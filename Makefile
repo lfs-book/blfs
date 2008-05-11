@@ -62,7 +62,7 @@ $(RENDERTMP)/blfs-pdf.xml: $(RENDERTMP)/blfs-full.xml
 	  --output $(RENDERTMP)/blfs-pdf.xml stylesheets/lfs-xsl/profile.xsl \
 	  $(RENDERTMP)/blfs-full.xml
 
-$(RENDERTMP)/blfs-pdf.fo: $(RENDERTMP)/blfs-full.xml
+$(RENDERTMP)/blfs-pdf.fo: $(RENDERTMP)/blfs-pdf.xml
 	@echo "Generating FO file..."
 	$(Q)xsltproc --nonet -stringparam rootid "$(ROOT_ID)" \
 	  --output $(RENDERTMP)/blfs-pdf.fo stylesheets/blfs-pdf.xsl \
@@ -132,7 +132,7 @@ $(BASEDIR)/wget-list: $(RENDERTMP)/blfs-full.xml
 	$(Q)xsltproc --nonet --output $(BASEDIR)/wget-list \
 	  stylesheets/wget-list.xsl $(RENDERTMP)/blfs-full.xml
 
-test-links: $(RENDERTMP)/blfs-full.xml
+test-links: $(BASEDIR)/test-links
 $(BASEDIR)/test-links: $(RENDERTMP)/blfs-full.xml
 	@echo "Generating test-links file..."
 	$(Q)mkdir -p $(BASEDIR)
