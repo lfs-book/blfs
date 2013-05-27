@@ -5,8 +5,8 @@
 # $Date$
 
 # Adjust these to suit your installation
-BASEDIR ?= $(HOME)/public_html/blfs-book-xsl
-DUMPDIR ?= $(HOME)/blfs-commands
+BASEDIR ?= $(HOME)/public_html/blfs-book-systemd-xsl
+DUMPDIR ?= $(HOME)/blfs-systemd-commands
 RENDERTMP ?= tmp
 CHUNK_QUIET = 1
 ROOT_ID =
