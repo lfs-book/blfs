@@ -86,8 +86,6 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="dbus"/>,
-      <xref linkend="libxml2"/> and
       <xref linkend="qt4"/>
     </para>
 
@@ -164,17 +162,6 @@ CONFIG_READLINE=y
 CONFIG_SMARTCARD=y
 CONFIG_WPS=y
 CFLAGS += -I/usr/include/libnl3
-EOF</userinput></screen>
-
-    <para>
-      If you wish to use <application>WPA Supplicant</application> with
-      <xref linkend="NetworkManager"/>, make sure that you have installed
-      <xref linkend="dbus"/> and <xref linkend="libxml2"/>, then add the
-      following options to the <application>WPA Supplicant</application>
-      build configuration file by running the following command:
-    </para>
-
-<screen><userinput>cat &gt;&gt; wpa_supplicant/.config &lt;&lt; "EOF"
 CONFIG_CTRL_IFACE_DBUS=y
 CONFIG_CTRL_IFACE_DBUS_NEW=y
 CONFIG_CTRL_IFACE_DBUS_INTRO=y
@@ -209,17 +196,8 @@ popd</userinput></screen>
 
 <screen role="root"><userinput>install -v -m755 wpa_{cli,passphrase,supplicant} /sbin/ &amp;&amp;
 install -v -m644 doc/docbook/wpa_supplicant.conf.5 /usr/share/man/man5/ &amp;&amp;
-install -v -m644 doc/docbook/wpa_{cli,passphrase,supplicant}.8 /usr/share/man/man8/</userinput></screen>
-
-    <para>
-      If you have built <application>WPA Supplicant</application> with
-      <application>D-Bus</application> support, you will need to install
-      <application>D-Bus</application> configuration files. Install them
-      by running the following commands as the
-      <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>install -v -m644 dbus/fi.{epitest.hostap.WPASupplicant,w1.wpa_supplicant1}.service \
+install -v -m644 doc/docbook/wpa_{cli,passphrase,supplicant}.8 /usr/share/man/man8/ &amp;&amp;
+install -v -m644 dbus/fi.{epitest.hostap.WPASupplicant,w1.wpa_supplicant1}.service \
                  /usr/share/dbus-1/system-services/ &amp;&amp;
 install -v -m644 dbus/dbus-wpa_supplicant.conf \
                  /etc/dbus-1/system.d/wpa_supplicant.conf</userinput></screen>
