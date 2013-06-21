@@ -79,8 +79,10 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required patch:
+          Required patches:
           <ulink url="&patch-root;/openssl-&openssl-version;-fix_parallel_build-1.patch"/>
+          and
+          <ulink url="&patch-root;/openssl-&openssl-version;-fix_pod_syntax-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -107,6 +109,7 @@
     </para>
 
 <screen><userinput>patch -Np1 -i ../openssl-&openssl-version;-fix_parallel_build-1.patch &amp;&amp;
+patch -Np1 -i ../openssl-&openssl-version;-fix_pod_syntax-1.patch &amp;&amp;
 
 ./config --prefix=/usr         \
          --openssldir=/etc/ssl \
@@ -128,8 +131,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>
-make MANDIR=/usr/share/man MANSUFFIX=ssl install &amp;&amp;
+<screen role="root"><userinput>make MANDIR=/usr/share/man MANSUFFIX=ssl install &amp;&amp;
 install -dv -m755 /usr/share/doc/openssl-&openssl-version;  &amp;&amp;
 cp -vfr doc/*     /usr/share/doc/openssl-&openssl-version;</userinput></screen>
 
