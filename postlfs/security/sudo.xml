@@ -6,9 +6,9 @@
 
   <!ENTITY sudo-download-http "http://www.sudo.ws/sudo/dist/sudo-&sudo-version;.tar.gz">
   <!ENTITY sudo-download-ftp  "ftp://ftp.twaren.net/Unix/Security/Sudo/sudo-&sudo-version;.tar.gz">
-  <!ENTITY sudo-md5sum        "6dac48c73c8e0932980efcddafa569af">
-  <!ENTITY sudo-size          "1.8 MB">
-  <!ENTITY sudo-buildsize     "23 MB">
+  <!ENTITY sudo-md5sum        "a02367090e1dac8d0c1747de1127b6bf">
+  <!ENTITY sudo-size          "1.9 MB">
+  <!ENTITY sudo-buildsize     "31 MB">
   <!ENTITY sudo-time          "0.3 SBU">
 ]>
 
@@ -101,11 +101,12 @@
       the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr                        \
-            --libexecdir=/usr/lib/sudo           \
+<screen><userinput>./configure --prefix=/usr                      \
+            -libexecdir=/usr/lib/sudo          \
             --docdir=/usr/share/doc/sudo-&sudo-version; \
-            --with-all-insults                   \
-            --with-env-editor                    &amp;&amp;
+            --with-timedir=/var/lib/sudo       \
+            --with-all-insults                 \
+            --with-env-editor                  &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -124,6 +125,11 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
+      <option>--with-timedir=/var/lib/sudo</option>: This switch places
+      the variable time stamp files in a FHS compatible location.
+    </para>
+
+    <para>
       <option>--with-all-insults</option>: This switch includes all the
       <application>sudo</application> insult sets.
     </para>
@@ -133,19 +139,6 @@ make</userinput></screen>
       environment variable EDITOR for <command>visudo</command>.
     </para>
 
-<!--
-    <para>
-      <option>-&#45;without-pam</option>: This switch disables the use of
-      <application>PAM</application> authentication. Omit if you have
-      <application>Linux PAM</application> installed.
-    </para>
-
-    <para>
-      <option>-&#45;without-sendmail</option>: This switch disables the use of
-      sendmail. Remove if you have a sendmail compatible MTA.
-   </para>
-
--->
     <note>
       <para>
         There are many options to <application>sudo</application>'s
@@ -162,7 +155,9 @@ make</userinput></screen>
     <sect3 id="sudo-config">
       <title>Config File</title>
 
-      <para><filename>/etc/sudoers</filename></para>
+      <para>
+        <filename>/etc/sudoers</filename>
+      </para>
 
       <indexterm zone="sudo sudo-config">
         <primary sortas="e-etc-sudoers">/etc/sudoers</primary>
@@ -242,19 +237,22 @@ chmod 644 /etc/pam.d/sudo</userinput></screen>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Libraries</segtitle> 
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
-          sudo, sudoedit, sudoreplay and visudo
+          sudo, sudoedit, sudoreplay, and visudo
         </seg>
         <seg>
-          sudoers.so and sudo_noexec.so
+          group_file.so, sudoers.so, system_group.so, and
+          sudo_noexec.so
         </seg>
         <seg>
-          /usr/lib/sudo and
-          /usr/share/doc/sudo-&sudo-version;
+          /etc/sudoers.d,
+          /usr/lib/sudo,
+          /usr/share/doc/sudo-&sudo-version;, and
+          /var/lib/sudo
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -312,32 +310,6 @@ chmod 644 /etc/pam.d/sudo</userinput></screen>
           </para>
           <indexterm zone="sudo sudoreplay">
             <primary sortas="b-sudoreplay">sudoreplay</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="sudoers">
-        <term><filename class='libraryfile'>sudoers.so</filename></term>
-        <listitem>
-          <para>
-            is default sudo security policy module.
-          </para>
-          <indexterm zone="sudo sudoers">
-            <primary sortas="c-sudoers">sudoers.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="sudo_noexec">
-        <term><filename class='libraryfile'>sudo_noexec.so</filename></term>
-        <listitem>
-          <para>
-             enables support for the "noexec" functionality which prevents
-             a dynamically-linked program being run by sudo from executing
-             another program (think shell escapes).
-          </para>
-          <indexterm zone="sudo sudo_noexec">
-            <primary sortas="c-sudo_noexec">sudo_noexec.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
