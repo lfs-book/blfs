@@ -34,6 +34,11 @@ install-service-bridge: create-service-dir
 install-service-wpa: create-service-dir
 	install -m ${MODE} blfs/services/wpa ${SERVICEDIR}
 
+install-acpid: create-dirs
+	install -m ${CONFMODE} blfs/units/acpid.service ${UNITSDIR}/
+	install -m ${CONFMODE} blfs/units/acpid.socket ${UNITSDIR}/
+	systemctl enable acpid.socket
+
 install-dhcpd: create-dirs
 	install -m ${CONFMODE} blfs/default/dhcpd ${DEFAULTSDIR}/
 	install -m ${CONFMODE} blfs/units/dhcpd.service ${UNITSDIR}/
@@ -139,6 +144,11 @@ install-winbindd: create-dirs
 	install -m ${CONFMODE} blfs/units/winbindd.service ${UNITSDIR}/
 	systemctl enable winbindd.service
 
+uninstall-acpid:
+	systemctl stop acpid.service
+	systemctl disable acpid.socket
+	rm -f ${UNITSDIR}/acpid.service ${UNITSDIR}/acpid.socket
+
 uninstall-dhcpd:
 	systemctl stop dhcpd.service
 	systemctl disable dhcpd.service
@@ -239,6 +249,7 @@ uninstall-winbindd:
 	install-service-ipx \
 	install-service-pppoe \
 	install-service-wpa \
+	install-acpid \
 	install-dhcpd \
 	install-httpd \
 	install-kdm \
@@ -256,6 +267,7 @@ uninstall-winbindd:
 	install-svnserve \
 	install-swat \
 	install-winbindd \
+	uninstall-acpid \
 	uninstall-dhcpd \
 	uninstall-httpd \
 	uninstall-kdm \
