@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY gnome-maps-download-http
+           "&gnome-download-http;/gnome-maps/3.12/gnome-maps-&gnome-maps-version;.tar.xz">
+  <!ENTITY gnome-maps-download-ftp
+           "&gnome-download-ftp;/gnome-maps/3.12/gnome-maps-&gnome-maps-version;.tar.xz">
+  <!ENTITY gnome-maps-md5sum        "3174cab728431abffe315598044118e2">
+  <!ENTITY gnome-maps-size          "668 KB">
+  <!ENTITY gnome-maps-buildsize     "25 MB">
+  <!ENTITY gnome-maps-time          "0.2 SBU">
+]>
+
+<sect1 id="gnome-maps" xreflabel="gnome-maps-&gnome-maps-version;">
+  <?dbhtml filename="gnome-maps.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>gnome-maps-&gnome-maps-version;</title>
+
+  <indexterm zone="gnome-maps">
+    <primary sortas="a-gnome-maps">gnome-maps</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to GNOME Maps</title>
+
+    <para>
+      <application>GNOME Maps</application> is a map application for GNOME 3.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&gnome-maps-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&gnome-maps-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &gnome-maps-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &gnome-maps-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &gnome-maps-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &gnome-maps-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">GNOME Maps Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="glib2"/>, and
+      <xref linkend="gjs"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="gtk3"/>,
+      <xref linkend="gnome-desktop"/>,
+      <xref linkend="geocode-glib"/>,
+      <xref linkend="geoclue"/>,
+      <xref linkend="gobject-introspection"/>,
+      <xref linkend="gnome-themes-standard"/>,
+      <xref linkend="gnome-icon-theme-symbolic"/>,
+      <xref linkend="libchamplain"/>,
+      <xref linkend="clutter-gtk"/>, and
+      <xref linkend="libgweather"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="gtk-doc"/>
+    </para>
+
+    <para condition="html" role="usernotes">User Notes:
+      <ulink url="&blfs-wiki;/gnome-maps"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of GNOME Maps</title>
+
+    <para>
+      Install <application>GNOME Maps</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr \
+            --libexecdir=/usr/lib/gnome-maps \
+            --disable-static &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <option>--enable-kerberos</option>: Use this switch if you have installed
+      <xref linkend="mitkrb"/> and wish to use it with
+      <application>GNOME Maps</application>.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/gtk-doc-rebuild.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          maps-daemon
+        </seg>
+        <seg>
+          libmaps-1.0.so and libmaps-backend-1.0.so
+        </seg>
+        <seg>
+          /usr/include/maps-1.0,
+          /usr/lib/gnome-maps and
+          /usr/share/gtk-doc/html/maps
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="maps-daemon">
+        <term><command>maps-daemon</command></term>
+        <listitem>
+          <para>
+            is the <application>GNOME Maps</application> Daemon.
+          </para>
+          <indexterm zone="gnome-maps maps-daemon">
+            <primary sortas="b-maps-daemon">maps-daemon</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libmaps-1">
+        <term><filename class="libraryfile">libmaps-1.0.so</filename></term>
+        <listitem>
+          <para>
+            contains the <application>GNOME Maps</application>
+            API functions.
+          </para>
+          <indexterm zone="gnome-maps libmaps-1">
+            <primary sortas="c-libmaps-1">libmaps-1.0.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libmaps-backend-1">
+        <term><filename class="libraryfile">libmaps-backend-1.0.so</filename></term>
+        <listitem>
+          <para>
+            contains functions used by <application>GNOME Maps</application>
+            backends.
+          </para>
+          <indexterm zone="gnome-maps libmaps-backend-1">
+            <primary sortas="c-libmaps-backend-1">libmaps-backend-1.0.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
