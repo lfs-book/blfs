@@ -29,13 +29,19 @@
   <sect2 role="package">
   <title>Introduction to Systemd</title>
 
-    <para>The systemd package was installed as part of the LFS-Systemd.  However not
-    all components were installed due to dependencies that were unavailable.
-    This procedure adds those missing components.</para>
+    <para>This part contains instructions on how to build systemd package with 
+    more features and why some features are required.
+    </para>
 
     <!-- &lfs75_checked; -->
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
+     <warning>
+      <para>
+         It is important that you use the _same_ version of systemd as it was used in LFS build.
+      </para>
+      </warning>
+
     <itemizedlist spacing="compact">
       <listitem>
         <para>Download (HTTP): <ulink url="&systemd-download-http;"/></para>
@@ -63,12 +69,12 @@
     <para role="required">
       <xref linkend="glib2"/>,
       <xref linkend="gobject-introspection"/>,
-      <xref linkend="linux-pam"/>, and
-      <xref linkend="libgcrypt"/>
+      <xref linkend="linux-pam"/>
     </para>
 
     <bridgehead renderas="sect4">Optional Dependencies</bridgehead>
     <para role="optional">
+      <xref linkend="libgcrypt"/> (see note below), and
       <xref linkend="gtk-doc"/> (to rebuild the documentation)
     </para>
 
@@ -77,6 +83,26 @@
       <xref linkend="pciutils"/> and
       <xref linkend="usbutils"/>
     </para>
+
+    <note>
+    <para>
+    Having the first two packages at build time results in:
+
+    libgudev-1.0.so in /usr/lib, /usr/include/gudev-1.0 directory, GUdev-1.0.
+    {typelib,gir} GObject-Introspection bindings in /usr/lib/girepository-1.0 
+    and /usr/share/gir-1.0 respectively.
+
+    Since GLib2 has a dependency on Python, systemd Python bindings were also installed in:
+
+    /usr/lib/python2.7/site-packages/systemd
+
+    Having the Linux-PAM package at build time results in:
+
+    pam_systemd.so in /lib/security, a PAM module used to register logins/logouts with systemd-logind component.
+ 
+    This is required by anything that now requires ConsoleKit (desktops, mostly), as well as some other software.
+     </para>
+     </note>
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/systemd"/></para>
@@ -142,15 +168,18 @@
     <para>To test the results, issue:</para>
 
 <screen><userinput>make -k check</userinput></screen>
-
+    <note>
     <para>For full test coverage, the test suite should be run
-    from a system booted using systemd.</para>
-
+    from a system booted using systemd.
+    </para>
+    </note>
+    <warning>
     <para>Installing the package will override all systemd components installed in LFS, 
-   so it is advised that the re-installation is done in a rescue mode with no programs except basic 
-   systemd ones running. To enter rescue mode with systemd, issue this as the <systemitem class="username">root</systemitem>
-   from a VT console:</para>
-
+    so it is advised that the re-installation is done in a rescue mode with no programs except basic 
+    systemd ones running. To enter rescue mode with systemd, issue this as the <systemitem class="username">root</systemitem>
+    from a VT console:
+    </para>
+    </warning>
 <screen role="root"><userinput>systemctl start rescue.target</userinput></screen>
 
     <para>Install the package as the <systemitem class="username">root</systemitem>
@@ -167,23 +196,28 @@
 
 <screen><userinput>rm -rfv /usr/lib/rpm</userinput></screen>
 
-    <para>Create the Sysvinit compatibility symlinks, so systemd is used
-    as the default init system:</para>
-
-<screen><userinput>for tool in runlevel reboot shutdown poweroff halt telinit; do
-     ln -sfv ../bin/systemctl /sbin/${tool}
-done
-ln -sfv ../lib/systemd/systemd /sbin/init</userinput></screen>
-
     <para>Remove a reference to a non-existent group:</para>
 
 <screen><userinput>sed -i "s:0775 root lock:0755 root root:g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
 
+    <warning>
     <para>WARNING do NOT run the systemd-machine-id-setup command again, 
     UUID was generated once and as its name says, 
     it should be unique. Generating a new one might result in broken logs from 
     journald and who knows what else.
     </para>
+    </warning>
+
+    <note>
+    <para>If libgcrypt was present at build time, make sure you move both libgpg-error and 
+    libgcrypt versioned libraries to /lib so that they are 
+    available in case of separate /usr  by
+    issuing the following commands as the <systemitem class="username">root</systemitem>
+    user:
+
+<screen role="root"><userinput>mv -v /usr/lib/libgcrypt.so.* /usr/lib/libgpg-error.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libgcrypt.so) /usr/lib/libgcrypt.so
+ln -sfv ../../lib/$(readlink /usr/lib/libgpg-error.so) /usr/lib/libgpg-error.so</userinput></screen></para></note>    
 
     <para>If the pam_systemd.so PAM module was built, the system-sesion 
     PAM file needs to be modified and a new file needs to be created in order 
