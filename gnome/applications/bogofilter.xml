@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY bogofilter-download-http 
+           "http://sourceforge.net/projects/bogofilter/files/bogofilter-stable/bogofilter-1.2.4/bogofilter-&bogofilter-version;.tar.gz">
+  <!ENTITY bogofilter-download-ftp  " ">
+  <!ENTITY bogofilter-md5sum        "6ce27a692d2d4881e9898f3798dcf91c">
+  <!ENTITY bogofilter-size          "1.9 MB">
+  <!ENTITY bogofilter-buildsize     "40 MB">
+  <!ENTITY bogofilter-time          "0.5 SBU">
+]>
+
+<sect1 id="bogofilter" xreflabel="bogofilter-&bogofilter-version;">
+  <?dbhtml filename="bogofilter.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>bogofilter-&bogofilter-version;</title>
+
+  <indexterm zone="bogofilter">
+    <primary sortas="a-bogofilter">bogofilter</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Bogofilter</title>
+
+    <para>
+      The<application>Bogofilter</application> application is a mail filter that classifies mail as spam or ham 
+      (non-spam) by a statistical analysis of the message's header and content (body). 
+      The program is able to learn from the user's classifications and corrections.
+
+      Bogofilter is or can be integrated with graphical mailers, such as KDE's KMail, GNOME's Evolution or Claws Mail 
+      (formerly known as Sylpheed-Claws), or it is run by a mail delivery agent (maildrop, procmail) script 
+      to classify an incoming message as spam or ham (using wordlists stored by BerkeleyDB). 
+      Bogofilter provides processing for plain text and HTML. It supports multi-part MIME messages with decoding 
+      of base64, quoted-printable, and uuencoded text and ignores attachments, such as images.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&bogofilter-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&bogofilter-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &bogofilter-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &bogofilter-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &bogofilter-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &bogofilter-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">bogofilter Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="db"/>, or
+      <xref linkend="sqlite"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/bogofilter"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of bogofilter</title>
+
+    <para>
+      Install <application>bogofilter</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr \
+            --sysconfdir=/etc \
+            --libexecdir=/usr/lib/bogofilter &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      To test the results, issue: <command>make -k check</command>. Two
+      tests may fail due to problems with the tests.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <option>--disable-gtk2</option>: This switch disables building
+      of the <application>GTK+ 2</application> immodule. Use it if
+      you have not installed <application>GTK+ 2</application>.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/gtk-doc-rebuild.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          bogofilter, bogofilter-daemon, and bogofilter-setup
+        </seg>
+        <seg>
+          libbogofilter-1.0.so and im-bogofilter.so
+          (<application>GTK+ Immodule</application>)
+        </seg>
+        <seg>
+          /etc/dconf/db/bogofilter.d,
+          /usr/include/bogofilter-1.0,
+          /usr/lib/bogofilter,
+          /usr/share/gtk-doc/html/bogofilter, and
+          /usr/share/bogofilter
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="bogofilter-daemon">
+        <term><command>bogofilter-daemon</command></term>
+        <listitem>
+          <para>
+            is the Intelligent Input Bus Daemon.
+          </para>
+          <indexterm zone="bogofilter bogofilter-daemon">
+            <primary sortas="b-bogofilter-daemon">bogofilter-daemon</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="bogofilter-setup">
+        <term><command>bogofilter-setup</command></term>
+        <listitem>
+          <para>
+            is the <application>GTK+</application> program used to configure
+            the <command>bogofilter-daemon</command>.
+          </para>
+          <indexterm zone="bogofilter bogofilter-setup">
+            <primary sortas="b-bogofilter-setup">bogofilter-setup</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libbogofilter-1.0">
+        <term><filename class="libraryfile">libbogofilter-1.0.so</filename></term>
+        <listitem>
+          <para>
+            contains <application>bogofilter</application> API functions.
+          </para>
+          <indexterm zone="bogofilter libbogofilter-1.0">
+            <primary sortas="c-libbogofilter-1.0">libbogofilter-1.0.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
