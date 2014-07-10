@@ -89,7 +89,7 @@
     <bridgehead renderas="sect4">Recomended</bridgehead>
     <para role="recomended">
       <xref linkend="upower"/>, and
-      <xref linkend="gconf"/>
+      <xref linkend="GConf"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -137,54 +137,6 @@ make</userinput></screen>
       <option>--enable-docbook-docs</option>: This switch is used to
       enable building of the documentation.
     </para>
-
-  </sect2>
-
-  <sect2 role="configuration" id="gnome-session-config">
-    <title>Configuring GNOME Session</title>
-
-    <sect3>
-      <title>Configuration Information</title>
-
-      <para>
-        If you are not using <application>GDM</application> to start your
-        <application>GNOME</application> desktop, you will need to invoke
-        <command>gnome-session</command> <emphasis>instead of</emphasis> invoking
-        a window-manager directly.  All of the packages in the 'Desktop' section of
-        this chapter need to be installed first, and some of the 'Applications' -
-        particularly <application>GNOME Terminal</application>
-        (<application>xterm</application> does not  install a '.desktop' file and
-        so not appear in the menus).
-      </para>
-
-      <para>
-        When <command>gnome-session</command> is run, it invokes the necessary
-        daemons and either <application>Metacity</application> or
-        <application>gnome-shell</application>. A desktop manager such as
-        <application>GDM</application> will invoke <application>ConsoleKit</application>
-        before the window manager, but if you use <command>startx</command> the first
-        invocation after booting may fail because the daemon is not already running,
-        so it is invoked first.
-      </para>
-
-      <para>
-        To automatically start the <application>gnome-session</application>
-        window manager when you issue the <command>startx</command> command,
-        backup your current <filename>~/.xinitrc</filename> before proceeding.
-        Note that you will be able to invoke <application>GNOME Terminal</application>
-        from the menu, so there is no reason to invoke <command>xterm</command> here.
-        Create a new <filename>.xinitrc</filename> using this command:
-      </para>
-
-      <indexterm zone="metacity gnome-session-config">
-        <primary sortas="e-AA.xinitrc">~/.xinitrc</primary>
-      </indexterm>
-
-<screen><userinput>cat &gt;&gt; ~/.xinitrc &lt;&lt; "EOF"
-<literal>exec ck-launch-session dbus-launch --exit-with-session gnome-session</literal>
-EOF</userinput></screen>
-
-    </sect3>
 
   </sect2>
 
