@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-  "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
@@ -8,14 +8,14 @@
   <!ENTITY systemd-download-ftp  " ">
   <!ENTITY systemd-md5sum        "eac4f9fc5bd18a0efc3fc20858baacf3">
   <!ENTITY systemd-size          "2.7 MB">
-  <!ENTITY systemd-buildsize     "97 MB">
-  <!ENTITY systemd-time          "0.4 SBU">
+  <!ENTITY systemd-buildsize     "23 MB">
+  <!ENTITY systemd-time          "0.3 SBU">
 ]>
 
 <sect1 id="systemd" xreflabel="systemd">
   <?dbhtml filename="systemd.html"?>
 
- <sect1info>
+  <sect1info>
     <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
@@ -23,25 +23,24 @@
   <title>Systemd-&systemd-version;</title>
 
   <indexterm zone="systemd">
-    <primary sortas="a-systemd">systemd</primary>
-  </indexterm>	
+    <primary sortas="a-systemd"></primary>
+  </indexterm>
 
   <sect2 role="package">
-  <title>Introduction to Systemd</title>
+    <title>Introduction to Systemd</title>
 
-    <para>This part contains instructions on how to build systemd package with 
+    <para>This part contains instructions on how to build systemd package with
     more features and why some features are required.
     </para>
 
-    <!-- &lfs75_checked; -->
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
-     <warning>
+    <warning>
       <para>
-         It is important that you use the _same_ version of systemd as it was used in LFS build.
+         It is important that you use the _same_ version of systemd as it was used in LFS build. 
       </para>
-      </warning>
-
+    </warning>
     <itemizedlist spacing="compact">
       <listitem>
         <para>Download (HTTP): <ulink url="&systemd-download-http;"/></para>
@@ -63,19 +62,26 @@
       </listitem>
     </itemizedlist>
 
-   <bridgehead renderas="sect3">Systemd Dependencies</bridgehead>
+    <bridgehead renderas="sect3">Systemd Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="glib2"/>,
-      <xref linkend="gobject-introspection"/>,
+      <xref linkend="gobject-introspection"/>, and
       <xref linkend="linux-pam"/>
     </para>
 
     <bridgehead renderas="sect4">Optional Dependencies</bridgehead>
     <para role="optional">
-      <xref linkend="libgcrypt"/> (see note below), and
-      <xref linkend="gtk-doc"/> (to rebuild the documentation)
+      <xref linkend="libgcrypt"/> (see note below)
+    </para>
+
+    <bridgehead renderas="sect4">Optional for rebuilding manual pages</bridgehead>
+    <para role="optional">
+      <xref linkend="libxslt"/>,
+      <xref linkend="DocBook"/>,
+      <xref linkend="docbook-xsl"/>, and
+      <xref linkend="gtk-doc"/> (for rebuilding UDev API docs)
     </para>
 
     <bridgehead renderas="sect4">Optional Runtime Dependencies</bridgehead>
@@ -89,7 +95,7 @@
     Having the first two packages at build time results in:
 
     libgudev-1.0.so in /usr/lib, /usr/include/gudev-1.0 directory, GUdev-1.0.
-    {typelib,gir} GObject-Introspection bindings in /usr/lib/girepository-1.0 
+    {typelib,gir} GObject-Introspection bindings in /usr/lib/girepository-1.0
     and /usr/share/gir-1.0 respectively.
 
     Since GLib2 has a dependency on Python, systemd Python bindings were also installed in:
@@ -99,7 +105,7 @@
     Having the Linux-PAM package at build time results in:
 
     pam_systemd.so in /lib/security, a PAM module used to register logins/logouts with systemd-logind component.
- 
+
     This is required by anything that now requires ConsoleKit (desktops, mostly), as well as some other software.
      </para>
      </note>
@@ -110,127 +116,100 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of systemd</title>
+    <title>Installation of Systemd</title>
 
-    <para>fix a build error when using Util-Linux built in
-    LFS-Systemd</para>
+    <para>First, re-build systemd:</para>
 
-<screen><userinput>sed -i "s:blkid/::" $(grep -rl "blkid/blkid.h")</userinput></screen>
+<screen><userinput>sed -i "s:blkid/::" $(grep -rl "blkid/blkid.h") &amp;&amp;
+patch -Np1 -i ../systemd-&systemd-version;-compat-patch; &amp;&amp;
 
-    <para>Apply a patch so that compat <command>pkg-config</command> files get
-    installed without installing compat libs which are useless on LFS:</para>
-
-<screen><userinput>patch -Np1 -i ../systemd-&systemd-version;-compat-1.patch</userinput></screen>
-
-    <para>Prepare systemd for compilation:</para>
-
-<screen><userinput> 
             ./configure --prefix=/usr   \
             --sysconfdir=/etc           \
             --localstatedir=/var        \
             --with-rootprefix=          \
             --with-rootlibdir=/lib      \
             --enable-split-usr          \
-            --docdir=/usr/share/doc/systemd-&systemd-version;</userinput></screen>
+            --docdir=/usr/share/doc/systemd-&systemd-version; &amp;&amp;
 
-    <variablelist>
-      <title>The meaning of the configure options:</title>
+make</userinput></screen>
 
-      <varlistentry>
-        <term><parameter>--with-root*</parameter></term>
-        <listitem>
-          <para>These switches ensure that core programs and
-          shared libraries are installed in the subdirectories
-          of the root partition.</para>
-        </listitem>
-      </varlistentry>
+   <para>First prevent a few broken test cases from being run:</para>
 
-      <varlistentry>
-        <term><parameter>--enable-split-usr</parameter></term>
-        <listitem>
-          <para>This switch ensures that systemd will work on
-          systems where /bin, /lib and /sbin directories are not
-          symlinks to their /usr counterparts.</para>
-        </listitem>
-      </varlistentry>
+<screen><userinput>sed -i s:test/udev-test.pl::g Makefile</userinput></screen>
 
-    </variablelist>
-
-    <para>Compile the package:</para>
-
-<screen><userinput>make</userinput></screen>
-
-    <para>First prevent few broken test cases from running:</para>
-
-<screen><userinput>sed -e "s:test/udev-test.pl::g"
-    -i Makefile</userinput></screen>
-
-    <para>To test the results, issue:</para>
-
-<screen><userinput>make -k check</userinput></screen>
-    <note>
+   <note>
     <para>For full test coverage, the test suite should be run
     from a system booted using systemd.
     </para>
     </note>
+
+   <para>To test the results, issue: <command>make -k check</command>.</para>
+
     <warning>
-    <para>Installing the package will override all systemd components installed in LFS, 
-    so it is advised that the re-installation is done in a rescue mode with no programs except basic 
+    <para>Installing the package will override all systemd components installed in LFS,
+    so it is advised that the re-installation is done in a rescue mode with no programs except basic
     systemd ones running. To enter rescue mode with systemd, issue this as the <systemitem class="username">root</systemitem>
     from a VT console:
     </para>
     </warning>
+
 <screen role="root"><userinput>systemctl start rescue.target</userinput></screen>
 
-    <para>Install the package as the <systemitem class="username">root</systemitem>
+   <para>Now re-install as the <systemitem class="username">root</systemitem> 
     user:</para>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
-    <para>Move NSS myhostname library to<filename
-    class="directory">/lib</filename>:</para>
+ <para>Move NSS myhostname library to <filename class="directory">/lib</filename>
+ as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen><userinput>mv -v /usr/lib/libnss_myhostname.so.2 /lib</userinput></screen>
+<screen role="root"><userinput>mv -v /usr/lib/libnss_myhostname.so.2 /lib</userinput></screen>
 
-    <para>Remove an unnecessary directory:</para>
+  <para>Remove an unnecessary directory as the as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen><userinput>rm -rfv /usr/lib/rpm</userinput></screen>
+<screen role="root"><userinput>rm -rfv /usr/lib/rpm</userinput></screen>
 
-    <para>Remove a reference to a non-existent group:</para>
+<para>Remove a reference to a non-existent group as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen><userinput>sed -i "s:0775 root lock:0755 root root:g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
+<screen role="root"><userinput>sed -i "s:0775 root lock:0755 root root:g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
+
+    <note>
+    <para> If libxslt was present, the man pages were also installed by make install. 
+    If not, the old man pages will remain and there's no need to reinstall 
+    them since the same version of systemd was used. The same goes for the sysv compatibility links.
+    </para>
+    </note>
 
     <warning>
-    <para>WARNING do NOT run the systemd-machine-id-setup command again, 
-    UUID was generated once and as its name says, 
-    it should be unique. Generating a new one might result in broken logs from 
+    <para>WARNING do NOT run the systemd-machine-id-setup command again,
+    UUID was generated once and as its name says,
+    it should be unique. Generating a new one might result in broken logs from
     journald and who knows what else.
     </para>
     </warning>
 
     <note>
-    <para>If libgcrypt was present at build time, make sure you move both libgpg-error and 
-    libgcrypt versioned libraries to /lib so that they are 
+    <para>If libgcrypt was present at build time, make sure you move both libgpg-error and
+    libgcrypt versioned libraries to /lib so that they are
     available in case of separate /usr  by
     issuing the following commands as the <systemitem class="username">root</systemitem>
-    user:
+     user:
 
 <screen role="root"><userinput>mv -v /usr/lib/libgcrypt.so.* /usr/lib/libgpg-error.so.* /lib
 ln -sfv ../../lib/$(readlink /usr/lib/libgcrypt.so) /usr/lib/libgcrypt.so
-ln -sfv ../../lib/$(readlink /usr/lib/libgpg-error.so) /usr/lib/libgpg-error.so</userinput></screen></para></note>    
+ln -sfv ../../lib/$(readlink /usr/lib/libgpg-error.so) /usr/lib/libgpg-error.so</userinput></screen></para></note>
 
-    <para>If the pam_systemd.so PAM module was built, the system-sesion 
-    PAM file needs to be modified and a new file needs to be created in order 
+ <para>If the pam_systemd.so PAM module was built, the system-sesion
+    PAM file needs to be modified and a new file needs to be created in order
     for systemd-logind to work correctly.  Create the configuration file by
     issuing the following commands as the <systemitem class="username">root</systemitem>
     user:
     </para>
-
 <screen role="root"><userinput>
 
 cat &gt; /etc/pam.d/system-session &lt;&lt; "EOF"
 # Begin Systemd addition
-
+    
 session   optional    pam_loginuid.so
 session   optional    pam_systemd.so
 # End Systemd addition
@@ -252,22 +231,38 @@ password required pam_deny.so
 # End /etc/pam.d/systemd-user
 EOF</userinput></screen>
 
-    <para>At this point it would be a nice idea to reboot, or rather restart the 
+    <para>At this point it would be a nice idea to reboot, or rather restart the
     systemd components in case of new dependencies as the <systemitem class="username">root</systemitem>
     user:</para>
 
-<screen role="root"><userinput>systemctl daemon-reexec
+<screen role="root"><userinput>systemctl daemon-reexec &amp;&amp;
                                systemctl restart systemd-logind systemd-journald systemd-udevd</userinput></screen>
-
   </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>--with-root*</parameter>: These switches ensure that core programs and
+          shared libraries are installed in the subdirectories
+          of the root partition.
+    </para>
+
+    <para>
+      <parameter>--enable-split-usr</parameter>: This switch ensures that systemd will work on
+          systems where /bin, /lib and /sbin directories are not
+          symlinks to their /usr counterparts.
+    </para>
+
+  </sect2> 
 
   <sect2 role="content">
     <title>Contents</title>
-    <para>
+
+     <para>
       A list of the installed files, along with their short descriptions can be
       found at <ulink url="http://www.linuxfromscratch.org/lfs/view/&lfs-version;/chapter06/systemd.html#contents-systemd"/>.
-    </para>
-
+     </para>
   </sect2>
 
 </sect1>
