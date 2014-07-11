@@ -36,11 +36,15 @@
     &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
+
+
     <warning>
       <para>
          It is important that you use the _same_ version of systemd as it was used in LFS build. 
       </para>
     </warning>
+
+
     <itemizedlist spacing="compact">
       <listitem>
         <para>Download (HTTP): <ulink url="&systemd-download-http;"/></para>
@@ -61,6 +65,7 @@
         <para>Estimated build time: &systemd-time;</para>
       </listitem>
     </itemizedlist>
+
 
     <bridgehead renderas="sect3">Systemd Dependencies</bridgehead>
 
@@ -116,11 +121,14 @@
   </sect2>
 
   <sect2 role="installation">
+
     <title>Installation of Systemd</title>
 
     <para>First, re-build systemd:</para>
 
-<screen><userinput>sed -i "s:blkid/::" $(grep -rl "blkid/blkid.h") &amp;&amp;
+<screen><userinput>
+
+sed -i "s:blkid/::" $(grep -rl "blkid/blkid.h") &amp;&amp;
 patch -Np1 -i ../systemd-&systemd-version;-compat-patch; &amp;&amp;
 
             ./configure --prefix=/usr   \
@@ -135,7 +143,9 @@ make</userinput></screen>
 
    <para>First prevent a few broken test cases from being run:</para>
 
-<screen><userinput>sed -i s:test/udev-test.pl::g Makefile</userinput></screen>
+<screen><userinput>
+
+sed -i s:test/udev-test.pl::g Makefile</userinput></screen>
 
    <note>
     <para>For full test coverage, the test suite should be run
@@ -153,25 +163,35 @@ make</userinput></screen>
     </para>
     </warning>
 
-<screen role="root"><userinput>systemctl start rescue.target</userinput></screen>
+<screen role="root">
+
+<userinput>systemctl start rescue.target</userinput></screen>
 
    <para>Now re-install as the <systemitem class="username">root</systemitem> 
     user:</para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root">
+
+<userinput>make install</userinput></screen>
 
  <para>Move NSS myhostname library to <filename class="directory">/lib</filename>
  as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>mv -v /usr/lib/libnss_myhostname.so.2 /lib</userinput></screen>
+<screen role="root">
+
+<userinput>mv -v /usr/lib/libnss_myhostname.so.2 /lib</userinput></screen>
 
   <para>Remove an unnecessary directory as the as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>rm -rfv /usr/lib/rpm</userinput></screen>
+<screen role="root">
+
+<userinput>rm -rfv /usr/lib/rpm</userinput></screen>
 
 <para>Remove a reference to a non-existent group as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>sed -i "s:0775 root lock:0755 root root:g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
+<screen role="root">
+
+<userinput>sed -i "s:0775 root lock:0755 root root:g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
 
     <note>
     <para> If libxslt was present, the man pages were also installed by make install. 
@@ -195,16 +215,19 @@ make</userinput></screen>
     issuing the following commands as the <systemitem class="username">root</systemitem>
      user:
 
-<screen role="root"><userinput>mv -v /usr/lib/libgcrypt.so.* /usr/lib/libgpg-error.so.* /lib
-ln -sfv ../../lib/$(readlink /usr/lib/libgcrypt.so) /usr/lib/libgcrypt.so
+<screen role="root"><userinput>
+
+mv -v /usr/lib/libgcrypt.so.* /usr/lib/libgpg-error.so.* /lib &amp;&amp;
+ln -sfv ../../lib/$(readlink /usr/lib/libgcrypt.so) /usr/lib/libgcrypt.so &amp;&amp;
 ln -sfv ../../lib/$(readlink /usr/lib/libgpg-error.so) /usr/lib/libgpg-error.so</userinput></screen></para></note>
 
- <para>If the pam_systemd.so PAM module was built, the system-sesion
+    <para>If the pam_systemd.so PAM module was built, the system-sesion
     PAM file needs to be modified and a new file needs to be created in order
     for systemd-logind to work correctly.  Create the configuration file by
     issuing the following commands as the <systemitem class="username">root</systemitem>
     user:
     </para>
+
 <screen role="root"><userinput>
 
 cat &gt; /etc/pam.d/system-session &lt;&lt; "EOF"
@@ -235,8 +258,11 @@ EOF</userinput></screen>
     systemd components in case of new dependencies as the <systemitem class="username">root</systemitem>
     user:</para>
 
-<screen role="root"><userinput>systemctl daemon-reexec &amp;&amp;
-                               systemctl restart systemd-logind systemd-journald systemd-udevd</userinput></screen>
+<screen role="root">
+
+<userinput>systemctl daemon-reexec &amp;&amp;
+systemctl restart systemd-logind systemd-journald systemd-udevd</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
