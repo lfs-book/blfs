@@ -83,8 +83,21 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="db"/>, or
-      <xref linkend="sqlite"/>
+      <xref linkend="sqlite"/>, or
+      <ulink url="http://fallabs.com/qdbm/">qdbm</ulink>
     </para>
+    
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="gsl"/>
+    </para>
+
+    <note>
+    <para>
+      If you do not install the recommended <application>gsl</application>
+      then a statically linked shipped version will be used instead.
+    </para>
+    </note>
 
     <para condition="html" role="usernotes">
       User Notes: <ulink url="&blfs-wiki;/bogofilter"/>
@@ -99,14 +112,11 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --sysconfdir=/etc \
-            --libexecdir=/usr/lib/bogofilter &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make -k check</command>. Two
-      tests may fail due to problems with the tests.
+      This application does not come with a test suite.
     </para>
 
     <para>
@@ -120,9 +130,8 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <option>--disable-gtk2</option>: This switch disables building
-      of the <application>GTK+ 2</application> immodule. Use it if
-      you have not installed <application>GTK+ 2</application>.
+      <option>--with-database=</option>: This switch allows you to change
+      the default database from db to either qdbm or sqlite.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
