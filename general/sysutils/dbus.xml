@@ -387,6 +387,59 @@ kill $DBUS_SESSION_BUS_PID</literal></userinput></screen>
 
     </sect3>
 
+    <sect3  id="dbus-init-systemd">
+      <title>Systemd Unit File</title>
+
+      <para>
+       Systemd users don't need to install this package since it has already been 
+       installed as part of LFS.
+
+       But some packages might require "dbus-launch" utility to be built with X11 support. 
+       To build "dbus-launch" utility with X11 support, Xorg Libraries 
+       must be installed first, then D-Bus needs to be reconfigured and built
+       using the same instructions as in LFS issue the following commands:
+      </para>
+
+      <indexterm zone="dbus dbus-init-systemd">
+        <primary sortas="f-dbus">dbus</primary>
+      </indexterm>
+
+<screen role="root">
+<userinput>
+
+./configure --prefix=/usr                      \
+            --sysconfdir=/etc                  \
+            --localstatedir=/var               \
+            --docdir=/usr/share/doc/dbus-1.8.0 \
+            --with-console-auth-dir=/run/console/ &amp;&amp; 
+make
+
+</userinput></screen>
+
+      <para>
+       And then just install the "dbus-launch" utility as the
+       <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root">
+<userinput>
+install -m755 tools/dbus-launch /usr/bin
+</userinput></screen>
+
+      <para>
+        If you had xmlto installed during the build, you can also install manual pages 
+        which were not installed in LFS. Issue the following command as the
+       <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root">
+<userinput>
+
+make -C doc install-man                                        
+
+</userinput></screen>
+    </sect3>
+
   </sect2>
 
   <sect2 role="content">
