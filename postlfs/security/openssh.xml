@@ -315,6 +315,52 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
 
 <screen role="root"><userinput>make install-sshd</userinput></screen>
     </sect3>
+
+    <sect3  id="openssh-init-systemd">
+      <title>Systemd Unit File</title>
+
+      <para>
+       Instead of using the classic boot script, the systemd-units package provides 
+       native unit files. To start the SSH server at system boot, install the
+       systemd unit included in the <xref linkend="systemd-units"/> package.as the 
+       <systemitem class="username">root</systemitem> user:
+       </para>
+
+      <indexterm zone="openssh openssh-init-systemd">
+        <primary sortas="f-sshd">sshd</primary>
+      </indexterm>
+
+<screen role="root"><userinput>make install-sshd</userinput></screen>
+
+      <note>
+      <para>
+        Note that this package comes with two types of units: A service file and a socket file. 
+        The service file will start sshd daemon once at boot and it will keep running until the 
+        system shuts down. The socket file will make systemd listen to sshd port (Default 22, needs 
+        to be edited for anything else) and will start sshd daemon when something tries to connect 
+        to that port and stop the daemon when the connection is terminated. This is 
+        called socket activation.
+
+        By default, the first method is used - sshd daemon is started at boot and stopped at shutdown. 
+        If the socket method is desired, you need to run as the <systemitem class="username">root</systemitem> user:
+
+ 
+<screen role="root">
+
+<userinput>         
+
+systemctl stop sshd &amp;&amp; 
+systemctl disable sshd.service &amp;&amp;
+systemctl enable sshd.socket &amp;&amp;
+systemctl start sshd.socket
+
+</userinput>
+</screen>
+
+      </para>
+      </note>
+    </sect3>
+
   </sect2>
 
   <sect2 role="content">

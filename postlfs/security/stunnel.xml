@@ -243,6 +243,31 @@ connect = <replaceable>&lt;hostname:portnumber&gt;</replaceable></literal></scre
 
     </sect3>
 
+    <sect3  id="stunnel-init-systemd">
+      <title>Systemd Unit File</title>
+
+      <para>This package provides a systemd unit in the source tarball.
+       To install it run the following commands as the 
+     <systemitem class="username">root</systemitem> user:
+      </para>
+      <indexterm zone="stunnel stunnel-init-systemd">
+        <primary sortas="f-stunnel">stunnel</primary>
+      </indexterm>
+
+      <para>Remove an unnecessary dependency:</para>
+
+<screen role="root"><userinput>sed -i /syslog.target/d tools/stunnel.service</userinput></screen>
+
+      <para>Install the service:</para>
+
+<screen role="root"><userinput>install -v -m644 tools/stunnel.service /lib/systemd/system/stunnel.service</userinput></screen>
+
+      <para>Enable the service:</para>
+
+<screen role="root"><userinput>systemctl enable stunnel</userinput></screen>
+
+    </sect3>
+
   </sect2>
 
   <sect2 role="content">

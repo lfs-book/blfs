@@ -89,10 +89,21 @@
     <para role="optional">
       <xref linkend="DocBook"/>,
       <xref linkend="docbook-xsl"/>,
-      <xref linkend="gtk-doc"/>,
-      <xref linkend="libxslt"/> and
+      <xref linkend="gtk-doc"/>, and
+      <xref linkend="libxslt"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional (Required if using systemd and building GNOME)</bridgehead>
+    <para role="optional">
       <xref linkend="linux-pam"/>
     </para>
+
+    <note>
+      <para>
+        This package will link against systemd libraries by default, since they are always installed 
+        and in doing that, it doesn't require ConsoleKit anymore.
+      </para>
+    </note>
 
     <note>
       <para>
@@ -161,6 +172,17 @@ make</userinput></screen>
       of LFS/BLFS. If you use <application>systemd</application>,
       replace "no" by "yes".
     </para>
+
+    <note>
+    <para>
+     Systemd users, if this package is going to be used, ie on desktops or if an 
+     user wants to grant unprivileged users to be able to shut down, 
+     reboot, etc the systemd PAM module needs to be built and set up. 
+     It is also a good idea to build Polkit with PAM support, so the Polkit can take 
+     advantage of the PAM module, so you need to remove the below parameter from
+     the configure line, and create the PAM file mentioned in the configuration section.
+    </para>
+    </note>
 
     <para>
       <parameter>--with-authfw=shadow</parameter>: This parameter configures the
