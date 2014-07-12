@@ -130,6 +130,42 @@ install -v -m644    doc/{FAQ,HACK_GPM,README*}        \
 
     </sect3>
 
+    <sect3 id="gpm-init-systemd">
+      <title>Systemd Unit File</title>
+
+      <indexterm zone="gpm gpm-init-systemd">
+        <primary sortas="f-gpm-init">gpm</primary>
+      </indexterm>
+
+      <para>
+        Instead of using the classic boot script, systemd-units package provides native unit file.
+        Install the Systemd Unit included in the <xref linkend="systemd-units"/>
+        package using the following command as the <systemitem class="username">root</systemitem> 
+        user:
+      </para>
+
+<screen role="root"><userinput>make install-gpm</userinput></screen>
+
+
+      <note>
+      <para>
+        Note that this service will start the daemon with "-m /dev/input/mice -t imps2" parameters 
+       (Same as when using the options from "Configuration Information" section). 
+       If any other options are needed, the file needs to be edited manually or overriden using 
+       the systemd override system using the following command as the 
+       <systemitem class="username">root</systemitem> user:
+      </para>
+      </note>
+
+<screen role="root"><userinput>
+
+mkdir -p /etc/systemd/system/gpm.service.d/
+echo "Exec=/usr/sbin/gpm -m <replaceable>&lt;yourdevice&gt;</replaceable> -t <replaceable>&lt;yourprotocol&gt;</replaceable>"&gt; 
+/etc/systemd/system/gpm.service.d/50-custom.conf
+
+</userinput></screen>
+    </sect3>
+
     <sect3 id="gpm-config">
       <title>Config Files</title>
 

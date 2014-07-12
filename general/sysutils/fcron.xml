@@ -86,6 +86,15 @@
   <sect2 role="installation">
     <title>Installation of Fcron</title>
 
+    <note>
+    <para>
+      Systemd logging daemon, systemd-journald will automatically log 
+      all the messages from the services started by systemd, so the initial 
+      configuration for this package related to syslog is not required if using 
+      this package in systemd environment.
+    </para>
+    </note>
+
     <para id="fcron-syslog"><application>Fcron</application> uses the cron facility
     of <command>syslog</command> to log all messages. Since LFS
     does not set up this facility in <filename>/etc/syslog.conf</filename>, it
@@ -228,6 +237,27 @@ make</userinput></screen>
       </indexterm>
 
 <screen role="root"><userinput>make install-fcron</userinput></screen>
+
+    </sect3>
+
+    <sect3  id="fcron-init-systemd">
+      <title>Systemd Unit File</title>
+
+      <para>
+        This package will automatically install the systemd unit file if systemd is detected. 
+        To enable it, issue as the <systemitem class="username">root</systemitem> user:
+      </para>
+
+      <indexterm zone="fcron fcron-init-systemd">
+        <primary sortas="f-fcron">fcron</primary>
+      </indexterm>
+
+<screen role="root">
+<userinput>
+
+systemctl enable fcron
+
+</userinput></screen>
 
     </sect3>
 
