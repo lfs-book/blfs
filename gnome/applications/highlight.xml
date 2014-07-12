@@ -71,10 +71,18 @@
 
     <bridgehead renderas="sect3">highlight Dependencies</bridgehead>
 
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="lua"/>, and
+      <xref linkend="boost"/>
+    </para>
+
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="doxygen"/>, and
-      <xref linkend="qt4"/>
+      <xref linkend="doxygen"/>, (to build documentation)
+      <xref linkend="qt4"/> (to build gui), or
+      <xref linkend="qt5"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -87,17 +95,16 @@
 
     <para>
       Install <application>highlight</application> by running the following
-      commands:
+      command:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --sysconfdir=/etc \
-            --libexecdir=/usr/lib/highlight &amp;&amp;
-make</userinput></screen>
+<screen><userinput>
+
+make
+</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make -k check</command>. Two
-      tests may fail due to problems with the tests.
+      This application does not have a test suite.
     </para>
 
     <para>
@@ -105,19 +112,41 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      If you have QT4 or QT5 installed and want to install the gui as the 
+      <systemitem class="username">root</systemitem> user issue the following
+      command:
+    </para>
+
+<screen role="root"><userinput>make install-gui</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
-      <option>--disable-gtk2</option>: This switch disables building
-      of the <application>GTK+ 2</application> immodule. Use it if
-      you have not installed <application>GTK+ 2</application>.
+      <option>make lib-static</option>: This option will 
+      compile only the static library.
     </para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gtk-doc-rebuild.xml"/>
+    <para>
+      <option>make lib-shared</option>: This option will 
+      compile only the shared library.    
+    </para>
+
+    <para>
+      <option>make gui</option>: This option will
+      compile static library and the Qt 4.x or Qt 5.x
+      GUI
+    </para>
+
+    <para>
+      <option>make apidocs</option>: This option will
+      build the documentation if <application>doxygen</application>
+      is installed.
+    </para>    
 
   </sect2>
 
