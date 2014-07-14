@@ -138,10 +138,10 @@ useradd -c "Color Daemon Owner" -d /var/lib/colord -u 71 \
             --localstatedir=/var         \
             --with-daemon-user=colord    \
             --enable-vala                \
-            --enable-systemd-login=no    \
+            --enable-systemd-login=yes   \
             --disable-bash-completion    \
             --disable-static             \
-            --with-systemdsystemunitdir=no &amp;&amp;
+            --with-systemdsystemunitdir=/lib/systemd/system &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -163,13 +163,6 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>--enable-libsystemd-login=no</parameter>: This parameter fixes
-      building without <application>systemd</application>, which is not part
-      of LFS/BLFS. If you use <application>systemd</application>,
-      replace "no" by "yes".
-    </para>
-
-    <para>
       <parameter>--with-daemon-user=colord</parameter>: This
       switch is used so the <command>colord</command> daemon
       will run as an unprivileged user instead of
@@ -188,17 +181,6 @@ make</userinput></screen>
       support for <application>Colord</application> apps.
     </para>
 
-    <para>
-      <option>--disable-systemd-login</option>: This switch prevents
-      <command>configure</command> to look for
-      <application>Systemd</application> libraries.
-    </para>
-
-    <para>
-      <option>--with-systemdsystemunitdir=no</option>: Disable
-      attempting to build with systemd libraries.
-    </para>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 
@@ -208,11 +190,6 @@ make</userinput></screen>
     <para>
       <option>--disable-gusb</option>: Use this switch if you don't have
       <application>libgusb</application> installed.
-    </para>
-
-    <para>
-      <option>--disable-gudev</option>: Use this switch if you don't have GUdev
-      installed.
     </para>
 
     <para>
@@ -227,16 +204,6 @@ make</userinput></screen>
     class="directory">/usr/libexec</filename> in accordance with the old
     version of the FHS used before LFS-7.5.</para>
 
-    <sect3 role="commands">
-    <title>Systemd Unit File</title>
-    <note>
-    <para>
-     This package will link against systemd libraries to utilize logind support, 
-     but it is disabled by default. Remove the "--disable-systemd-login" 
-     switch from the configure line.
-    </para>
-    </note>  
- </sect3>
  </sect2>
 
   <sect2 role="content">
