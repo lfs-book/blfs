@@ -88,7 +88,7 @@
       <xref linkend="boost"/>,
       <xref linkend="freetype2"/>,
       <xref linkend="pciutils"/>, and
-      <xref linkend="consolekit"/>
+      <xref linkend="systemd"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -140,6 +140,16 @@ useradd -c "KDM Daemon Owner" -d /var/lib/kdm -g kdm \
         -u 37 -s /bin/false kdm &amp;&amp;
 install -o kdm -g kdm -dm755 /var/lib/kdm</userinput></screen>
 
+    <note>
+    <para>
+      This package should work just fine with systemd-logind instead of ConsoleKit. 
+      If cmake complains about missing ConsoleKit at build time, just 
+      pass "-DWITH_CkConnector=OFF" to the cmake options.
+      This package also requires the logind PAM module to be installed and properly 
+      configured.
+    </para>
+    </note>
+  
     <para>
       Install <application>Kde-workspace</application> by running the following
       commands:
