@@ -115,6 +115,7 @@
 
 ./configure --prefix=/         \
             --without-openldap \
+            --with-systemd    \
             --mandir=/usr/share/man &amp;&amp;
 make</userinput></screen>
 
@@ -137,6 +138,10 @@ make</userinput></screen>
     <para>
       <option>--with-libtirpc</option>: This switch enables libtirpc support if
       available.
+    </para>
+
+    <para>
+      <option>--with-systemd</option>: This switch enables systemd support.
     </para>
 
     <para>
@@ -249,39 +254,14 @@ EOF</userinput></screen>
 
     </sect3>
 
-    <sect3  id="autofs-init">
-      <title>Boot Script</title>
-
-      <para> <application>autofs</application> installs its own boot script,
-      but it has no capability for logging or visual conformance with other
-      BLFS scripts.</para>
-
-      <para>Install the <filename>/etc/init.d/autofs</filename> mount script
-      included with the <xref linkend="bootscripts"/> package.</para>
-
-      <indexterm zone="autofs autofs-init">
-        <primary sortas="f-autofs-init">autofs</primary>
-      </indexterm>
-
-<screen role="root"><userinput>make install-autofs</userinput></screen>
-
-      <para>The time-out variable is set in
-      <filename>/etc/sysconfig/autofs.conf</filename>. The installed file sets
-      a default of 60 seconds of inactivity before unmounting the device.  A
-      much shorter time may be necessary to protect buffer writing to a floppy
-      if users tend to remove the media prior to the timeout setting.</para>
-
-    </sect3>
-
     <sect3  id="autofs-init-systemd">
       <title>Systemd Unit File</title>
 
-      <para> This package provides a systemd unit file in the source tarball. To install it, 
-       add --with-systemd to the configure line.</para>
+      <para> This package provides a systemd unit file in the source tarball. To enable it, 
+        issue the following command as the <systemitem class="username">root</systemitem> 
+        user:</para>
 
-      <para>To enable it, issue as the <systemitem class="username">root</systemitem> user:</para>
-
-      <indexterm zone="autofs autofs-init">
+      <indexterm zone="autofs autofs-init-systemd">
         <primary sortas="f-autofs-init">autofs</primary>
       </indexterm>
 
