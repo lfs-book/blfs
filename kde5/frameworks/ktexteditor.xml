@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY ktexteditor-download-http "&kf5-download-http;/ktexteditor-&kf5-version;.tar.xz">
+  <!ENTITY ktexteditor-download-ftp  "&kf5-download-ftp;/ktexteditor-&kf5-version;.tar.xz">
+  <!ENTITY ktexteditor-md5sum        "fb438acf5b10c0e9a620916c2bfe5797">
+  <!ENTITY ktexteditor-size          "2.8 MB">
+  <!ENTITY ktexteditor-buildsize     "79 MB">
+  <!ENTITY ktexteditor-time          "3.0 SBU">
+]>
+
+<sect1 id="ktexteditor" xreflabel="KTextEditor-&kf5-version;">
+  <?dbhtml filename="ktexteditor.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>KTextEditor-&kf5-version;</title>
+
+  <indexterm zone="ktexteditor">
+    <primary sortas="a-KTextEditor">KTextEditor</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to KTextEditor</title>
+
+    <para>
+      The <application>KTextEditor</application> package contains a library
+      that provides a powerful text editor component that you can embed in your
+      application.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&ktexteditor-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&ktexteditor-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &ktexteditor-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &ktexteditor-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &ktexteditor-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &ktexteditor-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">KTextEditor Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="kparts"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/ktexteditor"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of KTextEditor</title>
+
+    <para>
+      Install <application>KTextEditor</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX    \
+      -DCMAKE_BUILD_TYPE=Release            \
+      -DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR \
+      -DLIB_INSTALL_DIR=lib                 \
+      -DBUILD_TESTING=OFF                   \
+      -DQT_PLUGIN_INSTALL_DIR=&qt5-plugins-dir; \
+      -DECM_MKSPECS_INSTALL_DIR=&qt5-mkspecs-dir; \
+      .. &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-release.xml"/>
+
+    <para>
+      <parameter>-DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR</parameter>: This switch
+      is used to set correct XDG configuration directory.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-libdir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-tests.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-plugins-dir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-mkspecs-dir.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          None
+        </seg>
+        <seg>
+          libKF5TextEditor.so
+        </seg>
+        <seg>
+          $KF5_PREFIX/include/KF5/KTextEditor,
+          $KF5_PREFIX/lib/cmake/KF5TextEditor and
+          $KF5_PREFIX/share/{katepart,katepart5}
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>

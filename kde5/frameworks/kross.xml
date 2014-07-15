@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY kross5-download-http "&kf5-download-http;/portingAids/kross-&kf5-version;.tar.xz">
+  <!ENTITY kross5-download-ftp  "&kf5-download-ftp;/portingAids/kross-&kf5-version;.tar.xz">
+  <!ENTITY kross5-md5sum        "e6b72d26ff2f2fff75ccec11fa0c01a6">
+  <!ENTITY kross5-size          "2.7 MB">
+  <!ENTITY kross5-buildsize     "35 MB">
+  <!ENTITY kross5-time          "0.6 SBU">
+]>
+
+<sect1 id="kross5" xreflabel="Kross-&kf5-version;">
+  <?dbhtml filename="kross.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>Kross-&kf5-version;</title>
+
+  <indexterm zone="kross5">
+    <primary sortas="a-Kross">Kross</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Kross</title>
+
+    <para>
+      The <application>Kross</application> package contains a library
+      that provides a scripting bridge to embed scripting functionality
+      into an application.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&kross5-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&kross5-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &kross5-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &kross5-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &kross5-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &kross5-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Kross Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="kparts"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/kross5"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Kross</title>
+
+    <para>
+      Install <application>Kross</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX \
+      -DCMAKE_BUILD_TYPE=Release         \
+      -DLIB_INSTALL_DIR=lib              \
+      -DBUILD_TESTING=OFF                \
+      -DQT_PLUGIN_INSTALL_DIR=&qt5-plugins-dir; \
+      -DECM_MKSPECS_INSTALL_DIR=&qt5-mkspecs-dir; \
+      .. &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-release.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-libdir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-tests.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-plugins-dir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-mkspecs-dir.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          kf5kross
+        </seg>
+        <seg>
+          libKF5KrossCore.so and libKF5KrossUi.so
+        </seg>
+        <seg>
+          $KF5_PREFIX/include/KF5/{KrossCore,KrossUi} and
+          $KF5_PREFIX/lib/cmake/KF5Kross
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY plasma-desktop-download-http "&plasma-download-http;/plasma-desktop-&plasma-version;.tar.xz">
+  <!ENTITY plasma-desktop-download-ftp  "&plasma-download-ftp;/plasma-desktop-&plasma-version;.tar.xz">
+  <!ENTITY plasma-desktop-md5sum        "83a010a0f784dbd863299e3191d6169c">
+  <!ENTITY plasma-desktop-size          "5.8 MB">
+  <!ENTITY plasma-desktop-buildsize     "163 MB">
+  <!ENTITY plasma-desktop-time          "5.6 SBU">
+]>
+
+<sect1 id="plasma-desktop" xreflabel="Plasma-Desktop-&plasma-version;">
+  <?dbhtml filename="plasma-desktop.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>Plasma-Desktop-&plasma-version;</title>
+
+  <indexterm zone="plasma-desktop">
+    <primary sortas="a-Plasma-Desktop">Plasma-Desktop</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Plasma-Desktop</title>
+
+    <para>
+      The <application>Plasma-Desktop</application> package contains the
+      <application>KDE Plasma 5</application> Desktop.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&plasma-desktop-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&plasma-desktop-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &plasma-desktop-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &plasma-desktop-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &plasma-desktop-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &plasma-desktop-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Plasma-Desktop Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="plasma-workspace"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="libcanberra"/>,
+      <xref linkend="libusb-compat"/> and
+      <xref linkend="pulseaudio"/>
+    </para>
+
+    <bridgehead renderas="sect4">Runtime Dependencies</bridgehead>
+    <para role="required">
+      <xref linkend="khotkeys"/>,
+      <xref linkend="ksysguard"/>,
+      <xref linkend="powerdevil"/> and
+      <xref linkend="systemsettings"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/plasma-desktop"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Plasma-Desktop</title>
+
+    <para>
+      Install <application>Plasma-Desktop</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX      \
+      -DCMAKE_BUILD_TYPE=Release              \
+      -DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR   \
+      -DLIB_INSTALL_DIR=lib                   \
+      -DBUILD_TESTING=OFF                     \
+      -DQML_INSTALL_DIR=&qt5-qml-dir;           \
+      -DQT_PLUGIN_INSTALL_DIR=&qt5-plugins-dir; \
+      .. &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-release.xml"/>
+
+    <para>
+      <parameter>-DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR</parameter>: This switch
+      is used to set correct XDG configuration directory.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-libdir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-tests.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-qml-dir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-plugins-dir.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          kaccess, kapplymousetheme, kfontinst, kfontview, knetattach and krdb
+        </seg>
+        <seg>
+          libkdeinit5_kaccess.so, libkfontinst.so and libkfontinstui.so
+        </seg>
+        <seg>
+          $KF5_PREFIX/&qt5-qml-dir;/org/kde/plasma/private/{folder,kicker,kickoff},
+          $KF5_PREFIX/&qt5-qml-dir;/org/kde/plasma/private/{pager,taskmanager,trash},
+          $KF5_PREFIX/share/color-schemes,
+          $KF5_PREFIX/share/doc/HTML/*/{kcontrol,kfontview,knetattach,plasma-desktop},
+          $KF5_PREFIX/share/{kcm_componentchooser,kcminput,kcmkeyboard,kcmkeys},
+          $KF5_PREFIX/share/{kcm_phonon,kcontrol,kdisplay,kdm,kfontinst,kfontview}
+          $KF5_PREFIX/share/{konqsidebartng,kthememanager} and
+          $KF5_PREFIX/share/plasma/{packages,shells}
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>

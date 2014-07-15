@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY kauth-download-http "&kf5-download-http;/kauth-&kf5-version;.tar.xz">
+  <!ENTITY kauth-download-ftp  "&kf5-download-ftp;/kauth-&kf5-version;.tar.xz">
+  <!ENTITY kauth-md5sum        "eeb5e576c9d0d098cfb9def812f04089">
+  <!ENTITY kauth-size          "2.6 MB">
+  <!ENTITY kauth-buildsize     "78 MB">
+  <!ENTITY kauth-time          "0.4 SBU">
+]>
+
+<sect1 id="kauth" xreflabel="KAuth-&kf5-version;">
+  <?dbhtml filename="kauth.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>KAuth-&kf5-version;</title>
+
+  <indexterm zone="kauth">
+    <primary sortas="a-KAuth">KAuth</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to KAuth</title>
+
+    <para>
+      The <application>KAuth</application> package contains a library that
+      provides a convenient, system-integrated way to offload actions that
+      need to be performed as a privileged user to small helper utilities.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&kauth-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&kauth-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &kauth-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &kauth-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &kauth-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &kauth-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">KAuth Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="kcoreaddons"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="polkit-qt5"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/kauth"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of KAuth</title>
+
+    <para>
+      Install <application>KAuth</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX    \
+      -DCMAKE_BUILD_TYPE=Release            \
+      -DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR \
+      -DLIB_INSTALL_DIR=lib                 \
+      -DBUILD_TESTING=OFF                   \
+      -DQT_PLUGIN_INSTALL_DIR=&qt5-plugins-dir; \
+      -DECM_MKSPECS_INSTALL_DIR=&qt5-mkspecs-dir; \
+      .. &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-release.xml"/>
+
+    <para>
+      <parameter>-DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR</parameter>: This switch is
+      used to set correct installation directory for <application>D-Bus</application>
+      policy files.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-libdir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-tests.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-plugins-dir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-mkspecs-dir.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          None
+        </seg>
+        <seg>
+          libKF5Auth.so
+        </seg>
+        <seg>
+          $KF5_PREFIX/include/KF5/KAuth,
+          $KF5_PREFIX/lib/cmake/KF5Auth,
+          $KF5_PREFIX/lib/libexec/kauth,
+          $KF5_PREFIX/share/kf5/kauth and
+          $KF5_PREFIX/&qt5-plugins-dir;/kauth
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>

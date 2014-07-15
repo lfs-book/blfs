@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY kio-extras-download-http "&plasma-download-http;/kio-extras-&plasma-version;.tar.xz">
+  <!ENTITY kio-extras-download-ftp  "&plasma-download-ftp;/kio-extras-&plasma-version;.tar.xz">
+  <!ENTITY kio-extras-md5sum        "b90d36bc645a50077c1be5a0580d46bb">
+  <!ENTITY kio-extras-size          "564 KB">
+  <!ENTITY kio-extras-buildsize     "39 MB">
+  <!ENTITY kio-extras-time          "1.8 SBU">
+]>
+
+<sect1 id="kio-extras" xreflabel="KIO-Extras-&plasma-version;">
+  <?dbhtml filename="kio-extras.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>KIO-Extras-&plasma-version;</title>
+
+  <indexterm zone="kio-extras">
+    <primary sortas="a-KIO-Extras">KIO-Extras</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to KIO-Extras</title>
+
+    <para>
+      The <application>KIO-Extras</application> package contains additional
+      components to increase the functionality of KIO.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&kio-extras-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&kio-extras-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &kio-extras-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &kio-extras-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &kio-extras-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &kio-extras-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">KIO-Extras Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="kdelibs4support"/>,
+      <xref linkend="kdnssd"/> and
+      <xref linkend="khtml"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="exiv2"/>,
+      <ulink url="http://www.libssh.org/">libssh</ulink>,
+      <ulink url="http://www.openexr.com/">OpenEXR</ulink>,
+      <ulink url="http://www.openslp.org/">OpenSLP</ulink> and
+      <xref linkend="samba"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/kio-extras"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of KIO-Extras</title>
+
+    <para>
+      Install <application>KIO-Extras</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX      \
+      -DCMAKE_BUILD_TYPE=Release              \
+      -DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR   \
+      -DLIB_INSTALL_DIR=lib                   \
+      -DBUILD_TESTING=OFF                     \
+      -DQT_PLUGIN_INSTALL_DIR=&qt5-plugins-dir; \
+      .. &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-release.xml"/>
+
+    <para>
+      <parameter>-DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR</parameter>: This switch
+      is used to set correct XDG configuration directory.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-libdir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-tests.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-plugins-dir.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          ktrash5
+        </seg>
+        <seg>
+          libmolletnetwork.so
+        </seg>
+        <seg>
+          $KF5_PREFIX/share/doc/HTML/*/{kcontrol,kioslave5},
+          $KF5_PREFIX/share/{kio_bookmarks,kio_desktop,kio_docfilter} and
+          $KF5_PREFIX/share/{kio_info,konqsidebartng,konqueror,remoteview}
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>
