@@ -132,7 +132,8 @@
             --localstatedir=/var \
             --with-nmtui         \
             --disable-ppp        \
-            --with-systemdsystemunitdir=no &amp;&amp;
+            --with-session-tracking=systemd \
+            --with-systemdsystemunitdir=/lib/systemd/system &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -157,9 +158,13 @@ make</userinput></screen>
     </para>
 
     <para>
-      <parameter>--with-systemdsystemunitdir=no</parameter>: This parameter is
-      used for sysv init systems. If you use systemd, replace "no" by the
-      proper directory.
+      <parameter>--with-systemdsystemunitdir=/lib/systemd/system</parameter>: This parameter is
+      used to specifiy the correct location for the systemd unit files.
+    </para>
+
+    <para>
+      <parameter>--with-session-tracking=systemd</parameter>: This parameter
+       enables the use of systemd-logind for session tracking. 
     </para>
 
     <para>
@@ -222,21 +227,26 @@ EOF</userinput></screen>
 
     </sect3>
 
-    <sect3 id="NetworkManager-init">
-      <title>Boot Script</title>
+    <sect3 id="NetworkManager-init-systemd">
+      <title>Systemd Unit File</title>
 
       <para>
-        To automatically start the <command>NetworkManager</command> daemon when the
-        system is rebooted, install the
-        <filename>/etc/rc.d/init.d/networkmanager</filename> bootscript from the
-        <xref linkend="bootscripts"/> package.
+        This package will automatically install systemd units if systemd is detected.
+        To enable the NetworkManager daemon, issue the following command as the 
+        <systemitem class="username">root</systemitem> user: 
       </para>
 
-      <indexterm zone="NetworkManager NetworkManager-init">
+      <indexterm zone="NetworkManager NetworkManager-init-systemd">
         <primary sortas="f-NetworkManager">NetworkManager</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-networkmanager</userinput></screen>
+<screen role="root"><userinput>systemctl enable NetworkManager</userinput></screen>
+
+      <para>
+        The other systemd unit that this package provides is NetworkManager-wait-online.service 
+        which can be used to block programs that require connectivity (depending on the systemd network.target) 
+        from starting untill the network interfaces have been configured.
+      </para>
 
     </sect3>
 

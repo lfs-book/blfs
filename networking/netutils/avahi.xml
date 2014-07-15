@@ -241,21 +241,28 @@ make</userinput></screen>
   <sect2 role="configuration">
     <title>Configuring avahi</title>
 
-    <sect3  id="avahi-init">
-      <title>Boot Script</title>
+    <sect3  id="avahi-init-systemd">
+      <title>Systemd Unit File</title>
 
       <para>
-        To automatically start the <command>avahi-daemon</command>
-        when the system is rebooted, install the
-        <filename>/etc/rc.d/init.d/avahi</filename> bootscript from
-        the <xref linkend="bootscripts"/> package.
+        This package will automatically install systemd units 
+        if systemd is detected. To enable them, issue the following
+        commands as the <systemitem class="username">root</systemitem> 
+        user:
       </para>
 
-      <indexterm zone="avahi avahi-init">
+      <indexterm zone="avahi avahi-init-systemd">
         <primary sortas="f-avahi">avahi</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-avahi</userinput></screen>
+<screen role="root"><userinput>systemctl enable avahi-daemon</userinput></screen>
+
+      <para>
+        If desired issue the following command as the <systemitem class="username">root</systemitem> 
+        user:
+      </para>
+ 
+<screen role="root"><userinput>systemctl enable avahi-dnsconfd</userinput></screen>
 
     </sect3>
 

@@ -311,13 +311,48 @@ install -v -m644 wpa_gui-qt4/icons/wpa_gui.svg /usr/share/pixmaps/</userinput></
       <title>Connecting to an Access Point</title>
 
       <para id="wpa-service">
-        If you want to configure network interfaces at boot using
-        <command>wpa_supplicant</command>, you need to install the
-        <filename>/lib/services/wpa</filename> script
-        included in <xref linkend="bootscripts"/> package:
+        This package provides systemd units in the source tarball. 
+        To install them, issue the following commands as the
+        <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>make install-service-wpa</userinput></screen>
+<screen role="root">
+<userinput>
+install -v -m644 systemd/*.service /lib/systemd/system
+</userinput></screen>
+ 
+      <para>
+        The following files were installed:
+
+        /lib/systemd/system/wpa_supplicant.service
+
+        /lib/systemd/system/wpa_supplicant-nl80211@.service
+        /lib/systemd/system/wpa_supplicant-wired@.service
+        /lib/systemd/system/wpa_supplicant@.service
+
+        The first service should be enabled if D-Bus interface was built into 
+        wpa_supplicant, so that wpa_supplicant D-Bus interface can be started at boot 
+        instead of being automatically activated by the D-Bus daemon which doesn't work 
+        when using systemd.
+        To enable the service issue the following command as the
+        <systemitem class="username">root</systemitem> user:
+       </para>
+
+<screen role="root">
+<userinput>
+systemctl enable wpa_supplicant.service
+</userinput></screen>
+
+       <para>
+         The following three files are per-interface specific files. 
+         Much like LFS ifupdown@.service, they will start wpa_supplicant for a network 
+         interface. Only difference between the three files is the wpa_supplicant_driver 
+         being used.
+
+         The first one uses -Dnl80211, the second one uses -Dwired and the last one uses 
+         default -D option (not specified).
+       </para>
+
 
       <indexterm zone="wpa_supplicant wpa-service">
         <primary sortas="f-wpa">wpa</primary>
@@ -326,13 +361,20 @@ install -v -m644 wpa_gui-qt4/icons/wpa_gui.svg /usr/share/pixmaps/</userinput></
       <para>
         If your router/access point uses DHCP to allocate IP addresses, you
         can install <xref linkend="dhcp"/> client and use it to
-        automatically obtain network addresses. Create the
-        <filename>/etc/sysconfig/ifconfig-<replaceable>wifi0</replaceable>
+        automatically obtain network addresses. If your using the first unit file
+        Create the
+        <filename>/etc/wpa_supplicant/wpa_supplicant-nl80211-<replaceable>wifi0</replaceable>.conf
         </filename> by running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>cat &gt; /etc/sysconfig/ifconfig.<replaceable>wifi0</replaceable> &lt;&lt; "EOF"
+      <note>
+      <para>
+        wifi0 needs to be replaced with the actual interface.
+      </para>
+      </note>
+
+<screen role="root"><userinput>cat &gt; /etc/wpa_supplicant/wpa_supplicant-nl80211-<replaceable>wifi0</replaceable>.conf &lt;&lt; "EOF"
 <literal>ONBOOT="yes"
 IFACE="<replaceable>wlan0</replaceable>"
 SERVICE="wpa"
@@ -353,17 +395,122 @@ PRINTIP="no"
 PRINTALL="no"</literal>
 EOF</userinput></screen>
 
+      <note>
       <para>
-        If you prefer <xref linkend="dhcpcd"/> instead of
-        <xref linkend="dhcp"/> client, then create the
-        <filename>/etc/sysconfig/ifconfig-<replaceable>wifi0</replaceable>
+        Note that the argument after @ and the interface name,
+        ie wifi0 must be the same.
+      </para>
+      </note>
+
+      <para>
+        To enable it, issue the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+<screen role="root"><userinput>
+systemctl enable wpa_supplicant-nl80211@wifi0
+</userinput></screen>
+
+      <para>
+        If your using the second unit file
+        Create the
+        <filename>/etc/wpa_supplicant/wpa_supplicant-wired-<replaceable>eth0</replaceable>.conf
         </filename> by running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>cat &gt; /etc/sysconfig/ifconfig.<replaceable>wifi0</replaceable> &lt;&lt; "EOF"
+<screen role="root"><userinput>cat &gt; /etc/wpa_supplicant/wpa_supplicant-wired-<replaceable>eth0</replaceable>.conf &lt;&lt; "EOF"
 <literal>ONBOOT="yes"
-IFACE="<replaceable>wlan0</replaceable>"
+IFACE="<replaceable>eth0</replaceable>"
+SERVICE="wpa"
+
+# Additional arguments to wpa_supplicant
+WPA_ARGS=""
+
+WPA_SERVICE="dhclient"
+DHCP_START=""
+DHCP_STOP=""
+
+# Set PRINTIP="yes" to have the script print
+# the DHCP assigned IP address
+PRINTIP="no"
+
+# Set PRINTALL="yes" to print the DHCP assigned values for
+# IP, SM, DG, and 1st NS. This requires PRINTIP="yes".
+PRINTALL="no"</literal>
+EOF</userinput></screen>
+
+      <note>
+      <para>
+        Note that the argument after @ and the interface name,
+        ie eth0 must be the same.
+      </para>
+      </note>
+
+      <para>
+        To enable it, issue the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>
+systemctl enable wpa_supplicant-wired@eth0
+</userinput></screen>
+
+      <para>
+        If your using the third unit file
+        Create the
+        <filename>/etc/wpa_supplicant/wpa_supplicant-<replaceable>eth0</replaceable>.conf
+        </filename> by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/wpa_supplicant/wpa_supplicant-<replaceable>eth0</replaceable>.conf &lt;&lt; "EOF"
+<literal>ONBOOT="yes"
+IFACE="<replaceable>eth0</replaceable>"
+SERVICE="wpa"
+
+# Additional arguments to wpa_supplicant
+WPA_ARGS=""
+
+WPA_SERVICE="dhclient"
+DHCP_START=""
+DHCP_STOP=""
+
+# Set PRINTIP="yes" to have the script print
+# the DHCP assigned IP address
+PRINTIP="no"
+
+# Set PRINTALL="yes" to print the DHCP assigned values for
+# IP, SM, DG, and 1st NS. This requires PRINTIP="yes".
+PRINTALL="no"</literal>
+EOF</userinput></screen>
+
+      <note>
+      <para>
+        Note that the argument after @ and the interface name,
+        ie eth0 must be the same.
+      </para>
+      </note>
+
+      <para>
+        To enable it, issue the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>
+systemctl enable wpa_supplicant-@eth0
+</userinput></screen>
+
+      <para>
+        If you prefer <xref linkend="dhcpcd"/> instead of
+        <xref linkend="dhcp"/> client, then create the
+        <filename>/etc/wpa_supplicant/wpa_supplicant-nl80211-<replaceable>wifi0</replaceable>.conf
+        </filename> by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/wpa_supplicant/wpa_supplicant-nl80211-<replaceable>wifi0</replaceable>.conf &lt;&lt; "EOF"
+<literal>ONBOOT="yes"
+IFACE="<replaceable>wifi0</replaceable>"
 SERVICE="wpa"
 
 # Additional arguments to wpa_supplicant
@@ -377,14 +524,14 @@ EOF</userinput></screen>
       <para>
         Alternatively, if you use static addresses on your local network,
         then create the
-        <filename>/etc/sysconfig/ifconfig-<replaceable>wifi0</replaceable>
+        <filename>/etc/wpa_supplicant/wpa_supplicant-nl80211-<replaceable>wifi0</replaceable>.conf
         </filename> by running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>cat &gt; /etc/sysconfig/ifconfig.<replaceable>wifi0</replaceable> &lt;&lt; "EOF"
+<screen role="root"><userinput>cat &gt; /etc/wpa_supplicant/wpa_supplicant-nl80211-<replaceable>wifi0</replaceable>.conf &lt;&lt; "EOF"
 <literal>ONBOOT="yes"
-IFACE="<replaceable>wlan0</replaceable>"
+IFACE="<replaceable>wifi0</replaceable>"
 SERVICE="wpa"
 
 # Additional arguments to wpa_supplicant

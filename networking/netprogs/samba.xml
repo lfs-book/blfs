@@ -396,23 +396,25 @@ install -v -m644    lib/ntdb/doc/design.pdf \
 
       </sect4>
 
-      <sect4 id="samba-init">
-        <title>Boot Script</title>
+      <sect4 id="samba-init-systemd">
+        <title>Systemd Unit File</title>
 
-        <para>For your convenience, boot scripts have been provided for
-        <application>Samba</application>. There are two included in the
-        <xref linkend="bootscripts"/> package. The first,
-        <filename>samba</filename>, will start the <command>smbd</command>
-        and <command>nmbd</command> daemons needed to provide SMB/CIFS
-        services. The second script, <filename>winbind</filename>, starts
-        the <command>winbindd</command> daemon, used for providing Windows
-        domain services to Linux clients.</para>
+        <para>The <xref linkend="systemd-units"/> package provides types of units: 
+         A service file and a socket file. 
+         The service file will start smbd daemon once at boot and it 
+         will keep running until the system shuts down. The socket 
+         file will make systemd listen to sshd port (Default 445) and 
+         will start smbd daemon when something tries to connect to that 
+         port and stop the daemon when the connection is terminated. 
+         This is called socket activation. By default, the first method 
+         is used - smbd daemon is started at boot and stopped at shutdown.
+        </para>
 
-        <indexterm zone="samba samba-init">
+        <indexterm zone="samba samba-init-systemd">
           <primary sortas="f-samba">samba</primary>
         </indexterm>
 
-        <indexterm zone="samba samba-init">
+        <indexterm zone="samba samba-init-systemd">
           <primary sortas="f-winbind">winbind</primary>
         </indexterm>
 
@@ -430,7 +432,7 @@ install -v -m644    lib/ntdb/doc/design.pdf \
 useradd -c "Unprivileged Nobody" -d /dev/null -g nogroup \
     -s /bin/false -u 99 nobody</userinput></screen>
 
-        <para>Install the <filename>samba</filename> script with the following
+        <para>Install the <filename>samba</filename> systemd unit file with the following
         command issued as the <systemitem class="username">root</systemitem>
         user:</para>
 
@@ -440,6 +442,35 @@ useradd -c "Unprivileged Nobody" -d /dev/null -g nogroup \
         script to resolve names from Windows clients, run:</para>
 
 <screen role="root"><userinput>make install-winbindd</userinput></screen>
+
+         <note>
+         <para>
+           Note that nmbd and winbindd do not have (and should/can not have) 
+           units for socket based activation.
+         </para>
+         </note>
+
+        <para>If the socket method is desired, you need to run
+         the following command issues as the <systemitem class="username">root</systemitem>
+         user:
+        </para>
+
+<screen role="root">
+<userinput>
+
+systemctl stop smbd &amp;&amp;
+systemctl disable smbd.service &amp;&amp;
+systemctl enable smbd.socket &amp;&amp;
+systemctl start smbd.socket
+
+</userinput></screen> 
+
+         <note>
+         <para>
+           Note that nmbd and winbindd do not have (and should/can not have) 
+           units for socket based activation.
+         </para>
+         </note>
 
        </sect4>
 
