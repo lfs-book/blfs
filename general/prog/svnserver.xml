@@ -223,66 +223,40 @@ EOF</userinput></screen>
 
     </sect3>
 
-    <sect3 id="svnserver-init">
+    <sect3 id="svnserver-init-systemd">
       <title>4. Starting the Server</title>
-<!--
-      <para>There are a couple of ways to start <command>svnserve</command>.
-      The most common way is to start it as an <command>inetd</command> or
-      <command>xinetd</command> process. Alternately, you can use a
-      bootscript to start the service at startup.</para>
+
+      <para>The systemd-units package provides a native systemd unit file.
+       To install and enable the systemd unit file included
+       in the <xref linkend="systemd-units"/> package, run the following
+       command as the <systemitem class="username">root</systemitem>user:
+      </para>
 
       <note>
-        <para>If you do not wish to provide anonymous access to your svn
-        repositories or use <command>svnserve</command>'s built-in
-        authentication, you do not need to run
-        <command>svnserve</command>.</para>
+      <para>
+        Note that the path to the svn repositories isn't being set. You'll need to 
+        edit /etc/default/svnserve and add "-r /path/to/svn/repos" to the 
+        SVNSERVE_OPTS= line. DO NOT RENAME svnserve and svn binaries to .orig counterparts, 
+        and don't create the wrapper scripts at all.
+      </para>
       </note>
 
-      <para>If you use <command>inetd</command>, add a line to
-      <filename>/etc/inetd.conf</filename> using the following
-      commands:</para>
+      <para>
+      Create /etc/systemd/system/svnserve.service.d/50-custom.conf file:
+      </para>
 
-      <indexterm zone="svnserver svnserver-init">
-        <primary sortas="e-etc-inetd.conf">/etc/inetd.conf</primary>
-      </indexterm>
+<screen role="root"><userinput>
 
-<screen role="root"><userinput>cat &gt;&gt; /etc/inetd.conf &lt;&lt; "EOF"
-<literal>svn stream tcp nowait svn /usr/bin/svnserve svnserve -i</literal>
-EOF</userinput></screen>
+mkdir -p /etc/systemd/system/svnserve.service.d/ &amp;&amp;
+echo "UMask=0002" &gt; /etc/systemd/system/svnserve.service.d/50-custom.conf
 
-      <para>If you use <command>xinetd</command>, the following command will
-      create the <application>Subversion</application> server file as
-      <filename>/etc/xinetd.d/svn</filename>:</para>
+</userinput></screen>
 
-      <indexterm zone="svnserver svnserver-init ">
-        <primary sortas="e-etc-xinetd.d-svn">/etc/xinetd.d/svn</primary>
-      </indexterm>
-
-<screen role="root"><userinput>cat &gt;&gt; /etc/xinetd.d/svn &lt;&lt; "EOF"
-<literal># Begin /etc/xinetd.d/svn
-
-service svn
-{
-        port                    = 3690
-        socket_type             = stream
-        protocol                = tcp
-        wait                    = no
-        user                    = svn
-        server                  = /usr/bin/svnserve
-        server_args             = -i -r /srv/svn/repositories
-}
-
-# End /etc/xinetd.d/svn</literal>
-EOF</userinput></screen> -->
-
-      <para>To start the server at boot time, install the svn bootscript included
-      in the <xref linkend="bootscripts"/> package.</para>
-
-      <indexterm zone="svnserver svnserver-init">
+      <indexterm zone="svnserver svnserver-init-systemd">
         <primary sortas="f-svn">svn</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-svn</userinput></screen>
+<screen role="root"><userinput>make install-svnserve</userinput></screen>
 
     </sect3>
 

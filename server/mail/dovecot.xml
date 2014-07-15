@@ -119,6 +119,7 @@ useradd -c "Dovecot login user" -d /dev/null -u 43 \
             --sysconfdir=/etc \
             --localstatedir=/var \
             --docdir=/usr/share/doc/dovecot-&dovecot-version; \
+            --with-systemdsystemunitdir=/lib/systemd/system \
             --disable-static &amp;&amp;
 make</userinput></screen>
 
@@ -146,6 +147,12 @@ make</userinput></screen>
     <para>
       <option>--with-pgsql</option>: This switch enables
       <application>PostgreSQL</application> authentication support.
+    </para>
+
+    <para>
+      <option>--with-systemdsystemunitdir=/lib/systemd/system</option>: This switch enables
+      enables systemd support and specifies the correct location for the
+      systemd unit file.
     </para>
 
     <para>
@@ -236,15 +243,15 @@ EOF</userinput></screen>
 
     </sect3>
 
-    <sect3 id="dovecot-init">
-      <title>Boot Script</title>
+    <sect3 id="dovecot-init-systemd">
+      <title>Systemd Unit File</title>
 
-      <para>If you want the <application>Dovecot</application> server to
-      start automatically when the system is booted, install the
-      <filename>/etc/rc.d/init.d/dovecot</filename> init script included
-      in the <xref linkend="bootscripts"/> package.</para>
+      <para>This package provides a systemd unit file in the source tarball.
+       To enable the systemd unit file run the following
+       command as the <systemitem class="username">root</systemitem>user:
+      </para>
 
-      <indexterm zone="dovecot dovecot-init">
+      <indexterm zone="dovecot dovecot-init-systemd">
         <primary sortas="f-dovecot">dovecot</primary>
       </indexterm>
 
