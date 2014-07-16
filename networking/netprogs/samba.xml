@@ -113,7 +113,7 @@
     --localstatedir=/var                \
     --with-piddir=/run/samba            \
     --with-pammodulesdir=/lib/security  \
-    --without-systemd                   \
+    --with-systemd                   \
     --enable-fhs                        \
     --enable-nss-wrapper                &amp;&amp;
 
@@ -174,10 +174,8 @@ install -v -m644    lib/ntdb/doc/design.pdf \
     <para><parameter>--enable-nss-wrapper</parameter>: Builds the nss-wrapper
     library.</para>
 
-    <para><parameter>--without-systemd</parameter>: Disable
-    <application>systemd</application> integration, which is not part of
-    LFS/BLFS. If you use <application>systemd</application>, replace by
-    <parameter>--with-systemd</parameter>.</para>
+    <para><parameter>--with-systemd</parameter>: Enables
+    <application>systemd</application> integration.</para>
 
     <para><option>--enable-socket-wrapper</option> and
     <option>--enable-selftest</option>: These options are required to run
@@ -452,18 +450,12 @@ useradd -c "Unprivileged Nobody" -d /dev/null -g nogroup \
 
         <para>If the socket method is desired, you need to run
          the following command issues as the <systemitem class="username">root</systemitem>
-         user:
-        </para>
+          user:</para>
 
-<screen role="root">
-<userinput>
-
-systemctl stop smbd &amp;&amp;
+<screen role="root"><userinput>systemctl stop smbd &amp;&amp;
 systemctl disable smbd.service &amp;&amp;
 systemctl enable smbd.socket &amp;&amp;
-systemctl start smbd.socket
-
-</userinput></screen> 
+systemctl start smbd.socket</userinput></screen> 
 
          <note>
          <para>

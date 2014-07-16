@@ -70,17 +70,6 @@
       </listitem>
     </itemizedlist>
 
-      <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-      <itemizedlist spacing="compact">
-        <listitem>
-          <para>
-             Optional patch (required to work properly with gnome-bluetooth
-             and/or kde bluedevil):
-            <ulink url="&patch-root;/bluez-&bluez-version;-obexd_without_systemd-1.patch"/>
-          </para>
-        </listitem>
-      </itemizedlist>
-
     <bridgehead renderas="sect3">BlueZ Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -129,13 +118,6 @@
     <title>Installation of BlueZ</title>
 
     <para>
-      If you are going to use <application>BlueZ</application> with
-      gnome-bluetooth and/or kde bluedevil, apply the following patch:
-    </para>
-
-<screen><userinput>patch -Np1 -i ../bluez-&bluez-version;-obexd_without_systemd-1.patch</userinput></screen>
-
-    <para>
       Install <application>BlueZ</application> by running the following
       commands:
     </para>
@@ -143,8 +125,7 @@
 <screen><userinput>./configure --prefix=/usr         \
             --sysconfdir=/etc     \
             --localstatedir=/var  \
-            --enable-library      \
-            --disable-systemd     &amp;&amp;
+            --enable-library &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -184,12 +165,6 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
       <parameter>--enable-library</parameter>: This switch enables building of the
       <application>BlueZ</application> 4 compatibility library which is required by
       some applications.
-    </para>
-
-    <para>
-      <parameter>--disable-systemd</parameter>: This switch is needed because
-      <application>systemd</application> is not part of LFS/BLFS. If you are
-      using systemd, remove this switch.
     </para>
 
     <para>
@@ -250,10 +225,7 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
         <primary sortas="f-bluetooth">bluetooth</primary>
       </indexterm>
 
-<screen role="root">
-<userinput>
-systemctl enable bluetooth
-</userinput></screen>
+<screen role="root"><userinput>systemctl enable bluetooth</userinput></screen>
 
       <note>
       <para>
