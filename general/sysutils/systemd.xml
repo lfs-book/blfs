@@ -126,9 +126,7 @@
 
     <para>First, re-build systemd:</para>
 
-<screen><userinput>
-
-sed -i "s:blkid/::" $(grep -rl "blkid/blkid.h") &amp;&amp;
+<screen><userinput>sed -i "s:blkid/::" $(grep -rl "blkid/blkid.h") &amp;&amp;
 patch -Np1 -i ../systemd-&systemd-version;-compat-patch; &amp;&amp;
 
             ./configure --prefix=/usr   \
@@ -143,9 +141,7 @@ make</userinput></screen>
 
    <para>First prevent a few broken test cases from being run:</para>
 
-<screen><userinput>
-
-sed -i s:test/udev-test.pl::g Makefile</userinput></screen>
+<screen><userinput>sed -i s:test/udev-test.pl::g Makefile</userinput></screen>
 
    <note>
     <para>For full test coverage, the test suite should be run
@@ -163,9 +159,7 @@ sed -i s:test/udev-test.pl::g Makefile</userinput></screen>
     </para>
     </warning>
 
-<screen role="root">
-
-<userinput>systemctl start rescue.target</userinput></screen>
+<screen role="root"><userinput>systemctl start rescue.target</userinput></screen>
 
    <para>Now re-install as the <systemitem class="username">root</systemitem> 
     user:</para>
@@ -177,21 +171,15 @@ sed -i s:test/udev-test.pl::g Makefile</userinput></screen>
  <para>Move NSS myhostname library to <filename class="directory">/lib</filename>
  as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root">
-
-<userinput>mv -v /usr/lib/libnss_myhostname.so.2 /lib</userinput></screen>
+<screen role="root"><userinput>mv -v /usr/lib/libnss_myhostname.so.2 /lib</userinput></screen>
 
   <para>Remove an unnecessary directory as the as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root">
-
-<userinput>rm -rfv /usr/lib/rpm</userinput></screen>
+<screen role="root"><userinput>rm -rfv /usr/lib/rpm</userinput></screen>
 
 <para>Remove a reference to a non-existent group as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root">
-
-<userinput>sed -i "s:0775 root lock:0755 root root:g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
+<screen role="root"><userinput>sed -i "s:0775 root lock:0755 root root:g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
 
     <note>
     <para> If libxslt was present, the man pages were also installed by make install. 
@@ -215,9 +203,7 @@ sed -i s:test/udev-test.pl::g Makefile</userinput></screen>
     issuing the following commands as the <systemitem class="username">root</systemitem>
      user:
 
-<screen role="root"><userinput>
-
-mv -v /usr/lib/libgcrypt.so.* /usr/lib/libgpg-error.so.* /lib &amp;&amp;
+<screen role="root"><userinput>mv -v /usr/lib/libgcrypt.so.* /usr/lib/libgpg-error.so.* /lib &amp;&amp;
 ln -sfv ../../lib/$(readlink /usr/lib/libgcrypt.so) /usr/lib/libgcrypt.so &amp;&amp;
 ln -sfv ../../lib/$(readlink /usr/lib/libgpg-error.so) /usr/lib/libgpg-error.so</userinput></screen></para></note>
 
@@ -258,9 +244,7 @@ EOF</userinput></screen>
     systemd components in case of new dependencies as the <systemitem class="username">root</systemitem>
     user:</para>
 
-<screen role="root">
-
-<userinput>systemctl daemon-reexec &amp;&amp;
+<screen role="root"><userinput>systemctl daemon-reexec &amp;&amp;
 systemctl restart systemd-logind systemd-journald systemd-udevd</userinput></screen>
 
   </sect2>
@@ -287,7 +271,7 @@ systemctl restart systemd-logind systemd-journald systemd-udevd</userinput></scr
 
      <para>
       A list of the installed files, along with their short descriptions can be
-      found at <ulink url="http://www.linuxfromscratch.org/lfs/view/&lfs-version;/chapter06/systemd.html#contents-systemd"/>.
+      found at <ulink url="http://www.linuxfromscratch.org/lfs/view/systemd&lfs-version;/chapter06/systemd.html#contents-systemd"/>.
      </para>
   </sect2>
 
