@@ -7,15 +7,15 @@
   <!ENTITY python2-download-http
           "http://www.python.org/ftp/python/&python2-version;/Python-&python2-version;.tar.xz">
   <!ENTITY python2-download-ftp  " ">
-  <!ENTITY python2-md5sum        "5eea8462f69ab1369d32f9c4cd6272ab">
-  <!ENTITY python2-size          "9.8 MB">
-  <!ENTITY python2-buildsize     "235 MB">
-  <!ENTITY python2-time          "1.0 SBU">
+  <!ENTITY python2-md5sum        "d235bdfa75b8396942e360a70487ee00">
+  <!ENTITY python2-size          "11 MB">
+  <!ENTITY python2-buildsize     "222 MB (additional 18 MB for the tests)">
+  <!ENTITY python2-time          "1.0 SBU (additional 4.8 SBU for tests)">
 
   <!ENTITY python2htmldoc-download-http
            "http://docs.python.org/ftp/python/doc/&python2-version;/python-&python2-version;-docs-html.tar.bz2">
-  <!ENTITY python2htmldoc-md5sum        "77ae8fd6b456c6339a1a62d57425335b">
-  <!ENTITY python2htmldoc-size          "4.3 MB">
+  <!ENTITY python2htmldoc-md5sum        "2cf9ba96b2723a5268cd14432b15fdcf">
+  <!ENTITY python2htmldoc-size          "4.4 MB">
 ]>
 
 <sect1 id="python2" xreflabel="Python-&python2-version;">
@@ -43,7 +43,7 @@
       compatibility with other dependent packages.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -82,6 +82,15 @@
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
 
     <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+           Required patch if you wish to run the test suite:
+           <ulink url="&patch-root;/Python-&python2-version;-skip_test_gdb-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <itemizedlist spacing="compact">
       <title>Optional HTML Documentation</title>
       <listitem>
         <para>
@@ -104,7 +113,6 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="expat"/> and
       <xref linkend="libffi"/>
     </para>
 
@@ -142,6 +150,12 @@
 make</userinput></screen>
 
     <para>
+      If you wish to run the test suite, disable a test that fails:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../Python-&python2-version;-skip_test_gdb-1.patch</userinput></screen>
+
+    <para>
       To test the results, issue: <command>make test</command>.
     </para>
 
@@ -153,14 +167,20 @@ make</userinput></screen>
 chmod -v 755 /usr/lib/libpython&python2-majorver;.so.1.0</userinput></screen>
 
     <para>
-      If you have downloaded the preformatted documentation from
-      <ulink url="http://docs.python.org/download.html"/>, install it
+      Since <application>Python 2</application> is in maintenance mode, and
+      <application>Python 3</application> is recommended by upstream for
+      development, probably, you do not need to install the documentation.
+      However, if you still want to install documentation for both
+      <application>Python</application> versions, be sure to define PYTHONDOCS
+      variable for the version you want to use, each time you need to consult
+      the documentation. If you have downloaded the preformatted documentation
+      from <ulink url="http://docs.python.org/download.html"/>, install it
       as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>install -v -dm755 /usr/share/doc/python-&python2-version; &amp;&amp;
 tar --strip-components=1 -C /usr/share/doc/python-&python2-version; \
-    -xvf ../python-&python2-version;-docs-html.tar.bz2                      &amp;&amp;
+    --no-same-owner -xvf ../python-&python2-version;-docs-html.tar.bz2      &amp;&amp;
 find /usr/share/doc/python-&python2-version; -type d -exec chmod 0755 {} \; &amp;&amp;
 find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</userinput></screen>
   </sect2>
@@ -170,8 +190,7 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
 
     <para>
       <option>--with-system-expat</option>: This switch enables linking against
-      system version of <application>Expat</application>. Remove if you have
-      not installed <xref linkend="expat"/>.
+      system version of <application>Expat</application>. 
     </para>
 
     <para>
@@ -222,13 +241,15 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
 
       <seglistitem>
         <seg>
-          2to3, pydoc, python, python-config, python2, python2-config,
+          2to3, pydoc, python (symlink), python-config (symlink),
+          python2 (symlink), python2-config (symlink),
           python&python2-majorver;, python&python2-majorver;-config,
           smtpd.py, and optionally if <application>Tk</application>
           is installed, idle
         </seg>
         <seg>
           libpython&python2-majorver;.so
+          and several under /usr/lib/python2.7/{config,lib-dynload}
         </seg>
         <seg>
           /usr/include/python&python2-majorver;,

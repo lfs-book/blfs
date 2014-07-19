@@ -6,10 +6,10 @@
 
   <!ENTITY xscreensaver-download-http "http://www.jwz.org/xscreensaver/xscreensaver-&xscreensaver-version;.tar.gz">
   <!ENTITY xscreensaver-download-ftp  " ">
-  <!ENTITY xscreensaver-md5sum        "1e9828ab7146d443c9d109cf2a1a4ed2">
-  <!ENTITY xscreensaver-size          "7.1 MB">
-  <!ENTITY xscreensaver-buildsize     "205 MB">
-  <!ENTITY xscreensaver-time          "2.0 SBU">
+  <!ENTITY xscreensaver-md5sum        "14f9104fa03f85371f885bdad956764d">
+  <!ENTITY xscreensaver-size          "8.4 MB">
+  <!ENTITY xscreensaver-buildsize     "167 MB">
+  <!ENTITY xscreensaver-time          "0.8 SBU">
 ]>
 
 <sect1 id="xscreensaver" xreflabel="XScreenSaver-&xscreensaver-version;">
@@ -41,7 +41,7 @@
       locker, to prevent others from using your terminal while you are away.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,14 +81,18 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="bc"/>,
       <xref linkend="libglade"/> and
       <xref linkend="xorg7-app"/>
     </para>
 
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="glu"/>
+    </para>
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gdm"/>,
+      <ulink url="&gnome-download-http;/gdm/">GDM</ulink>,
       <ulink url="http://linas.org/gle/">GLE</ulink> and
       <xref linkend="linux-pam"/>
     </para>
@@ -106,7 +110,7 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --libexecdir=/usr/lib &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -129,6 +133,12 @@ make</userinput></screen>
       to be installed setuid <systemitem class="username">root</systemitem>
       which is needed in order to ping other hosts.
     </para>
+
+    <para><option>--libexecdir=/usr/lib</option>: This option
+    will put the individual screensaver programs into
+    <filename class="directory">/usr/lib/xscreensaver</filename> instead of
+    <filename class="directory">/usr/libexec/xscreensaver</filename> in
+    accordance with the old version of the FHS used before LFS-7.5.</para>
 
   </sect2>
 
@@ -198,7 +208,7 @@ EOF</userinput></screen>
           None
         </seg>
         <seg>
-          /usr/lib/xscreensaver and
+          /usr/libexec/xscreensaver and
           /usr/share/xscreensaver
         </seg>
       </seglistitem>

@@ -6,10 +6,10 @@
 
   <!ENTITY cmake-download-http "http://www.cmake.org/files/v&cmake-major-version;/cmake-&cmake-version;.tar.gz">
   <!ENTITY cmake-download-ftp  " ">
-  <!ENTITY cmake-md5sum        "be6008f2299613d23fe82ab53ef7472e">
-  <!ENTITY cmake-size          "5.7 MB">
-  <!ENTITY cmake-buildsize     "275 MB (including tests)">
-  <!ENTITY cmake-time          "1.9 SBU (additional 3.1 SBU for the test suite)">
+  <!ENTITY cmake-md5sum        "21a1c85e1a3b803c4b48e7ff915a863e">
+  <!ENTITY cmake-size          "5.3 MB">
+  <!ENTITY cmake-buildsize     "236 MB (additional 199 MB for tests)">
+  <!ENTITY cmake-time          "1.6 SBU (additional 4.4 SBU for tests)">
 ]>
 
 <sect1 id="cmake" xreflabel="CMake-&cmake-version;">
@@ -38,7 +38,7 @@
       since version 4.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,17 +76,18 @@
 
     <bridgehead renderas="sect3">CMake Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required">
-      <xref linkend="curl"/>,
-      <xref linkend="libarchive"/> and
-      <xref linkend="expat"/>
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="curl"/> and
+      <xref linkend="libarchive"/> 
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="subversion"/> (for testing) and
-      <xref linkend="qt4"/> (for the Qt-based GUI)
+      <xref linkend="subversion"/> (for testing),
+       <ulink url="http://pypi.python.org/pypi/Sphinx">Sphinx</ulink>
+       (for building documents), and
+      <xref linkend="qt4"/> or <xref linkend="qt5"/> (for the Qt-based GUI)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -98,6 +99,13 @@
     <title>Installation of CMake</title>
 
     <para>
+       If <application>Qt4</application> and <application>Qt5</application> are
+       installed in <filename class="directory">/opt</filename>, use
+       <command>source setqt4</command> or <command>source setqt5</command> to
+       choose which one will be used to build the Qt-based GUI.
+    </para>
+
+    <para>
       Install <application>CMake</application> by running the following
       commands:
     </para>
@@ -105,11 +113,20 @@
 <screen><userinput>./bootstrap --prefix=/usr       \
             --system-libs       \
             --mandir=/share/man \
-            --docdir=/share/doc/cmake-&cmake-version; &amp;&amp;
+            --docdir=/share/doc/cmake-&cmake-version;   &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <userinput>make test</userinput>.
+      To test the results, issue: <command>bin/ctest</command>. If you want to
+      investigate a problem with a given "problem1-test", use
+      <command>bin/ctest -R "problem1-test"</command> and, to omit it, use
+      <command>bin/ctest -E "problem1-test"</command>. These options can be
+      used toghether:
+      <command>bin/ctest -R "problem1-test" -E "problem2-test"</command>.
+      Option -N can be used to display all available tests, and you can run
+      <command>bin/ctest</command> for a sub-set of tests by using separated by
+      spaces names or numbers as options. Option --help can be used to
+      show all options.
     </para>
 
     <para>
@@ -124,10 +141,11 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <option>--system-libs</option>: This switch forces the build system to
-      link against <application>Zlib</application>, <application>Bzip2</application>,
-      <application>cURL</application> and <application>Expat</application> installed
-      on the system.
+      <parameter>--system-libs</parameter>: This switch forces the build system
+      to link against <application>Zlib</application>,
+      <application>Bzip2</application>, <application>cURL</application>,
+      <application>Expat</application> and <application>libarchive</application>
+      installed on the system.
     </para>
 
     <para>
@@ -148,7 +166,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          ccmake, cmake, cmake-gui, cpack and ctest
+          ccmake, cmake, cmake-gui (optional), cpack and ctest
         </seg>
         <seg>
           None
@@ -195,7 +213,7 @@ make</userinput></screen>
         <term><command>cmake-gui</command></term>
         <listitem>
           <para>
-            is the <application>Qt</application>-based frontent to
+            (optional) is the <application>Qt</application>-based frontent to
             <command>cmake</command>.
           </para>
           <indexterm zone="cmake cmake-gui">

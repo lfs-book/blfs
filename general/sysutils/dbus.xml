@@ -6,10 +6,10 @@
 
   <!ENTITY dbus-download-http "http://dbus.freedesktop.org/releases/dbus/dbus-&dbus-version;.tar.gz">
   <!ENTITY dbus-download-ftp  " ">
-  <!ENTITY dbus-md5sum        "a70edc50524f258eaf5c9a9994ed8748">
-  <!ENTITY dbus-size          "1.9 MB">
-  <!ENTITY dbus-buildsize     "44 MB">
-  <!ENTITY dbus-time          "0.3 SBU">
+  <!ENTITY dbus-md5sum        "6a08ba555d340e9dfe2d623b83c0eea8">
+  <!ENTITY dbus-size          "1.8 MB">
+  <!ENTITY dbus-buildsize     "109 MB (additional 42 MB for tests)">
+  <!ENTITY dbus-time          "0.4 SBU (additional 1.4 SBU for tests)">
 ]>
 
 <sect1 id="dbus" xreflabel="D-Bus-&dbus-version;">
@@ -41,7 +41,7 @@
       daemon).
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,29 +79,29 @@
 
     <bridgehead renderas="sect3">D-Bus Dependencies</bridgehead>
 
+<!--
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="expat"/> or
-      <xref linkend="libxml2"/>
+      <xref linkend="expat"/>
     </para>
-
+-->
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="xorg7-lib"/>
-      (for <command>dbus-launch</command> program)
+      <xref linkend="xorg7-lib"/> (for <command>dbus-launch</command> program)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="dbus-glib"/> (to run tests),
-      <xref linkend="python2"/> (to run tests) and
-      <xref linkend="doxygen"/> (to generate the API documentation)
-    </para>
-
-    <para>
-      Note that the <command>configure</command> script will look for
-      <xref linkend="xmlto"/> but it does nothing as the XML/HTML documentation is
-      already shipped in the source tree.
+      For the tests:
+      <xref linkend="dbus-glib"/>,
+      <xref linkend="dbus-python"/>, and
+      <xref linkend="pygobject2"/>; 
+      
+      for the API documentation:
+      <xref linkend="doxygen"/>; 
+      
+      for man pages and XML/HTML documentation:
+      <xref linkend="xmlto"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -113,7 +113,8 @@
     <title>Installation of D-Bus</title>
 
     <para>
-      As the <systemitem class="username">root</systemitem> user, create a
+      If they do not already exist,
+      as the <systemitem class="username">root</systemitem> user, create a
       system user and group to handle the system message bus activity:
     </para>
 
@@ -131,7 +132,6 @@ useradd -c "D-Bus Message Daemon User" -d /var/run/dbus \
 <screen><userinput>./configure --prefix=/usr                  \
             --sysconfdir=/etc              \
             --localstatedir=/var           \
-            --libexecdir=/usr/lib/dbus-1.0 \
             --with-console-auth-dir=/run/console/ \
             --without-systemdsystemunitdir \
             --disable-systemd              \
@@ -162,11 +162,16 @@ mv -v /usr/share/doc/dbus /usr/share/doc/dbus-&dbus-version;</userinput></screen
 
     <para>
       The dbus tests cannot be run until after <xref linkend="dbus-glib"/>
-      has been installed. The tests require passing additional parameters to
-      <command>configure</command> and exposing additional functionality in the
-      binaries. These interfaces are not intended to be used in a production
-      build of <application>D-Bus</application>.  If you would like to run the
-      unit tests, issue the following commands:
+      has been installed.  They must be run as an unprivileged user from a
+      local session. Tests fail through ssh. If you want to run only the unit
+      tests, replace, below, <parameter>--enable-tests</parameter> by
+      <parameter>--enable-embedded-tests</parameter>, otherwise,
+      <xref linkend="dbus-python"/> has to be installed, before.
+      The tests require passing additional parameters to
+      <command>configure</command> and exposing additional functionality in
+      the binaries. These interfaces are not intended to be used in a
+      production build of <application>D-Bus</application>.  If you would
+      like to run the tests, issue the following commands:
     </para>
 
 <screen><userinput>make distclean                              &amp;&amp;
@@ -174,6 +179,13 @@ mv -v /usr/share/doc/dbus /usr/share/doc/dbus-&dbus-version;</userinput></screen
 make                                        &amp;&amp;
 make check                                  &amp;&amp;
 make distclean</userinput></screen>
+
+    <para>
+      If <command>run-test.sh</command> fails, it can be disabled with the
+      following sed, before running the commands for the tests:
+    </para>
+
+<screen><userinput>sed -i -e 's:run-test.sh:$(NULL):g' test/name-test/Makefile.in</userinput></screen>
 
     <para>
       Note there has been a report that the tests may fail if running
@@ -194,12 +206,12 @@ make distclean</userinput></screen>
     </para>
 
     <para>
-      <option>--without-systemdsystemunitdir</option>: This switch prevents
-      installation of systemd unit files.
+      <parameter>--without-systemdsystemunitdir</parameter>: This switch
+      prevents installation of systemd unit files.
     </para>
 
     <para>
-      <option>--disable-systemd</option>: This switch disables systemd
+      <parameter>--disable-systemd</parameter>: This switch disables systemd
       support in <application>D-Bus</application>
     </para>
 
@@ -207,16 +219,23 @@ make distclean</userinput></screen>
       href="../../xincludes/static-libraries.xml"/>
 
     <para>
-      <option>--enable-tests</option>: Build extra parts of the code to support
-      testing. Configure will end with a NOTE warning about this.
+      <parameter>--enable-tests</parameter>: Build extra parts of the code to
+      support all tests. Configure will end with a NOTE warning about increased
+      size of libraries and decreased security.
     </para>
 
     <para>
-      <option>--enable-asserts</option>: Enable debugging code to run assertions for
-      statements normally assumed to be true. This prevents a warning that
-      '<parameter>--enable-tests</parameter>' on its own is only useful for profiling
-      and might not give true results for all tests, but adds its own NOTE that this
-      should not be used in a production build.
+      <parameter>--enable-embedded-tests</parameter>: Build extra parts of the
+      code to support only unit tests. Configure will end with a NOTE warning
+      about increased size of libraries and decreased security.
+    </para>
+
+    <para>
+      <parameter>--enable-asserts</parameter>: Enable debugging code to run
+      assertions for statements normally assumed to be true. This prevents a
+      warning that '<parameter>--enable-tests</parameter>' on its own is only
+      useful for profiling and might not give true results for all tests, but
+      adds its own NOTE that this should not be used in a production build.
     </para>
 
   </sect2>
@@ -381,7 +400,7 @@ kill $DBUS_SESSION_BUS_PID</literal></userinput></screen>
       <seglistitem>
         <seg>
           dbus-cleanup-sockets, dbus-daemon, dbus-launch, dbus-monitor,
-          dbus-send and dbus-uuidgen
+          dbus-run-session, dbus-send and dbus-uuidgen
         </seg>
         <seg>
            libdbus-1.so
@@ -391,8 +410,9 @@ kill $DBUS_SESSION_BUS_PID</literal></userinput></screen>
           /usr/include/dbus-1.0,
           /usr/lib/dbus-1.0,
           /usr/share/dbus-1,
-          /usr/share/doc/dbus-&dbus-version; and
-          /var/lib/dbus
+          /usr/share/doc/dbus-&dbus-version;,
+          /var/lib/dbus and
+          /var/run/dbus
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -449,6 +469,18 @@ kill $DBUS_SESSION_BUS_PID</literal></userinput></screen>
           </para>
           <indexterm zone="dbus dbus-monitor">
             <primary sortas="b-dbus-monitor">dbus-monitor</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="dbus-run-session">
+        <term><command>dbus-run-session</command></term>
+        <listitem>
+          <para>
+            start a process as a new <application>D-Bus</application> session.
+          </para>
+          <indexterm zone="dbus dbus-run-session">
+            <primary sortas="b-dbus-run-session">dbus-run-session</primary>
           </indexterm>
         </listitem>
       </varlistentry>

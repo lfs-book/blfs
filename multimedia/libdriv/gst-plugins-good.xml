@@ -42,7 +42,7 @@
       packages.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     &gst-compat;
 
@@ -125,7 +125,7 @@
 
     <bridgehead renderas="sect4">Optional, for the unit regression tests</bridgehead>
     <para>
-      <ulink url="http://www.valgrind.org/">Valgrind</ulink>
+      <xref linkend="valgrind"/>
     </para>
 
     <bridgehead renderas="sect4">
@@ -133,8 +133,7 @@
     </bridgehead>
     <para role="optional">
       <xref linkend="gtk-doc"/> and
-      <xref linkend="python2"/> (compiled against an XML parser such as
-      <xref linkend=" expat"/>)
+      <xref linkend="python2"/> 
     </para>
 
     <para condition="html" role="usernotes">
@@ -145,12 +144,17 @@
   <sect2 role="installation">
     <title>Installation of GStreamer Good Plug-ins</title>
 
+    <note><para>If you need a plugin for a given dependency, that dependency
+      needs to be installed before this application.
+    </para></note>
+
     <para>
       Install <application>GStreamer Good Plug-ins</application> by running the
       following commands:
     </para>
 
-<screen><userinput>sed -i -e '/input:/d' sys/v4l2/gstv4l2bufferpool.c &amp;&amp;
+<screen><userinput>sed -i -e "/input:/d" sys/v4l2/gstv4l2bufferpool.c &amp;&amp;
+sed -i -e "/case V4L2_CID_HCENTER/d" -e "/case V4L2_CID_VCENTER/d" sys/v4l2/v4l2_calls.c &amp;&amp;
 ./configure --prefix=/usr \
             --sysconfdir=/etc \
             --with-gtk=3.0 &amp;&amp;
@@ -184,8 +188,8 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i -e '/input:/d' sys/v4l2/gstv4l2bufferpool.c</command>:
-      This <command>sed</command> fixes building with recent kernels.
+      <command>sed -i -e "..."</command>: These <command>sed</command>
+      commands fix building with recent kernels.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

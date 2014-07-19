@@ -4,12 +4,14 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY seahorse-download-http "&gnome-download-http;/seahorse/3.6/seahorse-&seahorse-version;.tar.xz">
-  <!ENTITY seahorse-download-ftp  "&gnome-download-ftp;/seahorse/3.6/seahorse-&seahorse-version;.tar.xz">
-  <!ENTITY seahorse-md5sum        "bc4ffc588015f014c8b03058f91c0d58">
-  <!ENTITY seahorse-size          "2.0 MB">
-  <!ENTITY seahorse-buildsize     "60 MB">
-  <!ENTITY seahorse-time          "0.6 SBU">
+  <!ENTITY seahorse-download-http 
+           "&gnome-download-http;/seahorse/&gnome-minor;/seahorse-&seahorse-version;.tar.xz">
+  <!ENTITY seahorse-download-ftp  
+           "&gnome-download-ftp;/seahorse/&gnome-minor;/seahorse-&seahorse-version;.tar.xz">
+  <!ENTITY seahorse-md5sum        "998578f6dbde86037107c137161662f2">
+  <!ENTITY seahorse-size          "1.4 MB">
+  <!ENTITY seahorse-buildsize     "51 MB">
+  <!ENTITY seahorse-time          "0.4 SBU">
 ]>
 
 <sect1 id="seahorse" xreflabel="Seahorse-&seahorse-version;">
@@ -35,7 +37,7 @@
       keys (using GPG/GPGME) and SSH keys.
     </para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,7 +79,6 @@
     <para role="required">
       <xref linkend="gcr"/>,
       <xref linkend="gpgme"/>,
-      <xref linkend="gnupg"/> or
       <xref linkend="gnupg2"/>,
       <xref linkend="libsecret"/> and
       <xref linkend="yelp-xsl"/>
@@ -85,20 +86,25 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="libsoup"/>
+      <xref linkend="libsoup"/>,
+      <xref linkend="openssh"/> (for managing SSH keys) and
+      <xref linkend="vala"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="avahi"/>,
-      <xref linkend="openldap"/> and
-      <xref linkend="openssh"/>
+      <xref linkend="avahi"/> and
+      <xref linkend="openldap"/>
+    </para>
+
+    <bridgehead renderas="sect4">Runtime Dependency</bridgehead>
+    <para role="required">
+      <xref linkend="gnome-keyring"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
       <ulink url="&blfs-wiki;/seahorse"/>
     </para>
-
   </sect2>
 
   <sect2 role="installation">
@@ -109,7 +115,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr     \
+            --bindir=/usr/bin \
+            --disable-static  &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -126,6 +134,10 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <parameter>--bindir=/usr/bin</parameter>: Fix desktop file.
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
@@ -149,7 +161,7 @@ make</userinput></screen>
         </seg>
         <seg>
           /usr/lib/seahorse,
-          /usr/share/help/*/seahorse and
+          /usr/share/help/*/seahorse, and
           /usr/share/seahorse
         </seg>
       </seglistitem>

@@ -5,10 +5,11 @@
   %general-entities;
 
   <!ENTITY fcron-download-http "http://fcron.free.fr/archives/fcron-&fcron-version;.src.tar.gz">
-  <!ENTITY fcron-download-ftp "ftp://ftp.seul.org/pub/fcron/fcron-&fcron-version;.src.tar.gz">
-  <!ENTITY fcron-md5sum "36bf213e15f3a480f2274f8e46cced0a">
-  <!ENTITY fcron-size "583 KB">
-  <!ENTITY fcron-buildsize "3.6 MB">
+  <!ENTITY fcron-download-ftp " ">
+<!--  <!ENTITY fcron-download-ftp "ftp://ftp.seul.org/pub/fcron/fcron-&fcron-version;.src.tar.gz">-->
+  <!ENTITY fcron-md5sum "4b031c2fba32a98fa814d1557158b0e9">
+  <!ENTITY fcron-size "584 KB">
+  <!ENTITY fcron-buildsize "5.1 MB">
   <!ENTITY fcron-time "0.1 SBU">
 ]>
 
@@ -33,7 +34,7 @@
     command scheduler which aims at replacing <application>Vixie
     Cron</application>.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,7 +74,7 @@
     <para role="optional">An <xref linkend="server-mail"/>,
     <ulink url="../postlfs/editors.html">text editor</ulink> (default is
     <command>vi</command> from the <xref linkend="vim"/> package),
-    <xref linkend="linux-pam"/>,
+    <xref linkend="linux-pam"/>, and
     <xref linkend="docbook-utils"/>
     </para>
 
@@ -121,9 +122,12 @@ useradd -d /dev/null -c "Fcron User" -g fcron -s /bin/false -u 22 fcron</userinp
     <para>Install <application>Fcron</application> by running the following
     commands:</para>
 
-<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc \
-    --localstatedir=/var --without-sendmail --with-boot-install=no \
-    --with-dsssl-dir=/usr/share/sgml/docbook/dsssl-stylesheets-&docbook-dsssl-version; &amp;&amp;
+<screen><userinput>./configure --prefix=/usr          \
+            --sysconfdir=/etc      \
+            --localstatedir=/var   \
+            --without-sendmail     \
+            --with-boot-install=no \
+            --with-systemdsystemunitdir=no &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -132,13 +136,15 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+    <para>DESTDIR install must be done as <systemitem class="username">root</systemitem> user.</para>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
+<!--
     <para><command>autoconf</command>: This command is required to rebuild
-    <filename>configure</filename> using the fixed input file.</para>
+    <filename>configure</filename> using the fixed input file.</para>-->
 
     <para><parameter>--without-sendmail</parameter>: By default,
     <application>Fcron</application> will attempt to use the
@@ -149,14 +155,20 @@ make</userinput></screen>
     <option>--with-sendmail=<replaceable>&lt;/path/to/MTA
     command&gt;</replaceable></option> to use a different mailer command.</para>
 
-    <para><parameter>--with-boot-install=no</parameter>: This prevents installation
-    of the bootscript included with the package.</para>
+    <para><parameter>--with-boot-install=no</parameter>: This prevents
+    installation of the bootscript included with the package.</para>
+
+    <para><parameter>--with-systemdsystemunitdir=no|yes|DIR</parameter>: Use
+    no, if you use sysvint; yes, if you use systemd, or specify the directory
+    DIR for the systemd units.</para>
 
     <para><option>--with-editor=<replaceable>&lt;/path/to/editor&gt;</replaceable></option>:
     This switch allows you to set the default text editor.</para>
 
     <para><option>--with-dsssl-dir=<replaceable>&lt;/path/to/dsssl-stylesheets&gt;</replaceable></option>:
-    Avoid a warning message about not finding the DSSSL stylesheets.</para>
+    May be used if you have <xref linkend="docbook-utils"/> installed.
+    Currently, the dsssl stylesheets are located at
+    <filename class="directory">/usr/share/sgml/docbook/dsssl-stylesheets-1.79</filename>.</para>
 
   </sect2>
 

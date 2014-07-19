@@ -6,10 +6,10 @@
 
   <!ENTITY php-download-http "http://us2.php.net/distributions/php-&php-version;.tar.bz2">
   <!ENTITY php-download-ftp  "ftp://ftp.isu.edu.tw/pub/Unix/Web/PHP/distributions/php-&php-version;.tar.bz2">
-  <!ENTITY php-md5sum        "9975e68c22b86b013b934743ad2d2276">
-  <!ENTITY php-size          "10.6 MB">
-  <!ENTITY php-buildsize     "522 MB (includes installing all documentation)">
-  <!ENTITY php-time          "2.6 SBU (additional 2.2 SBU to run the test suite)">
+  <!ENTITY php-md5sum        "b53e5f47c59ffbe26d20957636695baa">
+  <!ENTITY php-size          "13 MB">
+  <!ENTITY php-buildsize     "432 MB (additional 102 MB for documentation)">
+  <!ENTITY php-time          "3.5 SBU (additional 1.8 SBU to run the test suite)">
 ]>
 
 <sect1 id="php" xreflabel="PHP-&php-version;">
@@ -34,7 +34,7 @@
     directly embedded into the HTML markup.  It is also useful as a
     general purpose scripting language.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,26 +68,26 @@
 
     <bridgehead renderas="sect3">PHP Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required"><xref linkend="apache"/></para>
-
     <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended"><xref linkend="libxml2"/></para>
+    <para role="recommended">
+      <xref linkend="apache"/> and
+      <xref linkend="libxml2"/>
+    </para>
 
     <bridgehead renderas="sect4">Optional System Utilities and Libraries</bridgehead>
     <para role="optional"><xref linkend="libxslt"/>,
+    <!-- <xref linkend="gamin"/>, -->
     <xref linkend="pcre"/>,
     <xref linkend="aspell"/>,
     <xref linkend="enchant"/>,
-    <xref linkend="expat"/> (deprecated alternative to <xref linkend="libxml2"/>),
+    <xref linkend="pth"/>,
+    an <xref linkend="server-mail"/> (that provides a
+    <command>sendmail</command> command)
     <ulink url="http://www.ossp.org/pkg/lib/mm/">OSSP mm</ulink>,
     <ulink url="http://www.net-snmp.org/">Net-SNMP</ulink>,
-    <xref linkend="pth"/>,
     <ulink url="http://re2c.org/">re2c</ulink>,
-    <ulink url="http://xmlrpc-epi.sourceforge.net/main.php?t=php_about">XMLRPC-EPI</ulink>,
-    <ulink url="http://dmalloc.com/">Dmalloc</ulink>, and
-    an <xref linkend="server-mail"/> (that provides a
-    <command>sendmail</command> command)</para>
+    <ulink url="http://xmlrpc-epi.sourceforge.net/main.php?t=php_about">XMLRPC-EPI</ulink>, and
+    <ulink url="http://dmalloc.com/">Dmalloc</ulink></para>
 
     <bridgehead renderas="sect4">Optional Graphics Utilities and Libraries</bridgehead>
     <para role="optional"><xref linkend="libjpeg"/>,
@@ -97,9 +97,9 @@
     <xref linkend="freetype2"/>,
     <xref linkend="x-window-system"/>,
     <ulink url="http://www.fastio.com/">ClibPDF</ulink>,
-    <ulink url="http://fossies.org/unix/www/gd-2.0.35.tar.gz/">GD (has bugs)</ulink>,
-    <ulink url="http://www.sfr-fresh.com/linux/misc/t1lib">t1lib</ulink>, and
-    <ulink url="http://partners.adobe.com/asn/acrobat/forms.jsp">FDF Toolkit</ulink></para>
+    <ulink url="https://bitbucket.org/libgd/gd-libgd/downloads">GD</ulink>,
+    <ulink url="http://fossies.org/linux/misc/t1lib-5.1.2.tar.gz/">t1lib</ulink>, and
+    <ulink url="http://www.adobe.com/devnet/acrobat/fdftoolkit.html">FDF Toolkit</ulink></para>
 
     <bridgehead renderas="sect4">Optional Web Utilities</bridgehead>
     <para role="optional"><xref linkend="curl"/>,
@@ -107,18 +107,18 @@
     <ulink url="http://www.mnogosearch.org/">mnoGoSearch</ulink>,
     <ulink url="http://www.hyperwave.com/">Hyperwave</ulink>,
     <ulink url="http://www.roxen.com/products/webserver/">Roxen WebServer</ulink>,
-    <ulink url="http://caudium.net/">Caudium</ulink>, and
-    <ulink url="http://www.openwddx.org/">WDDX</ulink></para>
+    <ulink url="http://sourceforge.net/projects/caudium/">Caudium</ulink>, and
+    <ulink url="https://wddxnet.codeplex.com/">WDDX</ulink></para>
 
     <bridgehead renderas="sect4">Optional Data Management Utilities and Libraries</bridgehead>
     <para role="optional"><xref linkend="openldap"/>,
     <!-- <xref linkend="gdbm"/>, -->
     <xref linkend="db"/>,
-    <xref linkend="mysql"/>,
+    <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
     <xref linkend="postgresql"/>,
     <xref linkend="unixodbc"/>,
     <xref linkend="sqlite"/>,
-    <ulink url="http://qdbm.sourceforge.net/">QDBM</ulink>,
+    <ulink url="http://sourceforge.net/projects/qdbm">QDBM</ulink>,
     <ulink url="http://cr.yp.to/cdb.html">cdb</ulink>,
     <ulink url="http://www.hughes.com.au/products/msql/">Mini SQL</ulink>,
     <ulink url="http://www.empress.com/">Empress</ulink>,
@@ -175,34 +175,44 @@
     <para>Install <application>PHP</application> by
     running the following commands:</para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --sysconfdir=/etc \
-            --with-apxs2 \
+<screen><userinput>sed -i -e 's/2.6.5 2.7/&amp; 3.0/' configure &amp;&amp;
+./configure --prefix=/usr                \
+            --sysconfdir=/etc            \
+            --localstatedir=/var         \
+            --datadir=/usr/share/php     \
+            --mandir=/usr/share/man      \
+            --enable-fpm                 \
+            --with-fpm-user=apache       \
+            --with-fpm-group=apache      \
             --with-config-file-path=/etc \
-            --with-zlib \
-            --enable-bcmath \
-            --with-bz2 \
-            --enable-calendar \
-            --enable-dba=shared \
-            --with-gdbm \
-            --with-gmp \
-            --enable-ftp \
-            --with-gettext \
-            --enable-mbstring \
-            --with-readline &amp;&amp;
+            --with-zlib                  \
+            --enable-bcmath              \
+            --with-bz2                   \
+            --enable-calendar            \
+            --enable-dba=shared          \
+            --with-gdbm                  \
+            --with-gmp                   \
+            --enable-ftp                 \
+            --with-gettext               \
+            --enable-mbstring            \
+            --with-readline              &amp;&amp;
 make</userinput></screen>
 
-    <para>To test the results, issue: <command>make test</command>. Some of
-    the tests are known to fail.</para>
+    <para>To test the results, issue: <command>make test</command>. A few
+    tests may fail, in which case you are asked whether you want to send
+    the report to the PHP developpers. If you want to automate the test,
+    you may prefix the command with <command>yes "n" | </command>.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>make install &amp;&amp;
-install -v -m644 php.ini-production /etc/php.ini &amp;&amp;
+<!-- dev note: make INSTALL_ROOT=<DESTDIR> install -->
+
+<screen role="root"><userinput>make install                                         &amp;&amp;
+install -v -m644 php.ini-production /etc/php.ini     &amp;&amp;
+mv -v /etc/php-fpm.conf{.default,}                   &amp;&amp;
 
 install -v -m755 -d /usr/share/doc/php-&php-version; &amp;&amp;
-install -v -m644    CODING_STANDARDS EXTENSIONS INSTALL NEWS \
-                    README* UPGRADING* php.gif \
+install -v -m644    CODING_STANDARDS EXTENSIONS INSTALL NEWS README* UPGRADING* php.gif \
                     /usr/share/doc/php-&php-version; &amp;&amp;
 ln -v -sfn          /usr/lib/php/doc/Archive_Tar/docs/Archive_Tar.txt \
                     /usr/share/doc/php-&php-version; &amp;&amp;
@@ -234,8 +244,16 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
   <sect2 role="commands">
       <title>Command Explanations</title>
 
-      <para><parameter>--with-apxs2</parameter>: This parameter
-      builds the Apache HTTPD 2.0 module.</para>
+      <para><command>sed -i -e 's/2.6.5 2.7/&amp; 3.0/' configure</command>: Make
+      <filename>configure</filename> accept the version 3.0 of 
+      <application>Bison</application> as a valid version.</para>
+      
+      <para><parameter>--with-datadir=/usr/share/php</parameter>: This works
+      around a bug in the build machinery, which installs some data to a
+      wrong location.</para>
+
+      <para><parameter>--enable-fpm</parameter>: This parameter allows
+      building the fastCGI Process Manager.</para>
 
       <para><parameter>--with-config-file-path=/etc</parameter>: This parameter
       makes <application>PHP</application> look for the
@@ -269,9 +287,19 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
       <para><parameter>--with-readline</parameter>: This parameter
       enables command line <application>Readline</application> support.</para>
 
+      <para><option>--with-mysql</option>: This option
+      includes <application>MariaDB/MySQL</application> support.</para>
+
       <para><option>--disable-libxml</option>: This option
       allows building PHP without <application>libxml2</application>
       installed.</para>
+
+      <para><option>--with-apxs2</option>: Instead of building the fastCGI process
+      manager, it is possible to build an <application>apache</application> module.
+      This has some performance penalty for heavy loaded servers, but may be easier
+      to set up. This switch is incompatible with the
+      <parameter>--enable-fpm</parameter> and <parameter>--with-fpm-...</parameter>
+      switches.</para>
 
   </sect2>
 
@@ -281,8 +309,9 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
     <sect3 id="php-config">
       <title>Config Files</title>
 
-      <para><filename>/etc/php.ini</filename> and
-      <filename>/etc/pear.conf</filename></para>
+      <para><filename>/etc/php.ini</filename>,
+      <filename>/etc/pear.conf</filename> and
+      <filename>/etc/php-fpm.conf</filename></para>
 
       <indexterm zone="php php-config">
         <primary sortas="e-etc-php.ini">/etc/php.ini</primary>
@@ -290,6 +319,10 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
 
       <indexterm zone="php php-config">
         <primary sortas="e-etc-pear.conf">/etc/pear.conf</primary>
+      </indexterm>
+
+      <indexterm zone="php php-config">
+        <primary sortas="e-etc-php-fpm.conf">/etc/php-fpm.conf</primary>
       </indexterm>
 
     </sect3>
@@ -316,15 +349,24 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
 <screen role="root"><userinput>sed -i 's@php/includes"@&amp;\ninclude_path = ".:/usr/lib/php"@' \
     /etc/php.ini</userinput></screen>
 
-      <para>To enable PHP support in the <application>Apache</application>
-      web server, a new LoadModule (which should be handled automatically by the
-      <command>make install</command> command) and AddType directives
-      must be added to the <filename>httpd.conf</filename> file:</para>
+      <para>To enable fastCGI support in the <application>Apache</application>
+      web server, two LoadModule directives must be added to the
+      <filename>httpd.conf</filename> file. They are commented out, so just issue the
+      following command as <systemitem class="username">root</systemitem> user:</para>
 
-<screen><literal>LoadModule php5_module lib/apache/libphp5.so
-AddType application/x-httpd-php .php</literal></screen>
+<screen role="root"><userinput>sed -i -e '/proxy_module/s/^#//'      \
+       -e '/proxy_fcgi_module/s/^#//' \
+       /etc/httpd/httpd.conf</userinput></screen>
 
-      <para>Additionally, it can be useful to add an entry for
+      <para>Those modules accept various <command>ProxyPass</command>
+      directives. One possibility is (as the
+      <systemitem class="username">root</systemitem> user):</para>
+
+<screen role="root"><userinput>echo \
+'ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/srv/www/$1' >> \
+/etc/httpd/httpd.conf</userinput></screen>
+
+      <para>Additionally, it may be useful to add an entry for
       <filename>index.php</filename> to the DirectoryIndex directive of the
       <filename>httpd.conf</filename> file. Lastly, adding a line to setup the
       <filename class='extension'>.phps</filename> extension to show
@@ -339,6 +381,24 @@ AddType application/x-httpd-php .php</literal></screen>
 
     </sect3>
 
+    <sect3  id="php-init">
+      <title>Boot Script</title>
+
+      <para>
+        To automatically start the <command>php-fpm</command> daemon when the
+        system is rebooted, install the
+        <filename>/etc/rc.d/init.d/php</filename> bootscript from the
+        <xref linkend="bootscripts"/> package as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+      <indexterm zone="php php-init">
+        <primary sortas="f-php">php</primary>
+      </indexterm>
+
+<screen role="root"><userinput>make install-php</userinput></screen>
+    </sect3>
+
   </sect2>
 
   <sect2 role="content">
@@ -346,13 +406,15 @@ AddType application/x-httpd-php .php</literal></screen>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>pear, peardev, pecl, php, php-config and phpize</seg>
-        <seg>libphp5.so Apache module</seg>
-        <seg>/usr/include/php, /usr/lib/php and
+        <seg>pear, peardev, pecl, phar (symlink), phar.phar,
+        php, php-cgi, php-config, php-fpm, and phpize</seg>
+        <seg>dba.{so,a} and opcache.{so,a} in
+       /usr/lib/php/extensions/no-debug-non-zts-20121212/</seg>
+        <seg>/usr/include/php, /usr/lib/php, /usr/share/php and
         /usr/share/doc/php-&php-version;</seg>
       </seglistitem>
     </segmentedlist>
@@ -380,6 +442,16 @@ AddType application/x-httpd-php .php</literal></screen>
           Repository (PEAR) package manager.</para>
           <indexterm zone="php pear">
             <primary sortas="b-pear">pear</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="php-fpm">
+        <term><command>php-fpm</command></term>
+        <listitem>
+          <para>is the fastCGI process manager for PHP.</para>
+          <indexterm zone="php php-fpm">
+            <primary sortas="b-php-fpm">php-fpm</primary>
           </indexterm>
         </listitem>
       </varlistentry>

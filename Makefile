@@ -5,8 +5,8 @@
 # $Date$
 
 # Adjust these to suit your installation
-BASEDIR ?= $(HOME)/public_html/blfs-book-systemd-xsl
-DUMPDIR ?= $(HOME)/blfs-systemd-commands
+BASEDIR ?= $(HOME)/public_html/blfs-book-xsl
+DUMPDIR ?= $(HOME)/blfs-commands
 RENDERTMP ?= tmp
 CHUNK_QUIET = 1
 ROOT_ID =
@@ -160,6 +160,17 @@ $(BASEDIR)/test-links: $(RENDERTMP)/blfs-full.xml
 	    fi; \
 	done
 
+bootscripts:
+	@VERSION=`grep "bootscripts-version " general.ent | cut -d\" -f2`; \
+   BOOTSCRIPTS="blfs-bootscripts-$$VERSION"; \
+   if [ ! -e $$BOOTSCRIPTS.tar.xz ]; then \
+     rm -rf $(RENDERTMP)/$$BOOTSCRIPTS; \
+     mkdir $(RENDERTMP)/$$BOOTSCRIPTS; \
+     cp -a ../bootscripts/* $(RENDERTMP)/$$BOOTSCRIPTS; \
+     rm -rf ../bootscripts/archive; \
+     tar  -cJhf $$BOOTSCRIPTS.tar.xz -C $(RENDERTMP) $$BOOTSCRIPTS; \
+   fi
+
 dump-commands: $(DUMPDIR)
 $(DUMPDIR): $(RENDERTMP)/blfs-full.xml
 	@echo "Dumping book commands..."
@@ -172,7 +183,8 @@ validate:
 	$(Q)xmllint --noout --nonet --xinclude --postvalid index.xml
 
 .PHONY: blfs all world html nochunks tmpdir clean validxml \
-	profile-html wget-list test-links dump-commands validate
+	profile-html wget-list test-links dump-commands validate \
+   bootscripts
 
 #.PHONY: blfs all world html pdf nochunks tmpdir clean validxml \
 	profile-html wget-list test-links dump-commands validate

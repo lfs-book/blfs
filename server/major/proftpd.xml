@@ -6,9 +6,9 @@
 
   <!ENTITY proftpd-download-http " ">
   <!ENTITY proftpd-download-ftp  "ftp://ftp.proftpd.org/distrib/source/proftpd-&proftpd-version;.tar.gz">
-  <!ENTITY proftpd-md5sum        "0871e0b93c9c3c88ca950b6d9a04aed2">
-  <!ENTITY proftpd-size          "7.3 MB">
-  <!ENTITY proftpd-buildsize     "29 MB">
+  <!ENTITY proftpd-md5sum        "aff1bff40e675244d72c4667f203e5bb">
+  <!ENTITY proftpd-size          "7.2 MB">
+  <!ENTITY proftpd-buildsize     "34 MB">
   <!ENTITY proftpd-time          "0.3 SBU">
 ]>
 
@@ -33,7 +33,7 @@
     and highly configurable FTP daemon. This is useful for serving large
     file archives over a network.</para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -61,7 +61,12 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="linux-pam"/> and to run tests
+      <xref linkend="libcap-pam"/>,
+      <xref linkend="linux-pam"/>,
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="openssl"/>,
+      <xref linkend="pcre"/>,
+      <xref linkend="postgresql"/> and to run tests:
       <xref linkend="check"/> and
       <ulink url='http://search.cpan.org/~clemburg/Test-Unit-0.14/'>Test::Unit-0.14</ulink>
     </para>
@@ -78,11 +83,12 @@
     <application>ProFTPD</application> using an unprivileged user and group.
     As the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>groupadd -g 46 proftpd &amp;&amp;
+<screen role="root"><userinput>groupadd -g 46 proftpd                             &amp;&amp;
 useradd -c proftpd -d /srv/ftp -g proftpd \
-        -s /usr/bin/proftpdshell -u 46 proftpd &amp;&amp;
+        -s /usr/bin/proftpdshell -u 46 proftpd     &amp;&amp;
+
 install -v -d -m775 -o proftpd -g proftpd /srv/ftp &amp;&amp;
-ln -v -s /bin/false /usr/bin/proftpdshell &amp;&amp;
+ln -v -s /bin/false /usr/bin/proftpdshell          &amp;&amp;
 echo /usr/bin/proftpdshell &gt;&gt; /etc/shells</userinput></screen>
 
     <para>Install <application>ProFTPD</application> as an unprivileged user by
@@ -92,11 +98,13 @@ echo /usr/bin/proftpdshell &gt;&gt; /etc/shells</userinput></screen>
 make</userinput></screen>
 
     <para>The tests for this package require a very old (2001) version of the
-    Perl Module Test::Unit.  Using the lastest version of this Test::Unit
-    results in many failures (34/1089) although the program appears to run
-    well.  The tests take a long time (38 minutes, not CPU dependent) and are
-    not recommended.  To test the results anyway, issue: <command>make
-    check</command>.</para>
+    Perl Module Test::Unit. Even when using that version of Test::Unit, there
+    are many failures (41/1397) although the program appears to run
+    well.  The tests take a long time (45 minutes, not CPU dependent) and are
+    not recommended.  To test the results anyway, add the switch: <parameter>
+    --enable-tests</parameter> to the <command>configure</command>, and
+    issue: <command>make check</command>. If the tests are run with root
+    privileges, more tests are run, but there are more failures.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
@@ -129,13 +137,14 @@ make</userinput></screen>
       for anonymous downloads.</para>
     </note>
 
-    <para><parameter>--sysconfdir=/etc</parameter>: This prevents the
-    configuration files from going to
-    <filename class="directory">/usr/etc</filename>.</para>
-
-    <para><parameter>--localstatedir=/var/run</parameter>:
-    This uses <filename class="directory">/var/run</filename> instead of
-    <filename class="directory">/usr/var</filename> for lock files.</para>
+    <note>
+      <para>
+        Support for most of the dependency packages requires using options
+        passed to the <command>configure</command> script. View the output
+        from <command>./configure --help</command> for complete information
+        about enabling dependency packages.
+      </para>
+    </note>
 
   </sect2>
 
@@ -187,6 +196,11 @@ MaxInstances                    30
 # Set the user and group that the server normally runs at.
 User                            proftpd
 Group                           proftpd
+
+# To cause every FTP user to be "jailed" (chrooted) into their home
+# directory, uncomment this line.
+#DefaultRoot ~
+
 
 # Normally, files should be overwritable.
 &lt;Directory /*&gt;
@@ -244,9 +258,9 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>ftpcount, ftpdctl, ftpasswd, ftpmail, ftpquota, ftpscrub,
-             ftptop, ftpshut, ftpcount, ftpwho, proftpd</seg>
+             ftptop, ftpshut, ftpcount, ftpwho, and proftpd</seg>
         <seg>None</seg>
-        <seg>/var/run/proftpd</seg>
+        <seg>/usr/lib/proftpd</seg>
       </seglistitem>
     </segmentedlist>
 

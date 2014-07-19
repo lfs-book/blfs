@@ -32,7 +32,7 @@
     <para>The <application>cpio</application> package contains
     tools for archiving.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,11 +68,10 @@
     commands:</para>
 
 <screen><userinput>sed -i -e '/gets is a/d' gnu/stdio.in.h &amp;&amp;
-./configure --prefix=/usr     \
-            --bindir=/bin     \
-            --libexecdir=/tmp \
-            --enable-mt       \
-            --with-rmt=/usr/sbin/rmt &amp;&amp;
+./configure --prefix=/usr \
+            --bindir=/bin \
+            --enable-mt   \
+            --with-rmt=/usr/libexec/rmt &amp;&amp;
 make &amp;&amp;
 makeinfo --html            -o doc/html      doc/cpio.texi &amp;&amp;
 makeinfo --html --no-split -o doc/cpio.html doc/cpio.texi &amp;&amp;
@@ -109,7 +108,7 @@ install -v -m644    doc/cpio.{html,txt} \
     <title>Command Explanations</title>
 
     <para><parameter>sed -i -e '/gets is a/d' gnu/stdio.in.h &amp;&amp;</parameter>:
-    This fixes an incompatability with <application>glibc-2.16.0</application>.
+    This fixes an incompatibility with <application>glibc-2.16.0</application>.
     </para>
 
     <para><parameter>--bindir=/bin</parameter>: This parameter installs
@@ -117,14 +116,10 @@ install -v -m644    doc/cpio.{html,txt} \
     instead of <filename class="directory">/usr/bin</filename> as recommended
     by the FHS guidelines.</para>
 
-    <para><parameter>--libexecdir=/tmp</parameter>: This parameter is used so
-    that <filename class='directory'>/usr/libexec</filename> is not
-    created.</para>
-
     <para><parameter>--enable-mt</parameter>: This parameter forces the
     building and installation of the <command>mt</command> program.</para>
 
-    <para><parameter>--with-rmt=/usr/sbin/rmt</parameter>: This parameter
+    <para><parameter>--with-rmt=/usr/libexec/rmt</parameter>: This parameter
     inhibits building the <command>rmt</command> program as it is already
     installed by the <application>Tar</application> package in LFS.</para>
 

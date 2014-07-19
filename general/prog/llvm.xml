@@ -6,18 +6,19 @@
 
   <!ENTITY llvm-download-http "http://llvm.org/releases/&llvm-version;/llvm-&llvm-version;.src.tar.gz">
   <!ENTITY llvm-download-ftp  " ">
-  <!ENTITY llvm-md5sum        "40564e1dc390f9844f1711c08b08e391">
-  <!ENTITY llvm-size          "13 MB">
-  <!ENTITY llvm-buildsize     "900 MB">
-  <!ENTITY llvm-time          "13.0 SBU (Additional 7.0 SBU for Clang)">
+  <!ENTITY llvm-md5sum        "a20669f75967440de949ac3b1bad439c">
+  <!ENTITY llvm-size          "16 MB">
+  <!ENTITY llvm-buildsize     "543 MB (1.2 GB with Clang)">
+  <!ENTITY llvm-time          "12 SBU (23 SBU with Clang) and 0.3 for tests">
 
   <!ENTITY clang-download-http "http://llvm.org/releases/&llvm-version;/cfe-&llvm-version;.src.tar.gz">
-  <!ENTITY clang-md5sum        "8284891e3e311829b8e44ac813d0c9ef">
-  <!ENTITY clang-size          "9.0 MB">
+  <!ENTITY clang-md5sum        "87945973b7c73038871c5f849a818588">
+  <!ENTITY clang-size          "11 MB">
 
-  <!ENTITY compiler-rt-download-http "http://llvm.org/releases/&llvm-version;/compiler-rt-&llvm-version;.src.tar.gz">
-  <!ENTITY compiler-rt-md5sum        "9c129ce24514467cfe492cf2fed8e2c4">
-  <!ENTITY compiler-rt-size          "1.5 MB">
+  <!ENTITY rt-version                "3.4">
+  <!ENTITY compiler-rt-download-http "http://llvm.org/releases/&rt-version;/compiler-rt-&rt-version;.src.tar.gz">
+  <!ENTITY compiler-rt-md5sum        "7938353e3a3bda85733a165e7ac4bb84">
+  <!ENTITY compiler-rt-size          "1.8 MB">
 ]>
 
 <sect1 id="llvm" xreflabel="LLVM-&llvm-version;">
@@ -52,7 +53,7 @@
       libraries for the <application>LLVM</application>.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -141,10 +142,11 @@
       <xref linkend="doxygen"/>,
       <xref linkend="graphviz"/>,
       <xref linkend="libxml2"/>,
+      <xref linkend="texlive"/>,
       <xref linkend="zip"/>,
       <ulink url="http://www.ocaml.org/">OCaml</ulink>,
       <ulink url="http://pypi.python.org/pypi/Sphinx">Sphinx</ulink> and
-      <ulink url="http://www.valgrind.org/">Valgrind</ulink>
+      <xref linkend="valgrind"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -161,29 +163,26 @@
     </para>
 
 <screen><userinput>tar -xf ../cfe-&llvm-version;.src.tar.gz -C tools &amp;&amp;
-tar -xf ../compiler-rt-&llvm-version;.src.tar.gz -C projects &amp;&amp;
+tar -xf ../compiler-rt-&rt-version;.src.tar.gz -C projects &amp;&amp;
 
 mv tools/cfe-&llvm-version;.src tools/clang &amp;&amp;
-mv projects/compiler-rt-&llvm-version;.src projects/compiler-rt</userinput></screen>
+mv projects/compiler-rt-&rt-version; projects/compiler-rt</userinput></screen>
 
     <para>
       Install <application>LLVM</application> by running the following
       commands:
     </para>
 
-<screen><userinput>sed -e 's:\$(PROJ_prefix)/docs/llvm:$(PROJ_prefix)/share/doc/llvm-&llvm-version;:' \
+<screen><userinput>sed -e 's:/docs/llvm:/share/doc/llvm-&llvm-version;:' \
     -i Makefile.config.in &amp;&amp;
+
 CC=gcc CXX=g++                         \
 ./configure --prefix=/usr              \
             --sysconfdir=/etc          \
             --enable-libffi            \
             --enable-optimized         \
             --enable-shared            \
-            --enable-targets=all       \
-            --disable-assertions       \
-            --disable-debug-runtime    \
-            --disable-expensive-checks \
-            --enable-experimental-targets=R600 &amp;&amp;
+            --disable-assertions       &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -202,7 +201,8 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-for file in /usr/lib/lib{clang,LLVM,LTO,profile_rt}*.a
+
+for file in /usr/lib/lib{clang,LLVM,LTO}*.a
 do
   test -f $file &amp;&amp; chmod -v 644 $file
 done</userinput></screen>
@@ -263,23 +263,8 @@ mv -v /usr/lib/clang-analyzer/scan-build/scan-build.1 /usr/share/man/man1/</user
     </para>
 
     <para>
-      <parameter>--enable-targets=all</parameter>: This switch ensures
-      that all <application>LLVM</application> targets are built.
-    </para>
-
-    <para>
-      <parameter>--disable-*</parameter>: These switches disable
-      features which are used for debugging and are not necesary
-      on a production system.
-    </para>
-
-    <para>
-      <parameter>--enable-experimental-targets=R600</parameter>:
-      This switch enables R600 target which is required by
-      <application>Mesa</application> to build the radeonsi
-      3D driver. It can be used for R600
-      <application>LLVM</application> backend and OpenCL
-      state tracker in <application>Mesa</application>.
+      <parameter>--disable-assertions</parameter>: Disable some compile checks,
+      not necessary on a production system.
     </para>
 
   </sect2>
@@ -294,16 +279,18 @@ mv -v /usr/lib/clang-analyzer/scan-build/scan-build.1 /usr/share/man/man1/</user
 
       <seglistitem>
         <seg>
-          bugpoint, c-index-test, clang, clang++, clang-check, clang-format, clang-tblgen,
-          llc, lli, llvm-ar, llvm-as, llvm-bcanalyzer, llvm-config, llvm-cov, llvm-diff,
-          llvm-dis, llvm-dwarfdump, llvm-extract, llvm-link, llvm-mc, llvm-mcmarkup,
-          llvm-nm, llvm-objdump, llvm-prof, llvm-ranlib, llvm-readobj, llvm-rtdyld,
-          llvm-size, llvm-stress, llvm-symbolizer, llvm-tblgen, macho-dump, opt, 
-          scan-build and scan-view
+          bugpoint, c-index-test, clang, clang++ (symlink), clang-check,
+          clang-format, clang-tblgen, llc, lli, lli-child-target, llvm-ar,
+          llvm-as, llvm-bcanalyzer, llvm-config, llvm-cov, llvm-diff, llvm-dis,
+          llvm-dwarfdump, llvm-extract, llvm-link, llvm-mc, llvm-mcmarkup,
+          llvm-nm, llvm-objdump,<!-- llvm-prof,--> llvm-ranlib (symlink),
+          llvm-readobj, llvm-rtdyld, llvm-size, llvm-stress, llvm-symbolizer,
+          llvm-tblgen, macho-dump, opt, scan-build (symlink) and scan-view
+          (symlink)
         </seg>
         <seg>
           BugpointPasses.so, libclang.so, libLLVM-&llvm-version;.so, 
-          libLTO.so, libprofile_rt.so, LLVMHello.so and numerous
+          libLTO.so,<!-- libprofile_rt.so,--> LLVMHello.so and numerous
           static libraries in /usr/lib
         </seg>
         <seg>
@@ -312,8 +299,10 @@ mv -v /usr/lib/clang-analyzer/scan-build/scan-build.1 /usr/share/man/man1/</user
           /usr/include/llvm,
           /usr/include/llvm-c,
           /usr/lib/clang,
-          /usr/lib/clang-analyzer and
-          /usr/share/doc/llvm-&llvm-version;
+          /usr/lib/clang-analyzer,
+          /usr/share/doc/html/clang,
+          /usr/share/doc/llvm-&llvm-version;, and
+          /usr/share/doc/ps
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -495,7 +484,7 @@ mv -v /usr/lib/clang-analyzer/scan-build/scan-build.1 /usr/share/man/man1/</user
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
       <varlistentry id="llvm-prof">
         <term><command>llvm-prof</command></term>
         <listitem>
@@ -507,7 +496,7 @@ mv -v /usr/lib/clang-analyzer/scan-build/scan-build.1 /usr/share/man/man1/</user
             <primary sortas="b-llvm-prof">llvm-prof</primary>
           </indexterm>
         </listitem>
-      </varlistentry>
+      </varlistentry>-->
 
       <varlistentry id="llvm-ranlib">
         <term><command>llvm-ranlib</command></term>
@@ -584,7 +573,7 @@ mv -v /usr/lib/clang-analyzer/scan-build/scan-build.1 /usr/share/man/man1/</user
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
       <varlistentry id="libprofile_rt">
         <term><filename class="libraryfile">libprofile_rt.so</filename></term>
         <listitem>
@@ -596,7 +585,7 @@ mv -v /usr/lib/clang-analyzer/scan-build/scan-build.1 /usr/share/man/man1/</user
             <primary sortas="c-libprofile_rt">libprofile_rt.so</primary>
           </indexterm>
         </listitem>
-      </varlistentry>
+      </varlistentry>-->
 
     </variablelist>
 

@@ -6,10 +6,10 @@
 
   <!ENTITY lvm2-download-http " ">
   <!ENTITY lvm2-download-ftp  "ftp://sources.redhat.com/pub/lvm2/LVM2.&lvm2-version;.tgz">
-  <!ENTITY lvm2-md5sum        "1ce5b7f9981e1d02dfd1d3857c8d9fbe">
-  <!ENTITY lvm2-size          "1.2 MB">
-  <!ENTITY lvm2-buildsize     "20 MB">
-  <!ENTITY lvm2-time          "0.6 SBU">
+  <!ENTITY lvm2-md5sum        "efa5b0ff0245cbccf53aec1f3d8840ba">
+  <!ENTITY lvm2-size          "1.4 MB">
+  <!ENTITY lvm2-buildsize     "25 MB (additional 7 MB to run the test suite)">
+  <!ENTITY lvm2-time          "0.4 SBU (additional 7 SBU to run the test suite)">
 ]>
 
 <sect1 id="lvm2" xreflabel="LVM2-&lvm2-version;">
@@ -36,7 +36,7 @@
       shrinking of logical partitions.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,6 +72,14 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">LVM2 Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend='mdadm'/> (for checks) and
+      <xref linkend='xfsprogs'/> (for checks)
+    </para>
+
     <para condition="html" role="usernotes">User Notes:
       <ulink url="&blfs-wiki;/lvm2"/>
     </para>
@@ -84,6 +92,12 @@
       Enable the following option in the kernel configuration
       and recompile the kernel:
     </para>
+
+    <note><para>
+      There are several other Device Mapper options in the kernel beyond those
+      listed below.  In order to get reasonable results if running the
+      regression tests, all must be enabled either internally or as a module.
+    </para></note>
 
 <screen><literal>Device Drivers ---&gt;
   Multiple devices driver support (RAID and LVM): Y
@@ -116,7 +130,12 @@
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      The check command must be run as the <systemitem
+      class="username">root</systemitem> user.  Also the tests are known to
+      hang if at least one partition on a hard drive is not set up as a Linux
+      LVM partition (type 8e00). To test the results, issue: <command>make
+      check</command> as the <systemitem class="username">root</systemitem>
+      user.
     </para>
 
     <para>
@@ -131,23 +150,23 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <option>--enable-applib</option>: This switch enables
+      <parameter>--enable-applib</parameter>: This switch enables
       building of the shared application library.
     </para>
 
     <para>
-      <option>--enable-cmdlib</option>: This switch enables
+      <parameter>--enable-cmdlib</parameter>: This switch enables
       building of the shared command library. It is required
       when building the event daemon.
     </para>
 
     <para>
-      <option>--enable-pkgconfig</option>: This switch enables
+      <parameter>--enable-pkgconfig</parameter>: This switch enables
       installation of <command>pkg-config</command> support files.
     </para>
 
     <para>
-     <option>--enable-udev_sync</option>: This switch enables
+     <parameter>--enable-udev_sync</parameter>: This switch enables
       synchronisation with <application>Udev</application> processing.
     </para>
 
@@ -169,15 +188,20 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          dmsetup, fsadm, lvm, lvmconf, lvmdump, vgimportclone. There
-          are also numerous symbolic links to lvm that implement
-          specific functionality.
+          blkdeactivate, dmeventd (optional), dmsetup, fsadm, lvm, lvmconf,
+          lvmdump, vgimportclone. There are also numerous symbolic links to
+          lvm that implement specific functionality.
         </seg>
         <seg>
-          libdevmapper.so, liblvm2app.so and liblvm2cmd.so
+          libdevmapper.so, liblvm2app.so and liblvm2cmd.so; optional:
+          libdevmapper-event.so, libdevmapper-event-lvm2.so,
+          libdevmapper-event-lvm2mirror.so, libdevmapper-event-lvm2snapshot.so,
+          libdevmapper-event-lvm2raid.so, libdevmapper-event-lvm2thin.so
+          and some under /lib/device-mapper
         </seg>
         <seg>
-          None
+          /etc/lvm and
+          /lib/device-mapper (optional)
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -185,7 +209,32 @@ make</userinput></screen>
     <variablelist>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
-      <?dbhtml list-presentation="table"?>
+
+     <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="blkdeactivate">
+        <term><command>blkdeactivate</command></term>
+        <listitem>
+          <para>
+            utility to deactivate block device.
+          </para>
+          <indexterm zone="lvm2 blkdeactivate">
+            <primary sortas="b-blkdeactivate">blkdeactivate</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="dmeventd">
+        <term><command>dmeventd</command></term>
+        <listitem>
+          <para>
+            (optional) is the Device Mapper event daemon.
+          </para>
+          <indexterm zone="lvm2 dmeventd">
+            <primary sortas="b-dmeventd">dmeventd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
 
       <varlistentry id="dmsetup">
         <term><command>dmsetup</command></term>

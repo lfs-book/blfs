@@ -39,7 +39,7 @@
       protocol and the connection.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -101,12 +101,12 @@
     <para role="optional">
       <xref linkend="linux-pam"/>,
       <xref linkend="mitkrb"/>,
-      <xref linkend="mysql"/>,
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openjdk"/>,
       <xref linkend="openldap"/>,
       <xref linkend="postgresql"/>,
       <xref linkend="sqlite"/>,
-      <ulink url="http://www.pdc.kth.se/kth-krb/">krb4</ulink> and
+      <ulink url="ftp://ftp.pdc.kth.se/pub/krb/src/">krb4</ulink> and
       <ulink url="http://dmalloc.com/">Dmalloc</ulink>
     </para>
 
@@ -118,6 +118,12 @@
   <sect2 role="installation">
     <title>Installation of Cyrus SASL</title>
 
+    <note>
+      <para>
+        This package does not support parallel build.
+      </para>
+    </note>
+
     <para>
       Install <application>Cyrus SASL</application> by
       running the following commands:
@@ -125,15 +131,16 @@
 
 <screen><userinput>patch -Np1 -i ../cyrus-sasl-&cyrus-sasl-version;-fixes-1.patch &amp;&amp;
 autoreconf -fi &amp;&amp;
-pushd saslauthd
+pushd saslauthd &amp;&amp;
 autoreconf -fi &amp;&amp;
-popd
-./configure --prefix=/usr \
-            --sysconfdir=/etc \
+popd &amp;&amp;
+./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
+            --enable-auth-sasldb \
             --with-dbpath=/var/lib/sasl/sasldb2 \
             --with-saslauthd=/var/run/saslauthd \
-            --enable-auth-sasldb &amp;&amp;
-make</userinput></screen>
+            CFLAGS=-fPIC &amp;&amp;
+make -j1</userinput></screen>
 
     <para>
       This package does not come with a test suite. If you are planning
@@ -171,6 +178,11 @@ install -v -dm700 /var/lib/sasl</userinput></screen>
       switch forces <command>saslauthd</command> to use the FHS compliant
       directory <filename class="directory">/var/run/saslauthd</filename>
       for variable run-time data.
+    </para>
+
+    <para>
+      <parameter>CFLAGS=-fPIC</parameter>: This ensures that the package can build
+      on x86_64.
     </para>
 
     <para>

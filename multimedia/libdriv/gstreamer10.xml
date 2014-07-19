@@ -6,10 +6,10 @@
 
   <!ENTITY gstreamer10-download-http "&gstreamer-dl;/gstreamer/gstreamer-&gstreamer10-version;.tar.xz">
   <!ENTITY gstreamer10-download-ftp  " ">
-  <!ENTITY gstreamer10-md5sum        "fb0c73470e8dd5dab01e5e9e62db9db9">
-  <!ENTITY gstreamer10-size          "3.0 MB">
-  <!ENTITY gstreamer10-buildsize     "90 MB">
-  <!ENTITY gstreamer10-time          "0.8 SBU">
+  <!ENTITY gstreamer10-md5sum        "74d8f674187a5f0ddf38da594c3998c3">
+  <!ENTITY gstreamer10-size          "3.1 MB">
+  <!ENTITY gstreamer10-buildsize     "76 MB (additional 20MB to run the test suite)">
+  <!ENTITY gstreamer10-time          "0.6 SBU (additional 0.7 SBU to run the test suite)">
 ]>
 
 <sect1 id="gstreamer10" xreflabel="GStreamer-&gstreamer10-version;">
@@ -38,7 +38,7 @@
       <xref linkend="gst10-plugins-base"/> and one of Good, Bad, Ugly or Libav plugins.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     &gst-compat;
 
@@ -83,6 +83,7 @@
       <xref linkend="glib2"/>
     </para>
 
+    <!-- Required for GNOME -->
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="gobject-introspection"/>
@@ -91,8 +92,8 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gsl"/>,
-      <xref linkend="gtk-doc"/> and
-      <ulink url="http://www.valgrind.org/">Valgrind</ulink>
+      <xref linkend="gtk-doc"/>, and
+      <xref linkend="valgrind"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -109,7 +110,6 @@
     </para>
 
 <screen><userinput>./configure --prefix=/usr \
-            --libexecdir=/usr/lib \
             --with-package-name="GStreamer &gstreamer10-version; BLFS" \
             --with-package-origin="http://www.linuxfromscratch.org/blfs/view/svn/" &amp;&amp;
 make</userinput></screen>
@@ -123,6 +123,17 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para><option>--libexecdir=/usr/lib</option>: This option puts the internal
+    support programs into <filename
+    class="directory">/usr/lib/gstreamer-1.0</filename> instead of
+    <filename class="directory">/usr/libexec/gstreamer-1.0.</filename> in
+    accordance with the old version of the FHS used before LFS-7.5.</para>
 
   </sect2>
 
@@ -140,11 +151,13 @@ make</userinput></screen>
         </seg>
         <seg>
           libgstbase-1.0.so, libgstcheck-1.0.so, libgstcontroller-1.0.so,
-          libgstnet-1.0.so and libgstreamer-1.0.so
+          libgstnet-1.0.so, libgstreamer-1.0.so 
+          and /usr/lib/gstreamer-1.0/libgstcoreelements.so
         </seg>
         <seg>
           /usr/include/gstreamer-1.0,
           /usr/lib/gstreamer-1.0,
+          /usr/libexec/gstreamer-1.0,
           /usr/share/gtk-doc/html/gstreamer-1.0 and
           /usr/share/gtk-doc/html/gstreamer-{libs,plugins}-1.0
         </seg>

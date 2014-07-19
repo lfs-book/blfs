@@ -6,10 +6,10 @@
 
   <!ENTITY vim-download-http " ">
   <!ENTITY vim-download-ftp  "ftp://ftp.vim.org/pub/vim/unix/vim-&vim-version;.tar.bz2">
-  <!ENTITY vim-md5sum        "5b9510a17074e2b37d8bb38ae09edbf2">
-  <!ENTITY vim-size          "8.7 MB">
-  <!ENTITY vim-buildsize     "97 MB">
-  <!ENTITY vim-time          "0.8 SBU">
+  <!ENTITY vim-md5sum        "607e135c559be642f210094ad023dc65">
+  <!ENTITY vim-size          "9.4 MB">
+  <!ENTITY vim-buildsize     "90 MB">
+  <!ENTITY vim-time          "1.7 SBU">
 ]>
 
 <sect1 id="vim" xreflabel="Vim-&vim-version;">
@@ -41,7 +41,7 @@
     There is no need for special instructions since
     <application>X</application> support is automatically detected.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -65,27 +65,16 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing='compact'>
-      <listitem>
-        <para>Optional Patch: <ulink
-          url="&patch-root;/vim-&vim-version;-fixes-524.patch"/></para>
-      </listitem>
-      <listitem>
-        <para>Translated Vim messages: <ulink
-         url="ftp://ftp.vim.org/pub/vim/extra/vim-7.2-lang.tar.gz"/>
-      </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">Vim Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended"><xref linkend="x-window-system"/></para>
+    <para role="recommended">
+      <xref linkend="x-window-system"/> and
+      <xref linkend="gtk2"/>
+    </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk2"/> or
       <ulink url="http://sourceforge.net/projects/lesstif/">LessTif</ulink>,
       <xref linkend="python2"/>,
       <xref linkend="tcl"/>,
@@ -112,21 +101,12 @@
       under a different name such as <filename>vi</filename>.</para>
     </note>
 
-    <para>If you downloaded the optional set of <application>Vim</application> patches,
-    apply them now:</para>
-
-<screen><userinput>patch -Np1 -i ../vim-&vim-version;-fixes-524.patch</userinput></screen>
-
-    <para>If desired, unpack the translated messages archive:</para>
-
-<screen><userinput>tar -xf ../vim-7.2-lang.tar.gz --strip-components=1</userinput></screen>
-
     <para>Install <application>Vim</application> by running the following
     commands:</para>
 
-<screen><userinput>echo '#define SYS_VIMRC_FILE "/etc/vimrc"' &gt;&gt; src/feature.h &amp;&amp;
+<screen><userinput>echo '#define SYS_VIMRC_FILE  "/etc/vimrc"' &gt;&gt;  src/feature.h &amp;&amp;
 echo '#define SYS_GVIMRC_FILE "/etc/gvimrc"' &gt;&gt; src/feature.h &amp;&amp;
-./configure --prefix=/usr --with-features=huge &amp;&amp;
+./configure --prefix=/usr --with-features=huge                &amp;&amp;
 make</userinput></screen>
 
     <para>To test the results, issue: <command>make test</command>.
@@ -154,7 +134,7 @@ make</userinput></screen>
 <!-- When updating, be sure to change the line below for the proper 'vimxx' unpacked
      directory -->
 
-<screen role="root"><userinput>ln -snfv ../vim/vim73/doc /usr/share/doc/vim-&vim-version;</userinput></screen>
+<screen role="root"><userinput>ln -snfv ../vim/vim74/doc /usr/share/doc/vim-&vim-version;</userinput></screen>
 
     <para>If you wish to update the runtime files, issue the
     following command (requires <xref linkend="rsync"/>):</para>
@@ -174,12 +154,9 @@ vim -c ":helptags /usr/share/doc/vim-&vim-version;" -c ":q"</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <!-- <para><command>patch &hellip;</command>: These patches are the same as the
-    ones in the LFS build used to update the package with upstream patches
-    and ensure the man pages are placed in the proper locations.</para>-->
-
     <para><parameter>--with-features=huge</parameter>: This switch enables all
-    the additional features available in <application>Vim</application>.</para>
+    the additional features available in <application>Vim</application>,
+    including support for multibyte characters.</para>
 
     <para><option>--enable-gui=no</option>: This will prevent compilation of the
     GUI. <application>Vim</application> will still link against
@@ -241,7 +218,7 @@ vim -c ":helptags /usr/share/doc/vim-&vim-version;" -c ":q"</userinput></screen>
       <para>Alternatively you can manually download the *.spl and *.sug files
       from: <ulink url="ftp://ftp.vim.org/pub/vim/runtime/spell/"/> and save
       them to <filename class="directory"> ~/.vim/spell </filename> or in
-      <filename class="directory">/usr/share/vim/vim73/spell/</filename>.</para>
+      <filename class="directory">/usr/share/vim/vim74/spell/</filename>.</para>
 
       <para>To find out what's new in <application>Vim-&vim-version;</application>
       issue the following command:</para>
@@ -251,7 +228,7 @@ vim -c ":helptags /usr/share/doc/vim-&vim-version;" -c ":q"</userinput></screen>
       <para>For additional information on setting up
       <application>Vim</application> configuration files, see <xref
       linkend="postlfs-config-vimrc"/> and <ulink
-      url='http://www.vi-improved.org/vimrc.php'/>.</para>
+      url='http://vim.wikia.com/wiki/Example_vimrc'/>.</para>
 
     </sect3>
 

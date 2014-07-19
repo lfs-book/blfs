@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY cifsutils-download-http " ">
+  <!ENTITY cifsutils-download-http "http://ftp.samba.org/pub/linux-cifs/cifs-utils/cifs-utils-&cifsutils-version;.tar.bz2">
   <!ENTITY cifsutils-download-ftp  "ftp://ftp.samba.org/pub/linux-cifs/cifs-utils/cifs-utils-&cifsutils-version;.tar.bz2">
-  <!ENTITY cifsutils-md5sum        "4215f12be8663f65d2c21dbbbafbc7f8">
-  <!ENTITY cifsutils-size          "380 KB">
-  <!ENTITY cifsutils-buildsize     "3.8 MB">
+  <!ENTITY cifsutils-md5sum        "b7d75b67fd3987952896d27256c7293d">
+  <!ENTITY cifsutils-size          "384 KB">
+  <!ENTITY cifsutils-buildsize     "3.1 MB">
   <!ENTITY cifsutils-time          "less than 0.1 SBU">
 ]>
 
@@ -32,7 +32,7 @@
     <para>The <application>cifs-utils</application> provides a means for
     mounting SMB/CIFS shares on a Linux system.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -58,14 +58,15 @@
 
     <bridgehead renderas="sect3">cifs-utils Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="samba3"/></para>
-
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="keyutils"/> and
-      <xref linkend="mitkrb"/>
+      <xref linkend="keyutils"/>,
+      <xref linkend="linux-pam"/>,
+      <xref linkend="mitkrb"/>,
+      <xref linkend="talloc"/>,
+      <xref linkend="samba"/>, and
+      <ulink url="http://people.redhat.com/sgrubb/libcap-ng/">libcap-ng</ulink> or
+      <xref linkend="libcap-pam"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -73,13 +74,33 @@
 
   </sect2>
 
+  <sect2 role="kernel" id="cifsutils-kernel">
+    <title>Kernel Configuration</title>
+
+    <para>
+      Enable the following options in the kernel configuration and recompile the
+      kernel if necessary:
+    </para>
+
+<screen><literal>File systems  ---&gt;
+  Network File Systems  ---&gt;
+    CIFS support (advanced network filesystem, SMBFS successor): Y or M</literal></screen>
+
+    <indexterm zone="cifsutils cifsutils-kernel">
+      <primary sortas="d-cifsutils">cifs-utils</primary>
+    </indexterm>
+                                                                                                                                       
+  </sect2>                                                                                                                             
+
   <sect2 role="installation">
     <title>Installation of cifs-utils</title>
 
     <para>Install <application>cifs-utils</application> by running the following
     commands:</para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
+<screen><userinput>./configure --prefix=/usr \
+            --disable-pam \
+            --disable-systemd &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -90,19 +111,38 @@ make</userinput></screen>
 
   </sect2>
 
+  <sect2 role="commands">
+      <title>Command Explanations</title>
+
+          <para><parameter>--disable-pam</parameter>: Do not build PAM support.
+            Remove  it and use <option>--with-pamdir</option> (see below),
+            if <xref linkend="linux-pam"/> is installed and you wish
+            PAM support.</para>
+
+          <para><parameter>--disable-systemd</parameter>: Disable systemd
+            specific behavior for <command>mount.cifs</command>. Remove it for
+            systems running with systemd.</para>
+
+          <para><option>--with-pamdir=/lib/security</option>: Install the PAM
+            module in
+            <filename class="directory">/lib/security</filename>.</para>
+
+  </sect2>
+
   <sect2 role="content">
     <title>Contents</title>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Libraries</segtitle>
-      <segtitle>Installed Directories</segtitle>
+      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Directory</segtitle>
 
       <seglistitem>
-        <seg>cifs.idmap, cifs.upcall, cifscreds, getcifsacl, mount.cifs,
-        and setcifsacl</seg>
-        <seg>None</seg>
-        <seg>None</seg>
+        <seg> getcifsacl, mount.cifs and setcifsacl;
+          optional: cifs.idmap, cifs.upcall and cifscreds</seg>
+        <seg>/usr/lib/cifs-utils/idmapwb.so and optionally
+          PAM module /lib/security/pam_cifscreds.so</seg>
+        <seg>/usr/lib/cifs-utils</seg>
       </seglistitem>
     </segmentedlist>
 

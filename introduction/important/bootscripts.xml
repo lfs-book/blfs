@@ -5,7 +5,7 @@
   %general-entities;
 ]>
 
-<sect1 id="bootscripts" xreflabel="blfs-units-&blfs-units-version;">
+<sect1 id="bootscripts" xreflabel="blfs-bootscripts-&blfs-bootscripts-version;">
   <?dbhtml filename="bootscripts.html"?>
 
   <sect1info>
@@ -13,34 +13,45 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>BLFS Units</title>
+  <title>BLFS Boot Scripts</title>
 
   <indexterm zone="bootscripts">
-    <primary sortas="a-BLFS-Units">BLFS Units</primary>
+    <primary sortas="a-BLFS-Bootscripts">BLFS Bootscripts</primary>
   </indexterm>
 
   <indexterm zone="bootscripts">
     <primary sortas="f-AA-General-Information">General Information</primary>
   </indexterm>
 
-  <para>The BLFS Units package contains the Systemd units that are
-  used throughout the book.</para>
+  <para>The BLFS Bootscripts package contains the init
+  scripts that are used throughout the book. It is assumed that you will be
+  using the BLFS Bootscripts package in conjunction with a compatible
+  LFS-Bootscripts package. Refer to
+  <ulink url="&lfs-root;/chapter07/bootscripts.html"/> for more
+  information on the LFS-Bootscripts package.</para>
 
-  <itemizedlist spacing="compact">
+  <itemizedlist spacing='compact'>
     <title>Package Information</title>
     <listitem>
-      <para>Download: <ulink url="&blfs-units-download;"/></para>
+      <para>Download: <ulink url="&blfs-bootscripts-download;"/></para>
     </listitem>
   </itemizedlist>
 
-  <para>The BLFS Units package will be used throughout the BLFS book
-  for Systemd units. Each unit has a separate install target
-  in the BLFS Units package. It is recommended you keep the package source
-  directory around until completion of your BLFS system. When a unit is
-  requested from BLFS Units, simply change to the directory and as the
+  <para>The BLFS Bootscripts package will be used throughout the BLFS book
+  for startup scripts.  Unlike LFS, each init script has a separate install target
+  in the BLFS Bootscripts package. It is recommended you keep the package source
+  directory around until completion of your BLFS system. When a script is
+  requested from BLFS Bootscripts, simply change to the directory and as the
   <systemitem class="username">root</systemitem> user, execute the given
-  <command>make install-<replaceable>&lt;unit&gt;</replaceable></command>
-  command. This command installs the Systemd unit to its proper location
-  (along with any auxiliary configuration scripts).</para>
+  <command>make install-<replaceable>&lt;init-script&gt;</replaceable></command>
+  command. This command installs the init script to its proper location (along
+  with any auxiliary configuration scripts) and also creates the appropriate
+  symlinks to start and stop the service at the appropriate run-level.</para>
+
+  <note>
+    <para>It is advisable to peruse each bootscript before installation to
+    ascertain that it satisfies your need. Also verify that the start and stop
+    symlinks it creates match your preferences.</para>
+  </note>
 
 </sect1>

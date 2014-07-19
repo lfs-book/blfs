@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY gnutls-download-http " ">
-  <!ENTITY gnutls-download-ftp  "ftp://ftp.gnutls.org/gcrypt/gnutls/v3.2/gnutls-&gnutls-version;.tar.xz">
-  <!ENTITY gnutls-md5sum        "9dd691ad1ccdb7386029809afef6b5ea">
-  <!ENTITY gnutls-size          "5.0 MB">
-  <!ENTITY gnutls-buildsize     "111 MB">
-  <!ENTITY gnutls-time          "1.2 SBU (additional 3.6 SBU if running the testsuite)">
+  <!ENTITY gnutls-download-ftp  "ftp://ftp.gnutls.org/gcrypt/gnutls/v3.3/gnutls-&gnutls-version;.tar.xz">
+  <!ENTITY gnutls-md5sum        "1f396dcf3c14ea67de7243821006d1a2">
+  <!ENTITY gnutls-size          "5.8 MB">
+  <!ENTITY gnutls-buildsize     "104 MB (additional 8 MB for the tests)">
+  <!ENTITY gnutls-time          "0.9 SBU (additional 1.9 SBU for the tests)">
 ]>
 
 <sect1 id="gnutls" xreflabel="GnuTLS-&gnutls-version;">
@@ -53,7 +53,7 @@
       extension and X.509 and OpenPGP certificate handling.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -108,16 +108,17 @@
       <xref linkend="guile"/>,
       <xref linkend="libidn"/>,
       <xref linkend="p11-kit"/>,
-      <ulink url="http://unbound.net/">Unbound</ulink> (to build the DANE library and requires
-      <ulink url="http://www.nlnetlabs.nl/projects/ldns/">ldns</ulink>), and
-      <ulink url="http://valgrind.org/">Valgrind</ulink> (used during the test suite)
+      <xref linkend="unbound"/> (to build the DANE library), 
+      <xref linkend="valgrind"/> (used during the test suite),
+      <ulink url="http://ftp.gnu.org/gnu/autogen/">autogen</ulink>, and
+      <ulink url="http://sourceforge.net/projects/trousers/files/trousers/">Trousers</ulink> (Trusted Platform Module support)
     </para>
 
-    <para>
+    <note><para>
       Note that if you do not install <xref linkend="libtasn1"/>, an older
       version shipped in the <application>GnuTLS</application> tarball will be
       used instead.
-    </para>
+    </para></note>
 
     <para condition="html" role="usernotes">User Notes:
       <ulink url="&blfs-wiki;/gnutls"/>
@@ -132,8 +133,7 @@
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr    \
-            --disable-static \
+<screen><userinput>./configure --prefix=/usr \
             --with-default-trust-store-file=/etc/ssl/ca-bundle.crt &amp;&amp;
 make</userinput></screen>
 
@@ -170,9 +170,6 @@ make</userinput></screen>
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
 
   </sect2>
@@ -188,16 +185,17 @@ make</userinput></screen>
       <seglistitem>
         <seg>
           certtool, crywrap, danetool, gnutls-cli, gnutls-cli-debug,
-          gnutls-serv, ocsptool, p11tool, psktool and srptool
+          gnutls-serv, ocsptool, p11tool, psktool, and srptool
         </seg>
         <seg>
-          libgnutls.so, libgnutls-openssl.so, libgnutls-xssl.so and
-          libgnutlsxx.so
+          libgnutls.so, libgnutls-dane.so,
+          libgnutls-openssl.so, libgnutlsxx.so, and
+          /usr/lib/guile/2.0/guile-gnutls-v-2.so
         </seg>
         <seg>
           /usr/include/gnutls,
-          /usr/share/doc/gnutls-3.2.1, and
-          /usr/share/gtk-doc/html/gnutls
+          /usr/share/gtk-doc/html/gnutls, and
+          /usr/share/guile/site/gnutls
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -224,8 +222,9 @@ make</userinput></screen>
         <term><command>crywrap</command></term>
         <listitem>
           <para>
-            is a simple wrapper that waits for TLS/SSL connections, and
-            proxies them to an unencrypted location.
+            is a simple wrapper that waits for TLS/SSL connections,
+            and proxies them to an unencrypted location. Only installed if
+            <xref linkend="libidn"/> is present.
           </para>
           <indexterm zone="gnutls crywrap">
             <primary sortas="b-crywrap">crywrap</primary>

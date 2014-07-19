@@ -6,10 +6,10 @@
 
   <!ENTITY cairo-download-http "http://cairographics.org/releases/cairo-&cairo-version;.tar.xz">
   <!ENTITY cairo-download-ftp  " ">
-  <!ENTITY cairo-md5sum        "27b634113d0f52152d60ae8e2ec7daa7">
-  <!ENTITY cairo-size          "41 MB">
-  <!ENTITY cairo-buildsize     "180 MB">
-  <!ENTITY cairo-time          "1.1 SBU">
+  <!ENTITY cairo-md5sum        "a1304edcdc99282f478b995ee5f8f854">
+  <!ENTITY cairo-size          "35 MB">
+  <!ENTITY cairo-buildsize     "158 MB">
+  <!ENTITY cairo-time          "1.0 SBU">
 ]>
 
 <sect1 id="cairo" xreflabel="Cairo-&cairo-version;">
@@ -47,7 +47,7 @@
       transformation</ulink> (scale, rotation, shear, etc.).
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -104,11 +104,11 @@
       <ulink url="http://www.directfb.org/">DirectFB</ulink>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="libdrm"/>,
-      <xref linkend="LZO"/>,
+      <xref linkend="lzo"/>,
       <xref linkend="mesalib"/>,
       <xref linkend="qt4"/>,
-      <ulink url="http://code.google.com/p/skia/">Skia</ulink> and
-      <ulink url="http://www.valgrind.org">Valgrind</ulink>
+      <ulink url="http://code.google.com/p/skia/">Skia</ulink>, and
+      <xref linkend="valgrind"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -124,7 +124,10 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>CFLAGS="$CFLAGS -ffat-lto-objects" \
+./configure --prefix=/usr    \
+            --disable-static \
+            --enable-tee &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -141,8 +144,24 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <para>
+      <command>CFLAGS="$CFLAGS -ffat-lto-objects"</command>: Fixes building
+      with GCC 4.9.
+    </para>
+
+    <para>
+      <parameter>--enable-tee</parameter>: This switch enables experimental tee
+      surface backend which is required if using system-installed
+      <application>Cairo</application> with Mozilla applications.
+    </para>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <option>--enable-xlib-xcb</option>: This switch enables experimental
+      Xlib/XCB functions used by some window managers.
+    </para>
 
     <para>
       <option>--enable-gl</option>: This switch enables

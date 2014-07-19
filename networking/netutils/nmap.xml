@@ -5,11 +5,12 @@
   %general-entities;
 
   <!ENTITY nmap-download-http "http://nmap.org/dist/nmap-&nmap-version;.tar.bz2">
-  <!ENTITY nmap-download-ftp  "&gentoo-ftp-repo;/nmap-&nmap-version;.tar.bz2">
-  <!ENTITY nmap-md5sum        "fcc80f94ff3adcb11eedf91092ea6f5e">
-  <!ENTITY nmap-size          "7.4 MB">
-  <!ENTITY nmap-buildsize     "124 MB">
-  <!ENTITY nmap-time          "0.9 SBU">
+<!--  <!ENTITY nmap-download-ftp  "&gentoo-ftp-repo;/nmap-&nmap-version;.tar.bz2">-->
+  <!ENTITY nmap-download-ftp  " ">
+  <!ENTITY nmap-md5sum        "5a36ad3a63d5b7ea5514f745a397436a">
+  <!ENTITY nmap-size          "7.6 MB">
+  <!ENTITY nmap-buildsize     "105 MB (additional 1 MB for the tests)">
+  <!ENTITY nmap-time          "0.7 SBU (additional 4.3 SBU for the tests)">
 ]>
 
 <sect1 id="nmap" xreflabel="Nmap-&nmap-version;">
@@ -33,7 +34,7 @@
     and security auditing. It supports ping scanning, port scanning and
     TCP/IP fingerprinting.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -57,6 +58,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch:
+          <ulink url="&patch-root;/nmap-&nmap-version;-fix_tests-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Nmap Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -71,8 +82,8 @@
     <para role="recommended">
       <xref linkend="libpcap"/>,
       <xref linkend="lua"/>,
-      <xref linkend="pcre"/> and
-      <ulink url="http://www.csie.ntu.edu.tw/~cjlin/liblinear/">liblinear</ulink>
+      <xref linkend="pcre"/>, and
+      <xref linkend="liblinear"/>
 <!-- This is not recommended, see: http://nmap.org/svn/libdnet-stripped/NMAP_MODIFICATIONS
       <ulink url="http://code.google.com/p/libdnet/">libdnet</ulink>
 -->
@@ -94,13 +105,25 @@
   <sect2 role="installation">
     <title>Installation of Nmap</title>
 
+    <note>
+      <para>
+        This package does not support parallel build.
+      </para>
+    </note>
+
+    <para>If you wish to run the test suite, run the following command:</para>
+
+<screen><userinput>patch -Np1 -i ../nmap-&nmap-version;-fix_tests-1.patch</userinput></screen>
+
     <para>Install <application>Nmap</application> by running the following
     commands:</para>
 
 <screen><userinput>./configure --prefix=/usr &amp;&amp;
-make</userinput></screen>
+make -j1</userinput></screen>
 
-    <para>This package does not come with a test suite.</para>
+    <para>To test the results, issue: <command>make check</command> as the
+    <systemitem class="username">root</systemitem> user. Tests need a
+    graphical session.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
@@ -117,10 +140,18 @@ make</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>ncat, ndiff, nmap, nmapfe, nmap-update, nping, uninstall_zenmap,
-        xnmap and zenmap</seg>
-        <seg>/usr/lib/python&python2-version;/site-packages/</seg>
-        <seg>/usr/share/ncat, /usr/share/nmap and /usr/share/zenmap</seg>
+        <seg>
+          ncat, ndiff, nmap, nmapfe, nmap-update, nping, uninstall_zenmap,
+          xnmap and zenmap
+        </seg>
+<!--    <seg>/usr/lib/python&python2-version;/site-packages/</seg>-->
+        <seg>
+          None
+        </seg>
+        <seg>
+          /usr/lib/python&python2-majorver;/site-packages/{radialnet,zenmapCore,zenmapGUI},
+          /usr/share/ncat, /usr/share/nmap and /usr/share/zenmap
+        </seg>
       </seglistitem>
     </segmentedlist>
 
@@ -195,8 +226,7 @@ make</userinput></screen>
       <varlistentry id="zenmap">
         <term><command>zenmap</command></term>
         <listitem>
-          <para>is a Python based graphical nmap frontend viewer.
-          <xref linkend='gtk2'/> is a required run time dependency.</para>
+          <para>is a Python based graphical nmap frontend viewer.</para>
           <indexterm zone="nmap zenmap">
             <primary sortas="f-zenmap">zenmap</primary>
           </indexterm>

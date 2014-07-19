@@ -6,10 +6,10 @@
 
   <!ENTITY kdepim-download-http "&kde-download-http;&kde-version;/src/kdepim-&kde-version;.tar.xz">
   <!ENTITY kdepim-download-ftp  "&kde-download-ftp;&kde-version;/src/kdepim-&kde-version;.tar.xz">
-  <!ENTITY kdepim-md5sum        "65b24e7b2afefb97721600884c5e06e2">
-  <!ENTITY kdepim-size          "14.4 MB">
-  <!ENTITY kdepim-buildsize     "318 MB">
-  <!ENTITY kdepim-time          "19.2 SBU">
+  <!ENTITY kdepim-md5sum        "0e9840faba4be79e50dc30bf64f31880">
+  <!ENTITY kdepim-size          "13.8 MB">
+  <!ENTITY kdepim-buildsize     "453 MB">
+  <!ENTITY kdepim-time          "24 SBU">
 ]>
 
 <sect1 id="kdepim" xreflabel="kdepim-&kde-version;">
@@ -34,7 +34,7 @@
     calendar, mail client, newsreader, X.509 certificate manager
     and sticky notes.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -57,38 +57,31 @@
         <para>Estimated build time: &kdepim-time;</para>
       </listitem>
     </itemizedlist>
-    
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing='compact'>
-      <listitem>
-        <para>Required patch: <ulink
-        url="&patch-root;/kdepim-&kde-version;-boost_fix-2.patch"/></para>
-      </listitem>
-    </itemizedlist>
-    
+      
     <bridgehead renderas="sect3">Kdepim Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-    <xref linkend="kdepim-runtime"/>
+      <xref linkend="grantlee"/> and
+      <xref linkend="kdepim-runtime"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-    <xref linkend="nepomuk-widgets"/>,
-    <xref linkend="boost"/> and
-    <xref linkend="libassuan"/>
+      <xref linkend="boost"/>, and
+      <xref linkend="libassuan"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-    <ulink url="ftp://ftp.kde.org/pub/kde/stable/prison/1.0/src/">Prison</ulink>,
-    <ulink url="http://www.gitorious.org/grantlee/pages/Home">Grantlee</ulink> and
-    <ulink url="http://dblatex.sourceforge.net/">dblatex</ulink>
+      <ulink url="&kde-download-http;&kde-version;/src">nepomuk-widgets</ulink>,
+      <ulink url="ftp://ftp.kde.org/pub/kde/stable/prison/1.0/src/">Prison</ulink>,
+      <ulink url="http://dblatex.sourceforge.net/">dblatex</ulink> and
+      <ulink url="http://www.abisource.com/projects/link-grammar/">LinkGrammar</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/kdepim"/>
+      <ulink url="&blfs-wiki;/kdepim"/>
     </para>
 
   </sect2>
@@ -99,13 +92,13 @@
     <para>Install <application>Kdepim</application> by running
     the following commands:</para>
     
-<screen><userinput>patch -Np1 -i ../kdepim-&kde-version;-boost_fix-2.patch &amp;&amp;
-mkdir build &amp;&amp;
-cd build &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
 cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; \
-      -DSYSCONF_INSTALL_DIR=/etc \
-      -DCMAKE_BUILD_TYPE=Release \
-      .. &amp;&amp;
+      -DSYSCONF_INSTALL_DIR=/etc         \
+      -DCMAKE_BUILD_TYPE=Release         \
+      -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>

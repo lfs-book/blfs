@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY pm-utils-download-http "http://pm-utils.freedesktop.org/releases/pm-utils-&pm-utils-version;.tar.gz">
+  <!ENTITY pm-utils-download-ftp  " ">
+  <!ENTITY pm-utils-md5sum        "1742a556089c36c3a89eb1b957da5a60">
+  <!ENTITY pm-utils-size          "204 KB">
+  <!ENTITY pm-utils-buildsize     "1.6 MB">
+  <!ENTITY pm-utils-time          "0.1 SBU">
+]>
+
+<sect1 id="pm-utils" xreflabel="pm-utils-&pm-utils-version;">
+  <?dbhtml filename="pm-utils.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy: igor $</othername>
+    <date>$Date: 2013-07-10 14:18:46 +0200 (Wed, 10 Jul 2013) $</date>
+  </sect1info>
+
+  <title>pm-utils-&pm-utils-version;</title>
+
+  <indexterm zone="pm-utils">
+    <primary sortas="a-pm-utils">pm-utils</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Power Management Utilities</title>
+
+    <para>
+      The <application>Power Management Utilities</application> is a small
+      collection of scripts to suspend and hibernate computer that can be used
+      to run user supplied scripts on suspend and resume.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&pm-utils-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&pm-utils-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &pm-utils-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &pm-utils-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &pm-utils-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &pm-utils-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Power Management Utilities Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="xmlto"/> (to generate man pages)
+    </para>
+
+    <bridgehead renderas="sect4">Optional (runtime)</bridgehead>
+    <para role="optional">
+      <xref linkend="hdparm"/>,
+      <xref linkend="wireless_tools"/>,
+      <ulink url="https://www.kernel.org/pub/software/network/ethtool/">ethtool</ulink> and
+      <!-- both http://www.codon.org.uk/~mjg59/vbetool/ and
+           http://www.srcf.ucam.org/~mjg59/vbetool/ are down -->
+      <ulink url="http://ftp.de.debian.org/debian/pool/main/v/vbetool/">vbetool</ulink>
+      <!-- radeontool, deprecated? -->
+    </para>
+
+    <para condition="html" role="usernotes">User Notes:
+      <ulink url="&blfs-wiki;/pm-utils"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Power Management Utilities</title>
+
+    <para>
+      Install <application>Power Management Utilities</application> by
+      running the following commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --docdir=/usr/share/doc/pm-utils-&pm-utils-version; &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      If you don't have <xref linkend="xmlto"/> installed, copy pregenerated
+      man pages:
+    </para>
+
+<screen role="root"><userinput>install -v -m644 man/*.1 /usr/share/man/man1 &amp;&amp;
+install -v -m644 man/*.8 /usr/share/man/man8 &amp;&amp;
+ln -sv pm-action.8 /usr/share/man/man8/pm-suspend.8 &amp;&amp;
+ln -sv pm-action.8 /usr/share/man/man8/pm-hibernate.8 &amp;&amp;
+ln -sv pm-action.8 /usr/share/man/man8/pm-suspend-hybrid.8</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="configuration">
+    <title>Configuring Power Management Utilities</title>
+
+    <para>
+      Suspend or resume functionality can be easily modified by installing files
+      into the <filename class="directory">/etc/pm/sleep.d</filename> directory.
+      These files, known as hooks, are run when the system is put into a sleep
+      state or resumed. Default hooks are located in <filename
+      class="directory">/usr/lib/pm-utils/sleep.d</filename>, and user hooks
+      should be put in <filename class="directory">/etc/pm/sleep.d</filename>.
+      See the pm-action(8) man page for more information.
+    </para>
+
+    <para>
+      In order to use hibernation with <application>GRUB</application> and a
+      swap partition, you need to add kernel parameter
+      <literal>resume=<replaceable>swap_partition</replaceable></literal> (i.e.
+      <literal>resume=/dev/sda1</literal>) to the kernel line in the
+      <filename>/boot/grub/grub.cfg</filename> configuration file.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          on_ac_power, pm-hibernate, pm-is-supported, pm-powersave, pm-suspend
+          and pm-suspend-hybrid
+        </seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          /etc/pm, /usr/lib/pm-utils and
+          /usr/share/doc/pm-utils-&pm-utils-version;
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="on_ac_power">
+        <term><command>on_ac_power</command></term>
+        <listitem>
+          <para>
+            is a script that determines whether the system is running on AC
+            power (rather than a battery).
+          </para>
+          <indexterm zone="pm-utils on_ac_power">
+            <primary sortas="b-on_ac_power">on_ac_power</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pm-hibernate">
+        <term><command>pm-hibernate</command></term>
+        <listitem>
+          <para>
+            is a symlink to pm-action script that puts the computer into
+            hibernate mode (the system is fully powered off and system state is
+            saved to disk). 
+          </para>
+          <indexterm zone="pm-utils pm-hibernate">
+            <primary sortas="b-pm-hibernate">pm-hibernate</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pm-is-supported">
+        <term><command>pm-is-supported</command></term>
+        <listitem>
+          <para>
+            is a script that checks whether power management features such as
+            suspend and hibernate are supported.
+          </para>
+          <indexterm zone="pm-utils pm-is-supported">
+            <primary sortas="b-pm-is-supported">pm-is-supported</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pm-powersave">
+        <term><command>pm-powersave</command></term>
+        <listitem>
+          <para>
+            is a script that puts the computer into powersaving (low power)
+            mode.
+          </para>
+          <indexterm zone="pm-utils pm-powersave">
+            <primary sortas="b-pm-powersave">pm-powersave</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pm-suspend">
+        <term><command>pm-suspend</command></term>
+        <listitem>
+          <para>
+            is a symlink to pm-action script that puts the computer into suspend
+            mode (most devices are shut down and system state is saved in RAM).
+          </para>
+          <indexterm zone="pm-utils pm-suspend">
+            <primary sortas="b-pm-suspend">pm-suspend</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pm-suspend-hybrid">
+        <term><command>pm-suspend-hybrid</command></term>
+        <listitem>
+          <para>
+            is a symlink to pm-action script that puts the computer into
+            hybrid-suspend mode (the system does everything it needs to
+            hibernate, but suspends instead of shutting down).
+          </para>
+          <indexterm zone="pm-utils pm-suspend-hybrid">
+            <primary sortas="b-pm-suspend-hybrid">pm-suspend-hybrid</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

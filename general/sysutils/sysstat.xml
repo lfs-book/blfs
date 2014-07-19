@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY sysstat-download-http "http://perso.wanadoo.fr/sebastien.godard/sysstat-&sysstat-version;.tar.bz2">
+  <!ENTITY sysstat-download-http "http://perso.wanadoo.fr/sebastien.godard/sysstat-&sysstat-version;.tar.xz">
   <!ENTITY sysstat-download-ftp  " ">
-  <!ENTITY sysstat-md5sum        "688b34df4828a7575c5b44df88d1d910">
-  <!ENTITY sysstat-size          "280 KB">
-  <!ENTITY sysstat-buildsize     "7.1 MB">
-  <!ENTITY sysstat-time          "less than 0.1 SBU">
+  <!ENTITY sysstat-md5sum        "85635dedac6802104a5737195d4effee">
+  <!ENTITY sysstat-size          "284 KB">
+  <!ENTITY sysstat-buildsize     "6.4 MB">
+  <!ENTITY sysstat-time          "0.1 SBU">
 ]>
 
 <sect1 id="sysstat" xreflabel="Sysstat-&sysstat-version;">
@@ -35,7 +35,7 @@
     utility, common to many commercial Unixes, and tools you can schedule via
     cron to collect and historize performance and activity data.</para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -109,15 +109,32 @@ make</userinput></screen>
     <systemitem class="username">root</systemitem>:<systemitem class="groupname">root</systemitem>
     ownership.</para>
 
-    <para>Run <command>./configure --help</command> to see other influential
+    <note><para>Run <command>./configure --help</command> to see other influential
     environment variables you can pass to <command>configure</command>. You may
     want to use the <envar>history</envar> and <envar>compressafter</envar>
-    variables to customize the amount of data files kept on the system.</para>
+    variables to customize the amount of data files kept on the system.</para></note>
 
   </sect2>
 
   <sect2 role="configuration">
     <title>Configuring Sysstat</title>
+
+    <sect3 id="sysstat-config">
+      <title>Config Files</title>
+
+      <para>
+        <filename>/etc/sysconfig/sysstat</filename> and
+        <filename>/etc/sysconfig/sysstat.ioconf</filename>
+      </para>
+
+      <indexterm zone="sysstat sysstat-config">
+        <primary sortas="e-etc-sysconfig-sysstat">/etc/sysconfig/sysstat</primary>
+      </indexterm>
+      <indexterm zone="sysstat sysstat-config">
+        <primary sortas="e-etc-sysconfig-sysstat.ioconf">/etc/sysconfig/sysstat.ioconf</primary>
+      </indexterm>
+
+    </sect3>
 
     <sect3>
      <title>Cron Information</title>
@@ -178,10 +195,13 @@ make</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>cifsiostat, iostat, mpstat, nsfiostat, pidstat, sadf, and sar</seg>
+        <seg>cifsiostat, iostat, mpstat, nfsiostat-sysstat, pidstat, sadf,
+             and sar</seg>
         <seg>None</seg>
-        <seg>/usr/lib/sa, /usr/share/doc/sysstat-&sysstat-version; and
-        /var/log/sa</seg>
+        <seg>/usr/lib/sa, 
+             /usr/share/doc/sysstat-&sysstat-version; and,
+             /var/log/sa
+        </seg>
       </seglistitem>
     </segmentedlist>
 
@@ -223,7 +243,7 @@ make</userinput></screen>
       </varlistentry>
 
       <varlistentry id="nfsiostat">
-        <term><command>nfsiostat</command></term>
+        <term><command>nfsiostat-sysstat</command></term>
         <listitem>
           <para>displays statistics about read and write operations on NFS
           filesystems.</para>

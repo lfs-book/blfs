@@ -4,8 +4,8 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY polkit-kde-agent-download-http "http://mirrors.isc.org/pub/kde/stable/apps/KDE4.x/admin/polkit-kde-agent-1-&polkit-kde-agent-version;.tar.bz2">
-  <!ENTITY polkit-kde-agent-download-ftp  "ftp://ftp.kde.org/pub/kde/stable/apps/KDE4.x/admin/polkit-kde-agent-1-&polkit-kde-agent-version;.tar.bz2">
+  <!ENTITY polkit-kde-agent-download-http "&kde-download-http;apps/KDE4.x/admin/polkit-kde-agent-1-&polkit-kde-agent-version;.tar.bz2">
+  <!ENTITY polkit-kde-agent-download-ftp  "&kde-download-ftp;apps/KDE4.x/admin/polkit-kde-agent-1-&polkit-kde-agent-version;.tar.bz2">
   <!ENTITY polkit-kde-agent-md5sum        "a02d3fddc6270a88bceaf3ba604c92f8">
   <!ENTITY polkit-kde-agent-size          "34 KB">
   <!ENTITY polkit-kde-agent-buildsize     "6.8 MB">
@@ -33,7 +33,7 @@
     authentication prompt so non-priviledged users can authenticate themselves
     for performing administrative tasks in KDE.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,9 +86,11 @@
     commands:</para>
 
 <screen><userinput>patch -Np1 -i ../polkit-kde-agent-1-&polkit-kde-agent-version;-remember_password-1.patch &amp;&amp;
+
 mkdir build &amp;&amp;
-cd build &amp;&amp;
-cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; .. &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -98,16 +100,6 @@ make</userinput></screen>
 <screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
-
-  <!-- The patch has a description in the header
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
-    <para><option>patch -Np1 -i ../polkit-kde...</option>: The patch removes an
-    unimplemented "Remember authorization" checkbox.</para>
-
-  </sect2>
-  -->
 
   <sect2 role="content">
     <title>Contents</title>

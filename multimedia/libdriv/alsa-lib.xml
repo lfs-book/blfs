@@ -6,9 +6,9 @@
 
   <!ENTITY alsa-lib-download-http "&alsa-download-http;/lib/alsa-lib-&alsa-lib-version;.tar.bz2">
   <!ENTITY alsa-lib-download-ftp  "&alsa-download-ftp;/lib/alsa-lib-&alsa-lib-version;.tar.bz2">
-  <!ENTITY alsa-lib-md5sum        "69129a7c37697f81ac092335e9fa452b">
-  <!ENTITY alsa-lib-size          "886 KB">
-  <!ENTITY alsa-lib-buildsize     "18 MB">
+  <!ENTITY alsa-lib-md5sum        "c9e21b88a2b3e6e12ea7ba0f3b271fc3">
+  <!ENTITY alsa-lib-size          "884 KB">
+  <!ENTITY alsa-lib-buildsize     " 16 MB (additional 1 MB for the tests and 26 MB for the docs)">
   <!ENTITY alsa-lib-time          "0.2 SBU">
 ]>
 
@@ -36,7 +36,7 @@
       interface.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,6 +89,17 @@
     <title>Kernel Configuration</title>
 
     <para>
+       If needed, enable the following options in the kernel 
+       configuration and recompile the kernel: 
+    </para>
+
+    <screen><literal>Device Drivers ---&gt;
+  &lt;y/m&gt; Sound card support ---&gt;
+    &lt;y/m&gt; Advanced Linux Sound Architecture ---&gt;
+            Select settings and drivers appropriate for your hardware.
+    &lt; &gt;   Open Sound System (unselected) </literal></screen>
+
+    <para>
       In the Device Drivers &rArr; Sound card support &rArr; Advanced Linux
       Sound Architecture section of the kernel configuration, select the settings
       and drivers appropriate for your hardware.  Ensure that the deprecated Device
@@ -138,7 +149,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>install -v -d -m755 /usr/share/doc/alsa-lib-&alsa-lib-version;/html &amp;&amp;
-install -v -m644 doc/doxygen/html/* /usr/share/doc/alsa-&alsa-lib-version;/html</userinput></screen>
+install -v -m644 doc/doxygen/html/* /usr/share/doc/alsa-lib-&alsa-lib-version;/html</userinput></screen>
 
   </sect2>
 
@@ -171,7 +182,7 @@ install -v -m644 doc/doxygen/html/* /usr/share/doc/alsa-&alsa-lib-version;/html<
         installations. For extra functionality and/or advanced control of your
         sound device, you may need to create additional configuration files.
         For information on the available configuration parameters, visit
-        <ulink url="http://www.alsa-project.org/alsa-doc/doc-php/asoundrc.php"/>.
+        <ulink url="http://www.alsa-project.org/main/index.php/Asoundrc"/>.
       </para>
 
     </sect3>
@@ -191,7 +202,7 @@ install -v -m644 doc/doxygen/html/* /usr/share/doc/alsa-&alsa-lib-version;/html<
           aserver
         </seg>
         <seg>
-          libasound.so
+          libasound.so and several under /usr/lib/alsa-lib/smixer
         </seg>
         <seg>
           /usr/include/alsa,

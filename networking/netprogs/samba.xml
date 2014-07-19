@@ -1,0 +1,913 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY samba-download-http "http://ftp.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
+  <!ENTITY samba-download-ftp  "ftp://ftp.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
+  <!ENTITY samba-md5sum        "f9efc506e08c680d2b79b13be28c959c">
+  <!ENTITY samba-size          "23 MB">
+  <!ENTITY samba-buildsize     "459 MB (additional 396 MB for the quicktest, reputedly up to 500 MB additional for all tests)">
+  <!ENTITY samba-time          "6.2 SBU (additional 4.1 SBU for the quicktest, reputedly up to 110 SBU to run all tests)">
+]>
+
+<sect1 id="samba" xreflabel="Samba-&samba-version;">
+  <?dbhtml filename="samba.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>Samba-&samba-version;</title>
+
+  <indexterm zone="samba">
+    <primary sortas="a-Samba">Samba</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Samba</title>
+
+    <para>The <application>Samba</application> package provides file and print
+    services to SMB/CIFS clients and Windows networking to Linux clients.
+    <application>Samba</application> can also be configured as a Windows Domain
+    Controller replacement, a file/print server acting as a member of a Windows
+    Active Directory domain and a NetBIOS (rfc1001/1002) nameserver (which
+    among other things provides LAN browsing support).</para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>Download (HTTP): <ulink url="&samba-download-http;"/></para>
+      </listitem>
+      <listitem>
+        <para>Download (FTP): <ulink url="&samba-download-ftp;"/></para>
+      </listitem>
+      <listitem>
+        <para>Download MD5 sum: &samba-md5sum;</para>
+      </listitem>
+      <listitem>
+        <para>Download size: &samba-size;</para>
+      </listitem>
+      <listitem>
+        <para>Estimated disk space required: &samba-buildsize;</para>
+      </listitem>
+      <listitem>
+        <para>Estimated build time: &samba-time;</para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Samba Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="python2"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="popt"/>,
+      <xref linkend="linux-pam"/>,
+      <xref linkend="cups"/>,
+      <xref linkend="openldap"/>,
+      <ulink url="https://people.gnome.org/~veillard/gamin/">Gamin</ulink>,
+      <xref linkend="xfsprogs"/>,
+      <xref linkend="mitkrb"/>,
+      <xref linkend="libxslt"/> (used only for documentation),
+      <ulink url="http://tdb.samba.org/">tdb</ulink>,
+      <ulink url="http://ctdb.samba.org/">ctdb</ulink>,
+      <xref linkend="libcap-pam"/>,
+      <ulink url="http://www.nongnu.org/libunwind/">libunwind</ulink>,
+      <xref linkend="avahi"/>,
+      <ulink url="http://www.openafs.org/">OpenAFS</ulink>, and
+      <xref linkend="valgrind"/> (optionally used by the test suite)
+    </para>
+
+    <para condition="html" role="usernotes">User Notes:
+    <ulink url="&blfs-wiki;/samba4"/></para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Samba</title>
+
+    <note>
+      <para>If you wish to run the test suite after the binaries are built,
+      you must add the <option>--enable-socket-wrapper</option> 
+      and <option>--enable-selftest</option> parameters to
+      the <command>configure</command> script below. You may want to run
+      <command>configure</command> with the <option>--help</option> parameter
+      first. There may be other parameters needed to take advantage of
+      optional dependencies.</para>
+    </note>
+
+    <para>Install <application>Samba</application> by running the following
+    commands:</para>
+
+<screen><userinput>./configure                             \
+    --prefix=/usr                       \
+    --sysconfdir=/etc                   \
+    --localstatedir=/var                \
+    --with-piddir=/run/samba            \
+    --with-pammodulesdir=/lib/security  \
+    --without-systemd                   \
+    --enable-fhs                        \
+    --enable-nss-wrapper                &amp;&amp;
+
+make</userinput></screen>
+
+    <para>According to <application>Samba</application> developers, the
+    limitation to 108 characters of the path length of a unix named pipe socket
+    may be the cause of errors, so that over 1/3 of the tests might fail. For
+    this reason, the switch <option>--with-selftest-prefix=/tmp/quick</option>
+    (or another path with small number of characters) can be used with
+    configure. Even so, the 
+    <quote><replaceable>samba3.raw.eas</replaceable></quote> test may fail,
+    apparently for the same reason. If one quicktest fails, it can be disabled.
+    For example, <quote><replaceable>samba3.raw.eas</replaceable></quote> may
+    be disabled with the following command:</para>
+
+<screen><userinput>sed -i "/samba3.blackbox.failure.failure/i \^samba3.raw.eas" selftest/knownfail</userinput></screen>
+
+    <para>To test the results, as the <systemitem
+    class="username">root</systemitem> user, issue: <command>make
+    quicktest</command>.  There are other targets (test, subunit-test)
+    available, but take a very long time (over 100 SBU).</para>
+
+    <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
+
+<screen role="root"><userinput>make install &amp;&amp;
+
+mv -v /usr/lib/libnss_win{s,bind}.so*   /lib                       &amp;&amp;
+ln -v -sf ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so &amp;&amp;
+ln -v -sf ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so    &amp;&amp;
+
+install -v -m644    examples/smb.conf.default /etc/samba &amp;&amp;
+
+mkdir -pv /etc/openldap/schema                        &amp;&amp;
+
+install -v -m644    examples/LDAP/README              \
+                    /etc/openldap/schema/README.LDAP  &amp;&amp;
+                    
+install -v -m644    examples/LDAP/samba*              \
+                    /etc/openldap/schema              &amp;&amp;
+                    
+install -v -m755    examples/LDAP/{get*,ol*} \
+                    /etc/openldap/schema              &amp;&amp;
+
+install -v -m755 -d /usr/share/doc/samba-&samba-version; &amp;&amp;
+
+install -v -m644    lib/ntdb/doc/design.pdf \
+                    /usr/share/doc/samba-&samba-version;</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para><parameter>--enable-fhs</parameter>: Assigns all other file paths in
+    a manner compliant with the Filesystem Hierarchy Standard (FHS).</para>
+
+    <para><parameter>--enable-nss-wrapper</parameter>: Builds the nss-wrapper
+    library.</para>
+
+    <para><parameter>--without-systemd</parameter>: Disable
+    <application>systemd</application> integration, which is not part of
+    LFS/BLFS. If you use <application>systemd</application>, replace by
+    <parameter>--with-systemd</parameter>.</para>
+
+    <para><option>--enable-socket-wrapper</option> and
+    <option>--enable-selftest</option>: These options are required to run
+    the test suite.</para>
+
+    <para><option>--with-selftest-prefix=SELFTEST_PREFIX</option>: This option
+    specify the test suite work directory (default=./st).</para>
+
+    <para><command>mv -v /usr/lib/libnss_win{s,bind}.so* /lib</command>:
+    The nss libraries are installed in /usr/lib by default. Move them to
+    /lib.</para>
+
+    <para><command>ln -v -sf ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so</command>
+    and <command>ln -v -sf ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so</command>:
+    These symlinks are required when applicates build against these libraries.</para>
+
+    <para><command>install -v -m644 examples/LDAP/* /etc/openldap/schema</command>:
+    These commands are used to copy sample Samba schemas to the OpenLDAP
+    <filename class='directory'>schema</filename> directory.</para>
+
+    <para><command>install -v -m644 ../examples/smb.conf.default
+    /etc/samba</command>: This copies a default <filename>smb.conf</filename>
+    file into <filename>/etc/samba</filename>. This sample configuration will
+    not work until you copy it to <filename>/etc/samba/smb.conf</filename> and
+    make the appropriate changes for your installation. See the configuration
+    section for minimum values which must be set.</para>
+
+  </sect2>
+
+  <sect2 role="configuration">
+    <title>Configuring Samba</title>
+
+    <sect3 id="samba-config">
+      <title>Config Files</title>
+
+      <para>/etc/samba/smb.conf</para>
+
+      <indexterm zone="samba samba-config">
+        <primary sortas="e-etc-samba-smb.conf">/etc/samba/smb.conf</primary>
+      </indexterm>
+
+    </sect3>
+
+    <sect3>
+      <title>Printing to SMB Clients</title>
+
+      <para>If you use <application>CUPS</application> for print services,
+      and you wish to print to a printer attached to an SMB client, you
+      need to create an SMB backend device. To create the device, issue the
+      following command as the <systemitem class="username">root</systemitem>
+      user:</para>
+
+<screen role="root"><userinput>ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
+
+    </sect3>
+
+    <sect3>
+      <title>Configuration Information</title>
+
+      <para>Due to the complexity and the many various uses for
+      <application>Samba</application>, complete configuration for all the
+      package's capabilities is well beyond the scope of the BLFS book. This
+      section provides instructions to configure the
+      <filename>/etc/samba/smb.conf</filename> file for two common scenarios.
+      The complete contents of <filename>/etc/samba/smb.conf</filename> will
+      depend on the purpose of <application>Samba</application>
+      installation.</para>
+
+      <note>
+        <para>You may find it easier to copy the configuration parameters shown
+        below into an empty <filename>/etc/samba/smb.conf</filename> file
+        instead of copying and editing the default file as mentioned in the
+        <quote>Command Explanations</quote> section. How you create/edit the
+        <filename>/etc/samba/smb.conf</filename> file will be left up to
+        you. Do ensure the file is only writeable by the
+        <systemitem class="username">root</systemitem> user (mode 644).</para>
+      </note>
+
+      <sect4>
+        <title>Scenario 1: Minimal Standalone Client-Only Installation</title>
+
+        <para>Choose this variant if you only want to transfer files using
+        <command>smbclient</command>, mount Windows shares and print to Windows
+        printers, and don't want to share your files and printers to Windows
+        machines.</para>
+
+        <para>A <filename>/etc/samba/smb.conf</filename> file with the following
+        three parameters is sufficient:</para>
+
+<screen role='root'><literal>[global]
+    workgroup = <replaceable>MYGROUP</replaceable>
+    dos charset = <replaceable>cp850</replaceable>
+    unix charset = <replaceable>ISO-8859-1</replaceable></literal></screen>
+
+        <para>The values in this example specify that the computer belongs to a
+        Windows workgroup named
+        <quote><replaceable>MYGROUP</replaceable></quote>, uses the
+        <quote><replaceable>cp850</replaceable></quote> character set on the
+        wire when talking to MS-DOS and MS Windows 9x, and that the filenames
+        are stored in the <quote><replaceable>ISO-8859-1</replaceable></quote>
+        encoding on the disk. Adjust these values appropriately for your
+        installation. The <quote>unix charset</quote> value must be the same as
+        the output of <command>locale charmap</command> when executed with the
+        <envar>LANG</envar> variable set to your preferred locale, otherwise the
+        <command>ls</command> command may not display correct filenames of
+        downloaded files.</para>
+
+        <para>There is no need to run any <application>Samba</application>
+        servers in this scenario, thus you don't need to install the provided
+        bootscripts.</para>
+
+      </sect4>
+
+      <sect4>
+        <title>Scenario 2: Standalone File/Print Server</title>
+
+        <para>Choose this variant if you want to share your files and printers
+        to Windows machines in your workgroup in addition to the capabilities
+        described in Scenario 1.</para>
+
+        <para>In this case, the <filename>/etc/samba/smb.conf.default</filename>
+        file may be a good template to start from. Also add
+        <quote>dos charset</quote> and <quote>unix charset</quote> parameters
+        to the <quote>[global]</quote> section as described in Scenario 1 in
+        order to prevent filename corruption. For security reasons, you may
+        wish to define
+        <replaceable>path = /home/alice/shared-files</replaceable>,
+        assuming your user name is <replaceable>alice</replaceable> and you
+        only want to share the files in that directory, instead of your entire
+        home. Then, replace <replaceable>homes</replaceable> by
+        <replaceable>shared-files</replaceable> and change also the
+        <quote><literal>comment</literal></quote> if used the configuration
+        file below or the <filename>/etc/samba/smb.conf.default</filename>
+        to create yours.</para>
+
+        <para>The following configuration file creates a separate share for each
+        user's home directory and also makes all printers available to Windows
+        machines:</para>
+
+<screen role='root'><literal>[global]
+    workgroup = <replaceable>MYGROUP</replaceable>
+    dos charset = <replaceable>cp850</replaceable>
+    unix charset = <replaceable>ISO-8859-1</replaceable>
+
+[homes]
+    comment = Home Directories
+    browseable = no
+    writable = yes
+
+[printers]
+    comment = All Printers
+    path = /var/spool/samba
+    browseable = no
+    guest ok = no
+    printable = yes</literal></screen>
+
+        <para>Other parameters you may wish to customize in the
+        <quote>[global]</quote> section include:</para>
+
+<screen role='root'><literal>    server string =
+    security =
+    hosts allow =
+    load printers =
+    log file =
+    max log size =
+    socket options =
+    local master =</literal></screen>
+
+        <para>Reference the comments in the
+        <filename>/etc/samba/smb.conf.default</filename> file for information
+        regarding these parameters.</para>
+
+        <para>Since the <command>smbd</command> and <command>nmbd</command>
+        daemons are needed in this case, install the <filename>samba</filename>
+        bootscript. Be sure to run <command>smbpasswd</command> (with the
+        <option>-a</option> option to add users) to enable and
+        set passwords for all accounts that need
+        <application>Samba</application> access. Using the default
+        <application>Samba</application> passdb backend, any user you attempt
+        to add will also be required to exist in the
+        <filename>/etc/passwd</filename> file.</para>
+
+      </sect4>
+
+      <sect4>
+        <title>Advanced Requirements</title>
+
+        <para>More complex scenarios involving domain control or membership are
+        possible.  Such setups are advanced topics and cannot be adequately
+        covered in BLFS. Many complete books have been written on these topics
+        alone.  Note that in some domain membership scenarios, the
+        <command>winbindd</command> daemon and the corresponding bootscript are
+        needed.</para>
+
+        <para>There is quite a bit of documentation available which covers many
+        of these advanced configurations. Point your web browser to the links
+        below to view some of the documentation included with the
+        <application>Samba</application> package:</para>
+
+        <itemizedlist spacing='compact'>
+          <listitem>
+            <para>Using Samba, 2nd Edition; a popular book published by O'Reilly
+            <ulink url="http://www.samba.org/samba/docs/using_samba/toc.html"/></para>
+          </listitem>
+          <listitem>
+            <para>The Official Samba HOWTO and Reference Guide <ulink
+            url="http://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/"/>
+            </para>
+          </listitem>
+          <listitem>
+            <para>Samba-3 by Example
+            <ulink url="http://www.samba.org/samba/docs/man/Samba-Guide/"/>
+            </para>
+          </listitem>
+        </itemizedlist>
+
+      </sect4>
+
+      <sect4 id="samba-init">
+        <title>Boot Script</title>
+
+        <para>For your convenience, boot scripts have been provided for
+        <application>Samba</application>. There are two included in the
+        <xref linkend="bootscripts"/> package. The first,
+        <filename>samba</filename>, will start the <command>smbd</command>
+        and <command>nmbd</command> daemons needed to provide SMB/CIFS
+        services. The second script, <filename>winbind</filename>, starts
+        the <command>winbindd</command> daemon, used for providing Windows
+        domain services to Linux clients.</para>
+
+        <indexterm zone="samba samba-init">
+          <primary sortas="f-samba">samba</primary>
+        </indexterm>
+
+        <indexterm zone="samba samba-init">
+          <primary sortas="f-winbind">winbind</primary>
+        </indexterm>
+
+        <para>The default <application>Samba</application> installation uses the
+        <systemitem class='username'>nobody</systemitem> user for guest access
+        to the server. This can be overridden by setting the
+        <option>guest account =</option> parameter in the
+        <filename>/etc/samba/smb.conf</filename> file. If you utilize the
+        <option>guest account =</option> parameter, ensure this user exists in
+        the <filename>/etc/passwd</filename> file. To use the default user,
+        issue the following commands as the
+        <systemitem class='username'>root</systemitem> user:</para>
+
+<screen role="root"><userinput>groupadd -g 99 nogroup &amp;&amp;
+useradd -c "Unprivileged Nobody" -d /dev/null -g nogroup \
+    -s /bin/false -u 99 nobody</userinput></screen>
+
+        <para>Install the <filename>samba</filename> script with the following
+        command issued as the <systemitem class="username">root</systemitem>
+        user:</para>
+
+<screen role="root"><userinput>make install-samba</userinput></screen>
+
+        <para>If you also need the <filename>winbindd</filename>
+        script to resolve names from Windows clients, run:</para>
+
+<screen role="root"><userinput>make install-winbindd</userinput></screen>
+
+       </sect4>
+
+    </sect3>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+
+        <seg>cifsdd, dbwrap_tool, eventlogadm, gentest, ldbadd, ldbdel, ldbedit,
+        ldbmodify, ldbrename, ldbsearch, locktest, masktest, ndrdump, net, nmbd,
+        nmblookup, nmblookup4, ntdbbackup, ntdbdump, ntdbrestore, ntdbtool,
+        ntlm_auth, oLschema2ldif, pdbedit, pidl, profiles, regdiff, regpatch,
+        regshell, regtree, rpcclient, samba, samba_dnsupdate, samba_kcc,
+        samba-regedit, samba_spnupdate, samba-tool, samba_upgradedns, sharesec,
+        smbcacls, smbclient, smbclient4, smbcontrol, smbcquotas, smbd, smbget,
+        smbpasswd, smbspool, smbstatus, smbtar, smbta-util, smbtorture, smbtree,
+        tdbbackup, tdbdump, tdbrestore, tdbtool, testparm, wbinfo, and
+        winbindd</seg>
+
+        <seg>libdcerpc-atsvc.so, libdcerpc-binding.so, libdcerpc-samr.so,
+        libdcerpc-server.so, libdcerpc.so, libgensec.so, libndr-krb5pac.so,
+        libndr-nbt.so, libndr.so, libndr-standard.so, libnetapi.so,
+        libnss_winbind.so, libnss_wins.so, libpdb.so, libregistry.so,
+        libsamba-credentials.so, libsamba-hostconfig.so, libsamba-policy.so,
+        libsamba-util.so, libsamdb.so, libsmbclient-raw.so, libsmbclient.so,
+        libsmbconf.so, libsmbldap.so, libsmbsharemodes.so, libtevent-util.so,
+        libtorture.so, libwbclient.so, mit_samba.so, and
+        winbind_krb5_locator.so; the pam_winbind.so and pam_smbpass.so PAM
+        libraries; and assorted character set, filesystem and support module
+        s under /usr/lib/{python&python2-majorver;,samba}</seg>
+        
+        <seg>/etc/samba, /run/samba, /usr/include/samba-4.0,
+        /usr/lib/perl5/vendor_perl/5.x.y/Parse/Pidl/Samba{3,4},
+        /usr/lib/python&python2-majorver;/site-packages/samba, /usr/lib/samba,
+        /usr/share/doc/samba-&samba-version;, /usr/share/samba, and
+        /var/{cache,lib,lock,log,run}/samba</seg>
+
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="eventlogadm">
+        <term><command>eventlogadm</command></term>
+        <listitem>
+          <para>is used to write records to eventlogs from STDIN, add the
+          specified source and DLL eventlog registry entries and display the
+          active eventlog names (from <filename>smb.conf</filename>).</para>
+          <indexterm zone="samba eventlogadm">
+            <primary sortas="b-eventlogadm">eventlogadm</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ldbadd">
+        <term><command>ldbadd</command></term>
+        <listitem>
+          <para>is a command-line utility for adding records to an LDB
+          database.</para>
+          <indexterm zone="samba ldbadd">
+            <primary sortas="b-ldbadd">ldbadd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ldbdel">
+        <term><command>ldbdel</command></term>
+        <listitem>
+          <para>is a command-line program for deleting LDB database
+          records.</para>
+          <indexterm zone="samba ldbdel">
+            <primary sortas="b-ldbdel">ldbdel</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ldbedit">
+        <term><command>ldbedit</command></term>
+        <listitem>
+          <para>allows you to edit LDB databases using your preferred
+          editor.</para>
+          <indexterm zone="samba ldbedit">
+            <primary sortas="b-ldbedit">ldbedit</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ldbmodify">
+        <term><command>ldbmodify</command></term>
+        <listitem>
+          <para>allows you to modify records in an LDB database.</para>
+          <indexterm zone="samba ldbmodify">
+            <primary sortas="b-ldbmodify">ldbmodify</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ldbrename">
+        <term><command>ldbrename</command></term>
+        <listitem>
+          <para>allows you to edit LDB databases using your preferred
+          editor.</para>
+          <indexterm zone="samba ldbrename">
+            <primary sortas="b-ldbrename">ldbrename</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ldbsearch">
+        <term><command>ldbsearch</command></term>
+        <listitem>
+          <para>searches an LDB database for records matching a specified
+          expression.</para>
+          <indexterm zone="samba ldbsearch">
+            <primary sortas="b-ldbsearch">ldbsearch</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="net">
+        <term><command>net</command></term>
+        <listitem>
+          <para>is a tool for administration of
+          <application>Samba</application> and remote CIFS servers, similar
+          to the <command>net</command> utility for DOS/Windows.</para>
+          <indexterm zone="samba net">
+            <primary sortas="b-net">net</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="nmbd">
+        <term><command>nmbd</command></term>
+        <listitem>
+          <para>is the <application>Samba</application>
+          NetBIOS name server.</para>
+          <indexterm zone="samba nmbd">
+            <primary sortas="b-nmbd">nmbd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="nmblookup">
+        <term><command>nmblookup</command></term>
+        <listitem>
+          <para>is used to query NetBIOS names and map
+          them to IP addresses.</para>
+          <indexterm zone="samba nmblookup">
+            <primary sortas="b-nmblookup">nmblookup</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ntlm_auth">
+        <term><command>ntlm_auth</command></term>
+        <listitem>
+          <para>is a tool to allow external access to Winbind's
+          NTLM authentication function.</para>
+          <indexterm zone="samba ntlm_auth">
+            <primary sortas="b-ntlm_auth">ntlm_auth</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pdbedit">
+        <term><command>pdbedit</command></term>
+        <listitem>
+          <para>is a tool used to manage the SAM database.</para>
+          <indexterm zone="samba pdbedit">
+            <primary sortas="b-pdbedit">pdbedit</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="profiles">
+        <term><command>profiles</command></term>
+        <listitem>
+          <para>is a utility that reports and changes SIDs in Windows
+          registry files. It currently only supports Windows NT.</para>
+          <indexterm zone="samba profiles">
+            <primary sortas="b-profiles">profiles</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="rpcclient">
+        <term><command>rpcclient</command></term>
+        <listitem>
+          <para>is used to execute MS-RPC client side functions.</para>
+          <indexterm zone="samba rpcclient">
+            <primary sortas="b-rpcclient">rpcclient</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="sharesec">
+        <term><command>sharesec</command></term>
+        <listitem>
+          <para>manipulates share ACL permissions on SMB file shares.</para>
+          <indexterm zone="samba sharesec">
+            <primary sortas="b-sharesec">sharesec</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbcacls">
+        <term><command>smbcacls</command></term>
+        <listitem>
+          <para>is used to manipulate Windows NT access control lists.</para>
+          <indexterm zone="samba smbcacls">
+            <primary sortas="b-smbcacls">smbcacls</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbclient">
+        <term><command>smbclient</command></term>
+        <listitem>
+          <para>is a SMB/CIFS access utility, similar to FTP.</para>
+          <indexterm zone="samba smbclient">
+            <primary sortas="b-smbclient">smbclient</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbcontrol">
+        <term><command>smbcontrol</command></term>
+        <listitem>
+          <para>is used to control running <command>smbd</command>,
+          <command>nmbd</command> and <command>winbindd</command>
+          daemons.</para>
+          <indexterm zone="samba smbcontrol">
+            <primary sortas="b-smbcontrol">smbcontrol</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbcquotas">
+        <term><command>smbcquotas</command></term>
+        <listitem>
+          <para>is used to manipulate Windows NT quotas on
+          SMB file shares.</para>
+          <indexterm zone="samba smbcquotas">
+            <primary sortas="b-smbcquotas">smbcquotas</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbd">
+        <term><command>smbd</command></term>
+        <listitem>
+          <para>is the main <application>Samba</application> daemon which
+          provides SMB/CIFS services to clients.</para>
+          <indexterm zone="samba smbd">
+            <primary sortas="b-smbd">smbd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbget">
+        <term><command>smbget</command></term>
+        <listitem>
+          <para>is a simple utility with <command>wget</command>-like
+          semantics, that can download files from SMB servers. You can specify
+          the files you would like to download on the command-line.</para>
+          <indexterm zone="samba smbget">
+            <primary sortas="b-smbget">smbget</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbpasswd">
+        <term><command>smbpasswd</command></term>
+        <listitem>
+          <para>changes a user's <application>Samba</application>
+          password.</para>
+          <indexterm zone="samba smbpasswd">
+            <primary sortas="b-smbpasswd">smbpasswd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbspool">
+        <term><command>smbspool</command></term>
+        <listitem>
+          <para>sends a print job to an SMB printer.</para>
+          <indexterm zone="samba smbspool">
+            <primary sortas="b-smbspool">smbspool</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbstatus">
+        <term><command>smbstatus</command></term>
+        <listitem>
+          <para>reports current <application>Samba</application>
+          connections.</para>
+          <indexterm zone="samba smbstatus">
+            <primary sortas="b-smbstatus">smbstatus</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbtar">
+        <term><command>smbtar</command></term>
+        <listitem>
+          <para>is a shell script used for backing up SMB/CIFS shares
+          directly to Linux tape drives or a file.</para>
+          <indexterm zone="samba smbtar">
+            <primary sortas="b-smbtar">smbtar</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="smbtree">
+        <term><command>smbtree</command></term>
+        <listitem>
+          <para>is a text-based SMB network browser.</para>
+          <indexterm zone="samba smbtree">
+            <primary sortas="b-smbtree">smbtree</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tdbbackup">
+        <term><command>tdbbackup</command></term>
+        <listitem>
+          <para>is a tool for backing up or validating the integrity of
+          <application>Samba</application> <filename>.tdb</filename>
+          files.</para>
+          <indexterm zone="samba tdbbackup">
+            <primary sortas="b-tdbbackup">tdbbackup</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tdbdump">
+        <term><command>tdbdump</command></term>
+        <listitem>
+          <para> is a tool used to print the contents of a
+          <application>Samba</application> <filename>.tdb</filename>
+          file.</para>
+          <indexterm zone="samba tdbdump">
+            <primary sortas="b-tdbdump">tdbdump</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tdbtool">
+        <term><command>tdbtool</command></term>
+        <listitem>
+          <para>is a tool which allows simple database manipulation from the
+          command line.</para>
+          <indexterm zone="samba tdbtool">
+            <primary sortas="b-tdbtool">tdbtool</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="testparm">
+        <term><command>testparm</command></term>
+        <listitem>
+          <para>checks an <filename>smb.conf</filename> file for proper
+          syntax.</para>
+          <indexterm zone="samba testparm">
+            <primary sortas="b-testparm">testparm</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="wbinfo">
+        <term><command>wbinfo</command></term>
+        <listitem>
+          <para>queries a running <command>winbindd</command> daemon.</para>
+          <indexterm zone="samba wbinfo">
+            <primary sortas="b-wbinfo">wbinfo</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="winbindd">
+        <term><command>winbindd</command></term>
+        <listitem>
+          <para>resolves names from Windows NT servers.</para>
+          <indexterm zone="samba winbindd">
+            <primary sortas="b-winbindd">winbindd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libnss_winbind">
+        <term><filename class='libraryfile'>libnss_winbind.so</filename></term>
+        <listitem>
+          <para>provides Name Service Switch API functions for resolving names
+          from NT servers.</para>
+          <indexterm zone="samba libnss_winbind">
+            <primary sortas="c-libnss_winbind">libnss_winbind.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libnss_wins">
+        <term><filename class='libraryfile'>libnss_wins.so</filename></term>
+        <listitem>
+          <para>provides API functions for Samba's implementation of the
+          Windows Internet Naming Service.</para>
+          <indexterm zone="samba libnss_wins">
+            <primary sortas="c-libnss_wins">libnss_wins.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libnetapi">
+        <term><filename class='libraryfile'>libnetapi.so</filename></term>
+        <listitem>
+          <para>provides the API functions for the administration tools used
+          for Samba and remote CIFS servers.</para>
+          <indexterm zone="samba libnetapi">
+            <primary sortas="c-libnetapi">libnetapi.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libsmbclient">
+        <term><filename class='libraryfile'>libsmbclient.so</filename></term>
+        <listitem>
+          <para>provides the API functions for the Samba SMB client tools.</para>
+          <indexterm zone="samba libsmbclient">
+            <primary sortas="c-libsmbclient">libsmbclient.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libsmbsharemodes">
+        <term><filename class='libraryfile'>libsmbsharemodes.so</filename></term>
+        <listitem>
+          <para>provides API functions for accessing SMB share modes
+          (locks etc.)</para>
+          <indexterm zone="samba libsmbsharemodes">
+            <primary sortas="c-libsmbsharemodes">libsmbsharemodes.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libwbclient">
+        <term><filename class='libraryfile'>libwbclient.so</filename></term>
+        <listitem>
+          <para>provides API functions for Windows domain client services.</para>
+          <indexterm zone="samba libwbclient">
+            <primary sortas="c-libwbclient">libwbclient.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

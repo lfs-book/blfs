@@ -7,10 +7,10 @@
   <!ENTITY postfix-download-http " ">
   <!ENTITY postfix-download-ftp
            "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-&postfix-version;.tar.gz">
-  <!ENTITY postfix-md5sum        "b2a563b2d5c53462952886e6fc4e4b7b">
-  <!ENTITY postfix-size          "3.7 MB">
-  <!ENTITY postfix-buildsize     "70 MB">
-  <!ENTITY postfix-time          "0.5 SBU">
+  <!ENTITY postfix-md5sum        "56ac1f1a79737c4ac1e24535a122a4a6">
+  <!ENTITY postfix-size          "3.9 MB">
+  <!ENTITY postfix-buildsize     "170 MB">
+  <!ENTITY postfix-time          "0.4 SBU">
 ]>
 
 <sect1 id="postfix" xreflabel="Postfix-&postfix-version;">
@@ -38,7 +38,7 @@
       Internet Service Provider.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,11 +89,11 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="mysql"/>,
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openldap"/>,
       <xref linkend="pcre"/>,
       <xref linkend="postgresql"/>,
-      <xref linkend="sqlite"/> and
+      <xref linkend="sqlite"/>, and
       <ulink url="http://cr.yp.to/cdb.html">CDB</ulink> or
       <ulink url="http://www.corpit.ru/mjt/tinycdb.html">TinyCDB</ulink>
     </para>
@@ -132,6 +132,14 @@ chown -v postfix:postfix /var/mail</userinput></screen>
 
     <sect3>
       <title>Configuring the Build</title>
+
+      <para>
+        Run the following command to enable <application>Postfix</application>
+        to compile against the current version of
+        <application>BerkeleyDB</application>:
+      </para>
+
+<screen><userinput>sed -i "s/DB_VERSION_MAJOR == 5/DB_VERSION_MAJOR >= 5/" src/util/dict_db.c</userinput></screen>
 
       <para>
         The README files are formatted to be read with a pager like
@@ -258,7 +266,7 @@ AUXLIBS='-lssl -lcrypto'</literal></screen>
         <application>Postfix</application> by running the following commands:
       </para>
 
-<screen><userinput>make CCARGS="-DNO_NIS -DUSE_TLS -I/usr/include/openssl/            \
+<screen><userinput>make CCARGS="-DUSE_TLS -I/usr/include/openssl/                     \
              -DUSE_SASL_AUTH -DUSE_CYRUS_SASL -I/usr/include/sasl" \
      AUXLIBS="-lssl -lcrypto -lsasl2"                              \
      makefiles &amp;&amp;
@@ -274,6 +282,8 @@ make</userinput></screen>
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
+
+<!-- dev note: sh postfix-install -non-interactive install_root=<DESTDIR> ... -->
 
 <screen role="root"><userinput>sh postfix-install -non-interactive \
    daemon_directory=/usr/lib/postfix \
@@ -292,12 +302,6 @@ make</userinput></screen>
       <command>make makefiles</command>: This command rebuilds the makefiles
       throughout the source tree to use the options contained in the
       <envar>CCARGS</envar> and <envar>AUXLIBS</envar> variables.
-    </para>
-
-    <para>
-      <parameter>-DNO_NIS</parameter>: This option disables building Network
-      Information Service/Yellow Pages support. The RPC implementation in Glibc
-      (on which NIS/YP depends) is deprecated.
     </para>
 
     <para>
@@ -429,8 +433,8 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          mailq, newaliases, postaliases, postcat, postconf, postdrop, postfix,
-          postkick, postlock, postlog, postmap, postmulti, postqueue, postsuper
+          mailq, newaliases, postalias, postcat, postconf, postdrop, postfix,
+          postkick, postlock, postlog, postmap, postmulti, postqueue, postsuper,
           and sendmail
         </seg>
         <seg>
@@ -440,7 +444,7 @@ EOF</userinput></screen>
           /etc/postfix,
           /usr/lib/postfix,
           /usr/share/doc/postfix-&postfix-version;,
-          /var/lib/postfix and
+          /var/lib/postfix, and
           /var/spool/postfix
         </seg>
       </seglistitem>
@@ -475,15 +479,15 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="postaliases">
-        <term><command>postaliases</command></term>
+      <varlistentry id="postalias">
+        <term><command>postalias</command></term>
         <listitem>
           <para>
             is a utility for <application>Postfix</application> alias database
             maintenance
           </para>
-          <indexterm zone="postfix postaliases">
-            <primary sortas="b-postaliases">postaliases</primary>
+          <indexterm zone="postfix postalias">
+            <primary sortas="b-postalias">postalias</primary>
           </indexterm>
         </listitem>
       </varlistentry>

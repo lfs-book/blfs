@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY file-roller-download-http
-           "&gnome-download-http;/file-roller/3.6/file-roller-&file-roller-version;.tar.xz">
+           "&gnome-download-http;/file-roller/&gnome-minor;/file-roller-&file-roller-version;.tar.xz">
   <!ENTITY file-roller-download-ftp
-           "&gnome-download-ftp;/file-roller/3.6/file-roller-&file-roller-version;.tar.xz">
-  <!ENTITY file-roller-md5sum        "6fdc21dfe47847125191a8ad8633871e">
-  <!ENTITY file-roller-size          "1.5 MB">
-  <!ENTITY file-roller-buildsize     "40 MB">
-  <!ENTITY file-roller-time          "0.4 SBU">
+           "&gnome-download-ftp;/file-roller/&gnome-minor;/file-roller-&file-roller-version;.tar.xz">
+  <!ENTITY file-roller-md5sum        "408e3bfc9616f6688ac7854c512b7dfa">
+  <!ENTITY file-roller-size          "1.4 MB">
+  <!ENTITY file-roller-buildsize     "25 MB">
+  <!ENTITY file-roller-time          "0.3 SBU">
 ]>
 
 <sect1 id="file-roller" xreflabel="File-Roller-&file-roller-version;">
@@ -37,7 +37,7 @@
       jar, compress, lzop and many other archive formats.
     </para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <note>
       <para>
@@ -93,14 +93,14 @@
     <para role="recommended">
       <xref linkend="json-glib"/>,
       <xref linkend="libarchive"/>,
-      <xref linkend="libnotify"/> and
+      <xref linkend="libnotify"/>, and
       <xref linkend="nautilus"/>
     </para>
 
     <bridgehead renderas="sect4">Optional (Runtime)</bridgehead>
     <para role="optional">
       <xref linkend="unrar"/>,
-      <xref linkend="unzip"/> and
+      <xref linkend="unzip"/>, and
       <xref linkend="zip"/>
     </para>
 
@@ -117,9 +117,8 @@
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --libexecdir=/usr/lib \
-            --disable-packagekit \
+<screen><userinput>./configure --prefix=/usr         \
+            --disable-packagekit  \
             --disable-static &amp;&amp;
 make</userinput></screen>
 
@@ -131,7 +130,8 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+chmod -v 0755 /usr/libexec/file-roller/isoinfo.sh</userinput></screen>
 
   </sect2>
 
@@ -149,6 +149,12 @@ make</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
 
+    <para><option>--libexecdir=/usr/lib/</option>: This option
+    will put the package's private programs in
+    <filename class="directory">/usr/lib/file-roller</filename> instead of
+    <filename class="directory">/usr/libexec/file-roller</filename> in
+    accordance with the old version of the FHS used before LFS-7.5.</para>
+
   </sect2>
 
   <sect2 role="content">
@@ -161,14 +167,14 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          file-roller
+          file-roller, isoinfo.sh, and rpm2cpio
         </seg>
         <seg>
-          None
+          /usr/lib/nautilus/extensions-3.0/libnautilus-fileroller.so
         </seg>
         <seg>
-          /usr/lib/file-roller,
-          /usr/share/file-roller and
+          /usr/libexec/file-roller,
+          /usr/share/file-roller, and
           /usr/share/help/*/file-roller
         </seg>
       </seglistitem>

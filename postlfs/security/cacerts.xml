@@ -6,7 +6,7 @@
 
   <!ENTITY certhost              "http://mxr.mozilla.org">
   <!ENTITY certdir               "/mozilla/source/security/nss/lib/ckfw/builtins">
-  <!ENTITY ca-bundle-download    "&certhost;&certdir;/certdata.txt?raw=1">
+  <!ENTITY ca-bundle-download    "&sources-anduin-other-http;/certdata.txt">
   <!ENTITY ca-bundle-size        "1.2 MB">
   <!ENTITY cacerts-buildsize     "1.2 MB">
   <!ENTITY cacerts-time          "less than 0.1 SBU">
@@ -30,7 +30,7 @@
   can also be used by other applications either directly of indirectly through
   <application>openssl</application>.</para>
 
-  &lfs73_checked;
+  &lfs75_checked;
 
   <indexterm zone="cacerts">
     <primary sortas="a-cacerts">Certificate Authority Certificates</primary>
@@ -55,13 +55,20 @@
       </listitem>
     </itemizedlist>
 
+    <note><para>The certfile.txt file above is actually retrieved from <ulink
+    url="https://hg.mozilla.org/releases/mozilla-release/file/default/security/nss/lib/ckfw/builtins/certdata.txt"/>.
+    It is really an HTML file, but the text file can be retrieved indirectly
+    from the HTML file.  The Download URL above automates that process and also
+    adds a line where the date can be extracted as a revision number by the
+    scripts below.</para></note>
+
     <bridgehead renderas="sect3">Certificate Authority Certificates Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required"><xref linkend="openssl"/></para>
 
-    <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional"><xref linkend="wget"/></para>
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended"><xref linkend="wget"/></para>
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url='&blfs-wiki;/cacerts'/></para>
@@ -74,8 +81,8 @@
     form needed by <application>openssl</application>.  As the <systemitem
     class="username">root</systemitem> user:</para>
 
-  <screen role="root"><userinput>cat > /bin/make-cert.pl &lt;&lt; "EOF"
-#!/usr/bin/perl -w
+<screen role="root"><userinput>cat > /bin/make-cert.pl &lt;&lt; "EOF"
+<literal>#!/usr/bin/perl -w
 
 # Used to generate PEM encoded files from Mozilla certdata.txt.
 # Run as ./mkcrt.pl > certificate.crt
@@ -123,7 +130,7 @@ while ( &lt;IN&gt; )
             printf( OUT "%c", oct($b) ) unless $b eq '';
         }
     }
-}
+}</literal>
 EOF
 
 chmod +x /bin/make-cert.pl</userinput></screen>
@@ -134,8 +141,8 @@ chmod +x /bin/make-cert.pl</userinput></screen>
    create this script as the <systemitem class="username">root</systemitem>
    user:</para>
 
-   <screen role="root"><userinput>cat > /bin/make-ca.sh &lt;&lt; "EOF"
-#!/bin/bash
+<screen role="root"><userinput>cat > /bin/make-ca.sh &lt;&lt; "EOF"
+<literal>#!/bin/bash
 # Begin make-ca.sh
 # Script to populate OpenSSL's CApath from a bundle of PEM formatted CAs
 #
@@ -192,7 +199,7 @@ done
 unset CERTBEGINLIST CERTDATA CERTENDLIST certebegin certend
 
 mkdir -p certs
-rm certs/*      # Make sure the directory is clean
+rm -f certs/*      # Make sure the directory is clean
 
 for tempfile in ${TEMPDIR}/certs/*.tmp; do
   # Make sure that the cert is trusted...
@@ -229,7 +236,7 @@ fi
 
 # Finally, generate the bundle and clean up.
 cat certs/*.pem >  ${BUNDLE}
-rm -r "${TEMPDIR}"
+rm -r "${TEMPDIR}"</literal>
 EOF
 
 chmod +x /bin/make-ca.sh</userinput></screen>
@@ -238,8 +245,8 @@ chmod +x /bin/make-ca.sh</userinput></screen>
    Again create this script as the <systemitem
    class="username">root</systemitem> user:</para>
 
-  <screen role="root"><userinput>cat > /bin/remove-expired-certs.sh &lt;&lt; "EOF"
-#!/bin/bash
+<screen role="root"><userinput>cat > /bin/remove-expired-certs.sh &lt;&lt; "EOF"
+<literal>#!/bin/bash
 # Begin /bin/remove-expired-certs.sh
 #
 # Version 20120211
@@ -291,7 +298,7 @@ for cert in $certs; do
      echo "${cert} expired on ${certdate}! Removing..."
      rm -f "${cert}"
   fi
-done
+done</literal>
 EOF
 
 chmod +x /bin/remove-expired-certs.sh</userinput></screen>
@@ -313,16 +320,21 @@ remove-expired-certs.sh certs</userinput></screen>
 
    <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>SSLDIR=/etc/ssl                                     &amp;&amp;
-install -d ${SSLDIR}/certs                          &amp;&amp;
-cp -v certs/*.pem ${SSLDIR}/certs                   &amp;&amp;
-c_rehash                                            &amp;&amp;
-install BLFS-ca-bundle*.crt ${SSLDIR}/ca-bundle.crt &amp;&amp;
+<screen role="root"><userinput>SSLDIR=/etc/ssl                                             &amp;&amp;
+install -d ${SSLDIR}/certs                                  &amp;&amp;
+cp -v certs/*.pem ${SSLDIR}/certs                           &amp;&amp;
+c_rehash                                                    &amp;&amp;
+install BLFS-ca-bundle*.crt ${SSLDIR}/ca-bundle.crt         &amp;&amp;
+ln -sv ../ca-bundle.crt ${SSLDIR}/certs/ca-certificates.crt &amp;&amp;
 unset SSLDIR</userinput></screen>
 
    <para>Finally, clean up the current directory:</para>
 
 <screen><userinput>rm -r certs BLFS-ca-bundle*</userinput></screen>
+
+   <para>After installing or updating certificates, if OpenJDK is installed, 
+   update the certificates for Java using the procedures at <xref linkend='ojdk-certs'/>.</para>
+
 
   </sect2>
 

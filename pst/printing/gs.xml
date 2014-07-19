@@ -7,12 +7,12 @@
   <!ENTITY gs-download-http
   "http://downloads.ghostscript.com/public/ghostscript-&gs-version;.tar.bz2">
   <!ENTITY gs-download-ftp  " ">
-  <!ENTITY gs-md5sum        "46f9ebe40dc52755287b30704270db11">
-  <!ENTITY gs-size          "28 MB">
+  <!ENTITY gs-md5sum        "75f2e8ab8891d052ade9b64eb4eb5294">
+  <!ENTITY gs-size          "30 MB">
   <!ENTITY gs-buildsize
-  "195 MB (includes installing libgs.so and both font tarballs)">
+  "212 MB (includes installing libgs.so, add 5 MB if the fonts are installed)">
   <!ENTITY gs-time
-  "2.5 SBU (includes building and installing libgs.so)">
+  "2.3 SBU (includes building and installing libgs.so)">
 
   <!ENTITY gs-standard-fonts-download
   "&sourceforge-repo;/gs-fonts/ghostscript-fonts-std-8.11.tar.gz">
@@ -44,9 +44,10 @@
 
     <para><application>Ghostscript</application> is a versatile processor
     for PostScript data with the ability to render PostScript to different
-    targets.</para>
+    targets. It used to be part of the cups printing stack, but is no longer
+    used for that.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -71,6 +72,8 @@
     </itemizedlist>
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+
+      <para>If you wish, you can download additional fonts.</para>
 
     <itemizedlist spacing="compact">
       <title>Standard Fonts</title>
@@ -102,7 +105,6 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="expat"/>,
       <xref linkend="freetype2"/>,
       <xref linkend="libjpeg"/>,
       <xref linkend="libpng"/>,
@@ -113,11 +115,11 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="cairo"/>,
-      <xref linkend="fontconfig"/>,
+      <xref linkend="fontconfig"/> (required, if you are installing any
+      suggested font),
       <xref linkend="gtk2"/>,
       <xref linkend="cups"/>,
-      <xref linkend="jasper"/>,
-      <xref linkend="lcms"/>,
+      <xref linkend="lcms"/> (not used by default, nor if lcms2 is present or found),
       <xref linkend="libidn"/>,
       <xref linkend="x-window-system"/> and
       <ulink url="http://packages.debian.org/unstable/source/libpaper">libpaper</ulink>
@@ -153,12 +155,12 @@
       If you have installed these dependencies on your system, remove the
       copies of <application>expat</application>,
       <application>freetype</application>, <application>lcms2</application>,
-      <application>libjpeg</application>, <application>libpng</application>,
-      and <application>libtiff</application>:
+      <application>libjpeg</application>, and <application>libpng</application>:
     </para>
 
-<screen><userinput>rm -rf expat freetype jpeg lcms2 libpng tiff</userinput></screen>
-
+<screen><userinput>sed -i 's/ZLIBDIR=src/ZLIBDIR=$includedir/' configure.ac configure &amp;&amp;
+rm -rf expat freetype lcms2 jpeg libpng</userinput></screen>
+<!--
     <note>
       <para>
         If you have a multicore computer and try to run make with multiple
@@ -167,23 +169,13 @@
         around that problem by simply running make again (eg,
         <command>make -j4 || make -j1</command>).
       </para>
-    </note>
-
-    <note>
-      <para>
-        If you have installed Cups and your printer is <emphasis>not</emphasis>
-        a postscript printer you will need to add
-        <option>--with-install-cups</option> to the configure options below.
-        (This option makes Ghostscript compile and install the gstoraster filter
-        and the gstoraster.convs configuration file that allow Cups to convert a
-        PostScript file to raster.)
-      </para>
-    </note>
+    </note>-->
 
     <para>Compile <application>Ghostscript</application>:</para>
 
-<screen><userinput>rm -rf jasper lcms zlib &amp;&amp;
-./configure --prefix=/usr --enable-dynamic --with-system-libtiff LIBS=-lz &amp;&amp;
+<screen><userinput>rm -rf zlib &amp;&amp;
+./configure --prefix=/usr --disable-compile-inits \
+ --enable-dynamic --with-system-libtiff &amp;&amp;
 make</userinput></screen>
 
     <note>
@@ -204,10 +196,10 @@ make</userinput></screen>
     <para>
       This package does not come with a test suite. However, you may test the
       operation of the newly built <command>gs</command> program by issuing the
-      following command (issue from an X Windows terminal):
+      following command (issue from an X Window System terminal):
     </para>
 
-<screen><userinput>bin/gs -Ilib -dBATCH examples/tiger.eps</userinput></screen>
+<screen><userinput>bin/gs -Ilib -IResource/Init -dBATCH examples/tiger.eps</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -221,12 +213,12 @@ make</userinput></screen>
 install -v -m644 base/*.h /usr/include/ghostscript &amp;&amp;
 ln -v -s ghostscript /usr/include/ps</userinput></screen>
 
-    <para>Now install the documentation:</para>
+    <para>Now make the documentation accessible from the normal place:</para>
 
 <screen role="root"><userinput>ln -sfv ../ghostscript/&gs-version;/doc /usr/share/doc/ghostscript-&gs-version;</userinput></screen>
 
     <para>
-      To finish the installation, unpack all fonts you've downloaded to
+      If you have downloaded any fonts, unpack them to
       <filename class="directory">/usr/share/ghostscript</filename> and ensure
       the ownerships of the files are
       <systemitem class="username">root</systemitem>:
@@ -235,37 +227,35 @@ ln -v -s ghostscript /usr/include/ps</userinput></screen>
       command below for the fonts you wish to install:
     </para>
 
-<screen role="root"><userinput>tar -xvf ../<replaceable>&lt;font-tarball&gt;</replaceable> -C /usr/share/ghostscript --no-same-owner</userinput></screen>
+<screen role="root"><userinput>tar -xvf ../<replaceable>&lt;font-tarball&gt;</replaceable> -C /usr/share/ghostscript --no-same-owner &amp;&amp;
+fc-cache -v /usr/share/ghostscript/fonts/</userinput></screen>
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
-      <command>rm -rf jasper lcms zlib</command>: The
-      <application>Ghostscript</application> build system defaults to using its
-      own version of <ulink url="http://www.openjpeg.org/">OpenJpeg</ulink> for
-      JPEG 2000 files <!-- I can't get it to compile using a system installed
-      version of openjpeg. It seems the ghostscript version has been heavily
-      modified... --> so jasper source can be removed. The default color
-      management system is now <application>lcms2</application> so the
-      <application>lcms</application> source is not needed.
-      <application>Zlib</application> was installed as part of LFS.
+      <command>sed -i 's/ZLIBDIR=src/ZLIBDIR=$includedir/' ... </command>:
+      Fix to build with system <application>zlib</application>.
     </para>
 
     <para>
-      <option>--with-system-libtiff</option>: Remove this option if you've not
-      installed <xref linkend="libtiff"/>.
+      <command>rm -rf zlib</command>:
+      <application>zlib</application> was installed as part of LFS.
     </para>
 
     <para>
-      <parameter>LIBS=-lz</parameter>: Use the <envar>LIBS</envar> variable to
-      tell the linker (ld) to link against the system installed
-      <application>zlib</application>.
+      <parameter>--disable-compile-inits</parameter>: This option makes
+      <command>gs</command> and <filename>libgs.so</filename> slightly smaller.
     </para>
 
     <para>
-      <command>install -v -m644 base/*.h...</command>: Some packages
+      <parameter>--with-system-libtiff</parameter>: Remove this option if
+      you've not installed <xref linkend="libtiff"/>.
+    </para>
+
+    <para>
+      <command>install -v -m644 base/*.h... </command>: Some packages
       (<application>ImageMagick</application> is one) need the
       <application>Ghostscript</application> interface headers in place to link
       to the shared library. These commands install the headers.
@@ -277,8 +267,14 @@ ln -v -s ghostscript /usr/include/ps</userinput></screen>
     </para>
 
     <para>
-      <command>ln -sfv ../ghostscript-&gs-version;/doc ...</command>: This puts
+      <command>ln -sfv ../ghostscript-&gs-version;/doc ... </command>: This puts
       a symbolic link to the documentation where it is expected to be found.
+    </para>
+
+    <para>
+      <option>--disable-cups</option>: this option will save a tiny amount of
+      space by not linking <command>gs</command> and <filename>libgs.so</filename>
+      to the <xref linkend="cups"/> libraries if you have installed those.
     </para>
   </sect2>
 
@@ -291,18 +287,21 @@ ln -v -s ghostscript /usr/include/ps</userinput></screen>
 
       <seglistitem>
         <seg>
-          bdftops, dumphint, dvipdf, eps2eps, fixmswrd.pl, font2c, gs, gsbj,
-          gsc (from soinstall), gsdj, gsdj500, gslj, gslp, gsnd, gsx
-          (from soinstall), lprsetup.sh, pdf2dsc, pdf2ps, pdfopt,
-          pf2afm, pfbtopfa, printafm, ps2ascii, ps2epsi, ps2pdf, ps2pdf12,
-          ps2pdf13, ps2pdf14, ps2pdfwr, ps2ps, ps2ps2, pv.sh, unix-lpr.sh, and
-          wftopfa
+          dvipdf, eps2eps, font2c, gs, gsbj, gsc (from soinstall), gsdj,
+          gsdj500, gslj, gslp, gsnd, gsx (from soinstall), lprsetup.sh,
+          pdf2dsc, pdf2ps, pf2afm, pfbtopfa, pphs, printafm, ps2ascii,
+          ps2epsi, ps2pdf, ps2pdf12, ps2pdf13, ps2pdf14, ps2pdfwr,
+          ps2ps, ps2ps2, unix-lpr.sh, and wftopfa
+          <!-- I don't see bdftops,fixmswrd.pl or pv.sh on my builds [ I don't
+          have any bdf tools from xorg ] but they are still referenced in
+          base/unixinst.mak -->
         </seg>
-        <seg>libgs.so</seg>
+        <seg>libgs.so and
+             /usr/lib/ghostscript/&gs-version;/X11.so</seg>
         <seg>
           /usr/include/ghostscript,
           /usr/lib/ghostscript,
-          /usr/share/ghostscript and
+          /usr/share/ghostscript, and
           /usr/share/doc/ghostscript-&gs-version;
         </seg>
       </seglistitem>

@@ -4,14 +4,16 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
+<!--  <!ENTITY firefox-download-http
+           "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">-->
   <!ENTITY firefox-download-http
-           "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">
+           "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">
   <!ENTITY firefox-download-ftp
            "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">
-  <!ENTITY firefox-md5sum        "4ffb6d1c1a04ca8e3dbca23df09626dd">
-  <!ENTITY firefox-size          "107 MB">
-  <!ENTITY firefox-buildsize     "4.4 GB (46 MB installed) (or 784 MB and 4.2 MB if using Xulrunner)">
-  <!ENTITY firefox-time          "32 SBU (0.2 SBU if using Xulrunner)">
+  <!ENTITY firefox-md5sum        "ac7e8c801ded4e6195182bf54c81acb6">
+  <!ENTITY firefox-size          "137 MB">
+  <!ENTITY firefox-buildsize     "3.7 GB (77 MB installed) (or 943 MB and 6.0 MB if using Xulrunner)">
+  <!ENTITY firefox-time          "44 SBU (0.3 SBU if using Xulrunner)">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
@@ -36,7 +38,7 @@
       <application>Mozilla</application> codebase.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,14 +74,6 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Download (if linking against xulrunner)</bridgehead>
-    <itemizedlist spacing='compact'>
-      <listitem>
-        <para>Recommended Patch: <ulink
-        url="&patch-root;/firefox-&firefox-version;-search_box_fix-1.patch"/></para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">Firefox Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -92,6 +86,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="icu"/>,
       <xref linkend="libevent"/>,
       <xref linkend="libvpx"/>,
       <xref linkend="nspr"/>,
@@ -115,10 +110,16 @@
       <xref linkend="curl"/>,
       <xref linkend="dbus-glib"/>,
       <xref linkend="doxygen"/>,
-      <xref linkend="gnome-vfs"/> and <xref linkend="libgnomeui"/>
-      (for integration with the old version of <application>GNOME</application>),
+      <xref linkend="gst-plugins-base"/> (with
+      <xref linkend="gst-plugins-good"/> and
+      <xref linkend="gst-ffmpeg"/> at runtime), or
+      <xref linkend="gst10-plugins-base"/> (with
+      <xref linkend="gst10-plugins-good"/> and
+      <xref linkend="gst10-libav"/> at runtime),
       <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>,
       <xref linkend="libnotify"/>,
+      <xref linkend="openjdk"/>,
+      <xref linkend="pulseaudio"/>,
       <xref linkend="startup-notification"/>,
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/> and
@@ -165,15 +166,27 @@
 # If you have installed DBus-Glib comment out this line:
 ac_add_options --disable-dbus
 
-# If you have installed wireless-tools comment out this line:
+# If you have installed dbus-glib, and you have installed (or will install)
+# wireless-tools, and you wish to use geolocation web services, comment out
+# this line
 ac_add_options --disable-necko-wifi
 
 # If you have installed libnotify comment out this line:
 ac_add_options --disable-libnotify
 
+# GStreamer is necessary for H.264 video playback in HTML5 Video Player;
+# to be enabled, also remember to set "media.gstreamer.enabled" to "true"
+# in about:config. If you have GStreamer 0.x.y, uncomment this line:
+#ac_add_options --enable-gstreamer
+# or uncomment this line, if you have GStreamer 1.x.y
+#ac_add_options --enable-gstreamer=1.0
+
 # Uncomment these lines if you have installed optional dependencies:
 #ac_add_options --enable-system-hunspell
 #ac_add_options --enable-startup-notification
+
+# Comment out following option if you have PulseAudio installed
+ac_add_options --disable-pulseaudio
 
 # If you have not installed Yasm then uncomment this line:
 #ac_add_options --disable-webm
@@ -191,15 +204,14 @@ ac_add_options --with-system-libevent
 ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
+ac_add_options --with-system-icu
 
-# It is recommended not to touch anything below this line
+# The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
 ac_add_options --enable-application=browser
 
 ac_add_options --disable-crashreporter
-ac_add_options --disable-installer
 ac_add_options --disable-updater
-ac_add_options --disable-debug
 ac_add_options --disable-tests
 
 ac_add_options --enable-optimize
@@ -211,6 +223,7 @@ ac_add_options --enable-official-branding
 ac_add_options --enable-safe-browsing
 ac_add_options --enable-url-classifier
 
+ac_add_options --enable-system-cairo
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
 
@@ -225,33 +238,29 @@ mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
 EOF</userinput></screen>
 
     <para>
-      If you are building against an already installed <application>Xulrunner</application>
-      apply the patch:
-    </para>
-
-<screen><userinput>patch -Np1 -i ../firefox-&firefox-version;-search_box_fix-1.patch
-</userinput></screen>
-
-    <para>
       Compile <application>Firefox</application> by issuing the following
       commands:
     </para>
 
-<screen><userinput>sed -i 's@ ""@@' browser/base/Makefile.in &amp;&amp;
-make -f client.mk</userinput></screen>
+    <note><para>
+      If you are compiling <application>Firefox</application> in chroot, prepend
+      <envar>SHELL=/bin/bash</envar> to the first make command below.
+    </para></note>
+      
+<screen><userinput>make -f client.mk</userinput></screen>
 
     <para>
       This package does not come with a test suite.
     </para>
 
-    <para>
+<!--    <para>
       If you have <emphasis>not</emphasis> linked
       <application>Firefox</application> against an installed
       <application>Xulrunner</application>:
     </para>
 
 <screen><userinput>make -C firefox-build-dir/browser/installer</userinput></screen>
-
+-->
     <para>
       Now, as the <systemitem class="username">root</systemitem> user, if you
       have <emphasis>not</emphasis> linked <application>Firefox</application>
@@ -259,14 +268,15 @@ make -f client.mk</userinput></screen>
       package:
     </para>
 
-<screen role="root"><userinput>rm -rf /usr/lib/firefox-&firefox-version; &amp;&amp;
+<!--<screen role="root"><userinput>rm -rf /usr/lib/firefox-&firefox-version; &amp;&amp;
 mkdir  /usr/lib/firefox-&firefox-version; &amp;&amp;
 
 tar -xvf firefox-build-dir/dist/firefox-&firefox-version;.en-US.linux-$(uname -m).tar.bz2 \
-    -C /usr/lib/firefox-&firefox-version; --strip-components=1 &amp;&amp;
+    -C /usr/lib/firefox-&firefox-version; -\-strip-components=1 &amp;&amp;
 chown -R -v root:root /usr/lib/firefox-&firefox-version; &amp;&amp;
 
-ln -sfv ../lib/firefox-&firefox-version;/firefox /usr/bin &amp;&amp;
+ln -sfv ../lib/firefox-&firefox-version;/firefox /usr/bin &amp;&amp;-->
+<screen role="root"><userinput>make -f client.mk install INSTALL_SDK= &amp;&amp;
 
 mkdir -pv /usr/lib/mozilla/plugins &amp;&amp;
 ln -sfv ../mozilla/plugins /usr/lib/firefox-&firefox-version;</userinput></screen>
@@ -284,38 +294,15 @@ ln -sfv ../xulrunner-&firefox-version; /usr/lib/firefox-&firefox-version;/xulrun
 mkdir -pv /usr/lib/mozilla/plugins &amp;&amp;
 ln -sfv ../mozilla/plugins /usr/lib/firefox-&firefox-version;</userinput></screen>
 
-    <bridgehead renderas="sect3" id="npapi-firefox" xreflabel="Firefox">
-      NPAPI Headers
-    </bridgehead>
-
-    <para>
-      The above instructions just install the parts you need to run
-      <application>Firefox</application>. If you want to compile
-      <xref linkend="gnash"/>, the open source version of Flash, copy some
-      headers that Gnash needs into /usr/include, as the
-      <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>rm -rf /usr/include/npapi &amp;&amp;
-mkdir -v /usr/include/npapi &amp;&amp;
-cp -v dom/plugins/base/*.h /usr/include/npapi</userinput></screen>
-
-    <note>
-      <para>
-        You don't need to install the headers if you have built
-        <application>Firefox</application> against
-        <application>Xulrunner</application>.
-      </para>
-    </note>
-
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i 's@ ""@@' browser/base/Makefile.in</command>: This sed
-      removes an unprintable control character from the title bar.
+      <command>ac_add_options --disable-necko-wifi</command>: If you remove
+      this command, you will enable opt-in support for geolocation web services
+      when you are using a wifi connection.
     </para>
 
     <para>
@@ -324,20 +311,6 @@ cp -v dom/plugins/base/*.h /usr/include/npapi</userinput></screen>
       configuration settings to the <command>configure</command> command.
       <command>make</command> uses the <filename>client.mk</filename> file to
       get initial configuration and setup parameters.
-    </para>
-
-    <para>
-      <command>make -C firefox-build-dir/browser/installer</command>: this
-      creates a <application>Firefox</application> tarball similar to the ones
-      you can download from Mozilla.
-    </para>
-
-    <para>
-      <command>tar -xfv firefox-build-dir/dist ...</command>: This untars
-      <application>Firefox</application> in /usr/lib. The
-      <option>--strip-components=1</option> option removes the leading
-      'firefox' directory from the filenames, allowing us to untar it
-      into a versioned directory.
     </para>
 
      <para>
@@ -394,7 +367,7 @@ cp -v dom/plugins/base/*.h /usr/include/npapi</userinput></screen>
 mkdir -pv /usr/share/pixmaps &amp;&amp;
 
 cat &gt; /usr/share/applications/firefox.desktop &lt;&lt; "EOF" &amp;&amp;
-[Desktop Entry]
+<literal>[Desktop Entry]
 Encoding=UTF-8
 Name=Firefox Web Browser
 Comment=Browse the World Wide Web
@@ -405,7 +378,7 @@ Type=Application
 Icon=firefox
 Categories=GNOME;GTK;Network;WebBrowser;
 MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
-StartupNotify=true
+StartupNotify=true</literal>
 EOF
 
 ln -sfv /usr/lib/firefox-&firefox-version;/browser/icons/mozicon128.png \
@@ -419,7 +392,7 @@ ln -sfv /usr/lib/firefox-&firefox-version;/browser/icons/mozicon128.png \
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
-      <segtitle>Installed Directories</segtitle>
+      <segtitle>Installed Directory</segtitle>
 
       <seglistitem>
         <seg>
@@ -431,7 +404,6 @@ ln -sfv /usr/lib/firefox-&firefox-version;/browser/icons/mozicon128.png \
           <filename class="directory">/usr/lib/firefox-&firefox-version;</filename>
         </seg>
         <seg>
-          /usr/include/npapi and
           /usr/lib/firefox-&firefox-version;
         </seg>
       </seglistitem>

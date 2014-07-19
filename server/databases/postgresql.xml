@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY postgresql-download-http " ">
-  <!ENTITY postgresql-download-ftp  "ftp://ftp5.us.postgresql.org/pub/PostgreSQL/source/v&postgresql-version;/postgresql-&postgresql-version;.tar.bz2">
-  <!ENTITY postgresql-md5sum        "6ee5bb53b97da7c6ad9cb0825d3300dd">
-  <!ENTITY postgresql-size          "16.0 MB">
-  <!ENTITY postgresql-buildsize     "181 MB (additional 151 MB to run the testsuite)">
-  <!ENTITY postgresql-time          "1.4 SBU (additional 0.2 SBU to run the testsuite)">
+  <!ENTITY postgresql-download-http "http://ftp.postgresql.org/pub/source/v&postgresql-version;/postgresql-&postgresql-version;.tar.bz2">
+  <!ENTITY postgresql-download-ftp  "ftp://ftp.postgresql.org/pub/source/v&postgresql-version;/postgresql-&postgresql-version;.tar.bz2">
+  <!ENTITY postgresql-md5sum        "d0a41f54c377b2d2fab4a003b0dac762">
+  <!ENTITY postgresql-size          "16 MB">
+  <!ENTITY postgresql-buildsize     "184 MB (additional 169 MB to run the testsuite)">
+  <!ENTITY postgresql-time          "1.5 SBU (additional 0.2 SBU to run the testsuite)">
 ]>
 
 <sect1 id="postgresql" xreflabel="PostgreSQL-&postgresql-version;">
@@ -33,13 +33,7 @@
     object-relational database management system (ORDBMS), derived
     from the Berkeley Postgres database management system.</para>
 
-    <para>There may be a more recent release available from the
-    <application>PostgreSQL</application> home page. You can check
-    <ulink url="http://www.postgresql.org/"/> and probably use the
-    existing BLFS instructions. Note that versions other than the one shown
-    in the download URLs have not been tested in a BLFS environment.</para>
-
-    &lfs73_built;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -66,21 +60,25 @@
     <bridgehead renderas="sect3">PostgreSQL Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional"><xref linkend="python2"/>,
-    <xref linkend="tcl"/>,
-    <xref linkend="openssl"/>,
-    <xref linkend="libxml2"/>,
-    <xref linkend="libxslt"/>,
-    <xref linkend="openldap"/>,
-    <xref linkend="linux-pam"/>,
-    <xref linkend="mitkrb"/> and
-    <ulink url="http://developer.apple.com/networking/bonjour/">Bonjour</ulink></para>
+    <para role="optional">
+      <xref linkend="python2"/>,
+      <xref linkend="tcl"/>,
+      <xref linkend="openssl"/>,
+      <xref linkend="libxml2"/>,
+      <xref linkend="libxslt"/>,
+      <xref linkend="openldap"/>,
+      <xref linkend="linux-pam"/>,
+      <xref linkend="mitkrb"/> and
+      <ulink url="http://developer.apple.com/networking/bonjour/">Bonjour</ulink>
+    </para>
 
     <bridgehead renderas="sect4">Optional (To Regenerate Documentation)</bridgehead>
-    <para role="optional"><xref linkend="sgml-dtd"/>,
-    <xref linkend="docbook-dsssl"/>,
-    <xref linkend="openjade"/>, and
-    <xref linkend="perl-sgmlspm"/></para>
+    <para role="optional">
+      <xref linkend="sgml-dtd"/>,
+      <xref linkend="docbook-dsssl"/>,
+      <xref linkend="openjade"/>, and
+      <xref linkend="perl-sgmlspm"/>
+    </para>
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/postgresql"/></para>
@@ -93,19 +91,44 @@
     <para>Install <application>PostgreSQL</application> with the
     following commands: </para>
 
-<screen><userinput>sed -e "s@DEFAULT_PGSOCKET_DIR  \"/tmp\"@DEFAULT_PGSOCKET_DIR  \"/run/postgresql\"@" \
-    -i src/include/pg_config_manual.h &amp;&amp;
+<screen><userinput>sed -i '/DEFAULT_PGSOCKET_DIR/s@/tmp@/run/postgresql@' src/include/pg_config_manual.h &amp;&amp;
+sed -i -e 's@psql\\"@&amp; -h /tmp@' src/test/regress/pg_regress{,_main}.c &amp;&amp;
+sed -i -e 's@gres\\"@&amp; -k /tmp@' src/test/regress/pg_regress.c &amp;&amp;
 ./configure --prefix=/usr          \
             --enable-thread-safety \
             --docdir=/usr/share/doc/postgresql-&postgresql-version; &amp;&amp;
 make</userinput></screen>
 
+    <warning>
+      <para>This package contains a known security hole that allows other
+      users on the same machine to gain access to an operating system account
+      while it is doing "make check": CVE-2014-0067. Until the fix is available,
+      users are strongly advised not to run "make check" on machines where
+      untrusted users have accounts. </para>
+    </warning>
+
     <para>To test the results, issue: <command>make check</command>.</para>
+
+    <para>There are a number of programs in the
+    <filename class="directory">contrib/</filename> directory. If you are going
+    to run this installation as a server and wish to build some of them, enter
+    <command>make -C contrib</command> or
+    <command>make -C contrib/<replaceable>&lt;SUBDIR-NAME&gt;</replaceable></command> for each subdirectory.
+    </para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install      &amp;&amp;
 make install-docs</userinput></screen>
+
+    <para>If you made any of the <filename class="directory">contrib/</filename>
+    programs, as the <systemitem class="username">root</systemitem> user:</para>
+
+<screen role="nodump/"><userinput>make -C contrib/<replaceable>&lt;SUBDIR-NAME&gt;</replaceable> install</userinput></screen>
+
+    <para><emphasis>If you only intend to use <application>PostgreSQL</application>
+    as a client to connect to a server on another machine, your installation is
+    complete and you should not run the remaining commands.</emphasis></para>
 
     <!-- 'Upgrading' seems to only ever exist in the docs for *previous* version -->
     <note>
@@ -153,9 +176,11 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -e ...</command>: This sed changes server socket location
+      <command>sed -i ...</command>: These seds change server socket location
       from <filename class="directory">/tmp</filename> to
-      <filename class="directory">/run/postgresql</filename>.
+      <filename class="directory">/run/postgresql</filename> and fix up the
+      regression tests to use <filename class="directory">/tmp</filename> so
+      that they can work reliably.
     </para>
 
     <para><parameter>--docdir=/usr/share/doc/postgresql-&postgresql-version;</parameter>:
@@ -163,7 +188,7 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
 
     <para><parameter>--enable-thread-safety</parameter>: This switch makes the
     client libraries thread-safe by allowing concurrent threads in
-    <filename class='libraryfile'>libpq</filename> and ECPG programs to safely
+    <filename class="libraryfile">libpq</filename> and ECPG programs to safely
     control their private connection handles.</para>
 
     <para><option>--with-openssl</option>: build with support for
@@ -249,11 +274,13 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
       <seglistitem>
         <seg>clusterdb, createdb, createlang, createuser, dropdb, droplang,
         dropuser, ecpg, initdb, pg_basebackup, pg_config, pg_controldata, pg_ctl,
-        pg_dump, pg_dumpall, pg_resetxlog, pg_restore, pltcl_delmod,
+        pg_dump, pg_dumpall, pg_isready, pg_receivexlog, pg_resetxlog, pg_restore, pltcl_delmod,
         pltcl_listmod, pltcl_loadmod, postgres, postmaster, psql,
-        reindexdb, and vacuumdb</seg>
+        reindexdb, vacuumdb, and optionally (in contrib/) oid2name, pg_archivecleanup,
+        pgbench, pg_standby, pg_test_fsync, pg_test_timing, pg_upgrade, pg_xlogdump,
+        vacuumlo,</seg>
         <seg>libecpg.{so,a}, libecpg_compat.{so,a}, libpgport.a, libpgtypes.{so,a},
-        libpq.{so,a}, and various charset (and optionally, programming language)
+        libpq.{so,a}, various charset modules, and optionally programming language
         modules.</seg>
         <seg>/srv/pgsql, /usr/include/libpq, /usr/include/postgresql,
         /usr/lib/postgresql, /usr/share/doc/postgresql-&postgresql-version;, and
@@ -362,6 +389,27 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
         </listitem>
       </varlistentry>
 
+      <varlistentry id="oid2name">
+        <term><command>oid2name</command></term>
+        <listitem>
+          <para>resolves OIDs (Object IDs) and file nodes in a PostgreSQL data
+          directory.</para>
+          <indexterm zone="postgresql oid2name">
+            <primary sortas="b-oid2name">oid2name</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pg_archivecleanup">
+        <term><command>pg_archivecleanup</command></term>
+        <listitem>
+          <para>clean up PostgreSQL WAL (write-ahead log) archive files.</para>
+          <indexterm zone="postgresql pg_archivecleanup">
+            <primary sortas="b-pg_archivecleanup">pg_archivecleanup</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="pg_basebackup">
         <term><command>pg_basebackup</command></term>
         <listitem>
@@ -428,6 +476,16 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
         </listitem>
       </varlistentry>
 
+      <varlistentry id="pg_isready">
+        <term><command>pg_isready</command></term>
+        <listitem>
+          <para>check the connection status of a PostgreSQL server.</para>
+          <indexterm zone="postgresql pg_isready">
+            <primary sortas="b-pg_isready">pg_isready</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="pg_resetxlog">
         <term><command>pg_resetxlog</command></term>
         <listitem>
@@ -450,13 +508,75 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
         </listitem>
       </varlistentry>
 
+      <varlistentry id="pg_standby">
+        <term><command>pg_standby</command></term>
+        <listitem>
+          <para>supports the creation of a PostgreSQL warm standby
+          server.</para>
+          <indexterm zone="postgresql pg_standby">
+            <primary sortas="b-pg_standby">pg_standby</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pg_test_fsync">
+        <term><command>pg_test_fsync</command></term>
+        <listitem>
+          <para>determine fastest wal_sync method for PostgreSQL.</para>
+          <indexterm zone="postgresql pg_test_fsync">
+            <primary sortas="b-pg_test_fsync">pg_test_fsync</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pg_test_timing">
+        <term><command>pg_test_timing</command></term>
+        <listitem>
+          <para>measure timing overhead.</para>
+          <indexterm zone="postgresql pg_test_timing">
+            <primary sortas="b-pg_test_timing">pg_test_timing</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pg_upgrade">
+        <term><command>pg_upgrade</command></term>
+        <listitem>
+          <para>upgrade a PostgreSQL server instance.</para>
+          <indexterm zone="postgresql pg_upgrade">
+            <primary sortas="b-pg_upgrade">pg_upgrade</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pg_xlogdump">
+        <term><command>pg_xlogdump</command></term>
+        <listitem>
+          <para>display a human-readable rendering of the write-ahead log of a
+          PostgreSQL database cluster.</para>
+          <indexterm zone="postgresql pg_xlogdump">
+            <primary sortas="b-pg_xlogdump">pg_xlogdump</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pgbench">
+        <term><command>pgbench</command></term>
+        <listitem>
+          <para>run a benchmark test on PostgreSQL.</para>
+          <indexterm zone="postgresql pgbench">
+            <primary sortas="b-pgbench">pgbench</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="pltcl_delmod">
         <term><command>pltcl_delmod</command></term>
         <listitem>
           <para>is a support script used to delete a module from a
           PL/<application>Tcl</application> table. The command
           requires the <ulink
-          url="http://gborg.postgresql.org/project/pgtcl/">Pgtcl</ulink>
+          url="http://flightaware.github.io/Pgtcl/">Pgtcl</ulink>
           package to be installed also.</para>
           <indexterm zone="postgresql pltcl_delmod">
             <primary sortas="b-pltcl_delmod">pltcl_delmod</primary>
@@ -545,6 +665,16 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
         </listitem>
       </varlistentry>
 
+      <varlistentry id="vacuumlo">
+        <term><command>vacuumlo</command></term>
+        <listitem>
+          <para>remove orphaned large objects from a PostgreSQL database.</para>
+          <indexterm zone="postgresql vacuumlo">
+            <primary sortas="b-vacuumlo">vacuumlo</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libecpg">
         <term><filename class='libraryfile'>libecpg.{so,a}</filename></term>
         <listitem>
@@ -558,7 +688,7 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
       <varlistentry id="libecpg_compat">
         <term><filename class='libraryfile'>libecpg_compat.{so,a}</filename></term>
         <listitem>
-          <para>is the ecpg compatability library.</para>
+          <para>is the ecpg compatibility library.</para>
           <indexterm zone="postgresql libecpg_compat">
             <primary sortas="c-libecpg_compat">libecpg_compat.{so,a}</primary>
           </indexterm>

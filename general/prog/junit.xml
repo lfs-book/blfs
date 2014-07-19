@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY junit-download-http "&sourceforge-repo;/junit/junit&junit-version;.zip">
+  <!ENTITY junit-download-http "https://launchpad.net/debian/+archive/primary/+files/junit4_&junit-version;.orig.tar.gz">
   <!ENTITY junit-download-ftp  " ">
-  <!ENTITY junit-md5sum        "0666bd1b9a7296ff2b6ee478c82a516b">
+  <!ENTITY junit-md5sum        "b4d163832583dcec8bedb5427c795cc4">
   <!ENTITY junit-size          "1.7 MB">
-  <!ENTITY junit-buildsize     "15 MB">
-  <!ENTITY junit-time          "less than 0.1 SBU">
+  <!ENTITY junit-buildsize     "34 MB">
+  <!ENTITY junit-time          "0.1 SBU">
 ]>
 
 <sect1 id="junit" xreflabel="JUnit-&junit-version;">
@@ -35,7 +35,7 @@
     assertions for testing expected results, test fixtures for sharing common
     test data, and test runners for running tests.</para>
 
-    &lfs72_checked;
+    &lfs75_checked; 
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -59,10 +59,24 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required file: <ulink 
+             url="http://hamcrest.googlecode.com/files/hamcrest-&hamcrest-version;.tgz">
+                  http://hamcrest.googlecode.com/files/hamcrest-&hamcrest-version;.tgz </ulink>
+        </para>
+      </listitem>
+    </itemizedlist>
+ 
     <bridgehead renderas="sect3">JUnit Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required"><xref linkend="unzip"/></para>
+    <para role="required">
+      <xref linkend="apache-ant"/> and
+      <xref linkend="unzip"/>
+    </para>
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/junit"/></para>
@@ -72,30 +86,44 @@
   <sect2 role="installation">
     <title>Installation of JUnit</title>
 
-    <para>Install <application>JUnit</application> by running the following
+<!--    <para>To do a full build of JUnit from source, <xref linkend='apache-ant'/>
+    is required.  However JUnit is useful in building Apache Ant.  Copy the
+    JUnit-&junit-version; jar file to get started.  Then come back to build
+    from source, if desired.</para>
+
+    <para>Install the <application>JUnit</application> jar file by running the following
     commands as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>install -v -m755 -d /usr/share/{,doc/}junit-&junit-version; &amp;&amp;
-chown -R root:root .                             &amp;&amp;
-cp -v -R junit* org  /usr/share/junit-&junit-version;       &amp;&amp;
-cp -v -R *.html *doc /usr/share/doc/junit-&junit-version;</userinput></screen>
+<screen role="root"><userinput>install -v -m755 -d /usr/share/java &amp;&amp;
+cp -v junit-&junit-version;.jar /usr/share/java</userinput></screen>
 
-    <para>Add the <filename
-    class='libraryfile'>junit-&junit-version;.jar</filename> and <filename
-    class='directory'>/usr/share/junit-&junit-version;</filename> directory to
-    your system <envar>CLASSPATH</envar> environment variable:</para>
+    <para>At this point, make sure Apache-Ant is installed and then continue
+    with the source build and installation.  From the directory created when
+    extracting the JUnit sources, place the required hamcrest jar files where
+    needed and build the package:</para> 
+-->
+    <para>Place the required hamcrest jar files where needed and build the
+    package:</para>
 
-<screen><userinput>export CLASSPATH=$CLASSPATH:\
-   /usr/share/junit-&junit-version;/junit-&junit-version;.jar:/usr/share/junit-&junit-version;</userinput></screen>
+<screen><userinput>tar -xf ../hamcrest-&hamcrest-version;.tgz                              &amp;&amp;
+cp -v hamcrest-&hamcrest-version;/hamcrest-core-&hamcrest-version;{,-sources}.jar lib/ &amp;&amp;
+ant dist</userinput></screen>
 
-    <para>To run the <application>JUnit</application> regression self-tests,
-    you'll need to have <xref linkend="openjdk"/>,<!-- <xref linkend="jdk"/>,--> or
-    <ulink url="http://jikes.sourceforge.net/">Jikes</ulink> installed and the
-    <envar>CLASSPATH</envar> environment variable updated. Then, as an
-    unprivileged user, issue:</para>
+    <para>Testing is automatically done as a part of the build step.</para>
 
-<screen><userinput>java org.junit.runner.JUnitCore org.junit.tests.AllTests</userinput></screen>
+    <para>Install the files in the final location as the 
+    <systemitem class="username">root</systemitem> user:</para>
+    
+<screen role="root"><userinput>install -v -m755 -d /usr/share/{doc,java}/junit-&junit-version; &amp;&amp;
+chown -R root:root .                                 &amp;&amp;
 
+cp -v -R junit*/javadoc/*             /usr/share/doc/junit-&junit-version;  &amp;&amp;
+cp -v junit*/junit*.jar               /usr/share/java/junit-&junit-version; &amp;&amp;
+cp -v hamcrest-&hamcrest-version;/hamcrest-core*.jar /usr/share/java/junit-&junit-version;</userinput></screen>
+    
+    <para>Finally, update the <envar>CLASSPATH</envar> variable:</para>
+
+<screen><userinput>export CLASSPATH=$CLASSPATH:/usr/share/java/junit-&junit-version;</userinput></screen>
   </sect2>
 
   <sect2 role="content">
@@ -103,14 +131,14 @@ cp -v -R *.html *doc /usr/share/doc/junit-&junit-version;</userinput></screen>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Libraies</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>None</seg>
-        <seg>junit-&junit-version;.jar</seg>
-        <seg>/usr/share/junit-&junit-version;,
-        /usr/share/doc/junit-&junit-version;</seg>
+        <seg>hamcrest-core and junit jar files</seg>
+        <seg>/usr/share/doc/junit-&junit-version; and
+             /usr/share/java/junit-&junit-version;</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -120,7 +148,7 @@ cp -v -R *.html *doc /usr/share/doc/junit-&junit-version;</userinput></screen>
       <?dbhtml list-presentation="table"?>
 
       <varlistentry id="junit.jar">
-        <term><filename class='libraryfile'>junit-&junit-version;.jar</filename></term>
+        <term><filename class='libraryfile'>junit jar files</filename></term>
         <listitem>
           <para>contains java classes to support the xUnit framework testing
           architecture.</para>

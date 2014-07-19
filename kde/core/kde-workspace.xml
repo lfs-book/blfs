@@ -4,15 +4,16 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY kde-workspace-download-http "&kde-download-http;&kde-version;/src/kde-workspace-&kde-version;.tar.xz">
-  <!ENTITY kde-workspace-download-ftp  "&kde-download-ftp;&kde-version;/src/kde-workspace-&kde-version;.tar.xz">
-  <!ENTITY kde-workspace-md5sum        "eee6f7ac3bcd6042d594c4d73dc8daef">
-  <!ENTITY kde-workspace-size          "13.6 MB">
-  <!ENTITY kde-workspace-buildsize     "333 MB">
-  <!ENTITY kde-workspace-time          "20 SBU">
+  <!ENTITY ws-dir "4.13.2">
+  <!ENTITY kde-workspace-download-http "&kde-download-http;&ws-dir;/src/kde-workspace-&kde-workspace-version;.tar.xz">
+  <!ENTITY kde-workspace-download-ftp  "&kde-download-ftp;&ws-dir;/src/kde-workspace-&kde-workspace-version;.tar.xz">
+  <!ENTITY kde-workspace-md5sum        "712c60b73bc24649fee8ad832d71f029">
+  <!ENTITY kde-workspace-size          "12.9 MB">
+  <!ENTITY kde-workspace-buildsize     "391 MB">
+  <!ENTITY kde-workspace-time          "16.4 SBU">
 ]>
 
-<sect1 id="kde-workspace" xreflabel="kde-workspace-&kde-version;">
+<sect1 id="kde-workspace" xreflabel="kde-workspace-&kde-workspace-version;">
   <?dbhtml filename="kde-workspace.html"?>
 
   <sect1info>
@@ -20,7 +21,7 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>Kde-workspace-&kde-version;</title>
+  <title>Kde-workspace-&kde-workspace-version;</title>
 
   <indexterm zone="kde-workspace">
     <primary sortas="a-kde-workspace">kde-workspace</primary>
@@ -36,7 +37,7 @@
       window manager, and Plasma, which provides the workspace interface.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,19 +76,19 @@
     <para role="required">
       <xref linkend="kactivities"/>,
       <xref linkend="qimageblitz"/>,
-      <xref linkend="xcb-util-image"/>, and
-      <xref linkend="xcb-util-renderutil"/>
+      <xref linkend="xcb-util-image"/>,
+      <xref linkend="xcb-util-renderutil"/>,
+      <xref linkend="xcb-util-keysyms"/> and
+      <xref linkend="xcb-util-wm"/>      
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="dbus"/>,
       <xref linkend="kdepimlibs"/>,
-      <xref linkend="nepomuk-core"/>,
       <xref linkend="boost"/>,
       <xref linkend="freetype2"/>,
-      <xref linkend="pciutils"/> and
-      <xref linkend="systemd"/> (for Logind)
+      <xref linkend="pciutils"/>, and
+      <xref linkend="consolekit"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -100,11 +101,12 @@
       <ulink url="&kde-download-http;&kde-version;/src/">PyKDE4</ulink>,
       <ulink url="http://code.google.com/p/google-gadgets-for-linux/">GoogleGadgets</ulink>,
       <ulink url="ftp://ftp.kde.org/pub/kde/stable/prison/1.0/src/">Prison</ulink>,
-      <ulink url="https://ieee1394.wiki.kernel.org/index.html">libraw1394</ulink>,
+      <ulink url="http://sourceforge.net/projects/libraw1394/">libraw1394</ulink>,
       <ulink url="http://www.catb.org/gpsd/">gpsd</ulink>,
-      <ulink url="http://www.xmms.org/">XMMS</ulink> and
+      <ulink url="http://www.xmms.org/">XMMS</ulink>,
       <ulink url="http://qalculate.sourceforge.net/">libqalculate</ulink>
-      (wants <ulink url="http://www.ginac.de/CLN/">CLN</ulink>)
+      (wants <ulink url="http://www.ginac.de/CLN/">CLN</ulink>) and
+      <ulink url="http://wayland.freedesktop.org/">Wayland</ulink>
     </para>
 
     <note>
@@ -144,19 +146,20 @@ install -o kdm -g kdm -dm755 /var/lib/kdm</userinput></screen>
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
-cd build &amp;&amp;
-cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; \
-      -DSYSCONF_INSTALL_DIR=/etc \
-      -DCMAKE_BUILD_TYPE=Release \
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=&kde-dir;           \
+      -DSYSCONF_INSTALL_DIR=/etc                   \
+      -DCMAKE_BUILD_TYPE=Release                   \
       -DINSTALL_PYTHON_FILES_IN_PYTHON_PREFIX=TRUE \
-      .. &amp;&amp;
+      -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
+<screen role="root"><userinput>make install                  &amp;&amp;
 mkdir -p /usr/share/xsessions &amp;&amp;
 ln -sf &kde-dir;/share/apps/kdm/sessions/kde-plasma.desktop \
        /usr/share/xsessions/kde-plasma.desktop</userinput></screen>
@@ -179,7 +182,7 @@ ln -sf &kde-dir;/share/apps/kdm/sessions/kde-plasma.desktop \
 
       <para>
         If you built <application>KDE Workspace</application> with
-        <application>Linux PAM</application> support, create necesary
+        <application>Linux PAM</application> support, create necessary
         configuration files by running the following commands as the
         <systemitem class="username">root</systemitem> user:
       </para>

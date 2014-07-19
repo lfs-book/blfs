@@ -5,13 +5,14 @@
   %general-entities;
 
   <!ENTITY brasero-download-http
-           "&gnome-download-http;/brasero/3.6/brasero-&brasero-version;.tar.xz">
+           "&gnome-download-http;/brasero/3.10/brasero-&brasero-version;.tar.xz">
   <!ENTITY brasero-download-ftp
-           "&gnome-download-ftp;/brasero/3.6/brasero-&brasero-version;.tar.xz">
-  <!ENTITY brasero-md5sum        "1bf94b5d75f4a003b3d139d50e620c7b">
-  <!ENTITY brasero-size          "3.1 MB">
-  <!ENTITY brasero-buildsize     "95 MB">
-  <!ENTITY brasero-time          "0.9 SBU">
+           "&gnome-download-ftp;/brasero/3.10/brasero-&brasero-version;.tar.xz">
+  <!ENTITY brasero-md5sum        "3026570f96b2e61ec902a68c4ba83cee">
+  <!ENTITY brasero-size          "3.3 MB">
+  <!ENTITY brasero-buildsize     "95 MB (additional 1 MB to rebuild and install
+                                  the API documentation)">
+  <!ENTITY brasero-time          "1.9 SBU">
 ]>
 
 <sect1 id="brasero" xreflabel="Brasero-&brasero-version;">
@@ -38,7 +39,7 @@
       features that enable users to create  their discs easily and quickly.
     </para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -80,7 +81,7 @@
     <para role="required">
       <xref linkend="gst10-plugins-base"/>,
       <xref linkend="libcanberra"/>,
-      <xref linkend="libnotify"/> and
+      <xref linkend="libnotify"/>, and
       <xref linkend="yelp-xsl"/>
     </para>
 
@@ -89,7 +90,7 @@
       <xref linkend="gobject-introspection"/>,
       <xref linkend="libburn"/> and
       <xref linkend="libisofs"/>,
-      <xref linkend="nautilus"/> and
+      <xref linkend="nautilus"/>, and
       <xref linkend="totem-pl-parser"/>
     </para>
 
@@ -107,10 +108,10 @@
 
     <bridgehead renderas="sect4">Optional (Runtime)</bridgehead>
     <para role="optional">
-      <xref linkend="cdrdao"/>,
-      <ulink url="http://www.cdrkit.org/">cdrkit</ulink>,
-      <ulink url="http://cdrecord.berlios.de/private/cdrecord.html">cdrtools</ulink>,
-      <xref linkend="libdvdcss"/> and
+      <xref linkend="cdrdao"/>, one of
+      <ulink url="http://www.cdrkit.org/">cdrkit</ulink> or
+      <ulink url="http://cdrecord.berlios.de/private/cdrecord.html">cdrtools</ulink> (conflict),
+      <xref linkend="libdvdcss"/>, and
       <ulink url="http://ftp.gnu.org/gnu/vcdimager/">VCDImager</ulink>
     </para>
 
@@ -133,6 +134,14 @@ make</userinput></screen>
     <para>
       This package does not come with a test suite.
     </para>
+
+    <note><para>
+      When installing, the Makefile does some additional
+      linking.  If you do not have Xorg in /usr, the LIBRARY_PATH
+      variable needs to be defined for the root user.  If
+      using sudo to assume root, use the -E option to pass
+      your current environment variables for the install process.
+    </para></note>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -163,15 +172,17 @@ make</userinput></screen>
           brasero
         </seg>
         <seg>
-          libbrasero-burn3.so, libbrasero-media3.so and
-          libbrasero-utils3.so
+          libbrasero-burn3.so, 
+          libbrasero-media3.so,
+          libbrasero-utils3.so,
+          several under /usr/lib/brasero3/plugins/, and
+          /usr/lib/nautilus/extensions-3.0/libnautilus-brasero-extension.so
         </seg>
         <seg>
           /usr/include/brasero3,
           /usr/lib/brasero3,
           /usr/share/brasero,
-          /usr/share/gtk-doc/html/libbrasero-burn,
-          /usr/share/gtk-doc/html/libbrasero-media and
+          /usr/share/gtk-doc/html/{libbrasero-burn,libbrasero-media}, and
           /usr/share/help/*/brasero
         </seg>
       </seglistitem>

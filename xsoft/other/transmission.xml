@@ -7,10 +7,10 @@
   <!ENTITY transmission-download-http
            "http://download.transmissionbt.com/files/transmission-&transmission-version;.tar.xz">
   <!ENTITY transmission-download-ftp  " ">
-  <!ENTITY transmission-md5sum        "2bde600d4b0a75d0bd3784550d59a8af">
-  <!ENTITY transmission-size          "3.1 MB">
-  <!ENTITY transmission-buildsize     "173 MB (without GUI)">
-  <!ENTITY transmission-time          "0.3 SBU (without GUI)">
+  <!ENTITY transmission-md5sum        "411aec1c418c14f6765710d89743ae42">
+  <!ENTITY transmission-size          "3 MB">
+  <!ENTITY transmission-buildsize     "230 MB">
+  <!ENTITY transmission-time          "1.1 SBU">
 ]>
 
 <sect1 id="transmission" xreflabel="Transmission-&transmission-version;">
@@ -37,7 +37,7 @@
       bandwidth.
     </para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,27 +72,37 @@
         </para>
       </listitem>
     </itemizedlist>
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch:
+          <ulink url="&patch-root;/transmission-&transmission-version;-qt4-1.patch"/>
+       </para>
+      </listitem>
+    </itemizedlist>-->
 
     <bridgehead renderas="sect3">Transmission Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="openssl"/>,
       <xref linkend="curl"/>,
-      <xref linkend="libevent"/> and
-      <xref linkend="intltool"/>
+      <xref linkend="libevent"/>, and
+      <xref linkend="openssl"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended (to build a GUI)</bridgehead>
     <para role="recommended">
-      <xref linkend="gtk3"/> or
-      <xref linkend="qt4"/> and
-      <xref linkend="gdb"/>
+      <xref linkend="gtk3"/> and either
+      <xref linkend="qt4"/> or
+      <xref linkend="qt5"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="doxygen"/>
+      <xref linkend="doxygen"/> and
+      <xref linkend="gdb"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -102,23 +112,39 @@
 
   <sect2 role="installation">
     <title>Installation of Transmission</title>
+<!--
+    <para>If you want to build the Qt interface using <xref linkend="qt4"/>,
+    apply the following patch:</para>
+
+<screen><userinput>patch -Np1 -i ../transmission-&transmission-version;-qt4-1.patch</userinput></screen>-->
 
     <para>
-      Install <application>Transmission</application> by running the following
-      commands:
+      Install <application>Transmission</application> by running the
+      following commands:
     </para>
 
 <screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
-      If you have installed <xref linkend="qt4"/> and would like to compile the
-      Qt GUI, run the following commands:
+       The following commands are used if you have installed Qt and would like
+       to compile the Qt GUI. If <application>Qt4</application> and
+       <application>Qt5</application> are installed in
+       <filename class="directory">/opt</filename>, use
+       <command>source setqt4</command> or <command>source setqt5</command> to
+       choose which one will be used to build the Qt GUI. For
+       <application>Qt4</application>, first fix the code with:
     </para>
 
-<screen><userinput>pushd qt &amp;&amp;
-qmake qtr.pro &amp;&amp;
-make &amp;&amp;
+<screen><userinput>sed -i '/^CONFIG/aQMAKE_CXXFLAGS += -std=c++11' qt/qtr.pro</userinput></screen>
+
+    <para>
+      Now, compile the Qt GUI, with the following commands:
+    </para>
+
+<screen><userinput>pushd qt        &amp;&amp;
+  qmake qtr.pro &amp;&amp;
+  make          &amp;&amp;
 popd</userinput></screen>
 
     <para>
@@ -136,18 +162,22 @@ popd</userinput></screen>
       as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>INSTALL_ROOT=/usr make -C qt install &amp;&amp;
+<screen role="root"><userinput>make INSTALL_ROOT=/usr -C qt install &amp;&amp;
+
 install -m644 qt/transmission-qt.desktop /usr/share/applications/transmission-qt.desktop &amp;&amp;
-install -m644 qt/icons/transmission.png /usr/share/pixmaps/transmission-qt.png</userinput></screen>
+install -m644 qt/icons/transmission.png  /usr/share/pixmaps/transmission-qt.png</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <!-- with-gtk is auto detected if gtk3 is present -->
     <para>
-      <option>--with-gtk</option>: This switch enables building of the
-      <application>GTK+</application> interface.
+      <option>--without-gtk</option>: This switch disables building of the
+      <application>GTK+</application> interface if
+      <application>GTK+</application> is present on the system (useful for
+      <application>Qt5</application> or cli only builds).
     </para>
 
   </sect2>

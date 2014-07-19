@@ -7,10 +7,10 @@
   <!ENTITY gst10-plugins-bad-download-http
            "&gstreamer-dl;/gst-plugins-bad/gst-plugins-bad-&gst10-plugins-bad-version;.tar.xz">
   <!ENTITY gst10-plugins-bad-download-ftp  " ">
-  <!ENTITY gst10-plugins-bad-md5sum        "a2fdf125ee2ae46047dcbcfc305949ee">
-  <!ENTITY gst10-plugins-bad-size          "3.1 MB">
-  <!ENTITY gst10-plugins-bad-buildsize     "110 MB">
-  <!ENTITY gst10-plugins-bad-time          "0.8 SBU">
+  <!ENTITY gst10-plugins-bad-md5sum        "16c2050716383926909664aa6c6aca2b">
+  <!ENTITY gst10-plugins-bad-size          "3.2 MB">
+  <!ENTITY gst10-plugins-bad-buildsize     "110 MB (additional 6 MB to run the test suite)">
+  <!ENTITY gst10-plugins-bad-time          "1.2 SBU (additional 1.1 SBU to run the test suite)">
 ]>
 
 <sect1 id="gst10-plugins-bad" xreflabel="gst-plugins-bad-&gst10-plugins-bad-version;">
@@ -38,7 +38,7 @@
       maintainer, or some actual wide use.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     &gst-compat;
 
@@ -83,36 +83,45 @@
       <xref linkend="gst10-plugins-base"/>
     </para>
 
+    <!-- Common formats, output and input codecs and requirements
+    for GNOME apps. What's a multimedia framework useful if it
+    can't be used to play anything (common)? -->
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="libdvdread"/>,
-      <xref linkend="libdvdnav"/> and
+      <xref linkend="libdvdnav"/>, and
       <xref linkend="soundtouch"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="bluez"/>,
       <xref linkend="curl"/>,
       <xref linkend="faac"/>,
       <xref linkend="faad2"/>,
+      <xref linkend="gnutls"/>,
+      <xref linkend="gtk-doc"/>,
+      <xref linkend="gtk2"/> or
       <xref linkend="gtk3"/>,
+      <xref linkend="libass"/>,
       <xref linkend="libexif"/>,
       <xref linkend="libmpeg2"/>,
+      <xref linkend="libvdpau"/>,
       <xref linkend="mesalib"/>,
       <xref linkend="mpg123"/>,
       <xref linkend="neon"/>,
+      <xref linkend="openjpeg"/>,
       <xref linkend="openssl"/>,
+      <xref linkend="valgrind"/>,
       <xref linkend="xorg7-lib"/>,
       <ulink url="http://celt-codec.org/">Celt</ulink>,
       <ulink url="http://www.speech.cs.cmu.edu/flite/">Flite</ulink>,
       <ulink url="http://code.google.com/p/game-music-emu/">Game Music Emu</ulink>,
       <ulink url="http://www.quut.com/gsm/">GSM</ulink>,
-      <ulink url="http://code.google.com/p/libass/">libass</ulink>,
       <ulink url="http://www.videolan.org/developers/libdca.html">libdca</ulink>,
       <ulink url="http://sourceforge.net/projects/farsight/files/libmimic/">libmimic</ulink>,
       <ulink url="http://sourceforge.net/projects/libmms/">libmms</ulink>,
       <ulink url="http://code.google.com/p/musicip-libofa/">libofa</ulink>,
-      <ulink url="http://cgit.freedesktop.org/~aplattner/libvdpau">libvdpau</ulink>,
       <ulink url="http://sourceforge.net/projects/mjpeg/">MJPEG Tools</ulink>,
       <ulink url="http://kcat.strangesoft.net/openal.html">OpenAL</ulink>,
       <ulink url="http://code.entropywave.com/orc/">ORC</ulink>,
@@ -120,7 +129,7 @@
       <ulink url="http://diracvideo.org/download/schroedinger/">Schroedinger</ulink>,
       <ulink url="http://sourceforge.net/projects/opencore-amr/files/vo-aacenc/">VO AAC</ulink>,
       <ulink url="http://sourceforge.net/projects/opencore-amr/files/vo-amrwbenc/">VO AMRWB</ulink>,
-      <ulink url="http://wayland.freedesktop.org/">Wayland</ulink> and
+      <ulink url="http://wayland.freedesktop.org/">Wayland</ulink>, and
       <ulink url="http://sourceforge.net/projects/zbar/">ZBAR</ulink>
       <!-- Not ported
       <xref linkend="jasper"/>,
@@ -150,6 +159,10 @@
   <sect2 role="installation">
     <title>Installation of GStreamer Bad Plug-ins</title>
 
+    <note><para>If you need a plugin for a given dependency, that dependency
+      needs to be installed before this application.
+    </para></note>
+
     <para>
       Install <application>GStreamer Bad Plug-ins</application> by running the following
       commands:
@@ -161,7 +174,9 @@
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      To test the results, issue: <command>make -k check</command>. Some tests
+      fail for unknown reasons.
+
     </para>
 
     <para>
@@ -184,14 +199,16 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          libgstbasecamerabinsrc-1.0.so, libgstbasevideo-1.0.so, libgstcodecparsers-1.0.so,
-          libgstphotography-1.0.so, libgstsignalprocessor-1.0.so and several plugins in
+          libgstbasecamerabinsrc-1.0.so, libgstcodecparsers-1.0.so,
+          libgstegl-1.0.so, libgstinsertbin-1.0.so,
+          libgstmpegts-1.0.so, libgstphotography-1.0.so,
+          libgsturidownloader-1.0.so and several plugins under
           /usr/lib/gstreamer-1.0
         </seg>
         <seg>
-          /usr/include/gstreamer-1.0/gst/{basecamerabinsrc,codecparsers},
-          /usr/include/gstreamer-1.0/gst/{interfaces,signalprocessor,video},
-          /usr/share/gstreamer-1.0/presets and
+          /usr/include/gstreamer-1.0/gst/{basecamerabinsrc,egl,codecparsers},
+          /usr/include/gstreamer-1.0/gst/{insertbin,interfaces},
+          /usr/include/gstreamer-1.0/gst/{mpegts,uridownloader} and
           /usr/share/gtk-doc/html/gst-plugins-bad-libs-1.0
         </seg>
       </seglistitem>

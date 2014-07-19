@@ -4,12 +4,13 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY libvpx-download-http "http://webm.googlecode.com/files/libvpx-v&libvpx-version;.tar.bz2">
+  <!ENTITY libvpx-download-http "&sources-anduin-other-http;/libvpx-v&libvpx-version;.tar.xz">
+<!--  <!ENTITY libvpx-download-http "http://webm.googlecode.com/files/libvpx-v&libvpx-version;.tar.bz2"> -->
   <!ENTITY libvpx-download-ftp  " ">
-  <!ENTITY libvpx-md5sum        "7ae163ac3196c79ec2f0904280078a45">
-  <!ENTITY libvpx-size          "1.6 MB">
-  <!ENTITY libvpx-buildsize     "15 MB (without the documentation)">
-  <!ENTITY libvpx-time          "0.3 SBU">
+  <!ENTITY libvpx-md5sum        "528cb52934d9a731dfc0a2853b1e260d">
+  <!ENTITY libvpx-size          "1.8 MB">
+  <!ENTITY libvpx-buildsize     "32 MB (without the documentation)">
+  <!ENTITY libvpx-time          "0.8 SBU">
 ]>
 
 <sect1 id="libvpx" xreflabel="libvpx-&libvpx-version;">
@@ -29,10 +30,11 @@
   <sect2 role="package">
     <title>Introduction to libvpx</title>
 
-    <para>This package provides the reference implementation of the vp8 Codec
-    from the WebM project, used in most current html5 video.</para>
+    <para>This package, from the WebM project, provides the reference
+    implementations of the VP8 Codec, used in most current html5 video,
+    and of the next-generation VP9 Codec.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -56,11 +58,18 @@
       </listitem>
     </itemizedlist>
 
+    <para>The <application>libvpx</application> tarballs are no longer generated
+    by the maintainers. To build from source, the
+    <application>libvpx</application> developers recommend using current git.
+    The source tarball shown above was created by the BLFS team by pulling a
+    git version, and removing .git, .gitattributes and .gitignore. BLFS made
+    no changes to the existing source files.</para>
+
     <bridgehead renderas="sect3">libvpx Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required"><xref linkend="yasm"/> (compiling with
-    <xref linkend="NASM"/> is currently broken) and <xref linkend="which"/>
+    <xref linkend="nasm"/> is currently broken) and <xref linkend="which"/>
     (so <command>configure</command> can find yasm)</para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -78,7 +87,9 @@
     <para>Install <application>libvpx</application> by running the
     following commands:</para>
 
-<screen><userinput>mkdir ../libvpx-build &amp;&amp;
+<screen><userinput>sed -i 's/cp -p/cp/' build/make/Makefile &amp;&amp;
+chmod -v 644 vpx/*.h &amp;&amp;
+mkdir ../libvpx-build &amp;&amp;
 cd ../libvpx-build &amp;&amp;
 ../libvpx-v&libvpx-version;/configure --prefix=/usr \
                            --enable-shared \
@@ -97,9 +108,18 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <para><command>sed ... &amp;&amp; chmod ...</command>: These commands
+    correct ownership and permissions of installed files.</para>
+
     <para><command>mkdir ../libvpx-build &amp;&amp; cd
     ../libvpx-build</command>: The <application>libvpx</application> developers
     recommend building in a dedicated build directory.</para>
+
+    <para><option>--disable-vp8</option>: This switch prevents building of VP8
+    codec support.</para>
+
+    <para><option>--disable-vp9</option>: This switch prevents building of VP9
+    codec support.</para>
 
     <para><option>--disable-static</option>: This switch prevents building of
     static versions of libraries.</para>
@@ -115,7 +135,8 @@ make</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>vp8_scalable_patterns, vpxdec and vpxenc</seg>
+        <seg>vp8_scalable_patterns, vp9_spatial_scalable_encoder,
+             vpxdec and vpxenc</seg>
         <seg>libvpx.so</seg>
         <seg>/usr/include/vpx</seg>
       </seglistitem>
@@ -129,7 +150,7 @@ make</userinput></screen>
       <varlistentry id="vpxdec">
         <term><command>vpxdec</command></term>
         <listitem>
-          <para>is the WebM Project VP8 decoder.</para>
+          <para>is the WebM Project VP8 and VP9 decoder.</para>
           <indexterm zone="libvpx vpxdec">
             <primary sortas="b-vpxdec">vpxdec</primary>
           </indexterm>
@@ -139,7 +160,7 @@ make</userinput></screen>
       <varlistentry id="vpxenc">
         <term><command>vpxenc</command></term>
         <listitem>
-          <para>is the WebM project VP8 encoder.</para>
+          <para>is the WebM project VP8 and VP9 encoder.</para>
           <indexterm zone="libvpx vpxenc">
             <primary sortas="b-vpxenc">vpxenc</primary>
           </indexterm>
@@ -149,7 +170,7 @@ make</userinput></screen>
       <varlistentry id="libvpx-lib">
         <term><filename class='libraryfile'>libvpx.so</filename></term>
         <listitem>
-          <para>provides functions to use the VP8 video codec.</para>
+          <para>provides functions to use the VP8 and VP9 video codecs.</para>
           <indexterm zone="libvpx libvpx-lib">
             <primary sortas="c-libvpx">libvpx.so</primary>
           </indexterm>

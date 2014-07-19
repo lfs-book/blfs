@@ -6,13 +6,15 @@
 
   <!ENTITY mercurial-download-http "http://mercurial.selenic.com/release/mercurial-&mercurial-version;.tar.gz">
   <!ENTITY mercurial-download-ftp  " ">
-  <!ENTITY mercurial-md5sum        "55f6ea5982cf87836113376174826e8c">
-  <!ENTITY mercurial-size          "3.6 MB">
-  <!ENTITY mercurial-buildsize     "43 MB">
-  <!ENTITY mercurial-time          "0.1 SBU (additional 12 SBU for tests)">
+  <!ENTITY mercurial-md5sum        "c5be4265745a8140fec777a4dfc40e0e">
+  <!ENTITY mercurial-size          "3.8 MB">
+  <!ENTITY mercurial-buildsize     "43 MB (additional 249 MB for the tests and 2 MB for docs generation)
+
+">
+  <!ENTITY mercurial-time          "less than 0.1 SBU (additional 7.9 SBU for tests)">
 ]>
 
-<sect1 id="mercurial" xreflabel="mercurial-&mercurial-version;">
+<sect1 id="mercurial" xreflabel="Mercurial-&mercurial-version;">
   <?dbhtml filename="mercurial.html"?>
 
   <sect1info>
@@ -20,7 +22,7 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>mercurial-&mercurial-version;</title>
+  <title>Mercurial-&mercurial-version;</title>
 
   <indexterm zone="mercurial">
     <primary sortas="a-mercurial">mercurial</primary>
@@ -35,7 +37,7 @@
     written in <application>Python</application> and is used by projects such as
     Mozilla and Vim.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -59,16 +61,6 @@
       </listitem>
     </itemizedlist>
 
-    <!--
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing='compact'>
-      <listitem>
-        <para>Recommended patch: <ulink
-        url="&patch-root;/mercurial-&mercurial-version;-1.patch"/></para>
-      </listitem>
-    </itemizedlist>
-    -->
-
     <bridgehead renderas="sect3">Mercurial Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -78,12 +70,12 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-    <ulink url="http://docutils.sourceforge.net/">Docutils</ulink> (required to build the documentation),
+    <xref linkend="bazaar"/>,
+    <xref linkend="cvs"/>,
     <xref linkend="git"/>,
     <xref linkend="gnupg2"/> (<command>gpg2</command> with Python bindings),
     <xref linkend="subversion"/> (with Python bindings),
-    <xref linkend="bazaar"/>,
-    <xref linkend="cvs"/>,
+    <ulink url="http://docutils.sourceforge.net/">Docutils</ulink> (required to build the documentation),
     <ulink url="http://pypi.python.org/pypi/pyflakes">pyflakes</ulink>,
     <ulink url="http://pygments.org/">pygments</ulink>, and
     <ulink url="https://launchpad.net/pyopenssl">pyOpenSSL</ulink>
@@ -108,7 +100,22 @@
 
 <screen><userinput>make doc</userinput></screen>
 
-    <para>To test the results, issue: <command>make check</command>.</para>
+    <para>Running the test suite is optional. Failure of test-patchbomb is
+    expected with <application>Python-2.7.x</application> (x &gt; 7). To test
+    the results in the subdiretory
+    <filename class="directory">tests/tmp</filename>,
+    skipping the failing test, issue:</para>
+
+<screen><userinput>cat &gt; tests/blacklists/test-failed &lt;&lt; "EOF"
+<literal># Failure with Python-2.7.8
+  test-patchbomb.t</literal>
+EOF
+rm -rf tests/tmp &amp;&amp;
+TESTFLAGS="--tmpdir tmp --blacklist blacklists/test-failed" \
+make check</userinput></screen>
+
+    <para>Tests may be run in parallel, just add
+    <quote>-j$(getconf _NPROCESSORS_ONLN)</quote> to TESTFLAGS.</para>
 
     <para>Install <application>Mercurial</application> by running
     the following command (as <systemitem class="username">root</systemitem>):</para>
@@ -119,6 +126,21 @@
     the following command (as <systemitem class="username">root</systemitem>):</para>
 
 <screen role="root"><userinput>make PREFIX=/usr install-doc</userinput></screen>
+
+    <para>After installed, two very quick and simple tests should run correctly.
+    First one needs some configuration:</para>
+
+<screen><userinput>cat &gt;&gt; ~/.hgrc &lt;&lt; "EOF"
+<literal>[ui]
+username = &lt;user_name&gt; &lt;your@mail&gt;</literal>
+EOF</userinput></screen>
+
+    <para>where you must replace &lt;user_name&gt; and &lt;your@mail&gt; (mail
+    is optional and can be omitted). With the user identity defined, run
+    <command>hg debuginstall</command> and several lines will be displayed, 
+    the last one reading "no problems detected". Another quick and simple test
+    is just <command>hg</command>, which should output basic commands that can
+    be used with <command>hg</command>.</para>
 
   </sect2>
 
@@ -162,9 +184,9 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>hg</seg>
-        <seg>none</seg>
-        <seg>/etc/mercurial, /usr/lib/python2.7/site-packages/hgext and
-        /usr/lib/python2.7/site-packages/mercurial</seg>
+        <seg>several under /usr/lib/python&python2-majorver;/site-packages/mercurial</seg>
+        <seg>/etc/mercurial, /usr/lib/python&python2-majorver;/site-packages/hgext and
+             /usr/lib/python&python2-majorver;/site-packages/mercurial</seg>
       </seglistitem>
     </segmentedlist>
 

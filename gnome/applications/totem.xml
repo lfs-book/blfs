@@ -4,12 +4,14 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY totem-download-http "&gnome-download-http;/totem/3.6/totem-&totem-version;.tar.xz">
-  <!ENTITY totem-download-ftp  "&gnome-download-ftp;/totem/3.6/totem-&totem-version;.tar.xz">
-  <!ENTITY totem-md5sum        "0afbc46fcb5a1c2634fb3ef7c181ecb9">
-  <!ENTITY totem-size          "3.0 MB">
-  <!ENTITY totem-buildsize     "75 MB">
-  <!ENTITY totem-time          "0.9 SBU">
+  <!ENTITY totem-download-http 
+     "&gnome-download-http;/totem/&gnome-minor;/totem-&totem-version;.tar.xz">
+  <!ENTITY totem-download-ftp  
+     "&gnome-download-ftp;/totem/&gnome-minor;/totem-&totem-version;.tar.xz">
+  <!ENTITY totem-md5sum        "2b506bae9468331d1e5aec4fab231ad7">
+  <!ENTITY totem-size          "3.2 MB">
+  <!ENTITY totem-buildsize     "68 MB">
+  <!ENTITY totem-time          "1.7 SBU">
 ]>
 
 <sect1 id="totem" xreflabel="Totem-&totem-version;">
@@ -38,7 +40,7 @@
       DVD, VCD or digital CD.
     </para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -80,38 +82,40 @@
     <para role="required">
       <xref linkend="clutter-gst2"/>,
       <xref linkend="clutter-gtk"/>,
-      <xref linkend="gnome-doc-utils"/>,
       <xref linkend="gnome-icon-theme"/>,
       <xref linkend="gst10-plugins-bad"/>,
       <xref linkend="gst10-plugins-good"/>,
-      <xref linkend="libpeas"/> and
-      <xref linkend="totem-pl-parser"/>
+      <xref linkend="libpeas"/>,
+      <xref linkend="totem-pl-parser"/>, and
+      <xref linkend="yelp-xsl"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="appdata-tools"/>,
       <xref linkend="dbus-glib"/>,
-      <xref linkend="gobject-introspection"/>,
-      <xref linkend="libzeitgeist"/>,
+      <xref linkend="grilo-plugins"/> (Channels),
       <xref linkend="nautilus"/>,
-      <xref linkend="pygobject3"/>,
-      <xref linkend="rarian"/> and
+      <xref linkend="pygobject3"/>, and
       <xref linkend="vala"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="http://live.gnome.org/Grilo/">Grilo</ulink>,
+      <xref linkend="avahi"/> (if installed at build time, make sure
+      avahi-daemon is running as a system daemon, started by
+      bootscript/systemd unit),
       <xref linkend="gtk-doc"/>,
       <ulink url="http://www.lirc.org">LIRC</ulink>,
-      <ulink url="http://pypi.python.org/pypi/pylint">pylint</ulink> and
+      <ulink url="http://pypi.python.org/pypi/pylint">pylint</ulink>,
+      <ulink url="http://launchpad.net/zeitgeist">zeitgeist</ulink>, and
       <xref linkend="xulrunner"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended (Runtime)</bridgehead>
     <para role="recommended">
       <xref linkend="gst10-libav"/>,
-      <xref linkend="gst10-plugins-ugly"/> and
+      <xref linkend="gst10-plugins-ugly"/>, and
       <xref linkend="libdvdcss"/>
     </para>
 
@@ -128,8 +132,7 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --libexecdir=/usr/lib/totem \
+<screen><userinput>./configure --prefix=/usr    \
             --disable-static &amp;&amp;
 make</userinput></screen>
 
@@ -152,10 +155,13 @@ make</userinput></screen>
       href="../../xincludes/static-libraries.xml"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/without-scrollkeeper.xml"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
+
+    <para><option>--libexecdir=/usr/lib</option>: This option
+    will put the package's private programs into
+    <filename class="directory">/usr/lib/totem</filename> instead of
+    <filename class="directory">/usr/libexec/totem</filename> in
+    accordance with the old version of the FHS used before LFS-7.5.</para>
 
   </sect2>
 
@@ -169,17 +175,19 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          totem, totem-audio-preview and totem-video-thumbnailer
+          totem, totem-audio-preview, totem-bugreport.py,
+          totem-plugin-viewer, and totem-video-thumbnailer
         </seg>
         <seg>
-          libtotem.so
+          libtotem.so and several plugins under /usr/lib/mozilla/plugins/,
+          /usr/lib/totem/plugins/*/, and /usr/lib/nautilus/extensions-3.0/
         </seg>
         <seg>
           /usr/include/totem,
           /usr/lib/totem,
-          /usr/share/gnome/help/totem,
+          /usr/libexec/totem,
           /usr/share/gtk-doc/html/totem,
-          /usr/share/omf/totem and
+          /usr/share/help/*/totem, and
           /usr/share/totem
         </seg>
       </seglistitem>

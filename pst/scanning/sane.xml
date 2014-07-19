@@ -5,16 +5,17 @@
   %general-entities;
 
   <!-- <!ENTITY sane-be-download-http "http://alioth.debian.org/frs/?group_id=30186"> -->
-  <!ENTITY sane-be-download-http " ">
-  <!ENTITY sane-be-download-ftp  "ftp://ftp2.sane-project.org/pub/sane/sane-backends-&sane-version;.tar.gz">
+  <!ENTITY sane-be-download-http "http://fossies.org/linux/misc//sane-backends-&sane-version;.tar.gz">
+  <!ENTITY sane-be-download-ftp  " ">
+  <!--<!ENTITY sane-be-download-ftp  "ftp://ftp2.sane-project.org/pub/sane/sane-backends-&sane-version;.tar.gz">-->
   <!--<!ENTITY sane-be-download-ftp  "&gentoo-ftp-repo;/sane-backends-&sane-version;.tar.gz">-->
-  <!ENTITY sane-be-md5sum        "979c9dbb23920d04e322be23122c7de7">
-  <!ENTITY sane-be-size          "5.1 MB">
-  <!ENTITY sane-be-buildsize     "120 MB">
-  <!ENTITY sane-be-time          "1.2 SBU">
+  <!ENTITY sane-be-md5sum        "1ca68e536cd7c1852322822f5f6ac3a4">
+  <!ENTITY sane-be-size          "5.6 MB">
+  <!ENTITY sane-be-buildsize     "97 MB">
+  <!ENTITY sane-be-time          "1 SBU">
 
-  <!ENTITY sane-fe-download-http "http://alioth.debian.org/download.php/1140/sane-frontends-&sane-fe-version;.tar.gz">
-  <!ENTITY sane-fe-download-ftp  "ftp://ftp2.sane-project.org/pub/sane/sane-frontends-&sane-fe-version;/sane-frontends-&sane-fe-version;.tar.gz">
+  <!ENTITY sane-fe-download-http "http://alioth.debian.org/frs/download.php/file/1140/sane-frontends-&sane-fe-version;.tar.gz">
+  <!ENTITY sane-fe-download-ftp  "ftp://ftp2.sane-project.org/pub/sane/sane-frontends-&sane-fe-version;.tar.gz">
   <!ENTITY sane-fe-md5sum        "c63bf7b0bb5f530cf3c08715db721cd3">
   <!ENTITY sane-fe-size          "231 KB">
   <!ENTITY sane-fe-buildsize     "3.0 MB">
@@ -49,9 +50,14 @@
     ends. The back ends are drivers for the supported scanners and cameras. The
     front ends are user interfaces to access the backends.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
-    <!-- This note is not applicable. First, there is no issue downloading the
+    <!-- The upstream web site has the md5sums for the tarballs:
+         http://www.sane-project.org/sane-md5sums.txt.
+         But they do not provide the tarballs, so, the following paragraph
+         seems not applicable, starting with sane-backends-1.0.24.tar.gz.
+
+         This note is not applicable. First, there is no issue downloading the
          ftp://ftp2.sane-project.org/pub/sane/sane-backends-1.0.23.tar.gz
          tarball with wget. Next, the combined tarball exists on the SANE FTP
          site, but the MD5sum is wrong. We can simply point the download to
@@ -150,7 +156,7 @@
   </sect2>
 
   <sect2 role="kernel" id='sane-kernel'>
-    <title>Kernel Configuration</title>
+    <title>Kernel Configuration, Drivers and Additional Packages</title>
 
     <indexterm zone="sane sane-kernel">
       <primary sortas="d-Scanning-devices">Scanning devices</primary>
@@ -161,8 +167,11 @@
     drivers, a parallel port scanner needs parallel port support (you should
     use enhanced EPP modes) and perhaps <ulink
     url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink>, and a USB
-    scanner will need the <xref linkend="libusb"/> package. Ensure you have
-    the necessary drivers properly configured to access the devices.</para>
+    scanner will need the <xref linkend="libusb"/> package. For HP devices, you
+    may need <ulink
+    url="http://sourceforge.net/projects/hplip/files/hplip/">hplip</ulink>.
+    Ensure you have the necessary drivers properly configured to access
+    the devices.</para>
 
   </sect2>
 
@@ -203,8 +212,10 @@
         </para>
       </note>
 
-      <para>Install <application>SANE</application>-backends by
-      running the following commands:</para>
+      <para>For a USB scanner, if you are linking to <xref linkend="libusb"/>,
+      include the configure switch --enable-libusb_1_0. Install
+      <application>SANE</application>-backends by running the following
+      commands:</para>
 
             <!-- Not sure why this was there as it works if TeX is installed
                  and it doesn't try to use it if TeX is not installed
@@ -213,10 +224,21 @@
 <screen><userinput>./configure --prefix=/usr                                    \
             --sysconfdir=/etc                                \
             --localstatedir=/var                             \
-            --with-docdir=/usr/share/doc/sane-backend-1.0.23 \
+            --with-docdir=/usr/share/doc/sane-backend-&sane-version; \
             --with-group=scanner                             &amp;&amp;
 make                                                         &amp;&amp;
 exit</userinput></screen>
+
+      <para>If you want to test the results, some files need to be fixed:</para>
+
+<screen><userinput>sed -i -e 's/Jul 31 07:52:48/Oct  7 08:58:33/'      \
+       -e 's/1.0.24git/1.0.24/'                     \
+       testsuite/tools/data/db.ref                  \
+       testsuite/tools/data/html-mfgs.ref           \
+       testsuite/tools/data/usermap.ref             \
+       testsuite/tools/data/html-backends-split.ref \
+       testsuite/tools/data/udev+acl.ref            \
+       testsuite/tools/data/udev.ref</userinput></screen>
 
       <para>To test the results, issue: <command>make check</command>.</para>
 
@@ -226,6 +248,10 @@ exit</userinput></screen>
 install -m 644 -v tools/udev/libsane.rules           \
                   /etc/udev/rules.d/65-scanner.rules &amp;&amp;
 chgrp -v scanner  /var/lock/sane</userinput></screen>
+
+      <para>With the scanner on, run <command>scanimage -L</command> and the
+      name and location of the device should appear. Of course, you need the
+      device drivers configured, in order to run this test.</para>
 
     </sect3>
 
@@ -261,6 +287,15 @@ install -v -m644 doc/sane.png xscanimage-icon-48x48-2.png \
       command as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>ln -v -s ../../../../bin/xscanimage /usr/lib/gimp/2.0/plug-ins</userinput></screen>
+
+      <note>
+        <para>
+          If the plugin <command>xscanimage</command> is disabled in
+          <application>GIMP</application>'s menu, in order to enable it,
+          "create" a blank image using the menu or Ctrl-N. After that, it is
+          enabled.
+        </para>
+      </note>
 
     </sect3>
 
@@ -311,6 +346,48 @@ install -v -m644 doc/sane.png xscanimage-icon-48x48-2.png \
 
         <para>Add any desired users to the <systemitem
         class="groupname">scanner</systemitem> group.</para>
+
+        <para>If you want to access a network scanner, include two lines in
+        <filename>net.conf</filename>, as <systemitem class="username">root</systemitem> user
+        (make sure to replace &lt;server_ip&gt; by the actual value, below):</para>
+
+<screen role="root"><userinput>cat &gt;&gt; /etc/sane.d/net.conf &lt;&lt; "EOF"
+connect_timeout = 60
+&lt;server_ip&gt;
+EOF</userinput></screen>
+
+        <para>On the server side, include the client ip in the access list of
+        <filename>/etc/sane.d/saned.conf</filename>, restart the
+        <command>saned</command> daemon, and make sure the firewall, if any, is
+        open to the client.</para>
+
+      </sect4>
+
+      <sect4>
+        <title>Frontend Configuration</title>
+        <para>
+          If you use a desktop environment like <application>Gnome</application>
+          or <application>KDE</application> you may wish to create a
+          <filename>xscanimage.desktop</filename> file so that
+          <application>xscanimage</application> appears in the panel's menus.
+          As the <systemitem class="username">root</systemitem> user:
+        </para>
+
+<screen role="root"><userinput>mkdir -pv /usr/share/{applications,pixmaps}               &amp;&amp;
+
+cat &gt; /usr/share/applications/xscanimage.desktop &lt;&lt; "EOF" &amp;&amp;
+[Desktop Entry]
+Encoding=UTF-8
+Name=XScanImage - Scanning
+Comment=Acquire images from a scanner
+Exec=xscanimage
+Icon=xscanimage
+Terminal=false
+Type=Application
+Categories=Application;Graphics
+EOF
+
+ln -svf ../sane/xscanimage-icon-48x48-2.png /usr/share/pixmaps/xscanimage.png</userinput></screen>
 
       </sect4>
 

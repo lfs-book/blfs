@@ -39,7 +39,7 @@
       <application>Quicktime 4 Linux</application> library.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,11 +75,22 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/libquicktime-&libquicktime-version;-ffmpeg2-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">libquicktime Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="alsa-lib"/>,
+      <xref linkend="doxygen"/>,
       <xref linkend="faac"/>,
       <xref linkend="faad2"/>,
       <xref linkend="ffmpeg"/>,
@@ -90,7 +101,7 @@
       <xref linkend="libpng"/>,
       <xref linkend="libvorbis"/>,
       <ulink url="http://www.diracvideo.org">Schroedinger</ulink>,
-      <ulink url="http://developers.videolan.org/x264.html">x264</ulink> and
+      <xref linkend="x264"/>, and
       <xref linkend="xorg7-lib"/>
     </para>
 
@@ -107,10 +118,12 @@
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --docdir=/usr/share/doc/libquicktime-&libquicktime-version; \
-            --enable-gpl \
-            --without-doxygen &amp;&amp;
+<screen><userinput>patch -Np1 -i ../libquicktime-&libquicktime-version;-ffmpeg2-1.patch &amp;&amp;
+
+./configure --prefix=/usr     \
+            --enable-gpl      \
+            --without-doxygen \
+            --docdir=/usr/share/doc/libquicktime-&libquicktime-version;
 make</userinput></screen>
 
     <para>
@@ -132,18 +145,18 @@ install -v -m644    README doc/{*.txt,*.html,mainpage.incl} \
     <title>Command Explanations</title>
 
     <para>
-      <option>--with-libdv</option>: Build with libdv support.
-      Not enabled by default.
-    </para>
-
-    <para>
-      <option>--enable-gpl</option>: Changes the licence to GPL. This
+      <parameter>--enable-gpl</parameter>: Changes the licence to GPL. This
       enables some extra plugins, such as FAAC, FAAD2, and x264.
     </para>
 
     <para>
-      <option>--without-doxygen</option>: This is necessary if you do
+      <parameter>--without-doxygen</parameter>: This is necessary if you do
       not have <application>Doxygen</application>, omit this if installed.
+    </para>
+
+    <para>
+      <option>--with-libdv</option>: Build with libdv support.
+      Not enabled by default.
     </para>
 
   </sect2>
@@ -159,7 +172,7 @@ install -v -m644    README doc/{*.txt,*.html,mainpage.incl} \
       <seglistitem>
         <seg>
           libquicktime_config, lqtplay, lqtremux, lqt_transcode,
-          qt2text, qtdechunk, qtdump, qtinfo, qtrechunk, qtstreamize and
+          qt2text, qtdechunk, qtdump, qtinfo, qtrechunk, qtstreamize, and
           qtyuv4toyuv
         </seg>
         <seg>
@@ -167,7 +180,7 @@ install -v -m644    README doc/{*.txt,*.html,mainpage.incl} \
         </seg>
         <seg>
           /usr/include/lqt,
-          /usr/lib/libquicktime and
+          /usr/lib/libquicktime, and
           /usr/share/doc/libquicktime-&libquicktime-version;
         </seg>
       </seglistitem>

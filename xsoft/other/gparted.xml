@@ -7,10 +7,10 @@
   <!ENTITY gparted-download-http
            "&sourceforge-repo;/gparted/gparted-&gparted-version;.tar.bz2">
   <!ENTITY gparted-download-ftp  " ">
-  <!ENTITY gparted-md5sum        "3f399bff031b5ce14d11a8c346f4b89c">
-  <!ENTITY gparted-size          "1.9 MB">
-  <!ENTITY gparted-buildsize     "110 MB">
-  <!ENTITY gparted-time          "1.2 SBU">
+  <!ENTITY gparted-md5sum        "9aff8cef2c46e5ca4adaab43588c9e64">
+  <!ENTITY gparted-size          "2.0 MB">
+  <!ENTITY gparted-buildsize     "77 MB (additional 3 MB, building the optional documentation)">
+  <!ENTITY gparted-time          "0.9 SBU (additional 0.1 SBU, building the optional documentation)">
 ]>
 
 <sect1 id="gparted" xreflabel="Gparted-&gparted-version;">
@@ -35,7 +35,7 @@
       tools that can create, reorganise or delete disk partitions.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,14 +75,14 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="gtkmm2"/>,
-      <xref linkend="intltool"/> and
+      <xref linkend="gtkmm2"/> and
       <xref linkend="parted"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gnome-doc-utils"/> and
+      <ulink url="&gnome-download-http;/gnome-doc-utils/">
+      GNOME Doc Utils</ulink> and
       <xref linkend="rarian"/>
     </para>
 
@@ -99,7 +99,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-doc &amp;&amp;
+<screen><userinput>./configure --prefix=/usr    \
+            --disable-doc    \
+            --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -117,10 +119,13 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
+
     <para>
       <option>--disable-doc</option>: This switch disables building of
       the optional documentation. Remove it if you have installed
-      <xref linkend="gnome-doc-utils"/>.
+      <application>GNOME Doc Utils</application>.
     </para>
 
   </sect2>
@@ -147,6 +152,96 @@ make</userinput></screen>
       <ulink url="http://www.nilfs.org/download/">nilfs-utils</ulink> and
       reiser4progs.
     </para>
+
+    <para>
+      Root privileges are required to run Gparted. If you wish to run the
+      application from the menu, further applications and configurations are
+      necessary. Examples of applications that may be used:
+      <ulink url="http://people.debian.org/~kov/gksu">gksu</ulink>,
+      <ulink url="https://launchpad.net/kdesudo">kdesudo</ulink>, or
+      <ulink url="https://github.com/tarakbumba/xdg-su">xdg-su</ulink>.
+      Other solution is to use <application>pkexec</application>, from
+      <xref linkend="polkit"/>, but some configuration is necessary.
+      Another simple solution is <xref linkend="ssh-askpass"/>. Below, we
+      describe these two alternatives: "ssh-askpass" and "pkexec".
+    </para>
+
+    <sect3 role="ssh-askpass">
+      <title>ssh-askpass</title>
+        <para>
+          To optionally use <xref linkend="ssh-askpass"/> if it is installed in
+          your system, run the following commands as the
+          <systemitem class="username">root</systemitem> user:
+        </para>
+
+<screen role="root"><userinput>cp -v /usr/share/applications/gparted.desktop /usr/share/applications/gparted.desktop.back &amp;&amp;
+sed -i 's/Exec=/Exec=sudo -A /'               /usr/share/applications/gparted.desktop      &amp;&amp;</userinput></screen>
+
+        <para>
+         Now, clicking in the menu item for Gparted, a dialog appears in the
+         screen, asking for the administrator password.</para>
+
+    </sect3>
+
+    <sect3 role="pkexec">
+      <title>pkexec</title>
+        <para>
+          To optionally use <application>pkexec</application>, you need
+          <xref linkend="polkit-gnome"/> or <xref linkend="lxpolkit"/>, and
+          <xref linkend="consolekit"/> installed with support to
+          <xref linkend="linux-pam"/> and <xref linkend="polkit"/>. As the
+          <systemitem class="username">root</systemitem> user, configure
+          <xref linkend="gparted"/> and <xref linkend="polkit"/> with the
+          following commands:
+        </para>
+
+<screen role="root"><userinput>cp -v /usr/share/applications/gparted.desktop \
+                                     /usr/share/applications/gparted.desktop.back &amp;&amp;
+sed -i 's:/usr/sbin/gparted:/usr/sbin/gparted_polkit:' \
+                                     /usr/share/applications/gparted.desktop      &amp;&amp;
+
+cat &gt; /usr/sbin/gparted_polkit &lt;&lt; "EOF" &amp;&amp;
+<literal>#!/bin/bash
+
+pkexec /usr/sbin/gparted $@</literal>
+EOF
+chmod -v 0755 /usr/sbin/gparted_polkit</userinput></screen>
+
+        <para>
+          Still as the <systemitem class="username">root</systemitem> user,
+          configure <xref linkend="polkit"/> and <xref linkend="gparted"/> to
+          use <application>pkexec</application>:
+        </para>
+
+<screen role="root"><userinput>cat &gt; /usr/share/polkit-1/actions/org.gnome.gparted.policy &lt;&lt; "EOF"
+<literal>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd"&gt;
+&lt;policyconfig&gt;
+
+  &lt;action id="org.freedesktop.policykit.pkexec.run-gparted"&gt;
+    &lt;description&gt;Run GParted&lt;/description&gt;
+    &lt;message&gt;Authentication is required to run GParted&lt;/message&gt;
+    &lt;defaults&gt;
+      &lt;allow_any&gt;no&lt;/allow_any&gt;
+      &lt;allow_inactive&gt;no&lt;/allow_inactive&gt;
+      &lt;allow_active&gt;auth_admin_keep&lt;/allow_active&gt;
+    &lt;/defaults&gt;
+    &lt;annotate key="org.freedesktop.policykit.exec.path"&gt;/usr/sbin/gparted&lt;/annotate&gt;
+    &lt;annotate key="org.freedesktop.policykit.exec.allow_gui"&gt;true&lt;/annotate&gt;
+  &lt;/action&gt;
+
+&lt;/policyconfig&gt;</literal>
+EOF
+chmod -v 0644 /usr/share/polkit-1/actions/org.gnome.gparted.policy</userinput></screen>
+
+        <para>
+         Now, clicking in the menu item for Gparted, a dialog appears in the
+         screen, asking for the administrator password.</para>
+
+    </sect3>
+
   </sect2>
 
   <sect2 role="content">
@@ -159,7 +254,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          gparted and gpartedbin
+          gparted, gpartedbin and gparted_polkit (optional)
         </seg>
         <seg>
           None
@@ -197,6 +292,19 @@ make</userinput></screen>
           </para>
           <indexterm zone="gparted gpartedbin">
             <primary sortas="b-gpartedbin">gpartedbin</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gparted_polkit">
+        <term><command>gparted_polkit</command></term>
+        <listitem>
+          <para>
+            is an optional script which can be used to run gparted with polkit,
+            from a menu.
+          </para>
+          <indexterm zone="gparted gparted_polkit">
+            <primary sortas="b-gparted_polkit">gparted_polkit</primary>
           </indexterm>
         </listitem>
       </varlistentry>

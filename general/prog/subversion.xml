@@ -4,13 +4,15 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
+  <!--<!ENTITY subversion-download-http
+  "http://archive.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">-->
   <!ENTITY subversion-download-http
-  "http://archive.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">
+  "http://www.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">
   <!ENTITY subversion-download-ftp  " ">
-  <!ENTITY subversion-md5sum        "f053a9948dfe5c70eff5c00509723214">
-  <!ENTITY subversion-size          "6.4 MB">
-  <!ENTITY subversion-buildsize     "132 MB  (additional 780 MB for tests)">
-  <!ENTITY subversion-time          "1.1 SBU (additional 7 SBU for tests)">
+  <!ENTITY subversion-md5sum        "bd495517a760ddd764ce449a891971db">
+  <!ENTITY subversion-size          "6.6 MB">
+  <!ENTITY subversion-buildsize     "147 MB  (284 MB with all bindings and API documentation built; additional 968 MB for tests)">
+  <!ENTITY subversion-time          "1.3 SBU (2.5 SBU with all bindings and API documentation built; additional 12.6 SBU for tests)">
 ]>
 
 <sect1 id="subversion" xreflabel="Subversion-&subversion-version;">
@@ -41,7 +43,7 @@
       a repository is covered at <xref linkend="svnserver"/>.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -91,6 +93,7 @@
       <xref linkend="serf"/> (for handling http:// and https:// URLs)
     </para>
 
+<!-- support for berkeley db is deprecated since 1.8
     <note>
       <para>
         If you require the <application>Berkeley DB</application> back-end hooks
@@ -99,17 +102,20 @@
         the <application>Berkeley DB</application> library.
       </para>
     </note>
+-->
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="apache"/>,
+<!-- support for berkeley db is deprecated since 1.8
       <xref linkend="db"/>,
+-->
       <xref linkend="cyrus-sasl"/>,
       <xref linkend="dbus"/>,
-      <xref linkend="libgnome-keyring"/>,
       <xref linkend="kdelibs"/> (for <ulink url="http://utils.kde.org/projects/kwalletmanager/">KWallet</ulink> support),
-      <xref linkend="python2"/> (required to run the test suite) and
-      <xref linkend="ruby"/>
+      <xref linkend="python2"/> (with sqlite support for the tests),
+      <xref linkend="ruby"/>, and
+      <xref linkend="swig"/> (for building Perl, Python and Ruby bindings)
     </para>
 
     <bridgehead renderas="sect4">Optional (for the Java Bindings)</bridgehead>
@@ -118,11 +124,6 @@
       <ulink url="http://www.inet.no/dante/">Dante</ulink> or
       <ulink url="http://oss.software.ibm.com/developerworks/opensource/jikes/">Jikes</ulink>,
       and <xref linkend="junit"/> (to test the Java bindings)
-    </para>
-
-    <bridgehead renderas="sect4">Optional (for the SWIG Bindings)</bridgehead>
-    <para role="optional">
-      <ulink url="http://www.swig.org/">SWIG</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -138,7 +139,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr    \
+            --disable-static \
+            --with-apache-libexecdir &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -151,30 +154,37 @@ make</userinput></screen>
       <command>configure</command> and wish to build the Java bindings, issue
       the following command:
     </para>
-
-<screen><userinput>make javahl</userinput></screen>
+    <para>
+      <screen><command>make javahl</command></screen>
+    </para>
 
     <para>
       If you have a multi core CPU and normally run <command>make</command> with
       multiple jobs (eg <command>make -j4</command>) then a bug in the
       <filename>Makefile</filename> will prevent the
       <application>Perl</application> bindings compiling correctly. Fix the
-      <filename>Makefile</filename> with this sed:
+      <filename>Makefile</filename> with:
+    </para>
+    <para>
+     <screen><command>sed -i 's#Makefile.PL.in$#&amp; libsvn_swig_perl#' Makefile.in</command></screen>
     </para>
 
-<screen><userinput>sed -i 's#Makefile.PL.in$#&amp; libsvn_swig_perl#' Makefile.in</userinput></screen>
-
     <para>
-      To compile the <application>Perl</application>,
-      <application>Python</application> or <application>Ruby</application>
-      bindings issue any of the following commands:
+      If you want to compile <application>Perl</application>,
+      <application>Python2</application>, or <application>Ruby</application>
+      bindings, issue any of the following command:
     </para>
-<screen><userinput>make swig-pl &amp;&amp;
-make swig-py &amp;&amp;
-make swig-rb</userinput></screen>
+    <para>
+      <screen><command>make swig-pl</command> # for <application>Perl</application>
+<command>make swig-py \
+     swig_pydir=/usr/lib/python&python2-majorver;/site-packages/libsvn \
+     swig_pydir_extra=/usr/lib/python&python2-majorver;/site-packages/svn</command> # for <application>Python</application>
+<command>make swig-rb</command> # for <application>Ruby</application></screen>
+    </para>
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      To test the results, issue: <command>make -k check</command>. One test
+      (wc-queries-test) is known to fail with recent versions of SQLite. 
     </para>
 
     <para>
@@ -186,17 +196,17 @@ make swig-rb</userinput></screen>
     <para>
       To test the results of any of the <application>SWIG</application>
       bindings, you can use any of the following commands:
+      <command>make check-swig-pl</command>,
+      <command> make check-swig-py</command>, or
+      <command>make check-swig-rb</command>.
     </para>
 
-<screen><userinput>make check-swig-pl &amp;&amp;
-make check-swig-py &amp;&amp;
-make check-swig-rb </userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
+<screen role="root"><userinput>make -j1 install &amp;&amp;
 install -v -m755 -d /usr/share/doc/subversion-&subversion-version; &amp;&amp;
 cp      -v -R       doc/* \
                     /usr/share/doc/subversion-&subversion-version;</userinput></screen>
@@ -205,25 +215,23 @@ cp      -v -R       doc/* \
       If you built the Java bindings, issue the following command as the
       <systemitem class="username">root</systemitem> user to install them:
     </para>
-
-<screen role="root"><userinput>make install-javahl</userinput></screen>
-
     <para>
-      If you built any of the <application>SWIG</application> bindings, issue
-      any of the following commands as the
-      <systemitem class="username">root</systemitem> user to install them:
+     <screen> <command>make install-javahl</command></screen>
     </para>
 
-<screen role="root"><userinput>make install-swig-pl &amp;&amp;
-make install-swig-py &amp;&amp;
-make install-swig-rb</userinput></screen>
-
     <para>
-      In order for <application>Python</application> to automatically discover
-      the bindings, add
-      <filename class="directory">/usr/lib/svn-python</filename> to the
-      <envar>PYTHONPATH</envar> environment variable to the system or personal
-      profiles.
+      If you built the <application>Perl</application>,
+      <application>Python2</application>, or
+      <application>Ruby</application> bindings, issue any of the following
+      commands as the <systemitem class="username">root</systemitem> user
+      to install them:
+    </para>
+    <para>
+      <screen><command>make install-swig-pl</command>
+<command>make install-swig-py \
+      swig_pydir=/usr/lib/python&python2-majorver;/site-packages/libsvn \
+      swig_pydir_extra=/usr/lib/python&python2-majorver;/site-packages/svn</command>
+<command>make install-swig-rb</command></screen>
     </para>
 
   </sect2>
@@ -233,6 +241,16 @@ make install-swig-rb</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <parameter>--with-apache-libexecdir</parameter>:
+      If <xref linkend="apache"/> is installed, the shared
+      <application>Apache</application> modules are
+      built. This switch allows to have those modules installed to
+      <application>Apache</application>'s configured module dir instead
+      of <filename class="directory">/usr/libexec</filename>. It has no effect
+      if <application>Apache</application> is not installed.
+    </para>
 
   </sect2>
 
@@ -299,9 +317,14 @@ make install-swig-rb</userinput></screen>
           /usr/include/subversion-1,
           /usr/lib/perl5/site_perl/&lfs-perl-version;/auto/SVN (optional),
           /usr/lib/perl5/site_perl/&lfs-perl-version;/SVN (optional),
+          /usr/lib/python&python2-majorver;/site-packages/libsvn (optional),
+          /usr/lib/python&python2-majorver;/site-packages/svn (optional),
           /usr/lib/ruby/site_ruby/&lt;x.y&gt;/i686-linux/svn (optional),
-          /usr/lib/svn-javahl (optional),
-          /usr/lib/svn-python (optional), and
+          /usr/lib/ruby/site_ruby/&lt;x.y&gt;/svn (optional),
+<!--      /usr/lib/svn-python/libsvn (optional),
+          /usr/lib/svn-python/svn (optional),
+-->
+          /usr/lib/svn-javahl (optional), and
           /usr/share/doc/subversion-&subversion-version;
         </seg>
       </seglistitem>

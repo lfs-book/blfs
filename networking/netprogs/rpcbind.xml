@@ -6,9 +6,9 @@
 
   <!ENTITY rpcbind-download-http "&sourceforge-repo;/rpcbind/rpcbind-&rpcbind-version;.tar.bz2">
   <!ENTITY rpcbind-download-ftp  " ">
-  <!ENTITY rpcbind-md5sum        "1a77ddb1aaea8099ab19c351eeb26316">
-  <!ENTITY rpcbind-size          "272 KB">
-  <!ENTITY rpcbind-buildsize     "3.8 MB">
+  <!ENTITY rpcbind-md5sum        "0a5f9c2142af814c55d957aaab3bcc68">
+  <!ENTITY rpcbind-size          "109 KB">
+  <!ENTITY rpcbind-buildsize     "1.9 MB">
   <!ENTITY rpcbind-time          "less than 0.1 SBU">
 ]>
 
@@ -33,7 +33,7 @@
     <application>portmap</application>.  It is required for import or export
     of Network File System (NFS) shared directories. </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,16 +72,18 @@
   <sect2 role="installation">
     <title>Installation of rpcbind</title>
 
+    <!-- Packages should adapt to standards, not the other way around -->
     <para>In order to get <application>rpcbind</application> to work
-    properly, first fix <filename>/etc/services</filename>. As the
-    <systemitem class="username">root</systemitem> user:</para>
+    properly, first fix the package to use correct service name:</para>
 
-<screen><userinput>sed -i 's/^sunrpc/rpcbind/' /etc/services</userinput></screen>
+<screen><userinput>sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c &amp;&amp;
+sed -i "/error = getaddrinfo/s:rpcbind:sunrpc:" src/rpcinfo.c</userinput></screen>
 
     <para>Install <application>rpcbind</application> by running the following
     commands:</para>
 
-<screen><userinput>./configure --prefix=/usr --bindir=/sbin &amp;&amp;
+    <!-- specifying rpcuser only needed in 0.2.1, already fixed upstream -->
+<screen><userinput>./configure --prefix=/usr --bindir=/sbin --with-rpcuser=root &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -89,6 +91,14 @@ make</userinput></screen>
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para><command>--with-rpcuser=root</command>: This works around an error in
+    the configure script.</para>
 
   </sect2>
 
@@ -102,7 +112,7 @@ make</userinput></screen>
       included in the <xref linkend="bootscripts"/> package.</para>
 
       <indexterm zone="rpcbind rpcbind-init">
-         <primary sortas="f-portmap">portmap</primary>
+         <primary sortas="f-rpcbind">rpcbind</primary>
       </indexterm>
 
 <screen role="root"><userinput>make install-rpcbind</userinput></screen>

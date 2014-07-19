@@ -6,10 +6,10 @@
 
   <!ENTITY lua-download-http "http://www.lua.org/ftp/lua-&lua-version;.tar.gz">
   <!ENTITY lua-download-ftp  " ">
-  <!ENTITY lua-md5sum        "efbb645e897eae37cad4344ce8b0a614">
-  <!ENTITY lua-size          "246 KB">
+  <!ENTITY lua-md5sum        "dc7f94ec6ff15c985d2d6ad0f1b35654">
+  <!ENTITY lua-size          "248 KB">
   <!ENTITY lua-buildsize     "3.5 MB">
-  <!ENTITY lua-time          "0.1 SBU">
+  <!ENTITY lua-time          "Less than 0.1 SBU">
 ]>
 
 <sect1 id="lua" xreflabel="Lua-&lua-version;">
@@ -33,33 +33,14 @@
       <application>Lua</application> is a powerful light-weight programming
       language designed for extending applications. It is also frequently used
       as a general-purpose, stand-alone language. <application>Lua</application>
-      combines simple procedural syntax with powerful data description
-      constructs based on associative arrays and extensible semantics. It is
-      dynamically typed, interpreted from bytecodes, and has automatic memory
-      management with garbage collection, making it ideal for configuration,
-      scripting, and rapid prototyping. A fundamental concept in the design of
-      <application>Lua</application> is to provide meta-mechanisms for
-      implementing features, instead of providing a host of features directly in
-      the language. For example, although <application>Lua</application> is not
-      a pure object-oriented language, it does provide meta-mechanisms for
-      implementing classes and inheritance. <application>Lua</application>'s
-      meta-mechanisms bring an economy of concepts and keep the language small,
-      while allowing the semantics to be extended in unconventional ways.
-      Extensible semantics is a distinguishing feature of
-      <application>Lua</application>. <application>Lua</application> is a
-      language engine that you can embed into your application. This means that,
-      besides syntax and semantics, it has an API that allows the application to
-      exchange data with <application>Lua</application> programs and also to
-      extend <application>Lua</application> with C functions. In this sense, it
-      can be regarded as a language framework for building domain-specific
-      languages. <application>Lua</application> is implemented as a small
-      library of C functions, written in ANSI C, and compiles unmodified in all
-      known platforms. The implementation goals are simplicity, efficiency,
-      portability, and low embedding cost. The result is a fast language engine
-      with small footprint, making it ideal in embedded systems too.
+      is implemented as a small library of C functions, written in ANSI C, and
+      compiles unmodified in all known platforms. The implementation goals are
+      simplicity, efficiency, portability, and low embedding cost. The result is
+      a fast language engine with small footprint, making it ideal in embedded
+      systems too.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -119,6 +100,7 @@
     </para>
 
 <screen><userinput>patch -Np1 -i ../lua-&lua-version;-shared_library-1.patch &amp;&amp;
+sed -i '/#define LUA_ROOT/s:/usr/local/:/usr/:' src/luaconf.h &amp;&amp;
 make linux</userinput></screen>
 
     <para>
@@ -129,7 +111,7 @@ make linux</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make INSTALL_TOP=/usr TO_LIB="liblua.so liblua.so.5.2 liblua.so.5.2.1" \
+<screen role="root"><userinput>make INSTALL_TOP=/usr TO_LIB="liblua.so liblua.so.5.2 liblua.so.&lua-version;" \
      INSTALL_DATA="cp -d" INSTALL_MAN=/usr/share/man/man1 install &amp;&amp;
 mkdir -pv /usr/share/doc/lua-&lua-version; &amp;&amp;
 cp -v doc/*.{html,css,gif,png} /usr/share/doc/lua-&lua-version;</userinput></screen>
@@ -160,6 +142,16 @@ Requires:
 Libs: -L${libdir} -llua -lm
 Cflags: -I${includedir}</literal>
 EOF</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <command>sed -i ... src/luaconf.h</command>: This command changes
+      <application>Lua</application> search path to match the install paths.
+    </para>
 
   </sect2>
 
@@ -222,7 +214,7 @@ EOF</userinput></screen>
             contains the <application>Lua</application> API functions.
           </para>
           <indexterm zone="lua liblua">
-            <primary sortas="b-liblua">liblua.so</primary>
+            <primary sortas="c-liblua">liblua.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

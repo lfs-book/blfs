@@ -6,10 +6,10 @@
 
   <!ENTITY openldap-download-http " ">
   <!ENTITY openldap-download-ftp  "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/openldap-&openldap-version;.tgz">
-  <!ENTITY openldap-md5sum        "cd75d82ca89fb0280cba66ca6bd97448">
+  <!ENTITY openldap-md5sum        "b0d5ee4b252c841dec6b332d679cf943">
   <!ENTITY openldap-size          "5.3 MB">
-  <!ENTITY openldap-buildsize     "130 MB">
-  <!ENTITY openldap-time          "1.2 SBU">
+  <!ENTITY openldap-buildsize     "48 MB (client) 103 MB (server)">
+  <!ENTITY openldap-time          "0.9 SBU (client) 1.8 SBU (server)">
 ]>
 
 <sect1 id="openldap" xreflabel="OpenLDAP-&openldap-version;">
@@ -34,7 +34,7 @@
       source implementation of the Lightweight Directory Access Protocol.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,19 +84,19 @@
           <ulink url="&patch-root;/openldap-&openldap-version;-symbol_versions-1.patch"/>
         </para>
       </listitem>
-      <listitem>
+      <!-- <listitem>
         <para>
           Optional patch:
           <ulink url="&patch-root;/openldap-&openldap-version;-ntlm-1.patch"/>
         </para>
-      </listitem>
+      </listitem> -->
     </itemizedlist>
 
     <bridgehead renderas="sect3">OpenLDAP Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="db"/>
+      <xref linkend="db"/> (only if building server)
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -108,8 +108,9 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="icu"/>,
-      <xref linkend="mysql"/> or
-      <xref linkend="postgresql"/>,
+        <xref linkend="mariadb"/> or 
+        <ulink url="http://www.mysql.com/">MySQL</ulink> or
+        <xref linkend="postgresql"/>,
       <ulink url="http://www.openslp.org/">OpenSLP</ulink>,
       <xref linkend="pth"/> and
       <xref linkend="unixodbc"/>
@@ -123,7 +124,7 @@
   <sect2 role="installation">
     <title>Installation of OpenLDAP</title>
 
-    <important>
+    <!-- <important>
       <para>
         Without the following patch, the <application>Evolution</application>
         Exchange addressbook integration uses simple binds with cleartext
@@ -133,15 +134,14 @@
       </para>
 
 <screen><userinput>patch -Np1 -i ../openldap-&openldap-version;-ntlm-1.patch</userinput></screen>
-    </important>
+    </important> -->
 
     <note>
       <para>
         If you only need to install the client side <command>ldap*</command>
         binaries, corresponding man pages, libraries and header files (referred to
-        as a <quote>client-only</quote> install), issue the following
-        <command>configure</command> command instead of the other one, and
-        then proceed with the remaining commands (no test suite available):
+        as a <quote>client-only</quote> install), issue these
+        commands instead of the following ones (no test suite available):
       </para>
 
 <screen><userinput>patch -Np1 -i ../openldap-&openldap-version;-blfs_paths-1.patch &amp;&amp;
@@ -149,11 +149,19 @@ patch -Np1 -i ../openldap-&openldap-version;-symbol_versions-1.patch &amp;&amp;
 autoconf &amp;&amp;
 ./configure --prefix=/usr     \
             --sysconfdir=/etc \
+            --disable-static  \
             --enable-dynamic  \
             --disable-debug   \
             --disable-slapd &amp;&amp;
 make depend &amp;&amp;
 make</userinput></screen>
+
+    <para>
+      Then, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
     </note>
 
     <para>
@@ -194,7 +202,8 @@ make depend &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>.
+      To test the results, issue: <command>make test</command>. Tests may fail
+      after a long time (~ 5 SBU).
     </para>
 
     <para>
@@ -203,12 +212,25 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install &amp;&amp;
 
-chown -R ldap:ldap /var/lib/openldap &amp;&amp;
+chmod -v 700 /var/lib/openldap                                         &amp;&amp;
+chown -v -R root:ldap /var/lib/openldap                                &amp;&amp;
+chmod -v 640 /etc/openldap/{slapd.{conf,ldif},DB_CONFIG.example}       &amp;&amp;
+chown -v root:ldap /etc/openldap/{slapd.{conf,ldif},DB_CONFIG.example} &amp;&amp;
+install -v -dm700 -o ldap -g ldap /etc/openldap/slapd.d                &amp;&amp;
 
 install -v -dm755  /usr/share/doc/openldap-&openldap-version; &amp;&amp;
 cp -vfr doc/drafts /usr/share/doc/openldap-&openldap-version; &amp;&amp;
 cp -vfr doc/rfc    /usr/share/doc/openldap-&openldap-version; &amp;&amp;
 cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></screen>
+
+    <para>
+      Having slapd configuration files and ldap databases in /var/lib/openldap
+      readable by anyone is a SECURITY ISSUE, especially since a file stores
+      admin password in PLAIN TEXT. That's why mode 640 and root:ldap ownership
+      were used. Owner is root, so only root can modify the file, and group is
+      ldap, so that the group which owns slapd daemon could read but not modify
+      the file in case of a security breach. 
+    </para>
 
   </sect2>
 
@@ -219,57 +241,65 @@ cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></scree
       href="../../xincludes/static-libraries.xml"/>
 
     <para>
-      <option>--disable-debug</option>: This switch disables
+      <parameter>--disable-debug</parameter>: This switch disables
       the debugging code in <application>OpenLDAP</application>.
     </para>
 
     <para>
-      <option>--enable-dynamic</option>: This switch forces the
+      <parameter>--enable-dynamic</parameter>: This switch forces the
       <application>OpenLDAP</application> libraries to be dynamically
       linked to the executable programs.
     </para>
 
     <para>
-      <option>--enable-crypt</option>: This switch enables using of
+      <parameter>--enable-crypt</parameter>: This switch enables using of
       <command>crypt(3)</command> passwords.
     </para>
 
     <para>
-      <option>--enable-spasswd</option>: This switch enables
+      <parameter>--enable-spasswd</parameter>: This switch enables
       <application>SASL</application> password verification.
     </para>
 
     <para>
-      <option>--enable-modules</option>: This switch enables dynamic
+      <parameter>--enable-modules</parameter>: This switch enables dynamic
       module support.
     </para>
 
     <para>
-      <option>--enable-rlookups</option>: This switch enables
+      <parameter>--enable-rlookups</parameter>: This switch enables
       reverse lookups of client hostnames.
     </para>
 
     <para>
-      <option>--enable-backends</option>: This switch enables
+      <parameter>--enable-backends</parameter>: This switch enables
       all available backends.
     </para>
 
     <para>
-      <option>--enable-overlays</option>: This switch enables
+      <parameter>--enable-overlays</parameter>: This switch enables
       all available overlays.
     </para>
 
     <para>
-      <option>--disable-ndb</option>: This switch disables
+      <parameter>--disable-ndb</parameter>: This switch disables
       <application>MySQL</application> NDB Cluster backend
       which causes configure to fail if
       <application>MySQL</application> is present.
     </para>
 
     <para>
-      <option>--disable-sql</option>: This switch explicitly
+      <parameter>--disable-sql</parameter>: This switch explicitly
       disables the SQL backend.  Omit this switch if a SQL server is
       installed and you are going to use a SQL backend.
+    </para>
+
+    <para>
+     <parameter>--libexecdir=/usr/lib</parameter>: This switch controls where
+     the <filename class="directory">/usr/lib/openldap</filename> directory is
+     installed.  Everything in that directory is a library, so it belongs under
+     <filename class="directory">/usr/lib</filename> instead of
+     <filename class="directory">/usr/libexec</filename>.
     </para>
 
     <para>
@@ -393,7 +423,6 @@ cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></scree
 
       <note>
         <para>
-          The init script starts the daemon without any parameters.
           You'll need to modify the
           <filename>/etc/sysconfig/slapd</filename> to include the
           parameters needed for your specific configuration. See the
@@ -456,15 +485,18 @@ result: 0 Success
       <seglistitem>
         <seg>
           ldapadd, ldapcompare, ldapdelete, ldapexop, ldapmodify, ldapmodrdn,
-          ldappasswd, ldapsearch, ldapurl, ldapwhoami, slapacl, slapadd, slapauth,
-          slapcat, slapd, slapdn, slapindex, slappasswd, slapschema and slaptest
+          ldappasswd, ldapsearch, ldapurl, ldapwhoami, slapacl, slapadd,
+          slapauth, slapcat, slapd, slapdn, slapindex, slappasswd, slapschema,
+          and slaptest
         </seg>
         <seg>
-          liblber.so, libldap.so and libldap_r.so
+          liblber.so, libldap.so, libldap_r.so,
+          and several under /usr/lib/openldap
         </seg>
         <seg>
           /etc/openldap,
-          /usr/lib/openldap and
+          /usr/lib/openldap,
+          /usr/share/doc/openldap-&openldap-version;, and
           /var/lib/openldap
         </seg>
       </seglistitem>

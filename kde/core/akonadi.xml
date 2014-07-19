@@ -6,9 +6,9 @@
 
   <!ENTITY akonadi-download-http "&kde-download-http;akonadi/src/akonadi-&akonadi-version;.tar.bz2">
   <!ENTITY akonadi-download-ftp  "&kde-download-ftp;akonadi/src/akonadi-&akonadi-version;.tar.bz2">
-  <!ENTITY akonadi-md5sum        "bdce288f4b91055d69f35c26dab276d0">
-  <!ENTITY akonadi-size          "221 KB">
-  <!ENTITY akonadi-buildsize     "41 MB">
+  <!ENTITY akonadi-md5sum        "9a4a99d10e003a267a515fc60de4f817">
+  <!ENTITY akonadi-size          "246 KB">
+  <!ENTITY akonadi-buildsize     "60 MB">
   <!ENTITY akonadi-time          "1.9 SBU">
 ]>
 
@@ -34,7 +34,7 @@
     and query access. It provides unique desktop-wide object identification and
     retrieval.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -58,25 +58,21 @@
       </listitem>
     </itemizedlist>
 
-<!--
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing='compact'>
-      <listitem>
-        <para>Required patch: <ulink
-        url="&patch-root;/akonadi-&akonadi-version;-fixes-1.patch"/></para>
-      </listitem>
-    </itemizedlist>
--->
     <bridgehead renderas="sect3">Akonadi Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
     <xref linkend="shared-mime-info"/>,
-    <xref linkend="boost"/>,
-    <xref linkend="soprano"/>, and one of:
-    <xref linkend="sqlite"/>,
-    <xref linkend="mysql"/>, or
-    <xref linkend="postgresql"/>
+    <xref linkend="boost"/>, and one of:
+     <xref linkend="sqlite"/>,
+     <xref linkend="mariadb"/>, 
+     <ulink url="http://www.mysql.com/">MySQL</ulink>, or
+     <xref linkend="postgresql"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <ulink url="&sourceforge-repo;/soprano/">soprano</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -86,25 +82,21 @@
 
   <sect2 role="installation">
     <title>Installation of Akonadi</title>
-
-    <para>Apply the following sed if using <application>MySQL</application>
-    5.6:</para>
-    
-<screen><userinput>sed -i 's@table_cache@table_open_cache@' server/src/storage/mysql*</userinput></screen>
     
     <para>Install <application>Akonadi</application> by running the following
     commands:</para>
 
 <screen><userinput>mkdir build &amp;&amp;
-cd build &amp;&amp;
-cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; \
-      -DCMAKE_PREFIX_PATH=&qt4-dir; \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DINSTALL_QSQLITE_IN_QT_PREFIX=TRUE \
-      .. &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=&kde-dir;  \
+      -DCMAKE_PREFIX_PATH=&qt4-dir;          \
+      -DCMAKE_BUILD_TYPE=Release           \
+      -DINSTALL_QSQLITE_IN_QT_PREFIX=TRUE  \
+      -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 
-    <para>To test the results,issue <command>make test</command>.</para>
+    <para>To test the results, issue <command>make test</command>.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
@@ -137,7 +129,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>akonadi_agent_launcher, akonadi_agent_server, akonadi_control,
-        akonadi_rds, akonadictl and akonadiserver</seg>
+        akonadi_rds, akonadictl, akonadiserver and asapcat</seg>
         <seg>libakonadiprotocolinternals.so and libqsqlite3.so</seg>
         <seg>&kde-dir;/include/akonadi, &kde-dir;/lib/cmake/Akonadi and
         &kde-dir;/share/config/akonadi</seg>

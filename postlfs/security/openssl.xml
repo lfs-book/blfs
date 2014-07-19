@@ -8,10 +8,10 @@
            "http://www.openssl.org/source/openssl-&openssl-version;.tar.gz">
   <!ENTITY openssl-download-ftp
            "ftp://ftp.openssl.org/source/openssl-&openssl-version;.tar.gz">
-  <!ENTITY openssl-md5sum        "66bf6f10f060d561929de96f9dfe5b8c">
+  <!ENTITY openssl-md5sum        "8d6d684a9430d5cc98a62a5d8fbda8cf">
   <!ENTITY openssl-size          "4.3 MB">
-  <!ENTITY openssl-buildsize     "55 MB">
-  <!ENTITY openssl-time          "1.5 SBU">
+  <!ENTITY openssl-buildsize     "51 MB (additional 1 MB for the tests)">
+  <!ENTITY openssl-time          "1.0 SBU (additional 0.4 SBU for the tests)">
 ]>
 
 <sect1 id="openssl" xreflabel="OpenSSL-&openssl-version;">
@@ -39,7 +39,7 @@
       (for accessing HTTPS sites).
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,10 +79,8 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required patches:
+          Required patch:
           <ulink url="&patch-root;/openssl-&openssl-version;-fix_parallel_build-1.patch"/>
-          and
-          <ulink url="&patch-root;/openssl-&openssl-version;-fix_pod_syntax-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -91,8 +89,6 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="bc"/> (required for full coverage by the test suite during
-      the build) and
       <xref linkend="mitkrb"/>
     </para>
 
@@ -108,11 +104,14 @@
       Install <application>OpenSSL</application> with the following commands:
     </para>
 
+<!-- libdir=lib so it doesn't write over /usr/lib64 symlink on 64 bit system.
+     Might break packaging. -->
+
 <screen><userinput>patch -Np1 -i ../openssl-&openssl-version;-fix_parallel_build-1.patch &amp;&amp;
-patch -Np1 -i ../openssl-&openssl-version;-fix_pod_syntax-1.patch &amp;&amp;
 
 ./config --prefix=/usr         \
          --openssldir=/etc/ssl \
+         --libdir=lib          \
          shared                \
          zlib-dynamic &amp;&amp;
 make</userinput></screen>
@@ -130,6 +129,8 @@ make</userinput></screen>
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
+
+<!-- dev note: make INSTALL_PREFIX=<DESTDIR> MANDIR=/usr/share/man MANSUFFIX=ssl install -->
 
 <screen role="root"><userinput>make MANDIR=/usr/share/man MANSUFFIX=ssl install &amp;&amp;
 install -dv -m755 /usr/share/doc/openssl-&openssl-version;  &amp;&amp;
@@ -224,7 +225,7 @@ cp -vfr doc/*     /usr/share/doc/openssl-&openssl-version;</userinput></screen>
           c_rehash and openssl
         </seg>
         <seg>
-          libcrypto.{so,a} and libssl.{so,a}
+          libcrypto.{so,a}, libssl.{so,a} and several under /usr/lib/engines/
         </seg>
         <seg>
           /etc/ssl,

@@ -6,10 +6,10 @@
 
   <!ENTITY kdepimlibs-download-http "&kde-download-http;&kde-version;/src/kdepimlibs-&kde-version;.tar.xz">
   <!ENTITY kdepimlibs-download-ftp  "&kde-download-ftp;&kde-version;/src/kdepimlibs-&kde-version;.tar.xz">
-  <!ENTITY kdepimlibs-md5sum        "994ff6687038cfda8fd481e0a550299a">
-  <!ENTITY kdepimlibs-size          "3.0 MB">
-  <!ENTITY kdepimlibs-buildsize     "153 MB">
-  <!ENTITY kdepimlibs-time          "7.5 SBU">
+  <!ENTITY kdepimlibs-md5sum        "056fc42fece45b2f8f1138b4267ced05">
+  <!ENTITY kdepimlibs-size          "2.7 MB">
+  <!ENTITY kdepimlibs-buildsize     "216 MB">
+  <!ENTITY kdepimlibs-time          "10 SBU">
 ]>
 
 <sect1 id="kdepimlibs" xreflabel="kdepimlibs-&kde-version;">
@@ -33,7 +33,7 @@
     <application>KDE</application> PIM applications like
     <command>kmail</command>, <command>kalarm</command>, etc.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,19 +70,25 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-    <xref linkend="nepomuk-core"/>,
-    <xref linkend="libxslt"/>,
-    <xref linkend="gpgme"/>,
-    <xref linkend="libical"/>,
-    <xref linkend="akonadi"/>,
-    <xref linkend="cyrus-sasl"/>,
-    <xref linkend="boost"/> and
-    <xref linkend="qjson"/>
+      <xref linkend="kdelibs"/>,
+      <xref linkend="libxslt"/>,
+      <xref linkend="gpgme"/>,
+      <xref linkend="libical"/>,
+      <xref linkend="akonadi"/>,
+      <xref linkend="cyrus-sasl"/>,
+      <xref linkend="boost"/> and
+      <xref linkend="qjson"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-    <xref linkend="openldap"/>
+      <xref linkend="openldap"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="openssl"/>
+      <ulink url="http://projects.kde.org/prison">prison</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -99,10 +105,11 @@
 
 <!-- Again, nothing in sysconfdir -->
 <screen><userinput>mkdir build &amp;&amp;
-cd build &amp;&amp;
+cd    build &amp;&amp;
+
 cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; \
-      -DCMAKE_BUILD_TYPE=Release \
-      .. &amp;&amp;
+      -DCMAKE_BUILD_TYPE=Release         \
+      -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 
     <para>The full test suite for this package is not enabled by default and not

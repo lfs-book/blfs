@@ -7,11 +7,10 @@
   <!ENTITY bind-download-http " ">
   <!ENTITY bind-download-ftp
   "ftp://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.gz">
-  <!ENTITY bind-md5sum "7baa8359f0773e04f63d7e694db1909c">
-  <!ENTITY bind-size "7.2 MB">
-  <!ENTITY bind-buildsize "110 MB (additional 50 MB to run the test suite)">
-  <!ENTITY bind-time "1.3 SBU (additional 15 minutes, processor independent, to
-  run the complete test suite)">
+  <!ENTITY bind-md5sum        "85f5bbd655f7fbb946fe128c5adcc9ca">
+  <!ENTITY bind-size          "8.0 MB">
+  <!ENTITY bind-buildsize     "101 MB (additional 54 MB to run the test suite)">
+  <!ENTITY bind-time          "1.6 SBU (additional 24 minutes, processor independent, to run the complete test suite)">
 ]>
 
 <sect1 id="bind" xreflabel="BIND-&bind-version;">
@@ -35,7 +34,7 @@
     and client utilities. If you are only interested in the utilities, refer
     to the <xref linkend="bind-utils"/>.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,9 +71,19 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="libcap-pam"/>,
       <xref linkend="libxml2"/>,
-      <xref linkend="mitkrb"/> and
+      <xref linkend="mitkrb"/>, and
       <xref linkend="openssl"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional database backends</bridgehead>
+    <para role="optional">
+      <xref linkend="postgresql"/>,
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="db"/>,
+      <xref linkend="openldap"/>, and
+      <xref linkend="unixodbc"/>
     </para>
 
     <bridgehead renderas="sect4">Optional (to run the test suite)</bridgehead>
@@ -104,24 +113,22 @@
 
 <screen><userinput>patch -Np1 -i ../bind-&bind-version;-use_iproute2-1.patch</userinput></screen>
 
-<!--
-    <para>If you want to <command>configure</command>
-    <application>BIND</application> with the option
-    <option>- -disable-static</option> fix a bug in one of the Makefiles:</para>
-    <!- - this is a bug in bind-9.8.1 that wasn't in bind-9.8.0 - ->
-
-<screen><userinput>sed -i 's# driver.o# .libs/driver.o#' bin/tests/system/dlzexternal/Makefile.in</userinput></screen>
--->
     <para>Install <application>BIND</application> by running the
     following commands:</para>
 
-<screen><userinput>./configure --prefix=/usr           \
+<screen><userinput>sed -e 's/resolver //'   \
+    -e 's/rpz //'        \
+    -e 's/statistics //' \
+    -e 's/xfer //'       \
+    -i bin/tests/system/conf.sh.in &amp;&amp;
+./configure --prefix=/usr           \
             --sysconfdir=/etc       \
             --localstatedir=/var    \
             --mandir=/usr/share/man \
             --enable-threads        \
             --with-libtool          \
-            --disable-static        &amp;&amp;
+            --disable-static        \
+            --with-randomdev=/dev/urandom &amp;&amp;
 make</userinput></screen>
 
     <para>Issue the following commands to run the complete suite of tests.
@@ -139,16 +146,19 @@ make</userinput></screen>
 
 <screen role="root"><userinput>bin/tests/system/ifconfig.sh down</userinput></screen>
 
-    <para>Issue the following command to check that all 185 tests
-    ran successfully:</para>
+    <para>Issue the following command to check tests that ran successfully:</para>
 
 <screen><userinput>grep "R:PASS" check.log | wc -l</userinput></screen>
+
+    <para>and the following command check tests that failed:</para>
+
+<screen><userinput>grep -A1 "R:FAIL" check.log</userinput></screen>
 
     <para>Finally, install the package as the <systemitem
     class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-chmod -v 0755 /usr/lib/lib{bind9,isc{,cc,cfg},lwres,dns}.so.*.?.? &amp;&amp;
+chmod -v 0755 /usr/lib/lib{bind9,dns,isc{,cc,cfg},lwres}.so &amp;&amp;
 
 install -v -m755 -d /usr/share/doc/bind-&bind-version;/{arm,misc} &amp;&amp;
 install -v -m644    doc/arm/*.html \
@@ -160,6 +170,9 @@ install -v -m644 \
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para><command>sed ... bin/tests/system/conf.sh.in</command>:
+    This command removes tests that fail (some for unknown reasons).</para>
 
     <para><parameter>--sysconfdir=/etc</parameter>: This parameter forces
     <application>BIND</application> to look for configuration
@@ -173,11 +186,14 @@ install -v -m644 \
     building of dynamic libraries and links the installed binaries to these
     libraries.</para>
 
+    <para><parameter>--with-randomdev=/dev/urandom</parameter>: This parameter 
+    specifes a non-blocking random device for use with digital signatures.</para>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 
-    <para><command>chmod 755
-    /usr/lib/{lib{bind9,isc{,cc,cfg},lwres,dns}.so.*.?.?}</command>:
+    <para><command>chmod 0755
+    /usr/lib/{lib{bind9,dns,isc{,cc,cfg},lwres}.so</command>:
     Enable the execute bit to prevent a warning when using
     <command>ldd</command> to check library dependencies.</para>
 
@@ -449,17 +465,24 @@ dig www.&lfs-domainname;</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>arpaname, ddns-confgen, dig, dnssec-checkds, dnssec-coverage,
-        dnssec-dsfromkey, dnssec-keyfromlabel, dnssec-keygen, dnssec-revoke,
+
+        <seg>arpaname, bind9-config hardlinked to isc-config.sh, ddns-confgen,
+        delv, dig, dnssec-checkds, dnssec-coverage, dnssec-dsfromkey,
+        dnssec-importkey, dnssec-keyfromlabel, dnssec-keygen, dnssec-revoke,
         dnssec-settime, dnssec-signzone, dnssec-verify, genrandom, host,
-        isc-config.sh, isc-hmac-fixup, lwresd, named, named-checkconf,
-        named-checkzone, named-journalprint, nsec3hash, nslookup, nsupdate, rndc
-        and rndc-confgen</seg>
-        <seg>libbind9.so, libdns.so, libisccc.so, libisccfg.so, libisc.so and
-        liblwres.so</seg>
-        <seg>/srv/named, /usr/include/bind9, /usr/include/dns, /usr/include/dst,
-        /usr/include/isc, /usr/include/isccc, /usr/include/isccfg,
-        /usr/include/lwres and /usr/share/doc/bind-&bind-version;</seg>
+        isc-hmac-fixup, lwresd hardlinked to named, named-checkconf,
+        named-checkzone, named-compilezone (symlink), named-journalprint,
+        named-rrchecker, nsec3hash, nslookup, nsupdate, rndc, rndc-confgen,
+        and tsig-keygen (symlink)</seg>
+      
+        <seg>libbind9.so, libdns.so, libirs.so, libisc.so, libisccc.so, 
+        libisccfg.so, and liblwres.so</seg>
+
+        <seg>/srv/named, /usr/include/bind9, /usr/include/dns,
+        /usr/include/dst, /usr/include/irs, /usr/include/isc,
+        /usr/include/isccc, /usr/include/isccfg, /usr/include/lwres,
+        /usr/include/pk11, /usr/include/pkcs11, and
+        /usr/share/doc/bind-&bind-version;</seg>
       </seglistitem>
     </segmentedlist>
 

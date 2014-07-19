@@ -7,10 +7,10 @@
   <!ENTITY polkit-download-http
            "http://www.freedesktop.org/software/polkit/releases/polkit-&polkit-version;.tar.gz">
   <!ENTITY polkit-download-ftp  " ">
-  <!ENTITY polkit-md5sum        "81b116edf986d8e13502929a171f4e0d">
+  <!ENTITY polkit-md5sum        "b0f2fa00a55f47c6a5d88e9b73f80127">
   <!ENTITY polkit-size          "1.4 MB">
   <!ENTITY polkit-buildsize     "17 MB">
-  <!ENTITY polkit-time          "0.5 SBU">
+  <!ENTITY polkit-time          "0.2 SBU">
 ]>
 
 <sect1 id="polkit" xreflabel="Polkit-&polkit-version;">
@@ -33,10 +33,10 @@
     <para>
       <application>Polkit</application> is a toolkit for defining and handling
       authorizations. It is used for allowing unprivileged processes to
-      comminicate with privileged processes.
+      communicate with privileged processes.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,9 +76,8 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="glib2"/>,
-      <xref linkend="intltool"/> and
-      <xref linkend="SpiderMonkey"/>
+      <xref linkend="glib2"/>, and
+      <xref linkend="JS"/>
     </para>
 
     <bridgehead renderas="sect4">Optional (Required if building GNOME)</bridgehead>
@@ -129,12 +128,12 @@ useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --sysconfdir=/etc \
-            --localstatedir=/var \
-            --libexecdir=/usr/lib/polkit-1 \
-            --with-authfw=shadow \
-            --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                \
+            --sysconfdir=/etc            \
+            --localstatedir=/var         \
+            --disable-static             \
+            --enable-libsystemd-login=no \
+            --with-authfw=shadow         &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -157,10 +156,17 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
+      <parameter>--enable-libsystemd-login=no</parameter>: This parameter fixes
+      building without <application>systemd</application>, which is not part
+      of LFS/BLFS. If you use <application>systemd</application>,
+      replace "no" by "yes".
+    </para>
+
+    <para>
       <parameter>--with-authfw=shadow</parameter>: This parameter configures the
       package to use the <application>Shadow</application> rather than the
-      <application>Linux PAM</application> Authentication framework. Remove it if
-      you would like to use <application>Linux PAM</application>.
+      <application>Linux PAM</application> Authentication framework. Remove it
+      if you would like to use <application>Linux PAM</application>.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

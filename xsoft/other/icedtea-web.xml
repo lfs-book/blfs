@@ -6,9 +6,9 @@
 
   <!ENTITY icedtea-web-download-http "http://icedtea.classpath.org/download/source/icedtea-web-&icedtea-web-version;.tar.gz">
   <!ENTITY icedtea-web-download-ftp  " ">
-  <!ENTITY icedtea-web-md5sum        "a19661c0b31725fbf0e5e31303ac74fa">
-  <!ENTITY icedtea-web-size          "972 KB">
-  <!ENTITY icedtea-web-buildsize     "16 MB">
+  <!ENTITY icedtea-web-md5sum        "a6199869763291879f3a7382b114974c">
+  <!ENTITY icedtea-web-size          "1.5 MB">
+  <!ENTITY icedtea-web-buildsize     "30 MB">
   <!ENTITY icedtea-web-time          "0.3 SBU">
 ]>
 
@@ -33,7 +33,7 @@
     <application>Java</application> browser plugin, and a new webstart
     implementation, licensed under GPLV3.</para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -61,8 +61,28 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="openjdk"/>, and
+      <xref linkend="openjdk"/> and
       <xref linkend="xulrunner"/>
+    </para>
+
+    <bridgehead renderas="sect4">Required at runtime, a web browser,
+    such as:</bridgehead>
+    <para role="required-real-time">
+      <xref linkend="epiphany"/>,
+      <xref linkend="firefox"/>,
+      <xref linkend="midori"/>,
+      <ulink url="http://www.chromium.org/getting-involved/download-chromium">Chromium</ulink>,
+      <ulink url="http://www.opera.com">Opera</ulink>, and
+      <xref linkend="seamonkey"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="libxslt"/>,
+      <xref linkend="mercurial"/>,
+      <xref linkend="npapi-sdk"/>,
+      <ulink url="http://emma.sourceforge.net/">EMMA</ulink>, and
+      <ulink url="http://www.eclemma.org/jacoco/">JACOCO</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -86,7 +106,8 @@ make</userinput></screen>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+mandb -c /opt/jdk/man</userinput></screen>
 
   </sect2>
 
@@ -107,13 +128,9 @@ make</userinput></screen>
     <title>Configuration Information</title>
 
     <para>As the <systemitem class="username">root</systemitem> user, create a
-    symbolic link to the plugin from your browser(s) plugins directory, where
-    <replaceable>&lt;arch&gt;</replaceable> is either
-    <filename class="directory">i386</filename> or
-    <filename class="directory">amd64</filename>:</para>
+    symbolic link to the plugin from your browser(s) plugins directory:</para>
 
-<screen><userinput role="root">ln -s ${JAVA_HOME}/jre/lib/&lt;<replaceable>arch</replaceable>&gt;/IcedTeaPlugin.so \
-    /usr/lib/mozilla/plugins/</userinput></screen>
+<screen role="root"><userinput>ln -s ${JAVA_HOME}/jre/lib/IcedTeaPlugin.so /usr/lib/mozilla/plugins/</userinput></screen>
 
     <important>
       <para>The plugin must be a symlink for it to work. If not, the browsers
@@ -133,9 +150,9 @@ make</userinput></screen>
 
 
       <seglistitem>
-        <seg>itweb-settings, javaws, and pluginappletviewer</seg>
+        <seg>itweb-settings and javaws</seg>
         <seg>IcedTeaPlugin.so, about.jar, netx.jar, plugin.jar</seg>
-        <seg>None</seg>
+        <seg>${JAVA_HOME}/jre/share/icedtea-web</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -161,16 +178,6 @@ make</userinput></screen>
           <para>launches Java application/applets hosted on a network.</para>
           <indexterm zone="icedtea-web javaws-itweb">
             <primary sortas="b-javaws">javaws</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="pluginappletviewer">
-        <term><command>pluginappletviewer</command></term>
-        <listitem>
-          <para>runs Java applets outside of the context of a browser.</para>
-          <indexterm zone="icedtea-web pluginappletviewer">
-            <primary sortas="b-pluginappletviewer">pluginappletviewer</primary>
           </indexterm>
         </listitem>
       </varlistentry>

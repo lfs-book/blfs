@@ -6,9 +6,9 @@
 
   <!ENTITY amarok-download-http "&kde-download-http;amarok/&amarok-version;/src/amarok-&amarok-version;.tar.bz2">
   <!ENTITY amarok-download-ftp  "&kde-download-ftp;amarok/&amarok-version;/src/amarok-&amarok-version;.tar.bz2">
-  <!ENTITY amarok-md5sum        "855203770cfb43be39bd9b961540dbaf">
-  <!ENTITY amarok-size          "41 MB">
-  <!ENTITY amarok-buildsize     "310 MB">
+  <!ENTITY amarok-md5sum        "53cfcb4819668b10e13b061478c7b32a">
+  <!ENTITY amarok-size          "38.1 MB">
+  <!ENTITY amarok-buildsize     "223 MB">
   <!ENTITY amarok-time          "9.2 SBU">
 ]>
 
@@ -36,7 +36,7 @@
       several digital music players including Apple's iPod.
     </para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,14 +77,13 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="kdelibs"/>,
-      <xref linkend="mysql"/> and
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>, and
       <xref linkend="taglib"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="ffmpeg"/> and
-      <xref linkend="nepomuk-core"/>
+      <xref linkend="ffmpeg"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -93,14 +92,17 @@
       <xref linkend="libxml2"/> (for MP3tunes integration),
       <xref linkend="openssl"/> (for MP3tunes integration),
       <xref linkend="qjson"/>,
+      <ulink url="&kde-download-http;&kde-version;/src/">nepomuk-core</ulink>,
+      <ulink url="http://kollide.net/~jefferai/">Taglib-extras</ulink>,
       <ulink url="http://code.google.com/p/clamz/">Clamz</ulink> (For Amazon integration),
       <ulink url="http://www.gtkpod.org/libgpod.html">libgpod</ulink> (for iPod support),
       <ulink url="https://github.com/lastfm/liblastfm">liblastfm</ulink> (for Last.fm integration),
       <ulink url="http://libmtp.sourceforge.net/">libmtp</ulink> (for MTP device support),
       <ulink url="http://wiki.gpodder.org/wiki/Libmygpo-qt">libmygpo-qt</ulink> (for gpodder.net podcast support),
       <ulink url="http://code.google.com/p/musicip-libofa">libofa</ulink> (for MusicDNS support),
-      <ulink url="&gnome-download-http;/loudmouth">Loudmouth</ulink> (for MP3tunes integration) and
-      <ulink url="http://code.google.com/p/qtscriptgenerator/">qtscript-qt</ulink>
+      <ulink url="&gnome-download-http;/loudmouth">Loudmouth</ulink> (for MP3tunes integration),
+      <ulink url="http://code.google.com/p/qtscriptgenerator/">qtscript-qt</ulink>, and
+      <ulink url="http://code.google.com/p/googlemock/">Google Mock</ulink> (for tests)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -117,10 +119,12 @@
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
-cd build &amp;&amp;
+cd    build &amp;&amp;
+
 cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; \
       -DCMAKE_BUILD_TYPE=Release         \
-      .. &amp;&amp;
+      -DKDE4_BUILD_TESTS=OFF             \
+      -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -128,6 +132,16 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+  
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <option>-DKDE4_BUILD_TESTS=OFF</option>: This switch disables the 
+      integrated tests. The test suite requires Google Mock.
+    </para>
 
   </sect2>
 
@@ -142,12 +156,12 @@ make</userinput></screen>
       <seglistitem>
         <seg>
           amarok, amarok_afttagger, amarokcollectionscanner,
-          amarokpkg and amzdownloader
+          amarokpkg, and amzdownloader
         </seg>
         <seg>
           libamarokcore.so, libamaroklib.so, libamarokocsclient.so, libamarokpud.so,
           libamarok_service_lastfm_shared.so, libamarok-sqlcollection.so,
-          libamarok-transcoding.so, libampache_account_login.so and several
+          libamarok-transcoding.so, libampache_account_login.so, and several
           libraries in &kde-dir;/lib/kde4
         </seg>
         <seg>

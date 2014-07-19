@@ -6,9 +6,9 @@
 
   <!ENTITY libtirpc-download-http "&sourceforge-repo;/project/libtirpc/libtirpc/&libtirpc-version;/libtirpc-&libtirpc-version;.tar.bz2">
   <!ENTITY libtirpc-download-ftp  " ">
-  <!ENTITY libtirpc-md5sum        "b70e6c12a369a91e69fcc3b9feb23d61">
-  <!ENTITY libtirpc-size          "456 KB">
-  <!ENTITY libtirpc-buildsize     "7.5 MB">
+  <!ENTITY libtirpc-md5sum        "847995e8d002cbf1387bda05947be086">
+  <!ENTITY libtirpc-size          "448 KB">
+  <!ENTITY libtirpc-buildsize     "8.0 MB">
   <!ENTITY libtirpc-time          "0.2 SBU">
 ]>
 
@@ -36,7 +36,7 @@
       used to be in glibc.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -72,27 +72,23 @@
       </listitem>
     </itemizedlist>
 
+    <!-- Not needed for LFS 7.5, Glibc RPC interface is exported again
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing='compact'>
       <listitem>
         <para>
-          Required header tar file (Add rpc/nis headers):
-          <ulink url="&sources-anduin-other;/rpcnis-headers.tar.bz2"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Required Patch (Remove nis dependencies):
+          Required patch (Remove nis dependencies):
           <ulink url="&patch-root;/libtirpc-&libtirpc-version;-remove_nis-1.patch"/>
         </para>
       </listitem>
-    </itemizedlist>
+    </itemizedlist> -->
 
     <bridgehead renderas="sect3">libtirpc Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/libgssapi">libgssapi</ulink>
+      <xref linkend="mitkrb"/> for the GSSAPI
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -104,24 +100,17 @@
     <title>Installation of libtirpc</title>
 
     <para>
-      In LFS-7.1 the NIS and RPC related headers were not installed by default.
-      If that applies to your system, install them by running the following
-      command as the <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>if [ ! -r /usr/include/rpc/rpc.h ]; then
-   tar -xvf ../rpcnis-headers.tar.bz2 -C /usr/include
-fi</userinput></screen>
-
-    <para>
       Install <application>libtirpc</application> by running the following
       commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../libtirpc-&libtirpc-version;-remove_nis-1.patch &amp;&amp;
-sed "s@AM_CONFIG_HEADER@AC_CONFIG_HEADERS@g" -i configure.ac &amp;&amp;
+<screen><userinput><!--patch -Np1 -i ../libtirpc-&libtirpc-version;-remove_nis-1.patch &amp;&amp;
 autoreconf -fi &amp;&amp;
-./configure --prefix=/usr --sysconfdir=/etc CFLAGS="-fPIC" &amp;&amp;
+
+-->./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --disable-static  \
+            --disable-gssapi  &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -141,10 +130,13 @@ ln -sfv ../../lib/libtirpc.so.1.0.10 /usr/lib/libtirpc.so</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
+
     <para>
-      <command>sed "s@AM_CONFIG_HEADER@AC_CONFIG_HEADERS@g"
-      -i configure.ac</command>: This sed fixes some issues with
-      <application>Automake</application> 1.13 and later.
+      <parameter>--disable-gssapi</parameter>: This switch is needed if 
+      no GSSAPI is installed. Remove this switch if you have one
+      installed (for example <xref linkend="mitkrb"/>) and you wish to use it.
     </para>
 
     <para>
@@ -167,7 +159,7 @@ ln -sfv ../../lib/libtirpc.so.1.0.10 /usr/lib/libtirpc.so</userinput></screen>
           None
         </seg>
         <seg>
-          libtirpc.{so,a}
+          libtirpc.so
         </seg>
         <seg>
           /usr/include/libtirpc
@@ -181,14 +173,14 @@ ln -sfv ../../lib/libtirpc.so.1.0.10 /usr/lib/libtirpc.so</userinput></screen>
       <?dbhtml list-presentation="table"?>
 
       <varlistentry id="libtirpc-lib">
-        <term><filename class="libraryfile">libtirpc.{so,a}</filename></term>
+        <term><filename class="libraryfile">libtirpc.so</filename></term>
         <listitem>
           <para>
             provides the Remote Procedure Call (RPC) API functions required by
             other programs.
           </para>
           <indexterm zone="libtirpc libtirpc-lib">
-            <primary sortas="c-libtirpc">libtirpc.{so,a}</primary>
+            <primary sortas="c-libtirpc">libtirpc.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

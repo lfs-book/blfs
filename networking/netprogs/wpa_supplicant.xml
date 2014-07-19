@@ -7,9 +7,9 @@
   <!ENTITY wpa_supplicant-download-http
            "http://hostap.epitest.fi/releases/wpa_supplicant-&wpa_supplicant-version;.tar.gz">
   <!ENTITY wpa_supplicant-download-ftp  " ">
-  <!ENTITY wpa_supplicant-md5sum        "3be2ebfdcced52e00eda0afe2889839d">
-  <!ENTITY wpa_supplicant-size          "2.0 MB">
-  <!ENTITY wpa_supplicant-buildsize     "32 MB">
+  <!ENTITY wpa_supplicant-md5sum        "238e8e888bbd558e1a57e3eb28d1dd07">
+  <!ENTITY wpa_supplicant-size          "2.3 MB">
+  <!ENTITY wpa_supplicant-buildsize     "26 MB">
   <!ENTITY wpa_supplicant-time          "0.2 SBU">
 ]>
 
@@ -40,7 +40,7 @@
       access point.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,32 +86,34 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="dbus"/>,
+      <xref linkend="libxml2"/>, and
       <xref linkend="qt4"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
       <ulink url="&blfs-wiki;/wpa_supplicant"/>
     </para>
+
   </sect2>
 
   <sect2 role="kernel" id="wpa_supplicant-kernel">
     <title>Kernel Configuration</title>
 
     <para>
-      Enable the following options in the kernel configuration
-      and recompile the kernel if necessary:
+      Enable the following options in the kernel configuration as well as
+      specific device drivers for your hardware and recompile the kernel if
+      necessary:
     </para>
 
-<screen><literal>[*] Networking support  --->
-  [*]   Wireless  --->
-    [*]   cfg80211 - wireless configuration API
-    [*]     cfg80211 wireless extensions compatibility
-    [*]   Generic IEEE 802.11 Networking Stack (mac80211)
-
+<screen><literal>Networking support  --->
+  Wireless  --->
+    cfg80211 - wireless configuration API: Y or M
+      cfg80211 wireless extensions compatibility: Y
+    Generic IEEE 802.11 Networking Stack (mac80211): Y or M
 Device Drivers  --->
-  [*] Network device support  --->
-    [*]   Wireless LAN  --->
-</literal></screen>
+  Network device support  --->
+    Wireless LAN  ---></literal></screen>
 
     <para>
       Select the options that support your hardware:
@@ -137,7 +139,7 @@ Device Drivers  --->
     </para>
 
 <screen><userinput>cat &gt; wpa_supplicant/.config &lt;&lt; "EOF"
-CONFIG_BACKEND=file
+<literal>CONFIG_BACKEND=file
 CONFIG_CTRL_IFACE=y
 CONFIG_DEBUG_FILE=y
 CONFIG_DEBUG_SYSLOG=y
@@ -161,10 +163,21 @@ CONFIG_PKCS12=y
 CONFIG_READLINE=y
 CONFIG_SMARTCARD=y
 CONFIG_WPS=y
-CFLAGS += -I/usr/include/libnl3
-CONFIG_CTRL_IFACE_DBUS=y
+CFLAGS += -I/usr/include/libnl3</literal>
+EOF</userinput></screen>
+
+    <para>
+      If you wish to use <application>WPA Supplicant</application> with
+      <xref linkend="NetworkManager"/>, make sure that you have installed
+      <xref linkend="dbus"/> and <xref linkend="libxml2"/>, then add the
+      following options to the <application>WPA Supplicant</application>
+      build configuration file by running the following command:
+    </para>
+
+<screen><userinput>cat &gt;&gt; wpa_supplicant/.config &lt;&lt; "EOF"
+<literal>CONFIG_CTRL_IFACE_DBUS=y
 CONFIG_CTRL_IFACE_DBUS_NEW=y
-CONFIG_CTRL_IFACE_DBUS_INTRO=y
+CONFIG_CTRL_IFACE_DBUS_INTRO=y</literal>
 EOF</userinput></screen>
 
     <para>
@@ -196,8 +209,17 @@ popd</userinput></screen>
 
 <screen role="root"><userinput>install -v -m755 wpa_{cli,passphrase,supplicant} /sbin/ &amp;&amp;
 install -v -m644 doc/docbook/wpa_supplicant.conf.5 /usr/share/man/man5/ &amp;&amp;
-install -v -m644 doc/docbook/wpa_{cli,passphrase,supplicant}.8 /usr/share/man/man8/ &amp;&amp;
-install -v -m644 dbus/fi.{epitest.hostap.WPASupplicant,w1.wpa_supplicant1}.service \
+install -v -m644 doc/docbook/wpa_{cli,passphrase,supplicant}.8 /usr/share/man/man8/</userinput></screen>
+
+    <para>
+      If you have built <application>WPA Supplicant</application> with
+      <application>D-Bus</application> support, you will need to install
+      <application>D-Bus</application> configuration files. Install them
+      by running the following commands as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -v -m644 dbus/fi.{epitest.hostap.WPASupplicant,w1.wpa_supplicant1}.service \
                  /usr/share/dbus-1/system-services/ &amp;&amp;
 install -v -m644 dbus/dbus-wpa_supplicant.conf \
                  /etc/dbus-1/system.d/wpa_supplicant.conf</userinput></screen>

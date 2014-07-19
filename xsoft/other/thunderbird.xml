@@ -4,14 +4,14 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY thunderbird-download-http
-           "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.bz2">
+  <!ENTITY thunderbird-download-http 
+           "http://ftp.mozilla.org/pub/mozilla.org/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.bz2">
   <!ENTITY thunderbird-download-ftp
            "&mozilla-ftp;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.bz2">
-  <!ENTITY thunderbird-md5sum            "31f07c3911d1d6772831195af64db963">
-  <!ENTITY thunderbird-size              "109 MB">
-  <!ENTITY thunderbird-buildsize         "3.1 GB (90 MB installed)">
-  <!ENTITY thunderbird-time              "29 SBU">
+  <!ENTITY thunderbird-md5sum            "3e5d44c7e716e132601a40e865a13ef8">
+  <!ENTITY thunderbird-size              "134 MB">
+  <!ENTITY thunderbird-buildsize         "3.8 GB (58 MB installed)">
+  <!ENTITY thunderbird-time              "64 SBU">
 ]>
 
 <sect1 id="thunderbird" xreflabel="Thunderbird-&thunderbird-version;">
@@ -37,7 +37,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -109,10 +109,11 @@
       <xref linkend="cyrus-sasl"/>,
       <xref linkend="dbus-glib"/>,
       <xref linkend="doxygen"/>,
-      <xref linkend="gnome-vfs"/> and <xref linkend="libgnomeui"/>
-      (for integration with the old version of <application>GNOME</application>),
+      <xref linkend="gst-plugins-good"/> and
+      <xref linkend="gst-ffmpeg"/>,
       <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>,
       <xref linkend="libnotify"/>,
+      <xref linkend="openjdk"/>,
       <xref linkend="startup-notification"/>,
       <xref linkend="wget"/> and
       <xref linkend="wireless_tools"/>
@@ -151,6 +152,11 @@ ac_add_options --disable-necko-wifi
 # If you have installed libnotify comment out this line:
 ac_add_options --disable-libnotify
 
+# GStreamer is necessary for H.264 video playback in HTML5 Video Player;
+# to be enabled, also remember to set "media.gstreamer.enabled" to "true"
+# in about:config. If you have installed GStreamer comment out this line:
+ac_add_options --disable-gstreamer
+
 # Uncomment these lines if you have installed optional dependencies:
 #ac_add_options --enable-system-hunspell
 #ac_add_options --enable-startup-notification
@@ -168,8 +174,9 @@ ac_add_options --with-system-libevent
 ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
+ac_add_options --with-system-icu
 
-# It is recommended not to touch anything below this line
+# The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
 
 ac_add_options --disable-crashreporter
@@ -187,6 +194,7 @@ ac_add_options --enable-official-branding
 ac_add_options --enable-safe-browsing
 ac_add_options --enable-url-classifier
 
+ac_add_options --enable-system-cairo
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
 
@@ -205,8 +213,13 @@ EOF</userinput></screen>
       commands:
     </para>
 
-<screen><userinput>make -f client.mk &amp;&amp;
-make -C thunderbuild/mail/installer</userinput></screen>
+    <note><para>
+      If you are compiling <application>Thunderbird</application> in chroot,
+      prepend <envar>SHELL=/bin/bash</envar> to the <!--first -->make command below.
+    </para></note>
+
+<screen><userinput>make -f client.mk<!--
+make -C thunderbuild/mail/installer--></userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -217,13 +230,15 @@ make -C thunderbuild/mail/installer</userinput></screen>
       commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>mkdir -pv /usr/lib/thunderbird-&thunderbird-version; &amp;&amp;
+<!--<screen role="root"><userinput>mkdir -pv /usr/lib/thunderbird-&thunderbird-version; &amp;&amp;
 tar -xvf thunderbuild/mozilla/dist/thunderbird-&thunderbird-version;.en-US.linux-$(uname -m).tar.bz2 \
-    -C /usr/lib/thunderbird-&thunderbird-version; --strip-components=1 &amp;&amp;
-ln -sfv ../lib/thunderbird-&thunderbird-version;/thunderbird /usr/bin</userinput></screen>
+    -C /usr/lib/thunderbird-&thunderbird-version; -\-strip-components=1 &amp;&amp;
+ln -sfv ../lib/thunderbird-&thunderbird-version;/thunderbird /usr/bin</userinput></screen>-->
+
+<screen role="root"><userinput>make -f client.mk install INSTALL_SDK=</userinput></screen>
 
     <para>
-      The above instructions just install the parts you need to run
+      The above instruction just installs the parts you need to run
       <application>Thunderbird</application>. Alternatively, if you want to
       install the full <application>Thunderbird</application> development
       environment, run the following command as the
@@ -244,22 +259,6 @@ ln -sfv ../lib/thunderbird-&thunderbird-version;/thunderbird /usr/bin</userinput
       get initial configuration and setup parameters.
     </para>
 
-    <para>
-      <command>make -C thunderbuild/mail/installer</command>: this runs make in
-      the <filename class="directory">thunderbuild/mail/installer</filename>
-      folder. This gathers together all the parts of
-      <application>Thunderbird</application> and compresses them into a tarball.
-    </para>
-
-    <para>
-      <command>tar -xfv thunderbuild/mozilla/dist ...</command>: This untars
-      <application>Thunderbird</application>, the <option>-C</option> option
-      uncompresses the files in
-      <filename class="directory">/usr/lib/thunderbird-&thunderbird-version;</filename>.
-      The <option>--strip-components=1</option> option removes the leading
-      'thunderbird' directory from the filenames, allowing us to untar it into a
-      versioned directory.
-    </para>
   </sect2>
 
   <sect2 role="configuration">
@@ -324,7 +323,7 @@ ln -sfv ../lib/thunderbird-&thunderbird-version;/thunderbird /usr/bin</userinput
 mkdir -pv /usr/share/pixmaps &amp;&amp;
 
 cat &gt; /usr/share/applications/thunderbird.desktop &lt;&lt; "EOF" &amp;&amp;
-[Desktop Entry]
+<literal>[Desktop Entry]
 Encoding=UTF-8
 Name=Thunderbird Mail
 Comment=Send and receive mail with Thunderbird
@@ -335,7 +334,7 @@ Type=Application
 Icon=thunderbird
 Categories=Application;Network;Email;
 MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;x-scheme-handler/mailto;
-StartupNotify=true
+StartupNotify=true</literal>
 EOF
 
 ln -sfv /usr/lib/thunderbird-&thunderbird-version;/chrome/icons/default/default256.png \

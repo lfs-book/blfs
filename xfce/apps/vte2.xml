@@ -36,7 +36,7 @@
       <application>libvte</application>.
     </para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,8 +76,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="gtk2"/> and
-      <xref linkend="intltool"/>
+      <xref linkend="gtk2"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -100,6 +99,7 @@
       commands:
     </para>
 
+<!-- both vte2 and vte3 install the same file in libexecdir, so overwrite this one -->
 <screen><userinput>./configure --prefix=/usr \
             --libexecdir=/usr/lib/vte \
             --disable-static  &amp;&amp;
@@ -119,6 +119,12 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+     <parameter>--libexecdir=/usr/lib/vte</parameter> : both this package and
+     <xref linkend="vte"/> install files of the same name. This switch ensures
+     that they do not overwrite each other if both are installed.
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>

@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY shadow-download-http "http://pkg-shadow.alioth.debian.org/releases/shadow-&shadow-version;.tar.bz2">
+  <!ENTITY shadow-download-http "http://pkg-shadow.alioth.debian.org/releases/shadow-&shadow-version;.tar.xz">
   <!ENTITY shadow-download-ftp  " ">
-  <!ENTITY shadow-md5sum        "a00449aa439c69287b6d472191dc2247">
-  <!ENTITY shadow-size          "2.1 MB">
-  <!ENTITY shadow-buildsize     "38 MB">
-  <!ENTITY shadow-time          "0.3 SBU">
+  <!ENTITY shadow-md5sum        "2bfafe7d4962682d31b5eba65dba4fc8">
+  <!ENTITY shadow-size          "1.5 MB">
+  <!ENTITY shadow-buildsize     "53 MB">
+  <!ENTITY shadow-time          "0.2 SBU">
 ]>
 
 <sect1 id="shadow" xreflabel="Shadow-&shadow-version;">
@@ -41,7 +41,7 @@
       <command>login</command> and <command>su</command> to utilize PAM.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -121,15 +121,13 @@
 
 <screen><userinput>sed -i 's/groups$(EXEEXT) //' src/Makefile.in &amp;&amp;
 find man -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \; &amp;&amp;
-sed -i -e 's/ ko//' -e 's/ zh_CN zh_TW//' man/Makefile.in &amp;&amp;
 
 sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' \
        -e 's@/var/spool/mail@/var/mail@' etc/login.defs &amp;&amp;
 
-sed -i -e 's@PATH=/sbin:/bin:/usr/sbin:/usr/bin@&amp;:/usr/local/sbin:/usr/local/bin@' \
-       -e 's@PATH=/bin:/usr/bin@&amp;:/usr/local/bin@' etc/login.defs &amp;&amp;
+sed -i 's/1000/999/' etc/useradd &amp;&amp;
 
-./configure --prefix=/usr --sysconfdir=/etc &amp;&amp;
+./configure --sysconfdir=/etc --with-group-name-max-length=32 &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -162,12 +160,6 @@ mv -v /usr/bin/passwd /bin</userinput></screen>
     </para>
 
     <para>
-      <command>sed -i -e '...' -e '...' man/Makefile.in</command>: This command
-      disables the installation of Chinese and Korean manual pages, since
-      <application>Man-DB</application> cannot format them properly.
-    </para>
-
-    <para>
       <command>sed -i -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' -e
       's@/var/spool/mail@/var/mail@' etc/login.defs</command>: Instead of using
       the default 'DES' method, this command modifies the installation to use
@@ -179,14 +171,13 @@ mv -v /usr/bin/passwd /bin</userinput></screen>
     </para>
 
     <para>
-      <command>sed -i -e
-      's@PATH=/sbin:/bin:/usr/sbin:/usr/bin@&amp;:/usr/local/sbin:/usr/local/bin@'
-      -e 's@PATH=/bin:/usr/bin@&amp;:/usr/local/bin@' etc/login.defs</command>:
-      This sed expands PATH to
-      <filename class="directory">/usr/local/bin</filename> for normal and
-      <systemitem class="username">root</systemitem> user and to
-      <filename class="directory">/usr/local/sbin</filename> for
-      <systemitem class="username">root</systemitem> user only.
+      <command>sed -i 's/1000/999/' etc/useradd</command>: Make a minor change 
+      to make the default useradd consistent with the LFS groups file.
+    </para>
+
+    <para>
+      <option>--with-group-name-max-length=32</option>: The maximum user name is
+      32 characters. Make the maximum group name the same. 
     </para>
 
     <para>
@@ -300,19 +291,20 @@ mv -v /usr/bin/passwd /bin</userinput></screen>
         </indexterm>
 
 <screen role="root"><userinput>install -v -m644 /etc/login.defs /etc/login.defs.orig &amp;&amp;
-for FUNCTION in FAIL_DELAY FAILLOG_ENAB \
-                LASTLOG_ENAB \
-                MAIL_CHECK_ENAB \
-                OBSCURE_CHECKS_ENAB \
-                PORTTIME_CHECKS_ENAB \
-                QUOTAS_ENAB \
-                CONSOLE MOTD_FILE \
-                FTMP_FILE NOLOGINS_FILE \
-                ENV_HZ PASS_MIN_LEN \
-                SU_WHEEL_ONLY \
-                CRACKLIB_DICTPATH \
-                PASS_CHANGE_TRIES \
-                PASS_ALWAYS_WARN \
+for FUNCTION in FAIL_DELAY               \
+                FAILLOG_ENAB             \
+                LASTLOG_ENAB             \
+                MAIL_CHECK_ENAB          \
+                OBSCURE_CHECKS_ENAB      \
+                PORTTIME_CHECKS_ENAB     \
+                QUOTAS_ENAB              \
+                CONSOLE MOTD_FILE        \
+                FTMP_FILE NOLOGINS_FILE  \
+                ENV_HZ PASS_MIN_LEN      \
+                SU_WHEEL_ONLY            \
+                CRACKLIB_DICTPATH        \
+                PASS_CHANGE_TRIES        \
+                PASS_ALWAYS_WARN         \
                 CHFN_AUTH ENCRYPT_METHOD \
                 ENVIRON_FILE
 do
@@ -532,9 +524,10 @@ EOF</userinput></screen>
       </sect4>
 
       <sect4>
-        <title>'chfn', 'chgpasswd', 'chgpasswd', 'chsh', 'groupadd', 'groupdel',
+        <title>Other common programs</title>
+        <!--<title>'chfn', 'chgpasswd', 'chgpasswd', 'chsh', 'groupadd', 'groupdel',
         'groupmems', 'groupmod', 'newusers', 'useradd', 'userdel' and
-        'usermod'</title>
+        'usermod'</title>-->
 
 <screen role="root"><userinput>for PROGRAM in chfn chgpasswd chpasswd chsh groupadd groupdel \
                groupmems groupmod newusers useradd userdel usermod
@@ -637,7 +630,7 @@ EOF</userinput></screen>
 
     <para>
       A list of the installed files, along with their short descriptions can be
-      found at <ulink url="&lfs-root;/chapter06/shadow.html#contents-shadow"/>.
+      found at <ulink url="http://www.linuxfromscratch.org/lfs/view/&lfs-version;/chapter06/shadow.html#contents-shadow"/>.
     </para>
 
   </sect2>

@@ -6,10 +6,10 @@
 
   <!ENTITY wireshark-download-http "http://www.wireshark.org/download/src/all-versions/wireshark-&wireshark-version;.tar.bz2">
   <!ENTITY wireshark-download-ftp  " ">
-  <!ENTITY wireshark-md5sum        "898b4c60e32efcd77ecf875a6ad07a92">
-  <!ENTITY wireshark-size          "23 MB">
-  <!ENTITY wireshark-buildsize     "1.0 GB">
-  <!ENTITY wireshark-time          "6.0 SBU">
+  <!ENTITY wireshark-md5sum        "510dc3b063785549b41ebc748ac21055">
+  <!ENTITY wireshark-size          "26 MB">
+  <!ENTITY wireshark-buildsize     "840 MB">
+  <!ENTITY wireshark-time          "5.1 SBU">
 ]>
 
 <sect1 id="wireshark" xreflabel="Wireshark-&wireshark-version;">
@@ -33,12 +33,12 @@
     protocol analyzer, also known as a <quote>sniffer</quote>. This is useful
     for analyzing data captured <quote>off the wire</quote> from a live network
     connection, or data read from a capture file.
-    <application>Wireshark</application> provides both a graphical and TTY-mode
+    <application>Wireshark</application> provides both a graphical and a TTY-mode
     front-end for examining captured network packets from over 500 protocols,
     as well as the capability to read capture files from many other popular
     network analyzers.</para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,12 +77,14 @@
     <bridgehead renderas="sect3">Wireshark dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required"><!--<xref linkend="GLib"/> or --><xref linkend="glib2"/>
-    (to build the TTY-mode front-end only)</para>
+    <para role="required">
+      <xref linkend="glib2"/> (to build the TTY-mode front-end only)
+    </para>
 
-    <para>Note that if you don't have <application>Gtk+</application>
-    installed, you will need to pass <option>--disable-wireshark</option>
-    to the <command>configure</command> command.</para>
+    <para>Note that you need <application>Gtk+</application> or
+    <application>Qt4</application> installed, otherwise, you will need to pass
+    <option>--disable-wireshark</option> to the
+    <command>configure</command> command.</para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
@@ -91,17 +93,21 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk2"/> or <xref linkend="gtk3"/> (to build the GUI front-end),
-      <xref linkend="openssl"/>,
-      <xref linkend="mitkrb"/>,
-      <xref linkend="python2"/>,
-      <xref linkend="pcre"/>,
-      <xref linkend="gnutls"/>,
-      <ulink url="http://www.portaudio.com/download.html">PortAudio</ulink>,
+      <ulink url="http://www.gnu.org/software/adns/adns.html">adns</ulink>,
       <ulink url="http://www.maxmind.com/app/c">GeoIP</ulink>,
-      <!-- <ulink url="http://www.net-snmp.org/">Net-SNMP</ulink>, -->
-      <ulink url="http://www.gnu.org/software/adns/adns.html">adns</ulink>, and
-      <xref linkend="lua"/>
+      <xref linkend="gnutls"/>,
+      <xref linkend="libgcrypt"/>,
+      <xref linkend="lua"/>,
+      <xref linkend="mitkrb"/>,
+      <xref linkend="openssl"/>, and
+      <ulink url="http://www.portaudio.com/download.html">PortAudio</ulink>
+    </para>
+
+    <bridgehead renderas="sect4">Optional (to build the GUI front-end)</bridgehead>
+    <para role="optional">
+      <xref linkend="gtk2"/>,
+      <xref linkend="gtk3"/>, or 
+      <xref linkend="qt4"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -114,11 +120,14 @@
 
       <para>The kernel must have the Packet protocol enabled for
       <application>Wireshark</application> to capture live packets from the
-      network. Enable the Packet protocol by choosing <quote>Y</quote> in the
-      <quote>Networking</quote> &ndash; <quote>Packet socket</quote>
-      configuration parameter. Alternatively, build the
-      <filename>af_packet.ko</filename> module by choosing <quote>M</quote> in
-      this parameter.</para>
+      network.</para>
+      
+<screen><literal>Networking support: Y
+  Networking options:
+    Packet: sockets monitoring interface: M or Y</literal></screen>
+
+      <para>If built as a module, the name is
+      <filename>af_packet.ko</filename>.</para>
 
       <indexterm zone="wireshark wireshark-kernel">
         <primary sortas="d-Capturing-network-packets">Capturing network
@@ -132,7 +141,7 @@
 
     <para>Optionally, fix the description of the program in the title.
     The first change overwrites the default "SVN Unknown" in the title
-    and the secong overwrites a utility script that resets the version
+    and the second overwrites a utility script that resets the version
     to "unknown".</para>
 
 <screen><userinput>cat > svnversion.h &lt;&lt; "EOF"
@@ -147,10 +156,16 @@ EOF</userinput></screen>
     <para><application>Wireshark</application> is a very large and complex
     application.  These instructions provide additional security measures to
     ensure that only trusted users are allowed to view network traffic.  First,
-    set up a system groub for wireshark.  As the <systemitem
+    set up a system group for wireshark.  As the <systemitem
     class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>groupadd -g 62 wireshark</userinput></screen>
+
+    <para>If you want an unpriviledged user to execute
+    <application>wireshark</application>, run the following command as the
+    <systemitem class="username">root</systemitem> user:</para>
+
+<screen><userinput>usermod -a -G wireshark <replaceable>&lt;username&gt;</replaceable></userinput></screen>
 
     <para>Continue to install <application>Wireshark</application> by running
     the following commands:</para>
@@ -172,7 +187,7 @@ install -v -m644    README{,.linux} doc/README.* doc/*.{pod,txt} \
 
 pushd /usr/share/doc/wireshark-&wireshark-version; &amp;&amp;
    for FILENAME in ../../wireshark/*.html; do
-      ln -s -v $FILENAME .
+      ln -s -v -f $FILENAME .
    done &amp;&amp;
 popd &amp;&amp;
 
@@ -209,13 +224,21 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
     <para><parameter>--enable-threads</parameter>: This parameter enables the
     use of threads in <command>wireshark</command>.</para>
 
-    <para><option>--with-ssl</option>: This parameter is required if you
+    <para><option>--disable-wireshark</option>: This option is required if you
+    have <application>GTK+</application> installed but do not want to build
+    the GUI.</para>
+
+    <para><option>--with-gtk3=yes</option>: This option is required if you want
+    to use <application>GTK+</application>3 instead of 2, for the GUI.</para>
+
+    <para><option>--with-qt=yes</option>: This option is required if you want to
+    use <application>Qt</application> instead of
+    <application>GTK+</application>, for the GUI.</para>
+
+    <para><option>--with-ssl</option>: This option is required if you
     are linking Kerberos libraries into the build so that the
     <application>OpenSSL</application>
     <filename class='libraryfile'>libcrypto</filename> library is found.</para>
-
-    <para><option>--with-python</option>: This parameter is required if you
-    want Python bindings built.</para>
 
   </sect2>
 
@@ -270,12 +293,12 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>capinfos, dftest, dumpcap, editcap, idl2wrs, mergecap, randpkt,
-        rawshark, text2pcap, tshark and wireshark</seg>
+        <seg>capinfos, dftest, dumpcap, editcap, mergecap, randpkt, rawshark,
+        reordercap, text2pcap, tshark, and wireshark</seg>
         <seg>libwireshark.so, libwiretap.so, libwsutil.so, and
-        numerous plugin modules</seg>
+        numerous modules under /usr/lib/wireshark/plugins</seg>
         <seg>/usr/lib/wireshark, /usr/share/doc/wireshark-&wireshark-version;,
-        /usr/share/pixmaps/wireshark and /usr/share/wireshark</seg>
+        /usr/share/pixmaps/wireshark, and /usr/share/wireshark</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -331,19 +354,6 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="idl2wrs">
-        <term><command>idl2wrs</command></term>
-        <listitem>
-          <para>takes a user specified CORBA
-          IDL file and generates <quote>C</quote> source code that
-          can be used to create an <application>Wireshark</application>
-          plugin.</para>
-          <indexterm zone="wireshark idl2wrs">
-            <primary sortas="b-idl2wrs">idl2wrs</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="mergecap">
         <term><command>mergecap</command></term>
         <listitem>
@@ -371,6 +381,16 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
           <para>dump and analyze raw libpcap data.</para>
           <indexterm zone="wireshark rawshark">
             <primary sortas="b-rawshark">rawshark</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="reordercap">
+        <term><command>reordercap</command></term>
+        <listitem>
+          <para>reorder timestamps of input file frames into output file.</para>
+          <indexterm zone="wireshark reordercap">
+            <primary sortas="b-reordercap">reordercap</primary>
           </indexterm>
         </listitem>
       </varlistentry>

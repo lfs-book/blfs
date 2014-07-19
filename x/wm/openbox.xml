@@ -7,9 +7,9 @@
   <!ENTITY openbox-download-http
   "http://openbox.org/dist/openbox/openbox-&openbox-version;.tar.gz">
   <!ENTITY openbox-download-ftp  " ">
-  <!ENTITY openbox-md5sum        "00441b53cf14c03566c8e82643544ff9">
-  <!ENTITY openbox-size          "9 MB">
-  <!ENTITY openbox-buildsize     "18 MB">
+  <!ENTITY openbox-md5sum        "93df606606053b7e8578a5c116afb8ec">
+  <!ENTITY openbox-size          "956 KB">
+  <!ENTITY openbox-buildsize     "19 MB">
   <!ENTITY openbox-time          "0.3 SBU">
 ]>
 
@@ -36,7 +36,7 @@
       almost every aspect of how you interact with your desktop.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,8 +76,11 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="imlib2"/> (to enable icons in the right click menu) and
-      <xref linkend="pyxdg"/>
+      <xref linkend="dbus"/> (runtime),
+      <xref linkend="imlib2"/> (to enable icons in the right click menu),
+      <xref linkend="pyxdg"/>,
+      <xref linkend="startup-notification"/>, and
+      <xref linkend="librsvg"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -99,15 +102,14 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr                         \
-            --libexecdir=/usr/lib/openbox         \
-            --sysconfdir=/etc                     \
-            --docdir=/usr/share/doc/openbox-&openbox-version; \
-            --disable-static                      &amp;&amp;
+<screen><userinput>./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --disable-static  \
+            --docdir=/usr/share/doc/openbox-&openbox-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      This package does not come with a test suite. 
     </para>
 
     <para>
@@ -260,9 +262,10 @@ EOF</userinput></screen>
 
       <para>
         If you like to have the numlock key set whan you start Xorg, install
-        <ulink url="http://home.kde.org/~seli/numlockx/">Numlockx</ulink> and
+        <!-- 13-12-11 numlockx not found on the KDE website. This URL is OK ? -->
+        <ulink url="http://ftp.de.debian.org/debian/pool/main/n/numlockx/numlockx_1.2.orig.tar.gz">Numlockx</ulink> and
         add that to your xinitrc. Another useful application is
-        <xref linkend="dbus"/>
+        <xref linkend="dbus"/>:
       </para>
 
 <screen role="user"><userinput>cat &gt; ~/.xinitrc &lt;&lt; "EOF"

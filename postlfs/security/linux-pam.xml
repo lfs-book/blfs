@@ -6,14 +6,14 @@
 
   <!ENTITY linux-pam-download-http "http://linux-pam.org/library/Linux-PAM-&linux-pam-version;.tar.bz2">
   <!ENTITY linux-pam-download-ftp  " ">
-  <!ENTITY linux-pam-md5sum        "7b73e58b7ce79ffa321d408de06db2c4">
+  <!ENTITY linux-pam-md5sum        "35b6091af95981b1b2cd60d813b5e4ee">
   <!ENTITY linux-pam-size          "1.1 MB">
-  <!ENTITY linux-pam-buildsize     "28 MB">
+  <!ENTITY linux-pam-buildsize     "22 MB">
   <!ENTITY linux-pam-time          "0.3 SBU">
 
   <!ENTITY linux-pam-docs-download "http://linux-pam.org/documentation/Linux-PAM-&linux-pam-version;-docs.tar.bz2">
-  <!ENTITY linux-pam-docs-md5sum   "43d19ccf40c1feb074e29922626f4971">
-  <!ENTITY linux-pam-docs-size     "144 KB">
+  <!ENTITY linux-pam-docs-md5sum   "730895d1c6e1c706dc5ffe2419f9b3f5">
+  <!ENTITY linux-pam-docs-size     "148 KB">
   <!ENTITY debian-pam-docs         "http://debian.securedservers.com/kernel/pub/linux/libs/pam">
 ]>
 
@@ -41,7 +41,7 @@
       users.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -138,16 +138,40 @@
 
 <screen><userinput>./configure --prefix=/usr \
             --sysconfdir=/etc \
-            --docdir=/usr/share/doc/Linux-PAM-&linux-pam-version; \
-            --disable-nis &amp;&amp;
+            --libdir=/usr/lib \
+            --enable-securedir=/lib/security \
+            --docdir=/usr/share/doc/Linux-PAM-&linux-pam-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, a configuration file must be created. This file
-      will be removed after the tests have completed. Ensure there are no errors
-      produced by the tests before continuing the installation. First create the
-      configuration file by issuing the following commands as the
-      <systemitem class="username">root</systemitem> user:
+      To test the results, a suitable <filename>/etc/pam.d/other</filename>
+      configuration file must exist.
+    </para>
+
+    <caution>
+      <title>Reinstallation or upgrade of Linux PAM</title>
+      <para>
+        If you have a system with Linux PAM installed and working, be careful
+        when modifying the files in
+        <filename class="directory">/etc/pam.d</filename>, since your system
+        may become totally unusable. If you want to run the tests, you do not
+        need to create another <filename>/etc/pam.d/other</filename> file. The
+        installed one can be used for that purpose.
+      </para>
+
+      <para>
+         You should also be aware that <command>make install</command>
+         overwrites the configuration files in
+         <filename class="directory">/etc/security</filename> as well as
+         <filename>/etc/environment</filename>. In case you
+         have modified those files, be sure to backup them.
+      </para>
+    </caution>
+
+    <para>
+      For a first installation, create the configuration file by issuing the
+      following commands as the <systemitem class="username">root</systemitem>
+      user:
     </para>
 
 <screen role="root"><userinput>install -v -m755 -d /etc/pam.d &amp;&amp;
@@ -161,11 +185,13 @@ EOF</userinput></screen>
 
     <para>
       Now run the tests by issuing <command>make check</command>.
+      Ensure there are no errors produced by the tests before continuing the
+      installation.
     </para>
 
     <para>
-      Remove the configuration file created earlier by issuing the
-      following command as the
+      Only in case of a first installation, remove the configuration file
+      created earlier by issuing the following command as the
       <systemitem class="username">root</systemitem> user:
     </para>
 
@@ -177,17 +203,23 @@ EOF</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-chmod -v 4755 /sbin/unix_chkpwd</userinput></screen>
+chmod -v 4755 /sbin/unix_chkpwd &amp;&amp;
+
+for file in pam pam_misc pamc
+do
+  mv -v /usr/lib/lib${file}.so.* /lib &amp;&amp;
+  ln -sfv ../../lib/$(readlink /usr/lib/lib${file}.so) /usr/lib/lib${file}.so
+done</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
-      <option>--disable-nis</option>: This switch disables building
-      of the Network Information Service/Yellow Pages support in
-      pam_unix and pam_access modules. Remove it if you have installed
-      <xref linkend="libtirpc"/>.
+      <parameter>--enable-securedir=/lib/security</parameter>:
+      This switch sets install location for the
+      <application>PAM</application> modules.
     </para>
 
     <para>
@@ -242,7 +274,7 @@ password        required        pam_unix.so     nullok
         The <application>PAM</application> man page (<command>man
         pam</command>) provides a good starting point for descriptions
         of fields and allowable entries. The <ulink
-        url="&debian-pam-docs;/Linux-PAM-html/Linux-PAM_SAG.html">Linux-PAM
+        url="http://www.linux-pam.org/Linux-PAM-html/Linux-PAM_SAG.html">Linux-PAM
         System Administrators' Guide</ulink> is recommended for additional
         information.
       </para>

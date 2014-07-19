@@ -4,14 +4,16 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
+<!--  <!ENTITY xulrunner-download-http
+           "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">-->
   <!ENTITY xulrunner-download-http
-           "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">
+           "http:///ftp.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">
   <!ENTITY xulrunner-download-ftp
            "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">
-  <!ENTITY xulrunner-md5sum        "4ffb6d1c1a04ca8e3dbca23df09626dd">
-  <!ENTITY xulrunner-size          "107 MB">
-  <!ENTITY xulrunner-buildsize     "4.4 GB (87 MB installed)">
-  <!ENTITY xulrunner-time          "32 SBU">
+  <!ENTITY xulrunner-md5sum        "ac7e8c801ded4e6195182bf54c81acb6">
+  <!ENTITY xulrunner-size          "137 MB">
+  <!ENTITY xulrunner-buildsize     "3.5 GB (137 MB installed)">
+  <!ENTITY xulrunner-time          "42 SBU">
 ]>
 
 <sect1 id="xulrunner" xreflabel="Xulrunner-&xulrunner-version;">
@@ -39,7 +41,7 @@
       can find and use it.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,6 +89,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="icu"/>,
       <xref linkend="libevent"/>,
       <xref linkend="libvpx"/>,
       <xref linkend="nspr"/>,
@@ -110,10 +113,16 @@
       <xref linkend="curl"/>,
       <xref linkend="dbus-glib"/>,
       <xref linkend="doxygen"/>,
-      <xref linkend="gnome-vfs"/> and <xref linkend="libgnomeui"/>
-      (for integration with the old version of <application>GNOME</application>),
+      <xref linkend="gst-plugins-base"/> (with
+      <xref linkend="gst-plugins-good"/> and
+      <xref linkend="gst-ffmpeg"/> at runtime), or
+      <xref linkend="gst10-plugins-base"/> (with
+      <xref linkend="gst10-plugins-good"/> and
+      <xref linkend="gst10-libav"/> at runtime),
       <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>,
       <xref linkend="libnotify"/>,
+      <xref linkend="openjdk"/>,
+      <xref linkend="pulseaudio"/>,
       <xref linkend="startup-notification"/>,
       <xref linkend="wget"/> and
       <xref linkend="wireless_tools"/>
@@ -146,15 +155,27 @@
 # If you have installed DBus-Glib comment out this line:
 ac_add_options --disable-dbus
 
-# If you have installed wireless-tools comment out this line:
+# If you have installed dbus-glib, and you have installed (or will install)
+# wireless-tools, and you wish to use geolocation web services, comment out
+# this line
 ac_add_options --disable-necko-wifi
 
 # If you have installed libnotify comment out this line:
 ac_add_options --disable-libnotify
 
+# GStreamer is necessary for H.264 video playback in HTML5 Video Player;
+# to be enabled, also remember to set "media.gstreamer.enabled" to "true"
+# in about:config. If you have GStreamer 0.x.y, uncomment this line:
+#ac_add_options --enable-gstreamer
+# or uncomment this line, if you have GStreamer 1.x.y
+#ac_add_options --enable-gstreamer=1.0
+
 # Uncomment these lines if you have installed optional dependencies:
 #ac_add_options --enable-system-hunspell
 #ac_add_options --enable-startup-notification
+
+# Comment out following option if you have PulseAudio installed
+ac_add_options --disable-pulseaudio
 
 # If you have not installed Yasm then uncomment this line:
 #ac_add_options --disable-webm
@@ -166,26 +187,26 @@ ac_add_options --with-system-libevent
 ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
+ac_add_options --with-system-icu
 
-# It is recommended not to touch anything below this line
+# The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
 ac_add_options --enable-application=xulrunner
 
 ac_add_options --disable-crashreporter
-ac_add_options --disable-installer
 ac_add_options --disable-updater
-ac_add_options --disable-debug
 ac_add_options --disable-tests
-ac_add_options --disable-mochitest
 
 ac_add_options --enable-optimize
 ac_add_options --enable-strip
 ac_add_options --enable-install-strip
 
+ac_add_options --enable-system-cairo
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
 
-ac_add_options --enable-shared-js
+# shared-js broken by WeakMapPtr visibility
+#ac_add_options --enable-shared-js
 ac_add_options --with-pthreads
 
 ac_add_options --with-system-bz2
@@ -196,10 +217,22 @@ ac_add_options --with-system-zlib
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/xulrunner-build-dir
 EOF</userinput></screen>
 
+    <note>
+      <para>
+        <application>Xulrunner</application>'s build uses large amount of
+        memory. On some systems, the RAM/Swap combination needs 6 GB available.
+      </para>
+    </note>
+
     <para>
-      Install <application>Xulrunner</application> by issuing the following
+      Build <application>Xulrunner</application> by issuing the following
       commands:
     </para>
+
+    <note><para>
+      If you are compiling <application>Xulrunner</application> in chroot,
+      prepend <envar>SHELL=/bin/bash</envar> to the first make command below.
+    </para></note>
 
 <screen><userinput>make -f client.mk</userinput></screen>
 
@@ -208,7 +241,7 @@ EOF</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Install, as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>make -C xulrunner-build-dir install &amp;&amp;
@@ -234,6 +267,12 @@ ln -sfv ../xulrunner-devel-&xulrunner-version;/sdk/bin/xpcshell \
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>ac_add_options --disable-necko-wifi</command>: If you remove
+      this command, you will enable opt-in support for geolocation web services
+      when you are using a wifi connection.
+    </para>
 
     <para>
       <command>make -f client.mk ...</command>: Mozilla products are packaged to

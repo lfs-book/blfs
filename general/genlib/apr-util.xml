@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY apr-util-download-http
+           "http://archive.apache.org/dist/apr/apr-util-&apr-util-version;.tar.bz2">
+  <!ENTITY apr-util-download-ftp  "ftp://ftp.mirrorservice.org/sites/ftp.apache.org/apr/apr-util-&apr-util-version;.tar.bz2">
+  <!ENTITY apr-util-md5sum        "6f3417691c7a27090f36e7cf4d94b36e">
+  <!ENTITY apr-util-size          "680 KB">
+  <!ENTITY apr-util-buildsize     "11 MB">
+  <!ENTITY apr-util-time          "0.2 SBU">
+]>
+
+<sect1 id="apr-util" xreflabel="Apr-Util-&apr-util-version;">
+  <?dbhtml filename="apr-util.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>Apr-Util-&apr-util-version;</title>
+
+  <indexterm zone="apr-util">
+    <primary sortas="a-Apr-Util">Apr-Util</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Apr Util</title>
+
+    <para>
+      The Apache Portable Runtime Utility Library provides a predictable and
+      consistent interface to underlying client library interfaces. This
+      application programming interface assures predictable if not identical
+      behaviour regardless of which libraries are available on a given platform.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&apr-util-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&apr-util-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &apr-util-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &apr-util-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &apr-util-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &apr-util-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Apr Util Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="apr"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="openssl"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="db"/>,
+      <ulink url="http://www.freetds.org/">FreeTDS</ulink>,
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="openldap"/>,
+      <xref linkend="postgresql"/>,
+      <xref linkend="sqlite"/> and
+      <xref linkend="unixodbc"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/apr-util"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Apr Util</title>
+
+    <para>
+      Install <application>Apr Util</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr       \
+            --with-apr=/usr     \
+            --with-gdbm=/usr    \
+            --with-openssl=/usr \
+            --with-crypto &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      To test the results, issue: <command>make test</command>.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>--with-gdbm=/usr</parameter>: This switch enables the
+      <filename class="libraryfile">apr_dbm_gdbm-1.so</filename> plugin.
+    </para>
+
+    <para>
+      <parameter>--with-openssl=/usr --with-crypto</parameter>: These
+      switches enable the
+      <filename class="libraryfile">apr_crypto_openssl-1.so</filename>
+      plugin. Remove them if you have not installed
+      <xref linkend="openssl"/>.
+    </para>
+
+    <para>
+      <option>--with-berkeley-db=/usr</option>: If you have installed
+      <xref linkend="db"/>, use this switch to compile the
+      <filename class="libraryfile">apr_dbm_db-1.so</filename> plugin.
+    </para>
+
+    <para>
+      <option>--with-ldap</option>: If you have installed
+      <xref linkend="openldap"/>, use this switch to compile the
+      <filename class="libraryfile">apr_ldap.so</filename> plugin.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Directory</segtitle>
+
+      <seglistitem>
+        <seg>
+          apu-1-config
+        </seg>
+        <seg>
+          libaprutil-1.so
+          and several plugins under /usr/lib/apr-util-1/
+        </seg>
+        <seg>
+          /usr/lib/apr-util-1
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="libaprutil-1">
+        <term><filename class="libraryfile">libaprutil-1.so</filename></term>
+        <listitem>
+          <para>
+            contains functions that provide a predictable and consistent
+            interface to underlying client library interfaces.
+          </para>
+          <indexterm zone="apr-util libaprutil-1">
+            <primary sortas="c-libaprutil-1">libaprutil-1.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

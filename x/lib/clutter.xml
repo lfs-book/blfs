@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY clutter-download-http "&gnome-download-http;/clutter/1.14/clutter-&clutter-version;.tar.xz">
-  <!ENTITY clutter-download-ftp  "&gnome-download-ftp;/clutter/1.14/clutter-&clutter-version;.tar.xz">
-  <!ENTITY clutter-md5sum        "c072e4c27e69368f2b877ea4f6da2cdf">
-  <!ENTITY clutter-size          "4.9 MB">
-  <!ENTITY clutter-buildsize     "110 MB">
-  <!ENTITY clutter-time          "1.4 SBU">
+  <!ENTITY clutter-download-http "&gnome-download-http;/clutter/1.18/clutter-&clutter-version;.tar.xz">
+  <!ENTITY clutter-download-ftp  "&gnome-download-ftp;/clutter/1.18/clutter-&clutter-version;.tar.xz">
+  <!ENTITY clutter-md5sum        "471f5ea423e20d4140c7771873daef29">
+  <!ENTITY clutter-size          "5.0 MB">
+  <!ENTITY clutter-buildsize     "85 MB (additional 7 MB for docs creation and 13 MB for tests)">
+  <!ENTITY clutter-time          "0.8 SBU (additional 2.1 SBU for docs creation and 0.5 SBU for tests)">
 ]>
 
 <sect1 id="clutter" xreflabel="Clutter-&clutter-version;">
@@ -35,7 +35,7 @@
       and animated graphical user interfaces.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <note>
       <para>
@@ -86,7 +86,7 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="atk"/>,
-      <xref linkend="cogl"/> and
+      <xref linkend="cogl"/>, and
       <xref linkend="json-glib"/>
     </para>
 
@@ -99,9 +99,11 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gtk-doc"/>,
+      <ulink url="http://www.freedesktop.org/wiki/Software/libevdev/">
+      libevdev</ulink>,
       <ulink url="http://xkbcommon.org/">libxkbcommon</ulink>,
       <ulink url="http://tslib.berlios.de/">Tslib</ulink>,
-      <xref linkend="systemd"/> (for GUdev) and
+      <xref linkend="udev-extras"/> (for GUdev), and
       <ulink url="http://wayland.freedesktop.org/">Wayland</ulink>
     </para>
 
@@ -112,6 +114,15 @@
 
   <sect2 role="installation">
     <title>Installation of Clutter</title>
+
+    <para>
+      If you wish to run the tests, the following commands disables two tests
+      that fail.
+    </para>
+
+<screen><userinput>sed -i '/actor-offscreen-redirect/d' \
+       tests/conform/Makefile.am tests/conform/Makefile.in &amp;&amp;
+autoreconf -f -i</userinput></screen>
 
     <para>
       Install <application>Clutter</application> by running the following
@@ -160,7 +171,7 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          libclutter-1.0.so
+          libclutter-1.0.so and libclutter-glx-1.0.so
         </seg>
         <seg>
           /usr/include/clutter-1.0 and

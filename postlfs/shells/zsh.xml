@@ -4,14 +4,16 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY zsh-download-http "&sourceforge-repo;/zsh/zsh-&zsh-version;.tar.bz2">
+  <!ENTITY zsh-download-http "http://www.zsh.org/pub/zsh-&zsh-version;.tar.bz2">
   <!ENTITY zsh-download-ftp  " ">
-  <!ENTITY zsh-md5sum        "b8f2ad691acf58b3252225746480dcad">
-  <!ENTITY zsh-size          "2.9 MB">
-  <!ENTITY zsh-buildsize     "65 MB (includes installing documentation)">
-  <!ENTITY zsh-time          "1.1 SBU">
+  <!ENTITY zsh-md5sum        "6156dc2f19b0a067bdbc0fb7f81e2017">
+  <!ENTITY zsh-size          "3.0 MB">
+  <!ENTITY zsh-buildsize     "61 MB (includes installing documentation -
+                              additional 2 MB for PDF documentation)">
+  <!ENTITY zsh-time          "0.8 SBU (additional 2 SBU for tests)">
 
-  <!ENTITY zsh-doc-md5sum    "b6818cbbea635b2f70883bb913d0a04a">
+  <!ENTITY zsh-doc-md5sum    "1eea70e7401a7a2116fa8de6ee5e8d32">
+  <!ENTITY zsh-doc-size      "2.9 MB">
 ]>
 
 <sect1 id="zsh" xreflabel="zsh-&zsh-version;">
@@ -37,7 +39,7 @@
     <application>zsh</application> most closely resembles
     <application>ksh</application> but includes many enhancements.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -64,15 +66,14 @@
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
-         <para>Required patch: <ulink 
-         url="&patch-root;/zsh-&zsh-version;-makeinfo-1.patch"/></para>
-      </listitem>
-      <listitem>
         <para>Optional Documentation: <ulink
-        url="&sourceforge-repo;/zsh/zsh-&zsh-version;-doc.tar.bz2"/></para>
+        url="http://www.zsh.org/pub/zsh-&zsh-version;-doc.tar.bz2"/></para>
       </listitem>
       <listitem>
         <para>Documentation MD5 sum: &zsh-doc-md5sum;</para>
+      </listitem>
+      <listitem>
+        <para>Documentation download size: &zsh-doc-size;</para>
       </listitem>
     </itemizedlist>
 
@@ -80,7 +81,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="pcre"/>
+      <ulink url="ftp://ftp.gnu.org/gnu/gdbm/">gdbm</ulink>,
+      <xref linkend="pcre"/>, and
+      <xref linkend="libcap-pam"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -96,10 +99,20 @@
 
 <screen><userinput>tar --strip-components=1 -xvf ../zsh-&zsh-version;-doc.tar.bz2</userinput></screen>
 
+    <note>
+      <para>
+        Using a script to build with "su -c script" may produce a funny
+        configure error message: "no controlling tty". If this happens, add
+        the switch --with-tcsetpgrp to configure.
+      </para>
+    </note>
+
     <para>Install <application>zsh</application> by running the following
     commands:</para>
 
-<screen><userinput>patch -Np1 -i ../zsh-&zsh-version;-makeinfo-1.patch &amp;&amp;
+<screen><userinput>sed -e '/attr.mdh/ d' -e '/attr.pro/ d'                                        \
+    -e '/include &lt;sys\/xattr.h&gt;/ a\\n#include "attr.mdh"\n#include "attr.pro"' \
+    -i Src/Modules/attr.c                             &amp;&amp;
 
 ./configure --prefix=/usr         \
             --bindir=/bin         \
@@ -150,6 +163,10 @@ install -v -m644 Doc/zsh.dvi /usr/share/doc/zsh-&zsh-version;</userinput></scree
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <para><command>sed ... Src/Modules/attr.c</command>: Fix 
+    <application>zsh-&zsh-version;</application> to build with
+    <application>libcap-2.x</application> (x &gt; 23).</para>
+
     <para><parameter>--sysconfdir=/etc/zsh</parameter> and
     <parameter>--enable-etcdir=/etc/zsh</parameter>: These parameters are
     used so that all the <application>zsh</application> configuration files
@@ -161,14 +178,14 @@ install -v -m644 Doc/zsh.dvi /usr/share/doc/zsh-&zsh-version;</userinput></scree
     <para><parameter>--bindir=/bin</parameter>: This parameter places the
     <command>zsh</command> binaries into the root filesystem.</para>
 
-    <para><parameter>--enable-cap</parameter>: This parameter enables
+    <para><option>--enable-cap</option>: This option enables
     POSIX capabilities.</para>
 
-    <para><parameter>--disable-gdbm</parameter>: This parameter disables the
+    <para><option>--disable-gdbm</option>: This option disables the
     use of the <application>GDBM</application> library.</para>
 
-    <para><parameter>--enable-pcre</parameter>: This parameter allows to use
-    the <application>pcre</application> regular expression library in shell
+    <para><option>--enable-pcre</option>: This option allows zsh to use
+    the <application>PCRE</application> regular expression library in shell
     builtins.</para>
 
     <sect3 id="mountpoints">
@@ -218,6 +235,27 @@ ln -v -sf ../../lib/libgdbm.so.3 /usr/lib/libgdbm.so</userinput>
       You can find more information on these in the <filename>zsh(1)</filename>
       and related manual pages.</para>
 
+      <para>
+        The first time zsh is executed, you will be prompted by messages asking
+        several questions. The answers will be used to create a 
+        <filename>~/.zshrc</filename> file. If you wish to run these questions
+        again, run <command>zsh
+        /usr/share/zsh/&zsh-version;/functions/zsh-newuser-install -f</command>.
+      </para>
+
+      <para>
+        There are several built-in advanced prompts. In the
+        <command>zsh</command> shell, start advanced prompt support with
+        <command>autoload -U promptinit</command>, then
+        <command>promptinit</command>. Available prompt names are listed with
+        <command>prompt -l</command>. Select a particular one with
+        <command>prompt <literal>&lt;prompt-name&gt;</literal></command>. Display all available
+        prompts with <command>prompt -p</command>. Except for the list and
+        display commands above, you can insert the other ones in
+        <filename>~/.zshrc</filename> to be automatically executed at
+        shell start, with the prompt you chose.
+      </para>
+
       <indexterm zone="zsh zsh-config">
         <primary sortas="e-etc-zsh-zshenv">/etc/zsh/zshenv</primary>
       </indexterm>
@@ -265,8 +303,9 @@ EOF</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>zsh and zsh-&zsh-version;</seg>
-        <seg>Numerous plugin helper modules</seg>
+        <seg>zsh (hardlink to zsh-&zsh-version;) and zsh-&zsh-version;</seg>
+        <seg>Numerous plugin helper modules under 
+        /usr/lib/zsh/&zsh-version;/</seg>
         <seg>/etc/zsh, /usr/lib/zsh, /usr/share/doc/zsh-&zsh-version; and
         /usr/share/zsh</seg>
       </seglistitem>

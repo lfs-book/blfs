@@ -7,10 +7,10 @@
   <!ENTITY fontconfig-download-http 
            "http://www.freedesktop.org/software/fontconfig/release/fontconfig-&fontconfig-version;.tar.bz2">
   <!ENTITY fontconfig-download-ftp  " ">
-  <!ENTITY fontconfig-md5sum        "0f8e5c63c2d6931626185c02802375a3">
+  <!ENTITY fontconfig-md5sum        "824d000eb737af6e16c826dd3b2d6c90">
   <!ENTITY fontconfig-size          "1.5 MB">
-  <!ENTITY fontconfig-buildsize     "16 MB">
-  <!ENTITY fontconfig-time          "0.4 SBU">
+  <!ENTITY fontconfig-buildsize     "17 MB">
+  <!ENTITY fontconfig-time          "0.2 SBU">
 ]>
 
 <sect1 id="fontconfig" xreflabel="Fontconfig-&fontconfig-version;">
@@ -36,7 +36,7 @@
       customizing font access.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,14 +76,13 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="freetype2"/> and either
-      <xref linkend="expat"/> or
-      <xref linkend="libxml2"/>
+      <xref linkend="freetype2"/> 
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="docbook-utils"/>
+      <xref linkend="docbook-utils"/> and
+      <xref linkend="libxml2"/>
     </para>
 
     <note>
@@ -91,8 +90,8 @@
         If you have <application>DocBook Utils</application> installed and
         you remove the <parameter>--disable-docs</parameter> parameter from
         the <command>configure</command> command below, you must have
-        <xref linkend="perl-sgmlspm"/> installed also, or the
-        <application>Fontconfig</application> build will fail.
+        <xref linkend="perl-sgmlspm"/> and <xref linkend="texlive"/> installed
+        also, or the <application>Fontconfig</application> build will fail.
       </para>
     </note>
 
@@ -109,12 +108,11 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --sysconfdir=/etc \
+<screen><userinput>./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
             --localstatedir=/var \
-            --docdir=/usr/share/doc/fontconfig-&fontconfig-version; \
-            --disable-docs \
-            --disable-static &amp;&amp;
+            --disable-docs       \
+            --docdir=/usr/share/doc/fontconfig-&fontconfig-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -154,9 +152,6 @@ install -v -m644 doc/*.{pdf,sgml,txt,html} \
       documentation (the release tarball includes pre-generated
       documentation).
     </para>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
 
   </sect2>
 
@@ -261,6 +256,7 @@ install -v -m644 doc/*.{pdf,sgml,txt,html} \
           /etc/fonts,
           /usr/include/fontconfig,
           /usr/share/doc/fontconfig-&fontconfig-version;,
+          /usr/share/fontconfig,
           /usr/share/xml/fontconfig and
           /var/cache/fontconfig
         </seg>

@@ -6,10 +6,10 @@
 
   <!ENTITY rsync-download-http "http://samba.org/ftp/rsync/src/rsync-&rsync-version;.tar.gz">
   <!ENTITY rsync-download-ftp  "ftp://ftp.samba.org/pub/rsync/src/rsync-&rsync-version;.tar.gz">
-  <!ENTITY rsync-md5sum        "5ee72266fe2c1822333c407e1761b92b">
-  <!ENTITY rsync-size          "780 KB">
-  <!ENTITY rsync-buildsize     "35 MB (includes installing all documentation)">
-  <!ENTITY rsync-time          "0.4 SBU">
+  <!ENTITY rsync-md5sum        "43bd6676f0b404326eee2d63be3cdcfe">
+  <!ENTITY rsync-size          "869 KB">
+  <!ENTITY rsync-buildsize     "9.0 MB">
+  <!ENTITY rsync-time          "0.3 SBU">
 ]>
 
 <sect1 id="rsync" xreflabel="rsync-&rsync-version;">
@@ -33,7 +33,7 @@
     <command>rsync</command> utility. This is useful for synchronizing large
     file archives over a network.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -59,8 +59,9 @@
 
     <bridgehead renderas="sect3">rsync Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional"><xref linkend="popt"/>,
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="popt"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -85,23 +86,11 @@ useradd -c "rsyncd Daemon" -d /home/rsync -g rsyncd \
     <para>Install <application>rsync</application> by running the following
     commands:</para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --without-included-zlib &amp;&amp;
 make</userinput></screen>
 
     <para>If you have <xref linkend="doxygen"/> installed and wish to
     build HTML API documentation, issue <command>doxygen</command>.</para>
-
-    <para>If you have <xref linkend="docbook-utils"/> installed and wish to
-    build the user documentation, issue any or all of the following
-    commands:</para>
-
-<screen><userinput>pushd doc &amp;&amp;
-docbook2pdf             rsync.sgml &amp;&amp;
-docbook2ps              rsync.sgml &amp;&amp;
-docbook2dvi             rsync.sgml &amp;&amp;
-docbook2txt             rsync.sgml &amp;&amp;
-docbook2html --nochunks rsync.sgml &amp;&amp;
-popd</userinput></screen>
 
     <para>To test the results, issue: <command>make check</command>.</para>
 
@@ -113,8 +102,17 @@ popd</userinput></screen>
     commands as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role='root'><userinput>install -v -m755 -d          /usr/share/doc/rsync-&rsync-version;/api &amp;&amp;
-install -v -m644 dox/html/*  /usr/share/doc/rsync-&rsync-version;/api &amp;&amp;
-install -v -m644 doc/rsync.* /usr/share/doc/rsync-&rsync-version;</userinput></screen>
+install -v -m644 dox/html/*  /usr/share/doc/rsync-&rsync-version;/api</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>--without-included-zlib</parameter>: This switch enables
+      compilation with system-installed zlib library.
+    </para>
 
   </sect2>
 

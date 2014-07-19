@@ -6,9 +6,9 @@
 
   <!ENTITY whois-download-http "http://ftp.debian.org/debian/pool/main/w/whois/whois_&whois-version;.tar.xz">
   <!ENTITY whois-download-ftp  "ftp://ftp.debian.org/debian/pool/main/w/whois/whois_&whois-version;.tar.xz">
-  <!ENTITY whois-md5sum        "8f873c1c51592ee419b2a46b0a3c8432">
-  <!ENTITY whois-size          "72 KB">
-  <!ENTITY whois-buildsize     "1.5 MB">
+  <!ENTITY whois-md5sum        "02ad3adf1cb4f209f06f9c8266c79887">
+  <!ENTITY whois-size          "76 KB">
+  <!ENTITY whois-buildsize     "1.4 MB">
   <!ENTITY whois-time          "less than 0.1 SBU">
 ]>
 
@@ -36,7 +36,7 @@
     <command>mkpasswd</command> command is also installed by the
     <xref linkend="expect"/> package.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -60,6 +60,13 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Whois Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="libidn"/>
+    </para>
+
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/whois"/></para>
 
@@ -81,9 +88,21 @@
     overwrite the same command installed by <xref
     linkend="expect"/>.</para></note>
 
-<screen><userinput>make prefix=/usr install-whois
+<!-- dev note: make BASEDIR=<DESTDIR> prefix=/usr install-whois -->
+
+<screen role="root"><userinput>make prefix=/usr install-whois
 make prefix=/usr install-mkpasswd
 make prefix=/usr install-pos</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <option>HAVE_LIBIDN=1</option>: This make variable adds internationalized
+      string handling support to <command>whois</command>.
+    </para>
 
   </sect2>
 

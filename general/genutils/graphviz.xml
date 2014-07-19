@@ -6,10 +6,10 @@
 
   <!ENTITY graphviz-download-http "http://graphviz.org/pub/graphviz/stable/SOURCES/graphviz-&graphviz-version;.tar.gz">
   <!ENTITY graphviz-download-ftp  " ">
-  <!ENTITY graphviz-md5sum        "8130785a8f1fb8a57f6b839b617e85fa">
-  <!ENTITY graphviz-size          "23 MB">
-  <!ENTITY graphviz-buildsize     "215 MB">
-  <!ENTITY graphviz-time          "2.0 SBU">
+  <!ENTITY graphviz-md5sum        "5b6a829b2ac94efcd5fa3c223ed6d3ae">
+  <!ENTITY graphviz-size          "25 MB">
+  <!ENTITY graphviz-buildsize     "350 MB">
+  <!ENTITY graphviz-time          "1.6 SBU">
 ]>
 
 <sect1 id="graphviz" xreflabel="Graphviz-&graphviz-version;">
@@ -38,7 +38,7 @@
       tools, libraries, and language bindings.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,7 +78,6 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="expat"/>,
       <xref linkend="freetype2"/>,
       <xref linkend="fontconfig"/>,
       <xref linkend="freeglut"/>,
@@ -93,7 +92,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <ulink url="http://openil.sourceforge.net/projects.php">DevIL</ulink>,
-      <ulink url="http://www.perens.com/FreeSoftware/ElectricFence/">Electric Fence</ulink>,
+      <ulink url="http://linux.softpedia.com/get/Programming/Debuggers/Electric-Fence-3305.shtml/">Electric Fence</ulink>,
       <xref linkend="libglade"/>,
       <ulink url="http://sourceforge.net/projects/lasi/">libLASi</ulink>,
       <ulink url="http://www.libgd.org/">GD Library</ulink>,
@@ -105,12 +104,12 @@
 
     <bridgehead renderas="sect4">Optional (To Build Language Bindings)</bridgehead>
     <para role="optional">
-      <ulink url="http://www.swig.org/">SWIG</ulink>
-      (<application>SWIG</application> must be installed or no bindings will be built),
+      <xref linkend="swig"/> (<application>SWIG</application> must be
+      installed or no bindings will be built),
       <xref linkend="guile"/>,
       <xref linkend="openjdk"/>,
-      <ulink url="http://www.iolanguage.com/about/">Io</ulink>,
-      <xref linkend="lua"/> (version 5.1),
+      <ulink url="http://iolanguage.org/">Io</ulink>,
+      <xref linkend="lua"/>,
       <ulink url="http://www.mono-project.com/Main_Page">Mono</ulink>,
       <ulink url="http://ocaml.org/">OCaml</ulink>,
       <xref linkend="php"/>,
@@ -134,7 +133,7 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -157,14 +156,6 @@ make</userinput></screen>
 
 <screen role="root"><userinput>ln -v -s /usr/share/graphviz/doc \
          /usr/share/doc/graphviz-&graphviz-version;</userinput></screen>
-
-  </sect2>
-
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
 
   </sect2>
 
@@ -214,18 +205,24 @@ make</userinput></screen>
       <seglistitem>
         <seg>
           acyclic, bcomps, ccomps, circo, cluster, diffimg, dijkstra,
-          dot, dot2gxl, dot_builtins, dotty, fdp, gc, gml2gv, gv2gxl,
-          gvcolor, gvedit, gvgen, gvmap, gvmap.sh, gvpack, gvpr,
-          gxl2dot, gxl2gv, lefty, lneato, mm2gv, neato, nop, osage,
-          patchwork, prune, sccmap, sfdp, tred, twopi, unflatten and vimdot
+          dot, dot2gxl, dot_builtins, dotty, edgepaint, fdp, gc, gml2gv,
+          graphml2gv, gv2gml, gv2gxl, gvcolor, gvedit, gvgen, gvmap, gvmap.sh,
+          gvpack, gvpr, gxl2dot, gxl2gv, lefty, lneato, mm2gv, neato, nop,
+          osage, patchwork, prune, sccmap, sfdp, tred, twopi,
+          unflatten, and vimdot
         </seg>
         <seg>
-          libcdt.so, libcgraph.so, libgraph.so, libgvc.so, libgvpr.so,
-          libpathplan.so and libxdot.so
+          libcdt.so, libcgraph.so, libgvc.so, libgvpr.so, libpathplan.so,
+          libxdot.so, and several plugins in /usr/lib/graphviz.
+          There are also several in subdirectories of
+          /usr/lib/{lua,perl5,php,python&python2-majorver;,tcl8.6}.
+          Unfortunately, some libraries are duplicated.
         </seg>
         <seg>
           /usr/include/graphviz,
-          /usr/lib/graphviz and
+          /usr/lib/graphviz,
+          /usr/lib/tcl8.6/graphviz, 
+          /usr/share/doc/graphviz-&graphviz-version;, and
           /usr/share/graphviz
         </seg>
       </seglistitem>
@@ -305,6 +302,7 @@ make</userinput></screen>
         <term><command>diffimg</command></term>
         <listitem>
           <para>
+            (needs <ulink url="http://www.libgd.org/">GD Library</ulink>)
             generates an image where each pixel is the
             difference between the corresponding pixel in
             each of the two source images.
@@ -372,6 +370,18 @@ make</userinput></screen>
           </para>
           <indexterm zone="graphviz dotty">
             <primary sortas="b-dotty">dotty</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="edgepaint">
+        <term><command>edgepaint</command></term>
+        <listitem>
+          <para>
+            edge coloring to disambiguate crossing edges.
+          </para>
+          <indexterm zone="graphviz edgepaint">
+            <primary sortas="b-edgepaint">edgepaint</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -752,20 +762,6 @@ make</userinput></screen>
           </para>
           <indexterm zone="graphviz libcgraph">
             <primary sortas="c-libcgraph">libcgraph.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="libgraph">
-        <term><filename class="libraryfile">libgraph.so</filename></term>
-        <listitem>
-          <para>
-            maintains directed and undirected attributed graphs in memory
-            and reads and writes graph files. Graphs are composed of nodes,
-            edges, and nested subgraphs.
-          </para>
-          <indexterm zone="graphviz libgraph">
-            <primary sortas="c-libgraph">libgraph.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

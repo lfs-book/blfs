@@ -6,9 +6,9 @@
 
   <!ENTITY iptables-download-http "http://www.netfilter.org/projects/iptables/files/iptables-&iptables-version;.tar.bz2">
   <!ENTITY iptables-download-ftp  "ftp://ftp.netfilter.org/pub/iptables/iptables-&iptables-version;.tar.bz2">
-  <!ENTITY iptables-md5sum        "be97ce9007fa42c867901b496c935a0a">
+  <!ENTITY iptables-md5sum        "536d048c8e8eeebcd9757d0863ebb0c0">
   <!ENTITY iptables-size          "536 KB">
-  <!ENTITY iptables-buildsize     "23 MB">
+  <!ENTITY iptables-buildsize     "15 MB">
   <!ENTITY iptables-time          "0.2 SBU">
 ]>
 
@@ -36,7 +36,7 @@
       any form of a firewall.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -124,13 +124,10 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr                          \
-            --exec-prefix=                         \
-            --bindir=/usr/bin                      \
-            --with-xtlibdir=/lib/xtables           \
-            --with-pkgconfigdir=/usr/lib/pkgconfig \
-            --enable-libipq                        \
-            --enable-devel &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                \
+            --sbindir=/sbin              \
+            --with-xtlibdir=/lib/xtables \
+            --enable-libipq &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -139,12 +136,10 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install &amp;&amp;
 ln -sfv ../../sbin/xtables-multi /usr/bin/iptables-xml &amp;&amp;
-for file in libip4tc libip6tc libipq libiptc libxtables
+for file in ip4tc ip6tc ipq iptc xtables
 do
-  ln -sfv ../../lib/`readlink /lib/${file}.so` /usr/lib/${file}.so &amp;&amp;
-  rm -v /lib/${file}.so &amp;&amp;
-  mv -v /lib/${file}.la /usr/lib &amp;&amp;
-  sed -i "s@libdir='@&amp;/usr@g" /usr/lib/${file}.la
+  mv -v /usr/lib/lib${file}.so.* /lib &amp;&amp;
+  ln -sfv ../../lib/$(readlink /usr/lib/lib${file}.so) /usr/lib/lib${file}.so
 done</userinput></screen>
 
   </sect2>
@@ -153,20 +148,9 @@ done</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>--exec-prefix=</parameter>: Ensure all binaries and
-      libraries end up in <filename class="directory">/</filename>
-      directory tree.
-    </para>
-
-    <para>
       <parameter>--with-xtlibdir=/lib/xtables</parameter>: Ensure all
       <application>Iptables</application> modules are installed in the
       <filename class="directory">/lib/xtables</filename> directory.
-    </para>
-
-    <para>
-      <parameter>--with-pkgconfigdir=/usr/lib/pkgconfig</parameter>:
-      Ensure all the pkgconfig files are in the standard location.
     </para>
 
     <para>
@@ -176,14 +160,13 @@ done</userinput></screen>
     </para>
 
     <para>
-      <option>--enable-devel</option>: This switch enables installation
-      of <application>Iptables</application> development headers that
-      can be used by some packages outside of BLFS.
+      <option>--enable-nfsynproxy</option>: This switch enables installation
+      of <application>nfsynproxy</application> SYNPROXY configuration tool.
     </para>
 
     <para>
       <command>ln -sfv ../../sbin/xtables-multi /usr/bin/iptables-xml</command>:
-      Ensure  the symbolic link for <command>iptables-xml</command> is relative.
+      Ensure the symbolic link for <command>iptables-xml</command> is relative.
     </para>
 
   </sect2>
@@ -226,10 +209,10 @@ done</userinput></screen>
       <seglistitem>
         <seg>
           ip6tables, ip6tables-restore, ip6tables-save, iptables, iptables-restore,
-          iptables-save, iptables-xml and xtables-multi
+          iptables-save, iptables-xml, and xtables-multi
         </seg>
         <seg>
-          libip4tc.so, libip6tc.so, libipq.so, libiptc.so and libxtables.so
+          libip4tc.so, libip6tc.so, libipq.so, libiptc.so, and libxtables.so
         </seg>
         <seg>
           /lib/xtables and /usr/include/libiptc
@@ -307,6 +290,20 @@ done</userinput></screen>
           </para>
           <indexterm zone="iptables ip6tables">
             <primary sortas="b-ip6tables">ip6tables</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="nfsynproxy">
+        <term><command>nfsynproxy</command></term>
+        <listitem>
+          <para>
+            (optional) configuration tool. SYNPROXY target makes handling of
+            large SYN floods possible without the large performance penalties
+            imposed by the connection tracking in such cases.
+          </para>
+          <indexterm zone="iptables nfsynproxy">
+            <primary sortas="b-nfsynproxy">nfsynproxy</primary>
           </indexterm>
         </listitem>
       </varlistentry>

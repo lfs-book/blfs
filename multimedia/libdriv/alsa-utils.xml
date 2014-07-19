@@ -6,10 +6,10 @@
 
   <!ENTITY alsa-utils-download-http "&alsa-download-http;/utils/alsa-utils-&alsa-utils-version;.tar.bz2">
   <!ENTITY alsa-utils-download-ftp  "&alsa-download-ftp;/utils/alsa-utils-&alsa-utils-version;.tar.bz2">
-  <!ENTITY alsa-utils-md5sum        "3d81357b997744a139881ef72bc6921a">
+  <!ENTITY alsa-utils-md5sum        "361552d5b1cacd0a1e7ba09e69990211">
   <!ENTITY alsa-utils-size          "1.1 MB">
-  <!ENTITY alsa-utils-buildsize     "7 MB">
-  <!ENTITY alsa-utils-time          "0.2 SBU">
+  <!ENTITY alsa-utils-buildsize     "11 MB">
+  <!ENTITY alsa-utils-time          "0.1 SBU">
 ]>
 
 <sect1 id="alsa-utils" xreflabel="alsa-utils-&alsa-utils-version;">
@@ -35,7 +35,7 @@
       card.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -71,14 +71,6 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing='compact'>
-      <listitem>
-        <para>Required patch: <ulink
-        url="&patch-root;/alsa-utils-&alsa-utils-version;-udev_rules-1.patch"/></para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">ALSA Utilities Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -106,12 +98,8 @@
       running the following commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../alsa-utils-&alsa-utils-version;-udev_rules-1.patch &amp;&amp;
-./configure --disable-alsaconf --disable-xmlto &amp;&amp;
-make &amp;&amp;
-pushd alsactl &amp;&amp;
-make 90-alsa-restore.rules &amp;&amp;
-popd</userinput></screen>
+<screen><userinput>./configure --disable-alsaconf --disable-xmlto &amp;&amp;
+make</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -121,8 +109,7 @@ popd</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
-install -v -m644 alsactl/90-alsa-restore.rules /lib/udev/rules.d</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -158,24 +145,8 @@ install -v -m644 alsactl/90-alsa-restore.rules /lib/udev/rules.d</userinput></sc
 
     </sect3>
 
-    <sect3 id="alsa-utils-init">
+    <sect3>
       <title>Configuration Information</title>
-
-      <para>
-        Use a bootscript to store the values at shutdown.
-      </para>
-
-      <indexterm zone="alsa-utils alsa-utils-init">
-        <primary sortas="f-alsa">alsa</primary>
-      </indexterm>
-
-      <para>
-        As the <systemitem class="username">root</systemitem> user,
-        install the init script <filename>/etc/rc.d/init.d/alsa</filename> included
-        in the <xref linkend="bootscripts"/> package.
-      </para>
-
-<screen role="root"><userinput>make install-alsa</userinput></screen>
 
       <para>
         Note that all channels of your sound card are muted by default.
@@ -198,7 +169,7 @@ install -v -m644 alsactl/90-alsa-restore.rules /lib/udev/rules.d</userinput></sc
 alsactl store</userinput></screen>
 
       <para>
-        The volume settings will be restored from the saved state by
+        The volume settings should be restored from the saved state by
         <application>Udev</application> when the device is detected
         (during boot or when plugged in for USB devices).
       </para>
@@ -222,6 +193,24 @@ alsactl store</userinput></screen>
 
     </sect3>
 
+    <sect3 id="alsa-utils-init">
+      <title>Boot Script</title>
+
+      <indexterm zone="alsa-utils alsa-utils-init">
+        <primary sortas="f-alsa">alsa</primary>
+      </indexterm>
+
+      <para>
+        To automatically store and restore volume settings (if udev rule doesn't
+        work for you) when the system is rebooted, install the
+        <filename>/etc/rc.d/init.d/alsa</filename> boot script from the <xref
+        linkend="bootscripts"/> package.
+      </para>
+
+<screen role="root"><userinput>make install-alsa</userinput></screen>
+
+    </sect3>
+
   </sect2>
 
   <sect2 role="content">
@@ -235,7 +224,7 @@ alsactl store</userinput></screen>
       <seglistitem>
         <seg>
           aconnect, alsactl, alsaloop, alsamixer,
-          alsaucm, amidi, amixer, aplay, aplaymidi, arecord,
+          alsaucm, amidi, amixer, aplay, aplaymidi, arecord (symlink),
           arecordmidi, aseqdump, aseqnet, iecset and
           speaker-test
         </seg>

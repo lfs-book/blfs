@@ -5,11 +5,12 @@
   %general-entities;
 
   <!ENTITY xdg-utils-download-http
-    "http://portland.freedesktop.org/download/xdg-utils-&xdg-utils-version;.tar.gz">
+    "http://people.freedesktop.org/~rdieter/xdg-utils/xdg-utils-&xdg-utils-version;.tar.gz">
+<!--    "http://portland.freedesktop.org/download/xdg-utils-&xdg-utils-version;.tar.gz">-->
   <!ENTITY xdg-utils-download-ftp  " ">
-  <!ENTITY xdg-utils-md5sum        "fadf5e7a08e0526fc60dbe3e5b7ef8d6">
-  <!ENTITY xdg-utils-size          "300 KB">
-  <!ENTITY xdg-utils-buildsize     "1.6 MB">
+  <!ENTITY xdg-utils-md5sum        "38b6f1d38cb02297ddbf64dba0a907a4">
+  <!ENTITY xdg-utils-size          "340 KB">
+  <!ENTITY xdg-utils-buildsize     "2.1 MB">
   <!ENTITY xdg-utils-time          "less than 0.1 SBU">
 ]>
 
@@ -36,7 +37,7 @@
       It is required for Linux Standards Base (LSB) conformance.
     </para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,6 +73,27 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">xdg-utils Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="xmlto"/> with one of
+      <xref linkend="lynx"/>,
+      <xref linkend="w3m"/>,
+      <xref linkend="Links"/>, or
+      <xref linkend="fop"/>,
+    </para>
+
+    <bridgehead renderas="sect4">Required (runtime)</bridgehead>
+    <para role="required">
+      <xref linkend="xorg7-app"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional (runtime)</bridgehead>
+    <para role="optional">
+      <xref linkend="dbus"/>
+    </para>
+
   </sect2>
 
   <sect2 role="installation">
@@ -80,7 +102,8 @@
     <para>Compile <application>xdg-utils</application> with the following
     commands:</para>
 
-<screen><userinput>./configure --prefix=/usr --mandir=/usr/share/man</userinput></screen>
+<screen><userinput>./configure --prefix=/usr --mandir=/usr/share/man &amp;&amp;
+make</userinput></screen>
 
     <caution><para>The tests for the scripts must be made from a X-Window
     based session.  There are several run-time requirements to run

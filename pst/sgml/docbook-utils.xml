@@ -4,7 +4,7 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY docbook-utils-download-http "http://sources-redhat.mirrors.redwire.net/docbook-tools/new-trials/SOURCES/docbook-utils-&docbook-utils-version;.tar.gz">
+  <!ENTITY docbook-utils-download-http " ">
   <!ENTITY docbook-utils-download-ftp  "ftp://sources.redhat.com/pub/docbook-tools/new-trials/SOURCES/docbook-utils-&docbook-utils-version;.tar.gz">
   <!ENTITY docbook-utils-md5sum        "6b41b18c365c01f225bc417cf632d81c">
   <!ENTITY docbook-utils-size          "124 KB">
@@ -37,7 +37,7 @@
     two SGML files and only display the differences in markup. This is useful
     for comparing documents prepared for different languages.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -64,7 +64,7 @@
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing='compact'>
       <listitem>
-        <para>Required Patch: <ulink
+        <para>Required patch: <ulink
         url="&patch-root;/docbook-utils-&docbook-utils-version;-grep_fix-1.patch"/></para>
       </listitem>
     </itemizedlist>
@@ -73,7 +73,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="texlive"/>,
+      <xref linkend="openjade"/>,
       <xref linkend="docbook-dsssl"/>, and
       <xref linkend="sgml-dtd-3"/>
     </para>
@@ -99,14 +99,15 @@
 
 <screen><userinput>patch -Np1 -i ../docbook-utils-&docbook-utils-version;-grep_fix-1.patch &amp;&amp;
 sed -i 's:/html::' doc/HTML/Makefile.in                &amp;&amp;
-./configure --prefix=/usr                              &amp;&amp;
+
+./configure --prefix=/usr --mandir=/usr/share/man      &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make docdir=/usr/share/doc install</userinput></screen>
 
     <para>Many packages use an alternate name for the
     <application>DocBook-utils</application> scripts. If you wish to create
@@ -115,7 +116,7 @@ make</userinput></screen>
 
 <screen role="root"><userinput>for doctype in html ps dvi man pdf rtf tex texi txt
 do
-    ln -s docbook2$doctype /usr/bin/db2$doctype
+    ln -svf docbook2$doctype /usr/bin/db2$doctype
 done</userinput></screen>
 
     <note>
@@ -137,6 +138,10 @@ done</userinput></screen>
 
     <para><command>sed -i 's:/html::' doc/HTML/Makefile.in</command>:
     This command changes the installation directory of the HTML documents.</para>
+
+    <para><option>docdir=/usr/share/doc</option>:
+    This option is placed on the <command>make install</command> line because is is not 
+    recognized by <command>configure</command>.</para>
 
   </sect2>
 

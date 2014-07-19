@@ -20,7 +20,7 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>jasper-&jasper-version;</title>
+  <title>JasPer-&jasper-version;</title>
 
   <indexterm zone="jasper">
     <primary sortas="a-jasper-&jasper-version;">JasPer</primary>
@@ -33,7 +33,7 @@
     initiative to provide a free software-based reference implementation of the
     JPEG-2000 codec.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -71,9 +71,14 @@
     <para role="required"><xref linkend="unzip"/></para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="optional"><xref linkend="libjpeg"/>,
-    <xref linkend="x-window-system"/>, and
-    <xref linkend="freeglut"/></para>
+    <para role="recommended">
+      <xref linkend="libjpeg"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="freeglut"/> (required for <command>jiv</command>)
+    </para>
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/jasper"/></para>
@@ -90,7 +95,10 @@
 </note>
 
 <screen><userinput>patch -Np1 -i ../jasper-&jasper-version;-security_fixes-1.patch &amp;&amp;
-./configure --prefix=/usr --enable-shared --disable-static &amp;&amp;
+./configure --prefix=/usr    \
+            --enable-shared  \
+            --disable-static \
+            --mandir=/usr/share/man &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a testsuite.</para>
@@ -111,7 +119,7 @@ install -v -m644 doc/*.pdf /usr/share/doc/jasper-&jasper-version;</userinput></s
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para><option>--enable-shared</option>: This command
+    <para><parameter>--enable-shared</parameter>: This command
     causes the shared library to be built.</para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

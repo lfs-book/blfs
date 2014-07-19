@@ -7,15 +7,15 @@
   <!ENTITY python3-download-http
            "http://www.python.org/ftp/python/&python3-version;/Python-&python3-version;.tar.xz">
   <!ENTITY python3-download-ftp  " ">
-  <!ENTITY python3-md5sum        "c94b78ea3b68a9bbc9906af4d5b4fdc7">
-  <!ENTITY python3-size          "12 MB">
-  <!ENTITY python3-buildsize     "260 MB">
-  <!ENTITY python3-time          "0.9 SBU">
+  <!ENTITY python3-md5sum        "6cafc183b4106476dd73d5738d7f616a">
+  <!ENTITY python3-size          "14 MB">
+  <!ENTITY python3-buildsize     "266 MB (additional 38 MB for the docs and 37 MB for the tests)">
+  <!ENTITY python3-time          "1.1 SBU (additional 0.1 SBU for the tests)">
 
   <!ENTITY python3htmldoc-download-http
-           "http://docs.python.org/ftp/python/doc/&python3-version;/python-&python3-version;-docs-html.tar.bz2">
-  <!ENTITY python3htmldoc-md5sum        "b5eee2b290338fb08c1512bfc79bb999">
-  <!ENTITY python3htmldoc-size          "4.7 MB">
+           "http://docs.python.org/3/archives/python-&python3-version;-docs-html.tar.bz2">
+  <!ENTITY python3htmldoc-md5sum        "e5662b53413b0dd05d1ee1a075956370">
+  <!ENTITY python3htmldoc-size          "5.2 MB">
 ]>
 
 <sect1 id="python3" xreflabel="Python-&python3-version;">
@@ -42,7 +42,7 @@
       prototyping large programs or developing entire applications.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -102,13 +102,14 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="expat"/> and
       <xref linkend="libffi"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="bluez"/>
+      <xref linkend="bluez"/>,
+      <xref linkend="gdb"/> (required for some tests), and
+      <xref linkend="valgrind"/>
     </para>
 
     <bridgehead renderas="sect4">Optional (For Additional Modules)</bridgehead>
@@ -132,14 +133,16 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr       \
+<screen><userinput>CXX="/usr/bin/g++"              \
+./configure --prefix=/usr       \
             --enable-shared     \
             --with-system-expat \
-            --with-system-ffi &amp;&amp;
+            --with-system-ffi   \
+            --without-ensurepip &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>.
+      The test suite must be run separately, using an X terminal (see below).
     </para>
 
     <para>
@@ -163,15 +166,33 @@ tar --strip-components=1 \
     -C /usr/share/doc/python-&python3-version;/html \
     -xvf ../python-&python3-version;-docs-html.tar.bz2</userinput></screen>
 
+    <para>
+      The test suite must be run separately from the build, either before or
+      after the package is built and installed. Do not run
+      <command>make install</command>, after running the test suite. To build
+      and install the package, you need to start with a fresh or clean source
+      tree. For the test, you also need a clean source code, so either start by
+      removing the source code directory and starting over, by uncompressing
+      the source tarball or by running <command>make clean</command>. Then
+      configure again, adding <quote>--with-pydebug</quote> to the
+      <command>configure</command> switches above, run <command>make</command>,
+      then <command>make test</command>. Remember that some tests fail, if not
+      run in an X terminal.
+    </para>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
+      <command> CXX="/usr/bin/g++" ./configure ...</command>: Avoid an annoying
+      message during configuration.
+    </para>
+
+    <para>
       <option>--with-system-expat</option>: This switch enables linking against
-      system version of <application>Expat</application>. Remove if you have
-      not installed recommended dependency <xref linkend="expat"/>.
+      system version of <application>Expat</application>. 
     </para>
 
     <para>
@@ -185,6 +206,12 @@ tar --strip-components=1 \
       if you want to build <application>Python</application> DBM Module
       against <application>Berkeley DB</application> instead of
       <application>GDBM</application>.
+    </para>
+
+    <para>
+      <parameter>--without-ensurepip</parameter>: This switch disables building
+      <command>pip</command> and <command>setuptools</command>
+      packaging programs.
     </para>
 
     <para>
@@ -217,26 +244,29 @@ tar --strip-components=1 \
 
       <seglistitem>
         <seg>
-          2to3 (symbolic link to 2to3-&python3-majorver;),
+          2to3 (symlink),
           2to3-&python3-majorver;,
 
-          pydoc3 (symbolic link to pydoc&python3-majorver;),
+          pydoc3 (symlink),
           pydoc&python3-majorver;,
 
-          python3 (hard link to python&python3-majorver;m),
-          python&python3-majorver; (hard link to python&python3-majorver;m),
-          python&python3-majorver;m,
+          python3 (symlink);
+          python&python3-majorver; and python&python3-majorver;m (hardlinked);
 
-          python3-config (symbolic link to python&python3-majorver;-config),
-          python&python3-majorver;-config (symbolic link to python3-config),
+          python3-config (symlink),
+          python&python3-majorver;-config (symlink),
           python&python3-majorver;m-config,
 
-          and optionally if Tk is installed,
-          idle3 (symbolic link to idle&python3-majorver;),
+          pyvenv (symlink),
+          pyvenv&python3-majorver;,
+
+          and optionally, if Tk is installed,
+          idle3 (symlink) and
           idle&python3-majorver;
         </seg>
         <seg>
-          libpython&python3-majorver;m.so and libpython3.so
+          libpython&python3-majorver;m.so and libpython3.so;
+          several under /usr/lib/python3.3/lib-dynload/
         </seg>
         <seg>
           /usr/include/python&python3-majorver;m,
@@ -298,6 +328,20 @@ tar --strip-components=1 \
             program.
           </para>
           <indexterm zone="python3 python-ver">
+            <primary
+            sortas="b-python&python3-majorver;">python&python3-majorver;</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pyvenv">
+        <term><command>pyvenv</command></term>
+        <listitem>
+          <para>
+            creates virtual <application>Python</application> environments in
+            one or more target directories.
+          </para>
+          <indexterm zone="python3 pyvenv">
             <primary
             sortas="b-python&python3-majorver;">python&python3-majorver;</primary>
           </indexterm>

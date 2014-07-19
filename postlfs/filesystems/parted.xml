@@ -35,7 +35,7 @@
       partition resizing tool.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -80,7 +80,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>sed -i parted/ui.c \
+    -e "s:(CPPFunction\*) complete:(rl_completion_func_t\*) complete:" &amp;&amp;
+./configure --prefix=/usr --disable-static &amp;&amp;
 make &amp;&amp;
 
 make -C doc html                                       &amp;&amp;
@@ -94,7 +96,11 @@ makeinfo --plaintext -o doc/parted.txt doc/parted.texi</userinput></screen>
 texi2dvi             -o doc/parted.dvi doc/parted.texi &amp;&amp;
 dvips                -o doc/parted.ps  doc/parted.dvi</userinput></screen>
 
-    <para>To test the results, issue: <command>make check</command>.</para>
+    <para>
+      To test the results, issue: <command>make check</command>.  Note that
+      many tests are skipped if not run as the <systemitem
+      class="username">root</systemitem> user.  
+    </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -117,6 +123,11 @@ install -v -m644    doc/{FAT,API,parted.{txt,html}} \
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>sed -i parted/ui.c ...</command>: This <command>sed</command>
+      fixes building with <application>Readline</application> 6.x (x>2).
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>

@@ -5,12 +5,13 @@
   %general-entities;
 
   <!ENTITY midori-download-http
-           "http://archive.xfce.org/src/apps/midori/0.5/midori-&midori-version;.tar.bz2">
+           "http://www.midori-browser.org/downloads/midori_&midori-version;_all_.tar.bz2">
   <!ENTITY midori-download-ftp  " ">
-  <!ENTITY midori-md5sum        "e2c1e0b617397ec9f9eef4fdb47b3565">
-  <!ENTITY midori-size          "1.1 MB">
-  <!ENTITY midori-buildsize     "50 MB (9 MB installed)">
-  <!ENTITY midori-time          "0.3 SBU">
+  <!ENTITY midori-md5sum        "b89e25e74199d705e74767499a415976">
+  <!ENTITY midori-size          "1.3 MB">
+  <!ENTITY midori-buildsize     "63 MB (additional 1 MB for the tests)">
+  <!ENTITY midori-time          "0.5 SBU (additional less than 0.1 SBU
+                                 for the tests)">
 ]>
 
 <sect1 id="midori" xreflabel="Midori-&midori-version;">
@@ -35,7 +36,7 @@
       <application>WebKitGTK+</application>.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,25 +76,24 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
+      <xref linkend="cmake"/>,
+      <xref linkend="libnotify"/>,
       <xref linkend="webkitgtk"/> or
-      <xref linkend="webkitgtk2"/> and
+      <xref linkend="webkitgtk2"/> (see "Command Explanations"), and
       <xref linkend="vala"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="libnotify"/> and
       <xref linkend="librsvg"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="&gnome-download-http;/gnome-keyring">GNOME Keyring (2.x)</ulink> or
-      <xref linkend="gcr"/>,
-      <xref linkend="gtk-doc"/>,
-      <xref linkend="libunique"/> or
-      <xref linkend="libunique3"/> and
+      <xref linkend="gtk-doc"/> and
       <xref linkend="libzeitgeist"/>
+<!--      <xref linkend="libunique"/> or
+      <ulink url="&gnome-download-http;/libunique/">libunique (3.x)</ulink>-->
     </para>
 
     <para condition="html" role="usernotes">
@@ -105,15 +105,25 @@
     <title>Installation of Midori</title>
 
     <para>
+      The tarball is not compressed from a directory, thus it is better to
+      create a directory to uncompress it:
+    </para>
+
+<screen><userinput>mkdir -v midori-&midori-version; &amp;&amp;
+tar xf midori_&midori-version;_all_.tar.bz2 -C midori-&midori-version; &amp;&amp;
+cd midori-&midori-version;</userinput></screen>
+
+    <para>
       Install <application>Midori</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --docdir=/usr/share/doc/midori-&midori-version; &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      To test the results, issue: <command>make check</command> from an X
+      terminal emulator.
     </para>
 
     <para>
@@ -129,7 +139,7 @@ make</userinput></screen>
     <para>
       <option>--enable-gtk3</option>: Use this switch if you want
       to build <application>Midori</application> with
-      <application>GTK+ 3</application> dependencies.
+      <application>WebKitGTK+ 2</application> dependencies.
     </para>
 
     <para>
@@ -162,13 +172,12 @@ make</userinput></screen>
           midori
         </seg>
         <seg>
-          None
+          libmidori-core.so and several libraries under /usr/lib/midori
         </seg>
         <seg>
           /etc/xdg/midori,
-          /usr/include/midori-0.5,
           /usr/lib/midori,
-          /usr/share/doc/midori-&midori-version; and
+          /usr/share/doc/midori and
           /usr/share/midori
         </seg>
       </seglistitem>

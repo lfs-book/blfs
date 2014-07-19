@@ -6,10 +6,10 @@
 
   <!ENTITY gpgme-download-http " ">
   <!ENTITY gpgme-download-ftp  "ftp://ftp.gnupg.org/gcrypt/gpgme/gpgme-&gpgme-version;.tar.bz2">
-  <!ENTITY gpgme-md5sum        "c8cb345ba7c0353e47bdf3c5c05e49be">
+  <!ENTITY gpgme-md5sum        "29e90462b29d445665e8728c66464a4f">
   <!ENTITY gpgme-size          "944 KB">
-  <!ENTITY gpgme-buildsize     "19 MB">
-  <!ENTITY gpgme-time          "0.1 SBU">
+  <!ENTITY gpgme-buildsize     "17 MB (additional 1 MB for the tests)">
+  <!ENTITY gpgme-time          "0.2 SBU (additional 0.1 SBU for the tests)">
 ]>
 
 <sect1 id="gpgme" xreflabel="GPGME-&gpgme-version;">
@@ -39,7 +39,7 @@
       signature verification and key management.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,7 +84,6 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gnupg"/> or
       <xref linkend="gnupg2"/> (used during the testsuite)
     </para>
 
@@ -101,7 +100,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
+<screen><userinput>./configure --prefix=/usr        \
+            --disable-fd-passing \
+            --disable-gpgsm-test &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -114,6 +115,16 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para><option>--disable-fd-passing</option>: This option disables
+    a problem causing a hang for some operations on some systems.</para>
+
+    <para><option>--disable-gpgsm-test</option>: This option disables
+    a test with gpgsm in some systems breaking make.</para>
   </sect2>
 
   <sect2 role="content">

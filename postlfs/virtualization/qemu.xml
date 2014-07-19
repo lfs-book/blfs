@@ -6,10 +6,10 @@
 
   <!ENTITY qemu-download-http "http://wiki.qemu.org/download/qemu-&qemu-version;.tar.bz2">
   <!ENTITY qemu-download-ftp  " ">
-  <!ENTITY qemu-md5sum        "b56e73bdcfdb214d5c68e13111aca96f">
-  <!ENTITY qemu-size          "11.4 MB">
-  <!ENTITY qemu-buildsize     "186 MB">
-  <!ENTITY qemu-time          "2.0 SBU">
+  <!ENTITY qemu-md5sum        "2790f44fd76da5de5024b4aafeb594c2">
+  <!ENTITY qemu-size          "12.3 MB">
+  <!ENTITY qemu-buildsize     "205 MB">
+  <!ENTITY qemu-time          "1.8 SBU">
 ]>
 
 <sect1 id="qemu" xreflabel="qemu-&qemu-version;">
@@ -33,7 +33,7 @@
     for Linux on x86 hardware containing virtualization extensions (Intel VT or
     AMD-V).</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -56,15 +56,7 @@
         <para>Estimated build time: &qemu-time;</para>
       </listitem>
     </itemizedlist>
-<!--
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing='compact'>
-      <listitem>
-        <para>Required Patch: <ulink
-          url="&patch-root;/qemu-&qemu-version;-fixes-1.patch"/></para>
-      </listitem>
-    </itemizedlist>
--->
+
     <bridgehead renderas="sect3">Qemu Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -80,12 +72,16 @@
       <xref linkend="alsa"/>,
       <xref linkend="check"/>,
       <xref linkend="curl"/>,
-      <xref linkend="esound"/>,
       <xref linkend="mesalib"/>, and
-      <xref linkend="cyrus-sasl"/>.
-      Note that this optional dependencies list is not comprehensive.  See the
-      output of <command>./configure --help</command> for a more complete list.
+      <xref linkend="cyrus-sasl"/>
     </para>
+
+    <note>
+      <para>
+        This optional dependencies list is not comprehensive. See the output of
+        <command>./configure --help</command> for a more complete list.
+      </para>
+    </note>
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/qemu"/></para>
@@ -93,7 +89,7 @@
   </sect2>
 
   <sect2 id='qemu-prereq'>
-    <title>KVM Prerequsites</title>
+    <title>KVM Prerequisites</title>
 
     <para>Before building <application>qemu</application>, check to see if
     your processor supports Virtualization Technology (VT):</para>
@@ -113,10 +109,10 @@
     <para>Enable the following options in the kernel configuration
     and recompile the kernel if necessary:</para>
 
-<screen><literal>Virtualization: Y
-  Kernel-based Virtual Machine (KVM) support: M or Y
-  KVM for Intel processors support:           M or Y
-  KVM for AMD processors support:             M or Y</literal></screen>
+<screen><literal>Virtualization:  ---&gt;
+  Kernel-based Virtual Machine (KVM) support: Y or M
+    KVM for Intel processors support: Y or M
+    KVM for AMD processors support: Y or M</literal></screen>
 
     <indexterm zone="qemu qemu-kernel">
       <primary sortas="d-qemu">qemu</primary>
@@ -125,26 +121,31 @@
     <para>The Intel or AMD settings are not both required, but the one matching
     your system processor is required.</para>
 
-    <para>For networking, check that the settings CONFIG_BRIDGE, CONFIG_STP,
-    CONFIG_TUN are enabled and <xref linkend='bridgeutils'/> is
-    installed.</para>
+    <para>For networking, check that <xref linkend='bridgeutils'/> is installed
+    and the following options in the kernel configuration are enabled:</para>
+
+<screen><literal>Networking support  ---&gt;
+  Networking options  ---&gt;
+    802.1d Ethernet Bridging: Y or M
+Device Drivers  ---&gt;
+  Network device support  ---&gt;
+    Universal TUN/TAP device driver support: Y or M</literal></screen>
 
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of qemu</title>
 
-    <para>If <application>xorg</application> is not installed in
-    <filename class='directory'>/usr</filename>, then the linker needs to
-    be told where it is.  For example:</para>
-
-<screen><userinput>export LIBRARY_PATH=/opt/xorg/lib</userinput></screen>
-
     <para>Install <application>qemu</application> by running the following
     commands:</para>
 
-<screen><userinput>./configure --prefix=/usr                \
-            --sysconfdir=/etc            \
+<screen><userinput>sed -e '/#include &lt;sys\/capability.h&gt;/ d' \
+    -e '/#include "virtio-9p-marshal.h"/ i#include &lt;sys\/capability.h&gt;' \
+    -i fsdev/virtfs-proxy-helper.c &amp;&amp;
+
+./configure --prefix=/usr \
+            --sysconfdir=/etc \
+            --docdir=/usr/share/doc/qemu-&qemu-version; \
             --target-list=x86_64-softmmu &amp;&amp;
 make</userinput></screen>
 
@@ -152,8 +153,32 @@ make</userinput></screen>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>make install</userinput></screen>
-    
+<screen role="root"><userinput>make install &amp;&amp;
+[ -e  /usr/lib/libcacard.so ] &amp;&amp; chmod -v 755 /usr/lib/libcacard.so</userinput></screen>
+
+    <para>
+      You will need a dedicated group that will contain users (other than root)
+      allowed to access the KVM device. Add the group by running the following
+      command as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>groupadd -g 61 kvm</userinput></screen>
+
+    <para>
+      Add any users that might use the KVM device to that group:
+    </para>
+
+<screen role="root"><userinput>usermod -a -G kvm <replaceable>&lt;username&gt;</replaceable></userinput></screen>
+
+    <para>
+      You will also need to add a Udev rule so that the KVM device gets correct
+      permissions:
+    </para>
+
+<screen role="root"><userinput>cat > /lib/udev/rules.d/65-kvm.rules &lt;&lt; "EOF"
+<literal>KERNEL=="kvm", NAME="%k", GROUP="kvm", MODE="0660"</literal>
+EOF</userinput></screen>
+
     <note><!--<para>The main program <command>qemu-system-x86_64</command> doesn't
     make a distinction between i386 and x86_64 so even on an i386 system you
     should use <emphasis>qemu-system-x86_64</emphasis></para>
@@ -162,7 +187,7 @@ make</userinput></screen>
     <para>For convenience you may want to create a symbolic link to run
     <command>qemu-system-x86_64</command>:</para>
 
-    <screen><userinput>ln -sv qemu-system-x86_64 /usr/bin/qemu</userinput></screen>
+    <screen role="root"><userinput>ln -sv qemu-system-x86_64 /usr/bin/qemu</userinput></screen>
     </note>
 
   </sect2>
@@ -170,14 +195,23 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para><parameter>--target-list=x86_64-softmmu</parameter>: This option
+    <para><command>sed -e '/#include ... fsdev/virtfs-proxy-helper.c</command>:
+    Fixes <application>qemu-&qemu-version;</application> to build with
+    <application>libcap-&libcap-version;</application>.</para>
+
+    <para><parameter>--target-list=x86_64-softmmu</parameter>: This switch
     limits the build target to the x86_64 architecture.  For other 
     hardware emulation see the --target-list list in <command>configure</command>'s
     help output.  Omitting this option will build all architectures.</para>
 
+    <para>
+      <option>--audio-drv-list=alsa</option>: This switch sets the audio driver
+      to ALSA. For other drivers see the --audio-drv-list list in
+      <command>configure</command>'s help output. The default audio driver is
+      OSS.
+    </para>
+
   </sect2>
-
-
 
   <sect2 role="configuration">
     <title>Configuring qemu</title>
@@ -192,7 +226,7 @@ make</userinput></screen>
 
     <note><para>The following instructions assume you have created the optional
     symbolic link, <userinput>qemu</userinput>.  Additionally, you must run
-    <userinput>qemu</userinput> from an X-Windows based terminal.</para></note>
+    <userinput>qemu</userinput> from an X Window System based terminal.</para></note>
 
     <para>To install an operating system, download an iso of your choice or use
     a pre-intalled cdrom device.  For the purposes of this example, use
@@ -236,12 +270,12 @@ make</userinput></screen>
       <listitem>
         <para>Allow the host system to forward IP packets.</para>
 
-<screen><userinput>sysctl -w net.ipv4.ip_forward=1</userinput></screen>
+<screen role="root"><userinput>sysctl -w net.ipv4.ip_forward=1</userinput></screen>
 
         <para>To make this permanent, add the command to
         <filename>/etc/syssysctl.conf:</filename></para>
 
-<screen><userinput>cat &gt;&gt; /etc/sysctl.conf &lt;&lt; EOF
+<screen role="root"><userinput>cat &gt;&gt; /etc/sysctl.conf &lt;&lt; EOF
 net.ipv4.ip_forward=1
 EOF</userinput></screen>
 
@@ -251,7 +285,7 @@ EOF</userinput></screen>
         <para>Create scripts for qemu to attach the client network
         device, usually visible as tap0, to the host bridge.</para>
 
-<screen><userinput>cat &gt; /etc/qemu-ifup &lt;&lt; EOF
+<screen role="root"><userinput>cat &gt; /etc/qemu-ifup &lt;&lt; EOF
 #!/bin/bash
 
 switch=br0
@@ -271,7 +305,7 @@ EOF
 
 chmod +x /etc/qemu-ifup</userinput></screen>
 
-<screen><userinput>cat &gt; /etc/qemu-ifdown &lt;&lt; EOF
+<screen role="root"><userinput>cat &gt; /etc/qemu-ifdown &lt;&lt; EOF
 #!/bin/bash
 
 switch=br0
@@ -292,7 +326,7 @@ chmod +x /etc/qemu-ifdown</userinput></screen>
       </listitem>
     </itemizedlist>
 
-      <note><para>The backslashes in the abouve script are for convenience
+      <note><para>The backslashes in the above script are for convenience
       for cut/paste operations.  The backslashes should <emphasis>not</emphasis>
       appear in the final scripts.</para></note>
 
@@ -315,14 +349,28 @@ chmod +x /etc/qemu-ifdown</userinput></screen>
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Program</segtitle>
-      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Library</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>qemu-ga, qemu-img, qemu-io, qemu-nbd, qemu-system-x86_64</seg>
-        <seg>None</seg>
-        <seg>/etc/qemu, /usr/share/qemu, /usr/share/doc/qemu</seg>
+        <seg>
+          qemu-ga,
+          qemu-img,
+          qemu-io,
+          qemu-nbd,
+          qemu-system-x86_64,
+          virtfs-proxy-helper, and
+          vscclient
+        </seg>
+        <seg>libcacard.so</seg>
+        <seg>
+          /etc/qemu,
+          /usr/include/cacard,
+          /usr/lib/qemu,
+          /usr/share/qemu, and
+          /usr/share/doc/qemu-&qemu-version;
+        </seg>
       </seglistitem>
     </segmentedlist>
 
@@ -381,6 +429,16 @@ chmod +x /etc/qemu-ifdown</userinput></screen>
           <para>is the QEMU PC System emulator.</para>
           <indexterm zone="qemu qemu-system">
             <primary sortas="b-qemu-system">qemu-system-x86_64</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libcacard">
+        <term><filename class="libraryfile">libcacard.so</filename></term>
+        <listitem>
+          <para>is the Virtual Smart Card Emulator library.</para>
+          <indexterm zone="qemu libcacard">
+            <primary sortas="c-libcacard">libcacard.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

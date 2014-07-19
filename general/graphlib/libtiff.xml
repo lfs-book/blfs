@@ -38,7 +38,7 @@
       used for general work with TIFF files.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,10 +78,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="freeglut"/>,
-      <ulink url="http://www.cl.cam.ac.uk/~mgk25/jbigkit/">JBIG-KIT</ulink>,
-      <xref linkend="libjpeg"/> and
-      <xref linkend="xorg7-lib"/>
+      <xref linkend="libjpeg"/>,
+      <xref linkend="freeglut"/> (required for <command>tiffgt</command>), and
+      <ulink url="http://www.cl.cam.ac.uk/~mgk25/jbigkit/">JBIG-KIT</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -97,7 +96,8 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>sed -i '/glDrawPixels/a glFlush();' tools/tiffgt.c &amp;&amp;
+./configure --prefix=/usr --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -114,6 +114,11 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>sed -i ...</command>: This command fixes a bug which is causing
+      <command>tiffgt</command> to open blank windows in some cases.
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
@@ -132,7 +137,7 @@ make</userinput></screen>
         <seg>
           bmp2tiff, fax2ps, fax2tiff, gif2tiff, pal2rgb, ppm2tiff, ras2tiff,
           raw2tiff, rgb2ycbcr, thumbnail, tiff2bw, tiff2pdf, tiff2ps,
-          tiff2rgba, tiffcmp, tiffcp, tiffcrop, tiffdither, tiffdump,
+          tiff2rgba, tiffcmp, tiffcp, tiffcrop, tiffdither, tiffdump, tiffgt
           tiffinfo, tiffmedian, tiffset and tiffsplit
         </seg>
         <seg>
@@ -377,6 +382,18 @@ make</userinput></screen>
           </para>
           <indexterm zone="libtiff tiffdump">
             <primary sortas="b-tiffdump">tiffdump</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tiffgt">
+        <term><command>tiffgt</command></term>
+        <listitem>
+          <para>
+            displays an image stored in a TIFF file.
+          </para>
+          <indexterm zone="libtiff tiffgt">
+            <primary sortas="b-tiffgt">tiffgt</primary>
           </indexterm>
         </listitem>
       </varlistentry>

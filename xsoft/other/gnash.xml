@@ -37,7 +37,7 @@
       animations.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -92,8 +92,8 @@
       <xref linkend="curl"/>,
       <!-- <xref linkend="ffmpeg"/> or -->
       <xref linkend="gst-ffmpeg"/>,
-      <xref linkend="firefox"/> or <xref linkend="seamonkey"/> and
-      <xref linkend="giflib"/>.
+      <xref linkend="npapi-sdk"/>, and
+      <xref linkend="giflib"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -101,6 +101,7 @@
       <xref linkend="dejagnu"/>,
       <xref linkend="GConf"/>,
       <xref linkend="git"/>,
+      <xref linkend="kdelibs"/>,
       <xref linkend="libogg"/>,
       <xref linkend="libvorbis"/>,
       <xref linkend="qt4"/>,
@@ -130,9 +131,14 @@
 
 <screen><userinput>patch -Np1 -i ../gnash-&gnash-version;-CVE-2012-1175-1.patch &amp;&amp;
 sed -i '/^LIBS/s/\(.*\)/\1 -lboost_system/' \
-  gui/Makefile.in utilities/Makefile.in &amp;&amp;
+    gui/Makefile.in utilities/Makefile.in   &amp;&amp;
+sed -e '/DGifOpen/s:Data:&amp;, NULL:'          \
+    -e '/DGifCloseFile/s:_gif:&amp;, NULL:'     \
+    -i libbase/GnashImageGif.cpp            &amp;&amp;
+sed -i '/#include &lt;csignal&gt;/a\#include &lt;unistd.h&gt;' plugin/klash4/klash_part.cpp &amp;&amp;
+
 ./configure --prefix=/usr --sysconfdir=/etc               \
-  --with-npapi-incl=/usr/include/npapi --enable-media=gst \
+  --with-npapi-incl=/usr/include/npapi-sdk --enable-media=gst \
   --with-npapi-plugindir=/usr/lib/mozilla/plugins         \
   --without-gconf &amp;&amp;
 make</userinput></screen>
@@ -158,16 +164,25 @@ make install-plugin</userinput></screen>
     </para>
 
     <para>
+      <command>sed -e '/DGifOpen/s:Data:&amp;, NULL:' ...</command>:
+      This sed fixes building with recent versions of
+      <application>Giflib</application>.
+    </para>
+
+    <para>
+      <command>sed -i '/#include &lt;csignal&gt;/a\#include &lt;unistd.h&gt;' ...</command>:
+      This fixes building when <application>kdelibs</application> has been installed.
+    </para>
+
+    <para>
       <option>--enable-media=gst</option>: This tells it to use Gstreamer for
       to play video and audio (--enable-media=ffmpeg is broken with
       FFmpeg-0.11.1).
     </para>
 
     <para>
-      <option>--with-npapi-incl=/usr/include/npapi</option>: This option tells
-      it where to find some Mozilla headers that it needs. You should have
-      installed these headers when you installed <xref linkend="npapi-firefox"/>
-      or <xref linkend="npapi-seamonkey"/>.
+      <option>--with-npapi-incl=/usr/include/npapi-sdk</option>: This option tells
+      it where to find some Mozilla headers that it needs.
     </para>
 
     <para>

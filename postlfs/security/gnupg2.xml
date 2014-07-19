@@ -6,14 +6,14 @@
 
   <!ENTITY gnupg2-download-http " ">
   <!ENTITY gnupg2-download-ftp  "ftp://ftp.gnupg.org/gcrypt/gnupg/gnupg-&gnupg2-version;.tar.bz2">
-  <!ENTITY gnupg2-md5sum        "9d18ee71bb0b10d40d1c8a393bdd7a89">
-  <!ENTITY gnupg2-size          "4.1 MB">
-  <!ENTITY gnupg2-buildsize     "90 MB">
-  <!ENTITY gnupg2-time          "0.9 SBU">
+  <!ENTITY gnupg2-md5sum        "048d8de797125f1d8e6cf3bdff9e2d12">
+  <!ENTITY gnupg2-size          "4.2 MB">
+  <!ENTITY gnupg2-buildsize     "67 MB (additional 1 MB for the tests)">
+  <!ENTITY gnupg2-time          "0.6 SBU (additional 0.5 SBU for the tests)">
 ]>
 
 <sect1 id="gnupg2" xreflabel="GnuPG-&gnupg2-version;">
-  <?dbhtml filename="gnupg2.html"?>
+  <?dbhtml filename="gnupg.html"?>
 
   <sect1info>
     <othername>$LastChangedBy$</othername>
@@ -23,22 +23,21 @@
   <title>GnuPG-&gnupg2-version;</title>
 
   <indexterm zone="gnupg2">
-    <primary sortas="a-GnuPG-2">GnuPG 2</primary>
+    <primary sortas="a-GnuPG">GnuPG</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to GnuPG 2</title>
+    <title>Introduction to GnuPG</title>
 
-    <para>The <application>GnuPG 2</application> package is GNU's tool for
+    <para>The <application>GnuPG</application> package is GNU's tool for
     secure communication and data storage. It can be used to encrypt data and
     to create digital signatures. It includes an advanced key management
     facility and is compliant with the proposed OpenPGP Internet standard as
     described in RFC2440 and the S/MIME standard as described by several RFCs.
     GnuPG 2 is the stable version of GnuPG integrating support for OpenPGP and
-    S/MIME. It does not conflict with an installed <xref linkend="gnupg"/>
-    OpenPGP-only version.</para>
+    S/MIME.</para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -61,15 +60,6 @@
         <para>Estimated build time: &gnupg2-time;</para>
       </listitem>
     </itemizedlist>
-
-    <!-- <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing='compact'>
-      <listitem>
-        <para>Required Patch: <ulink
-        url="&patch-root;/gnupg2-&gnupg2-version;-curl_LDAP-1.patch"/>
-      </para>
-      </listitem>
-    </itemizedlist> -->
 
     <bridgehead renderas="sect3">GnuPG 2 Dependencies</bridgehead>
 
@@ -97,13 +87,13 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of GnuPG 2</title>
+    <title>Installation of GnuPG</title>
 
-    <para>Install <application>GnuPG 2</application> by running the following
+    <para>Install <application>GnuPG</application> by running the following
     commands:</para>
 
 <screen><userinput>./configure --prefix=/usr \
-            --libexecdir=/usr/lib/gnupg2 \
+            --enable-symcryptrun \
             --docdir=/usr/share/doc/gnupg-&gnupg2-version; &amp;&amp;
 make &amp;&amp;
 
@@ -123,9 +113,11 @@ makeinfo --plaintext       -o doc/gnupg.txt           doc/gnupg.texi</userinput>
     <filename>/usr/share/man/man1/gpg-zip.1</filename>. Now, as the
     <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>make install &amp;&amp;
+<screen role="root"><userinput>make install               &amp;&amp;
+ln -sv gpg2  /usr/bin/gpg  &amp;&amp;
+ln -sv gpgv2 /usr/bin/gpgv &amp;&amp;
 
-install -v -m755 -d /usr/share/doc/gnupg-&gnupg2-version;/html &amp;&amp;
+install -v -m755 -d /usr/share/doc/gnupg-&gnupg2-version;/html       &amp;&amp;
 install -v -m644    doc/gnupg_nochunks.html \
                     /usr/share/doc/gnupg-&gnupg2-version;/gnupg.html &amp;&amp;
 install -v -m644    doc/*.texi doc/gnupg.txt \
@@ -145,10 +137,8 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para><parameter>--libexecdir=/usr/lib/gnupg2</parameter>: This switch
-    creates a <filename class="directory">gnupg</filename> directory in
-    <filename class="directory">/usr/lib</filename> instead of
-    <filename class="directory">/usr/libexec</filename>.</para>
+    <para><command>ln -sv gpg...</command>: Symlinks for compatibility with the
+    first version of <application>GnuPG</application>.</para>
 
     <para><parameter>--docdir=/usr/share/doc/gnupg-&gnupg2-version;</parameter>:
     This switch changes the default docdir to <filename
@@ -156,6 +146,12 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
 
     <para><parameter>--enable-symcryptrun</parameter>: This switch enables
     building the symcryptrun program.</para>
+
+    <para><option>--libexecdir=/usr/lib/gnupg2</option>: This option
+    creates a <filename class="directory">gnupg</filename> directory in
+    <filename class="directory">/usr/lib</filename> instead of
+    <filename class="directory">/usr/libexec</filename> in accordance
+    with the old version of the FHS used before LFS-7.5.</para>
 
   </sect2>
 
@@ -168,12 +164,15 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>addgnupghome, applygnupgdefaults, gpg-agent, gpg-connect-agent,
-        gpg2, gpgconf, gpgkey2ssh, gpgparsemail, gpgsm, gpgsm-gencert.sh,
-        gpgv2, kbxutil, scdaemon, symcryptrun, and watchgnupg</seg>
+        <seg>gpg (symlink), gpg2, gpg-agent, gnupg-pcsc-wrapper, gpg2keys_curl,
+        gpg2keys_finger, addgnupghome, gpgconf, gpg-connect-agent, gpgkey2ssh,
+        gpg2keys_hkp, gpg2keys_ldap, gpg-check-pattern, applygnupgdefaults,
+        gpgparsemail, gpgsm, gpgsm-gencert.sh, gpg-preset-passphrase,
+        gpg-protect-tool, scdaemon, gpgv (symlink), gpgv2, kbxutil,
+        symcryptrun, and watchgnupg</seg>
         <seg>None</seg>
-        <seg>/usr/lib/gnupg2, /usr/share/gnupg and
-        /usr/share/doc/gnupg-&gnupg2-version;</seg>
+        <seg>/usr/share/doc/gnupg-&gnupg2-version; and
+        /usr/share/gnupg</seg>
       </seglistitem>
     </segmentedlist>
 

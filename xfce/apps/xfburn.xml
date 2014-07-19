@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY xfburn-download-http
-           "http://archive.xfce.org/src/apps/xfburn/0.4/xfburn-&xfburn-version;.tar.bz2">
+           "http://archive.xfce.org/src/apps/xfburn/0.5/xfburn-&xfburn-version;.tar.bz2">
   <!ENTITY xfburn-download-ftp  " ">
-  <!ENTITY xfburn-md5sum        "147cdc2d909e751125be16103b8dc81f">
-  <!ENTITY xfburn-size          "640 KB">
-  <!ENTITY xfburn-buildsize     "17 MB">
-  <!ENTITY xfburn-time          "0.3 SBU">
+  <!ENTITY xfburn-md5sum        "5a277c76ec9f70900b8b98a2cd500a1d">
+  <!ENTITY xfburn-size          "744 KB">
+  <!ENTITY xfburn-buildsize     "17 MB (additional 1 MB for the tests)">
+  <!ENTITY xfburn-time          "0.1 SBU (additional 0.1 SBU for the tests)">
 ]>
 
 <sect1 id="xfburn" xreflabel="Xfburn-&xfburn-version;">
@@ -37,7 +37,7 @@
       from elsewhere.
     </para>
 
-    &lfs73_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,8 +78,13 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="exo"/>,
-      <xref linkend="libxfcegui4"/> and
+      <xref linkend="libxfce4util"/>, and
       <xref linkend="libisoburn"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="gst-plugins-base"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -95,12 +100,11 @@
       commands:
     </para>
 
-<screen><userinput>sed -i '/&lt;glib.h&gt;/a#include &lt;glib-object.h&gt;' xfburn/xfburn-settings.h &amp;&amp;
-./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>
-      This package does not come with a test suite.
+      To test the results, issue: <command>make check</command>.
     </para>
 
     <para>
@@ -113,12 +117,6 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <command>sed -i '/&lt;glib.h&gt;/a#include &lt;glib-object.h&gt;'
-      xfburn/xfburn-settings.h</command>: This sed is needed to compile with
-      <application>Glib</application> 2.32 installed.
-    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
