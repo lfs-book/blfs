@@ -313,15 +313,36 @@ EOF</userinput></screen>
       <primary sortas="e-etc-profile.d-i18n.sh">/etc/profile.d/i18n.sh</primary>
     </indexterm>
 
-      <para>This script sets an environment variable necessary for
-      native language support. A full discussion on determining this
-      variable can be found on the <ulink
-      url="&lfs-root;/chapter07/profile.html">LFS Bash Shell
-      Startup Files</ulink> page.</para>
+      <para>This script sets environment variables necessary for
+      native language support.</para>
 
 <screen role="root"><userinput>cat &gt; /etc/profile.d/i18n.sh &lt;&lt; "EOF"
-<literal># Set up i18n variables
-export LANG=<replaceable>&lt;ll&gt;</replaceable>_<replaceable>&lt;CC&gt;</replaceable>.<replaceable>&lt;charmap&gt;</replaceable><replaceable>&lt;@modifiers&gt;</replaceable></literal>
+<literal># Begin /etc/profile.d/i18n.sh
+
+unset LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES \
+      LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION
+
+if [ -n "$XDG_CONFIG_HOME" ] &amp;&amp; [ -r "$XDG_CONFIG_HOME/locale.conf" ]; then
+  . "$XDG_CONFIG_HOME/locale.conf"
+elif [ -r /etc/locale.conf ]; then
+  . /etc/locale.conf
+fi
+
+export LANG="${LANG:-C}"
+[ -n "$LC_CTYPE" ]          &amp;&amp; export LC_CTYPE
+[ -n "$LC_NUMERIC" ]        &amp;&amp; export LC_NUMERIC
+[ -n "$LC_TIME" ]           &amp;&amp; export LC_TIME
+[ -n "$LC_COLLATE" ]        &amp;&amp; export LC_COLLATE
+[ -n "$LC_MONETARY" ]       &amp;&amp; export LC_MONETARY
+[ -n "$LC_MESSAGES" ]       &amp;&amp; export LC_MESSAGES
+[ -n "$LC_PAPER" ]          &amp;&amp; export LC_PAPER
+[ -n "$LC_NAME" ]           &amp;&amp; export LC_NAME
+[ -n "$LC_ADDRESS" ]        &amp;&amp; export LC_ADDRESS
+[ -n "$LC_TELEPHONE" ]      &amp;&amp; export LC_TELEPHONE
+[ -n "$LC_MEASUREMENT" ]    &amp;&amp; export LC_MEASUREMENT
+[ -n "$LC_IDENTIFICATION" ] &amp;&amp; export LC_IDENTIFICATION
+
+# End /etc/profile.d/i18n.sh</literal>
 EOF</userinput></screen>
 
     </sect3>
