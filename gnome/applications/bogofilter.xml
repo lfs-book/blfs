@@ -4,8 +4,7 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY bogofilter-download-http 
-           "http://sourceforge.net/projects/bogofilter/files/bogofilter-stable/bogofilter-1.2.4/bogofilter-&bogofilter-version;.tar.gz">
+  <!ENTITY bogofilter-download-http "&ourceforge-repo;/bogofilter/bogofilter-&bogofilter-version;.tar.gz">
   <!ENTITY bogofilter-download-ftp  " ">
   <!ENTITY bogofilter-md5sum        "6ce27a692d2d4881e9898f3798dcf91c">
   <!ENTITY bogofilter-size          "1.9 MB">
@@ -13,7 +12,7 @@
   <!ENTITY bogofilter-time          "0.5 SBU">
 ]>
 
-<sect1 id="bogofilter" xreflabel="bogofilter-&bogofilter-version;">
+<sect1 id="bogofilter" xreflabel="Bogofilter-&bogofilter-version;">
   <?dbhtml filename="bogofilter.html"?>
 
   <sect1info>
@@ -21,25 +20,19 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>bogofilter-&bogofilter-version;</title>
+  <title>Bogofilter-&bogofilter-version;</title>
 
   <indexterm zone="bogofilter">
-    <primary sortas="a-bogofilter">bogofilter</primary>
+    <primary sortas="a-Bogofilter">Bogofilter</primary>
   </indexterm>
 
   <sect2 role="package">
     <title>Introduction to Bogofilter</title>
 
     <para>
-      The<application>Bogofilter</application> application is a mail filter that classifies mail as spam or ham 
-      (non-spam) by a statistical analysis of the message's header and content (body). 
-      The program is able to learn from the user's classifications and corrections.
-
-      Bogofilter is or can be integrated with graphical mailers, such as KDE's KMail, GNOME's Evolution or Claws Mail 
-      (formerly known as Sylpheed-Claws), or it is run by a mail delivery agent (maildrop, procmail) script 
-      to classify an incoming message as spam or ham (using wordlists stored by BerkeleyDB). 
-      Bogofilter provides processing for plain text and HTML. It supports multi-part MIME messages with decoding 
-      of base64, quoted-printable, and uuencoded text and ignores attachments, such as images.
+      The<application>Bogofilter</application> application is a mail filter that classifies
+      mail as spam or ham (non-spam) by a statistical analysis of the message's header and
+      content (body).
     </para>
 
     &lfs75_checked;
@@ -78,25 +71,30 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">bogofilter Dependencies</bridgehead>
+    <bridgehead renderas="sect3">Bogofilter Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="db"/>, or
-      <xref linkend="sqlite"/>, or
-      <ulink url="http://fallabs.com/qdbm/">qdbm</ulink>
+      <xref linkend="db"/>
     </para>
-    
+
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="gsl"/>
     </para>
 
-    <note>
-    <para>
-      If you do not install the recommended <application>gsl</application>
-      then a statically linked shipped version will be used instead.
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="sqlite"/>,
+      <ulink url="http://fallabs.com/qdbm/">QDBM</ulink> and
+      <ulink url="http://fallabs.com/tokyocabinet/">TokyoCabinet</ulink>
     </para>
+
+    <note>
+      <para>
+        If you do not install the recommended <xref linkend="gsl"/> package
+        then a statically linked shipped version will be used instead.
+      </para>
     </note>
 
     <para condition="html" role="usernotes">
@@ -105,14 +103,14 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of bogofilter</title>
+    <title>Installation of Bogofilter</title>
 
     <para>
-      Install <application>bogofilter</application> by running the following
+      Install <application>Bogofilter</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc/bogofilter &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -124,6 +122,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
@@ -131,11 +130,8 @@ make</userinput></screen>
 
     <para>
       <option>--with-database=</option>: This switch allows you to change
-      the default database from db to either qdbm or sqlite.
+      the default database from db to either qdbm, sqlite3 or tokyocabinet.
     </para>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gtk-doc-rebuild.xml"/>
 
   </sect2>
 
@@ -144,23 +140,19 @@ make</userinput></screen>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
-          bogofilter, bogofilter-daemon, and bogofilter-setup
+          bf_compact, bf_copy, bf_tar, bogofilter, bogolexer, bogotune,
+          bogoupgrade and bogoutil
         </seg>
         <seg>
-          libbogofilter-1.0.so and im-bogofilter.so
-          (<application>GTK+ Immodule</application>)
+          None
         </seg>
         <seg>
-          /etc/dconf/db/bogofilter.d,
-          /usr/include/bogofilter-1.0,
-          /usr/lib/bogofilter,
-          /usr/share/gtk-doc/html/bogofilter, and
-          /usr/share/bogofilter
+          /etc/bogofilter
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -170,39 +162,101 @@ make</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="bogofilter-daemon">
-        <term><command>bogofilter-daemon</command></term>
+      <varlistentry id="bf_compact">
+        <term><command>bf_compact</command></term>
         <listitem>
           <para>
-            is the Intelligent Input Bus Daemon.
+            creates a more compact bogofilter working directory with a
+            dump/load cycle.
           </para>
-          <indexterm zone="bogofilter bogofilter-daemon">
-            <primary sortas="b-bogofilter-daemon">bogofilter-daemon</primary>
+          <indexterm zone="bogofilter bf_compact">
+            <primary sortas="b-bf_compact">bf_compact</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="bogofilter-setup">
-        <term><command>bogofilter-setup</command></term>
+      <varlistentry id="bf_copy">
+        <term><command>bf_copy</command></term>
         <listitem>
           <para>
-            is the <application>GTK+</application> program used to configure
-            the <command>bogofilter-daemon</command>.
+            copies a bogofilter working directory to another directory.
           </para>
-          <indexterm zone="bogofilter bogofilter-setup">
-            <primary sortas="b-bogofilter-setup">bogofilter-setup</primary>
+          <indexterm zone="bogofilter bf_copy">
+            <primary sortas="b-bf_copy">bf_copy</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libbogofilter-1.0">
-        <term><filename class="libraryfile">libbogofilter-1.0.so</filename></term>
+      <varlistentry id="bf_tar">
+        <term><command>bf_tar</command></term>
         <listitem>
           <para>
-            contains <application>bogofilter</application> API functions.
+            bundles a bogofilter working directory in tar format and
+            copies it to standard output.
           </para>
-          <indexterm zone="bogofilter libbogofilter-1.0">
-            <primary sortas="c-libbogofilter-1.0">libbogofilter-1.0.so</primary>
+          <indexterm zone="bogofilter bf_tar">
+            <primary sortas="b-bf_tar">bf_tar</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="bogofilter-prog">
+        <term><command>bogofilter</command></term>
+        <listitem>
+          <para>
+            is a fast Bayesian spam filter.
+          </para>
+          <indexterm zone="bogofilter bogofilter-prog">
+            <primary sortas="b-bogofilter">bogofilter</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="bogolexer">
+        <term><command>bogolexer</command></term>
+        <listitem>
+          <para>
+            used to separate messages into tokens and to test new
+            versions of the lexer.l code.
+          </para>
+          <indexterm zone="bogofilter bogolexer">
+            <primary sortas="b-bogolexer">bogolexer</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="bogotune">
+        <term><command>bogotune</command></term>
+        <listitem>
+          <para>
+            tries to find optimum parameter settings for bogofilter.
+          </para>
+          <indexterm zone="bogofilter bogotune">
+            <primary sortas="b-bogotune">bogotune</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="bogoupgrade">
+        <term><command>bogoupgrade</command></term>
+        <listitem>
+          <para>
+            upgrades bogofilter database to current version.
+          </para>
+          <indexterm zone="bogofilter bogoupgrade">
+            <primary sortas="b-bogoupgrade">bogoupgrade</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="bogoutil">
+        <term><command>bogoutil</command></term>
+        <listitem>
+          <para>
+            dumps, loads, and maintains bogofilter database files.
+          </para>
+          <indexterm zone="bogofilter bogoutil">
+            <primary sortas="b-bogoutil">bogoutil</primary>
           </indexterm>
         </listitem>
       </varlistentry>
