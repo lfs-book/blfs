@@ -74,6 +74,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/xfce4-session-&xfce4-session-version;-logind_suspend_hibernate-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Xfce4 Session Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -96,7 +106,8 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
+<screen><userinput>patch -Np1 -i ..//xfce4-session-&xfce4-session-version;-logind_suspend_hibernate-1.patch &amp;&amp;
+./configure --prefix=/usr \
             --sysconfdir=/etc \
             --disable-legacy-sm &amp;&amp;
 make</userinput></screen>
@@ -130,20 +141,16 @@ make</userinput></screen>
     <para>
       There are several optional run time dependencies for
       <application>Xfce4</application>:
-      <xref linkend="consolekit"/>,
       <xref linkend="dbus"/>,
       <xref linkend="gnupg2"/>,
-      <xref linkend="hicolor-icon-theme"/> and
-      <xref linkend="openssh"/>
+      <xref linkend="hicolor-icon-theme"/>,
+      <xref linkend="openssh"/> and
+      <xref linkend="systemd"/> (for Logind)
     </para>
 
     <para>
       To launch <application>Xfce4</application> use the command
-      <command>startxfce4</command>. If you have <xref linkend="consolekit"/>
-      installed, use <command>startxfce4 --with-ck-launch</command>.
-      <application>ConsoleKit</application> is required to perform any
-      task that requires administrative access, including shut down
-      and reboot.
+      <command>startxfce4</command>.
     </para>
 
   </sect2>
