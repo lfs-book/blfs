@@ -128,6 +128,7 @@ usermod -a -G video gdm</userinput></screen>
             --localstatedir=/var \
             --libexecdir=/usr/lib/gdm \
             --with-initial-vt=7 \
+            --with-systemdsystemunitdir=/lib/systemd/system \
             --with-at-spi-registryd-directory=/usr/lib/at-spi2-core \
             --with-authentication-agent-directory=/usr/lib/polkit-gnome \
             --with-check-accelerated-directory=/usr/lib/gnome-session \
@@ -221,28 +222,20 @@ chown -R -v gdm:gdm /var/lib/gdm /var/cache/gdm /var/log/gdm</userinput></screen
 
     </sect3>
 
-    <sect3 id="gdm-init">
-      <title>Boot Script</title>
+    <sect3 id="gdm-init-systemd">
+      <title>Systemd Unit File</title>
 
       <para>
-        To start a graphical login when the system is booted, install the
-        <filename>/etc/rc.d/init.d/gdm</filename> init script included in the
-        <xref linkend="bootscripts"/> package.
+        This package provides a systemd unit file in the source tarball.
+        To enable it as the <systemitem class="username">root</systemitem> user:
       </para>
 
-      <indexterm zone="gdm gdm-init">
+      <indexterm zone="gdm gdm-init-systemd">
         <primary sortas="f-gdm">gdm</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-gdm</userinput></screen>
+<screen role="root"><userinput>systemctl enable gdm</userinput></screen>
 
-      <para>
-        Now edit <filename>/etc/inittab</filename> with the following
-        command.
-      </para>
-
-<screen role="root"><userinput>sed -i 's/id:3:initdefault:/id:5:initdefault:/' \
-    /etc/inittab</userinput></screen>
 
     </sect3>
 
