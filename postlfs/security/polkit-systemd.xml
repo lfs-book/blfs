@@ -80,6 +80,20 @@
       <xref linkend="JS"/>
     </para>
 
+    <bridgehead renderas="sect4">Recommended</bridgehead
+    <para role="recommended">
+      <xref linkend="linux-pam"/>
+    </para>
+
+    <note>
+      <para>
+        Since <command>systemd-logind</command> uses PAM to register user
+        sessions, it is a good idea to build  <application>Polkit</application>
+        with PAM support so <command>systemd-logind</command> can track
+        <application>Polkit</application> sessions.
+      </para>
+    </note>
+
     <bridgehead renderas="sect4">Optional (Required if building GNOME)</bridgehead>
     <para role="optional">
       <xref linkend="gobject-introspection"/>
@@ -89,9 +103,13 @@
     <para role="optional">
       <xref linkend="DocBook"/>,
       <xref linkend="docbook-xsl"/>,
-      <xref linkend="gtk-doc"/>,
-      <xref linkend="libxslt"/> and
-      <xref linkend="linux-pam"/>
+      <xref linkend="gtk-doc"/>, and
+      <xref linkend="libxslt"/>
+    </para>
+
+    <bridgehead renderas="sect4">Required Runtime Dependencies</bridgehead>
+    <para role="required">
+      <xref linkend="systemd"/> (for Logind)
     </para>
 
     <note>
@@ -131,9 +149,7 @@ useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
 <screen><userinput>./configure --prefix=/usr                \
             --sysconfdir=/etc            \
             --localstatedir=/var         \
-            --disable-static             \
-            --enable-libsystemd-login=no \
-            --with-authfw=shadow         &amp;&amp;
+            --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -155,22 +171,15 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para>
-      <parameter>--enable-libsystemd-login=no</parameter>: This parameter fixes
-      building without <application>systemd</application>, which is not part
-      of LFS/BLFS. If you use <application>systemd</application>,
-      replace "no" by "yes".
-    </para>
-
-    <para>
-      <parameter>--with-authfw=shadow</parameter>: This parameter configures the
-      package to use the <application>Shadow</application> rather than the
-      <application>Linux PAM</application> Authentication framework. Remove it
-      if you would like to use <application>Linux PAM</application>.
-    </para>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <option>--with-authfw=shadow</option>: This switch enables the
+      package to use the <application>Shadow</application> rather than the
+      <application>Linux PAM</application> Authentication framework. Use it
+      if you have not installed <application>Linux PAM</application>.
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>

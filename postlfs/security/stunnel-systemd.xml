@@ -113,6 +113,12 @@ useradd -c "stunnel Daemon" -d /var/lib/stunnel \
 -----END DH PARAMETERS-----</literal></screen>
     </note>
 
+    <para>
+      Fix the bundled systemd unit so it does not use a deprecated dependency:
+    </para>
+
+<screen><userinput>sed -i /syslog.target/d tools/stunnel.service</userinput></screen>
+
     <para>Install <application>stunnel</application> by running the following
     commands:</para>
 
@@ -126,6 +132,13 @@ make</userinput></screen>
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make docdir=/usr/share/doc/stunnel-&stunnel-version; install</userinput></screen>
+
+    <para>
+      Install the systemd unit by running the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -v -m644 tools/stunnel.service /lib/systemd/system/stunnel.service</userinput></screen>
 
     <para>To create the <filename>stunnel.pem</filename> in the
     <filename class="directory">/etc/stunnel</filename> directory, 
@@ -228,18 +241,18 @@ connect = <replaceable>&lt;hostname:portnumber&gt;</replaceable></literal></scre
     </sect3>
 
     <sect3  id="stunnel-init">
-      <title>Boot Script</title>
+      <title>Systemd Unit</title>
 
       <para>To automatically start the <command>stunnel</command> daemon
-      when the system is rebooted, install the
-      <filename>/etc/rc.d/init.d/stunnel</filename> bootscript from the
-      <xref linkend="bootscripts"/> package.</para>
+      when the system is rebooted, enable the previously installed
+      systemd unit by running the following command as the
+      <systemitem class="username">root</systemitem> user:</para>
 
       <indexterm zone="stunnel stunnel-init">
         <primary sortas="f-stunnel">stunnel</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-stunnel</userinput></screen>
+<screen role="root"><userinput>systemctl enable stunnel</userinput></screen>
 
     </sect3>
 
