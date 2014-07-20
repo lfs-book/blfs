@@ -115,6 +115,10 @@ install-ntpd: create-dirs
 	echo "ntpd.service" > ${DESTDIR}/usr/lib/systemd/ntp-units.d/ntp.list
 	systemctl enable ntpd.service
 
+install-php-fpm: create-dirs
+	install -m ${CONFMODE} blfs/units/php-fpm.service ${UNITSDIR}/
+	systemctl enable php-fpm.service
+
 install-postfix: create-dirs
 	install -m ${CONFMODE} blfs/units/postfix.service ${UNITSDIR}/
 	systemctl enable postfix.service
@@ -283,6 +287,11 @@ uninstall-ntpd:
 	systemctl disable ntpd.service
 	rm -f ${UNITSDIR}/ntpd.service ${DESTDIR}/usr/lib/systemd/ntp-units.d/ntp.list
 
+uninstall-php-fpm:
+	systemctl stop php-fpm.service
+	systemctl disable php-fpm.service
+	rm -f ${UNITSDIR}/php-fpm.service
+
 uninstall-postfix:
 	systemctl stop postfix.service
 	systemctl disable postfix.service
@@ -387,6 +396,7 @@ uninstall-xinetd:
 	install-nfs-client \
 	install-nfs-server \
 	install-ntp \
+	install-php-fpm \
 	install-postfix \
 	install-postgresql \
 	install-proftpd \
@@ -416,6 +426,7 @@ uninstall-xinetd:
 	uninstall-nfs-client \
 	uninstall-nfs-server \
 	uninstall-ntpd \
+	uninstall-php-fpm \
 	uninstall-postfix \
 	uninstall-postgresql \
 	uninstall-proftpd \
