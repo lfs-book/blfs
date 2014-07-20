@@ -259,12 +259,14 @@ m4 m4/cf.m4 sendmail.mc > sendmail.cf</userinput></screen>
     </sect3>
 
     <sect3  id="sendmail-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
-      <para>To automate the running of <application>sendmail</application>
-      at startup, install the <filename>/etc/rc.d/init.d/sendmail</filename>
-      init script included in the
-      <xref linkend="bootscripts"/> package.</para>
+      <para>
+        To start the <command>sendmail</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
 
       <indexterm zone="sendmail sendmail-init">
         <primary sortas="f-sendmail-init">sendmail</primary>
@@ -275,10 +277,11 @@ m4 m4/cf.m4 sendmail.mc > sendmail.cf</userinput></screen>
       <note>
         <para>The -qNm option to <command>sendmail</command>, where N is number
         of minutes, controls how often <application>sendmail</application> will
-        process the mail queue. A default of 5 minutes is used in the init
-        script. Individual workstation users may want to set this as low as 1
+        process the mail queue. A default of 5 minutes is used in the systemd
+        units. Individual workstation users may want to set this as low as 1
         minute, large installations handling more mail may want to set it
-        higher.</para>
+        higher. The value can be changed in
+        <filename>/etc/default/sendmail</filename> file.</para>
       </note>
 
     </sect3>
