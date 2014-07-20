@@ -81,31 +81,6 @@ useradd -c "SVN Owner" -d /home/svn -m -g svn -s /bin/false -u 56 svn</userinput
 <screen role="root"><userinput>groupadd -g 57 svntest &amp;&amp;
 usermod -G svntest -a svn</userinput></screen>
 
-      <para>Additionally you should set <command>umask 002</command> while
-      working with a repository so that all new files will be writable by
-      owner and group. This is made mandatory by creating a wrapper script for
-      <command>svn</command> and <command>svnserve</command>:</para>
-
-<screen role="root"><userinput>mv /usr/bin/svn /usr/bin/svn.orig &amp;&amp;
-mv /usr/bin/svnserve /usr/bin/svnserve.orig &amp;&amp;
-cat &gt;&gt; /usr/bin/svn &lt;&lt; "EOF"
-<literal>#!/bin/sh
-umask 002
-/usr/bin/svn.orig "$@"</literal>
-EOF
-cat &gt;&gt; /usr/bin/svnserve &lt;&lt; "EOF"
-<literal>#!/bin/sh
-umask 002
-/usr/bin/svnserve.orig "$@"</literal>
-EOF
-chmod 0755 /usr/bin/svn{,serve}</userinput></screen>
-
-      <note>
-        <para>If you use <application>Apache</application> for working with
-        the repository over HTTP, even for anonymous access, you should wrap
-        <command>/usr/sbin/httpd</command> in a similar script.</para>
-      </note>
-
     </sect3>
 
     <sect3>
@@ -275,14 +250,29 @@ service svn
 # End /etc/xinetd.d/svn</literal>
 EOF</userinput></screen> -->
 
-      <para>To start the server at boot time, install the svn bootscript included
-      in the <xref linkend="bootscripts"/> package.</para>
+      <para>
+        To start the <command>svnserve</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
 
       <indexterm zone="svnserver svnserver-init">
-        <primary sortas="f-svn">svn</primary>
+        <primary sortas="f-svnserve">svnserve</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-svn</userinput></screen>
+<screen role="root"><userinput>make install-svnserve</userinput></screen>
+
+      <para>Additionally, the instructions above require that svn server
+      uses <command>umask 002</command> so that all new files will
+      be writable by owner and group. This can be achieved by creating
+      a systemd unit override file by running the following command:</para>
+
+<screen role="root"><userinput>mkdir -p /etc/systemd/system/svnserve.service.d
+echo "UMask=0002" > /etc/systemd/system/svnserve.service.d/99-user.conf</userinput></screen>
+
+      <para>Options which are passed to <command>svnserve</command> daemon
+      can be changed in <filename>/etc/default/svnserve</filename>.</para>
 
     </sect3>
 
