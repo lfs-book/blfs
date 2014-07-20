@@ -143,8 +143,7 @@
 <screen><userinput>./configure --prefix=/usr         \
             --sysconfdir=/etc     \
             --localstatedir=/var  \
-            --enable-library      \
-            --disable-systemd     &amp;&amp;
+            --enable-library &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -155,8 +154,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
-ln -svf ../libexec/bluetooth/bluetoothd /usr/sbin</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
     <para>
       Install the main configuration file as the
@@ -184,17 +182,6 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
       <parameter>--enable-library</parameter>: This switch enables building of the
       <application>BlueZ</application> 4 compatibility library which is required by
       some applications.
-    </para>
-
-    <para>
-      <parameter>--disable-systemd</parameter>: This switch is needed because
-      <application>systemd</application> is not part of LFS/BLFS. If you are
-      using systemd, remove this switch.
-    </para>
-
-    <para>
-      <command>ln -svf ../libexec/bluetooth/bluetoothd /usr/sbin</command>: 
-      This command makes access to the bluetooth daemon more convenient.
     </para>
 
   </sect2>
@@ -242,16 +229,23 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
 
       <para>
         To automatically start the <command>bluetoothd</command> daemon when the
-        system is rebooted, install the
-        <filename>/etc/rc.d/init.d/bluetooth</filename> bootscript from the
-        <xref linkend="bootscripts"/> package.
+        system is rebooted, enable the previously installed systemd unit by
+        running the following command as the
+        <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="bluez bluez-init">
         <primary sortas="f-bluetooth">bluetooth</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-bluetooth</userinput></screen>
+<screen role="root"><userinput>systemctl enable bluetooth</userinput></screen>
+
+      <note>
+        <para>
+          The bluetooth daemon will only start when a bluetooth device has been detected
+          on the system.
+        </para>
+      </note>
 
     </sect3>
 

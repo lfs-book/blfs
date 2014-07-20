@@ -141,12 +141,12 @@ chmod +x /etc/acpi/lid.sh</userinput></screen>
     </para>
 
     <sect3  id="acpid-init">
-      <title>Boot Script</title>
+      <title>Systemd Unit</title>
 
       <para>
         To automatically start <command>acpid</command> when the system is
-        rebooted, install the <filename>/etc/rc.d/init.d/acpid</filename>
-        boot script from the <xref linkend="bootscripts"/> package.
+        rebooted, install the systemd unit
+        from the <xref linkend="bootscripts"/> package.
       </para>
 
       <indexterm zone="acpid acpid-init">
@@ -154,6 +154,14 @@ chmod +x /etc/acpi/lid.sh</userinput></screen>
       </indexterm>
 
 <screen role="root"><userinput>make install-acpid</userinput></screen>
+
+      <note>
+        <para>
+          This package uses socket based activation and will be started when
+          something needs it. No standalone unit file is provided for this
+          package.
+        </para>
+      </note>
 
     </sect3>
 
