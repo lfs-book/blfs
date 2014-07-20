@@ -8,8 +8,8 @@
   <!ENTITY wayland-download-ftp  " ">
   <!ENTITY wayland-md5sum        "1d882776b27329b91d2d500b6d66dd1d">
   <!ENTITY wayland-size          "396 KB">
-  <!ENTITY wayland-buildsize     "50 MB">
-  <!ENTITY wayland-time          "0.4 SBU">
+  <!ENTITY wayland-buildsize     "8 MB">
+  <!ENTITY wayland-time          "21.8 SBU">
 ]>
 
 <sect1 id="wayland" xreflabel="wayland-&wayland-version;">
@@ -30,13 +30,8 @@
     <title>Introduction to wayland</title>
 
     <para>
-      <application>wayland</application> is a project to define a protocol 
-      for a compositor to talk to its clients as well as a library 
-      implementation of the protocol.  The compositor can be a standalone 
-      display server running on Linux kernel modesetting and evdev input devices, 
-      an X application, or a wayland client itself.  
-      The clients can be traditional applications, X servers (rootless or fullscreen) 
-      or other display servers.
+      <application>wayland</application> is a protocol between a 
+      compositor and its clients.
     </para>
 
     &lfs75_checked;
@@ -110,9 +105,18 @@
 <screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
 make</userinput></screen>
 
+    <note>
     <para>
-      This package does not come with a test suite.
+      The queue-test will fail if the test suite is run
+      as an unprivileged user.
     </para>
+    </note>
+
+    <para>
+      To test the results issue the following command:
+    </para>
+
+<screen><userinput>make check</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -140,15 +144,12 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          wayland, wayland-message, wayland-theme-viewer and
-          wayland-window-demo
+          wayland-scanner
         </seg>
         <seg>
-          libwayland.so
+          libwayland-client.so libwayland-cursor.so libwayland-server.so
         </seg>
         <seg>
-          /usr/include/wayland,
-          /usr/lib/wayland and
           /usr/share/wayland
         </seg>
       </seglistitem>
@@ -159,65 +160,51 @@ make</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="wayland-prog">
+      <varlistentry id="wayland-scanner">
         <term><command>wayland</command></term>
         <listitem>
           <para>
-            is a <application>Clutter</application> based compositing
-            <application>GTK+</application> Window Manager.
+            Is a tool to generate proxy methods in wayland-client-protocol.h 
+            and wayland-server-protocol.h
           </para>
-          <indexterm zone="wayland wayland-prog">
+          <indexterm zone="wayland wayland-scanner">
             <primary sortas="b-wayland">wayland</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="wayland-message">
-        <term><command>wayland-message</command></term>
+      <varlistentry id="libwayland-client">
+        <term><filename class="libraryfile">libwayland-client.so</filename></term>
         <listitem>
           <para>
-            is a command used to send a message to
-            <application>wayland</application>.
+            contains the <application>libwayland-client</application> API functions.
           </para>
-          <indexterm zone="wayland wayland-message">
-            <primary sortas="b-wayland-message">wayland-message</primary>
+          <indexterm zone="wayland libwayland-client">
+            <primary sortas="c-libwayland">libwayland-client.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="wayland-theme-viewer">
-        <term><command>wayland-theme-viewer</command></term>
-        <listitem>
-          <para>
-            is used to preview any installed
-            <application>wayland</application> theme.
-          </para>
-          <indexterm zone="wayland wayland-theme-viewer">
-            <primary sortas="b-wayland-theme-viewer">wayland-theme-viewer</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="wayland-window-demo">
-        <term><command>wayland-window-demo</command></term>
-        <listitem>
-          <para>
-            is a <application>wayland</application> demo program.
-          </para>
-          <indexterm zone="wayland wayland-window-demo">
-            <primary sortas="b-wayland-window-demo">wayland-window-demo</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="libwayland">
-        <term><filename class="libraryfile">libwayland.so</filename></term>
+      <varlistentry id="libwayland-cursor">
+        <term><filename class="libraryfile">libwayland-cursor.so</filename></term>
         <listitem>
           <para>
             contains the <application>wayland</application> API functions.
           </para>
-          <indexterm zone="wayland libwayland">
-            <primary sortas="c-libwayland">libwayland.so</primary>
+          <indexterm zone="wayland libwayland-cursor">
+            <primary sortas="c-libwayland">libwayland-cursor.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libwayland-server">
+        <term><filename class="libraryfile">libwayland-server.so</filename></term>
+        <listitem>
+          <para>
+            contains the <application>libwayland-server</application> API functions.
+          </para>
+          <indexterm zone="wayland libwayland-server">
+            <primary sortas="c-libwayland">libwayland-server.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
