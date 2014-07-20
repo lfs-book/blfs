@@ -137,7 +137,8 @@ sed -i -e 's/-DG_DISABLE_DEPRECATED=1//' \
             --disable-qt3        \
             --disable-qt4        \
             --enable-core-docs   \
-            --with-distro=none &amp;&amp;
+            --with-distro=none   \
+            --with-systemdsystemunitdir=/lib/systemd/system &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -196,6 +197,12 @@ make</userinput></screen>
     </para>
 
     <para>
+      <parameter>--with-systemdsystemunitdir=/lib/systemd/system</parameter>:
+      This parameter is used to set the correct installation directory for
+      systemd units.
+    </para>
+
+    <para>
       <parameter>--with-distro=none</parameter>: There is an obsolete
       boot script in the distribution for LFS. This option disables it.
     </para>
@@ -239,23 +246,30 @@ make</userinput></screen>
   </sect2>
 
   <sect2 role="configuration">
-    <title>Configuring avahi</title>
+    <title>Configuring Avahi</title>
 
     <sect3  id="avahi-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
       <para>
-        To automatically start the <command>avahi-daemon</command>
-        when the system is rebooted, install the
-        <filename>/etc/rc.d/init.d/avahi</filename> bootscript from
-        the <xref linkend="bootscripts"/> package.
+        To start the <command>avahi-daemon</command> daemon at boot, enable
+        the previously installed systemd unit by running the following command
+        as the <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="avahi avahi-init">
         <primary sortas="f-avahi">avahi</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-avahi</userinput></screen>
+<screen role="root"><userinput>systemctl enable avahi-daemon</userinput></screen>
+
+      <para>
+        To start the <command>avahi-dnsconfd</command> daemon at boot, enable
+        the previously installed systemd unit by running the following command
+        as the <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>systemctl enable avahi-dnsconfd</userinput></screen>
 
     </sect3>
 
@@ -270,20 +284,27 @@ make</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>avahi-autoipd, avahi-bookmarks, avahi-browse, avahi-browse-domains,
-        avahi-daemon, avahi-discover, avahi-discover-standalone, avahi-dnsconfd,
-        avahi-publish, avahi-publish-address, avahi-publish-service,
-        avahi-resolve, avahi-resolve-address, avahi-resolve-host-name,
-        avahi-set-host-name, bshell, bssh, and bvnc</seg>
-        <seg>libavahi-client.so, libavahi-common.so,
-        libavahi-core.so, libavahi-glib.so, libavahi-gobject.so,
-        libavahi-ui-gtk3.so,, libavahi-ui.so, libdns_sd.so, and
-        libhowl.so,</seg>
-        <seg>/etc/avahi/services, /usr/{include/{avahi-client,avahi-common,
-        avahi-compat-howl/{corby,discovery,rendezvous,salt},
-        avahi-compat-libdns_sd,avahi-core,avahi-glib,avahi-gobject,avahi-ui},
-        lib/{avahi,python&python2-majorver;/site-packages/{avahi,
-        avahi_discover}},share/{avahi/interfaces,locale/en_NZ/LC_MESSAGES}}</seg>
+        <seg>
+          avahi-autoipd, avahi-bookmarks, avahi-browse, avahi-browse-domains,
+          avahi-daemon, avahi-discover, avahi-discover-standalone, avahi-dnsconfd,
+          avahi-publish, avahi-publish-address, avahi-publish-service,
+          avahi-resolve, avahi-resolve-address, avahi-resolve-host-name,
+          avahi-set-host-name, bshell, bssh, and bvnc
+        </seg>
+        <seg>
+          libavahi-client.so, libavahi-common.so,libavahi-core.so,
+          libavahi-glib.so, libavahi-gobject.so, libavahi-ui-gtk3.so,
+          libavahi-ui.so, libdns_sd.so, and libhowl.so
+        </seg>
+        <seg>
+          /etc/avahi,
+          /usr/include/{avahi-client,avahi-common,avahi-compat-howl},
+          /usr/include/{avahi-compat-libdns_sd,avahi-core,avahi-glib}
+          /usr/include/{avahi-gobject,avahi-ui},
+          /usr/lib/avahi,
+          /usr/lib/python&python2-majorver;/site-packages/{avahi,avahi_discover}, and
+          /usr/share/avahi
+        </seg>
       </seglistitem>
     </segmentedlist>
 

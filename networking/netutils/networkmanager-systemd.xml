@@ -101,6 +101,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="bluez"/> (runtime),
       <xref linkend="gtk-doc"/>,
       <xref linkend="qt4"/>,
       <xref linkend="valgrind"/>,
@@ -118,20 +119,13 @@
   <sect2 role="installation">
     <title>Installation of NetworkManager</title>
 
-    <para>
-      If <xref linkend="qt4"/> and  <xref linkend="qt5"/> are installed, you
-      need to choose <application>Qt4</application> with
-      <command>source setqt4</command>, before starting. Install
-      <application>NetworkManager</application> by running the following
-      commands:
-    </para>
-
-<screen><userinput>./configure --prefix=/usr        \
-            --sysconfdir=/etc    \
-            --localstatedir=/var \
-            --with-nmtui         \
-            --disable-ppp        \
-            --with-systemdsystemunitdir=no &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                   \
+            --sysconfdir=/etc               \
+            --localstatedir=/var            \
+            --disable-ppp                   \
+            --with-nmtui                    \
+            --with-session-tracking=systemd \
+            --with-systemdsystemunitdir=/lib/systemd/system &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -151,20 +145,28 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>--with-nmtui</parameter>: This parameter enables build of
-      <command>nmtui</command>.
-    </para>
-
-    <para>
-      <parameter>--with-systemdsystemunitdir=no</parameter>: This parameter is
-      used for sysv init systems. If you use systemd, replace "no" by the
-      proper directory.
-    </para>
-
-    <para>
-      <parameter>--disable-ppp</parameter>: This parameter disables parameteral
+      <parameter>--disable-ppp</parameter>: This switch disables
       <application>PPP</application> support in
-      <application>NetworkManager</application>.
+      <application>NetworkManager</application> because
+      <application>PPP</application> isn't part of BLFS.
+    </para>
+
+    <para>
+      <parameter>--with-nmtui</parameter>: This switch enables building
+      of the <command>nmtui</command> program. Remove it if you have
+      not installed <xref linkend="newt"/>.
+    </para>
+
+    <para>
+      <parameter>--with-session-tracking=systemd</parameter>: This switch
+      is used to set <command>systemd-logind</command> as the default
+      program for session tracking.
+    </para>
+
+    <para>
+      <parameter>--with-systemdsystemunitdir=/lib/systemd/system</parameter>:
+      This switch is used to set the correct installation directory for
+      systemd units.
     </para>
 
     <para>
@@ -189,8 +191,7 @@ make</userinput></screen>
       </para>
 
       <indexterm zone="NetworkManager NetworkManager-config">
-        <primary
-        sortas="e-etc-NetworkManager-NetworkManager.conf">
+        <primary sortas="e-etc-NetworkManager-NetworkManager.conf">
         /etc/NetworkManager/NetworkManager.conf</primary>
       </indexterm>
 
@@ -199,12 +200,12 @@ make</userinput></screen>
     <sect3><title>Configuration Information</title>
 
       <para>
-        For <application>NetworkManager</application> to work, at least
-        minimal configuration file must be present. Such file is not
-        installed with <command>make install</command>. Issue following
+        For <application>NetworkManager</application> to work, at least a
+        basic configuration file must be present. Such file is not
+        installed with <command>make install</command>. Run the following
         command as the
-        <systemitem class="username">root</systemitem> user to create
-        minimal <filename>NetworkManager.conf</filename> file:
+        <systemitem class="username">root</systemitem> user to create a
+        basic <filename>NetworkManager.conf</filename> file:
       </para>
 
 <screen role="root"><userinput>cat &gt;&gt; /etc/NetworkManager/NetworkManager.conf &lt;&lt; "EOF"
@@ -213,7 +214,7 @@ plugins=keyfile</literal>
 EOF</userinput></screen>
 
       <para>
-        You can add <option>dns=none</option> to suppress changes to
+         You can add <option>dns=none</option> to suppress changes to
          <filename>/etc/resolv.conf</filename>. See
          <command>man 5 NetworkManager.conf</command>
          for any additional options.
@@ -222,20 +223,30 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3 id="NetworkManager-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
       <para>
-        To automatically start the <command>NetworkManager</command> daemon when the
-        system is rebooted, install the
-        <filename>/etc/rc.d/init.d/networkmanager</filename> bootscript from the
-        <xref linkend="bootscripts"/> package.
+        To start the <command>NetworkManager</command> daemon at boot, enable
+        the previously installed systemd unit by running the following command
+        as the <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="NetworkManager NetworkManager-init">
         <primary sortas="f-NetworkManager">NetworkManager</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-networkmanager</userinput></screen>
+<screen role="root"><userinput>systemctl enable NetworkManager</userinput></screen>
+
+      <para>
+        <application>NetworkManager</application> also ships a systemd unit
+        called <filename>NetworkManager-wait-online.service</filename> which
+        can be used to prevent services that require network connectivity
+        from starting until <application>NetworkManager</application> has
+        established the connection. To enable it, run the following command
+        as the <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>systemctl enable NetworkManager-wait-online</userinput></screen>
 
     </sect3>
 
@@ -251,13 +262,11 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          NetworkManager, nm-avahi-autoipd.action, nm-dhcp-helper,
-          nm-dispatcher, nm-online, nmcli, and, hardlinked to each other:
-          nmtui, nmtui-connect, nmtui-edit, and nmtui-hostname
+          NetworkManager, nm-online, nmcli, nmtui, nmtui-connect,
+          nmtui-edit, and nmtui-hostname
         </seg>
         <seg>
-          libnm-glib.so, libnm-glib-vpn.so, libnm-util.so, and
-          modules under /usr/lib/NetworkManager
+          libnm-glib.so, libnm-glib-vpn.so, and libnm-util.so
         </seg>
         <seg>
           /etc/NetworkManager,
@@ -309,7 +318,7 @@ EOF</userinput></screen>
         <term><command>nmtui</command></term>
         <listitem>
           <para>
-            interactive ncurses based interface for
+            is an interactive ncurses based interface for
             <application>nmcli</application>.
           </para>
           <indexterm zone="NetworkManager nmtui">
@@ -322,7 +331,8 @@ EOF</userinput></screen>
         <term><command>nmtui-connect</command></term>
         <listitem>
           <para>
-            interactive ncurses based interface connection activate/deactivate.
+            is an interactive ncurses based interface connection
+            activate/deactivate.
           </para>
           <indexterm zone="NetworkManager nmtui-connect">
             <primary sortas="b-nmtui-connect">nmtui-connect</primary>
@@ -334,7 +344,8 @@ EOF</userinput></screen>
         <term><command>nmtui-edit</command></term>
         <listitem>
           <para>
-            interactive ncurses based interface connection editor.
+            is an interactive ncurses based interface connection
+            editor.
           </para>
           <indexterm zone="NetworkManager nmtui-edit">
             <primary sortas="b-nmtui-edit">nmtui-edit</primary>
@@ -346,7 +357,8 @@ EOF</userinput></screen>
         <term><command>nmtui-hostname</command></term>
         <listitem>
           <para>
-            interactive ncurses based interface hostname editor.
+            is an interactive ncurses based interface hostname
+            editor.
           </para>
           <indexterm zone="NetworkManager nmtui-hostname">
             <primary sortas="b-nmtui-hostname">nmtui-hostname</primary>
