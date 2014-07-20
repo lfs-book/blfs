@@ -180,10 +180,12 @@ EOF</userinput></screen>
       other option is to run <command>ntpd</command> periodically (using cron)
       and update the time each time <command>ntpd</command> is scheduled.</para>
 
-      <para>If you choose Option one, then install the
-      <filename>/etc/rc.d/init.d/ntp</filename>
-      init script included in the
-      <xref linkend="bootscripts"/> package.</para>
+      <para>
+        To start the <command>ntpd</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
 
       <indexterm zone="ntp ntp-init">
         <primary sortas="f-ntp">ntp</primary>
@@ -196,14 +198,6 @@ EOF</userinput></screen>
       <filename>crontab</filename>:</para>
 
 <screen><literal>ntpd -q</literal></screen>
-
-      <para>Execute the following command if you would like to set the
-      hardware clock to the current system time at shutdown and reboot:</para>
-
-<screen role="root"><userinput>ln -v -sf ../init.d/setclock /etc/rc.d/rc0.d/K46setclock &amp;&amp;
-ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
-
-      <para>The other way around is already set up by LFS.</para>
 
     </sect3>
 
