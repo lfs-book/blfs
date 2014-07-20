@@ -195,11 +195,14 @@ make</userinput></screen>
       </indexterm>
 
       <sect4 id="nfs-utils-server-init">
-        <title>Boot Script</title>
+        <title>Systemd Units</title>
 
-        <para>Install the <filename>/etc/rc.d/init.d/nfs-server</filename>
-        init script included in the <xref linkend="bootscripts"/> package
-        to start the server at boot.</para>
+        <para>
+          To start the NFS Server daemons at boot,
+          install the systemd units from the <xref linkend="bootscripts"/>
+          package by running the following command as the
+          <systemitem class="username">root</systemitem> user:
+        </para>
 
 <screen role="root"><userinput>make install-nfs-server</userinput></screen>
 
@@ -207,22 +210,12 @@ make</userinput></screen>
           <primary sortas="f-nfs-server">nfs-server</primary>
         </indexterm>
 
-        <para>Now create the <filename>/etc/sysconfig/nfs-server</filename>
-        configuration file:</para>
-
-<screen role="root"><userinput>cat &gt; /etc/sysconfig/nfs-server &lt;&lt; "EOF"
-<literal>PORT="2049"
-PROCESSES="8"
-QUOTAS="no"
-KILLDELAY="10"</literal>
-EOF</userinput></screen>
-
-        <note><para>The above parameters may be optionally placed in
-        <filename>/etc/sysconfig/rc.site</filename>.</para></note>
+        <para>You can edit the <filename>/etc/default/nfs-utils</filename>
+        file to change the startup options for NFS daemons. Defaults should
+        be fine for most use cases.</para>
 
         <indexterm zone="nfs-utils nfs-utils-server-init">
-          <primary
-          sortas="e-etc-sysconfig-nfs-server">/etc/sysconfig/nfs-server</primary>
+          <primary sortas="e-etc-default-nfs-utils">/etc/default/nfs-utils</primary>
         </indexterm>
 
       </sect4>
@@ -283,28 +276,22 @@ EOF</userinput></screen>
 -->
 
       <sect4  id="nfs-utils-client-init">
-        <title>Boot Script</title>
+        <title>Systemd Units</title>
 
-        <note><para>The following boot script is not required if the
-        nfs-server script is installed.</para></note>
+        <note><para>The following systemd unis are not required if the
+        nfs-server units were previously installed.</para></note>
 
-        <para>Install the <filename>/etc/rc.d/init.d/nfs-client</filename> init
-        script included in the <xref linkend="bootscripts"/> package to start
-        the client services at boot.</para>
+        <para>
+          To start the NFS client services at boot,
+          install the systemd units from the <xref linkend="bootscripts"/>
+          package by running the following command as the
+          <systemitem class="username">root</systemitem> user:
+        </para>
 
 <screen role="root"><userinput>make install-nfs-client</userinput></screen>
 
         <indexterm zone="nfs-utils nfs-utils-client-config">
           <primary sortas="f-nfs-client">nfs-client</primary>
-        </indexterm>
-
-        <para>To automatically mount <systemitem
-        class="filesystem">nfs</systemitem> filesystems, clients will also need
-        to install the <filename>netfs</filename> bootscript as described in
-        <xref linkend="postlfs-config-netfs"/>.</para>
-
-        <indexterm zone="nfs-utils nfs-utils-client-config">
-          <primary sortas="f-netfs">netfs</primary>
         </indexterm>
 
       </sect4>
