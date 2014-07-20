@@ -57,11 +57,19 @@ install-gpm: create-dirs
 	install -m ${CONFMODE} blfs/units/gpm.service ${UNITSDIR}/
 	systemctl enable gpm.service
 
+install-haveged: create-dirs
+	install -m ${CONFMODE} blfs/units/haveged.service ${UNITSDIR}/
+	systemctl enable haveged.service
+
 install-httpd: create-dirs
 	install -m ${CONFMODE} blfs/tmpfiles/httpd.conf ${TMPFILESDIR}/
 	install -m ${CONFMODE} blfs/units/httpd.service ${UNITSDIR}/
 	systemd-tmpfiles --create httpd.conf
 	systemctl enable httpd.service
+
+install-iptables: create-dirs
+	install -m ${CONFMODE} blfs/units/iptables.service ${UNITSDIR}/
+	systemctl enable iptables.service
 
 install-kdm: create-dirs
 	install -m ${CONFMODE} blfs/units/kdm.service ${UNITSDIR}/
@@ -216,10 +224,19 @@ uninstall-gpm:
 	systemctl disable gpm.service
 	rm -f ${UNITSDIR}/gpm.service
 
+uninstall-haveged:
+	systemctl stop haveged.service
+	systemctl disable haveged.service
+	rm -f ${UNITSDIR}/haveged.service
+
 uninstall-httpd:
 	systemctl stop httpd.service
 	systemctl disable httpd.service
 	rm -f ${TMPFILESDIR}/httpd.conf ${UNITSDIR}/httpd.service
+
+uninstall-iptables:
+	systemctl disable iptables.service
+	rm -f ${UNITSDIR}/iptables.service
 
 uninstall-kdm:
 	systemctl stop kdm.service
@@ -362,6 +379,7 @@ uninstall-xinetd:
 	install-git \
 	install-gpm \
 	install-httpd \
+	install-iptables \
 	install-kdm \
 	install-krb5 \
 	install-mysqld \
@@ -390,6 +408,7 @@ uninstall-xinetd:
 	uninstall-git \
 	uninstall-gpm \
 	uninstall-httpd \
+	uninstall-iptables \
 	uninstall-kdm \
 	uninstall-krb5 \
 	uninstall-mysqld \
