@@ -106,7 +106,8 @@ mkdir -p /var/spool/cron</userinput></screen>
     <screen><userinput>./configure --docdir=/usr/share/doc/at-&at-version; \
             --with-daemon_username=atd        \
             --with-daemon_groupname=atd       \
-            SENDMAIL=/usr/sbin/sendmail &amp;&amp;
+            SENDMAIL=/usr/sbin/sendmail       \
+            --with-systemdsystemunitdir=/lib/systemd/system &amp;&amp;
 make -j1</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -138,16 +139,18 @@ make -j1</userinput></screen>
     </sect3>
 
     <sect3  id="at-init">
-      <title>Boot Script</title>
+      <title>Systemd Unit</title>
 
-      <para>Install the <filename>/etc/init.d/atd</filename> init script from
-      the <xref linkend="bootscripts"/> package.</para>
+      <para>To start the <command>atd</command> daemon at boot,
+      enable the previously installed systemd unit by running
+      the following command as the
+      <systemitem class="username">root</systemitem> user:</para>
 
       <indexterm zone="at at-init">
         <primary sortas="f-at">at</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-atd</userinput></screen>
+<screen role="root"><userinput>systemctl enable atd</userinput></screen>
 
     </sect3>
 
