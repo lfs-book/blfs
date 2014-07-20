@@ -150,6 +150,13 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+    <para>
+      Install the systemd unit by running the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -v -m644 utils/cups-browsed.service /lib/systemd/system/cups-browsed.service</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
@@ -193,7 +200,27 @@ make</userinput></screen>
 
   </sect2>
 
-<!-- TODO: Write a bootscript for cups-browsed -->
+  <sect2 role="configuration">
+    <title>Configuring Cups Filters</title>
+
+    <sect3 id="cups-filters-init">
+      <title>Systemd Units</title>
+
+      <para>
+        To start the <command>cups-browsed</command> daemon at boot, enable
+        the previously installed systemd unit by running the following command
+        as the <systemitem class="username">root</systemitem> user:
+      </para>
+
+      <indexterm zone="cups-filters cups-filters-init">
+        <primary sortas="f-cups-browsed">cups-browsed</primary>
+      </indexterm>
+
+<screen role="root"><userinput>systemctl enable cups-browsed</userinput></screen>
+
+    </sect3>
+
+  </sect2>
 
   <sect2 role="content">
     <title>Contents</title>
