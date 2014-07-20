@@ -282,13 +282,12 @@ install -v -dm700 /var/lib/sasl</userinput></screen>
     </sect3>
 
     <sect3 id="cyrus-sasl-init">
-      <title>Init Script</title>
+      <title>Systemd Unit</title>
 
       <para>
         If you need to run the <command>saslauthd</command> daemon at system
-        startup, install the <filename>/etc/rc.d/init.d/saslauthd</filename>
-        init script included in the <xref linkend="bootscripts"/>
-        package using the following command:
+        startup, install the systemd unit included in the
+        <xref linkend="bootscripts"/> package using the following command:
       </para>
 
       <indexterm zone="cyrus-sasl cyrus-sasl-init">
@@ -299,9 +298,9 @@ install -v -dm700 /var/lib/sasl</userinput></screen>
 
       <note>
         <para>
-          You'll need to modify /etc/sysconfig/saslauthd and replace the
-          <option><replaceable>AUTHMECH</replaceable></option> parameter
-          with your desired authentication mechanism.
+          The default authentication method is "shadow". The
+          <filename>/etc/default/saslauthd</filename> 
+          file needs to be modified for anything else.
         </para>
       </note>
 
