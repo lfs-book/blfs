@@ -86,7 +86,7 @@
   <sect2 role="installation">
     <title>Installation of Fcron</title>
 
-    <para id="fcron-syslog"><application>Fcron</application> uses the cron facility
+<!--    <para id="fcron-syslog"><application>Fcron</application> uses the cron facility
     of <command>syslog</command> to log all messages. Since LFS
     does not set up this facility in <filename>/etc/syslog.conf</filename>, it
     needs to be done prior to installing <application>Fcron</application>. This
@@ -110,7 +110,7 @@ EOF</userinput></screen>
     <command>sysklogd</command> daemon will activate the changes (again as the
     <systemitem class='username'>root</systemitem> user).</para>
 
-<screen role="root"><userinput>/etc/rc.d/init.d/sysklogd reload</userinput></screen>
+<screen role="root"><userinput>/etc/rc.d/init.d/sysklogd reload</userinput></screen> -->
 
     <para>For security reasons, an unprivileged user and group for
     <application>Fcron</application> should be created (perform as the
@@ -126,8 +126,7 @@ useradd -d /dev/null -c "Fcron User" -g fcron -s /bin/false -u 22 fcron</userinp
             --sysconfdir=/etc      \
             --localstatedir=/var   \
             --without-sendmail     \
-            --with-boot-install=no \
-            --with-systemdsystemunitdir=no &amp;&amp;
+            --with-boot-install=no &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -157,10 +156,6 @@ make</userinput></screen>
 
     <para><parameter>--with-boot-install=no</parameter>: This prevents
     installation of the bootscript included with the package.</para>
-
-    <para><parameter>--with-systemdsystemunitdir=no|yes|DIR</parameter>: Use
-    no, if you use sysvint; yes, if you use systemd, or specify the directory
-    DIR for the systemd units.</para>
 
     <para><option>--with-editor=<replaceable>&lt;/path/to/editor&gt;</replaceable></option>:
     This switch allows you to set the default text editor.</para>
@@ -226,17 +221,18 @@ make</userinput></screen>
     </sect3>
 
     <sect3  id="fcron-init">
-      <title>Boot Script</title>
+      <title>Systemd Unit</title>
 
-      <para>Install the <filename>/etc/rc.d/init.d/fcron</filename>
-      init script from the <xref linkend="bootscripts"/>
-      package.</para>
+      <para>To start the <command>fcron</command> daemon at boot,
+      enable the previously installed systemd unit by running
+      the following command as the
+      <systemitem class="username">root</systemitem> user:</para>
 
       <indexterm zone="fcron fcron-init">
         <primary sortas="f-fcron">fcron</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-fcron</userinput></screen>
+<screen role="root"><userinput>systemctl enable fcron</userinput></screen>
 
     </sect3>
 
