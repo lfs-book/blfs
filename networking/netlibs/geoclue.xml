@@ -5,7 +5,7 @@
   %general-entities;
 
   <!ENTITY geoclue-download-http
-  "https://launchpad.net/geoclue/trunk/0.12/+download/geoclue-0.12.0.tar.gz">
+  "http://www.freedesktop.org/software/geoclue/releases/2.1/geoclue-&geoclue-version;">
   <!ENTITY geoclue-download-ftp  " ">
   <!ENTITY geoclue-md5sum        "33af8307f332e0065af056ecba65fec2">
   <!ENTITY geoclue-size          "556 KB">
@@ -73,23 +73,12 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch (if GPSD is installed):
-          <ulink url="&patch-root;/geoclue-&geoclue-version;-gpsd_fix-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">GeoClue Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="dbus-glib"/>,
-      <xref linkend="GConf"/> and
-      <xref linkend="libxslt"/>
+      <xref linkend="dbus-glib"/>, and
+      <xref linkend="json-glib"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended if you are building GNOME</bridgehead>
@@ -100,9 +89,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="https://savannah.nongnu.org/projects/gpsd">GPSD</ulink>,
-      <xref linkend="gtk2"/> and
-      <ulink url="http://ofono.org/">oFono</ulink>
+      <ulink url="http://www.freedesktop.org/software/ModemManager/">ModemManager</ulink>, and
+      <xref linkend="gtk-doc"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -118,12 +106,8 @@
       commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../geoclue-&geoclue-version;-gpsd_fix-1.patch &amp;&amp;
-sed -i "s@ -Werror@@" configure &amp;&amp;
-sed -i "s@libnm_glib@libnm-glib@g" configure &amp;&amp;
-sed -i "s@geoclue/libgeoclue.la@&amp; -lgthread-2.0@g" \
-       providers/skyhook/Makefile.in &amp;&amp;
-./configure --prefix=/usr &amp;&amp;
+<screen><userinput>
+./configure --prefix=/usr --disable-modem-gps-source --disable-3g-source --sysconfdir=/etc &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -141,32 +125,39 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i "s@ -Werror@@" configure</command>: This
-      <command>sed</command> removes <parameter>-Werror</parameter> from the
-      <envar>CFLAGS</envar> variable, otherwise the build will fail with
-      <application>gcc-4.7</application>.
+      <option>--disable-modem-gps-source</option>: This switch disables
+       the modem GPS backend.  Remove it if you have installed the
+       optional <application>ModemManager</application> application.
     </para>
 
     <para>
-      <command>sed -i "s@libnm_glib@libnm-glib@g" configure</command>:
-      This <command>sed</command> fixes detection of
-      <application>NetworkManager</application> libraries.
+      <option>--disable-3g-source</option>: This switch disables the
+      3G backend.  Remove it if you have installed the optional
+      <application>ModemManager</application> application.
     </para>
 
-    <para>
-      <command>sed -i "s@geoclue/libgeoclue.la@&amp; -lgthread-2.0@g" ..
-      </command>: This <command>sed</command> fixes building
-      <application>GeoClue</application> with recent
-      <application>binutils</application>.
-    </para>
-
-    <para>
-      <option>--libexecdir=/usr/lib/geoclue</option>: This option installs
-      <application>GeoClue's</application> private executables into
-      <filename class="libraryfile">/usr/lib/geoclue</filename> in accordance
-      with the old version of the FHS used before LFS-7.5.
-    </para>
   </sect2>
+
+
+  <sect2 role="configuration">
+    <title>Configuring Geoclue</title>
+
+    <sect3  id="geoclue-init">
+      <title>Systemd Units</title>
+
+      <para>
+        To start the <command>geoclue-service</command> at boot, enable
+        the previously installed systemd unit by running the following command
+        as the <systemitem class="username">root</systemitem> user:
+      </para>
+
+      <indexterm zone="geoclue geoclue-init">
+        <primary sortas="f-geoclue">geoclue</primary>
+      </indexterm>
+
+<screen role="root"><userinput>systemctl enable geoclue</userinput></screen>
+
+    </sect3>
 
   <sect2 role="content">
     <title>Contents</title>
@@ -181,10 +172,10 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          libgeoclue.so
+          None
         </seg>
         <seg>
-          /usr/include/geoclue, /usr/share/geoclue-providers,
+          /etc/geoclue /usr/libexec/geoclue-2.0
           and /usr/share/gtk-doc/html/geoclue
         </seg>
       </seglistitem>
