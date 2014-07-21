@@ -112,7 +112,7 @@
       <filename>MesaLib-&mesalib-version;-add_xdemos-1.patch</filename>;
       to avoid that, install in a different prefix or add, e.g.
       <option>--program-prefix=md</option> to configure, and
-      <ulink url="http://wayland.freedesktop.org/">Wayland</ulink>
+      <xref linkend="wayland"/>
     </para>
 
     <note>
@@ -172,15 +172,15 @@
             --enable-texture-float         \
             --enable-gles1                 \
             --enable-gles2                 \
-            --enable-openvg                \
             --enable-osmesa                \
             --enable-xa                    \
             --enable-gbm                   \
-            --enable-gallium-egl           \
+            --disable-gallium-egl          \
             --enable-gallium-gbm           \
+            --enable-shared-glapi          \
             --enable-glx-tls               \
-            --with-egl-platforms="drm,x11" \
-            --with-gallium-drivers="nouveau,r300,r600,radeonsi,svga,swrast" &amp;&amp;
+            --with-egl-platforms="x11,wayland,drm" \
+            --with-gallium-drivers="nouveau,r300,r600,radeonsi,swrast" &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -248,8 +248,17 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
     </para>
 
     <para>
+      <parameter>--disable-gallium-egl</parameter>: This switch disables
+      the egl_gallium loader so that on Intel 915 and 965 hardware we 
+      avoid harmless error messages at runtime.  The real Gallium drivers 
+      will be built as DRI drivers, which egl_dri2 loader will load just fine.
+    </para>
+
+    <para>
       <parameter>--enable-openvg</parameter>: This switch enables support for
-      OpenVG API.
+      OpenVG API. In order to use this switch you will need to replace
+      <parameter>--disable-gallium-egl</parameter> with 
+      <parameter>--enable-gallium-egl</parameter>.
     </para>
 
     <para>
@@ -280,6 +289,12 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
     <para>
       <parameter>--enable-glx-tls</parameter>: This switch enables TLS (Thread Local
       Storage) support in GLX.
+    </para>
+
+    <para>
+      <parameter>--enable-shared-glapi</parameter>: This switch makes libGL 
+      use the shared libglapi which is required if applications mix 
+      OpenGL and OpenGL ES.
     </para>
 
     <para>
@@ -323,10 +338,10 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
           libGLESv1_CM.so, 
           libGLESv2.so,
           libOSMesa.so, 
-          libOpenVG.so, 
           libgbm.so, 
           libglapi.so, 
           libxatracker.so,
+          libwayland-egl.so,
           <!--libXvMCnouveau.so and libXvMCr600.so--> and
           several libs under /usr/lib/{dri,egl,gallium-pipe,gbm,vdpau}
         </seg>
@@ -441,14 +456,14 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libOpenVG">
-        <term><filename class="libraryfile">libOpenVG.so</filename></term>
+      <varlistentry id="libwayland-egl">
+        <term><filename class="libraryfile">libwayland-egl.so</filename></term>
         <listitem>
           <para>
-            is the <application>Mesa</application> OpenVG 1.0 library.
+            is the <application>Mesa</application> Wayland framebuffer library.
           </para>
-          <indexterm zone="mesalib libOpenVG">
-            <primary sortas="c-libOpenVG">libOpenVG.so</primary>
+          <indexterm zone="mesalib libwayland-egl">
+            <primary sortas="c-libwayland-egl">libwayland-egl.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
