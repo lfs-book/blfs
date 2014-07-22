@@ -83,16 +83,16 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gobject-introspection"/>
+      <xref linkend="gobject-introspection"/> and
+      <xref linkend="wayland"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gst10-plugins-base"/>,
       <xref linkend="gtk-doc"/>,
-      <xref linkend="sdl"/>,
-      <ulink url="http://www.libsdl.org/tmp/release/">SDL2</ulink>, and
-      <ulink url="http://wayland.freedesktop.org/">Wayland</ulink>
+      <xref linkend="sdl"/>, and
+      <ulink url="http://www.libsdl.org/tmp/release/">SDL2</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -108,7 +108,13 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --enable-gles1 --enable-gles2 &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                 \
+            --enable-gles1                \
+            --enable-gles2                \
+            --enable-kms-egl-platform     \
+            --enable-wayland-egl-platform \
+            --enable-xlib-egl-platform    \
+            --enable-wayland-egl-server   &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -136,6 +142,19 @@ make</userinput></screen>
     <para>
       <parameter>--enable-gles2</parameter>: This switch enables support
       for OpenGL ES 2.0.
+    </para>
+
+    <para>
+      <parameter>--enable-*-egl-platform</parameter>: This switch enables
+      support for KMS, Wayland and Xlib EGL platforms. They are required
+      for <application>GNOME</application> Wayland support.
+    </para>
+
+    <para>
+      <parameter>--enable-wayland-egl-server</parameter>: This switch
+      enables <application>Cogl</application>'s Wayland Server API
+      which is required for <application>GNOME</application> Wayland
+      support.
     </para>
 
     <para>
