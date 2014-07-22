@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY geoclue2-download-http
+  "http://www.freedesktop.org/software/geoclue/releases/2.1/geoclue-&geoclue2-version;">
+  <!ENTITY geoclue2-download-ftp  " ">
+  <!ENTITY geoclue2-md5sum        "87f91ca7db6cc7726067fcd7bc3cf9bb">
+  <!ENTITY geoclue2-size          "324 KB">
+  <!ENTITY geoclue2-buildsize     "8.4 MB">
+  <!ENTITY geoclue2-time          "0.1 SBU">
+]>
+
+<sect1 id="geoclue2" xreflabel="GeoClue-&geoclue2-version;">
+  <?dbhtml filename="geoclue2.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>GeoClue-&geoclue2-version;</title>
+
+  <indexterm zone="geoclue2">
+    <primary sortas="a-geoclue">GeoClue</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to GeoClue</title>
+
+    <para>
+      <application>GeoClue</application> is a modular geoinformation service
+      built on top of the <application>D-Bus</application> messaging system. The
+      goal of the <application>GeoClue</application> project is to make creating
+      location-aware applications as simple as possible.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&geoclue2-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&geoclue2-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &geoclue2-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &geoclue2-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &geoclue2-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &geoclue2-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">GeoClue Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="dbus-glib"/>, and
+      <xref linkend="json-glib"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended if you are building GNOME</bridgehead>
+    <para role="recommended">
+      <xref linkend="libsoup"/> and
+      <xref linkend="NetworkManager"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <ulink url="http://www.freedesktop.org/software/ModemManager/">ModemManager</ulink>, and
+      <xref linkend="gtk-doc"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/geoclue"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of GeoClue</title>
+
+    <para>
+      Install <application>GeoClue</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>
+./configure --prefix=/usr --disable-modem-gps-source --disable-3g-source --sysconfdir=/etc &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <option>--disable-modem-gps-source</option>: This switch disables
+       the modem GPS backend.  Remove it if you have installed the
+       optional <application>ModemManager</application> application.
+    </para>
+
+    <para>
+      <option>--disable-3g-source</option>: This switch disables the
+      3G backend.  Remove it if you have installed the optional
+      <application>ModemManager</application> application.
+    </para>
+
+  </sect2>
+
+
+  <sect2 role="configuration">
+    <title>Configuring Geoclue</title>
+
+    <sect3  id="geoclue-init">
+      <title>Systemd Units</title>
+
+      <para>
+        To start the <command>geoclue-service</command> at boot, enable
+        the previously installed systemd unit by running the following command
+        as the <systemitem class="username">root</systemitem> user:
+      </para>
+
+      <indexterm zone="geoclue geoclue-init">
+        <primary sortas="f-geoclue">geoclue</primary>
+      </indexterm>
+
+<screen role="root"><userinput>systemctl enable geoclue</userinput></screen>
+
+    </sect3>
+
+</sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Directory</segtitle>
+
+      <seglistitem>
+        <seg>
+          None
+        </seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          /etc/geoclue /usr/libexec/geoclue-2.0
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+</sect1>
