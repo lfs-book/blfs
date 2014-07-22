@@ -106,11 +106,10 @@
 
 <screen><userinput>./configure --prefix=/usr            \
             --sysconfdir=/etc        \
-            --with-systemdsystemunitdir=/lib/systemd/system     \
+            --localstatedir=/var    \
             --enable-admin-group=adm \
             --disable-static         \
-            --enable-systemd         \
-            --libexecdir=/usr/lib/accountsservice &amp;&amp;
+            --enable-systemd &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -143,6 +142,29 @@ make</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
+
+  </sect2>
+
+ <sect2 role="configuration">
+    <title>Configuring accountsservice</title>
+
+    <sect3  id="accountsservice-init">
+      <title>Systemd Units</title>
+
+      <para>
+        To start the <command>accounts-daemon</command> daemon at boot,
+        enable the previously installed systemd unit by
+        running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+      <indexterm zone="accountsservice accountsservice-init">
+        <primary sortas="f-accountsservice">AccountsService</primary>
+      </indexterm>
+
+<screen role="root"><userinput>systemctl enable accounts-daemon</userinput></screen>
+
+    </sect3>
 
   </sect2>
 
