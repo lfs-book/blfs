@@ -128,6 +128,18 @@ install -v -m644    README doc/{README.apichanges,fips*,libgcrypt*} \
                     /usr/share/doc/libgcrypt-&libgcrypt-version;</userinput></screen>
 
     <para>
+      The shared library needs to be moved to
+      <filename class="directory">/lib</filename>, and as a result the
+      <filename class="extension">.so</filename> file in
+      <filename class="directory">/usr/lib</filename> will need to be
+      recreated. Run the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen><userinput remap="install">mv -v /usr/lib/libgcrypt.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libgcrypt.so) /usr/lib/libgcrypt.so</userinput></screen>
+
+    <para>
       If you built the additional documentation, install it by issuing the
       following commands as the <systemitem class="username">root</systemitem>
       user:
