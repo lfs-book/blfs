@@ -8,11 +8,11 @@
   <!ENTITY uhttpmock-download-ftp  " ">
   <!ENTITY uhttpmock-md5sum        "0c6aa414cfddada4e6d0ae292cbaa667">
   <!ENTITY uhttpmock-size          "284 KB">
-  <!ENTITY uhttpmock-buildsize     "50 MB">
-  <!ENTITY uhttpmock-time          "1.0 SBU">
+  <!ENTITY uhttpmock-buildsize     "4.5 MB">
+  <!ENTITY uhttpmock-time          "less than 0.1 SBU">
 ]>
 
-<sect1 id="uhttpmock" xreflabel="uhttpmock-&uhttpmock-version;">
+<sect1 id="uhttpmock" xreflabel="Uhttpmock-&uhttpmock-version;">
   <?dbhtml filename="uhttpmock.html"?>
 
   <sect1info>
@@ -20,18 +20,18 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>uhttpmock-&uhttpmock-version;</title>
+  <title>Uhttpmock-&uhttpmock-version;</title>
 
   <indexterm zone="uhttpmock">
     <primary sortas="a-uhttpmock">uhttpmock</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to uhttpmock</title>
+    <title>Introduction to Uhttpmock</title>
 
     <para>
-      <application>uhttpmock</application> is a HTTP web service mocking project for projects which use libsoup.
-      It is used by applications like libgdata for unit testing.  This project is still in its infancy.
+      The <application>uhttpmock</application> application is a HTTP web service mocking project 
+      for projects which use libsoup.It is used by applications like libgdata for unit testing.
     </para>
 
     &lfs75_checked;
@@ -94,7 +94,7 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of uhttpmock</title>
+    <title>Installation of Uhttpmock</title>
 
     <para>
       Install <application>uhttpmock</application> by running the following
@@ -102,12 +102,21 @@
     </para>
 
 <screen><userinput>./configure --prefix=/usr \
-            --disable-static &amp;&amp;
+            --disable-static --enable-introspection=yes &amp;&amp;
 make</userinput></screen>
 
+    <note>
     <para>
-      To test the results, issue: <command>make check</command>.
+      The test suite will fail if run as an unprivileged user.
     </para>
+    </note>
+
+    <para>
+      To test the results, as the <systemitem class="username">root</systemitem> 
+       user:  
+    </para>
+
+<screen role="root"><userinput>make check</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -133,16 +142,19 @@ make</userinput></screen>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
-          uhttpmock and uhttpmock-preferences
+          None
         </seg>
         <seg>
-          /usr/include/uhttpmock-1.0,
-          /usr/lib/uhttpmock-1.0 and
-          /usr/share/uhttpmock
+          libuhttpmock-0.0.so
+        </seg>
+        <seg>
+           /usr/include/libuhttpmock-0.0, and
+          /usr/share/gtk-doc/html/libuhttpmock-0.0
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -152,13 +164,13 @@ make</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="uhttpmock-prog">
-        <term><command>uhttpmock</command></term>
+      <varlistentry id="libuhttpmock">
+        <term><filename class='libraryfile'>libuhttpmock-0.0.so</filename></term>
         <listitem>
           <para>
-            is the media server.
+            is the library file for uhttpmock.
           </para>
-          <indexterm zone="uhttpmock uhttpmock-prog">
+          <indexterm zone="uhttpmock libuhttpmock">
             <primary sortas="b-uhttpmock">uhttpmock</primary>
           </indexterm>
         </listitem>
