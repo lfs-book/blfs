@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY libvdpau-download-http "http://people.freedesktop.org/~aplattner/vdpau/libvdpau-&libvdpau-version;.tar.gz">
+  <!ENTITY libvdpau-download-ftp  " ">
+  <!ENTITY libvdpau-md5sum        "acf68adc8b8ff4f72be6e8679abc284e">
+  <!ENTITY libvdpau-size          "476 KB">
+  <!ENTITY libvdpau-buildsize     "8.9 MB">
+  <!ENTITY libvdpau-time          "0.1 SBU">
+]>
+
+<sect1 id="libvdpau" xreflabel="libvdpau-&libvdpau-version;">
+  <?dbhtml filename="libvdpau.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>libvdpau-&libvdpau-version;</title>
+
+  <indexterm zone="libvdpau">
+    <primary sortas="a-libvdpau">libvdpau</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to libvdpau</title>
+
+    <para>
+      The <application>libvdpau</application> package contains a library which
+      implements VDPAU.
+    </para>
+
+    <para>
+      VDPAU (Video Decode and Presentation API for Unix) is an open source
+      library (libvdpau) and API originally designed by Nvidia for its
+      GeForce 8 series and later GPU hardware targeted at the X Window System
+      This VDPAU API allows video programs to offload portions of the video
+      decoding process and video post-processing to the GPU video-hardware.
+    </para>
+
+    <para>
+      Currently, the portions capable of being offloaded by VDPAU onto the GPU
+      are motion compensation (mo comp), inverse discrete cosine transform
+      (iDCT), VLD (variable-length decoding) and deblocking for MPEG-1, MPEG-2,
+      MPEG-4 ASP (MPEG-4 Part 2), H.264/MPEG-4 AVC and VC-1, WMV3/WMV9 encoded
+      videos.  Which specific codecs of these that can be offloaded to the
+      GPU depends on the version of the GPU hardware; specifically,
+      to also decode MPEG-4 ASP (MPEG-4 Part 2), Xvid/OpenDivX (DivX 4), and
+      DivX 5 formats, a GeForce 200M (2xxM) Series (the eleventh generation of
+      Nvidia's GeForce graphics processing units) or newer GPU hardware is
+      required.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&libvdpau-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&libvdpau-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &libvdpau-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &libvdpau-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &libvdpau-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &libvdpau-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">libvdpau Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="xorg7-lib"/>
+    </para>
+
+    <bridgehead renderas="sect5">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="doxygen"/>,
+      <xref linkend="graphviz"/>, and
+      <xref linkend="texlive"/>
+    </para>
+
+    <bridgehead renderas="sect4">Runtime Dependency</bridgehead>
+    <para role="optional">
+      <xref linkend="mesalib"/> (with the corresponding VDPAU driver) or
+      <xref linkend="libvdpau-va-gl"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/libvdpau"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of libvdpau</title>
+
+    <para>
+      Install <application>libvdpau</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc --disable-static &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      To test the results, issue: <command>make check</command>.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          None
+        </seg>
+        <seg>
+          libvdpau.so
+        </seg>
+        <seg>
+          /usr/include/libvdpau and
+          /usr/lib/libvdpau
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="libvdpau-lib">
+        <term><filename class="libraryfile">libvdpau.so</filename></term>
+        <listitem>
+          <para>
+            contains functions to offload portions of the video decoding
+            process and video post-processing to the GPU video-hardware.
+          </para>
+          <indexterm zone="libvdpau libvdpau-lib">
+            <primary sortas="c-libvdpau">libvdpau.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
