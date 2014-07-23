@@ -166,14 +166,13 @@
 <screen><userinput>./autogen.sh CFLAGS="-O2" CXXFLAGS="-O2" \
             --prefix=/usr                \
             --sysconfdir=/etc            \
+            --disable-gallium-egl        \
             --enable-texture-float       \
             --enable-gles1               \
             --enable-gles2               \
-            --enable-openvg              \
             --enable-osmesa              \
             --enable-xa                  \
             --enable-gbm                 \
-            --enable-gallium-egl         \
             --enable-gallium-gbm         \
             --enable-glx-tls             \
             --with-egl-platforms="drm,x11,wayland" \
@@ -228,6 +227,12 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
     </para>
 
     <para>
+      <parameter>--disable-gallium-egl</parameter>: This switch disables
+      the egl_gallium loader in favor of egl_dri2 loader which supports
+      both DRI and Gallium drivers.
+    </para>
+
+    <para>
       <parameter>--enable-texture-float</parameter>: This switch enables
       floating-point textures and render buffers. Please consult
       <filename>docs/patents.txt</filename> to see if there are
@@ -245,11 +250,6 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
     </para>
 
     <para>
-      <parameter>--enable-openvg</parameter>: This switch enables support for
-      OpenVG API.
-    </para>
-
-    <para>
       <parameter>--enable-osmesa</parameter>: This switch enables building of
       the <filename class="libraryfile">libOSMesa</filename> library.
     </para>
@@ -262,11 +262,6 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
     <para>
       <parameter>--enable-gbm</parameter>: This switch enables building of the
       <application>Mesa</application> Graphics Buffer Manager library.
-    </para>
-
-    <para>
-      <parameter>--enable-gallium-egl</parameter>: This switch enables optional
-      EGL state tracker for Gallium.
     </para>
 
     <para>
@@ -324,7 +319,6 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
           libGLESv2.so,
           libGL.so,
           libOSMesa.so,
-          libOpenVG.so,
           libwayland-egl.so, and
           libxatracker.so
         </seg>
@@ -439,18 +433,6 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libOpenVG">
-        <term><filename class="libraryfile">libOpenVG.so</filename></term>
-        <listitem>
-          <para>
-            is the <application>Mesa</application> OpenVG 1.0 library.
-          </para>
-          <indexterm zone="mesalib libOpenVG">
-            <primary sortas="c-libOpenVG">libOpenVG.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="libOSMesa">
         <term><filename class="libraryfile">libOSMesa.so</filename></term>
         <listitem>
@@ -459,6 +441,18 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
           </para>
           <indexterm zone="mesalib libOSMesa">
             <primary sortas="c-libOSMesa">libOSMesa.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libwayland-egl">
+        <term><filename class="libraryfile">libwayland-egl.so</filename></term>
+        <listitem>
+          <para>
+            is the <application>Wayland</application> specific EGL library.
+          </para>
+          <indexterm zone="mesalib libwayland-egl">
+            <primary sortas="c-libwayland-egl">libwayland-egl.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
