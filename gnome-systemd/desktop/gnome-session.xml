@@ -10,8 +10,8 @@
            "&gnome-download-ftp;/gnome-session/3.12/gnome-session-&gnome-session-version;.tar.xz">
   <!ENTITY gnome-session-md5sum        "f44ffd94643ff716d241d65c39760965">
   <!ENTITY gnome-session-size          "704 KB">
-  <!ENTITY gnome-session-buildsize     "20 MB">
-  <!ENTITY gnome-session-time          "0.3 SBU">
+  <!ENTITY gnome-session-buildsize     "16 MB">
+  <!ENTITY gnome-session-time          "0.1 SBU">
 ]>
 
 <sect1 id="gnome-session" xreflabel="gnome-session-&gnome-session-version;">
@@ -85,13 +85,13 @@
 
     <bridgehead renderas="sect4">Recomended</bridgehead>
     <para role="recomended">
-      <xref linkend="upower"/>, and
-      <xref linkend="GConf"/>
+      <xref linkend="upower"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="xmlto"/>
+      <xref linkend="xmlto"/>, and
+      <xref linkend="GConf"/>
     </para>
    
     <bridgehead renderas="sect4">Runtime Dependencies</bridgehead>
@@ -112,7 +112,7 @@
       running the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --libexecdir=/usr/lib/gnome-session --enable-systemd &amp;&amp;
+<screen><userinput>./configure --prefix=/usr  &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -147,7 +147,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          gnome-session, gnome-session-properties and gnome-session-quit
+          gnome-session, gnome-session-inhibit, and gnome-session-quit
         </seg>
        <seg>
           None
@@ -178,15 +178,17 @@ make</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="gnome-session-properties">
-        <term><command>gnome-session-properties</command></term>
+      <varlistentry id="gnome-session-inhibit">
+        <term><command>gnome-session-inhibit</command></term>
         <listitem>
-          <para>
-            allows the users to configure which applications should be
-            started at login.
+          <para><command>gnome-session-inhibit</command> can inhibit certain
+            gnome-session functionality while executing the given COMMAND. To
+            achieve this, it calls the Inhibit() method of the gnome-session
+            D-Bus API and creates an inhibitor. The inhibitor is automatically
+            removed when gnome-session-inhibit exits.
           </para>
-          <indexterm zone="gnome-session gnome-session-properties">
-            <primary sortas="b-gnome-session-properties">gnome-session-properties</primary>
+          <indexterm zone="gnome-session gnome-session-inhibit">
+            <primary sortas="b-gnome-session-inhibit">gnome-session-inhibit</primary>
           </indexterm>
         </listitem>
       </varlistentry>
