@@ -19,8 +19,8 @@
 
   <bridgehead renderas="sect4">Required</bridgehead>
   <para role="required">
-    <xref linkend="consolekit"/> (with configured PAM module),
-    <xref linkend="dbus"/> (built with X11 autolaunch support) and
+    <xref linkend="dbus"/>,
+    <xref linkend="systemd"/> (for Logind) and
     <xref linkend="xinit"/>
   </para>
 
@@ -36,7 +36,7 @@
 <screen><userinput>cat &gt; ~/.xinitrc &lt;&lt; EOF
 <literal># Begin .xinitrc
 
-exec ck-launch-session dbus-launch --exit-with-session startkde
+exec dbus-launch --exit-with-session startkde
 
 # End .xinitrc</literal>
 EOF</userinput></screen>
@@ -48,13 +48,6 @@ EOF</userinput></screen>
         <command>startkde-wrapper</command> in the command above.
       </para>
     </tip>
-
-    <note>
-      <para>
-        If you are not using <application>ConsoleKit</application>, remove
-        <command>ck-launch-session</command> from the command above.
-      </para>
-    </note>
 
     <para>
       You can now start <application>KDE Plasma 5</application> using the
