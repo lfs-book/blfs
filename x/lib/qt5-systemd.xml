@@ -97,7 +97,7 @@
       <xref linkend="glib2"/>,
       <xref linkend="gst-plugins-base"/>,
       <xref linkend="harfbuzz"/>,
-      <xref linkend="icu"/> (required for QtWebKit),
+      <xref linkend="icu"/> (unicode support, also required for QtWebKit),
       <xref linkend="libjpeg"/>,
       <xref linkend="libmng"/>,
       <xref linkend="libpng"/>,
@@ -105,8 +105,8 @@
       <xref linkend="mtdev"/>,
       <xref linkend="openssl"/>,
       <xref linkend="pcre"/>,
-      <xref linkend="sqlite"/> and
-      <xref linkend="ruby"/> (required for QtWebKit)
+      <xref linkend="ruby"/> (required for QtWebKit), and
+      <xref linkend="sqlite"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -133,7 +133,7 @@
     </para>
   </sect2>
 
-  <sect2 role="qtprefix">
+  <sect2 role="qt5-prefix">
     <title>Setting the installation prefix</title>
 
     <bridgehead renderas="sect3">Installing in /usr</bridgehead>
@@ -153,7 +153,7 @@
       within several subdirectories of the
       <filename class="directory">/usr</filename> hierarchy. This is
       the method that most distributions use. The disadvantage for BLFS
-      users is that this <application>Qt</application> instance cannot
+      users is that this <application>Qt5</application> instance cannot
       be upgraded while it is in use. It also does not allow reverting
       to an existing, known working instance of
       <application>Qt5</application>.
@@ -184,7 +184,7 @@
 
   </sect2>
 
-  <sect2 role="multi-install">
+  <sect2 role="qt5-multi-install">
     <title>Dealing with multiple Qt versions</title>
 
     <para>
@@ -312,9 +312,7 @@ find $QT5PREFIX/lib/lib{qgsttools_p,Qt5*}.prl -exec sed -i -r \
       as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>install -v -dm755 /usr/share/pixmaps &amp;&amp;
-
-install -v -Dm644 qttools/src/assistant/assistant/images/assistant-128.png \
+<screen role="root"><userinput>install -v -Dm644 qttools/src/assistant/assistant/images/assistant-128.png \
                   /usr/share/pixmaps/assistant-qt5.png &amp;&amp;
 
 install -v -Dm644 qttools/src/designer/src/designer/images/designer.png \
@@ -520,7 +518,8 @@ EOF</userinput></screen>
 
       <note>
         <para>
-          If you also have <application>Qt4</application> installed,
+          If <xref linkend="qtchooser"/> is not installed and you
+          also have <application>Qt4</application> installed,
           you will need to manually adjust the <envar>PATH</envar>
           variable depending on which <application>Qt</application>
           version is needed.
