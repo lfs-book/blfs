@@ -32,12 +32,11 @@
     <title>Introduction to qtchooser</title>
 
     <para>
-      The <application>qtchooser</application> package contains a wrapper used to select
-      between <application>Qt</application> binary versions.  It is only needed if 
-      both Qt4 and Qt5 are installed for access via the /usr/bin directory.
+      The <application>qtchooser</application> package contains a wrapper used to
+      select between <application>Qt</application> binary versions.
     </para>
 
-    &lfs74_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,6 +72,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/qtchooser-&qtchooser-version;-upstream_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">qtchooser Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -102,7 +111,8 @@
       commands:
     </para>
 
-<screen><userinput>make</userinput></screen>
+<screen><userinput>patch -Np1 -i ../qtchooser-&qtchooser-version;-upstream_fixes-1.patch &amp;&amp;
+make</userinput></screen>
 
     <para>
       To test the results, issue: <command>make check</command>.
@@ -112,8 +122,7 @@
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
-install -m644 doc/qtchooser.1 /usr/share/man/man1</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -148,33 +157,60 @@ install -m644 doc/qtchooser.1 /usr/share/man/man1</userinput></screen>
       </para>
 
       <para>
-        Create the configuration files by running the following commands as
+        If both <application>Qt4</application> and
+        <application>Qt5</application> are installed in
+        <filename class="directory">/usr</filename>, create the
+        configuration files by running the following commands as
         the <systemitem class="username">root</systemitem> user:
       </para>
 
 <screen role="root"><userinput>install -dm755 /etc/xdg/qtchooser &amp;&amp;
-cat &gt; /etc/xdg/qtchooser/4.conf &lt;&lt; "EOF"
+cat &gt; /etc/xdg/qtchooser/qt4.conf &lt;&lt; "EOF"
 <literal>/usr/lib/qt4/bin
 /usr/lib</literal>
 EOF
-cat &gt; /etc/xdg/qtchooser/5.conf &lt;&lt; "EOF"
+cat &gt; /etc/xdg/qtchooser/qt5.conf &lt;&lt; "EOF"
 <literal>/usr/lib/qt5/bin
 /usr/lib</literal>
 EOF</userinput></screen>
+
+      <para>
+        If both <application>Qt4</application> and
+        <application>Qt5</application> are installed in
+        <filename class="directory">/usr</filename>, create the
+        configuration files by running the following commands as
+        the <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>install -dm755 /etc/xdg/qtchooser &amp;&amp;
+cat &gt; /etc/xdg/qtchooser/qt4.conf &lt;&lt; "EOF"
+<literal>/opt/qt4/lib/qt4/bin
+/opt/qt4/lib</literal>
+EOF
+cat &gt; /etc/xdg/qtchooser/qt5.conf &lt;&lt; "EOF"
+<literal>/opt/qt5/lib/qt5/bin
+/opt/qt5/lib</literal>
+EOF</userinput></screen>
+
+      <para>
+        Replace <filename class="directory">/opt/qt4</filename> and/or
+        <filename class="directory">/opt/qt5</filename> if you used
+        different prefix.
+      </para>
 
       <para>
         To set <application>Qt4</application> as the default, run the following
         command as the <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>ln -sfv 4.conf /etc/xdg/qtchooser/default.conf</userinput></screen>
+<screen role="root"><userinput>ln -sfv qt4.conf /etc/xdg/qtchooser/default.conf</userinput></screen>
 
       <para>
         To set <application>Qt5</application> as the default, run the following
         command as the <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>ln -sfv 5.conf /etc/xdg/qtchooser/default.conf</userinput></screen>
+<screen role="root"><userinput>ln -sfv qt5.conf /etc/xdg/qtchooser/default.conf</userinput></screen>
 
       <para>
         You can also select default <application>Qt</application> using an environment
@@ -185,13 +221,13 @@ EOF</userinput></screen>
         To set <application>Qt4</application> as the default, run the following command:
       </para>
 
-<screen><userinput>export QT_SELECT=4</userinput></screen>
+<screen><userinput>export QT_SELECT=qt4</userinput></screen>
 
       <para>
         To set <application>Qt5</application> as the default, run the following command:
       </para>
 
-<screen><userinput>export QT_SELECT=5</userinput></screen>
+<screen><userinput>export QT_SELECT=qt5</userinput></screen>
 
     </sect3>
 
@@ -210,9 +246,10 @@ EOF</userinput></screen>
           assistant, designer, lconvert, linguist, lrelease, lupdate, moc,
           pixeltool, qcollectiongenerator, qdbus, qdbuscpp2xml, qdbusviewer,
           qdbusxml2cpp, qdoc, qdoc3, qglinfo, qhelpconverter, qhelpgenerator,
-          qmake, qml, qml1plugindump, qmlbundle, qmlmin, qmlplugindump,
-          qmlprofiler, qmlscene, qmltestrunner, qmlviewer, qtchooser,
-          qtconfig, rcc, uic, uic3, xmlpatterns, and xmlpatternsvalidator
+          qlalr, qmake, qml, qml1plugindump, qmlbundle, qmlimportscanner,
+          qmlmin, qmlplugindump, qmlprofiler, qmlscene, qmltestrunner,
+          qmlviewer, qtchooser, qtconfig, qtdiag, qtpaths, rcc, uic, uic3,
+          xmlpatterns and xmlpatternsvalidator
         </seg>
         <seg>
           None
