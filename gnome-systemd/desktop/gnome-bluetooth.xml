@@ -8,7 +8,7 @@
            "&gnome-download-http;/gnome-bluetooth/3.12/gnome-bluetooth-&gnome-bluetooth-version;.tar.xz">
   <!ENTITY gnome-bluetooth-download-ftp
            "&gnome-download-ftp;/gnome-bluetooth/3.12/gnome-bluetooth-&gnome-bluetooth-version;.tar.xz">
-  <!ENTITY gnome-bluetooth-md5sum        "a3b0b6c2c542b3264cb0144a4efb3342">
+  <!ENTITY gnome-bluetooth-md5sum        "c23666aa1d0bfc37be38f45493679de2">
   <!ENTITY gnome-bluetooth-size          "1.3 MB">
   <!ENTITY gnome-bluetooth-buildsize     "21 MB">
   <!ENTITY gnome-bluetooth-time          "0.2 SBU">
@@ -130,24 +130,31 @@ make</userinput></screen>
       <filename>/dev/rfkill</filename>. Create a
       <application>Udev</application> rule that will allow
       normal users to write to <filename>/dev/rfkill</filename>
-      with the following command as the
+      with the following commands as the
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>cat &gt; /lib/udev/rules.d/61-gnome-bluetooth.rules &lt;&lt; "EOF"
-<literal># Get access to /dev/rfkill for users
-# See https://bugzilla.redhat.com/show_bug.cgi?id=514798
-#
-# Updated for udev &gt;= 154
-# http://bugs.debian.org/582188
-# https://bugzilla.redhat.com/show_bug.cgi?id=588660
+    <para>
+      First create a new group:
+    </para>
 
-ENV{ACL_MANAGE}=="0", GOTO="gnome_bluetooth_end"
-ACTION!="add|change", GOTO="gnome_bluetooth_end"
-KERNEL=="rfkill", TAG+="udev-acl"
-LABEL="gnome_bluetooth_end"</literal>
+<screen role="root"><userinput>groupadd -r rfkill</userinput></screen>
+
+    <para>
+      Create the udev rule:
+    </para>
+
+<screen role="root"><userinput>cat &gt; /lib/udev/rules.d/61-rfkill.rules &lt;&lt; "EOF"
+<literal># Get access to /dev/rfkill for users
+KERNEL=="rfkill", GROUP="rfkill", MODE="0664"</literal>
 EOF</userinput></screen>
 
+    <para>
+      Add a user to the new group:
+    </para>
+
+<screen role="root"><userinput>usermod -a -G rfkill <replaceable>&lt;username&gt;</replaceable></userinput></screen>
+ 
   </sect2>
 
   <sect2 role="commands">
