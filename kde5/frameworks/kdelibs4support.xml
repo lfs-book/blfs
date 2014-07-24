@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="kdelibs4support" xreflabel="KDELibs4Support-&kf5-version;">
+  <?dbhtml filename="kdelibs4support.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>KDELibs4Support-&kf5-version;</title>
+
+  <indexterm zone="kdelibs4support">
+    <primary sortas="a-KDELibs4Support">KDELibs4Support</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to KDELibs4Support</title>
+
+    <para>
+      The <application>KDELibs4Support</application> package contains libraries
+      and utilities to ease the transition from kdelibs 4 to
+      <application>KDE Frameworks 5</application>.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&kdelibs4support-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&kdelibs4support-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &kdelibs4support-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &kdelibs4support-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &kdelibs4support-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &kdelibs4support-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <!-- <ulink url="&patch-root;/kdelibs4support-&kf5-version;-cmake_fix-1.patch"/> -->
+          <ulink url="http://www.linuxfromscratch.org/~krejzi/kdelibs4support-&kf5-version;-cmake_fix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">KDELibs4Support Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="kemoticons"/>,
+      <xref linkend="kdesignerplugin"/>,
+      <xref linkend="kinit5"/>,
+      <xref linkend="kitemmodels"/>,
+      <xref linkend="kparts"/> and
+      <xref linkend="kunitconversion"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/kdelibs4support"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of KDELibs4Support</title>
+
+    <para>
+      Install <application>KDELibs4Support</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../kdelibs4support-&kf5-version;-cmake_fix-1.patch &amp;&amp;
+
+mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX      \
+      -DCMAKE_BUILD_TYPE=Release              \
+      -DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR   \
+      -DLIB_INSTALL_DIR=lib                   \
+      -DBUILD_TESTING=OFF                     \
+      -DQT_PLUGIN_INSTALL_DIR=&qt5-plugins-dir; \
+      .. &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-release.xml"/>
+
+    <para>
+      <parameter>-DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR</parameter>: This switch
+      is used to set correct XDG configuration directory.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-libdir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-tests.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-plugins-dir.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          kdebugdialog5 and kf5-config
+        </seg>
+        <seg>
+          libKF5KDELibs4Support.so
+        </seg>
+        <seg>
+          $KF5_PREFIX/include/KF5/KDELibs4Support,
+          $KF5_PREFIX/lib/cmake/{KDELibs4,KF5KDE4Support},
+          $KF5_PREFIX/lib/cmake/KF5KDELibs4Support,
+          $KF5_PREFIX/share/doc/HTML/*/kdebugdialog5,
+          $KF5_PREFIX/share/kf5/{kdoctools,kssl} and
+          $KF5_PREFIX/share/kf5/{locale,widgets}
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>

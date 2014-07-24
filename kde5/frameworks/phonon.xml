@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+]>
+
+<sect1 id="phonon5" xreflabel="Phonon-&phonon5-version;">
+  <?dbhtml filename="phonon.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>Phonon-&phonon5-version;</title>
+
+  <indexterm zone="phonon5">
+    <primary sortas="a-Phonon">Phonon</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Phonon</title>
+
+    <para>
+      The <application>Phonon</application> package contains a
+      multimedia framework for Qt5.
+    </para>
+
+    &lfs75_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&phonon5-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&phonon5-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &phonon5-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &phonon5-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &phonon5-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &phonon5-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Phonon Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="extra-cmake-modules"/>,
+      <xref linkend="glib2"/> and
+      <xref linkend="qt5"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="pulseaudio"/>
+    </para>
+
+    <bridgehead renderas="sect4">Runtime Dependency</bridgehead>
+    <para role="optional">
+      <xref linkend="phonon-backend-gstreamer5"/> or
+      <xref linkend="phonon-backend-vlc5"/> or both
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/phonon5"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Phonon</title>
+
+    <para>
+      Install <application>Phonon</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX \
+      -DCMAKE_BUILD_TYPE=Release         \
+      -DCMAKE_INSTALL_LIBDIR=lib         \
+      -DPHONON_BUILD_PHONON4QT5=ON       \
+      -Wno-dev .. &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-release.xml"/>
+
+    <para>
+      <parameter>-DCMAKE_INSTALL_LIBDIR=lib</parameter>: This switch is used
+      to get libraries to install to <filename
+      class="directory">$KF5_PREFIX/lib</filename> instead of <filename
+      class="directory">$KF5_PREFIX/lib64</filename> on a 64 bit system.
+    </para>
+
+    <para>
+      <parameter>-DPHONON_BUILD_PHONON4QT5=ON</parameter>: This switch is used
+      to ensure that <application>Qt5</application> version of the library is
+      built even if <application>Qt4</application> is present.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          None
+        </seg>
+        <seg>
+          libphonon4qt5experimental.so and libphonon4qt5.so
+        </seg>
+        <seg>
+          $KF5_PREFIX/include/phonon4qt5,
+          $KF5_PREFIX/lib/cmake/phonon4qt5 and
+          $KF5_PREFIX/share/phonon4qt5
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>
