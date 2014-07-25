@@ -8,8 +8,8 @@
   <!ENTITY gdm-download-ftp  "&gnome-download-ftp;/gdm/3.12/gdm-&gdm-version;.tar.xz">
   <!ENTITY gdm-md5sum        "88cb6fcd8f35d60f0f7ffcd15d074c1f">
   <!ENTITY gdm-size          "1.5 MB">
-  <!ENTITY gdm-buildsize     "65 MB">
-  <!ENTITY gdm-time          "0.5 SBU">
+  <!ENTITY gdm-buildsize     "43 MB">
+  <!ENTITY gdm-time          "0.3 SBU">
 ]>
 
 <sect1 id="gdm" xreflabel="GDM-&gdm-version;">
@@ -126,13 +126,6 @@ usermod -a -G video gdm</userinput></screen>
 <screen><userinput>./configure --prefix=/usr \
             --sysconfdir=/etc \
             --localstatedir=/var \
-            --libexecdir=/usr/lib/gdm \
-            --with-initial-vt=7 \
-            --with-systemdsystemunitdir=/lib/systemd/system \
-            --with-at-spi-registryd-directory=/usr/lib/at-spi2-core \
-            --with-authentication-agent-directory=/usr/lib/polkit-gnome \
-            --with-check-accelerated-directory=/usr/lib/gnome-session \
-            --with-gnome-settings-daemon-directory=/usr/lib/gnome-settings-daemon \
             --disable-static &amp;&amp;
 make</userinput></screen>
 
@@ -140,13 +133,6 @@ make</userinput></screen>
       If you have installed <xref linkend="check"/> and you wish to run
       the testsuite, issue: <command>make check</command>.
     </para>
-
-    <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>make install &amp;&amp;
-chown -R -v gdm:gdm /var/lib/gdm /var/cache/gdm /var/log/gdm</userinput></screen>
 
   </sect2>
 
@@ -159,10 +145,6 @@ chown -R -v gdm:gdm /var/lib/gdm /var/cache/gdm /var/log/gdm</userinput></screen
       instead of the first free VT.
     </para>
 
-    <para>
-      <parameter>--with-*-directory=...</parameter>: These switches
-      specify the location of programs that are used at runtime.
-    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
@@ -223,15 +205,15 @@ chown -R -v gdm:gdm /var/lib/gdm /var/cache/gdm /var/log/gdm</userinput></screen
 
     </sect3>
 
-    <sect3 id="gdm-init-systemd">
-      <title>Systemd Unit File</title>
+    <sect3 id="gdm-init">
+      <title>Systemd Unit</title>
 
       <para>
-        This package provides a systemd unit file in the source tarball.
-        To enable it as the <systemitem class="username">root</systemitem> user:
+        To enable the previously installed unit file issue the following
+        command  as the <systemitem class="username">root</systemitem> user:
       </para>
 
-      <indexterm zone="gdm gdm-init-systemd">
+      <indexterm zone="gdm gdm-init">
         <primary sortas="f-gdm">gdm</primary>
       </indexterm>
 
@@ -255,15 +237,12 @@ chown -R -v gdm:gdm /var/lib/gdm /var/cache/gdm /var/log/gdm</userinput></screen
           gdm and gdm-screenshot
         </seg>
         <seg>
-          libgdm.so and libgdmsimplegreeter.so
+          libgdm.so
         </seg>
         <seg>
-          /etc/dconf/db/gdm.d,
           /etc/gdm,
           /usr/include/gdm,
-          /usr/lib/gdm,
           /usr/share/gdm,
-          /usr/share/help/*/gdm,
           /var/cache/gdm,
           /var/gdm,
           /var/lib/gdm,
