@@ -8,8 +8,8 @@
   <!ENTITY highlight-download-ftp  " ">
   <!ENTITY highlight-md5sum        "085d7639a7e05a0d41923a889dc801c9">
   <!ENTITY highlight-size          "608 KB">
-  <!ENTITY highlight-buildsize     "40 MB">
-  <!ENTITY highlight-time          "0.5 SBU">
+  <!ENTITY highlight-buildsize     "25 MB">
+  <!ENTITY highlight-time          "0.8 SBU">
 ]>
 
 <sect1 id="highlight" xreflabel="highlight-&highlight-version;">
@@ -93,15 +93,18 @@
   <sect2 role="installation">
     <title>Installation of highlight</title>
 
+    <para>First fix an incorrect file name in the makefile
+     that causes qmake to not to be found:
+    </para>
+
+<screen><userinput>sed -i "s:qmake-qt4:qmake:g" -i makefile src/makefile</userinput></screen>
+
     <para>
       Install <application>highlight</application> by running the following
       command:
     </para>
 
-<screen><userinput>
-
-make
-</userinput></screen>
+<screen><userinput>make</userinput></screen>
 
     <para>
       This application does not have a test suite.
@@ -114,9 +117,21 @@ make
 <screen role="root"><userinput>make install</userinput></screen>
 
     <para>
-      If you have QT4 or QT5 installed and want to install the gui as the 
-      <systemitem class="username">root</systemitem> user issue the following
-      command:
+      In order to build both <application>Qt4</application> 
+      and <application>Qt5</application>Gui's, you need to 
+      run the install commands twice, because although
+      both are detected, only wrapper for the first
+      <application>Qt</application> version in PATH is built. Either can be
+      built first, but to facilitate the explanation, we choose first the
+      <application>Qt4</application> library. You can do this using
+      <command>source setqt4</command> (script from <xref linkend="qt4"/>).
+    </para>
+
+<screen><userinput>make gui</userinput></screen>
+
+    <para>
+      To install the GUI as the <systemitem class="username">root</systemitem> 
+      user issue the following command:
     </para>
 
 <screen role="root"><userinput>make install-gui</userinput></screen>
@@ -160,17 +175,14 @@ make
 
       <seglistitem>
         <seg>
-          highlight, highlight-daemon, and highlight-setup
+          highlight, and highlight-gui
         </seg>
         <seg>
-          libhighlight-1.0.so and im-highlight.so
-          (<application>GTK+ Immodule</application>)
+          None
         </seg>
         <seg>
-          /etc/dconf/db/highlight.d,
-          /usr/include/highlight-1.0,
-          /usr/lib/highlight,
-          /usr/share/gtk-doc/html/highlight, and
+          /etc/highlight
+          /usr/share/doc/highlight, and
           /usr/share/highlight
         </seg>
       </seglistitem>
@@ -181,39 +193,27 @@ make
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="highlight-daemon">
-        <term><command>highlight-daemon</command></term>
+      <varlistentry id="highlight-prog">
+        <term><command>highlight</command></term>
         <listitem>
           <para>
-            is the Intelligent Input Bus Daemon.
+            is the highlight program.
           </para>
-          <indexterm zone="highlight highlight-daemon">
-            <primary sortas="b-highlight-daemon">highlight-daemon</primary>
+          <indexterm zone="highlight highlight-prog">
+            <primary sortas="b-highlight-prog">highlight</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="highlight-setup">
-        <term><command>highlight-setup</command></term>
+      <varlistentry id="highlight-gui">
+        <term><command>highlight-gui</command></term>
         <listitem>
           <para>
-            is the <application>GTK+</application> program used to configure
-            the <command>highlight-daemon</command>.
+            is the <application>Quick Time</application> program used to configure
+            <command>highlight</command>.
           </para>
-          <indexterm zone="highlight highlight-setup">
-            <primary sortas="b-highlight-setup">highlight-setup</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="libhighlight-1.0">
-        <term><filename class="libraryfile">libhighlight-1.0.so</filename></term>
-        <listitem>
-          <para>
-            contains <application>highlight</application> API functions.
-          </para>
-          <indexterm zone="highlight libhighlight-1.0">
-            <primary sortas="c-libhighlight-1.0">libhighlight-1.0.so</primary>
+          <indexterm zone="highlight highlight-gui">
+            <primary sortas="b-highlight-gui">highlight-gui</primary>
           </indexterm>
         </listitem>
       </varlistentry>
