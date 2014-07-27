@@ -8,11 +8,11 @@
   <!ENTITY highlight-download-ftp  " ">
   <!ENTITY highlight-md5sum        "085d7639a7e05a0d41923a889dc801c9">
   <!ENTITY highlight-size          "608 KB">
-  <!ENTITY highlight-buildsize     "25 MB">
+  <!ENTITY highlight-buildsize     "30 MB">
   <!ENTITY highlight-time          "0.8 SBU">
 ]>
 
-<sect1 id="highlight" xreflabel="highlight-&highlight-version;">
+<sect1 id="highlight" xreflabel="Highlight-&highlight-version;">
   <?dbhtml filename="highlight.html"?>
 
   <sect1info>
@@ -20,17 +20,18 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>highlight-&highlight-version;</title>
+  <title>Highlight-&highlight-version;</title>
 
   <indexterm zone="highlight">
-    <primary sortas="a-highlight">highlight</primary>
+    <primary sortas="a-Highlight">Highlight</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to highlight</title>
+    <title>Introduction to Highlight</title>
 
     <para>
-      <application>highlight</application> converts source code to formatted text with syntax highlighting.
+      <application>Highlight</application> is an utility that converts
+      source code to formatted text with syntax highlighting.
     </para>
 
     &lfs75_checked;
@@ -69,20 +70,18 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">highlight Dependencies</bridgehead>
+    <bridgehead renderas="sect3">Highlight Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="lua"/>, and
-      <xref linkend="boost"/>
+      <xref linkend="boost"/> and
+      <xref linkend="lua"/>
     </para>
-
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="doxygen"/>, (to build documentation)
-      <xref linkend="qt4"/> (to build gui), or
-      <xref linkend="qt5"/>
+      <xref linkend="doxygen"/> (to build documentation) and
+      <xref linkend="qt4"/> (to build GUI)
     </para>
 
     <para condition="html" role="usernotes">
@@ -91,77 +90,53 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of highlight</title>
-
-    <para>First fix an incorrect file name in the makefile
-     that causes qmake to not to be found:
-    </para>
-
-<screen><userinput>sed -i "s:qmake-qt4:qmake:g" -i makefile src/makefile</userinput></screen>
+    <title>Installation of Highlight</title>
 
     <para>
-      Install <application>highlight</application> by running the following
+      To build <application>Highlight</application> run the following
       command:
     </para>
 
 <screen><userinput>make</userinput></screen>
 
     <para>
-      This application does not have a test suite.
-    </para>
-
-    <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>make install</userinput></screen>
-
-    <para>
-      In order to build both <application>Qt4</application> 
-      and <application>Qt5</application>Gui's, you need to 
-      run the install commands twice, because although
-      both are detected, only wrapper for the first
-      <application>Qt</application> version in PATH is built. Either can be
-      built first, but to facilitate the explanation, we choose first the
-      <application>Qt4</application> library. You can do this using
-      <command>source setqt4</command> (script from <xref linkend="qt4"/>).
+      To build the <application>Qt4</application> GUI run the following
+      command:
     </para>
 
 <screen><userinput>make gui</userinput></screen>
 
     <para>
-      To install the GUI as the <systemitem class="username">root</systemitem> 
-      user issue the following command:
+      To build the API documentation, run the following command:
+    </para>
+
+<screen><userinput>make apidocs</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      To install <application>Highlight</application>, run the
+      following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      To install the GUI program, run the following command as the
+      <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>make install-gui</userinput></screen>
 
-  </sect2>
-
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
     <para>
-      <option>make lib-static</option>: This option will 
-      compile only the static library.
+      To install the API documentation, run the following command
+      as the <systemitem class="username">root</systemitem> user:
     </para>
 
-    <para>
-      <option>make lib-shared</option>: This option will 
-      compile only the shared library.    
-    </para>
-
-    <para>
-      <option>make gui</option>: This option will
-      compile static library and the Qt 4.x or Qt 5.x
-      GUI
-    </para>
-
-    <para>
-      <option>make apidocs</option>: This option will
-      build the documentation if <application>doxygen</application>
-      is installed.
-    </para>    
+<screen role="root"><userinput>cp -rv apidocs/html /usr/share/doc/highlight/apidocs</userinput></screen>
 
   </sect2>
 
@@ -170,12 +145,12 @@
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
-          highlight, and highlight-gui
+          highlight and highlight-gui
         </seg>
         <seg>
           None
@@ -197,10 +172,10 @@
         <term><command>highlight</command></term>
         <listitem>
           <para>
-            is the highlight program.
+            is a universal source code to formatted text converter.
           </para>
           <indexterm zone="highlight highlight-prog">
-            <primary sortas="b-highlight-prog">highlight</primary>
+            <primary sortas="b-highlight">highlight</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -209,7 +184,7 @@
         <term><command>highlight-gui</command></term>
         <listitem>
           <para>
-            is the <application>Quick Time</application> program used to configure
+            is the <application>Qt4</application> interface to
             <command>highlight</command>.
           </para>
           <indexterm zone="highlight highlight-gui">
