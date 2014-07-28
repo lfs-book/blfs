@@ -77,27 +77,23 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
+      <xref linkend="colord"/>,
+      <xref linkend="geoclue2"/>,
+      <xref linkend="geocode-glib"/>,
       <xref linkend="gnome-desktop"/>,
-      <xref linkend="libnotify"/>, and
-      <xref linkend="systemd"/>
+      <xref linkend="libcanberra"/>,
+      <xref linkend="libgweather"/>,
+      <xref linkend="libnotify"/>,
+      <xref linkend="librsvg"/>,
+      <xref linkend="libwacom"/>,
+      <xref linkend="pulseaudio"/>,
+      <xref linkend="upower"/>, and
+      <xref linkend="xorg-wacom-driver"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="cups"/>,
-      <xref linkend="colord"/>,
-      <xref linkend="libgweather"/>,
-      <xref linkend="geoclue"/>,
-      <xref linkend="geocode-glib"/>,
-      <xref linkend="polkit"/>,
-      <xref linkend="librsvg"/>,
-      <xref linkend="pulseaudio"/>,
-      <xref linkend="libwacom"/>,
-      <xref linkend="xorg-wacom-driver"/>,
-      <xref linkend="gsettings-desktop-schemas"/>,
-      <xref linkend="libgnomekbd"/>,
-      <xref linkend="upower"/>,
-      <xref linkend="libcanberra"/>,
       <xref linkend="ibus"/>, and
       <xref linkend="nss"/>
     </para>
@@ -119,18 +115,17 @@
     <title>Installation of GNOME Settings Daemon</title>
 
     <para>
-      Install <application>GNOME Settings Daemon</application> by running the following
-      commands:
+      Install <application>GNOME Settings Daemon</application> by running the
+      following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --sysconfdir=/etc \
+<screen><userinput>./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
             --disable-packagekit \
-            --disable-static &amp;&amp;
+            --disable-static     &amp;&amp;
 make</userinput></screen>
 
     <para>
-      <!-- To test the results, issue <command>make check</command>. -->
       This package does not have a working testsuite.
     </para>
 
@@ -138,7 +133,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make udevrulesdir=/lib/udev/rules.d install</userinput></screen>
 
   </sect2>
 
@@ -146,12 +141,18 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <option>--disable-packagekit</option>: This switch disables use
-      of PackageKit which isn't suitable for BLFS.
+      <parameter>--disable-packagekit</parameter>: This switch disables
+      use of PackageKit which isn't suitable for BLFS.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <parameter>udevrulesdir=/lib/udev/rules.d</parameter>: This switch
+      ensures that <application>UDev</application> rule is installed in
+      the correct location.
+    </para>
 
     <para>
       <option>--disable-cups</option>: Use this switch if you have not
@@ -176,7 +177,7 @@ make</userinput></screen>
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
