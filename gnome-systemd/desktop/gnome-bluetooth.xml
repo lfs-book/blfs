@@ -77,25 +77,23 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="libnotify"/>
+      <xref linkend="gtk3"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gobject-introspection"/>, and
-      <xref linkend="nautilus-sendto"/>
+      <xref linkend="gobject-introspection"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="geoclue"/>, and
       <xref linkend="gtk-doc"/>
     </para>
 
     <bridgehead renderas="sect4">Required (Runtime)</bridgehead>
     <para role="optional">
-      <xref linkend="bluez"/>, and
-      <xref linkend="systemd"/>
+      <xref linkend="bluez"/> and
+      <xref linkend="systemd"/> (for Logind)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -107,11 +105,11 @@
     <title>Installation of GNOME Bluetooth</title>
 
     <para>
-      Install <application>GNOME Bluetooth</application> by running the following
-      commands:
+      Install <application>GNOME Bluetooth</application> by running the
+      following  commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -124,37 +122,6 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
-    <para>
-      For <application>GNOME Bluetooth</application> to work
-      as expected, users need to be allowed to write to
-      <filename>/dev/rfkill</filename>. Create a
-      <application>Udev</application> rule that will allow
-      normal users to write to <filename>/dev/rfkill</filename>
-      with the following commands as the
-      <systemitem class="username">root</systemitem> user:
-    </para>
-
-    <para>
-      First create a new group:
-    </para>
-
-<screen role="root"><userinput>groupadd -r rfkill</userinput></screen>
-
-    <para>
-      Create the udev rule:
-    </para>
-
-<screen role="root"><userinput>cat &gt; /lib/udev/rules.d/61-rfkill.rules &lt;&lt; "EOF"
-<literal># Get access to /dev/rfkill for users
-KERNEL=="rfkill", GROUP="rfkill", MODE="0664"</literal>
-EOF</userinput></screen>
-
-    <para>
-      Add a user to the new group:
-    </para>
-
-<screen role="root"><userinput>usermod -a -G rfkill <replaceable>&lt;username&gt;</replaceable></userinput></screen>
- 
   </sect2>
 
   <sect2 role="commands">
@@ -170,19 +137,18 @@ EOF</userinput></screen>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
-          bluetooth-applet, bluetooth-sendto and bluetooth-wizard
+          bluetooth-sendto
         </seg>
         <seg>
           libgnome-bluetooth.so
         </seg>
         <seg>
           /usr/include/gnome-bluetooth,
-          /usr/lib/gnome-bluetooth,
           /usr/share/gnome-bluetooth,
           /usr/share/gtk-doc/html/gnome-bluetooth and
           /usr/share/help/*/gnome-bluetooth
@@ -195,19 +161,6 @@ EOF</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="bluetooth-applet">
-        <term><command>bluetooth-applet</command></term>
-        <listitem>
-          <para>
-            is a <application>GNOME</application> applet for prompting the
-            user for a Bluetooth passkey (PIN).
-          </para>
-          <indexterm zone="gnome-bluetooth bluetooth-applet">
-            <primary sortas="b-bluetooth-applet">bluetooth-applet</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="bluetooth-sendto">
         <term><command>bluetooth-sendto</command></term>
         <listitem>
@@ -217,19 +170,6 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="gnome-bluetooth bluetooth-sendto">
             <primary sortas="b-bluetooth-sendto">bluetooth-sendto</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="bluetooth-wizard">
-        <term><command>bluetooth-wizard</command></term>
-        <listitem>
-          <para>
-            is a <application>GTK+</application> wizard for setting up
-            devices with the Linux Bluetooth stack.
-          </para>
-          <indexterm zone="gnome-bluetooth bluetooth-wizard">
-            <primary sortas="b-bluetooth-wizard">bluetooth-wizard</primary>
           </indexterm>
         </listitem>
       </varlistentry>
