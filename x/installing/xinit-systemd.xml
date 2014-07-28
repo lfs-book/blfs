@@ -75,8 +75,7 @@
     <para>Install <application>xinit</application> by running the
     following commands:</para>
 
-<screen><userinput>./configure $XORG_CONFIG \
-            --with-xinitdir=/etc/X11/app-defaults &amp;&amp;
+<screen><userinput>./configure $XORG_CONFIG --with-xinitdir=/etc/X11/xinit &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -85,6 +84,22 @@ make</userinput></screen>
     user:</para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      Create a configuration file required to use the latest
+      <application>Xorg Server</application> by running the
+      following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>cat &gt; /etc/X11/xinit/xserverrc &lt;&lt; "EOF"
+<literal>#!/bin/sh
+if [ -z "$XDG_VTNR" ]; then
+  exec /usr/bin/X -nolisten tcp "$@"
+else
+  exec /usr/bin/X -nolisten tcp "$@" vt$XDG_VTNR
+fi</literal>
+EOF</userinput></screen>
 
   </sect2>
 
