@@ -11,7 +11,7 @@
   <!ENTITY gnome-session-md5sum        "f44ffd94643ff716d241d65c39760965">
   <!ENTITY gnome-session-size          "704 KB">
   <!ENTITY gnome-session-buildsize     "16 MB">
-  <!ENTITY gnome-session-time          "0.1 SBU">
+  <!ENTITY gnome-session-time          "0.2 SBU">
 ]>
 
 <sect1 id="gnome-session" xreflabel="gnome-session-&gnome-session-version;">
@@ -76,27 +76,23 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="gnome-desktop"/>,
       <xref linkend="dbus-glib"/>,
-      <xref linkend="mesalib"/>,
-      <xref linkend="xorg7-proto"/>, and
-      <xref linkend="json-glib"/>
-    </para>
-
-    <bridgehead renderas="sect4">Recomended</bridgehead>
-    <para role="recomended">
-      <xref linkend="upower"/>
+      <xref linkend="gnome-desktop"/>,
+      <xref linkend="json-glib"/>, and
+      <xref linkend="mesalib"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="xmlto"/>, and
-      <xref linkend="GConf"/>
+      <xref linkend="GConf"/> and
+      <xref linkend="libxslt"/> with
+      <xref linkend="DocBook"/> and
+      <xref linkend="docbook-xsl"/> (to build the documentation)
     </para>
    
     <bridgehead renderas="sect4">Runtime Dependencies</bridgehead>
     <para role="required">
-      <xref linkend="systemd"/>
+      <xref linkend="systemd"/> (for Logind)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -153,7 +149,6 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          /usr/lib/gnome-session,
           /usr/share/doc/gnome-session and
           /usr/share/gnome-session
         </seg>
@@ -181,11 +176,9 @@ make</userinput></screen>
       <varlistentry id="gnome-session-inhibit">
         <term><command>gnome-session-inhibit</command></term>
         <listitem>
-          <para><command>gnome-session-inhibit</command> can inhibit certain
-            gnome-session functionality while executing the given COMMAND. To
-            achieve this, it calls the Inhibit() method of the gnome-session
-            D-Bus API and creates an inhibitor. The inhibitor is automatically
-            removed when gnome-session-inhibit exits.
+          <para>
+            is used to inhibit certain <application>GNOME</application>
+            Session functionality while executing the given command.
           </para>
           <indexterm zone="gnome-session gnome-session-inhibit">
             <primary sortas="b-gnome-session-inhibit">gnome-session-inhibit</primary>
