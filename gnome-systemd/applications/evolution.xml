@@ -6,10 +6,10 @@
 
   <!ENTITY evolution-download-http "&gnome-download-http;/evolution/&gnome-minor;/evolution-&evolution-version;.tar.xz">
   <!ENTITY evolution-download-ftp  "&gnome-download-ftp;/evolution/&gnome-minor;/evolution-&evolution-version;.tar.xz">
-  <!ENTITY evolution-md5sum        "7e359b94af6fe5380eb071ec24c486e5">
+  <!ENTITY evolution-md5sum        "b94b63bd8a32527aa45b152878c0a354">
   <!ENTITY evolution-size          "12 MB">
-  <!ENTITY evolution-buildsize     "481 MB">
-  <!ENTITY evolution-time          "10.6 SBU">
+  <!ENTITY evolution-buildsize     "495 MB">
+  <!ENTITY evolution-time          "4.5 SBU">
 ]>
 
 <sect1 id="evolution" xreflabel="Evolution-&evolution-version;">
@@ -76,41 +76,36 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="evolution-data-server"/>,
-      <xref linkend="gsettings-desktop-schemas"/>,
+      <xref linkend="gnome-icon-theme"/>,
       <xref linkend="gtkhtml"/>,
-      <xref linkend="gnome-desktop"/>, and
-      <xref linkend="shared-mime-info"/>
+      <xref linkend="libgdata"/>,
+      <xref linkend="shared-mime-info"/>,
+      <xref linkend="webkitgtk2"/>, and
+      <xref linkend="yelp-xsl"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gstreamer10"/>,
-      <xref linkend="gnome-online-accounts"/>,
-      <xref linkend="libgdata"/>,
-      <xref linkend="libical"/>,
-      <xref linkend="libsoup"/>,
-      <xref linkend="highlight"/>,
       <xref linkend="bogofilter"/>,
-<!--      <xref linkend="perl-mail-spamassassin"/>, -->
-      <xref linkend="libcanberra"/>, and
-      <xref linkend="libgweather"/>
+      <xref linkend="gnome-desktop"/>,
+      <xref linkend="highlight"/>,
+      <xref linkend="libcanberra"/>,
+      <xref linkend="libgweather"/>, and
+      <xref linkend="libnotify"/>
     </para>
-
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="clutter-gtk"/>,
-      <xref linkend="docbook-utils"/>,
-      <xref linkend="geoclue"/>,
+      <xref linkend="geoclue2"/>,
+      <xref linkend="geocode-glib"/>, and
+      <xref linkend="libchamplain"/> (Contact Maps plugin),
       <xref linkend="gtk-doc"/>,
-      <ulink url="http://trac.bjourne.webfactional.com/">
-      gtkimageview</ulink>,
-      <xref linkend="mitkrb"/>,
-      <xref linkend="libchamplain"/>,
+      <ulink url="http://trac.bjourne.webfactional.com/">GtkImageView</ulink>,
+      <ulink url="http://gtkspell.sourceforge.net/">GtkSpell3</ulink>,
       <ulink url="http://www.five-ten-sg.com/libpst/">libpst</ulink>,
-      <xref linkend="openldap"/>,
       <ulink url="http://sourceforge.net/projects/ytnef/">libytnef</ulink>, and
-      <ulink url="http://gtkspell.sourceforge.net/">gtk-spell3</ulink>
+      <xref linkend="openldap"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -128,8 +123,8 @@
 
 <screen><userinput>./configure --prefix=/usr         \
             --sysconfdir=/etc     \
+            --disable-gtkspell    \
             --disable-pst-import  \
-            --disable-gtkspell     \
             --disable-spamassassin &amp;&amp;
 make</userinput></screen>
 
@@ -149,14 +144,21 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <option>--disable-pst-import</option>: This switch is used to
-      disable the pst-import plugin.
+      <parameter>--disable-gtkspell</parameter>: This switch is used to
+      disable the gtkspell plugin because
+      <application>GtkSpell</application> is not part of BLFS.
     </para>
 
     <para>
-      <option>--disable-spamassassin</option>: This switch is used to
-      disable the spamassassin plugin. Spamassassin is not part of
-      BLFS.
+      <parameter>--disable-pst-import</parameter>: This switch is
+      used to disable the pst-import plugin because
+      <application>libpst</application> is not part of BLFS.
+    </para>
+
+    <para>
+      <parameter>--disable-spamassassin</parameter>: This switch is
+      used to disable the spamassassin plugin because
+      <application>Spamassassin</application> is not part of BLFS.
     </para>
 
     <para>
@@ -166,15 +168,9 @@ make</userinput></screen>
     </para>
 
     <para>
-      <parameter>--with-krb5=/usr</parameter>: This switch will enable
-      <application>Kerberos 5</application> support in
-      <application>Evolution</application>.
-    </para>
-
-    <para>
-      <option>--disable-gtkspell</option>: This switch is used to
-      disable the gtk-spell plugin remove it if you have installed
-      <application>GtkSpell</application>.
+      <option>--enable-contact-maps</option>: Use this switch if you
+      have installed the necessary dependencies and wish to build the
+      Contact Maps plugin.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -186,7 +182,7 @@ make</userinput></screen>
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
@@ -200,12 +196,11 @@ make</userinput></screen>
         <seg>
           /usr/include/evolution-&gnome-minor;,
           /usr/lib/evolution,
+          /usr/libexec/evolution,
           /usr/share/evolution,
-          /usr/share/gtk-doc/html/evolution-mail-composer,
-          /usr/share/gtk-doc/html/evolution-mail-engine,
-          /usr/share/gtk-doc/html/evolution-mail-formatter,
-          /usr/share/gtk-doc/html/evolution-shell,
-          /usr/share/gtk-doc/html/evolution-util
+          /usr/share/gtk-doc/html/{evolution-mail-composer,evolution-mail-engine},
+          /usr/share/gtk-doc/html/{evolution-mail-formatter,evolution-shell},
+          /usr/share/gtk-doc/html/evolution-util, and
           /usr/share/help/*/evolution
         </seg>
       </seglistitem>
