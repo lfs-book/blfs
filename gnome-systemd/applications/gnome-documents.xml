@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY gnome-documents-download-http
-           "&gnome-download-http;/gnome-documents/0.4/gnome-documents-&gnome-documents-version;.tar.xz">
+           "&gnome-download-http;/gnome-documents/3.12/gnome-documents-&gnome-documents-version;.tar.xz">
   <!ENTITY gnome-documents-download-ftp
-           "&gnome-download-ftp;/gnome-documents/0.4/gnome-documents-&gnome-documents-version;.tar.xz">
-  <!ENTITY gnome-documents-md5sum        "465de85bf9bac48ff300b1bf6aa5851c">
-  <!ENTITY gnome-documents-size          "492 KB">
-  <!ENTITY gnome-documents-buildsize     "10 MB">
-  <!ENTITY gnome-documents-time          "0.4 SBU">
+           "&gnome-download-ftp;/gnome-documents/3.12/gnome-documents-&gnome-documents-version;.tar.xz">
+  <!ENTITY gnome-documents-md5sum        "ac15852ebd353d91d4f82e41f66bc4d9">
+  <!ENTITY gnome-documents-size          "700 KB">
+  <!ENTITY gnome-documents-buildsize     "18 MB">
+  <!ENTITY gnome-documents-time          "0.3 SBU">
 ]>
 
 <sect1 id="gnome-documents" xreflabel="gnome-documents-&gnome-documents-version;">
@@ -32,13 +32,12 @@
     <title>Introduction to GNOME Documents</title>
 
     <para>
-      <application>GNOME Documents</application> is a document viewer which supports
-      local documents (using the <application>Tracker</application> search engine) and
-      Google Documents. For local documents, this appears to be restricted to PDF and PS
-      files.
+      <application>GNOME Documents</application> is a document manager which supports
+      local documents (using the <application>Tracker</application> indexing engine),
+      Google Documents and SkyDrive.
     </para>
 
-    &lfs70_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,19 +77,12 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="clutter-gtk"/>,
-      <xref linkend="evince"/> (with introspection support enabled),
+      <xref linkend="evince"/>,
       <xref linkend="gjs"/>,
       <xref linkend="gnome-desktop"/>,
-      <xref linkend="gnome-online-accounts"/>,
-      <xref linkend="libgdata"/> and
+      <xref linkend="libgdata"/>,
+      <xref linkend="libzapojit"/>, and
       <xref linkend="tracker"/>
-    </para>
-
-    <bridgehead renderas="sect4">Additional Runtime Dependency</bridgehead>
-    <para role="optional">
-      Although this package uses <application>Evince</application>,
-      it needs <xref linkend="gimp"/> to display documents.
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -106,8 +98,7 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --libexecdir=/usr/lib/gnome-documents &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -122,22 +113,12 @@ make</userinput></screen>
 
   </sect2>
 
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
-    <para>
-      <parameter>--libexecdir=/usr/lib/gnome-documents</parameter>: This
-      parameter ensures <filename>gd-tracker-gdata-miner</filename> is not installed in
-      <filename class="directory">/usr/libexec</filename>.
-    </para>
-
-  </sect2>
-
   <sect2 role="content">
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
@@ -145,8 +126,12 @@ make</userinput></screen>
           gnome-documents
         </seg>
         <seg>
-          /usr/lib/gnome-documents and
-          /usr/share/gnome-documents
+          None
+        </seg>
+        <seg>
+          /usr/lib/gnome-documents
+          /usr/share/gnome-documents, and
+          /usr/share/help/*/gnome-documents
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -160,7 +145,7 @@ make</userinput></screen>
         <term><command>gnome-documents</command></term>
         <listitem>
           <para>
-            displays (indexed) shared and local documents.
+            is a document manager application for <application>GNOME</application>.
           </para>
           <indexterm zone="gnome-documents gnome-documents-prog">
             <primary sortas="b-gnome-documents">gnome-documents</primary>
