@@ -253,12 +253,39 @@ EOF</userinput></screen>
 <screen role="root"><userinput>install -v -dm 755 /var/lib/dhclient</userinput></screen>
 
       <para>
+        If you want to configure network interfaces at boot using
+        <command>dhclient</command>, you need to install the
+        systemd unit included in <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>make install-dhclient</userinput></screen>
+
+      <indexterm zone="dhcp dhclient-config">
+        <primary sortas="f-dhclient">dhclient</primary>
+      </indexterm>
+
+      <para>
         At this point you can test if <command>dhclient</command> is
         behaving as expected by running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>dhclient <replaceable>&lt;eth0&gt;</replaceable></userinput></screen>
+<screen role="root"><userinput>systemctl start dhclient@<replaceable>eth0</replaceable></userinput></screen>
+
+      <para>
+        To start <command>dhclient</command> on a specific interface
+        at boot, enable the previously installed systemd unit by
+        running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>systemctl enable dhclient@<replaceable>eth0</replaceable></userinput></screen>
+
+      <para>
+        Replace <replaceable>eth0</replaceable> with the actual interface name.
+      </para>
 
     </sect3>
 
