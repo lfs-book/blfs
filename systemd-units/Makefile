@@ -39,6 +39,12 @@ install-acpid: create-dirs
 	install -m ${CONFMODE} blfs/units/acpid.socket ${UNITSDIR}/
 	systemctl enable acpid.socket
 
+install-dhclient: create-dirs
+	install -m ${CONFMODE} blfs/units/dhclientat.service ${UNITSDIR}/dhclient@.service
+
+install-dhcpcd: create-dirs
+	install -m ${CONFMODE} blfs/units/dhcpcdat.service ${UNITSDIR}/dhcpcd@.service
+
 install-dhcpd: create-dirs
 	install -m ${CONFMODE} blfs/default/dhcpd ${DEFAULTSDIR}/
 	install -m ${CONFMODE} blfs/units/dhcpd.service ${UNITSDIR}/
@@ -208,6 +214,12 @@ uninstall-acpid:
 	systemctl disable acpid.socket
 	rm -f ${UNITSDIR}/acpid.service ${UNITSDIR}/acpid.socket
 
+uninstall-dhclient:
+	rm -f ${UNITSDIR}/dhclient@.service
+
+uninstall-dhcpcd:
+	rm -f ${UNITSDIR}/dhcpcd@.service
+
 uninstall-dhcpd:
 	systemctl stop dhcpd.service
 	systemctl disable dhcpd.service
@@ -376,13 +388,9 @@ uninstall-xinetd:
 	rm -f ${UNITSDIR}/xinetd.service
 
 .PHONY: all create-dirs create-service-dir \
-	install-service-dhclient \
-	install-service-dhcpcd \
-	install-service-bridge \
-	install-service-ipx \
-	install-service-pppoe \
-	install-service-wpa \
 	install-acpid \
+	install-dhclient \
+	install-dhcpcd \
 	install-dhcpd \
 	install-exim \
 	install-git \
@@ -413,6 +421,8 @@ uninstall-xinetd:
 	install-winbindd \
 	install-xinetd \
 	uninstall-acpid \
+	uninstall-dhclient \
+	uninstall-dhcpcd \
 	uninstall-dhcpd \
 	uninstall-exim \
 	uninstall-git \
