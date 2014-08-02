@@ -117,17 +117,103 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
     </para>
   </sect2>
 
+  <sect2 role="configuration">
+    <title>Configuring dhcpcd</title>
+
+    <sect3 id="dhcpcd-config">
+      <title>Config Files</title>
+
+      <para><filename>/etc/dhcpcd.conf</filename></para>
+
+      <indexterm zone="dhcpcd dhcpcd-config">
+        <primary sortas="e-etc-dhcpcd-dhcpcd-conf">/etc/dhcpcd/dhcpcd.conf</primary>
+      </indexterm>
+
+    </sect3>
+
+    <sect3 id="dhcpcd-init">
+      <title>General Configuration Information</title>
+
+      <para>
+        If you want to configure network interfaces at boot using
+        <command>dhcpcd</command>, you need to install the
+        systemd unit included in <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>make install-dhcpcd</userinput></screen>
+
+      <indexterm zone="dhcpcd dhcpcd-init">
+        <primary sortas="f-dhcpcd">dhcpcd</primary>
+      </indexterm>
+
+      <para>
+        Whenever <command>dhcpcd</command> configures or shuts down
+        a network interface, it executes hook scripts. For more details
+        about those scripts, see the <command>dhcpcd-run-hooks</command> and
+        <command>dhcpcd</command> man pages.
+      </para>
+
+      <note>
+        <para id="dhcpcd-config3">
+          The default behavior of <command>dhcpcd</command> sets the
+          hostname and mtu settings. It also overwrites
+          <filename>/etc/resolv.conf</filename> and
+          <filename>/etc/ntp.conf</filename>.
+
+          These modifications to system files and settings on system
+          configuration files are done by hooks which are stored in
+          <filename class="directory">/lib/dhcpcd/dhcpcd-hooks</filename>.
+
+          Setup <command>dhcpcd</command> by removing or adding hooks from/to
+          that directory.  The execution of hooks can be disabled by using the
+          <option>--nohook</option> (<option>-C</option>) command line option or
+          by the <option>nohook</option> option in the
+          <filename>/etc/dhcpcd.conf</filename> file.
+        </para>
+      </note>
+
+      <indexterm zone="dhcpcd dhcpcd-config3">
+        <primary sortas="e-etc-resolv.conf">/etc/resolv.conf</primary>
+      </indexterm>
+
+      <para>
+        At this point you can test if <command>dhcpcd</command> is
+        behaving as expected by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>systemctl start dhcpcd@<replaceable>eth0</replaceable></userinput></screen>
+
+      <para>
+        To start <command>dhcpcd</command> on a specific interface
+        at boot, enable the previously installed systemd unit by
+        running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>systemctl enable dhcpcd@<replaceable>eth0</replaceable></userinput></screen>
+
+      <para>
+        Replace <replaceable>eth0</replaceable> with the actual interface name.
+      </para>
+
+    </sect3>
+
+  </sect2>
+
   <sect2 role="content">
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Program</segtitle>
-      <segtitle>Installed Library</segtitle>
-      <segtitle>Installed Directory</segtitle>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>dhcpcd</seg>
-        <seg>/lib/dhcpcd/dev/udev.so</seg>
+        <seg>None</seg>
         <seg>/lib/dhcpcd</seg>
       </seglistitem>
     </segmentedlist>
@@ -144,20 +230,6 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
           in RFC2131.</para>
           <indexterm zone="dhcpcd dhcpcd-prog">
             <primary sortas="b-dhcpcd">dhcpcd</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="dhcpcd-udev">
-        <term><filename class="libraryfile">udev.so</filename></term>
-        <listitem>
-          <para>
-            add udev support for interface arrival and departure; this is
-            because udev likes to rename the interface, which it can't do if
-            dhcpcd grabs it first.
-          </para>
-          <indexterm zone="dhcpcd dhcpcd-udev">
-            <primary sortas="c-dhcpcd-udev">udev.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
