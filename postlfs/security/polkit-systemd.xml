@@ -141,6 +141,21 @@
 useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
         -g polkitd -s /bin/false polkitd</userinput></screen>
 
+    <note>
+      <para>
+        When building <application>Polkit</application> with
+        <application>systemd</application> logind support, the
+        <command>configure</command> script explicitly checks if
+        system is booted using <application>systemd</application>.
+        This can cause problems if building the package in chroot,
+        where the <command>configure</command> would fail to
+        detect <application>systemd</application>. To workaround
+        the problem, simply run the following command:
+      </para>
+
+<screen><userinput>sed -i "s:/sys/fs/cgroup/systemd/:/sys:g" configure</userinput></screen>
+    </note>
+
     <para>
       Install <application>Polkit</application> by running the following
       commands:
