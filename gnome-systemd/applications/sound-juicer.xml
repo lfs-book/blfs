@@ -5,16 +5,16 @@
   %general-entities;
 
   <!ENTITY sound-juicer-download-http
-          "&gnome-download-http;/sound-juicer/3.4/sound-juicer-&sound-juicer-version;.tar.xz">
+           "&gnome-download-http;/sound-juicer/&gnome-minor;/sound-juicer-&sound-juicer-version;.tar.xz">
   <!ENTITY sound-juicer-download-ftp
-           "&gnome-download-ftp;/sound-juicer/3.4/sound-juicer-&sound-juicer-version;.tar.xz">
-  <!ENTITY sound-juicer-md5sum        "a913b246260ccf3843ea779ae9cdb5e7">
+           "&gnome-download-ftp;/sound-juicer/&gnome-minor;/sound-juicer-&sound-juicer-version;.tar.xz">
+  <!ENTITY sound-juicer-md5sum        "72eec63540026139d9aa855a2839a5cb">
   <!ENTITY sound-juicer-size          "1.9 MB">
   <!ENTITY sound-juicer-buildsize     "22 MB">
-  <!ENTITY sound-juicer-time          "0.6 SBU">
+  <!ENTITY sound-juicer-time          "0.2 SBU">
 ]>
 
-<sect1 id="sound-juicer" xreflabel="Sound-Juicer-&sound-juicer-version;">
+<sect1 id="sound-juicer" xreflabel="sound-juicer-&sound-juicer-version;">
   <?dbhtml filename="sound-juicer.html"?>
 
   <sect1info>
@@ -22,24 +22,24 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>Sound-Juicer-&sound-juicer-version;</title>
+  <title>sound-juicer-&sound-juicer-version;</title>
 
   <indexterm zone="sound-juicer">
-    <primary sortas="a-Sound-Juicer">Sound-Juicer</primary>
+    <primary sortas="a-sound-juicer">sound-juicer</primary>
   </indexterm>
 
   <sect2 role="package">
     <title>Introduction to Sound Juicer</title>
 
     <para>
-      The <application>Sound Juicer</application> package contains the
-      simple CD ripping tool which is useful for extracting the audio tracks
-      from audio compact discs and converting them into audio files. It can
-      also play the audio tracks directly from the CD, allowing you to preview
-      the CD before ripping it.
+      The <application>Sound Juicer</application> package contains a
+      simple CD ripping tool which can be used for extracting the
+      audio tracks from audio compact discs and converting them into
+      audio files. It can also play the audio tracks directly from the
+      CD, allowing you to preview the CD before ripping it.
     </para>
 
-    &lfs72_checked;
+    &lfs75_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,25 +79,11 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="GConf"/>,
-      <xref linkend="gnome-doc-utils"/>,
-      <xref linkend="gst-plugins-base"/>,
-      <xref linkend="gtk3"/>,
-      <xref linkend="libcanberra"/> and
-      <xref linkend="libmusicbrainz3"/>
-    </para>
-
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="rarian"/>
-    </para>
-
-    <bridgehead renderas="sect4">Recommended (Runtime)</bridgehead>
-    <para role="recommended">
-      <xref linkend="gst-plugins-good"/>
-      (for the flacenc and wavenc plugins) and
-      <xref linkend="gst-plugins-ugly"/>
-      (for the lame plugin)
+      <xref linkend="brasero"/>,
+      <xref linkend="gsettings-desktop-schemas"/>,
+      <xref linkend="iso-codes"/>,
+      <xref linkend="libdiscid"/>, and
+      <xref linkend="libmusicbrainz5"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -109,11 +95,11 @@
     <title>Installation of Sound Juicer</title>
 
     <para>
-      Install <application>Sound Juicer</application> by running the
-      following commands:
+      Install <application>Sound Juicer</application> by running the following
+      commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -128,40 +114,11 @@ make</userinput></screen>
 
   </sect2>
 
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/without-scrollkeeper.xml"/>
-
-  </sect2>
-
-  <sect2 role="configuration">
-    <title>Configuring Sound Juicer</title>
-
-    <sect3 id="sound-juicer-config">
-      <title>Configuration Information</title>
-
-      <para>
-        Configuration is accomplished by using the
-        <quote>Preferences</quote> drop-down menu option.
-        For information on how to configure
-        <command>sound-juicer</command> to use
-        <application>LAME</application> as the default
-        encoding method (creating  MP3 files as the default)
-        see the <application>Sound Juicer</application>
-        Help section.
-      </para>
-
-    </sect3>
-
-  </sect2>
-
   <sect2 role="content">
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
@@ -173,8 +130,7 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          /usr/share/gnome/help/sound-juicer,
-          /usr/share/omf/sound-juicer and
+          /usr/share/help/*/sound-juicer
           /usr/share/sound-juicer
         </seg>
       </seglistitem>
@@ -189,15 +145,15 @@ make</userinput></screen>
         <term><command>sound-juicer</command></term>
         <listitem>
           <para>
-            is a graphical CD extraction (ripping) tool based on
-            <application>GTK+</application> and
-            <application>GStreamer</application>.
+            is a CD ripper and player for <application>GNOME</application>
+            which aims to have a simple, clean, easy to use interface.
           </para>
           <indexterm zone="sound-juicer sound-juicer-prog">
             <primary sortas="b-sound-juicer">sound-juicer</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+
     </variablelist>
 
   </sect2>
