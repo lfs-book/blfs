@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY libwebp-download-http "https://webp.googlecode.com/files/libwebp-&libwebp-version;.tar.gz">
+  <!ENTITY libwebp-download-http "http://downloads.webmproject.org/releases/webp/libwebp-&libwebp-version;.tar.gz">
   <!ENTITY libwebp-download-ftp  " ">
-  <!ENTITY libwebp-md5sum        "c8dd1d26eb9566833aba269b86d97e68">
-  <!ENTITY libwebp-size          "868 KB">
-  <!ENTITY libwebp-buildsize     "13 MB">
+  <!ENTITY libwebp-md5sum        "42bc79613ec5ee5b0e68ba97839c981e">
+  <!ENTITY libwebp-size          "944 KB">
+  <!ENTITY libwebp-buildsize     "28 MB">
   <!ENTITY libwebp-time          "0.1 SBU">
 ]>
 
@@ -98,8 +98,12 @@
       commands:
     </para>
 
-<screen><userinput>sed -i '/DGifCloseFile/s:gif:&amp;, NULL:g' examples/gif2webp.c &amp;&amp;
-./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr           \
+            --disable-static        \
+            --enable-experimental   \
+            --enable-libwebpdecoder \
+            --enable-libwebpdemux   \
+            --enable-libwebpmux     &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -117,13 +121,22 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para>
-      <command>sed -i...</command>: This sed fixes building with new versions
-      of giflib.
-    </para>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <parameter>--enable-experimental</parameter>: This switch enables
+      building of the experimental features which may be needed
+      by other programs in BLFS and beyond.
+    </para>
+
+    <para>
+      <parameter>--enable-libwebp*</parameter>: This switch enables
+      building of the additional <application>libwebp</application>
+      libraries which are required to build additional programs
+      from <application>libwebp</application> source and may be
+      needed by other programs in BLFS and beyond.
+    </para>
 
   </sect2>
 
@@ -132,14 +145,15 @@ make</userinput></screen>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Library</segtitle>
-      <segtitle>Installed Directory</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
-          cwebp and dwebp
+          cwebp, dwebp, gif2webp, vwebp and webpmux
         </seg>
         <seg>
+          libwebpdecoder.so, libwebpdemux.so, libwebpmux.so and
           libwebp.so
         </seg>
         <seg>
@@ -177,11 +191,49 @@ make</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="gif2webp">
+        <term><command>gif2webp</command></term>
+        <listitem>
+          <para>
+            converts a GIF image to a WebP image.
+          </para>
+          <indexterm zone="libwebp gif2webp">
+            <primary sortas="b-gif2webp">gif2webp</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="vwebp">
+        <term><command>vwebp</command></term>
+        <listitem>
+          <para>
+            decompresses a WebP file and displays it in a window
+            using OpenGL.
+          </para>
+          <indexterm zone="libwebp vwebp">
+            <primary sortas="b-vwebp">vwebp</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="webpmux">
+        <term><command>webpmux</command></term>
+        <listitem>
+          <para>
+            used to create a WebP container file and extract/strip
+            relevant data from the container file.
+          </para>
+          <indexterm zone="libwebp webpmux">
+            <primary sortas="b-webpmux">webpmux</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libwebp-lib">
         <term><filename class="libraryfile">libwebp.so</filename></term>
         <listitem>
           <para>
-            contains the API functions for WebP encoding and decoding.
+            contains API functions for encoding and decoding WebP Images.
           </para>
           <indexterm zone="libwebp libwebp-lib">
             <primary sortas="c-libwebp">libwebp.so</primary>
