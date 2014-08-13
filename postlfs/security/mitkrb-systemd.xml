@@ -6,8 +6,8 @@
 
   <!ENTITY mitkrb-download-http "http://web.mit.edu/kerberos/www/dist/krb5/&mitkrb-major-version;/krb5-&mitkrb-version;-signed.tar">
   <!ENTITY mitkrb-download-ftp  " ">
-  <!ENTITY mitkrb-md5sum        "524b1067b619cb5bf780759b6884c3f5">
-  <!ENTITY mitkrb-size          "11.4 MB">
+  <!ENTITY mitkrb-md5sum        "357f1312b7720a0a591e22db0f7829fe">
+  <!ENTITY mitkrb-size          "12 MB">
   <!ENTITY mitkrb-buildsize     "165 MB (Additional 25 MB if running the testsuite)">
   <!ENTITY mitkrb-time          "1.0 SBU (additional 4.4 SBU if running the testsuite)">
 ]>
@@ -74,22 +74,12 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/mitkrb-&mitkrb-version;-db2_fix-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">MIT Kerberos V5 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="dejagnu"/> (for full test coverage),
-      <xref linkend="gnupg2"/> (to authenticate the package),
+      <xref linkend="dejagnu"/> (for full test coverage),<!--
+      <xref linkend="gnupg2"/> (to authenticate the package),-->
       <xref linkend="keyutils"/>,
       <xref linkend="openldap"/>,
       <xref linkend="python2"/> (used during the testsuite) and
@@ -121,6 +111,12 @@
       starting the build.
     </para>
 
+<!-- Can't recieve the key properly:
+
+gpg: requesting key 749D7889 from hkp server pgp.mit.edu
+gpg: Note: signatures using the MD5 algorithm are rejected
+gpg: key 749D7889: no valid user IDs
+
     <para>
       After unpacking the distribution tarball and if you have
       <xref linkend="gnupg2"/> installed, you can
@@ -128,18 +124,18 @@
       <filename>krb5-&mitkrb-version;.tar.gz.asc</filename>.
     </para>
 
-<screen><userinput>gpg --verify krb5-&mitkrb-version;.tar.gz.asc krb5-&mitkrb-version;.tar.gz</userinput></screen>
+<screen><userinput>gpg - -verify krb5-&mitkrb-version;.tar.gz.asc krb5-&mitkrb-version;.tar.gz</userinput></screen>
 
     <para>You will probably see output similar to:</para>
 
-<screen>gpg: Signature made Wed Aug  8 22:29:58 2012 GMT using RSA key ID F376813D
+<screen>Signature made Tue 12 Aug 2014 12:53:10 AM CEST using RSA key ID 749D7889
 gpg: Can't check signature: public key not found</screen>
 
     <para>
       You can import the public key with:
     </para>
 
-<screen><userinput>gpg --keyserver pgp.mit.edu --recv-keys 0xF376813D</userinput></screen>
+<screen><userinput>gpg - -keyserver pgp.mit.edu - -recv-keys 0x749D7889</userinput></screen>
 
     <para>
       Now re-verify the package with the first command above.  You should  get a
@@ -147,21 +143,19 @@ gpg: Can't check signature: public key not found</screen>
       with a trusted signature.  Trusting the downloaded key is a separate
       operation but it is up to you to determine the level of trust.
     </para>
+-->
 
     <para>
       Build <application>MIT Kerberos V5</application> by running the
       following commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../mitkrb-&mitkrb-version;-db2_fix-1.patch &amp;&amp;
-cd src &amp;&amp;
+<screen><userinput>cd src &amp;&amp;
 sed -e "s@python2.5/Python.h@&amp; python2.7/Python.h@g" \
     -e "s@-lpython2.5]@&amp;,\n  AC_CHECK_LIB(python2.7,main,[PYTHON_LIB=-lpython2.7])@g" \
-    -i configure.in &amp;&amp;
-sed -e "s@interp->result@Tcl_GetStringResult(interp)@g" \
-    -i kadmin/testing/util/tcl_kadm5.c &amp;&amp;
+    -i configure.in &amp;&amp;<!-- Tests passed fine without this.
 sed -e 's@\^u}@^u cols 300}@' \
-    -i tests/dejagnu/config/default.exp &amp;&amp;
+    -i tests/dejagnu/config/default.exp &amp;&amp; -->
 autoconf &amp;&amp;
 ./configure --prefix=/usr            \
             --sysconfdir=/etc        \
@@ -192,19 +186,19 @@ for LIBRARY in gssapi_krb5 gssrpc k5crypto kadm5clnt kadm5srv \
     [ -e  /usr/lib/lib$LIBRARY.so ] &amp;&amp; chmod -v 755 /usr/lib/lib$LIBRARY.so
 done &amp;&amp;
 
-mv -v /usr/lib/libkrb5.so.3*        /lib &amp;&amp;
-mv -v /usr/lib/libk5crypto.so.3*    /lib &amp;&amp;
-mv -v /usr/lib/libkrb5support.so.0* /lib &amp;&amp;
+mv -v /usr/lib/libkrb5.so.*        /lib &amp;&amp;
+mv -v /usr/lib/libk5crypto.so.*    /lib &amp;&amp;
+mv -v /usr/lib/libkrb5support.so.* /lib &amp;&amp;
 
-ln -v -sf ../../lib/libkrb5.so.3.3        /usr/lib/libkrb5.so        &amp;&amp;
-ln -v -sf ../../lib/libk5crypto.so.3.1    /usr/lib/libk5crypto.so    &amp;&amp;
-ln -v -sf ../../lib/libkrb5support.so.0.1 /usr/lib/libkrb5support.so &amp;&amp;
+ln -sfv ../../lib/$(readlink /usr/lib/libkrb5.so)        /usr/lib/libkrb5.so        &amp;&amp;
+ln -sfv ../../lib/$(readlink /usr/lib/libk5crypto.so)    /usr/lib/libk5crypto.so    &amp;&amp;
+ln -sfv ../../lib/$(readlink /usr/lib/libkrb5support.so) /usr/lib/libkrb5support.so &amp;&amp;
 
 mv -v /usr/bin/ksu /bin &amp;&amp;
 chmod -v 755 /bin/ksu   &amp;&amp;
 
 install -v -dm755 /usr/share/doc/krb5-&mitkrb-version; &amp;&amp;
-cp -vfr ../doc/*  /usr/share/doc/krb5-&mitkrb-version; &amp;&amp;
+cp -rfv ../doc/*  /usr/share/doc/krb5-&mitkrb-version; &amp;&amp;
 
 unset LIBRARY</userinput></screen>
 
@@ -216,10 +210,9 @@ unset LIBRARY</userinput></screen>
 
     <para>
       <command>sed -e ...</command>: The first <command>sed</command> fixes
-      <application>Python</application> detection. The second one fixes
-      building with <application>Tcl</application> 8.6. The third one increases
+      <application>Python</application> detection.<!-- The second one increases
       the width of the virtual terminal used for some tests, to prevent
-      some spurious characters to be echoed, which is taken as a failure.
+      some spurious characters to be echoed, which is taken as a failure. -->
     </para>
 
     <para>
