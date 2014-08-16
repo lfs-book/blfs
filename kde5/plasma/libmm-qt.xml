@@ -5,27 +5,27 @@
   %general-entities;
 ]>
 
-<sect1 id="kde-cli-tools" xreflabel="KDE-Cli-Tools-&plasma-version;">
-  <?dbhtml filename="kde-cli-tools.html"?>
+<sect1 id="libmm-qt" xreflabel="libmm-qt-&libmm-qt-version;">
+  <?dbhtml filename="libmm-qt.html"?>
 
   <sect1info>
     <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
-  <title>KDE-Cli-Tools-&plasma-version;</title>
+  <title>libmm-qt-&libmm-qt-version;</title>
 
-  <indexterm zone="kde-cli-tools">
-    <primary sortas="a-KDE-Cli-Tools">KDE-Cli-Tools</primary>
+  <indexterm zone="libmm-qt">
+    <primary sortas="a-libmm-qt">libmm-qt</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to KDE-Cli-Tools</title>
+    <title>Introduction to libmm-qt</title>
 
     <para>
-      The <application>KDE-Cli-Tools</application> package contains
-      tools based on <application>KDE Frameworks 5</application> to
-      better interact with the system.
+      The <application>libmm-qt</application> package contains a
+      <application>Qt</application> wrapper for ModemManager
+      DBus API.
     </para>
 
     &lfs75_checked;
@@ -34,55 +34,55 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Download (HTTP): <ulink url="&kde-cli-tools-download-http;"/>
+          Download (HTTP): <ulink url="&libmm-qt-download-http;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download (FTP): <ulink url="&kde-cli-tools-download-ftp;"/>
+          Download (FTP): <ulink url="&libmm-qt-download-ftp;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download MD5 sum: &kde-cli-tools-md5sum;
+          Download MD5 sum: &libmm-qt-md5sum;
         </para>
       </listitem>
       <listitem>
         <para>
-          Download size: &kde-cli-tools-size;
+          Download size: &libmm-qt-size;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated disk space required: &kde-cli-tools-buildsize;
+          Estimated disk space required: &libmm-qt-buildsize;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated build time: &kde-cli-tools-time;
+          Estimated build time: &libmm-qt-time;
         </para>
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">KDE-Cli-Tools Dependencies</bridgehead>
+    <bridgehead renderas="sect3">libmm-qt Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="kcmutils"/>,
-      <xref linkend="kdelibs4support"/> and
-      <xref linkend="kdesu"/>
+      <xref linkend="extra-cmake-modules"/>,
+      <xref linkend="ModemManager"/> and
+      <xref linkend="qt5"/>
     </para>
 
     <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/kde-cli-tools"/>
+      User Notes: <ulink url="&blfs-wiki;/libmm-qt"/>
     </para>
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of KDE-Cli-Tools</title>
+    <title>Installation of libmm-qt</title>
 
     <para>
-      Install <application>KDE-Cli-Tools</application> by running the following
+      Install <application>libmm-qt</application> by running the following
       commands:
     </para>
 
@@ -93,7 +93,7 @@ cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX \
       -DCMAKE_BUILD_TYPE=Release         \
       -DLIB_INSTALL_DIR=lib              \
       -DBUILD_TESTING=OFF                \
-      -DQT_PLUGIN_INSTALL_DIR=&qt5-plugins-dir; \
+      -DECM_MKSPECS_INSTALL_DIR=&qt5-mkspecs-dir; \
       .. &amp;&amp;
 make</userinput></screen>
 
@@ -105,8 +105,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
-ln -sfv ../lib/libexec/kdesu $KF5_PREFIX/bin/kdesu5</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -123,7 +122,7 @@ ln -sfv ../lib/libexec/kdesu $KF5_PREFIX/bin/kdesu5</userinput></screen>
       href="../../xincludes/kf5-tests.xml"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/qt5-plugins-dir.xml"/>
+      href="../../xincludes/qt5-mkspecs-dir.xml"/>
 
   </sect2>
 
@@ -137,15 +136,14 @@ ln -sfv ../lib/libexec/kdesu $KF5_PREFIX/bin/kdesu5</userinput></screen>
 
       <seglistitem>
         <seg>
-          kcmshell5, kdecp5, kdemv5, kde-open5, kdesu5, keditfiletype5,
-          kioclient5, kmimetypefinder5, kstart5, ksvgtopng5 and
-          ktraderclient5
+          None
         </seg>
         <seg>
-          libkdeinit5_kcmshell5.so
+          libKF5ModemManagerQt.so
         </seg>
         <seg>
-          $KF5_PREFIX/share/doc/HTML/*/kdesu
+          $KF5_PREFIX/include/KF5/ModemManagerQt and
+          $KF5_PREFIX/lib/cmake/KF5ModemManagerQt
         </seg>
       </seglistitem>
     </segmentedlist>
