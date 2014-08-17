@@ -78,8 +78,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="dejagnu"/> (for full test coverage),<!--
-      <xref linkend="gnupg2"/> (to authenticate the package),-->
+      <xref linkend="dejagnu"/> (for full test coverage),
+      <xref linkend="gnupg2"/> (to authenticate the package),
       <xref linkend="keyutils"/>,
       <xref linkend="openldap"/>,
       <xref linkend="python2"/> (used during the testsuite) and
@@ -111,12 +111,6 @@
       starting the build.
     </para>
 
-<!-- Can't recieve the key properly:
-
-gpg: requesting key 749D7889 from hkp server pgp.mit.edu
-gpg: Note: signatures using the MD5 algorithm are rejected
-gpg: key 749D7889: no valid user IDs
-
     <para>
       After unpacking the distribution tarball and if you have
       <xref linkend="gnupg2"/> installed, you can
@@ -124,7 +118,7 @@ gpg: key 749D7889: no valid user IDs
       <filename>krb5-&mitkrb-version;.tar.gz.asc</filename>.
     </para>
 
-<screen><userinput>gpg - -verify krb5-&mitkrb-version;.tar.gz.asc krb5-&mitkrb-version;.tar.gz</userinput></screen>
+<screen><userinput>gpg --verify krb5-&mitkrb-version;.tar.gz.asc krb5-&mitkrb-version;.tar.gz</userinput></screen>
 
     <para>You will probably see output similar to:</para>
 
@@ -135,7 +129,7 @@ gpg: Can't check signature: public key not found</screen>
       You can import the public key with:
     </para>
 
-<screen><userinput>gpg - -keyserver pgp.mit.edu - -recv-keys 0x749D7889</userinput></screen>
+<screen><userinput>gpg --pgp2 --keyserver pgp.mit.edu --recv-keys 0x749D7889</userinput></screen>
 
     <para>
       Now re-verify the package with the first command above.  You should  get a
@@ -143,7 +137,6 @@ gpg: Can't check signature: public key not found</screen>
       with a trusted signature.  Trusting the downloaded key is a separate
       operation but it is up to you to determine the level of trust.
     </para>
--->
 
     <para>
       Build <application>MIT Kerberos V5</application> by running the
