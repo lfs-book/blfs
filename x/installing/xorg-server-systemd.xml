@@ -74,6 +74,12 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
+          Recommended patch:
+          <ulink url="&patch-root;/xorg-server-&xorg-server-version;-upstream_glamor_fix-1.patch"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
           Optional patch:
           <ulink url="&patch-root;/xorg-server-&xorg-server-version;-add_prime_support-2.patch"/>
         </para>
@@ -94,7 +100,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="libepoxy"/> (for Glamor) and
+      <xref linkend="libepoxy"/> (for Glamor),
       <xref linkend="wayland"/> (both for <command>Xwayland</command>) and
       <xref linkend="systemd"/> (for Logind)
     </para>
@@ -116,6 +122,13 @@
 
   <sect2 role="installation">
     <title>Installation of Xorg Server</title>
+
+    <para>
+      If you are going to build Glamor, apply the recommended patch by running
+      the following command:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../xorg-server-&xorg-server-version;-upstream_glamor_fix-1.patch</userinput></screen>
 
     <para>
       If you have downloaded the optional patch, apply it by running
@@ -158,20 +171,17 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
     </para>
 
     <para>
-      <parameter>--enable-glamor</parameter>: This switch enables building of the
-      Glamor DIX module which is required by some drivers.
+      <parameter>--enable-glamor</parameter>: This switch enables building
+      of the Glamor DIX module which is required by some drivers and
+      <command>Xwayland</command>. Remove it if you don't want to install
+      <application>libepoxy</application> and are not going to need
+      <command>Xwayland</command> or you don't have any hardware that
+      requires Glamor (Radeon "Southern Islands" and later GPUs).
     </para>
 
     <para>
       <parameter>--enable-suid-wrapper</parameter>: This switch enables building of
       the suid-root wrapper for legacy driver support on rootless xserver systems.
-    </para>
-
-    <para>
-      <option>--enable-install-setuid</option>: Use this switch if you have not
-      reinstalled <application>systemd</application> with Logind support and
-      wish to run the <application>Xorg Server</application> as the
-      <systemitem class="username">root</systemitem> user.
     </para>
 
   </sect2>
