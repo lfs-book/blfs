@@ -110,6 +110,7 @@
       <xref linkend="libgcrypt"/>,
       <xref linkend="libidn"/>,
       <xref linkend="python3"/>,
+      <xref linkend="valgrind"/>,
       <ulink url="https://code.google.com/p/cryptsetup/">cryptsetup</ulink>,
       <ulink url="https://www.gnu.org/software/libmicrohttpd/">libmicrohttpd</ulink>,
       <ulink url="http://fukuchi.org/works/qrencode/">libqrencode</ulink>,
@@ -166,7 +167,9 @@
             --with-rootprefix=     \
             --with-rootlibdir=/lib \
             --enable-split-usr     \
+            --disable-firstboot    \
             --disable-ldconfig     \
+            --disable-sysusers     \
             --docdir=/usr/share/doc/systemd-${SYSTEMD_VERSION} &amp;&amp;
 make</userinput></screen>
 
@@ -202,14 +205,6 @@ make</userinput></screen>
    </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
-
-    <para>
-      Prevent systemd units that are not needed on a LFS system from
-      running by running the following command as the <systemitem
-      class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>rm -fv /lib/systemd/system/sysinit.target.wants/systemd-{firstboot,sysusers,update-done}.service</userinput></screen>
 
     <para>
       Move NSS libraries to <filename class="directory">/lib</filename>
