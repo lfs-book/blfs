@@ -45,7 +45,7 @@
     this system is that it can be used to bootstrap <xref linkend="openjdk"/>,
     without the need for downloading a Java binary.</para>
 
-<!--    &lfs75_checked; -->
+    &lfs76_built;
 
     <caution>
       <para>Using the instructions on this page will have the effect that
@@ -134,6 +134,10 @@
     the GCC version, then remove the <option>--disable-bootstrap</option> from
     the <command>./configure</command> options below.</para>
 
+    <para>As in LFS, fix a problem identified upstream:</para>
+
+<screen><userinput>sed -i 's/if \((code.*))\)/if (\1 \&amp;\&amp; \!DEBUG_INSN_P (insn))/' gcc/sched-deps.c</userinput></screen>
+
     <para>Install <application>GCC Java</application> by running the
     following commands:</para>
 
@@ -149,11 +153,6 @@ cd    ../gcc-build &amp;&amp;
 
 ../gcc-&gcc-version;/configure           \
     --prefix=/usr                \
-    --libdir=/usr/lib            \
-    --enable-shared              \
-    --enable-threads=posix       \
-    --enable-__cxa_atexit        \
-    --enable-clocale=gnu         \
     --disable-multilib           \
     --with-system-zlib           \
     --disable-bootstrap          \
@@ -208,13 +207,6 @@ ln -sfv ../../../usr/bin/ecj /opt/gcj/bin/javac</userinput></screen>
     <para><command>mkdir ../gcc-build; cd ../gcc-build</command>: The
     <application>GCC</application> documentation recommends
     building the package in a dedicated build directory.</para>
-
-    <para><parameter>--enable-shared --enable-threads=posix
-    --enable-__cxa_atexit</parameter>: These parameters are required to build
-    the <application>C++</application> libraries to published standards.</para>
-
-    <para><parameter>--enable-clocale=gnu</parameter>: This parameter is a
-    failsafe for incomplete locale data.</para>
 
     <para><parameter>--disable-multilib</parameter>: This parameter ensures
     that files are created for the specific architecture of your computer.</para>
