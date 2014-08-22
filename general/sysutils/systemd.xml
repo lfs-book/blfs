@@ -108,12 +108,15 @@
       <xref linkend="gnutls"/>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="libgcrypt"/>,
+      <xref linkend="libidn"/>,
       <xref linkend="python3"/>,
+      <xref linkend="valgrind"/>,
       <ulink url="https://code.google.com/p/cryptsetup/">cryptsetup</ulink>,
       <ulink url="https://www.gnu.org/software/libmicrohttpd/">libmicrohttpd</ulink>,
       <ulink url="http://fukuchi.org/works/qrencode/">libqrencode</ulink>,
-      <ulink url="http://sourceforge.net/projects/libseccomp/">libseccomp</ulink>, and
-      <ulink url="http://lxml.de/">lxml</ulink> (Python Module)
+      <ulink url="http://sourceforge.net/projects/libseccomp/">libseccomp</ulink>,
+      <ulink url="http://lxml.de/">lxml</ulink> (Python Module), and
+      <ulink url="https://code.google.com/p/lz4/">lz4</ulink>
     </para>
 
     <note>
@@ -157,12 +160,16 @@
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr          \
+<screen><userinput>cc_cv_CFLAGS__flto=no              \
+./configure --prefix=/usr          \
             --sysconfdir=/etc      \
             --localstatedir=/var   \
             --with-rootprefix=     \
             --with-rootlibdir=/lib \
             --enable-split-usr     \
+            --disable-firstboot    \
+            --disable-ldconfig     \
+            --disable-sysusers     \
             --docdir=/usr/share/doc/systemd-${SYSTEMD_VERSION} &amp;&amp;
 make</userinput></screen>
 
@@ -194,32 +201,29 @@ make</userinput></screen>
     </warning>
 
    <para>
-     Now, as the <systemitem class="username">root</systemitem> 
-    user:</para>
+     Now, as the <systemitem class="username">root</systemitem> user:
+   </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
     <para>
-      Move the NSS myhostname library to <filename
-      class="directory">/lib</filename> by running the
-      following command as the <systemitem
+      Move NSS libraries to <filename class="directory">/lib</filename>
+      by running the following command as the <systemitem
       class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>mv -v /usr/lib/libnss_myhostname.so.2 /lib</userinput></screen>
+<screen role="root"><userinput>mv -v /usr/lib/libnss_{myhostname,mymachines,resolve}.so.2 /lib</userinput></screen>
 
     <para>
-      Remove an unnecessary directory by running the
-      following command as the <systemitem
-      class="username">root</systemitem> user:
+      Remove an unnecessary directory by running the following command
+      as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>rm -rfv /usr/lib/rpm</userinput></screen>
 
     <para>
-      Remove a reference to a non-existent group by running
-      the following command as the <systemitem
-      class="username">root</systemitem> user:
+      Remove a reference to a non-existent group by running the following
+      command as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>sed -i "s:0775 root lock:0755 root root:g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
