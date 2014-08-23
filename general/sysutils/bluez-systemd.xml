@@ -34,7 +34,7 @@
       Bluetooth protocol stack for Linux.
     </para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,8 +74,7 @@
       <itemizedlist spacing="compact">
         <listitem>
           <para>
-             Optional patch (required to work properly with gnome-bluetooth
-             and/or kde bluedevil):
+             Required patch:
             <ulink url="&patch-root;/bluez-&bluez-version;-obexd_without_systemd-1.patch"/>
           </para>
         </listitem>
@@ -129,18 +128,12 @@
     <title>Installation of BlueZ</title>
 
     <para>
-      If you are going to use <application>BlueZ</application> with
-      gnome-bluetooth and/or kde bluedevil, apply the following patch:
-    </para>
-
-<screen><userinput>patch -Np1 -i ../bluez-&bluez-version;-obexd_without_systemd-1.patch</userinput></screen>
-
-    <para>
       Install <application>BlueZ</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr         \
+<screen><userinput>patch -Np1 -i ../bluez-&bluez-version;-obexd_without_systemd-1.patch &amp;&amp;
+./configure --prefix=/usr         \
             --sysconfdir=/etc     \
             --localstatedir=/var  \
             --enable-library &amp;&amp;
