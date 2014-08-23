@@ -76,7 +76,8 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="gst10-plugins-base"/>,
-      <xref linkend="gtk3"/>,
+      <xref linkend="gtk3"/> or
+      <xref linkend="gtk2"/> or both,
       <xref linkend="icu"/>,
       <xref linkend="libsecret"/>,
       <xref linkend="libsoup"/>,
@@ -88,20 +89,27 @@
       <xref linkend="which"/>
     </para>
 
+    <note>
+      <para>
+        Note that WebKit2 links against <application>GTK+ 2</application>
+        (even if <application>GTK+ 3</application> is being used) in order
+        to be able to use NPAPI plugins such as Adobe Flash.
+      </para>
+    </note>
+
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="enchant"/>,
       <xref linkend="geoclue2"/> or
       <xref linkend="geoclue"/>,
-      <xref linkend="gobject-introspection"/>,
-      <xref linkend="gtk2"/> and
+      <xref linkend="gobject-introspection"/> and
       <xref linkend="hicolor-icon-theme"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gtk-doc"/>,
-      <xref linkend="llvm"/>, and
+      <xref linkend="llvm"/> and
       <ulink url="http://xsltml.sourceforge.net/">MathML</ulink>
     </para>
 
@@ -121,12 +129,21 @@
 <screen><userinput>sed -i '/generate-gtkdoc --rebase/s:^:# :' GNUmakefile.in</userinput></screen>
 
     <para>
-      Install <application>WebKitGTK+</application> by running the
-      following commands:
+      To build <application>WebKitGTK+</application> against
+      <application>GTK+ 3</application>, run the following
+      commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr          \
-            --enable-introspection &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --enable-introspection &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      To build <application>WebKitGTK+</application> against
+      <application>GTK+ 2</application>, run the following
+      commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr --with-gtk=2.0 --disable-webkit2 &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -137,54 +154,65 @@ make</userinput></screen>
       fails, there is a problem with the build.
     </para>
 
-    <note><para>
-      When installing, the Makefile does some additional compiling and linking.
-      If you do not have Xorg in /usr, the LIBRARY_PATH and PKG_CONFIG_PATH
-      variables need to be defined for the root user.  If using sudo to assume
-      root, use the -E option to pass your current environment variables for the
-      install process.
-    </para></note>
-
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install                                    &amp;&amp;
-rm -rf /usr/share/gtk-doc/html/webkitgtk-2.0    &amp;&amp;
-mv -vi /usr/share/gtk-doc/html/webkitgtk{,-2.0}</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      If you have built the package against <application>GTK+ 3</application>,
+      rename the following directory to avoid conflicts with the package
+      built against <application>GTK+ 2</application> by running the
+      following commands as the <systemitem
+      class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>rm -rf /usr/share/gtk-doc/html/webkitgtk-3.0 &amp;&amp;
+mv -v /usr/share/gtk-doc/html/webkitgtk{,-3.0}</userinput></screen>
+
+    <para>
+      If you have built the package against <application>GTK+ 2</application>,
+      rename the following directory to avoid conflicts with the package
+      built against <application>GTK+ 3</application> by running the
+      following commands as the <systemitem
+      class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>rm -rf /usr/share/gtk-doc/html/webkitgtk-1.0 &amp;&amp;
+mv -v /usr/share/gtk-doc/html/webkitgtk{,-1.0}</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
-      <command>mv -vi /usr/share/gtk-doc/html/webkitgtk{,-2.0}</command>:
-      There is a conflict with the directory installed with same name by
-      <xref linkend="webkitgtk"/>.
+      <parameter>--enable-introspection</parameter>: This switch enables
+      <application>Gobject Introspection</application> bindings and is
+      required if building <application>GNOME</application> Desktop.
+      Remove if you don't have <application>Gobject
+      Introspection</application> installed or you don't want to install
+      <application>GNOME</application>. It is not needed if building
+      against <application>GTK+ 2</application>, although it can be used
+      if desired.
     </para>
 
     <para>
-      <option>--enable-introspection</option>: This switch enables support for
-      <application>Gobject Introspection</application> and is required for a
-      <application>GNOME</application> Desktop. Remove if you don't have
-      <application>Gobject Introspection</application> installed or you don't
-      want to install <application>GNOME</application>.
+      <parameter>--with-gtk=2.0 --disable-webkit2</parameter>: These switches
+      force <application>WebKitGTK+</application> to compile against
+      <application>GTK+ 2</application>, even if
+      <application>GTK+ 3</application> is also installed.
     </para>
 
     <para>
-      <option>--disable-geolocation</option>: Use this option if you did not
-      install <xref linkend="geoclue"/> or <command>configure</command> will
-      fail.
+      <option>--disable-geolocation</option>: Use this switch if you don't
+      want to install <xref linkend="geoclue"/> or
+      <xref linkend="geoclue2"/>.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
-
-    <para><option>--libexecdir=/usr/lib/webkitgtk3</option>: This option
-    puts the package's private programs into
-    <filename class="directory">/usr/lib/webkitgtk3</filename> instead of
-    <filename class="directory">/usr/libexec</filename> in accordance with
-    the old version of the FHS used before LFS-7.5.</para>
 
   </sect2>
 
@@ -198,21 +226,25 @@ mv -vi /usr/share/gtk-doc/html/webkitgtk{,-2.0}</userinput></screen>
 
       <seglistitem>
         <seg>
-          jsc-3
+          jsc-3 <emph>or</emph> jsc-1
         </seg>
         <seg>
           libjavascriptcoregtk-3.0.so,
-          libwebkit2gtk-3.0.so,
-          libwebkitgtk-3.0.so and
-          /usr/lib/webkit2gtk-3.0/injected-bundle/libwebkit2gtkinjectedbundle.so
+          libwebkit2gtk-3.0.so and
+          libwebkitgtk-3.0.so <emph>or</emph>
+          libjavascriptcoregtk-1.0.so and
+          libwebkitgtk-1.0.so
         </seg>
         <seg>
           /usr/include/webkitgtk-3.0,
           /usr/lib/webkit2gtk-3.0,
-          /usr/share/gtk-doc/html/webkitgtk-2.0,
+          /usr/share/gtk-doc/html/webkitgtk-3.0,
           /usr/share/gtk-doc/html/webkitdomgtk,
-          /usr/share/gtk-doc/html/webkit2gtk, and
-          /usr/share/webkitgtk-3.0
+          /usr/share/gtk-doc/html/webkit2gtk and
+          /usr/share/webkitgtk-3.0 <emph>or</emph>
+          /usr/include/webkit-1.0,
+          /usr/share/gtk-doc/html/webkitgtk-1.0 and
+          /usr/share/webkit-1.0
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -227,7 +259,8 @@ mv -vi /usr/share/gtk-doc/html/webkitgtk{,-2.0}</userinput></screen>
         <listitem>
           <para>
             is a command-line utility that allows you to run JavaScript programs
-            outside of the context of a web browser.
+            outside of the context of a web browser linked against
+            <filename class="libraryfile">libjavascriptcoregtk-3.0.so</filename>.
           </para>
           <indexterm zone="webkitgtk2 jsc-3">
             <primary sortas="b-jsc-3">jsc-3</primary>
@@ -235,7 +268,21 @@ mv -vi /usr/share/gtk-doc/html/webkitgtk{,-2.0}</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libjavascriptcoregtk-3">
+      <varlistentry id="jsc-1">
+        <term><command>jsc-1</command></term>
+        <listitem>
+          <para>
+            is a command-line utility that allows you to run JavaScript programs
+            outside of the context of a web browser linked against
+            <filename class="libraryfile">libjavascriptcoregtk-1.0.so</filename>.
+          </para>
+          <indexterm zone="webkitgtk2 jsc-1">
+            <primary sortas="b-jsc-1">jsc-1</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libjavascriptcoregtk-3.0">
         <term><filename
         class="libraryfile">libjavascriptcoregtk-3.0.so</filename></term>
         <listitem>
@@ -243,47 +290,60 @@ mv -vi /usr/share/gtk-doc/html/webkitgtk{,-2.0}</userinput></screen>
             contains core JavaScript API functions used by <command>jsc-3</command>
             and <filename class="libraryfile">libwebkitgtk-3.0.so</filename>.
           </para>
-          <indexterm zone="webkitgtk libjavascriptcoregtk-3">
-            <primary sortas="c-libjavascriptcoregtk-3">libjavascriptcoregtk-3.0.so</primary>
+          <indexterm zone="webkitgtk2 libjavascriptcoregtk-3.0">
+            <primary sortas="c-libjavascriptcoregtk-3.0">libjavascriptcoregtk-3.0.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-<!--
-      <varlistentry id="libwebkit2gtkinjectedbundle">
-        <term><filename class="libraryfile">libwebkit2gtkinjectedbundle.so</filename></term>
-        <listitem>
-          <para>
-            contains the <application>WebKitGTK+</application> API functions for
-            the Injected Bundle support.
-          </para>
-          <indexterm zone="webkitgtk libwebkit2gtkinjectedbundle">
-            <primary sortas="c-libwebkit2gtkinjectedbundle">libwebkit2gtkinjectedbundle.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
--->
 
-      <varlistentry id="libwebkitgtk-3">
+      <varlistentry id="libwebkitgtk-3.0">
         <term><filename class="libraryfile">libwebkitgtk-3.0.so</filename></term>
         <listitem>
           <para>
             contains the <application>WebKitGTK+</application> API functions for
             <application>GTK+ 3</application>.
           </para>
-          <indexterm zone="webkitgtk libwebkitgtk-3">
-            <primary sortas="c-libwebkitgtk-3">libwebkitgtk-3.0.so</primary>
+          <indexterm zone="webkitgtk2 libwebkitgtk-3.0">
+            <primary sortas="c-libwebkitgtk-3.0">libwebkitgtk-3.0.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libwebkit2gtk-3">
+      <varlistentry id="libwebkit2gtk-3.0">
         <term><filename class="libraryfile">libwebkit2gtk-3.0.so</filename></term>
         <listitem>
           <para>
             contains the <application>WebKit2</application> API functions.
           </para>
-          <indexterm zone="webkitgtk libwebkit2gtk-3">
-            <primary sortas="c-libwebkit2gtk-3">libwebkit2gtk-3.0.so</primary>
+          <indexterm zone="webkitgtk2 libwebkit2gtk-3.0">
+            <primary sortas="c-libwebkit2gtk-3.0">libwebkit2gtk-3.0.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libjavascriptcoregtk-1.0">
+        <term><filename
+        class="libraryfile">libjavascriptcoregtk-1.0.so</filename></term>
+        <listitem>
+          <para>
+            contains core JavaScript API functions used by <command>jsc-1</command>
+            and <filename class="libraryfile">libwebkitgtk-1.0.so</filename>.
+          </para>
+          <indexterm zone="webkitgtk2 libjavascriptcoregtk-1.0">
+            <primary sortas="c-libjavascriptcoregtk-1.0">libjavascriptcoregtk-1.0.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libwebkitgtk-1.0">
+        <term><filename class="libraryfile">libwebkitgtk-1.0.so</filename></term>
+        <listitem>
+          <para>
+            contains the <application>WebKitGTK+</application> API functions for
+            <application>GTK+ 2</application>.
+          </para>
+          <indexterm zone="webkitgtk2 libwebkitgtk-1.0">
+            <primary sortas="c-libwebkitgtk-1.0">libwebkitgtk-1.0.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
