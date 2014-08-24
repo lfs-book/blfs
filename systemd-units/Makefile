@@ -118,7 +118,6 @@ install-nfs-server: install-nfs-client
 install-ntpd: create-dirs
 	install -m ${CONFMODE} blfs/units/ntpd.service ${UNITSDIR}/
 	install -d -m ${DIRMODE} ${DESTDIR}/usr/lib/systemd/ntp-units.d
-	echo "ntpd.service" > ${DESTDIR}/usr/lib/systemd/ntp-units.d/ntp.list
 	systemctl enable ntpd.service
 
 install-php-fpm: create-dirs
@@ -297,7 +296,7 @@ uninstall-nfs-server:
 uninstall-ntpd:
 	systemctl stop ntpd.service
 	systemctl disable ntpd.service
-	rm -f ${UNITSDIR}/ntpd.service ${DESTDIR}/usr/lib/systemd/ntp-units.d/ntp.list
+	rm -f ${UNITSDIR}/ntpd.service
 
 uninstall-php-fpm:
 	systemctl stop php-fpm.service
