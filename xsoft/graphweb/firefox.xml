@@ -39,7 +39,7 @@
       <application>Mozilla</application> codebase.
     </para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -259,11 +259,6 @@ EOF</userinput></screen>
       Compile <application>Firefox</application> by issuing the following
       commands:
     </para>
-
-    <note><para>
-      If you are compiling <application>Firefox</application> in chroot, prepend
-      <envar>SHELL=/bin/sh</envar> to the first make command below.
-    </para></note>
       
 <screen><userinput>make -f client.mk</userinput></screen>
 
@@ -271,14 +266,6 @@ EOF</userinput></screen>
       This package does not come with a test suite.
     </para>
 
-<!--    <para>
-      If you have <emphasis>not</emphasis> linked
-      <application>Firefox</application> against an installed
-      <application>Xulrunner</application>:
-    </para>
-
-<screen><userinput>make -C firefox-build-dir/browser/installer</userinput></screen>
--->
     <para>
       Now, as the <systemitem class="username">root</systemitem> user, if you
       have <emphasis>not</emphasis> linked <application>Firefox</application>
@@ -286,14 +273,6 @@ EOF</userinput></screen>
       package:
     </para>
 
-<!--<screen role="root"><userinput>rm -rf /usr/lib/firefox-&firefox-version; &amp;&amp;
-mkdir  /usr/lib/firefox-&firefox-version; &amp;&amp;
-
-tar -xvf firefox-build-dir/dist/firefox-&firefox-version;.en-US.linux-$(uname -m).tar.bz2 \
-    -C /usr/lib/firefox-&firefox-version; -\-strip-components=1 &amp;&amp;
-chown -R -v root:root /usr/lib/firefox-&firefox-version; &amp;&amp;
-
-ln -sfv ../lib/firefox-&firefox-version;/firefox /usr/bin &amp;&amp;-->
 <screen role="root"><userinput>make -f client.mk install INSTALL_SDK= &amp;&amp;
 
 mkdir -pv /usr/lib/mozilla/plugins &amp;&amp;
@@ -382,7 +361,6 @@ ln -sfv ../mozilla/plugins /usr/lib/firefox-&firefox-version;</userinput></scree
     </para>
 
 <screen role="root"><userinput>mkdir -pv /usr/share/applications &amp;&amp;
-mkdir -pv /usr/share/pixmaps &amp;&amp;
 
 cat &gt; /usr/share/applications/firefox.desktop &lt;&lt; "EOF" &amp;&amp;
 <literal>[Desktop Entry]
@@ -399,8 +377,15 @@ MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xm
 StartupNotify=true</literal>
 EOF
 
-ln -sfv /usr/lib/firefox-&firefox-version;/browser/icons/mozicon128.png \
-        /usr/share/pixmaps/firefox.png</userinput></screen>
+for s in 16 32 48
+do
+install -v -Dm644 /usr/lib/firefox-&firefox-version;/browser/chrome/icons/default/default${s}.png \
+                  /usr/share/icons/hicolor/${s}x${s}/apps/firefox.png
+done &amp;&amp;
+install -v -Dm644 /usr/lib/firefox-&firefox-version;/browser/icons/mozicon128.png \
+                  /usr/share/icons/hicolor/128x128/apps/firefox.png &amp;&amp;
+gtk-update-icon-cache -qf /usr/share/icons/hicolor &amp;&amp;
+unset s</userinput></screen>
 
   </sect2>
 
@@ -410,19 +395,18 @@ ln -sfv /usr/lib/firefox-&firefox-version;/browser/icons/mozicon128.png \
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
-      <segtitle>Installed Directory</segtitle>
+      <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
           firefox
         </seg>
         <seg>
-          Numerous libraries, browser components, plugins, extensions, and
-          helper modules installed in
-          <filename class="directory">/usr/lib/firefox-&firefox-version;</filename>
+          None
         </seg>
         <seg>
-          /usr/lib/firefox-&firefox-version;
+          /usr/lib/firefox-&firefox-version; and
+          /usr/lib/mozilla/plugins
         </seg>
       </seglistitem>
     </segmentedlist>
