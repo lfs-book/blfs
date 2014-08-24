@@ -49,24 +49,21 @@ EOF</userinput></screen>
 
     <para>KDE comes with a graphical login interface called KDM (the KDE Display
     Manager), which provides a customizable graphical login at boot. To use KDM,
-    you need to install the systemd unit from the <xref linkend="bootscripts"/>
-    package by running the following command as the
-    <systemitem class="username">root</systemitem> user:</para>
+    you need to create and enable a systemd unit by running the following commands
+    as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>make install-kdm</userinput></screen>
+<screen role="root"><userinput>cat &gt; /lib/systemd/system/kdm.service &lt;&lt; EOF &amp;&amp;
+<literal>[Unit]
+Description=K Display Manager
+After=systemd-user-sessions.service
 
-    <note>
-      <para>
-        The systemd unit assumes that <command>kdm</command> is installed
-        in <filename class="directory">/usr/bin</filename>. If your &kde-dir;
-        is different than <filename class="directory">/usr</filename>,
-        create a symlink to get the systemd unit to work properly by
-        running the following command as the
-        <systemitem class="username">root</systemitem> user:
+[Service]
+ExecStart=&kde-dir;/bin/kdm -nodaemon
 
-<screen role="root"><userinput>ln -sfv &kde-dir;/bin/kdm /usr/bin/kdm</userinput></screen>
-      </para>
-    </note>
+[Install]
+Alias=display-manager.service</literal>
+EOF
+systemctl enable kdm</userinput></screen>
 
     <para>You can now restart your system and see the KDE login
     screen.</para>
