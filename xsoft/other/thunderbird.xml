@@ -37,7 +37,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -156,10 +156,10 @@
     </para>
 
 <screen><userinput>cat &gt; mozconfig &lt;&lt; "EOF"
-# If you have a multicore machine you can speed up the build by running
-# several jobs at once by uncommenting the following line and setting the
-# value to number of CPU cores:
-#mk_add_options MOZ_MAKE_FLAGS="-j4"
+# If you have a multicore machine, firefox will now use all the cores by
+# default. Exceptionally, you can reduce the number of cores, e.g. to 1,
+# by uncommenting the next line and setting a valid number of CPU cores.
+#mk_add_options MOZ_MAKE_FLAGS="-j1"
 
 # If you have installed DBus-Glib comment out this line:
 ac_add_options --disable-dbus
@@ -230,8 +230,9 @@ mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/thunderbuild
 EOF</userinput></screen>
 
     <para>
-      First, a bug needs to be fixed. Notice that thunderbuild needs to match
-      the value used in mozconfig (above) for the object directory (MOZ_OBJDIR):
+      First, a bug needs to be fixed. Notice that thunderbuild matches
+      the value used in mozconfig (above) for the object directory
+      (MOZ_OBJDIR):
     </para>
 
 <screen><userinput>mkdir -vp mozilla/thunderbuild</userinput></screen>
@@ -241,13 +242,7 @@ EOF</userinput></screen>
       commands:
     </para>
 
-    <note><para>
-      If you are compiling <application>Thunderbird</application> in chroot,
-      prepend <envar>SHELL=/bin/sh</envar> to the <!--first -->make command below.
-    </para></note>
-
-<screen><userinput>make -f client.mk<!--
-make -C thunderbuild/mail/installer--></userinput></screen>
+<screen><userinput>make -f client.mk</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -257,11 +252,6 @@ make -C thunderbuild/mail/installer--></userinput></screen>
       Install <application>Thunderbird</application> by running the following
       commands as the <systemitem class="username">root</systemitem> user:
     </para>
-
-<!--<screen role="root"><userinput>mkdir -pv /usr/lib/thunderbird-&thunderbird-version; &amp;&amp;
-tar -xvf thunderbuild/mozilla/dist/thunderbird-&thunderbird-version;.en-US.linux-$(uname -m).tar.bz2 \
-    -C /usr/lib/thunderbird-&thunderbird-version; -\-strip-components=1 &amp;&amp;
-ln -sfv ../lib/thunderbird-&thunderbird-version;/thunderbird /usr/bin</userinput></screen>-->
 
 <screen role="root"><userinput>make -f client.mk install INSTALL_SDK=</userinput></screen>
 
@@ -274,15 +264,11 @@ ln -sfv ../lib/thunderbird-&thunderbird-version;/thunderbird /usr/bin</userinput
     </para>
 
 <screen role="root"><userinput>make -C thunderbuild install</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <command>mkdir -vp mozilla/thunderbuild</command>: fixes a build failure
-      of Makefile at the beginning of build, where a file cannot be found.
-    </para>
 
     <para>
       <command>make -f client.mk</command>: Mozilla products are packaged to
@@ -353,7 +339,6 @@ ln -sfv ../lib/thunderbird-&thunderbird-version;/thunderbird /usr/bin</userinput
     </para>
 
 <screen role="root"><userinput>mkdir -pv /usr/share/applications &amp;&amp;
-mkdir -pv /usr/share/pixmaps &amp;&amp;
 
 cat &gt; /usr/share/applications/thunderbird.desktop &lt;&lt; "EOF" &amp;&amp;
 <literal>[Desktop Entry]
@@ -370,9 +355,16 @@ MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rs
 StartupNotify=true</literal>
 EOF
 
-ln -sfv /usr/lib/thunderbird-&thunderbird-version;/chrome/icons/default/default256.png \
-        /usr/share/pixmaps/thunderbird.png</userinput></screen>
+for s in 16 22 24 32 48 256
+do
+install -v -Dm644 /usr/lib/thunderbird-&thunderbird-version;/chrome/icons/default/default${s}.png \
+                  /usr/share/icons/hicolor/${s}x${s}/apps/thunderbird.png
+done &amp;&amp;
+gtk-update-icon-cache -qf /usr/share/icons/hicolor &amp;&amp;
+unset s</userinput></screen>
+
     </sect3>
+
   </sect2>
 
   <sect2 role="content">
