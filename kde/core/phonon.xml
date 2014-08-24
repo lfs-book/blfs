@@ -12,7 +12,7 @@
   <!ENTITY phonon-time          "0.5 SBU">
 ]>
 
-<sect1 id="phonon" xreflabel="phonon-&phonon-version;">
+<sect1 id="phonon" xreflabel="Phonon-&phonon-version;">
   <?dbhtml filename="phonon.html"?>
 
   <sect1info>
@@ -23,7 +23,7 @@
   <title>Phonon-&phonon-version;</title>
 
   <indexterm zone="phonon">
-    <primary sortas="a-phonon">phonon</primary>
+    <primary sortas="a-Phonon">Phonon</primary>
   </indexterm>
 
   <sect2 role="package">
@@ -33,7 +33,7 @@
     It replaces the old <application>aRts</application>, that is no longer
     supported by KDE. Phonon needs either the GStreamer or VLC backend.</para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,7 +68,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="pulseaudio"/>,
-      <xref linkend="qt5"/> and
+      <xref linkend="qt5"/>, and
       <ulink url="http://projects.kde.org/projects/kdesupport/libqzeitgeist/">QZeitgeist</ulink>
     </para>
 
@@ -84,6 +84,13 @@
     <application>Phonon</application> library. This package provides
     a better implementation.</para>
 
+    <para>
+      First, silence a lot of warnings caused by using the latest toolchain
+      by running the following command:
+    </para>
+
+<screen><userinput>sed -i "s:BSD_SOURCE:DEFAULT_SOURCE:g" cmake/FindPhononInternal.cmake</userinput></screen>
+
     <para>Install <application>Phonon</application> by running the following
     commands:</para>
 
@@ -95,7 +102,6 @@ cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_LIBDIR=lib \
       -DPHONON_INSTALL_QT_EXTENSIONS_INTO_SYSTEM_QT=FALSE \
-      -DDBUS_INTERFACES_INSTALL_DIR=/usr/share/dbus-1/interfaces \
       -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 
@@ -117,12 +123,6 @@ make</userinput></screen>
       <parameter>-DPHONON_INSTALL_QT_EXTENSIONS_INTO_SYSTEM_QT=FALSE</parameter>:
       This switch ensures that the plugins and mkspecs files get installed in
       the correct location.
-    </para>
-
-    <para>
-     <parameter>-DDBUS_INTERFACES_INSTALL_DIR=/usr/share/dbus-1/interfaces</parameter>:
-      This switch sets the correct installation path for the 
-      <application>D-Bus</application> interfaces file.
     </para>
 
     <para>
