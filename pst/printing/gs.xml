@@ -47,7 +47,7 @@
     targets. It used to be part of the cups printing stack, but is no longer
     used for that.</para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -155,11 +155,12 @@
       If you have installed these dependencies on your system, remove the
       copies of <application>expat</application>,
       <application>freetype</application>, <application>lcms2</application>,
-      <application>libjpeg</application>, and <application>libpng</application>:
+      <application>libjpeg</application>, <application>libpng</application>
+      and <application>zlib</application>:
     </para>
 
 <screen><userinput>sed -i 's/ZLIBDIR=src/ZLIBDIR=$includedir/' configure.ac configure &amp;&amp;
-rm -rf expat freetype lcms2 jpeg libpng</userinput></screen>
+rm -rf expat freetype lcms2 jpeg libpng zlib</userinput></screen>
 <!--
     <note>
       <para>
@@ -173,9 +174,10 @@ rm -rf expat freetype lcms2 jpeg libpng</userinput></screen>
 
     <para>Compile <application>Ghostscript</application>:</para>
 
-<screen><userinput>rm -rf zlib &amp;&amp;
-./configure --prefix=/usr --disable-compile-inits \
- --enable-dynamic --with-system-libtiff &amp;&amp;
+<screen><userinput>./configure --prefix=/usr           \
+            --disable-compile-inits \
+            --enable-dynamic        \
+            --with-system-libtiff &amp;&amp;
 make</userinput></screen>
 
     <note>
@@ -209,9 +211,9 @@ make</userinput></screen>
 
     <para>If you want the shared library too:</para>
 
-<screen role="root"><userinput>make soinstall &amp;&amp;
+<screen role="root"><userinput>make soinstall<!-- &amp;&amp;
 install -v -m644 base/*.h /usr/include/ghostscript &amp;&amp;
-ln -v -s ghostscript /usr/include/ps</userinput></screen>
+ln -v -s ghostscript /usr/include/ps--></userinput></screen>
 
     <para>Now make the documentation accessible from the normal place:</para>
 
@@ -236,13 +238,13 @@ fc-cache -v /usr/share/ghostscript/fonts/</userinput></screen>
 
     <para>
       <command>sed -i 's/ZLIBDIR=src/ZLIBDIR=$includedir/' ... </command>:
-      Fix to build with system <application>zlib</application>.
+      Fixes building with system <application>Zlib</application>.
     </para>
 
-    <para>
+    <!-- <para>
       <command>rm -rf zlib</command>:
       <application>zlib</application> was installed as part of LFS.
-    </para>
+    </para> -->
 
     <para>
       <parameter>--disable-compile-inits</parameter>: This option makes
@@ -254,17 +256,17 @@ fc-cache -v /usr/share/ghostscript/fonts/</userinput></screen>
       you've not installed <xref linkend="libtiff"/>.
     </para>
 
-    <para>
+    <!-- <para> Nothing needs these. The ones installed by soinstall are sufficient.
       <command>install -v -m644 base/*.h... </command>: Some packages
       (<application>ImageMagick</application> is one) need the
       <application>Ghostscript</application> interface headers in place to link
       to the shared library. These commands install the headers.
     </para>
 
-    <para>
+    <para> Haven't found anything that needs this
       <command>ln -v -s ghostscript /usr/include/ps</command>: Some packages
       expect to find the interface headers in an alternate location.
-    </para>
+    </para> -->
 
     <para>
       <command>ln -sfv ../ghostscript-&gs-version;/doc ... </command>: This puts
@@ -276,6 +278,7 @@ fc-cache -v /usr/share/ghostscript/fonts/</userinput></screen>
       space by not linking <command>gs</command> and <filename>libgs.so</filename>
       to the <xref linkend="cups"/> libraries if you have installed those.
     </para>
+
   </sect2>
 
   <sect2 role="content">
