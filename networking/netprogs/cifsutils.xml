@@ -32,7 +32,7 @@
     <para>The <application>cifs-utils</application> provides a means for
     mounting SMB/CIFS shares on a Linux system.</para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -97,9 +97,7 @@
     <para>Install <application>cifs-utils</application> by running the following
     commands:</para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --disable-pam \
-            --disable-systemd &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --disable-pam &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -113,18 +111,13 @@ make</userinput></screen>
   <sect2 role="commands">
       <title>Command Explanations</title>
 
-          <para><parameter>--disable-pam</parameter>: Do not build PAM support.
-            Remove  it and use <option>--with-pamdir</option> (see below),
+          <para>
+            <parameter>--disable-pam</parameter>: This switch disables
+            PAM support. Replace it with
+            <option>--with-pamdir=/lib/security</option>,
             if <xref linkend="linux-pam"/> is installed and you wish
-            PAM support.</para>
-
-          <para><parameter>--disable-systemd</parameter>: Disable systemd
-            specific behavior for <command>mount.cifs</command>. Remove it for
-            systems running with systemd.</para>
-
-          <para><option>--with-pamdir=/lib/security</option>: Install the PAM
-            module in
-            <filename class="directory">/lib/security</filename>.</para>
+            to build the PAM module.
+          </para>
 
   </sect2>
 
