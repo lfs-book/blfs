@@ -34,7 +34,7 @@
     and client utilities. If you are only interested in the utilities, refer
     to the <xref linkend="bind-utils"/>.</para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -157,11 +157,11 @@ make</userinput></screen>
     class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-chmod -v 0755 /usr/lib/lib{bind9,dns,isc{,cc,cfg},lwres}.so &amp;&amp;
+chmod -v 755 /usr/lib/lib{bind9,dns,isc{,cc,cfg},lwres}.so &amp;&amp;
 
-install -v -m755 -d /usr/share/doc/bind-&bind-version;/{arm,misc} &amp;&amp;
-install -v -m644    doc/arm/*.html \
-                    /usr/share/doc/bind-&bind-version;/arm &amp;&amp;
+install -v -dm755 /usr/share/doc/bind-&bind-version;/{arm,misc} &amp;&amp;
+install -v -m644  doc/arm/*.html \
+                  /usr/share/doc/bind-&bind-version;/arm &amp;&amp;
 install -v -m644 \
     doc/misc/{dnssec,ipv6,migrat*,options,rfc-compliance,roadmap,sdb} \
     /usr/share/doc/bind-&bind-version;/misc</userinput></screen>
@@ -257,14 +257,14 @@ install -d -m770 -o named -g named /srv/named</userinput></screen>
       <application>BIND</application>:</para>
 
 <screen role="root"><userinput>cd /srv/named &amp;&amp;
-mkdir -p dev etc/namedb/{slave,pz} usr/lib/engines var/run/named &amp;&amp;
+mkdir -pv dev etc/namedb/{slave,pz} usr/lib/engines var/run/named &amp;&amp;
 mknod /srv/named/dev/null c 1 3 &amp;&amp;
-mknod /srv/named/dev/random c 1 8 &amp;&amp;
-chmod 666 /srv/named/dev/{null,random} &amp;&amp;
-cp /etc/localtime etc &amp;&amp;
+mknod /srv/named/dev/urandom c 1 8 &amp;&amp;
+chmod -v 666 /srv/named/dev/{null,urandom} &amp;&amp;
+cp -Lv /etc/localtime etc &amp;&amp;
 touch /srv/named/managed-keys.bind &amp;&amp;
-cp /usr/lib/engines/libgost.so usr/lib/engines &amp;&amp;
-[ $(uname -m) = x86_64 ] &amp;&amp; ln -sv lib usr/lib64</userinput></screen>
+cp -v /usr/lib/engines/libgost.so usr/lib/engines &amp;&amp;
+[ $(uname -m) = x86_64 ] &amp;&amp; ln -sfv lib usr/lib64</userinput></screen>
 
       <para>The <filename>rndc.conf</filename> file contains information for
       controlling <command>named</command> operations with the
