@@ -36,7 +36,7 @@
       almost every aspect of how you interact with your desktop.
     </para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,12 +90,6 @@
 
   <sect2 role="installation">
     <title>Installation of Openbox</title>
-
-    <note><para>If XORG_PREFIX is not <filename class='directory'>/usr</filename>,
-    tell <command>gcc</command> about it:</para>
-
-    <screen><userinput>export LIBRARY_PATH=$XORG_PREFIX/lib</userinput></screen>
-    </note>
 
     <para>
       Install <application>Openbox</application> by running the following
@@ -231,7 +225,7 @@ make</userinput></screen>
         <application>Xorg</application>:
       </para>
 
-<screen role="user"><userinput>echo openbox &gt; ~/.xinitrc</userinput></screen>
+<screen role="user"><userinput>echo "exec openbox-session" &gt; ~/.xinitrc</userinput></screen>
 
       <para>
         If you want to set a background image to your desktop you can use
@@ -241,7 +235,7 @@ make</userinput></screen>
 
 <screen role="user"><userinput>cat &gt; ~/.xinitrc &lt;&lt; "EOF"
 <literal>display -backdrop -window root /path/to/beautiful/picture.jpeg
-exec openbox</literal>
+exec openbox-session</literal>
 EOF</userinput></screen>
 
       <para>
@@ -257,7 +251,7 @@ picture_list=(~/.config/backgrounds/*)
 random_number=$(( ${RANDOM} % ${#picture_list[@]} ))
 # display the chosen picture:
 display -backdrop -window root "${picture_list[${random_number}]}"
-exec openbox</literal>
+exec openbox-session</literal>
 EOF</userinput></screen>
 
       <para>
@@ -276,7 +270,7 @@ display -backdrop -window root "${picture_list[${random_number}]}"
 numlockx
 eval $(dbus-launch --auto-syntax --exit-with-session)
 lxpanel &amp;
-exec openbox</literal>
+exec openbox-session</literal>
 EOF</userinput></screen>
     </sect3>
   </sect2>
