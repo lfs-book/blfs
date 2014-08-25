@@ -4,8 +4,6 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-<!--  <!ENTITY firefox-download-http
-           "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">-->
   <!ENTITY firefox-download-http
            "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">
   <!ENTITY firefox-download-ftp
@@ -81,8 +79,8 @@
     <para role="required">
       <xref linkend="alsa-lib"/>,
       <xref linkend="gtk2"/>,
-      <xref linkend="zip"/>, and
-      <xref linkend="unzip"/>
+      <xref linkend="unzip"/> and
+      <xref linkend="zip"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -109,7 +107,7 @@
     <note>
       <para>
         With <application>Firefox-31.0</application> and later versions, you
-        must have installed <application>Openssl</application> before
+        must have installed <application>OpenSSL</application> before
         <application>Python 2</application>, or the build system will quickly
         fail with output including "ImportError: cannot import name
         HTTPSHandler". If you are in any doubt about this (e.g. upgrading
@@ -134,14 +132,14 @@
       <xref linkend="gst10-plugins-base"/> (with
       <xref linkend="gst10-plugins-good"/> and
       <xref linkend="gst10-libav"/> at runtime),
-      <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>,
       <xref linkend="libnotify"/>,
       <xref linkend="openjdk"/>,
       <xref linkend="pulseaudio"/>,
       <xref linkend="startup-notification"/>,
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/> and
-      <xref linkend="xulrunner"/>
+      <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>
+      <!-- <xref linkend="xulrunner"/> -->
     </para>
 
     <para condition="html" role="usernotes">
@@ -152,7 +150,7 @@
   <sect2 role="installation">
     <title>Installation of Firefox</title>
 
-    <para>
+    <!-- <para>
       There are two major methods for building
       <application>Firefox</application>. In the standard case, the entire suite
       of libraries is built and installed. In the other, most of the system is
@@ -162,7 +160,7 @@
       the main build procedure below with the appropriate options in the
       <filename>mozconfig</filename> file. Then use the appropriate install
       instructions depending on the chosen build method.
-    </para>
+    </para> -->
 
     <para>
       The configuration of <application>Firefox</application> is accomplished by
@@ -208,13 +206,13 @@ ac_add_options --disable-pulseaudio
 
 # If you have not installed Yasm then uncomment this line:
 #ac_add_options --disable-webm
-
+<!--
 # If you have installed xulrunner uncomment the next two ac_add_options lines
 # and check that the sdk will be set by running pkg-config in a subshell
 # and has not become hardcoded or empty when you created this file
-#ac_add_options --with-system-libxul
-#ac_add_options --with-libxul-sdk=$(pkg-config --variable=sdkdir libxul)
-
+#ac_add_options -\-with-system-libxul
+#ac_add_options -\-with-libxul-sdk=$(pkg-config -\-variable=sdkdir libxul)
+-->
 # Comment out following options if you have not installed
 # recommended dependencies:
 ac_add_options --enable-system-sqlite
@@ -266,11 +264,16 @@ EOF</userinput></screen>
       This package does not come with a test suite.
     </para>
 
-    <para>
+    <!-- <para>
       Now, as the <systemitem class="username">root</systemitem> user, if you
       have <emphasis>not</emphasis> linked <application>Firefox</application>
       against an installed <application>Xulrunner</application>, install the
       package:
+    </para> -->
+
+    <para>
+      Install <application>Firefox</application> by running the following
+      commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>make -f client.mk install INSTALL_SDK= &amp;&amp;
@@ -279,6 +282,16 @@ mkdir -pv /usr/lib/mozilla/plugins &amp;&amp;
 ln -sfv ../mozilla/plugins /usr/lib/firefox-&firefox-version;</userinput></screen>
 
     <para>
+      The above instruction just installs the parts you need to run
+      <application>Firefox</application>. Alternatively, if you want to
+      install the full <application>Firefox</application> development
+      environment, run the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make -C firefox-build-dir install</userinput></screen>
+
+    <!-- <para>
       If you <emphasis>have</emphasis> linked against an already installed
       <application>Xulrunner</application>, as the
       <systemitem class="username">root</systemitem> user:
@@ -289,7 +302,7 @@ ln -sfv ../lib/firefox-&firefox-version;/firefox /usr/bin &amp;&amp;
 ln -sfv ../xulrunner-&firefox-version; /usr/lib/firefox-&firefox-version;/xulrunner &amp;&amp;
 
 mkdir -pv /usr/lib/mozilla/plugins &amp;&amp;
-ln -sfv ../mozilla/plugins /usr/lib/firefox-&firefox-version;</userinput></screen>
+ln -sfv ../mozilla/plugins /usr/lib/firefox-&firefox-version;</userinput></screen> -->
 
   </sect2>
 
@@ -304,22 +317,11 @@ ln -sfv ../mozilla/plugins /usr/lib/firefox-&firefox-version;</userinput></scree
       get initial configuration and setup parameters.
     </para>
 
-     <para>
-      <command>make -C firefox-build-dir install</command>: This runs
-      <command>make install</command> in firefox-build-dir.
-    </para>
-
-    <para>
+    <!-- <para>
       <command>ln -sfv ... /usr/bin/firefox</command>: This puts a symbolic link
       to the <command>firefox</command> executable in your <envar>PATH</envar>
       variable.
-    </para>
-
-    <para>
-      <command>mkdir -p /usr/lib/mozilla/plugins</command>: This checks
-      that <filename class="directory">/usr/lib/mozilla/plugins</filename>
-      exists.
-    </para>
+    </para> -->
 
     <para>
       <command>ln -sv ... /usr/lib/firefox-&firefox-version;</command>: This
