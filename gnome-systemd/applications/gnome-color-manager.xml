@@ -37,7 +37,7 @@
       it easy to manage, install and generate color profiles.
     </para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -108,7 +108,8 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-packagekit &amp;&amp;
+<screen><userinput>sed -i "/\tman/d" Makefile.in &amp;&amp;
+./configure --prefix=/usr --disable-packagekit &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -121,6 +122,12 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>sed -i "/\tman/d" Makefile.in</command>: This sed prevents
+      man pages from being built even if <xref linkend="docbook-utils"/>
+      package is present. Building man pages is currently broken.
+    </para>
 
     <para>
       <parameter>--disable-packagekit</parameter>: This switch disables
