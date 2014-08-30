@@ -9,14 +9,14 @@
   -->
 
   <!ENTITY lxdm-download-http "http://distfiles.alpinelinux.org/distfiles/lxdm-&lxdm-version;.tar.xz">
-  <!ENTITY lxdm-download-ftp  "ftp://">
-  <!ENTITY lxdm-md5sum        "MD5 sum: a51686720e606ca456d7f56ae4159d1f">
+  <!ENTITY lxdm-download-ftp  "">
+  <!ENTITY lxdm-md5sum        "a51686720e606ca456d7f56ae4159d1f">
   <!ENTITY lxdm-size          "232 KB">
   <!ENTITY lxdm-buildsize     "4.6 MB">
   <!ENTITY lxdm-time          "less than 0.1 SBU ">
 ]>
 
-<sect1 id="lxdm" xreflabel="lxdm-&lxdm-version;">
+<sect1 id="lxdm" xreflabel="LXDM-&lxdm-version;">
   <?dbhtml filename="lxdm.html"?>
 
   <sect1info>
@@ -27,16 +27,17 @@
   <title>lxdm-&lxdm-version;</title>
 
   <indexterm zone="lxdm">
-    <primary sortas="a-lxdm">lxdm</primary>
+    <primary sortas="a-LXDM">LXDM</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to lxdm</title>
+    <title>Introduction to LXDM</title>
 
     <para>
-      The <application>lxdm</application> is a
-      lightweight display manager for
-      <application>lxde</application>.
+      The <application>LXDM</application> is a
+      lightweight display manager for<application>LXDE</application>. It can also be used as an
+      alternative to <application>GNOME's</application><application>GDM</application> or
+      <application>KDE's</application><application>KDM</application>.
     </para>
 
     &lfs76_checked;
@@ -75,7 +76,7 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">lxdm Dependencies</bridgehead>
+    <bridgehead renderas="sect3">LXDM Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
@@ -99,23 +100,19 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of lxdm</title>
+    <title>Installation of LXDM</title>
 
     <para>
-      Install <application>lxdm</application> by running the following
+      Install <application>LXDM</application> by running the following
       commands:
     </para>
 
-    <para>
-      First, fix the pam configuration file to use <application>logind</application>
-    </para>
 <screen><userinput>sed -e "/pam_selinux.so/d" -i pam/lxdm &amp;&amp;
-awk '/system-auth/{c++;if(c==2){sub("system-auth","system-account");}}1'  pam/lxdm 2&gt;&amp;1 | tee pam/lxdm</userinput></screen>
-
-<screen><userinput>./configure --prefix=/usr \
-                               --sysconfdir=/etc \
-                               --with-pam \
-                               --disable-consolekit \
+awk '/system-auth/{c++;if(c==2){sub("system-auth","system-account");}}1'  pam/lxdm 2&gt;&amp;1 | tee pam/lxdm &amp;&amp;
+                               ./configure --prefix=/usr \
+                               --sysconfdir=/etc         \
+                               --with-pam                \
+                               --disable-consolekit      \
                                --with-systemdsystemunitdir=/lib/systemd/system &amp;&amp;
 make</userinput></screen>
 
@@ -161,11 +158,14 @@ make</userinput></screen>
 
   </sect2>
 
-   <sect2 id="lxdm-init">
+  <sect2 role="configuration">
+    <title>Configuring LXDM</title>
+
+   <sect3 id="lxdm-init">
       <title>Systemd Units</title>
 
       <para>
-        To start the <command>lxdm</command> daemon at boot, enable
+        To start the <command>LXDM</command> daemon at boot, enable
         the previously installed systemd unit by running the following command
         as the <systemitem class="username">root</systemitem> user:
       </para>
@@ -176,8 +176,9 @@ make</userinput></screen>
 
 <screen role="root"><userinput>systemctl enable lxdm</userinput></screen>
 
-    </sect2>
-
+    </sect3>
+  
+  </sect2>
   <!--Required section-->
   <sect2 role="content">
     <title>Contents</title>
@@ -189,7 +190,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          lxdm-config, lxdm and lxdm-binary
+          lxdm-config, lxdm and lxdm-binary.
         </seg>
         <seg>
           None.
