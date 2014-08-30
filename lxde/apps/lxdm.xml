@@ -24,7 +24,7 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>lxdm-&lxdm-version;</title>
+  <title>LXDM-&lxdm-version;</title>
 
   <indexterm zone="lxdm">
     <primary sortas="a-LXDM">LXDM</primary>
@@ -160,6 +160,56 @@ make</userinput></screen>
 
   <sect2 role="configuration">
     <title>Configuring LXDM</title>
+
+   <sect3 id="lxdm-config">
+      <title>Config Files</title>
+
+      <para>
+        <filename>/etc/lxdm/lxdm.conf</filename>
+      </para>
+
+      <indexterm zone="lxdm lxdm-config">
+        <primary sortas="e-etc-lxdm-lxdm.conf">/etc/lxdm/lxdm.conf</primary>
+      </indexterm>
+
+    </sect3>
+
+    <sect3>
+      <title>Configuration Information</title>
+
+      <para>
+        The LXDM daemon is configured using the
+        <filename>/etc/lxdm/lxdm.conf</filename> file.
+        Within this file you can set a default session by uncommenting
+        the line: session=/usr/bin/startlxde and replacing startlxde 
+        with your session of choice. For <application>GNOME</application>
+        session=/usr/bin/gnome-session.  For <application>OPENBOX</application>
+        session=/usr/bin/openbox-session and for <application>XFCE</application>
+        session=/usr/bin/startxfce4.
+      </para>
+
+      <para>
+        It is also possible to set the preferred session on a per-user basis by
+        editing the ~/.dmrc file for each user and adding:
+        <screen><literal>[Desktop]
+        Session=xfce</literal></screen>
+      </para>
+
+      <para>
+        To prevent the possibility of lxdm not cleanly logging out a users session
+        add the following to the <filename>/etc/lxdm/PostLogout</filename> as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/lxdm/PostLogout &lt;&lt; "EOF"
+# Terminate current user session
+/usr/bin/loginctl terminate-session $XDG_SESSION_ID
+
+# Restart lxdm
+/usr/bin/systemctl restart lxdm.service
+EOF</userinput></screen>
+
+    </sect3>
 
    <sect3 id="lxdm-init">
       <title>Systemd Units</title>
