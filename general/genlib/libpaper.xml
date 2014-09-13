@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY libpaper-download-http "http://ftp.debian.org/debian/pool/main/libp/libpaper/libpaper_&libpaper-version;.tar.gz">
+  <!ENTITY libpaper-download-ftp "ftp://ftp.debian.org/debian/pool/main/libp/libpaper/libpaper_&libpaper-version;.tar.gz">
+  <!ENTITY libpaper-md5sum        "2d7239e4e7cb295aff54814f0d97992d">
+  <!ENTITY libpaper-size          "361 KB">
+  <!ENTITY libpaper-buildsize     "2.6 MB">
+  <!ENTITY libpaper-time          "less than 0.1 SBU">
+]>
+
+<sect1 id="libpaper" xreflabel="libpaper-&libpaper-version;">
+  <?dbhtml filename="libpaper.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>libpaper-&libpaper-version;</title>
+
+  <indexterm zone="libpaper">
+    <primary sortas="a-libpaper">libpaper</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to libpaper</title>
+
+    <para>
+      This package is intended to provide a simple way for applications to take
+      actions based on a system or user-specified paper size.
+    </para>
+
+    &lfs76_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&libpaper-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&libpaper-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &libpaper-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &libpaper-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &libpaper-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &libpaper-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/libpaper"/>
+    </para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of libpaper</title>
+
+    <para>
+      Install <application>libpaper</application> by running the following commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --disable-static &amp;&amp;
+make
+</userinput></screen>
+
+    <para>This package does not come with a test suite.</para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install &amp;&amp;
+mkdir -v /etc/libpaper.d &amp;&amp;
+cat &gt; /usr/bin/run-parts &lt;&lt; "EOF"
+#!/bin/sh
+# run-parts:  Runs all the scripts found in a directory.
+# from Slackware, by Patrick J. Volkerding with ideas borrowed
+# from the Red Hat and Debian versions of this utility.
+
+# keep going when something fails
+set +e
+
+if [ $# -lt 1 ]; then
+  echo "Usage: run-parts &lt;directory&gt;"
+  exit 1
+fi
+
+if [ ! -d $1 ]; then
+  echo "Not a directory: $1"
+  echo "Usage: run-parts &lt;directory&gt;"
+  exit 1
+fi
+
+# There are several types of files that we would like to
+# ignore automatically, as they are likely to be backups
+# of other scripts:
+IGNORE_SUFFIXES="~ ^ , .bak .new .rpmsave .rpmorig .rpmnew .swp"
+
+# Main loop:
+for SCRIPT in $1/* ; do
+  # If this is not a regular file, skip it:
+  if [ ! -f $SCRIPT ]; then
+    continue
+  fi
+  # Determine if this file should be skipped by suffix:
+  SKIP=false
+  for SUFFIX in $IGNORE_SUFFIXES ; do
+    if [ ! "$(basename $SCRIPT $SUFFIX)" = "$(basename $SCRIPT)" ]; then
+      SKIP=true
+      break
+    fi
+  done
+  if [ "$SKIP" = "true" ]; then
+    continue
+  fi
+  # If we've made it this far, then run the script if it's executable:
+  if [ -x $SCRIPT ]; then
+    $SCRIPT || echo "$SCRIPT failed."
+  fi
+done
+
+exit 0
+EOF
+chmod -v 755 /usr/bin/run-parts</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
+
+    <para><command>mkdir -v /etc/libpaper.d</command>:
+    <application>libpaper</application> expects that packages will install files
+    into this directory.</para>
+
+    <para><command>cat &gt; /usr/bin/run-parts &lt;&lt; "EOF"</command> :
+    <filename>paperconfig</filename> is a script which will invoke
+    <command>run-parts</command> if
+    <filename class="directory">/etc/libpaper.d</filename> exists. No other BLFS
+    package installs this, so we create it here.</para>
+
+  </sect2>
+
+  <sect2 role="configuration">
+    <title>Configuring libpaper</title>
+
+    <sect3>
+      <title>Configuration Information</title>
+
+      <para>Create <filename>/etc/papersize</filename> to set the default
+      system paper size.  Issue the following command as the
+      <systemitem class="username">root</systemitem> user to set this to
+      &apos;A4&apos; (libpaper prefers the lowercase form). You may wish
+      to use a different size, such as letter.</para>
+
+<screen role="root"><userinput>cat &gt; /etc/papersize &lt;&lt; "EOF"
+a4
+EOF</userinput></screen>
+
+    </sect3>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          paperconf, paperconfig, run-parts
+        </seg>
+        <seg>
+          libpaper.so
+        </seg>
+        <seg>
+          /etc/libpaper.d
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="paperconf">
+        <term><command>paperconf</command></term>
+        <listitem>
+          <para>print paper configuration information.</para>
+          <indexterm zone="libpaper paperconf">
+            <primary sortas="b-paperconf">paperconf</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="paperconfig">
+        <term><command>paperconfig</command></term>
+        <listitem>
+          <para>configure the system default paper size.</para>
+          <indexterm zone="libpaper paperconfig">
+            <primary sortas="b-paperconfig">paperconfig</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="run-parts">
+        <term><command>run-parts</command></term>
+        <listitem>
+          <para>run all the scripts found in a directory.</para>
+          <indexterm zone="libpaper run-parts">
+            <primary sortas="b-run-parts">run-parts</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libpaper-lib">
+        <term><filename class="libraryfile">libpaper.so</filename></term>
+        <listitem>
+          <para>
+            contains functions for interrogating the paper library.
+          </para>
+          <indexterm zone="libpaper libpaper-lib">
+            <primary sortas="c-libpaper">libpaper.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

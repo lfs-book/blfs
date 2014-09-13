@@ -67,12 +67,15 @@
       <xref linkend="tl-installer"/> or a previous version of TeX Live
       (untested, you would need to alter the configure switches which refer
       to &texlive-year; so that it overwrites your existing installation, or
-      else copy everything to the location for the current year).
+      else copy everything to the location for the current year), and
+      <xref linkend="clisp"/> (to build <command>xindy</command> which is an
+      index processor for multi-lingual index creation)
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gs"/> (for dvisvgm, which is used by asy),
+      <xref linkend="gs"/> (for dvisvgm - used by asymptote which provides a
+      mathematical coordinate-based framework for technical drawing),
       <xref linkend="x-window-system"/>
     </para>
     <para>
@@ -86,25 +89,12 @@
       <xref linkend="graphite2"/>,
       <xref linkend="harfbuzz"/> (linked to graphite2),
       <xref linkend="icu"/>,
+      <xref linkend="libpaper"/>,
       <xref linkend="libpng"/>,
       <xref linkend="poppler"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional">
-      <ulink url="http://www.fftw.org/">FFTW</ulink> can be used by asy.
-    </para>
-    <para>
-      The version of
-      <ulink
-      url="http://packages.debian.org/source/sid/libpaper">libpaper</ulink>
-      shipped with the source will be used unless you have installed a system
-      version and told it to use that.
-    </para>
-    <para role="optional">
-      <ulink url="http://www.gnu.org/software/clisp/">clisp</ulink> is a build-time
-      dependency for xindy, see <filename>utils/xindy/README-clisp</filename>.
-    </para>
     <para>
       The source ships with its own versions of several libraries which are either
       not under active development, or only used for limited functionality.  If
@@ -148,12 +138,7 @@
     the actions of the installer, and the <filename>ls-R</filename> files listing
     what was originally installed.</para>
 
-    <para>At the moment, these instructions do not rebuild
-    <application>biber</application> or <application>xindy</application> which were
-    installed by the binary installer.  See the "Special considerations for ..."
-    paragraphs of
-    <ulink url="http://tug.org/texlive/build.html">Building TeX Live</ulink>.
-    Asy and the rest of asymptote is by default not rebuilt, so we have to
+    <para>Asy and the rest of asymptote is by default not rebuilt, so we have to
     separately run <command>configure</command> and <command>make</command> in its
     directory.
     </para>
@@ -183,7 +168,11 @@ cd texlive-build    &amp;&amp;
     --with-system-poppler                           \
     --with-system-xpdf                              \
     --with-system-zlib                              \
-    --with-banner-add=" - BLFS"</userinput></screen>
+    --with-banner-add=" - BLFS"                     \
+    --enable-xindy                                  \
+    --enable-xindy-rules                            \
+    --enable-xindy-doc                              \
+    --with-clisp-runtime=system</userinput></screen>
 
     <para>Asymptote has to be separately configured.  It ships with its own copy
     of the gc source tarball, and will only use the system version if that local
@@ -191,10 +180,10 @@ cd texlive-build    &amp;&amp;
     </para>
 
 <screen><userinput>pushd ../utils/asymptote &amp;&amp;
-    rm -v gc-7.4.0.tar.gz &amp;&amp;
+rm -v gc-7.4.0.tar.gz &amp;&amp;
 
-    echo "ac_cv_lib_m_sqrt=yes"     >config.cache &amp;&amp;
-    echo "ac_cv_lib_z_deflate=yes" >>config.cache &amp;&amp;
+echo "ac_cv_lib_m_sqrt=yes"     >config.cache &amp;&amp;
+echo "ac_cv_lib_z_deflate=yes" >>config.cache &amp;&amp;
 
 ./configure LIBS="-ltirpc "                         \
     --prefix=/opt/texlive/&texlive-year;/                     \
@@ -217,6 +206,9 @@ make -C ../utils/asymptote</userinput></screen>
 
 <screen><userinput role="root">make install &amp;&amp;
 make -C ../utils/asymptote install</userinput></screen>
+
+    <para>One part of the package remains to be rebuilt:
+    <xref linkend="biber"/>.</para>
 
   </sect2>
 

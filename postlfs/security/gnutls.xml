@@ -6,10 +6,10 @@
 
   <!ENTITY gnutls-download-http " ">
   <!ENTITY gnutls-download-ftp  "ftp://ftp.gnutls.org/gcrypt/gnutls/v3.3/gnutls-&gnutls-version;.tar.xz">
-  <!ENTITY gnutls-md5sum        "84264c7d3f5fad14b7990a4e71aa340e">
+  <!ENTITY gnutls-md5sum        "a7a73cfa883cd106d70b15300552a5b5">
   <!ENTITY gnutls-size          "5.8 MB">
   <!ENTITY gnutls-buildsize     "122 MB (additional 8 MB for the tests)">
-  <!ENTITY gnutls-time          "0.9 SBU (additional 1.9 SBU for the tests)">
+  <!ENTITY gnutls-time          "0.9 SBU (additional 1.8 SBU for the tests)">
 ]>
 
 <sect1 id="gnutls" xreflabel="GnuTLS-&gnutls-version;">
@@ -98,9 +98,8 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="cacerts"/>,
-      <xref linkend="libtasn1"/>, and
-      <xref linkend="p11-kit"/>
+      <xref linkend="cacerts"/> and
+      <xref linkend="libtasn1"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -108,6 +107,7 @@
       <xref linkend="gtk-doc"/>,
       <xref linkend="guile"/>,
       <xref linkend="libidn"/>,
+      <xref linkend="p11-kit"/>,
       <xref linkend="unbound"/> (to build the DANE library), 
       <xref linkend="valgrind"/> (used during the test suite),
       <ulink url="http://ftp.gnu.org/gnu/autogen/">Autogen</ulink>, and
@@ -127,6 +127,14 @@
 
   <sect2 role="installation">
     <title>Installation of GnuTLS</title>
+
+    <para><!-- Only for 3.3.7, remove for next versions -->
+      First fix a bug in one of the libraries:
+    </para>
+
+<screen><userinput>sed -i -e '201 i#ifdef ENABLE_PKCS11' \
+       -e '213 i#endif'               \
+       lib/gnutls_privkey.c</userinput></screen>
 
     <para>
       Install <application>GnuTLS</application> by running the
@@ -161,12 +169,6 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <option>--without-p11-kit</option>: This switch disables
-      PKCS#11 support. Use it if you have not installed 
-      <xref linkend="p11-kit"/>.
-    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
