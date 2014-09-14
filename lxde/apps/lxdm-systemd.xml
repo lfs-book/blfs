@@ -80,8 +80,9 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="iso-codes"/> and
       <xref linkend="gtk2"/>
+      <xref linkend="iso-codes"/> and
+      <xref linkend="librsvg"/> (runtime, for default theme background)
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -107,9 +108,7 @@
       commands:
     </para>
 
-<screen><userinput>sed -e "/pam_selinux.so/d" -i pam/lxdm &amp;&amp;
-awk '/system-auth/{c++;if(c==2){sub("system-auth","system-account");}}1' pam/lxdm 2&gt;&amp;1 | tee pam/lxdm &amp;&amp;
-                               ./configure --prefix=/usr \
+<screen><userinput>./configure --prefix=/usr             \
                                --sysconfdir=/etc         \
                                --with-pam                \
                                --disable-consolekit      \
@@ -124,7 +123,9 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+sed -e "/pam_selinux.so/d" -i pam/lxdm &amp;&amp;
+awk '/system-auth/{c++;if(c==2){sub("system-auth","system-account");}}1' pam/lxdm 2&gt;&amp;1 | tee /etc/pam.d/lxdm</userinput></screen>
   </sect2>
 
   <!--Optional section-->
