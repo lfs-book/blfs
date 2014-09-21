@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+<!-- for when .0 is not part of the new tarball name -->
+  <!ENTITY nss-url "ftp.mozilla.org/pub/mozilla.org/security/nss/releases">
+
+  <!ENTITY nss-download-http
+           "http://&nss-url;/NSS_3_&nss-minor-version;_RTM/src/nss-&nss-version;.tar.gz">
+  <!ENTITY nss-download-ftp
+           "ftp://&nss-url;/NSS_3_&nss-minor-version;_RTM/src/nss-&nss-version;.tar.gz">
+<!-- normal versions
+  <!ENTITY nss-download-http
+           "http://&nss-url;/NSS_3_&nss-minor-version;_&nss-micro-version;_RTM/src/nss-&nss-version;.tar.gz">
+-->
+  <!ENTITY nss-md5sum        "081dd99afa12af589c09e2d7cb5f5c6d">
+  <!ENTITY nss-size          "6.2 MB">
+  <!ENTITY nss-buildsize     "79 MB">
+  <!ENTITY nss-time          "0.7 SBU">
+]>
+
+<sect1 id="nss" xreflabel="NSS-&nss-version;">
+  <?dbhtml filename="nss.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>NSS-&nss-version;</title>
+
+  <indexterm zone="nss">
+    <primary sortas="a-NSS">NSS</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to NSS</title>
+
+    <para>
+      The Network Security Services (<application>NSS</application>) package is
+      a set of libraries designed to support cross-platform development of
+      security-enabled client and server applications. Applications built with
+      NSS can support SSL v2 and v3, TLS, PKCS #5, PKCS #7, PKCS #11, PKCS #12,
+      S/MIME, X.509 v3 certificates, and other security standards. This is
+      useful for implementing SSL and S/MIME or other Internet security
+      standards into an application.
+    </para>
+
+    &lfs76_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&nss-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&nss-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &nss-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &nss-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &nss-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &nss-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/nss-&nss-version;-standalone-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">NSS Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="nspr"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="sqlite"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/nss"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of NSS</title>
+
+    <note>
+      <para>
+        This package does not support parallel build.
+      </para>
+    </note>
+
+    <para>
+      Install <application>NSS</application> by running the following commands:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../nss-&nss-version;-standalone-1.patch &amp;&amp;
+
+cd nss &amp;&amp;
+make BUILD_OPT=1                      \
+  NSPR_INCLUDE_DIR=/usr/include/nspr  \
+  USE_SYSTEM_ZLIB=1                   \
+  ZLIB_LIBS=-lz                       \
+  $([ $(uname -m) = x86_64 ] &amp;&amp; echo USE_64=1) \
+  $([ -f /usr/include/sqlite3.h ] &amp;&amp; echo NSS_USE_SYSTEM_SQLITE=1) -j1</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>cd ../dist                                                       &amp;&amp;
+install -v -m755 Linux*/lib/*.so              /usr/lib           &amp;&amp;
+install -v -m644 Linux*/lib/{*.chk,libcrmf.a} /usr/lib           &amp;&amp;
+install -v -m755 -d                           /usr/include/nss   &amp;&amp;
+cp -v -RL {public,private}/nss/*              /usr/include/nss   &amp;&amp;
+chmod -v 644                                  /usr/include/nss/* &amp;&amp;
+install -v -m755 Linux*/bin/{certutil,nss-config,pk12util} /usr/bin &amp;&amp;
+install -v -m644 Linux*/lib/pkgconfig/nss.pc  /usr/lib/pkgconfig</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>BUILD_OPT=1</parameter>: This option is passed to
+      <command>make</command> so that the build is performed with no debugging
+      symbols built into the binaries and the default compiler optimizations are
+      used.
+    </para>
+
+    <para>
+      <parameter>NSPR_INCLUDE_DIR=/usr/include/nspr</parameter>: This option
+      sets the location of the nspr headers.
+    </para>
+
+    <para>
+      <parameter>USE_SYSTEM_ZLIB=1</parameter>: This option is passed to
+      <command>make</command> to ensure that the
+      <filename class="libraryfile">libssl3.so</filename> library is linked to
+      the system installed <application>zlib</application> instead of the
+      in-tree version.
+    </para>
+
+    <para>
+      <parameter>ZLIB_LIBS=-lz</parameter>: This option provides the
+      linker flags needed to link to the system <application>zlib</application>.
+    </para>
+
+    <para>
+      <command>$([ $(uname -m) = x86_64 ] &amp;&amp; echo USE_64=1)</command>:
+      The <parameter>USE_64=1</parameter> option is <emphasis>required on
+      x86_64</emphasis>, otherwise <command>make</command> will try (and fail)
+      to create 32-bit objects. The [ $(uname -m) = x86_64 ] test ensures it
+      has no effect on a 32 bit system.
+    </para>
+
+    <para>
+      <command>([ -f /usr/include/sqlite3.h ] &amp;&amp; echo
+      NSS_USE_SYSTEM_SQLITE=1)</command>: This tests if
+      <application>sqlite</application> is installed and if so it
+      <command>echo</command>s the option NSS_USE_SYSTEM_SQLITE=1 to
+      <command>make</command> so that
+      <filename class="libraryfile">libsoftokn3.so</filename> will link against
+      the system version of sqlite.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          certutil, nss-config, and pk12util
+        </seg>
+        <seg>
+          libcrmf.a, libfreebl3.so, libnss3.so, libnssckbi.so,
+          libnssdbm3.so, libnsssysinit.so, libnssutil3.so,
+          libsmime3.so, libsoftokn3.so, and libssl3.so
+        </seg>
+        <seg>
+          /usr/include/nss
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="certutil">
+        <term><command>certutil</command></term>
+        <listitem>
+          <para>
+            is the Mozilla Certificate Database Tool. It is a command-line
+            utility that can create and modify the Netscape Communicator
+            cert8.db and key3.db database files. It can also list, generate,
+            modify, or delete certificates within the cert8.db file and create
+            or change the password, generate new public and private key pairs,
+            display the contents of the key database, or delete key pairs within
+            the key3.db file.
+          </para>
+          <indexterm zone="nss certutil">
+            <primary sortas="b-certutil">certutil</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="nss-config">
+        <term><command>nss-config</command></term>
+        <listitem>
+          <para>
+            is used to determine the NSS library settings of the installed NSS
+            libraries.
+          </para>
+          <indexterm zone="nss nss-config">
+            <primary sortas="b-nss-config">nss-config</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pk12util">
+        <term><command>pk12util</command></term>
+        <listitem>
+          <para>
+            is a tool for importing certificates and keys from pkcs #12 files
+            into NSS or exporting them. It can also list certificates and keys
+            in such files.
+          </para>
+          <indexterm zone="nss pk12util">
+            <primary sortas="b-pk12util">pk12util</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
