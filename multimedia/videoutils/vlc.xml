@@ -211,7 +211,10 @@
       Install <application>VLC</application> by running the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
+<screen><userinput>sed -i 's:libsmbclient.h:samba-4.0/&amp;:' modules/access/smb.c &amp;&amp;
+./bootstrap                                                 &amp;&amp;
+sed "s:&lt; 56:&lt; 57:g" -i configure                            &amp;&amp;
+./configure --prefix=/usr                                   &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -231,6 +234,11 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>sed ... configure</command>: This sed fixes compilation with
+      <application>ffmpeg</application> 2.4.
+    </para>
 
     <para>
       <option>--disable-lua</option>: Use this switch if you don't have
