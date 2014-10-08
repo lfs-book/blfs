@@ -174,10 +174,7 @@
       <para>
         Most of these packages are recommended because if they're not installed,
         the build process will compile and install its own (often older)
-        version. If you have not installed some of the dependencies listed below,
-        make sure you examine the <command>./configure --help</command> output
-        for information on switches needed to prevent
-        <command>./configure</command> to look for them.
+        version.
       </para>
     </note>
 
@@ -187,6 +184,7 @@
       <xref linkend="cups"/>,
       <xref linkend="curl"/>,
       <xref linkend="dbus-glib"/>,
+      <xref linkend="libjpeg"/>,
       <xref linkend="glu"/>,
       <xref linkend="graphite2"/>,
       <xref linkend="gst-plugins-base"/> or
@@ -195,8 +193,6 @@
       <xref linkend="harfbuzz"/>,
       <xref linkend="icu"/>,
       <xref linkend="lcms2"/>,
-      <xref linkend="libatomic_ops"/>,
-      <xref linkend="libjpeg"/>,
       <xref linkend="librsvg"/>,
       <xref linkend="libxml2"/> and
       <xref linkend="libxslt"/>,
@@ -220,15 +216,16 @@
       <xref linkend="gdb"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="kdelibs"/>,
-      <xref linkend="mariadb"/>,
+      <xref linkend="libatomic_ops"/>,
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
       <xref linkend="mitkrb"/>,
       <xref linkend="openjdk"/>,
       <xref linkend="postgresql"/>,
       <xref linkend="sane"/>,
       <xref linkend="vlc"/>,
-      <xref linkend="zenity"/>,
       <ulink url="http://sourceforge.net/projects/cppunit/">Cppunit</ulink>,
-      <ulink url="http://www.firebirdsql.org/">Firebird</ulink>,
+      <ulink url="http://www.firebirdsql.org/">firebird</ulink>,
+      <ulink url="http://downloads.sourceforge.net/glew/">glew (OpenGL Extension Wrangler Library)</ulink>,
       <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>,
       <ulink url="http://sourceforge.net/projects/hunspell/files/Hyphen/">Hyphen</ulink>,
       <ulink url="http://www.freedesktop.org/wiki/Software/libabw/">libabw</ulink>,
@@ -241,6 +238,7 @@
       <ulink url="http://www.freedesktop.org/wiki/Software/libmspub/">libmspub</ulink>,
       <ulink url="http://sourceforge.net/projects/libmwaw/">libmwaw</ulink>,
       <ulink url="http://sourceforge.net/projects/libwpd/files/libodfgen/">libodfgen</ulink>,
+      <ulink url="http://sourceforge.net/projects/libwpd/files/librevenge/">librevenge (WordPerfect Document importer)</ulink>,
       <ulink url="http://www.freedesktop.org/wiki/Software/libvisio/">libvisio</ulink>,
       <ulink url="http://libwpd.sourceforge.net/">libwpd</ulink>,
       <ulink url="http://libwpg.sourceforge.net/">libwpg</ulink>,
@@ -248,8 +246,10 @@
       <ulink url="http://lpsolve.sourceforge.net/">lp_solve</ulink>,
       <ulink url="http://code.google.com/p/multidimalgorithm/">mdds</ulink>,
       <ulink url="http://sourceforge.net/projects/hunspell/files/MyThes/">MyThes</ulink>,
-      <ulink url="https://gitorious.org/orcus">Orcus</ulink>, and
-      <ulink url="http://hci.iwr.uni-heidelberg.de/vigra/">VIGRA</ulink>
+      <ulink url="http://sourceforge.net/projects/ogl-math/">ogl-math - OpenGL Mathematics (GLM)</ulink>,
+      <ulink url="https://gitorious.org/orcus/">Orcus</ulink>,
+      <ulink url="http://hci.iwr.uni-heidelberg.de/vigra/">VIGRA</ulink>, and
+      <ulink url="&gnome-download-http;/zenity/">Zenity</ulink>
     </para>
 
     <para>There are many optional dependencies not listed here. They can be
@@ -311,15 +311,14 @@ cd libreoffice-&libreoffice-dlversion;</userinput></screen>
 
     <para>
       Unpack the dictionaries file and create symlinks to tarballs from the
-      source directory so they won't get downloaded againi.  It is not necessary
+      source directory so they won't get downloaded again.  It is not necessary
       to unpack the help nor the translations tarballs:
     </para>
 
 <screen><userinput>install -dm755 external/tarballs &amp;&amp;
 
 tar -xf ../libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz \
-        --no-overwrite-dir --strip-components=1</userinput></screen>
-<!--    -\-no-overwrite-dir -\-strip-components=1    &amp;&amp; -->
+        --no-overwrite-dir --strip-components=1    &amp;&amp;
 <!-- Not necessary for this version
 tar -xf ../libreoffice-help-&libreoffice-dlversion;.tar.xz -\-no-overwrite-dir -\-strip-components=1 &amp;&amp;
 -->
@@ -328,6 +327,13 @@ ln -sv ../../../libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz external
 ln -sv ../../../libreoffice-help-&libreoffice-dlversion;.tar.xz         external/tarballs/</userinput></screen>
 
 <!-- Not necessary for this version
+    <para>
+      If you have downloaded the translations tarball, unpack it:
+    </para>
+
+<screen><userinput>tar -xf ../libreoffice-translations-&libreoffice-dlversion;.tar.xz -\-no-overwrite-dir -\-strip-components=1 &amp;&amp;
+ln -sv ../../libreoffice-translations-&libreoffice-dlversion;.tar.xz src/</userinput></screen>
+-->
     <para>
       If you have downloaded the translations tarball, create a symlink:
     </para>
@@ -344,9 +350,9 @@ ln -sv ../../../libreoffice-help-&libreoffice-dlversion;.tar.xz         external
     </note>
 
     <para>
-      In the rest of the page, locales "en-US" and "pt-BR" are examples. Change
-      them to suit your needs. You might want to read the "Command Explanations"
-      further below before proceeding.
+      In the rest of the page, locales "en-US" and "pt-BR" are examples; you
+      can change them to suit your needs - you might want to read the
+      "Command Explanations", further below, before proceeding.
     </para>
 
     <para>
@@ -381,13 +387,12 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
 
 chmod -v +x bin/unpack-sources                       &amp;&amp;
 
-chmod -v +x bin/unpack-sources                     &amp;&amp;
 sed -e "s/target\.mk/langlist\.mk/"                \
     -e "s/tar -xf/tar -x --strip-components=1 -f/" \
     -e "/tar -x/s/lo_src_dir/start_dir/"           \
     -i bin/unpack-sources                            &amp;&amp;
 
-./autogen.sh --prefix=/usr               \
+./autogen.sh --prefix=$LO_PREFIX         \
              --sysconfdir=/etc           \
              --with-vendor="BLFS"        \
              --with-lang="en-US pt-BR"   \
@@ -409,7 +414,6 @@ sed -e "s/target\.mk/langlist\.mk/"                \
              --with-system-icu           \
              --with-system-jpeg          \
              --with-system-lcms2         \
-             --with-system-libatomic_ops \
              --with-system-libpng        \
              --with-system-libxml        \
              --with-system-mesa-headers  \
@@ -430,12 +434,6 @@ sed -e "s/target\.mk/langlist\.mk/"                \
       <command>make build</command> with <command>make</command>.
     </para>
 
-    <note>
-      <para>
-        The package needs to be built from an X terminal emulator.
-      </para>
-    </note>
-
     <para>
       Build the package:
     </para>
@@ -446,21 +444,21 @@ sed -e "s/target\.mk/langlist\.mk/"                \
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make distro-pack-install             &amp;&amp;
-install -v -dm755 /usr/share/appdata &amp;&amp;
-install -v -m644  sysui/desktop/appstream-appdata/*.xml \
-                  /usr/share/appdata</userinput></screen>
+<screen role="root"><userinput>make distro-pack-install                                  &amp;&amp;
+install -v -m755 -d $LO_PREFIX/share/appdata              &amp;&amp;
+install -v -m644    sysui/desktop/appstream-appdata/*.xml \
+                    $LO_PREFIX/share/appdata</userinput></screen>
 
     <para>
        If the dictionaries have been built, again as
        <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>chown -cR 0:0 dictionaries/                                                  &amp;&amp;
-mkdir -pv /usr/lib/libreoffice/share/extensions/dict-en                      &amp;&amp;
-cp -rv    dictionaries/en/* /usr/lib/libreoffice/share/extensions/dict-en    &amp;&amp;
-mkdir -pv /usr/lib/libreoffice/share/extensions/dict-pt-BR                   &amp;&amp;
-cp -rv    dictionaries/pt_BR/* /usr/lib/libreoffice/share/extensions/dict-pt-BR</userinput></screen>
+<screen role="root"><userinput>chown -cR 0:0 dictionaries/                                                        &amp;&amp;
+mkdir -pv $LO_PREFIX/lib/libreoffice/share/extensions/dict-en                      &amp;&amp;
+cp -vR dictionaries/en/*    $LO_PREFIX/lib/libreoffice/share/extensions/dict-en    &amp;&amp;
+mkdir -pv $LO_PREFIX/lib/libreoffice/share/extensions/dict-pt-BR                   &amp;&amp;
+cp -vR dictionaries/pt_BR/* $LO_PREFIX/lib/libreoffice/share/extensions/dict-pt-BR</userinput></screen>
 
     <para>
        If installed in <filename class="directory">/opt/libreoffice-&libreoffice-dlversion;</filename>
@@ -498,11 +496,19 @@ unset i</userinput></screen>
       <parameter>--with-vendor=BLFS</parameter>: This switch sets BLFS as
       the vendor which is mentioned when you click "About" on the toolbar.
     </para>
+<!-- I believe en-US is not necessary anymore
+    <para>
+      <parameter>-\-with-lang="en-US pt-BR"</parameter>: This switch sets
+      what languages to support. en-US is always needed. To list several
+      languages, separate them with a space. For all languages, use
+      <parameter>-\-with-lang=ALL</parameter>
+    </para>
+-->
 
     <para>
       <parameter>--with-lang="en-US pt-BR"</parameter>: This switch sets
-      what languages to support. To list several languages, separate them
-      with a space. For all languages, use
+      what languages to support. To list several languages, separate them with
+      a space. For all languages, use
       <parameter>--with-lang=ALL</parameter>.
     </para>
 
@@ -514,8 +520,8 @@ unset i</userinput></screen>
     </para></note>
 
     <para>
-      <parameter>--with-help</parameter>: This switch is used to build
-      the help files.
+      <parameter>--with-help</parameter>: Without this switch, the help files
+      are not built.
     </para>
 
     <para>
@@ -554,9 +560,12 @@ unset i</userinput></screen>
     </para>
  
     <para>
-      <parameter>--enable-release-build</parameter>: This switch is used to
-      remove "Beta" or "Dev" from <application>LibreOffice</application>
-      splash screen and "About" menu.
+      <parameter>--enable-release-build=yes</parameter>: This switch enables a
+      Release Build.
+      <application>LibreOffice</application> can be built as a Release Build or
+      as a Developer Build, because their default installation paths and user
+      profile paths are different. Developer Build displays the words "Dev" and
+      "Beta" in several places (e.g, menu and splash screen).
     </para>
 
     <para>
@@ -580,8 +589,8 @@ unset i</userinput></screen>
     </para>
 
     <para>
-      <option>--disable-gstreamer-0-10</option>: Use this switch if you
-      haven't installed <xref linkend="gst-plugins-base"/>.
+      <option>--disable-cups</option>: Use this switch if you don't need
+      printing support.
     </para>
 
     <para>
@@ -614,18 +623,21 @@ unset i</userinput></screen>
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
-      <segtitle>Installed Directories</segtitle>
+      <segtitle>Installed Directory</segtitle>
 
       <seglistitem>
         <seg>
           libreoffice, lobase, localc, lodraw, loffice, lofromtemplate,
-          loimpress, lomath, loweb, lowriter, soffice and unopkg
+          loimpress, lomath, loweb, lowriter, soffice and unopkg;
+          several programs under
+          $LO_PREFIX/lib/libreoffice/program
         </seg>
         <seg>
-          None
+          several libraries under
+          $LO_PREFIX/lib/libreoffice/{ure/lib,program}
         </seg>
         <seg>
-          /usr/lib/libreoffice
+          $LO_PREFIX/lib/libreoffice
         </seg>
       </seglistitem>
     </segmentedlist>
