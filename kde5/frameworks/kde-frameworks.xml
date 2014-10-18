@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY kf5-size          "28 MB">
+  <!ENTITY kf5-buildsize     "MB">
+  <!ENTITY kf5-time          "SBU">
+]>
+
+<sect1 id="kf5" xreflabel="KDE Frameworks-&kf5-version;">
+  <?dbhtml filename="kf5.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>KDE Frameworks-&kf5-version;</title>
+
+  <indexterm zone="kf5">
+    <primary sortas="a-KDE-Frameworks">KDE-Frameworks</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to KDE Frameworks</title>
+
+    <para>
+      The <application>KDE Frameworks</application> is a collection of libraries based
+      on top of <application>Qt5</application> and QML derived from the monolithic
+      <application>KDE</application> 4 libraries so they can be used independently
+      of the <application>KDE</application> project.
+    </para>
+
+    &lfs76_checked;
+
+    <para>
+      The instructions below offer building all of the <application>KDE Frameworks</application>
+      packages in one go, using a <command>bash</command> script. This is useful if you need all
+      of the Frameworks packages to build, eg. the <application>KDE Plasma Desktop</application>.
+      If you need only a small amount of packages to build a certain <application>KDE
+      Frameworks</application> based application, we offer the instructions for building each
+      of the <application>KDE Frameworks</application> packages separately.
+    </para>
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&kf5-download-http;/"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&kf5-download-ftp;/"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &kf5-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &kf5-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &kf5-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">KDE Frameworks Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="boost"/>,
+      <xref linkend="DocBook"/>,
+      <xref linkend="docbook-xsl"/>,
+      <xref linkend="giflib"/>,
+      <xref linkend="libgcrypt"/>,
+      <xref linkend="libjpeg"/>,
+      <xref linkend="libpng"/>,
+      <xref linkend="libxslt"/>,
+      <xref linkend="phonon5"/>,
+      <xref linkend="shared-mime-info"/> and
+      <xref linkend="wget"/> (required to download the packages)
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="avahi"/> (DNS-SD backend for KDNSSD),
+      <xref linkend="aspell"/> (Dictionary backend for Sonnet),
+      <xref linkend="libdbusmenu-qt5"/> and
+      <xref linkend="polkit-qt5"/> (Authentication backend for KAuth)
+    </para>
+
+    <bridgehead renderas="sect4">Runtime dependencies for kapidox</bridgehead>
+    <para role="optional">
+      <xref linkend="doxygen"/>,
+      <xref linkend="Jinja2"/> and
+      <xref linkend="PyYAML"/>
+    </para>
+
+    <bridgehead renderas="sect4">Additional image formats support in KImageFormats</bridgehead>
+    <para role="optional">
+      <xref linkend="jasper"/> and
+      <ulink url="http://www.openexr.com/">OpenEXR</ulink>
+    </para>
+
+    <bridgehead renderas="sect4">Optional dependencies for KIO</bridgehead>
+    <para role="optional">
+      <xref linkend="mitkrb"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional dependencies for Solid</bridgehead>
+    <para role="optional">
+      <xref linkend="udisks2"/>,
+      <xref linkend="upower"/> and
+      <ulink url="http://www.freedesktop.org/software/media-player-info/">media-player-info</ulink> (runtime)
+    </para>
+
+    <bridgehead renderas="sect4">Optional dictionary backends for Sonnet</bridgehead>
+    <para role="optional">
+      <ulink url="http://hspell.ivrix.org.il/">Hspell</ulink> and
+      <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>
+    </para>
+
+    <para condition="html" role="usernotes">User Notes:
+      <ulink url="&blfs-wiki;/kde-frameworks"/>
+    </para>
+  </sect2>
+
+  <sect2>
+    <title>Downloading KDE Frameworks</title>
+
+    <para>
+      First, create a list of files to be downloaded. This file will also
+      be used to verify the integrity of the downloads when complete:
+    </para>
+
+<screen><userinput>cat &gt; frameworks-&kf5-version;.md5 &lt;&lt; "EOF"
+<literal>&attica5-md5sum;  attica-&kf5-version;.tar.xz
+&kapidox-md5sum;  kapidox-&kf5-version;.tar.xz
+&karchive-md5sum;  karchive-&kf5-version;.tar.xz
+&kcodecs-md5sum;  kcodecs-&kf5-version;.tar.xz
+&kconfig-md5sum;  kconfig-&kf5-version;.tar.xz
+&kcoreaddons-md5sum;  kcoreaddons-&kf5-version;.tar.xz
+&kdbusaddons-md5sum;  kdbusaddons-&kf5-version;.tar.xz
+&kdnssd-md5sum;  kdnssd-&kf5-version;.tar.xz
+&kglobalaccel-md5sum;  kglobalaccel-&kf5-version;.tar.xz
+&kguiaddons-md5sum;  kguiaddons-&kf5-version;.tar.xz
+&ki18n-md5sum;  ki18n-&kf5-version;.tar.xz
+&kidletime-md5sum;  kidletime-&kf5-version;.tar.xz
+&kimageformats-md5sum;  kimageformats-&kf5-version;.tar.xz
+&kitemmodels-md5sum;  kitemmodels-&kf5-version;.tar.xz
+&kitemviews-md5sum;  kitemviews-&kf5-version;.tar.xz
+&kplotting-md5sum;  kplotting-&kf5-version;.tar.xz
+&kwidgetsaddons-md5sum;  kwidgetsaddons-&kf5-version;.tar.xz
+&kwindowsystem-md5sum;  kwindowsystem-&kf5-version;.tar.xz
+&solid-md5sum;  solid-&kf5-version;.tar.xz
+&sonnet-md5sum;  sonnet-&kf5-version;.tar.xz
+&threadweaver-md5sum;  threadweaver-&kf5-version;.tar.xz
+&kauth-md5sum;  kauth-&kf5-version;.tar.xz
+&kcompletion-md5sum;  kcompletion-&kf5-version;.tar.xz
+&kcrash-md5sum;  kcrash-&kf5-version;.tar.xz
+&kdoctools-md5sum;  kdoctools-&kf5-version;.tar.xz
+&kpty-md5sum;  kpty-&kf5-version;.tar.xz
+&kunitconversion-md5sum;  kunitconversion-&kf5-version;.tar.xz
+&kconfigwidgets-md5sum;  kconfigwidgets-&kf5-version;.tar.xz
+&kservice-md5sum;  kservice-&kf5-version;.tar.xz
+&kdesu-md5sum;  kdesu-&kf5-version;.tar.xz
+&kemoticons-md5sum;  kemoticons-&kf5-version;.tar.xz
+&kiconthemes-md5sum;  kiconthemes-&kf5-version;.tar.xz
+&kjobwidgets-md5sum;  kjobwidgets-&kf5-version;.tar.xz
+&knotifications-md5sum;  knotifications-&kf5-version;.tar.xz
+&ktextwidgets-md5sum;  ktextwidgets-&kf5-version;.tar.xz
+&kwallet-md5sum;  kwallet-&kf5-version;.tar.xz
+&kxmlgui-md5sum;  kxmlgui-&kf5-version;.tar.xz
+&kbookmarks-md5sum;  kbookmarks-&kf5-version;.tar.xz
+&kcmutils-md5sum;  kcmutils-&kf5-version;.tar.xz
+&kio-md5sum;  kio-&kf5-version;.tar.xz
+&frameworkintegration-md5sum;  frameworkintegration-&kf5-version;.tar.xz
+&kdeclarative-md5sum;  kdeclarative-&kf5-version;.tar.xz
+&kinit5-md5sum;  kinit-&kf5-version;.tar.xz
+&knewstuff-md5sum;  knewstuff-&kf5-version;.tar.xz
+&knotifyconfig-md5sum;  knotifyconfig-&kf5-version;.tar.xz
+&kparts-md5sum;  kparts-&kf5-version;.tar.xz
+&kactivities5-md5sum;  kactivities-&kf5-version;.tar.xz
+&kded-md5sum;  kded-&kf5-version;.tar.xz
+&kdewebkit-md5sum;  kdewebkit-&kf5-version;.tar.xz
+&ktexteditor-md5sum;  ktexteditor-&kf5-version;.tar.xz
+&kdesignerplugin-md5sum;  kdesignerplugin-&kf5-version;.tar.xz
+&plasma-framework-md5sum;  plasma-framework-&kf5-version;.tar.xz
+&kjs5-md5sum;  portingAids/kjs-&kf5-version;.tar.xz
+&kdelibs4support-md5sum;  portingAids/kdelibs4support-&kf5-version;.tar.xz
+&khtml-md5sum;  portingAids/khtml-&kf5-version;.tar.xz
+&kjsembed-md5sum;  portingAids/kjsembed-&kf5-version;.tar.xz
+&kmediaplayer-md5sum;  portingAids/kmediaplayer-&kf5-version;.tar.xz
+&kross5-md5sum;  portingAids/kross-&kf5-version;.tar.xz
+&krunner-md5sum;  portingAids/krunner-&kf5-version;.tar.xz</literal>
+EOF</userinput></screen>
+
+    <para>
+      To download the needed files using <application>wget</application>,
+      use the following commands:
+    </para>
+
+<screen><userinput>mkdir frameworks &amp;&amp;
+cd frameworks &amp;&amp;
+grep -v '^#' ../frameworks-&kf5-version;.md5 | awk '{print $2}' | wget -i- -c \
+     -B &kf5-download-http;/ &amp;&amp;
+sed "s:portingAids/::g" ../frameworks-&kf5-version;.md5 | md5sum -c -</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of KDE Frameworks</title>
+
+    &as_root;
+
+    <para>
+      First, start a subshell that will exit on error:
+    </para>
+
+<screen><userinput>bash -e</userinput></screen>
+
+    <para>
+      Install all of the packages by running the following
+      commands:
+    </para>
+
+<screen><userinput>for package in $(grep -v '^#' ../frameworks-&kf5-version;.md5 | sed "s:portingAids/::g" | awk '{print $2}')
+do
+  packagedir=${package%.tar.xz}
+  tar -xf $package
+  case $packagedir in
+    kdelibs4support-[0-9]* )
+      sed -i "s:4.2:4.5:g" $packagedir/cmake/FindDocBookXML4.cmake
+    ;;
+  esac
+  install -dm755 $packagedir/build
+  pushd $packagedir/build
+  cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX      \
+        -DCMAKE_BUILD_TYPE=Release              \
+        -DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR   \
+        -DLIB_INSTALL_DIR=lib                   \
+        -DBUILD_TESTING=OFF                     \
+        -DQT_PLUGIN_INSTALL_DIR=&qt5-plugins-dir; \
+        -DQML_INSTALL_DIR=&qt5-qml-dir;           \
+        -DECM_MKSPECS_INSTALL_DIR=&qt5-mkspecs-dir; \
+        ..
+  make
+  as_root make install
+  popd
+  rm -rf $packagedir
+  as_root /sbin/ldconfig
+done</userinput></screen>
+
+    <para>
+      Finally, exit the shell that was started earlier:
+    </para>
+
+<screen><userinput>exit</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <command>sed -i "s:4.2:4.5:g" cmake/FindDocBookXML4.cmake</command>: This
+      sed fixes detection of <application>DocBook XML</application>.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-release.xml"/>
+
+    <para>
+      <parameter>-DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR</parameter>: This switch
+      is used to set correct XDG configuration directory.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-libdir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-tests.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-plugins-dir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-qml-dir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/qt5-mkspecs-dir.xml"/>
+
+  </sect2>
+<!--
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          
+        </seg>
+        <seg>
+          
+        </seg>
+        <seg>
+          
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="PROG">
+        <term><command>PROG</command></term>
+        <listitem>
+          <para>
+            
+          </para>
+          <indexterm zone="kf5 PROG">
+            <primary sortas="b-PROG">PROG</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="LIB">
+        <term><filename class="libraryfile">LIB.so</filename></term>
+        <listitem>
+          <para>
+            
+          </para>
+          <indexterm zone="kf5 LIB">
+            <primary sortas="c-LIB">LIB.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2> -->
+
+</sect1>
