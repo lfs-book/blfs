@@ -5,88 +5,95 @@
   %general-entities;
 ]>
 
-<sect1 id="oxygen-icons5" xreflabel="Oxygen-Icons-&oxygen-icons-version;">
-  <?dbhtml filename="oxygen-icons.html"?>
+<sect1 id="kwayland" xreflabel="KWayland-&plasma-version;">
+  <?dbhtml filename="kwayland.html"?>
 
   <sect1info>
     <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
-  <title>Oxygen-Icons-&oxygen-icons-version;</title>
+  <title>KWayland-&plasma-version;</title>
 
-  <indexterm zone="oxygen-icons5">
-    <primary sortas="a-Oxygen-Icons">Oxygen-Icons</primary>
+  <indexterm zone="kwayland">
+    <primary sortas="a-KWayland">KWayland</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to Oxygen-Icons</title>
+    <title>Introduction to KWayland</title>
 
     <para>
-      The <application>Oxygen-Icons</application> package contains the
-      standard icon theme for <application>KDE Plasma 5</application>.
+      The <application>KWayland</application> package contains a library
     </para>
 
-    &lfs75_checked;
+    &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Download (HTTP): <ulink url="&oxygen-icons5-download-http;"/>
+          Download (HTTP): <ulink url="&kwayland-download-http;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download (FTP): <ulink url="&oxygen-icons5-download-ftp;"/>
+          Download (FTP): <ulink url="&kwayland-download-ftp;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download MD5 sum: &oxygen-icons5-md5sum;
+          Download MD5 sum: &kwayland-md5sum;
         </para>
       </listitem>
       <listitem>
         <para>
-          Download size: &oxygen-icons5-size;
+          Download size: &kwayland-size;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated disk space required: &oxygen-icons5-buildsize;
+          Estimated disk space required: &kwayland-buildsize;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated build time: &oxygen-icons5-time;
+          Estimated build time: &kwayland-time;
         </para>
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Oxygen-Icons Dependencies</bridgehead>
+    <bridgehead renderas="sect3">KWayland Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="cmake"/>
+      <xref linkend="extra-cmake-modules"/>,
+      <xref linkend="mesalib"/> (built with Wayland support),
+      <xref linkend="qt5"/> and
+      <xref linkend="wayland"/>
     </para>
 
     <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/oxygen-icons5"/>
+      User Notes: <ulink url="&blfs-wiki;/kwayland"/>
     </para>
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of Oxygen-Icons</title>
+    <title>Installation of KWayland</title>
 
     <para>
-      Install <application>Oxygen-Icons</application> by running the following
+      Install <application>KWayland</application> by running the following
       commands:
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX ..</userinput></screen>
+cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX \
+      -DCMAKE_BUILD_TYPE=Release         \
+      -DLIB_INSTALL_DIR=lib              \
+      -DBUILD_TESTING=OFF                \
+      .. &amp;&amp;
+make</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -97,6 +104,20 @@ cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX ..</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-release.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-libdir.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-tests.xml"/>
 
   </sect2>
 
@@ -113,10 +134,11 @@ cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX ..</userinput></screen>
           None
         </seg>
         <seg>
-          None
+          libKF5WaylandClient.so
         </seg>
         <seg>
-          $KF5_PREFIX/share/icons/oxygen
+          $KF5_PREFIX/include/KF5/KWayland and
+          $KF5_PREFIX/lib/cmake/KF5Wayland
         </seg>
       </seglistitem>
     </segmentedlist>
