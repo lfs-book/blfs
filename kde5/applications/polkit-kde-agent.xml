@@ -5,26 +5,27 @@
   %general-entities;
 ]>
 
-<sect1 id="akonadi5" xreflabel="Akonadi-&akonadi5-version;">
-  <?dbhtml filename="akonadi.html"?>
+<sect1 id="polkit-kde-agent5" xreflabel="Polkit-KDE-Agent-&polkit-kde-agent5-version;">
+  <?dbhtml filename="polkit-kde-agent.html"?>
 
   <sect1info>
     <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
-  <title>Akonadi-&akonadi5-version;</title>
+  <title>Polkit-KDE-Agent-&polkit-kde-agent5-version;</title>
 
-  <indexterm zone="akonadi5">
-    <primary sortas="a-Akonadi">Akonadi</primary>
+  <indexterm zone="polkit-kde-agent5">
+    <primary sortas="a-Polkit-KDE-Agent">Polkit-KDE-Agent</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to Akonadi</title>
+    <title>Introduction to Polkit-KDE-Agent</title>
 
     <para>
-      The <application>Akonadi</application> package contains a storage service
-      for personal information management (PIM) data and metadata.
+      The <application>Polkit-KDE-Agent</application> package contains a
+      graphical <application>Polkit</application> authentication agent
+      for the <application>KDE Plasma</application> Desktop.
     </para>
 
     &lfs76_checked;
@@ -33,77 +34,66 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Download (HTTP): <ulink url="&akonadi5-download-http;"/>
+          Download (HTTP): <ulink url="&polkit-kde-agent5-download-http;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download (FTP): <ulink url="&akonadi5-download-ftp;"/>
+          Download (FTP): <ulink url="&polkit-kde-agent5-download-ftp;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download MD5 sum: &akonadi5-md5sum;
+          Download MD5 sum: &polkit-kde-agent5-md5sum;
         </para>
       </listitem>
       <listitem>
         <para>
-          Download size: &akonadi5-size;
+          Download size: &polkit-kde-agent5-size;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated disk space required: &akonadi5-buildsize;
+          Estimated disk space required: &polkit-kde-agent5-buildsize;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated build time: &akonadi5-time;
+          Estimated build time: &polkit-kde-agent5-time;
         </para>
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Akonadi Dependencies</bridgehead>
+    <bridgehead renderas="sect3">Polkit-KDE-Agent Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="extra-cmake-modules"/>,
-      <xref linkend="mariadb"/>,
-      <xref linkend="qt5"/> and
-      <xref linkend="shared-mime-info"/>
-    </para>
-
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="sqlite"/>
-    </para>
-
-    <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional">
-      <xref linkend="postgresql"/>
+      <xref linkend="kdelibs4support"/> and
+      <xref linkend="polkit-qt5"/>
     </para>
 
     <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/akonadi5"/>
+      User Notes: <ulink url="&blfs-wiki;/polkit-kde-agent5"/>
     </para>
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of Akonadi</title>
+    <title>Installation of Polkit-KDE-Agent</title>
 
     <para>
-      Install <application>Akonadi</application> by running the following
+      Install <application>Polkit-KDE-Agent</application> by running the following
       commands:
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX    \
-      -DCMAKE_BUILD_TYPE=Release            \
-      -DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR \
-      -DLIB_INSTALL_DIR=lib                 \
-      -DBUILD_TESTING=OFF                   \
+cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX      \
+      -DCMAKE_BUILD_TYPE=Release              \
+      -DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR   \
+      -DLIB_INSTALL_DIR=lib                   \
+      -DBUILD_TESTING=OFF                     \
+
       .. &amp;&amp;
 make</userinput></screen>
 
@@ -115,12 +105,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install                                             &amp;&amp;
-
-install -v -dm755 $KF5_PREFIX/lib/qt5/plugins/sqldrivers &amp;&amp;
-mv -v             $KF5_PREFIX/lib/plugins/sqldrivers/*   \
-                  $KF5_PREFIX/lib/qt5/plugins/sqldrivers &amp;&amp;
-rm -rfv           $KF5_PREFIX/lib/plugins</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -153,15 +138,13 @@ rm -rfv           $KF5_PREFIX/lib/plugins</userinput></screen>
 
       <seglistitem>
         <seg>
-          akonadi_agent_launcher, akonadi_agent_server, akonadi_control,
-          akonadictl, akonadi_rds, akonadiserver and asapcat
+          polkit-kde-authentication-agent-1
         </seg>
         <seg>
-          libKF5AkonadiPrivate.so
+          None
         </seg>
         <seg>
-          $KF5_PREFIX/include/KF5/akonadi and
-          $KF5_PREFIX/lib/cmake/KF5AkonadiServer
+          None
         </seg>
       </seglistitem>
     </segmentedlist>

@@ -5,26 +5,26 @@
   %general-entities;
 ]>
 
-<sect1 id="kdepim-runtime5" xreflabel="Kdepim-Runtime-&kdepim-runtime5-version;">
-  <?dbhtml filename="kdepim-runtime.html"?>
+<sect1 id="kmix5" xreflabel="KMix-&kmix5-version;">
+  <?dbhtml filename="kmix.html"?>
 
   <sect1info>
     <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
-  <title>Kdepim-Runtime-&kdepim-runtime5-version;</title>
+  <title>KMix-&kmix5-version;</title>
 
-  <indexterm zone="kdepim-runtime5">
-    <primary sortas="a-Kdepim-Runtime">Kdepim-Runtime</primary>
+  <indexterm zone="kmix5">
+    <primary sortas="a-KMix">KMix</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to Kdepim-Runtime</title>
+    <title>Introduction to KMix</title>
 
     <para>
-      The <application>Kdepim-Runtime</application> package contains additional
-      programs and libraries to extend the functionality of KDE PIM.
+      The <application>KMix</application> package contains a volume control
+      application for the <application>KDE Plasma</application> Desktop.
     </para>
 
     &lfs76_checked;
@@ -33,70 +33,59 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Download (HTTP): <ulink url="&kdepim-runtime5-download-http;"/>
+          Download (HTTP): <ulink url="&kmix5-download-http;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download (FTP): <ulink url="&kdepim-runtime5-download-ftp;"/>
+          Download (FTP): <ulink url="&kmix5-download-ftp;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download MD5 sum: &kdepim-runtime5-md5sum;
+          Download MD5 sum: &kmix5-md5sum;
         </para>
       </listitem>
       <listitem>
         <para>
-          Download size: &kdepim-runtime5-size;
+          Download size: &kmix5-size;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated disk space required: &kdepim-runtime5-buildsize;
+          Estimated disk space required: &kmix5-buildsize;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated build time: &kdepim-runtime5-time;
+          Estimated build time: &kmix5-time;
         </para>
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Kdepim-Runtime Dependencies</bridgehead>
+    <bridgehead renderas="sect3">KMix Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="kdepimlibs5"/>,
-      <xref linkend="knewstuff"/>,
-      <xref linkend="knotifyconfig"/> and
-      <xref linkend="kross5"/>
-    </para>
-
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="libkgapi"/>
+      <xref linkend="kdelibs4support"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="https://code.google.com/p/accounts-sso/">Accounts-SSO (Qt5 version)</ulink>,
-      <ulink url="http://download.kde.org/stable/libkfbapi/">libkfbapi</ulink>,
-      <ulink url="http://mirror.kolabsys.com/pub/releases/">libkolab (Qt5 version),
-      <ulink url="http://mirror.kolabsys.com/pub/releases/">libkolabxml</ulink> and
-      <ulink url="http://quickgit.kde.org/?p=prison.git">Prison (Qt5 version)</ulink>
+      <xref linkend="libcanberra"/> and
+      <xref linkend="pulseaudio"/>
     </para>
 
     <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/kdepim-runtime5"/>
+      User Notes: <ulink url="&blfs-wiki;/kmix5"/>
     </para>
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of Kdepim-Runtime</title>
+    <title>Installation of KMix</title>
 
     <para>
-      Install <application>Kdepim-Runtime</application> by running the following
+      Install <application>KMix</application> by running the following
       commands:
     </para>
 
@@ -107,6 +96,8 @@ cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX      \
       -DCMAKE_BUILD_TYPE=Release              \
       -DSYSCONF_INSTALL_DIR=$KF5_SYSCONFDIR   \
       -DLIB_INSTALL_DIR=lib                   \
+      -DBUILD_TESTING=OFF                     \
+      -DKMIX_KF5_BUILD=1                      \
       -DQT_PLUGIN_INSTALL_DIR=&qt5-plugins-dir; \
       .. &amp;&amp;
 make</userinput></screen>
@@ -138,6 +129,15 @@ make</userinput></screen>
       href="../../xincludes/kf5-libdir.xml"/>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/kf5-tests.xml"/>
+
+    <para>
+      <parameter>-DKMIX_KF5_BUILD=1</parameter>: This switch is used to ensure
+      that <application>KDE Frameworks</application> 5 based application is
+      built.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/qt5-plugins-dir.xml"/>
 
   </sect2>
@@ -152,24 +152,14 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          accountwizard, akonadi_birthdays_resource, akonadi_davgroupware_resource,
-          akonadi_icaldir_resource, akonadi_imap_resource, akonadi_invitations_agent,
-          akonadi_kdeaccounts_resource, akonadi_localbookmarks_resource,
-          akonadi_maildispatcher_agent, akonadi_mailtransport_dummy_resource,
-          akonadi_migration_agent, akonadi_mixedmaildir_resource,
-          akonadi_newmailnotifier_agent, akonadi_nntp_resource,
-          akonadi_openxchange_resource, akonadi_pop3_resource, akonadi_vcarddir_resource,
-          gidmigrator, ispdb, kaddressbookmigrator, kjotsmigrator and kmail-migrator
+          kmix, kmixctrl and kmixremote
         </seg>
         <seg>
-          libakonadi-filestore.so, libakonadi-singlefileresource.so,
-          libfolderarchivesettings.so, libkmindexreader.so and
-          libmaildir.so
+          libkdeinit5_kmixctrl.so and libkdeinit5_kmix.so
         </seg>
         <seg>
-          $KF5_PREFIX/lib/qt5/plugins/imports/org/kde/akonadi,
-          $KF5_PREFIX/share/akonadi/{accountwizard,firstrun,plugins} and
-          $KF5_PREFIX/share/kservices5/akonadi/davgroupware-providers
+          $KF5_PREFIX/share/kmix and
+          $KF5_PREFIX/share/kxmlgui/kmix
         </seg>
       </seglistitem>
     </segmentedlist>
