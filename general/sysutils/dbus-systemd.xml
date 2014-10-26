@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY dbus-download-http "http://dbus.freedesktop.org/releases/dbus/">
+]>
+
+<sect1 id="dbus" xreflabel="D-Bus">
+  <?dbhtml filename="dbus.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>D-Bus</title>
+
+  <indexterm zone="dbus">
+    <primary sortas="a-D-Bus">D-Bus</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to D-Bus</title>
+
+    <para>
+      Even though <application>D-Bus</application> was built in
+      LFS, there are some features provided by the package that
+      some BLFS packages need, but their dependencies didn't fit
+      into LFS.
+    </para>
+
+    <para>
+      Unlike other packages in BLFS, there is no set version of
+      <application>D-Bus</application> in this page's title and
+      no set version specified for download. Version updates to
+      <application>D-Bus</application> make it possible that the
+      user's system may have a <application>D-Bus</application>
+      version different from the one in the current LFS book.
+      Therefore, users should use the version of
+      <application>D-Bus</application> that is currently
+      installed on their system.
+    </para>
+
+    <para>
+      This package is known to build and work properly using an
+      LFS-7.6 systemd platform using dbus-1.8.6 source.
+    </para>
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&dbus-download-http;"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <note>
+      <para>
+        If you are unsure which version needs to be downloaded, issue
+        <command>dbus-daemon --version</command> in order to find out.
+        Some of the commands below might need the version information.
+        Issue the following command to store the
+        <application>D-Bus</application> version number into an
+        environment variable:
+      </para>
+
+<screen><userinput>export DBUS_VERSION=$(dbus-daemon --version | head -n1 | awk '{print $5}')</userinput></screen>
+    </note>
+
+    <bridgehead renderas="sect3">D-Bus Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="xorg7-lib"/> (for X11 autolaunch support)
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      For the tests:
+      <xref linkend="dbus-glib"/>,
+      <xref linkend="dbus-python"/>, and
+      <xref linkend="pygobject2"/>;
+      for the API documentation:
+      <xref linkend="doxygen"/>; 
+      for man pages and XML/HTML documentation:
+      <xref linkend="xmlto"/>
+    </para>
+
+    <para condition="html" role="usernotes">User Notes:
+      <ulink url="&blfs-wiki;/dbus"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of D-Bus</title>
+
+    <para>
+      Rebuild <application>D-Bus</application> by running the
+      following commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr                        \
+            --sysconfdir=/etc                    \
+            --localstatedir=/var                 \
+            --with-console-auth-dir=/run/console \
+            --docdir=/usr/share/doc/dbus-${DBUS_VERSION} &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      See below for test instructions.
+    </para>
+
+    <warning>
+      <para>
+        Installing the package will override all files installed by
+        <application>D-Bus</application> in LFS. It is critical that
+        nothing uses <application>D-Bus</application> libraries or
+        programs during the installation phrase. Best way to achieve
+        that is to do the installation in the rescue mode. To switch
+        to the rescue mode, issue the following command as the
+        <systemitem class="username">root</systemitem> user from a TTY:
+      </para>
+
+<screen role="root"><userinput>systemctl start rescue.target</userinput></screen>
+    </warning>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      The shared library needs to be moved to
+      <filename class="directory">/lib</filename>, and as a result the
+      <filename class="extension">.so</filename> file in
+      <filename class="directory">/usr/lib</filename> will need to be
+      recreated. Run the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen><userinput remap="install">mv -v /usr/lib/libdbus-1.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libdbus-1.so) /usr/lib/libdbus-1.so</userinput></screen>
+
+    <para>
+      The <application>D-Bus</application> tests cannot be run until after
+      <xref linkend="dbus-glib"/> has been installed.  They must be run as
+      an unprivileged user from a local session. If you want to run only
+      the unit tests, replace <parameter>--enable-tests</parameter> in the
+      command below by <parameter>--enable-embedded-tests</parameter>,
+      otherwise <xref linkend="dbus-python"/> has to be installed before
+      the tests are run. The tests require passing additional parameters to
+      <command>configure</command> and exposing additional functionality in
+      the binaries. These interfaces are not intended to be used in a
+      production build of <application>D-Bus</application>. If you would
+      like to run the tests, issue the following commands:
+    </para>
+
+<screen><userinput>make distclean                              &amp;&amp;
+./configure --enable-tests --enable-asserts &amp;&amp;
+make                                        &amp;&amp;
+make check                                  &amp;&amp;
+make distclean</userinput></screen>
+
+    <para>
+      If <command>run-test.sh</command> fails, it can be disabled with the
+      following sed, before running the commands for the tests:
+    </para>
+
+<screen><userinput>sed -i -e 's:run-test.sh:$(NULL):g' test/name-test/Makefile.in</userinput></screen>
+
+    <para>
+      Note there has been a report that the tests may fail if running
+      inside a Midnight Commander shell.
+      You may get out-of-memory error messages when running the tests.
+      These are normal and can be safely ignored.
+    </para>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>--enable-tests</parameter>: Build extra parts of the code to
+      support all tests. Configure will end with a NOTE warning about increased
+      size of libraries and decreased security.
+    </para>
+
+    <para>
+      <parameter>--enable-embedded-tests</parameter>: Build extra parts of the
+      code to support only unit tests. Configure will end with a NOTE warning
+      about increased size of libraries and decreased security.
+    </para>
+
+    <para>
+      <parameter>--enable-asserts</parameter>: Enable debugging code to run
+      assertions for statements normally assumed to be true. This prevents a
+      warning that '<parameter>--enable-tests</parameter>' on its own is only
+      useful for profiling and might not give true results for all tests, but
+      adds its own NOTE that this should not be used in a production build.
+    </para>
+
+  </sect2>
+
+  <sect2 role="configuration">
+    <title>Configuring D-Bus</title>
+
+    <sect3 id="dbus-config">
+      <title>Config Files</title>
+
+      <para>
+        <filename>/etc/dbus-1/session.conf</filename>,
+        <filename>/etc/dbus-1/system.conf</filename> and
+        <filename>/etc/dbus-1/system.d/*</filename>
+      </para>
+
+      <indexterm zone="dbus dbus-config">
+        <primary sortas="e-etc-dbus-1-session.conf">/etc/dbus-1/session.conf</primary>
+      </indexterm>
+
+      <indexterm zone="dbus dbus-config">
+        <primary sortas="e-etc-dbus-1/system.conf">/etc/dbus-1/system.conf</primary>
+      </indexterm>
+
+      <indexterm zone="dbus dbus-config">
+        <primary sortas="e-etc-dbus-1-system.d-star">/etc/dbus-1/system.d/*</primary>
+      </indexterm>
+
+    </sect3>
+
+    <sect3 id="dbus-session-config" xreflabel="D-Bus custom services directory">
+      <title>Configuration Information</title>
+
+      <para>
+        The configuration files listed above should probably not be
+        modified. If changes are required, you should create
+        <filename>/etc/dbus-1/session-local.conf</filename> and/or
+        <filename>/etc/dbus-1/system-local.conf</filename> and make any
+        desired changes to these files.
+     </para>
+
+      <para>
+        If any packages install a
+        <application>D-Bus</application> <filename>.service</filename>
+        file outside of the standard <filename
+        class="directory">/usr/share/dbus-1/services</filename> directory,
+        that directory should be added to the local session configuration.
+        For instance, <filename
+        class="directory">/usr/local/share/dbus-1/services</filename> can
+        be added by performing the following commands as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/dbus-1/session-local.conf &lt;&lt; "EOF"
+<literal>&lt;!DOCTYPE busconfig PUBLIC
+ "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd"&gt;
+&lt;busconfig&gt;
+
+  &lt;!-- Search for .service files in /usr/local --&gt;
+  &lt;servicedir&gt;/usr/local/share/dbus-1/services&lt;/servicedir&gt;
+
+&lt;/busconfig&gt;</literal>
+EOF</userinput></screen>
+
+    </sect3>
+
+    <sect3  id="dbus-session">
+      <title>D-Bus Session Daemon</title>
+
+      <para>
+        There are many methods you can use to start a session daemon
+        using the <command>dbus-launch</command> command. Review the
+        <command>dbus-launch</command> man page for details about the
+        available parameters and options. Here are some suggestions and
+        examples:
+      </para>
+
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            Add <command>dbus-launch</command> to the line in the
+            <filename>~/.xinitrc</filename> file that starts your graphical
+            desktop environment.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            If you use <command>xdm</command> or some other display manager
+            that calls the <filename>~/.xsession</filename> file, you can add
+            <command>dbus-launch</command> to the line in your
+            <filename>~/.xsession</filename> file that starts your graphical
+            desktop environment. The syntax would be similar to the example in
+            the <filename>~/.xinitrc</filename> file.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            The examples shown previously use
+            <command>dbus-launch</command> to specify a program to be run. This
+            has the benefit (when also using the
+            <parameter>--exit-with-session</parameter> parameter) of stopping the
+            session daemon when the specified program is stopped. You can also
+            start the session daemon in your system or personal startup scripts
+            by adding the following lines:
+          </para>
+
+<screen><userinput><literal># Start the D-Bus session daemon
+eval `dbus-launch`
+export DBUS_SESSION_BUS_ADDRESS</literal></userinput></screen>
+
+          <para>
+            This method will not stop the session daemon when you exit
+            your shell, therefore you should add the following line to your
+            <filename>~/.bash_logout</filename> file:
+          </para>
+
+<screen><userinput><literal># Kill the D-Bus session daemon
+kill $DBUS_SESSION_BUS_PID</literal></userinput></screen>
+        </listitem>
+
+        <listitem>
+          <para>
+            A hint has been written that provides ways to start scripts
+            using the KDM session manager of KDE. The concepts in this hint could
+            possibly be used with other session managers as well. The hint is
+            located at <ulink
+            url="&hints-root;/downloads/files/execute-session-scripts-using-kdm.txt"/>.
+          </para>
+        </listitem>
+
+      </itemizedlist>
+
+    </sect3>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+      <para>
+        A list of the installed files, along with their short
+        descriptions can be found at
+        <ulink url="&lfs-root;/chapter06/dbus.html#contents-dbus"/>.
+      </para>
+
+  </sect2>
+
+</sect1>
+

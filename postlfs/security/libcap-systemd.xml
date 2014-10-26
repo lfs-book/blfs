@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY libcap-download-http "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-&libcap-version;.tar.xz">
+  <!ENTITY libcap-download-ftp  "ftp://ftp.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-&libcap-version;.tar.xz">
+  <!ENTITY libcap-md5sum        "d43ab9f680435a7fff35b4ace8d45b80">
+  <!ENTITY libcap-size          "62 KB">
+  <!ENTITY libcap-buildsize     "1.5 MB">
+  <!ENTITY libcap-time          "0.1 SBU">
+]>
+
+<sect1 id="libcap-pam" xreflabel="libcap-&libcap-version; with PAM">
+  <?dbhtml filename="libcap.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>libcap-&libcap-version; with PAM</title>
+
+  <indexterm zone="libcap-pam">
+    <primary sortas="a-libcap-pam">libcap</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to libcap with PAM</title>
+
+    <para>The <application>libcap</application> package was installed in 
+    LFS, but if PAM support is desired, it needs to be reinstalled after 
+    PAM is built so the shipped PAM module can be installed.</para>
+
+    &lfs76_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>Download (HTTP): <ulink url="&libcap-download-http;"/></para>
+      </listitem>
+      <listitem>
+        <para>Download (FTP): <ulink url="&libcap-download-ftp;"/></para>
+      </listitem>
+      <listitem>
+        <para>Download MD5 sum: &libcap-md5sum;</para>
+      </listitem>
+      <listitem>
+        <para>Download size: &libcap-size;</para>
+      </listitem>
+      <listitem>
+        <para>Estimated disk space required: &libcap-buildsize;</para>
+      </listitem>
+      <listitem>
+        <para>Estimated build time: &libcap-time;</para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">libcap Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="linux-pam"/>
+    </para>
+
+    <para condition="html" role="usernotes">User Notes:
+    <ulink url="&blfs-wiki;/libcap"/></para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of libcap</title>
+
+    <para>Install <application>libcap</application> by running the following
+    commands:</para>
+
+<screen><userinput>make -C pam_cap</userinput></screen>
+
+    <para>This package does not come with a test suite.</para>
+
+    <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
+
+<screen role="root"><userinput>install -v -m755 pam_cap/pam_cap.so /lib/security/pam_cap.so &amp;&amp;
+install -v -m644 pam_cap/capability.conf /etc/security</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>None</seg>
+        <seg>pam_cap.so</seg>
+        <seg>None</seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>

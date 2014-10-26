@@ -29,70 +29,93 @@
   <sect2 role="package">
     <title>Introduction to GnuPG</title>
 
-    <para>The <application>GnuPG</application> package is GNU's tool for
-    secure communication and data storage. It can be used to encrypt data and
-    to create digital signatures. It includes an advanced key management
-    facility and is compliant with the proposed OpenPGP Internet standard as
-    described in RFC2440 and the S/MIME standard as described by several RFCs.
-    GnuPG 2 is the stable version of GnuPG integrating support for OpenPGP and
-    S/MIME.</para>
+    <para>
+      The <application>GnuPG</application> package is GNU's tool for secure
+      communication and data storage. It can be used to encrypt data and to
+      create digital signatures. It includes an advanced key management
+      facility and is compliant with the proposed OpenPGP Internet standard
+      as described in RFC2440 and the S/MIME standard as described by several
+      RFCs. GnuPG 2 is the stable version of GnuPG integrating support for
+      OpenPGP and S/MIME.
+    </para>
 
     &lfs76_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
-        <para>Download (HTTP): <ulink url="&gnupg2-download-http;"/></para>
+        <para>
+          Download (HTTP): <ulink url="&gnupg2-download-http;"/>
+        </para>
       </listitem>
       <listitem>
-        <para>Download (FTP): <ulink url="&gnupg2-download-ftp;"/></para>
+        <para>
+          Download (FTP): <ulink url="&gnupg2-download-ftp;"/>
+        </para>
       </listitem>
       <listitem>
-        <para>Download MD5 sum: &gnupg2-md5sum;</para>
+        <para>
+          Download MD5 sum: &gnupg2-md5sum;
+        </para>
       </listitem>
       <listitem>
-        <para>Download size: &gnupg2-size;</para>
+        <para>
+          Download size: &gnupg2-size;
+        </para>
       </listitem>
       <listitem>
-        <para>Estimated disk space required: &gnupg2-buildsize;</para>
+        <para>
+          Estimated disk space required: &gnupg2-buildsize;
+        </para>
       </listitem>
       <listitem>
-        <para>Estimated build time: &gnupg2-time;</para>
+        <para>
+          Estimated build time: &gnupg2-time;
+        </para>
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">GnuPG 2 Dependencies</bridgehead>
+    <bridgehead renderas="sect3">GnuPG Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required"><xref linkend="pth"/>,
-    <xref linkend="libassuan"/>,
-    <xref linkend="libgcrypt"/>, and
-    <xref linkend="libksba"/></para>
+    <para role="required">
+      <xref linkend="libassuan"/>,
+      <xref linkend="libgcrypt"/>,
+      <xref linkend="libksba"/> and
+      <xref linkend="pth"/>
+    </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended"><xref linkend="pinentry"/> (Run-time requirement for most of
-    the package's functionality)</para>
+    <para role="recommended">
+      <xref linkend="pinentry"/> (Run-time requirement for
+      most of the package's functionality)
+    </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional"><xref linkend="openldap"/>,
-    <xref linkend="libusb-compat"/>,
-    <xref linkend="curl"/>,
-    <ulink url="http://www.chiark.greenend.org.uk/~ian/adns/">GNU
-    adns</ulink>, and an
-    <xref linkend="server-mail"/></para>
+    <para role="optional">
+      <xref linkend="curl"/>,
+      <ulink url="http://www.chiark.greenend.org.uk/~ian/adns/">GNU
+      ADNS</ulink>,
+      <xref linkend="libusb-compat"/>,
+      an <xref linkend="server-mail"/> and
+      <xref linkend="openldap"/>
+    </para>
 
     <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/gnupg2"/></para>
-
+      <ulink url="&blfs-wiki;/gnupg2"/>
+    </para>
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of GnuPG</title>
 
-    <para>Install <application>GnuPG</application> by running the following
-    commands:</para>
+    <para>
+      Install <application>GnuPG</application> by running the following
+      commands:
+    </para>
 
-<screen><userinput>./configure --prefix=/usr \
+<screen><userinput>./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
             --enable-symcryptrun \
             --docdir=/usr/share/doc/gnupg-&gnupg2-version; &amp;&amp;
 make &amp;&amp;
@@ -100,41 +123,40 @@ make &amp;&amp;
 makeinfo --html --no-split -o doc/gnupg_nochunks.html doc/gnupg.texi &amp;&amp;
 makeinfo --plaintext       -o doc/gnupg.txt           doc/gnupg.texi</userinput></screen>
 
-    <para>If you have <xref linkend="texlive"/>
-    installed and you wish to create documentation in alternate formats,
-    issue the following commands:</para>
+    <para>
+      If you have <xref linkend="texlive"/> installed and you wish
+      to create documentation in alternate formats, issue the
+      following commands:
+    </para>
 
 <screen><userinput>make -C doc pdf ps html</userinput></screen>
 
-    <para>To test the results, issue: <command>make check</command>.</para>
+    <para>
+      To test the results, issue: <command>make check</command>.
+    </para>
 
-    <para>Note that if you have already installed
-    <application>GnuPG</application>, the instructions below will overwrite
-    <filename>/usr/share/man/man1/gpg-zip.1</filename>. Now, as the
-    <systemitem class="username">root</systemitem> user:</para>
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
+<screen role="root"><userinput>make install               &amp;&amp;
 
-install -v -m755 -d /usr/share/doc/gnupg-&gnupg2-version;/html       &amp;&amp;
-install -v -m644    doc/gnupg_nochunks.html \
-                    /usr/share/doc/gnupg-&gnupg2-version;/gnupg.html &amp;&amp;
-install -v -m644    doc/*.texi doc/gnupg.txt \
-                    /usr/share/doc/gnupg-&gnupg2-version;</userinput></screen>
+for f in gpg gpgv ; do
+ln -sfv ${f}2   /usr/bin/${f} &amp;&amp;
+ln -sfv ${f}2.1 /usr/share/man/man1/${f}.1
+done &amp;&amp;
 
-    <para>We recommend the creation of symlinks for compatibility with the first
-    version of GnuPG, because some programs or scripts need them. Issue, as
-    <systemitem class="username">root</systemitem> user:</para>
+install -v -dm755 /usr/share/doc/gnupg-&gnupg2-version;/html       &amp;&amp;
+install -v -m644  doc/gnupg_nochunks.html \
+                  /usr/share/doc/gnupg-&gnupg2-version;/gnupg.html &amp;&amp;
+install -v -m644  doc/*.texi doc/gnupg.txt \
+                  /usr/share/doc/gnupg-&gnupg2-version;</userinput></screen>
 
-<screen role="root"><userinput>for f in gpg gpgv
-do
-  ln -svf ${f}2.1 /usr/share/man/man1/$f.1 &amp;&amp;
-  ln -svf ${f}2   /usr/bin/$f
-done
-unset f</userinput></screen>
-
-    <para>If you created alternate formats of the documentation, install it
-    using the following command as the
-    <systemitem class="username">root</systemitem> user:</para>
+    <para>
+      If you created alternate formats of the documentation, install
+      it using the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
 
 <screen role="root"><userinput>install -v -m644 doc/gnupg.html/* \
                  /usr/share/doc/gnupg-&gnupg2-version;/html &amp;&amp;
@@ -146,12 +168,16 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para><parameter>--docdir=/usr/share/doc/gnupg-&gnupg2-version;</parameter>:
-    This switch changes the default docdir to <filename
-    class="directory">/usr/share/doc/gnupg-&gnupg2-version;</filename>.</para>
+    <para>
+      <parameter>--enable-symcryptrun</parameter>: This switch enables
+      building the symcryptrun program.
+    </para>
 
-    <para><parameter>--enable-symcryptrun</parameter>: This switch enables
-    building the symcryptrun program.</para>
+    <para>
+      <command>ln -sfv ...</command>: This command creates symlinks for
+      compatibility with the first version of
+      <application>GnuPG</application>.
+    </para>
 
   </sect2>
 
@@ -164,15 +190,19 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>addgnupghome, applygnupgdefaults, gnupg-pcsc-wrapper, gpg,
-        gpg-agent, gpg-check-pattern, gpg-connect-agent, gpg-preset-passphrase,
-        gpg-protect-tool, gpg2, gpg2keys_curl, gpg2keys_finger, gpg2keys_hkp,
-        gpg2keys_ldap, gpgconf, gpgkey2ssh, gpgparsemail, gpgsm,
-        gpgsm-gencert.sh, gpgv, gpgv2, kbxutil, scdaemon, symcryptrun,
-        and watchgnupg</seg>
-        <seg>None</seg>
-        <seg>/usr/share/doc/gnupg-&gnupg2-version; and
-        /usr/share/gnupg</seg>
+        <seg>
+          addgnupghome, applygnupgdefaults, gpg, gpg2, gpg-agent,
+          gpgconf, gpg-connect-agent, gpgkey2ssh, gpgparsemail,
+          gpgsm, gpgsm-gencert.sh, gpgtar, gpgv, gpgv2, kbxutil,
+          scdaemon, symcryptrun and watchgnupg
+        </seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          /usr/share/doc/gnupg-&gnupg2-version; and
+          /usr/share/gnupg
+        </seg>
       </seglistitem>
     </segmentedlist>
 
@@ -184,8 +214,10 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="addgnupghome">
         <term><command>addgnupghome</command></term>
         <listitem>
-          <para>is used to create and populate user's
-          <filename class='directory'>~/.gnupg</filename> directories</para>
+          <para>
+            is used to create and populate user's
+            <filename class="directory">~/.gnupg</filename> directories.
+          </para>
           <indexterm zone="gnupg2 addgnupghome">
             <primary sortas="b-addgnupghome">addgnupghome</primary>
           </indexterm>
@@ -195,9 +227,11 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="applygnupgdefaults">
         <term><command>applygnupgdefaults</command></term>
         <listitem>
-          <para>is a wrapper script used to run <command>gpgconf</command>
-          with the <parameter>--apply-defaults</parameter> parameter on all
-          user's GnuPG home directories.</para>
+          <para>
+            is a wrapper script used to run <command>gpgconf</command>
+            with the <parameter>--apply-defaults</parameter> parameter
+            on all user's GnuPG home directories.
+          </para>
           <indexterm zone="gnupg2 applygnupgdefaults">
             <primary sortas="b-applygnupgdefaults">applygnupgdefaults</primary>
           </indexterm>
@@ -207,10 +241,12 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpg-agent">
         <term><command>gpg-agent</command></term>
         <listitem>
-          <para>is a daemon used to manage secret (private) keys independently
-          from any protocol. It is used as a backend for <command>gpg2</command>
-          and <command>gpgsm</command> as well as for a couple of other
-          utilities.</para>
+          <para>
+            is a daemon used to manage secret (private) keys independently
+            from any protocol. It is used as a backend for
+            <command>gpg</command> and <command>gpgsm</command> as well as
+            for a couple of other utilities.
+          </para>
           <indexterm zone="gnupg2 gpg-agent">
             <primary sortas="b-gpg-agent">gpg-agent</primary>
           </indexterm>
@@ -220,8 +256,10 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpg-connect-agent">
         <term><command>gpg-connect-agent</command></term>
         <listitem>
-          <para>is a utility used to communicate with a running
-          <command>gpg-agent</command>.</para>
+          <para>
+            is a utility used to communicate with a running
+            <command>gpg-agent</command>.
+          </para>
           <indexterm zone="gnupg2 gpg-connect-agent">
             <primary sortas="b-gpg-connect-agent">gpg-connect-agent</primary>
           </indexterm>
@@ -231,8 +269,10 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpg">
         <term><command>gpg</command></term>
         <listitem>
-          <para>(optional) is a symlink to <command>gpg2</command> for
-          compatibility with the first version of GnuPG.</para>
+          <para>
+            is a symlink to <command>gpg2</command> for compatibility
+            with the first version of <application>GnuPG</application>.
+          </para>
           <indexterm zone="gnupg2 gpg">
             <primary sortas="b-gpg">gpg</primary>
           </indexterm>
@@ -242,9 +282,11 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpg2">
         <term><command>gpg2</command></term>
         <listitem>
-          <para>is the OpenPGP part of the GNU Privacy Guard (GnuPG). It is a
-          tool used to provide digital encryption and signing services using
-          the OpenPGP standard.</para>
+          <para>
+            is the OpenPGP part of the GNU Privacy Guard (GnuPG). It is a
+            tool used to provide digital encryption and signing services
+            using the OpenPGP standard.
+          </para>
           <indexterm zone="gnupg2 gpg2">
             <primary sortas="b-gpg2">gpg2</primary>
           </indexterm>
@@ -254,11 +296,13 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpgconf">
         <term><command>gpgconf</command></term>
         <listitem>
-          <para>is a utility used to automatically and reasonable safely
-          query and modify configuration files in the
-          <filename class='directory'>~/.gnupg</filename> home directory. It is
-          designed not to be invoked manually by the user, but automatically by
-          graphical user interfaces.</para>
+          <para>
+            is a utility used to automatically and reasonable safely
+            query and modify configuration files in the
+            <filename class="directory">~/.gnupg</filename> home
+            directory. It is designed not to be invoked manually by
+            the user, but automatically by graphical user interfaces.
+          </para>
           <indexterm zone="gnupg2 gpgconf">
             <primary sortas="b-gpgconf">gpgconf</primary>
           </indexterm>
@@ -268,8 +312,10 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpgparsemail">
         <term><command>gpgparsemail</command></term>
         <listitem>
-          <para>is a utility currently only useful for debugging. Run it with
-          <parameter>--help</parameter> for usage information.</para>
+          <para>
+            is a utility currently only useful for debugging. Run it with
+            <parameter>--help</parameter> for usage information.
+          </para>
           <indexterm zone="gnupg2 gpgparsemail">
             <primary sortas="b-gpgparsemail">gpgparsemail</primary>
           </indexterm>
@@ -279,10 +325,11 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpgsm">
         <term><command>gpgsm</command></term>
         <listitem>
-          <para>is a tool similar to <command>gpg2</command> used to provide
-          digital encryption and signing services on X.509 certificates and the
-          CMS protocol. It is mainly used as a backend for S/MIME mail
-          processing.</para>
+          <para>
+            is a tool similar to <command>gpg</command> used to provide digital
+            encryption and signing services on X.509 certificates and the CMS
+            protocol. It is mainly used as a backend for S/MIME mail processing.
+          </para>
           <indexterm zone="gnupg2 gpgsm">
             <primary sortas="b-gpgsm">gpgsm</primary>
           </indexterm>
@@ -292,8 +339,10 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpgsm-gencert.sh">
         <term><command>gpgsm-gencert.sh</command></term>
         <listitem>
-          <para>is a simple tool used to interactively generate a certificate
-          request which will be printed to stdout.</para>
+          <para>
+            is a simple tool used to interactively generate a certificate
+            request which will be printed to stdout.
+          </para>
           <indexterm zone="gnupg2 gpgsm-gencert.sh">
             <primary sortas="b-gpgsm-gencert.sh">gpgsm-gencert.sh</primary>
           </indexterm>
@@ -303,8 +352,10 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpgv">
         <term><command>gpgv</command></term>
         <listitem>
-          <para>(optional) is a symlink to <command>gpgv2</command> for
-          compatibility with the first version of GnuPG.</para>
+          <para>
+            is a symlink to <command>gpgv2</command> for compatibility
+            with the first version of <application>GnuPG</application>.
+          </para>
           <indexterm zone="gnupg2 gpgv">
             <primary sortas="b-gpgv">gpgv</primary>
           </indexterm>
@@ -314,7 +365,9 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="gpgv2">
         <term><command>gpgv2</command></term>
         <listitem>
-          <para>is a verify only version of <command>gpg2</command>.</para>
+          <para>
+            is a verify only version of <command>gpg2</command>.
+          </para>
           <indexterm zone="gnupg2 gpgv2">
             <primary sortas="b-gpgv2">gpgv2</primary>
           </indexterm>
@@ -324,7 +377,9 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="kbxutil">
         <term><command>kbxutil</command></term>
         <listitem>
-          <para>is used to list, export and import Keybox data.</para>
+          <para>
+            is used to list, export and import Keybox data.
+          </para>
           <indexterm zone="gnupg2 kbxutil">
             <primary sortas="b-kbxutil">kbxutil</primary>
           </indexterm>
@@ -334,8 +389,10 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="scdaemon">
         <term><command>scdaemon</command></term>
         <listitem>
-          <para>is a daemon used to manage smartcards. It is usually invoked by
-          <command>gpg-agent</command> and in general not used directly.</para>
+          <para>
+            is a daemon used to manage smartcards. It is usually invoked by
+            <command>gpg-agent</command> and in general not used directly.
+          </para>
           <indexterm zone="gnupg2 scdaemon">
             <primary sortas="b-scdaemon">scdaemon</primary>
           </indexterm>
@@ -345,7 +402,9 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="symcryptrun">
         <term><command>symcryptrun</command></term>
         <listitem>
-          <para>is a simple symmetric encryption tool.</para>
+          <para>
+            is a simple symmetric encryption tool.
+          </para>
           <indexterm zone="gnupg2 symcryptrun">
             <primary sortas="b-symcryptrun">symcryptrun</primary>
           </indexterm>
@@ -355,8 +414,10 @@ install -v -m644 doc/gnupg.{pdf,dvi,ps} \
       <varlistentry id="watchgnupg">
         <term><command>watchgnupg</command></term>
         <listitem>
-          <para>is used to listen to a Unix Domain socket created by any of
-          the GnuPG tools.</para>
+          <para>
+            is used to listen to a Unix Domain socket created by any of
+            the GnuPG tools.
+          </para>
           <indexterm zone="gnupg2 watchgnupg">
             <primary sortas="b-watchgnupg">watchgnupg</primary>
           </indexterm>
