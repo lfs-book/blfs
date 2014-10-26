@@ -122,7 +122,7 @@
 
     <para>You will probably see output similar to:</para>
 
-<screen><literal>gpg: Signature made Mon Aug 11 22:53:10 2014 GMT using RSA key ID 749D7889
+<screen><literal>gpg: Signature made Thu 16 Oct 2014 02:02:43 AM CEST using RSA key ID 749D7889
 gpg: Can't check signature: No public key</literal></screen>
 
     <para>
@@ -147,16 +147,14 @@ gpg: Can't check signature: No public key</literal></screen>
 sed -e "s@python2.5/Python.h@&amp; python2.7/Python.h@g" \
     -e "s@-lpython2.5]@&amp;,\n  AC_CHECK_LIB(python2.7,main,[PYTHON_LIB=-lpython2.7])@g" \
     -i configure.in &amp;&amp;
-sed -e 's@\^u}@^u cols 300}@' \
-    -i tests/dejagnu/config/default.exp &amp;&amp;
 autoconf &amp;&amp;
 ./configure --prefix=/usr            \
             --sysconfdir=/etc        \
             --localstatedir=/var/lib \
             --with-system-et         \
             --with-system-ss         \
-            --with-system-verto=no   \
-            --enable-dns-for-realm &amp;&amp;
+            --without-system-verto   \
+            --enable-dns-for-realm   &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -177,23 +175,23 @@ make</userinput></screen>
 
 for LIBRARY in gssapi_krb5 gssrpc k5crypto kadm5clnt kadm5srv \
                kdb5 kdb_ldap krad krb5 krb5support verto ; do
-    chmod -v 755 /usr/lib/lib$LIBRARY.so
-done          &amp;&amp;
+    [ -e  /usr/lib/lib$LIBRARY.so ] &amp;&amp; chmod -v 755 /usr/lib/lib$LIBRARY.so
+done &amp;&amp;
 unset LIBRARY &amp;&amp;
 
-mv -v /usr/lib/libkrb5.so.3*        /lib &amp;&amp;
-mv -v /usr/lib/libk5crypto.so.3*    /lib &amp;&amp;
-mv -v /usr/lib/libkrb5support.so.0* /lib &amp;&amp;
+mv -v /usr/lib/libkrb5.so.*        /lib &amp;&amp;
+mv -v /usr/lib/libk5crypto.so.*    /lib &amp;&amp;
+mv -v /usr/lib/libkrb5support.so.* /lib &amp;&amp;
 
-ln -v -sf ../../lib/libkrb5.so.3.3        /usr/lib/libkrb5.so        &amp;&amp;
-ln -v -sf ../../lib/libk5crypto.so.3.1    /usr/lib/libk5crypto.so    &amp;&amp;
-ln -v -sf ../../lib/libkrb5support.so.0.1 /usr/lib/libkrb5support.so &amp;&amp;
+ln -sfv ../../lib/$(readlink /usr/lib/libkrb5.so)        /usr/lib/libkrb5.so        &amp;&amp;
+ln -sfv ../../lib/$(readlink /usr/lib/libk5crypto.so)    /usr/lib/libk5crypto.so    &amp;&amp;
+ln -sfv ../../lib/$(readlink /usr/lib/libkrb5support.so) /usr/lib/libkrb5support.so &amp;&amp;
 
 mv -v /usr/bin/ksu /bin &amp;&amp;
 chmod -v 755 /bin/ksu   &amp;&amp;
 
 install -v -dm755 /usr/share/doc/krb5-&mitkrb-version; &amp;&amp;
-cp -vfr ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
+cp -rfv ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
 
 
   </sect2>
@@ -203,13 +201,13 @@ cp -vfr ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
 
     <para>
       <command>sed -e ...</command>: The first <command>sed</command> fixes
-      <application>Python</application> detection. The second one increases
+      <application>Python</application> detection.<!-- The second one increases
       the width of the virtual terminal used for some tests, to prevent
-      some spurious characters to be echoed, which is taken as a failure.
+      some spurious characters to be echoed, which is taken as a failure. -->
     </para>
 
     <para>
-      <parameter>--localstatedir=/var/lib</parameter>: This parameter is
+      <parameter>--localstatedir=/var/lib</parameter>: This switch is
       used so that the Kerberos variable run-time data is located in
       <filename class="directory">/var/lib</filename> instead of
       <filename class="directory">/usr/var</filename>.
@@ -228,11 +226,11 @@ cp -vfr ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
     </para>
 
     <para>
-      <parameter>--with-system-verto=no</parameter>: This switch fixes a bug in
-      the package: it does not recognize its own verto library installed
-      previously. This is not a problem, if reinstalling the same version,
-      but if you are updating, the old library is used as system's one,
-      instead of installing the new version.
+      <parameter>--without-system-verto</parameter>: This switch causes
+      the build to use the internal version of <filename
+      class="libraryfile">libverto</filename> library in case older one
+      is present from previous <application>Kerberos</application>
+      installation.
     </para>
 
     <para>
@@ -457,13 +455,13 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3 id="mitkrb-init">
-      <title>Init Script</title>
+      <title>Systemd Units</title>
 
       <para>
-        If you want to start <application>Kerberos</application> services
-        at boot, install the <filename>/etc/rc.d/init.d/krb5</filename> init
-        script included in the <xref linkend="bootscripts"/> package using
-        the following command:
+        To start the Kerberos services at boot,
+        install the systemd units from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="mitkrb mitkrb-init">
@@ -495,10 +493,10 @@ EOF</userinput></screen>
           sserver, uuclient and uuserver
         </seg>
         <seg>
-          libgssapi_krb5.so, libgssrpc.so, libk5crypto.so, libkadm5clnt_mit.so,
-          libkadm5clnt.so, libkadm5srv_mit.so, libkadm5srv.so, libkdb_ldap.so
-          (optional), libkdb5.so, libkrad.so, libkrb5.so, libkrb5support.so,
-          libverto.so, and some plugins under the /usr/lib/krb5 tree
+          libgssapi_krb5.so, libgssrpc.so, libk5crypto.so,
+          libkadm5clnt.so, libkadm5srv.so, libkdb5.so, libkdb_ldap.so
+          (optional), libkrad.so, libkrb5.so, libkrb5support.so, and
+          libverto.so
         </seg>
         <seg>
           /usr/include/gssapi,
@@ -507,8 +505,7 @@ EOF</userinput></screen>
           /usr/include/krb5,
           /usr/lib/krb5,
           /usr/share/doc/krb5-&mitkrb-version;,
-          /usr/share/examples/krb5,
-          /usr/share/gnats/, and
+          /usr/share/examples/krb5 and
           /var/lib/krb5kdc
         </seg>
       </seglistitem>

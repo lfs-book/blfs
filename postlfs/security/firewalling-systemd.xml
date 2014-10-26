@@ -140,21 +140,8 @@
       comprehensive information about building your own firewall.</para>
     </caution>
 
-    <para>The firewall configuration script installed in the iptables section
-    differs from the standard configuration script. It only has two of
-    the standard targets: start and status. The other targets are clear
-    and lock. For instance if you issue:</para>
-
-<screen role="root"><userinput>/etc/rc.d/init.d/iptables start</userinput></screen>
-
-    <para>the firewall will be restarted just as it is upon system startup.
-    The status target will present a list of all currently implemented
-    rules. The clear target turns off all firewall rules and the lock
-    target will block all packets in and out of the computer with the
-    exception of the loopback interface.</para>
-
     <para>The main startup firewall is located in the file
-    <filename>/etc/rc.d/rc.iptables</filename>. The sections below provide
+    <filename>/etc/systemd/scripts/iptables</filename>. The sections below provide
     three different approaches that can be used for a system.</para>
 
     <note>
@@ -177,10 +164,12 @@
       Linux 2.4 Packet Filtering HOWTO</ulink>. It is still applicable
       to the Linux 2.6 kernels.</para>
 
-<screen role="root"><?dbfo keep-together="auto"?><userinput>cat &gt; /etc/rc.d/rc.iptables &lt;&lt; "EOF"
+<screen role="root"><?dbfo keep-together="auto"?><userinput>install -v -dm755 /etc/systemd/scripts
+
+cat &gt; /etc/systemd/scripts/iptables &lt;&lt; "EOF"
 <literal>#!/bin/sh
 
-# Begin rc.iptables
+# Begin /etc/systemd/scripts/iptables
 
 # Insert connection-tracking modules
 # (not needed if built into the kernel)
@@ -249,9 +238,9 @@ iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 # Log everything else. What's Windows' latest exploitable vulnerability?
 iptables -A INPUT -j LOG --log-prefix "FIREWALL:INPUT "
 
-# End $rc_base/rc.iptables</literal>
+# End /etc/systemd/scripts/iptables</literal>
 EOF
-chmod 700 /etc/rc.d/rc.iptables</userinput></screen>
+chmod 700 /etc/systemd/scripts/iptables</userinput></screen>
 
       <para>This script is quite simple, it drops all traffic coming
       into your computer that wasn't initiated from your computer, but
@@ -283,10 +272,12 @@ chmod 700 /etc/rc.d/rc.iptables</userinput></screen>
       makes a daemon on your system crash, or even worse, that implements
       a worm via a buffer-overflow).</para>
 
-<screen role="root"><?dbfo keep-together="auto"?><userinput>cat &gt; /etc/rc.d/rc.iptables &lt;&lt; "EOF"
+<screen role="root"><?dbfo keep-together="auto"?><userinput>install -v -dm755 /etc/systemd/scripts
+
+cat &gt; /etc/systemd/scripts/iptables &lt;&lt; "EOF"
 <literal>#!/bin/sh
 
-# Begin rc.iptables
+# Begin /etc/systemd/scripts/iptables
 
 echo
 echo "You're using the example configuration for a setup of a firewall"
@@ -370,9 +361,11 @@ iptables -A FORWARD -j LOG --log-prefix "FIREWALL:FORWARD "
 iptables -A OUTPUT  -j LOG --log-prefix "FIREWALL:OUTPUT "
 
 # Enable IP Forwarding
-echo 1 &gt; /proc/sys/net/ipv4/ip_forward</literal>
+echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+
+# End /etc/systemd/scripts/iptables</literal>
 EOF
-chmod 700 /etc/rc.d/rc.iptables</userinput></screen>
+chmod 700 /etc/systemd/scripts/iptables</userinput></screen>
 
       <para>With this script your intranet should be reasonably secure
       against external attacks. No one should be able to setup a new

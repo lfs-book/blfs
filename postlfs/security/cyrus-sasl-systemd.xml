@@ -101,7 +101,7 @@
     <para role="optional">
       <xref linkend="linux-pam"/>,
       <xref linkend="mitkrb"/>,
-      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="mariadb"/>,
       <xref linkend="openjdk"/>,
       <xref linkend="openldap"/>,
       <xref linkend="postgresql"/>,
@@ -176,7 +176,7 @@ install -v -dm700 /var/lib/sasl</userinput></screen>
     </para>
 
     <para>
-      <option>--with-dblib=gdbm</option>: This switch forces
+      <parameter>--with-dblib=gdbm</parameter>: This switch forces
       <application>GDBM</application> to be used instead of
       <application>Berkeley DB</application>.
     </para>
@@ -267,13 +267,13 @@ install -v -dm700 /var/lib/sasl</userinput></screen>
     </sect3>
 
     <sect3 id="cyrus-sasl-init">
-      <title>Init Script</title>
+      <title>Systemd Units</title>
 
       <para>
-        If you need to run the <command>saslauthd</command> daemon at system
-        startup, install the <filename>/etc/rc.d/init.d/saslauthd</filename>
-        init script included in the <xref linkend="bootscripts"/>
-        package using the following command:
+        To start the <command>saslauthd</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="cyrus-sasl cyrus-sasl-init">
@@ -284,9 +284,9 @@ install -v -dm700 /var/lib/sasl</userinput></screen>
 
       <note>
         <para>
-          You'll need to modify /etc/sysconfig/saslauthd and replace the
-          <option><replaceable>AUTHMECH</replaceable></option> parameter
-          with your desired authentication mechanism.
+          The default authentication method is "shadow". The
+          <filename>/etc/default/saslauthd</filename> 
+          file needs to be modified for anything else.
         </para>
       </note>
 
