@@ -3,10 +3,10 @@ Description=The PHP FastCGI Process Manager
 After=network.target
 
 [Service]
-Type=forking
+Type=notify
 PIDFile=/run/php-fpm.pid
 PrivateTmp=true
-ExecStart=/usr/sbin/php-fpm --daemonize --allow-to-run-as-root --fpm-config /etc/php-fpm.conf --pid /run/php-fpm.pid
+ExecStart=/usr/sbin/php-fpm --nodaemonize --fpm-config /etc/php-fpm.conf --pid /run/php-fpm.pid
 ExecReload=/bin/kill -USR2 $MAINPID
 
 [Install]

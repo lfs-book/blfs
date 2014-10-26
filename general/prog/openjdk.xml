@@ -68,7 +68,7 @@
 
     <para><application>IcedTea</application> provides a build harness for the
     <application>OpenJDK</application> package, Oracle's open-sourced
-    <application>Java</application> development environment.  In order to
+    <application>Java</application> development environment. In order to
     provide a completely free runtime environment, similar to Oracle's closed
     distribution, the <application>IcedTea</application> build harness also
     provides free, and arguably better versions of parts of the JDK which
@@ -85,7 +85,7 @@
 
     <para>OpenJDK is GPL'd code, however, it should be explained that there has
     been a special exception made for non-free projects to use these classes in
-    their proprietary products.  In similar fashion to the LGPL, which
+    their proprietary products. In similar fashion to the LGPL, which
     allows non-free programs to link to libraries provided by free software,
     the <ulink url="http://openjdk.java.net/legal/gplv2+ce.html">GNU
     General Public License, version 2, with the Classpath Exception</ulink>
@@ -420,8 +420,8 @@ rm -f Xvfb.pid</userinput></screen>
     <para>Install the package with the following commands as the
     <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>chmod 0644 openjdk.build/j2sdk-image/lib/sa-jdi.jar   &amp;&amp;
-cp -R openjdk.build/j2sdk-image /opt/OpenJDK-&openjdk-version; &amp;&amp;
+<screen role="root"><userinput>chmod -v 644 openjdk.build/j2sdk-image/lib/sa-jdi.jar   &amp;&amp;
+cp -rv openjdk.build/j2sdk-image /opt/OpenJDK-&openjdk-version; &amp;&amp;
 chown -R root:root /opt/OpenJDK-&openjdk-version;</userinput></screen>
 
     <para>If desired, you may install a .desktop file corresponding to an entry
@@ -449,7 +449,7 @@ Icon=javaws
 Categories=Settings;</literal>
 EOF
 
-install -v -Dm0644 javaws.png /usr/share/pixmaps/javaws.png</userinput></screen>
+install -v -Dm644 javaws.png /usr/share/pixmaps/javaws.png</userinput></screen>
 
     <para>The choice of pt_BR is just an example. You can add any translation
     by adding lines corresponding to your locale, e.g. for fr_FR,
@@ -477,7 +477,7 @@ install -v -Dm0644 javaws.png /usr/share/pixmaps/javaws.png</userinput></screen>
     <para><parameter>--enable-nss</parameter>: Enable inclusion of NSS
     security provider.</para>
 
-    <para><parameter>--disable-system-kerberos</parameter>: Remove this switch,
+    <para><parameter>--disable-system-kerberos</parameter>: Remove this switch
     if <xref linkend="mitkrb"/> is installed.</para>
 
     <para><parameter>--with-parallel-jobs</parameter>: Allows to set the number
@@ -512,7 +512,7 @@ install -v -Dm0644 javaws.png /usr/share/pixmaps/javaws.png</userinput></screen>
       the precompiled <application>OpenJDK</application>, do the following as
       the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>ln -v -nsf OpenJDK-&openjdk-version;-bin /opt/jdk</userinput></screen>
+<screen role="root"><userinput>ln -sfv OpenJDK-&openjdk-version;-bin /opt/jdk</userinput></screen>
 
       <para>The information below assumes your system is set up using the
       instructions found in <quote><xref
@@ -538,6 +538,11 @@ ANT_HOME=/opt/ant
 pathappend $JAVA_HOME/bin PATH
 pathappend $ANT_HOME/bin PATH
 
+pathappend $JAVA_HOME/include       C_INCLUDE_PATH
+pathappend $JAVA_HOME/include/linux C_INCLUDE_PATH
+pathappend $JAVA_HOME/include       CPLUS_INCLUDE_PATH
+pathappend $JAVA_HOME/include/linux CPLUS_INCLUDE_PATH
+
 # Auto Java CLASSPATH
 # Copy jar files to, or create symlinks in this directory
 
@@ -553,7 +558,7 @@ for jar in `find ${AUTO_CLASSPATH_DIR} -name "*.jar" 2>/dev/null`; do
     pathappend $jar CLASSPATH
 done
 
-export JAVA_HOME ANT_HOME CLASSPATH
+export JAVA_HOME ANT_HOME CLASSPATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH
 unset AUTO_CLASSPATH_DIR dir jar
 
 # End /etc/profile.d/openjdk.sh</literal>
@@ -586,7 +591,7 @@ mandb -c /opt/jdk/man</userinput></screen>
 
     </sect3>
 
-    <sect3 id='ojdk-certs'>
+    <sect3 id="ojdk-certs">
       <title>Install or update the JRE Certificate Authority Certificates
       (cacerts) file</title>
 
@@ -825,7 +830,7 @@ fi
 exit 0</literal>
 EOF
 
-chmod -c 0755 /opt/jdk/bin/mkcacerts</userinput></screen>
+chmod -v 755 /opt/jdk/bin/mkcacerts</userinput></screen>
  
   <note>
     <para>

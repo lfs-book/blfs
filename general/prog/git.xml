@@ -134,12 +134,18 @@
     <title>Installation of Git</title>
 
     <para>
+      First, silence a lot of compiler warnings by running the following
+      command:
+    </para>
+
+<screen><userinput>sed -i "/BSD_SOURCE/d" git-compat-util.h</userinput></screen>
+
+    <para>
       Install <application>Git</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr         \
-            --with-gitconfig=/etc/gitconfig &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --with-gitconfig=/etc/gitconfig &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -165,10 +171,7 @@ make</userinput></screen>
 <screen><userinput>make man</userinput></screen>
 
     <para>
-      The test suite can be run in parallel mode. Many tests cannot find
-      <application>GnuPG2</application>, if the compatibility symlinks,
-      recommended in <xref linkend="gnupg2"/>, are not installed. To run the
-      test suite, issue: <command>make test</command>.
+      To test the results, issue: <command>make test</command>.
     </para>
 
     <para>

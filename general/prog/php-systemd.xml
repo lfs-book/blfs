@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY php-download-http "http://us2.php.net/distributions/php-&php-version;.tar.xz">
+  <!ENTITY php-download-http "http://www.php.net/distributions/php-&php-version;.tar.xz">
   <!ENTITY php-download-ftp  "ftp://ftp.isu.edu.tw/pub/Unix/Web/PHP/distributions/php-&php-version;.tar.xz">
   <!ENTITY php-md5sum        "c976f54d429a0e5214659b0098e44e37">
   <!ENTITY php-size          "11 MB">
-  <!ENTITY php-buildsize     "376 MB (additional 2 MB to run the test suite and 102 MB for documentation)">
-  <!ENTITY php-time          "4 SBU (additional 2.5 SBU to run the test suite)">
+  <!ENTITY php-buildsize     "378 MB">
+  <!ENTITY php-time          "4.0 SBU">
 ]>
 
 <sect1 id="php" xreflabel="PHP-&php-version;">
@@ -175,7 +175,9 @@
     <para>Install <application>PHP</application> by
     running the following commands:</para>
 
-<screen><userinput>./configure --prefix=/usr                \
+<screen><userinput>sed -i "s|lsystemd-daemon|lsystemd|g" configure &amp;&amp;
+
+./configure --prefix=/usr                \
             --sysconfdir=/etc            \
             --localstatedir=/var         \
             --datadir=/usr/share/php     \
@@ -183,6 +185,7 @@
             --enable-fpm                 \
             --with-fpm-user=apache       \
             --with-fpm-group=apache      \
+            --with-fpm-systemd           \
             --with-config-file-path=/etc \
             --with-zlib                  \
             --enable-bcmath              \
@@ -243,17 +246,23 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
   <sect2 role="commands">
       <title>Command Explanations</title>
 
+      <para><command>sed -i "s|lsystemd-daemon|lsystemd|g" configure</command>:
+      This command fixes the detection of the systemd library.</para>
+
       <para><parameter>--with-datadir=/usr/share/php</parameter>: This works
       around a bug in the build machinery, which installs some data to a
       wrong location.</para>
 
       <para><parameter>--enable-fpm</parameter>: This parameter allows
-      building the fastCGI Process Manager.</para>
+      building the FastCGI Process Manager.</para>
+
+      <para><parameter>--with-fpm-systemd</parameter>: This parameter allows
+      the FastCGI Process Manager to integrate with systemd.</para>
 
       <para><parameter>--with-config-file-path=/etc</parameter>: This parameter
       makes <application>PHP</application> look for the
       <filename>php.ini</filename> configuration file in
-      <filename class='directory'>/etc</filename>.</para>
+      <filename class="directory">/etc</filename>.</para>
 
       <para><parameter>--with-zlib</parameter>: This parameter adds
       support for <application>Zlib</application> compression.</para>
@@ -377,21 +386,20 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
     </sect3>
 
     <sect3  id="php-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
       <para>
-        To automatically start the <command>php-fpm</command> daemon when the
-        system is rebooted, install the
-        <filename>/etc/rc.d/init.d/php</filename> bootscript from the
-        <xref linkend="bootscripts"/> package as the
+        To start the <command>php-fpm</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="php php-init">
-        <primary sortas="f-php">php</primary>
+        <primary sortas="f-php-fpm">php-fpm</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-php</userinput></screen>
+<screen role="root"><userinput>make install-php-fpm</userinput></screen>
     </sect3>
 
   </sect2>
@@ -407,8 +415,7 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
       <seglistitem>
         <seg>pear, peardev, pecl, phar (symlink), phar.phar,
         php, php-cgi, php-config, php-fpm, and phpize</seg>
-        <seg>dba.{so,a} and opcache.{so,a} at
-       /usr/lib/php/extensions/no-debug-non-zts-20131226/</seg>
+        <seg>None</seg>
         <seg>/usr/include/php, /usr/lib/php, /usr/share/php and
         /usr/share/doc/php-&php-version;</seg>
       </seglistitem>

@@ -4,29 +4,33 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY dbus-python-download-http "http://dbus.freedesktop.org/releases/dbus-python/dbus-python-&dbus-python-version;.tar.gz">
-  <!ENTITY dbus-python-download-ftp  " ">
-  <!ENTITY dbus-python-md5sum        "b09cd2d1a057cc432ce944de3fc06bf7">
-  <!ENTITY dbus-python-size          "592 KB">
-  <!ENTITY dbus-python-buildsize     "11 MB">
-  <!ENTITY dbus-python-time          "0.3 SBU">
+  <!ENTITY pyatspi2-download-http
+           "&gnome-download-http;/pyatspi/2.14/pyatspi-&pyatspi2-version;.tar.xz">
+  <!ENTITY pyatspi2-download-ftp
+           "&gnome-download-ftp;/pyatspi/2.14/pyatspi-&pyatspi2-version;.tar.xz">
+  <!ENTITY pyatspi2-md5sum        "4989ac6acc922ee3c620973b8b3d8c9b">
+  <!ENTITY pyatspi2-size          "289 KB">
+  <!ENTITY pyatspi2-buildsize     "4.4 MB">
+  <!ENTITY pyatspi2-time          "less than 0.1 SBU">
 ]>
 
-  <!-- Begin D-Bus Python -->
-  <sect2 id="dbus-python" xreflabel="D-Bus Python-&dbus-python-version;">
-    <title>D-Bus Python</title>
+   <!-- Begin PyAtSpi2 -->
+  <sect2 id="pyatspi2" xreflabel="PyAtSpi2-&pyatspi2-version;">
 
-    <indexterm zone="dbus-python">
-      <primary sortas="a-dbus-python">dbus-python</primary>
+    <title>PyAtSpi2-&pyatspi2-version;</title>
+
+    <indexterm zone="pyatspi2">
+      <primary sortas="a-PyAtSpi2">PyAtSpi2</primary>
     </indexterm>
 
     <sect3 role="package">
-      <title>Introduction to D-Bus Python Module</title>
+      <title>Introduction to PyAtSpi2</title>
 
       <para>
-        <application>D-Bus Python</application> provides
-        <application>Python</application> bindings to the
-        <application>D-Bus</application>.
+        The <application>PyAtSpi2</application> package contains
+        <application>Python</application> bindings for the core
+        components of the <application>GNOME</application>
+        Accessibility.
       </para>
 
       &lfs76_checked;
@@ -35,60 +39,56 @@
       <itemizedlist spacing="compact">
         <listitem>
           <para>
-            Download (HTTP): <ulink url="&dbus-python-download-http;"/>
+            Download (HTTP): <ulink url="&pyatspi2-download-http;"/>
           </para>
         </listitem>
         <listitem>
           <para>
-            Download (FTP): <ulink url="&dbus-python-download-ftp;"/>
+            Download (FTP): <ulink url="&pyatspi2-download-ftp;"/>
           </para>
         </listitem>
         <listitem>
           <para>
-            Download MD5 sum: &dbus-python-md5sum;
+            Download MD5 sum: &pyatspi2-md5sum;
           </para>
         </listitem>
         <listitem>
           <para>
-            Download size: &dbus-python-size;
+            Download size: &pyatspi2-size;
           </para>
         </listitem>
         <listitem>
           <para>
-            Estimated disk space required: &dbus-python-buildsize;
+            Estimated disk space required: &pyatspi2-buildsize;
           </para>
         </listitem>
         <listitem>
           <para>
-            Estimated build time: &dbus-python-time;
+            Estimated build time: &pyatspi2-time;
           </para>
         </listitem>
       </itemizedlist>
 
-      <bridgehead renderas="sect4">D-Bus Python Dependencies</bridgehead>
+      <bridgehead renderas="sect4">PyAtSpi2 Dependencies</bridgehead>
 
       <bridgehead renderas="sect5">Required</bridgehead>
       <para role="required">
-        <xref linkend="dbus-glib"/> and
-        <xref linkend="python2"/> and/or
-        <xref linkend="python3"/>
+        <xref linkend="pygobject3"/>
       </para>
 
-      <bridgehead renderas="sect5">
-       Optional (Required to build the API and HTML Documentation)
-      </bridgehead>
-      <para role="optional">
-        <ulink url="http://epydoc.sourceforge.net/">Epydoc</ulink> and
-        <ulink url="http://docutils.sourceforge.net/">Docutils</ulink>
+      <bridgehead renderas="sect5">Recommended</bridgehead>
+      <para role="recommended">
+        <xref linkend="at-spi2-core"/>
       </para>
 
-      <para condition="html" role="usernotes">User Notes:
-        <ulink url="&blfs-wiki;/dbus-python"/>
+      <para condition="html" role="usernotes">
+        User Notes: <ulink url="&blfs-wiki;/pyatspi2"/>
       </para>
+
     </sect3>
 
     <sect3 role="installation">
-      <title>Installation of D-Bus Python</title>
+      <title>Installation of PyAtSpi2</title>
 
       <note>
         <para>
@@ -99,37 +99,31 @@
       </note>
 
       <para>
-        To build <application>D-Bus Python</application> as the
+        To build <application>PyAtSpi2</application> as the
         <application>Python 2</application> module, run the
         following commands:
       </para>
 
 <screen><userinput>mkdir python2 &amp;&amp;
 pushd python2 &amp;&amp;
-PYTHON=/usr/bin/python \
-../configure --prefix=/usr --docdir=/usr/share/doc/dbus-python-&dbus-python-version; &amp;&amp;
+../configure --prefix=/usr --with-python=/usr/bin/python &amp;&amp;
 make &amp;&amp;
 popd</userinput></screen>
 
       <para>
-        To test the results, issue: <command>make -C python2 check</command>.
-      </para>
-
-      <para>
-        To build <application>D-Bus Python</application> as the
+        To build <application>PyAtSpi2</application> as the
         <application>Python 3</application> module, run the
         following commands:
       </para>
 
 <screen><userinput>mkdir python3 &amp;&amp;
 pushd python3 &amp;&amp;
-PYTHON=/usr/bin/python3 \
-../configure --prefix=/usr --docdir=/usr/share/doc/dbus-python-&dbus-python-version; &amp;&amp;
+../configure --prefix=/usr --with-python=/usr/bin/python3 &amp;&amp;
 make &amp;&amp;
 popd</userinput></screen>
 
       <para>
-        To test the results, issue: <command>make -C python3 check</command>.
+        This package does not come with a testsuite.
       </para>
 
       <para>
@@ -156,7 +150,7 @@ popd</userinput></screen>
       <segmentedlist>
         <segtitle>Installed Programs</segtitle>
         <segtitle>Installed Libraries</segtitle>
-        <segtitle>Installed Directories</segtitle>
+        <segtitle>Installed Directory</segtitle>
 
         <seglistitem>
           <seg>
@@ -166,9 +160,8 @@ popd</userinput></screen>
             None
           </seg>
           <seg>
-            /usr/share/doc/dbus-python-&dbus-python-version; and
-            /usr/lib/python&python2-majorver;/site-packages/dbus and/or
-            /usr/lib/python&python3-majorver;/site-packages/dbus
+            /usr/lib/python&python2-majorver;/site-packages/pyatspi and/or
+            /usr/lib/python&python3-majorver;/site-packages/pyatspi
           </seg>
         </seglistitem>
       </segmentedlist>
@@ -176,4 +169,4 @@ popd</userinput></screen>
     </sect3>
 
   </sect2>
-  <!-- End D-Bus Python -->
+  <!-- End PyAtSpi2 -->
