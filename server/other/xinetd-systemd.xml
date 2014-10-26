@@ -7,7 +7,7 @@
   <!-- Development seems to be over and the xinetd.og site does not seem to exist any more. -->
   <!-- <!ENTITY xinetd-download-http "http://www.xinetd.org/xinetd-&xinetd-version;.tar.gz"> -->
   <!ENTITY xinetd-download-http " ">
-  <!ENTITY xinetd-download-ftp  "&sources-anduin-ftp;/x/xinetd-&xinetd-version;.tar.gz">
+  <!ENTITY xinetd-download-ftp  "&gentoo-ftp-repo;/xinetd-&xinetd-version;.tar.gz">
   <!ENTITY xinetd-md5sum        "77358478fd58efa6366accae99b8b04c">
   <!ENTITY xinetd-size          "308 KB">
   <!ENTITY xinetd-buildsize     "5.0 MB">
@@ -76,7 +76,7 @@
     <para>Install <application>xinetd</application> by running the following
     commands:</para>
 
-<screen><userinput>sed -i -e "s/exec_server/child_process/" xinetd/builtins.c       &amp;&amp;
+<screen><userinput>sed -i -e "s/exec_server/child_process/" xinetd/builtins.c        &amp;&amp;
 sed -i -e "/register unsigned count/s/register//" xinetd/itox.c  &amp;&amp;
 ./configure --prefix=/usr --mandir=/usr/share/man --with-loadavg &amp;&amp;
 make</userinput></screen>
@@ -396,11 +396,14 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3  id="xinetd-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
-      <para>As the <systemitem class="username">root</systemitem> user, install
-      the <filename>/etc/rc.d/init.d/xinetd</filename> init script included in
-      the <xref linkend="bootscripts"/> package.</para>
+      <para>
+        To start the <command>xinetd</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
 
       <indexterm zone="xinetd xinetd-init">
         <primary sortas="f-xinetd">xinetd</primary>
@@ -409,11 +412,12 @@ EOF</userinput></screen>
 <screen role="root"><userinput>make install-xinetd</userinput></screen>
 
       <para>As the <systemitem class="username">root</systemitem> user,
-      use the new boot script to start <command>xinetd</command>:</para>
+      use the <command>systemctl</command> utility to start
+      <command>xinetd</command>:</para>
 
-<screen role="root"><userinput>/etc/rc.d/init.d/xinetd start</userinput></screen>
+<screen role="root"><userinput>systemctl start xinetd</userinput></screen>
 
-      <para>Check the <filename>/var/log/daemon.log</filename> to ensure the
+      <para>Check the <command>journalctl</command> output to ensure the
       appropriate services are started. If no services are enabled, the program
       will not start without the <option>-stayalive</option> option.</para>
 

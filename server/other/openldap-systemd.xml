@@ -90,17 +90,16 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="db"/> (only if building server),
-      <xref linkend="cyrus-sasl"/>, and
+      <xref linkend="cyrus-sasl"/>,
+      <xref linkend="db"/> (only if building server) and
       <xref linkend="openssl"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="icu"/>,
-        <xref linkend="mariadb"/> or 
-        <ulink url="http://www.mysql.com/">MySQL</ulink> or
-        <xref linkend="postgresql"/>,
+      <xref linkend="mariadb"/> or
+      <xref linkend="postgresql"/>,
       <ulink url="http://www.openslp.org/">OpenSLP</ulink>,
       <xref linkend="pth"/> and
       <xref linkend="unixodbc"/>
@@ -186,8 +185,7 @@ make depend &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>. Tests may fail
-      after a long time (~ 5 SBU).
+      To test the results, issue: <command>make -k test</command>.
     </para>
 
     <para>
@@ -222,9 +220,10 @@ cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></scree
     <title>Command Explanations</title>
 
     <para>
-      <command>sed ... configure</command>: Fix  <command>configure</command>
-      script for building with <application>Berkeley DB-6.0.20</application> or
-      later.
+      <command>sed ... configure</command>: This command prevents
+      <command>configure</command> from failing when
+      <application>Berkeley-DB-6.0.20</application> or later is
+      found on the system.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -396,13 +395,13 @@ cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></scree
     </sect3>
 
     <sect3 id="openldap-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
       <para>
-        To automate the startup of the LDAP server at system bootup,
-        install the <filename>/etc/rc.d/init.d/slapd</filename> init script
-        included in the <xref linkend="bootscripts"/> package
-        using the following command:
+        To start the <command>slapd</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="openldap openldap-init">
@@ -414,7 +413,7 @@ cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></scree
       <note>
         <para>
           You'll need to modify the
-          <filename>/etc/sysconfig/slapd</filename> to include the
+          <filename>/etc/default/slapd</filename> to include the
           parameters needed for your specific configuration. See the
           <command>slapd</command> man page for parameter information.
         </para>
@@ -426,10 +425,10 @@ cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></scree
       <title>Testing the Configuration</title>
 
       <para>
-        Start the LDAP server using the init script:
+        Start the LDAP server using <command>systemctl</command>:
       </para>
 
-<screen role="root"><userinput>/etc/rc.d/init.d/slapd start</userinput></screen>
+<screen role="root"><userinput>systemctl start slapd</userinput></screen>
 
       <para>
         Verify access to the LDAP server with the following command:

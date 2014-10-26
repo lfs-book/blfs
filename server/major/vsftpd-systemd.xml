@@ -62,8 +62,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="libcap-pam"/>,
-      <xref linkend="linux-pam"/>, and
+      <xref linkend="linux-pam"/> and
       <xref linkend="openssl"/>
     </para>
 
@@ -81,18 +80,19 @@
     class="username">root</systemitem> user, create the needed directories,
     users, and groups with the following commands:</para>
 
-<screen role="root"><userinput>install -v -d -m 0755 &vsftpd-empty; &amp;&amp;
-install -v -d -m 0755 /home/ftp               &amp;&amp;
-groupadd -g 47 vsftpd                         &amp;&amp;
-groupadd -g 45 ftp                            &amp;&amp;
+<screen role="root"><userinput>
+install -v -dm755 &vsftpd-empty; &amp;&amp;
+install -v -dm755 /home/ftp               &amp;&amp;
+groupadd -g 47 vsftpd                     &amp;&amp;
+groupadd -g 45 ftp                        &amp;&amp;
 
 useradd -c "vsftpd User"  -d /dev/null -g vsftpd -s /bin/false -u 47 vsftpd &amp;&amp;
 useradd -c anonymous_user -d /home/ftp -g ftp    -s /bin/false -u 45 ftp</userinput></screen>
 
-    <para>If you did not install the optional <application>libcap2</application> package,
+<!--    <para>If you did not install the optional <application>libcap2</application> package,
     run the following to avoid a build error:</para>
 
-<screen><userinput>sed -i -e 's|#define VSF_SYSDEP_HAVE_LIBCAP|//&amp;|' sysdeputil.c</userinput></screen>
+<screen><userinput>sed -i -e 's|#define VSF_SYSDEP_HAVE_LIBCAP|//&amp;|' sysdeputil.c</userinput></screen> -->
 
     <para>Build <application>vsftpd</application> as an unprivileged user
     using the following command:</para>
@@ -180,11 +180,14 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3  id="vsftpd-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
-      <para>Install the <filename>/etc/rc.d/init.d/vsftpd</filename>
-      init script included in the
-      <xref linkend="bootscripts"/> package.</para>
+      <para>
+        To start the <command>vsftpd</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
 
 <screen role="root"><userinput>make install-vsftpd</userinput></screen>
 

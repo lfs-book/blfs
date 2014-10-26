@@ -61,7 +61,6 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="libcap-pam"/>,
       <xref linkend="linux-pam"/>,
       <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openssl"/>,
@@ -88,7 +87,7 @@ useradd -c proftpd -d /srv/ftp -g proftpd \
         -s /usr/bin/proftpdshell -u 46 proftpd     &amp;&amp;
 
 install -v -d -m775 -o proftpd -g proftpd /srv/ftp &amp;&amp;
-ln -v -s /bin/false /usr/bin/proftpdshell          &amp;&amp;
+ln -sfv /bin/false /usr/bin/proftpdshell           &amp;&amp;
 echo /usr/bin/proftpdshell &gt;&gt; /etc/shells</userinput></screen>
 
     <para>Install <application>ProFTPD</application> as an unprivileged user by
@@ -232,11 +231,14 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3  id="proftpd-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
-      <para>Install the <filename>/etc/rc.d/init.d/proftpd</filename> init
-      script included in the <xref linkend="bootscripts"/>
-      package.</para>
+      <para>
+        To start the <command>proftpd</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
 
       <indexterm zone="proftpd proftpd-init">
         <primary sortas="f-proftpd">proftpd</primary>

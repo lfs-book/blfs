@@ -102,7 +102,7 @@
       <xref linkend="libxml2"/>,
       <xref linkend="lynx"/>,
       <xref linkend="openldap"/> (<xref linkend="apr-util"/> needs to be
-      installed with ldap suport),
+      compiled with LDAP suport),
       <xref linkend="rsync"/>,
       <ulink url="http://www.distcache.org/">Distcache</ulink>, and
       <xref linkend="lua"/>
@@ -153,15 +153,14 @@ make</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user
-      (notice that DESTDIR does not work properly as unpriviledged user):
+      Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>make install                                 &amp;&amp;
 
 mv -v /usr/sbin/suexec /usr/lib/httpd/suexec &amp;&amp;
-chgrp apache           /usr/lib/httpd/suexec &amp;&amp;
-chmod 4754             /usr/lib/httpd/suexec &amp;&amp;
+chgrp -v apache        /usr/lib/httpd/suexec &amp;&amp;
+chmod -v 4754          /usr/lib/httpd/suexec &amp;&amp;
 
 chown -v -R apache:apache /srv/www</userinput></screen>
 
@@ -263,17 +262,17 @@ chown -v -R apache:apache /srv/www</userinput></screen>
     </sect3>
 
     <sect3  id="httpd-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
       <para>
-        If you want the <application>Apache</application> server to
-        start automatically when the system is booted, install the
-        <filename>/etc/rc.d/init.d/httpd</filename> init script included
-        in the <xref linkend="bootscripts"/> package.
+        To start the <command>httpd</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="apache httpd-init">
-        <primary sortas="f-apache">apache</primary>
+        <primary sortas="f-httpd">httpd</primary>
       </indexterm>
 
 <screen role="root"><userinput>make install-httpd</userinput></screen>
@@ -297,7 +296,7 @@ chown -v -R apache:apache /srv/www</userinput></screen>
           httxt2dbm,    logresolve,      rotatelogs, and suexec
         </seg>
         <seg>
-          Several libraries under /usr/lib/httpd/modules/
+          None
         </seg>
         <seg>
           /etc/httpd,
