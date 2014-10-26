@@ -98,6 +98,18 @@ make</userinput></screen>
 <screen role="root"><userinput>make install &amp;&amp;
 install -v -m644 -D README /usr/share/doc/libgpg-error-&libgpg-error-version;/README</userinput></screen>
 
+    <para>
+      The shared library needs to be moved to
+      <filename class="directory">/lib</filename>, and as a result the
+      <filename class="extension">.so</filename> file in
+      <filename class="directory">/usr/lib</filename> will need to be
+      recreated. Run the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen><userinput remap="install">mv -v /usr/lib/libgpg-error.so.* /lib
+ln -sfv ../../lib/$(readlink /usr/lib/libgpg-error.so) /usr/lib/libgpg-error.so</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">

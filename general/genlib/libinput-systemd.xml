@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY libinput-download-http "http://www.freedesktop.org/software/libinput/libinput-&libinput-version;.tar.xz">
+  <!ENTITY libinput-download-ftp  " ">
+  <!ENTITY libinput-md5sum        "3afaf9f66d8796323a79edb879c10ba3">
+  <!ENTITY libinput-size          "390 KB">
+  <!ENTITY libinput-buildsize     "9.5 MB">
+  <!ENTITY libinput-time          "0.1 SBU">
+]>
+
+<sect1 id="libinput" xreflabel="libinput-&libinput-version;">
+  <?dbhtml filename="libinput.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>libinput-&libinput-version;</title>
+
+  <indexterm zone="libinput">
+    <primary sortas="a-libinput">libinput</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to libinput</title>
+
+    <para>
+      <application>libinput</application> is a library that handles
+      input devices for display servers and other applications that
+      need to directly deal with input devices.
+    </para>
+
+    &lfs76_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&libinput-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&libinput-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &libinput-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &libinput-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &libinput-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &libinput-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">libinput Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="libevdev"/> and
+      <xref linkend="mtdev"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="check"/>,
+      <xref linkend="doxygen"/>, and
+      <xref linkend="gtk3"/> (to build the GUI event viewer)
+      <!-- <xref linkend="valgrind"/> broken -->
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/libinput"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of libinput</title>
+
+    <para>
+      Install <application>libinput</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      If you have the optional <xref linkend="check"/> package installed,
+      the regression tests can be run as the <systemitem 
+      class="username">root</systemitem> user with
+      <userinput>make -C test check-TESTS</userinput>.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      If <xref linkend="doxygen"/> was present during the build, you
+      can install the generated documentation by running the following
+      command as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -v -dm755 /usr/share/doc/libinput-&libinput-version; &amp;&amp;
+cp -rv doc/html/* /usr/share/doc/libinput-&libinput-version;</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          None
+        </seg>
+        <seg>
+          libinput.so
+        </seg>
+        <seg>
+          /usr/share/doc/libinput-&libinput-version;
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="libinput-lib">
+        <term><filename class="libraryfile">libinput.so</filename></term>
+        <listitem>
+          <para>
+            contains API functions for handling input devices.
+          </para>
+          <indexterm zone="libinput libinput-lib">
+            <primary sortas="c-libinput">libinput.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
