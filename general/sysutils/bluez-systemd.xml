@@ -8,8 +8,8 @@
   <!ENTITY bluez-download-ftp  "ftp://ftp.kernel.org/pub/linux/bluetooth/bluez-&bluez-version;.tar.xz">
   <!ENTITY bluez-md5sum        "37b785185fb98269b45e51b254bd8d3d">
   <!ENTITY bluez-size          "1.4 MB">
-  <!ENTITY bluez-buildsize     "57 MB (additional 17 MB for the tests)">
-  <!ENTITY bluez-time          "0.5 SBU (additional 0.2 SBU for the tests)">
+  <!ENTITY bluez-buildsize     "72 MB (additional 17 MB for the tests)">
+  <!ENTITY bluez-time          "0.5 SBU (additional 0.2 SBU for the tests)"> 
 ]>
 
 <sect1 id="bluez" xreflabel="BlueZ-&bluez-version;">
@@ -74,8 +74,7 @@
       <itemizedlist spacing="compact">
         <listitem>
           <para>
-             Optional patch (required to work properly with gnome-bluetooth
-             and/or kde bluedevil):
+             Required patch:
             <ulink url="&patch-root;/bluez-&bluez-version;-obexd_without_systemd-1.patch"/>
           </para>
         </listitem>
@@ -129,22 +128,15 @@
     <title>Installation of BlueZ</title>
 
     <para>
-      If you are going to use <application>BlueZ</application> with
-      gnome-bluetooth and/or kde bluedevil, apply the following patch:
-    </para>
-
-<screen><userinput>patch -Np1 -i ../bluez-&bluez-version;-obexd_without_systemd-1.patch</userinput></screen>
-
-    <para>
       Install <application>BlueZ</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr         \
+<screen><userinput>patch -Np1 -i ../bluez-&bluez-version;-obexd_without_systemd-1.patch &amp;&amp;
+./configure --prefix=/usr         \
             --sysconfdir=/etc     \
             --localstatedir=/var  \
-            --enable-library      \
-            --disable-systemd     &amp;&amp;
+            --enable-library &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -155,8 +147,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
-ln -svf ../libexec/bluetooth/bluetoothd /usr/sbin</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
     <para>
       Install the main configuration file as the
@@ -176,7 +167,6 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
 
   </sect2>
 
-
   <sect2 role="commands">
     <title>Command Explanations</title>
 
@@ -184,17 +174,6 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
       <parameter>--enable-library</parameter>: This switch enables building of the
       <application>BlueZ</application> 4 compatibility library which is required by
       some applications.
-    </para>
-
-    <para>
-      <parameter>--disable-systemd</parameter>: This switch is needed because
-      <application>systemd</application> is not part of LFS/BLFS. If you are
-      using systemd, remove this switch.
-    </para>
-
-    <para>
-      <command>ln -svf ../libexec/bluetooth/bluetoothd /usr/sbin</command>: 
-      This command makes access to the bluetooth daemon more convenient.
     </para>
 
   </sect2>
@@ -205,11 +184,11 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
     <sect3 id="bluez-config">
       <title>Configuration Files</title>
       <para>
-        <filename>/etc/bluetooth/main.conf</filename> is installed automatically
-        during the install.  Additionally, there are three supplementary
-        configuration files.  /etc/sysconfig/bluetooth is installed as a part
-        of the boot script below.  In addition, you optionally can install the
-        following, as the <systemitem class="username">root</systemitem> user:
+        <filename>/etc/bluetooth/main.conf</filename> is installed
+        automatically during the install. Additionally, there are
+        two supplementary configuration files that you can install
+        by running the following commands as the 
+        <systemitem class="username">root</systemitem> user:
       </para>
         
 <screen role="root"><userinput>cat > /etc/bluetooth/rfcomm.conf &lt;&lt; "EOF"</userinput>
@@ -217,7 +196,6 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
 # Set up the RFCOMM configuration of the Bluetooth subsystem in the Linux kernel.
 # Use one line per command
 # See the rfcomm man page for options
-
 
 # End of rfcomm.conf</literal>
 EOF</screen>
@@ -236,23 +214,40 @@ EOF</screen>
         sortas="e-etc-bluetooth-main.conf">/etc/bluetooth/main.conf</primary>
       </indexterm>
 
+      <indexterm zone="bluez bluez-config">
+        <primary
+        sortas="e-etc-bluetooth-rfcomm.conf">/etc/bluetooth/rfcomm.conf</primary>
+      </indexterm>
+
+      <indexterm zone="bluez bluez-config">
+        <primary
+        sortas="e-etc-bluetooth-uart.conf">/etc/bluetooth/uart.conf</primary>
+      </indexterm>
+
     </sect3>
 
     <sect3  id="bluez-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
       <para>
-        To automatically start the <command>bluetoothd</command> daemon when the
-        system is rebooted, install the
-        <filename>/etc/rc.d/init.d/bluetooth</filename> bootscript from the
-        <xref linkend="bootscripts"/> package.
+        To start the <command>bluetoothd</command> daemon at boot,
+        enable the previously installed systemd unit by
+        running the following command as the
+        <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="bluez bluez-init">
         <primary sortas="f-bluetooth">bluetooth</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-bluetooth</userinput></screen>
+<screen role="root"><userinput>systemctl enable bluetooth</userinput></screen>
+
+      <note>
+        <para>
+          <application>Systemd</application> will start the Bluetooth daemon
+          only when a bluetooth device is detected on the system.
+        </para>
+      </note>
 
     </sect3>
 

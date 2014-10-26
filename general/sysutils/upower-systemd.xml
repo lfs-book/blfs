@@ -4,15 +4,15 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY upower-download-http "http://upower.freedesktop.org/releases/upower-&upower-version;.tar.xz">
+  <!ENTITY upower-download-http "http://upower.freedesktop.org/releases/upower-&upower1-version;.tar.xz">
   <!ENTITY upower-download-ftp  " ">
-  <!ENTITY upower-md5sum        "39cfd97bfaf7d30908f20cf937a57634">
-  <!ENTITY upower-size          "416 KB">
-  <!ENTITY upower-buildsize     "10 MB">
+  <!ENTITY upower-md5sum        "e21ea7875e46142e37695850754a296a">
+  <!ENTITY upower-size          "420 KB">
+  <!ENTITY upower-buildsize     "12 MB">
   <!ENTITY upower-time          "0.2 SBU">
 ]>
 
-<sect1 id="upower" xreflabel="UPower-&upower-version;">
+<sect1 id="upower" xreflabel="UPower-&upower1-version;">
   <?dbhtml filename="upower.html"?>
 
   <sect1info>
@@ -20,7 +20,7 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>UPower-&upower-version;</title>
+  <title>UPower-&upower1-version;</title>
 
   <indexterm zone="upower">
     <primary sortas="a-UPower">UPower</primary>
@@ -72,6 +72,7 @@
       </listitem>
     </itemizedlist>
 
+
     <bridgehead renderas="sect3">UPower Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -79,12 +80,7 @@
       <xref linkend="dbus-glib"/>,
       <xref linkend="libusb"/>,
       <xref linkend="polkit"/>, and
-      <xref linkend="systemd"/> (for GUdev)
-    </para>
-
-    <bridgehead renderas="sect4">Recommended (runtime)</bridgehead>
-    <para role="recommended">
-      <xref linkend="pm-utils"/>
+      <xref linkend="systemd"/> (for GUdev and Logind)
     </para>
 
     <bridgehead renderas="sect4">Optional (Required if building GNOME)</bridgehead>
@@ -94,8 +90,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/> and
-      <xref linkend="python3"/> (used only in the testsuite).
+      <xref linkend="gtk-doc"/>,
+      <xref linkend="python3"/> (used only in the testsuite) and
+      <ulink url="http://www.libimobiledevice.org/">libimobiledevice</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -114,14 +111,13 @@
 <screen><userinput>./configure --prefix=/usr        \
             --sysconfdir=/etc    \
             --localstatedir=/var \
-            --enable-deprecated  \
-            --disable-static &amp;&amp;
+            --disable-static     &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>. Some
-      checks may not pass due to missing files. Test suite should be run from
-      a local GUI session started with dbus-launch.
+      To test the results, issue: <command>make check</command>. Test
+      suite should be run from a local GUI session started with
+      dbus-launch.
     </para>
 
     <para>
@@ -134,12 +130,6 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <option>--enable-deprecated</option>: This switch enables
-      deprecated functionality which is still needed by some
-      applications.
-    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
@@ -154,13 +144,33 @@ make</userinput></screen>
 
     <para>
       To use the command <command>upower -w</command> for information about
-      processor wakeups (this command is used by <ulink url="http://ftp.gnome.org/pub/gnome/sources/gnome-power-manager/">gnome-power-manager</ulink>)
+      processor wakeups (this command is used by <ulink
+      url="http://ftp.gnome.org/pub/gnome/sources/gnome-power-manager/">gnome-power-manager</ulink>)
       you need to enable CONFIG_TIMER_STATS.  This is achieved in
       <command>make menuconfig</command> by going to the &apos;kernel-hacking&apos;
       menu and selecting &apos;Collect kernel timers statistics&apos;.
     </para>
 
+    <sect3  id="upower-init">
+      <title>Systemd Units</title>
+
+      <para>
+        To start the <command>upowerd</command> daemon at boot,
+        enable the previously installed systemd unit by
+        running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+      <indexterm zone="upower upower-init">
+        <primary sortas="f-upower">upower</primary>
+      </indexterm>
+
+<screen role="root"><userinput>systemctl enable upower</userinput></screen>
+
+    </sect3>
+
   </sect2>
+
   <sect2 role="content">
     <title>Contents</title>
 

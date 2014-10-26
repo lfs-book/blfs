@@ -8,9 +8,9 @@
            "http://www.freedesktop.org/software/colord/releases/colord-&colord-version;.tar.xz">
   <!ENTITY colord-download-ftp  " ">
   <!ENTITY colord-md5sum        "d0a9c8e29374b6330455fb8902c8f246">
-  <!ENTITY colord-size          "1.2 MB">
-  <!ENTITY colord-buildsize     "32 MB (additional 3 MB to build and install the API documentation, and 3 MB for the tests)">
-  <!ENTITY colord-time          "0.5 SBU (additional 0.2 SBU for the tests)">
+  <!ENTITY colord-size          "1.1 MB">
+  <!ENTITY colord-buildsize     "32 MB">
+  <!ENTITY colord-time          "0.5 SBU">
 ]>
 
 <sect1 id="colord" xreflabel="Colord-&colord-version;">
@@ -83,31 +83,26 @@
       <xref linkend="sqlite"/>
     </para>
 
-    <bridgehead renderas="sect4">Required (for the tests)</bridgehead>
-    <para role="required">
-      <xref linkend="valgrind"/>
-    </para>
-
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="libgusb"/>,
       <xref linkend="gobject-introspection"/>,
       <xref linkend="polkit"/>,
-      <xref linkend="systemd"/> (for GUdev), and
+      <xref linkend="systemd"/> (for GUdev and Logind) and
       <xref linkend="vala"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gnome-desktop"/> and
+      <ulink url="http://bash-completion.alioth.debian.org/">Bash Completion</ulink>,
       <ulink url="http://www.freedesktop.org/software/colord/releases/">
-      colord-gtk</ulink> (to build the example tools),
+      colord-gtk</ulink> and <xref linkend="gnome-desktop"/>
+      (To build the example tools),
       <xref linkend="docbook-utils"/>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="libxslt"/>,
-      <xref linkend="sane"/>,
-      <xref linkend="valgrind"/> (required for the tests), and
-      <ulink url="http://bash-completion.alioth.debian.org/">Bash Completion</ulink>,
+      <xref linkend="sane"/>, and
+      <xref linkend="valgrind"/> (required for the tests)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -139,10 +134,8 @@ useradd -c "Color Daemon Owner" -d /var/lib/colord -u 71 \
             --localstatedir=/var         \
             --with-daemon-user=colord    \
             --enable-vala                \
-            --enable-systemd-login=no    \
             --disable-bash-completion    \
-            --disable-static             \
-            --with-systemdsystemunitdir=no &amp;&amp;
+            --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -152,8 +145,9 @@ make</userinput></screen>
 <screen role="root"><userinput>make install</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make -k check</command>. For unknown
-      reasons, some tests may fail. Note that system-wide
+      To test the results, make sure you have installed
+      <xref linkend="valgrind"/> and issue: <command>make -k check</command>.
+      Some tests may fail for unknown reasons. Note that system-wide
       <application>D-Bus</application> daemon must be running or the tests
       will fail.
     </para>
@@ -162,13 +156,6 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <parameter>--enable-libsystemd-login=no</parameter>: This parameter fixes
-      building without <application>systemd</application>, which is not part
-      of LFS/BLFS. If you use <application>systemd</application>,
-      replace "no" by "yes".
-    </para>
 
     <para>
       <parameter>--with-daemon-user=colord</parameter>: This
@@ -189,24 +176,13 @@ make</userinput></screen>
       support for <application>Colord</application> apps.
     </para>
 
-    <para>
-      <option>--disable-systemd-login</option>: This switch prevents
-      <command>configure</command> to look for
-      <application>Systemd</application> libraries.
-    </para>
-
-    <para>
-      <option>--with-systemdsystemunitdir=no</option>: Disable
-      attempting to build with systemd libraries.
-    </para>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 
     <para>
       <option>--enable-gtk-doc</option>: Use this switch if
-      <application>GTK-Doc</application> is installed and you wish to build
-      and install the API documentation.
+      <application>GTK-Doc</application> is installed and you wish to
+      build and install the API documentation.
     </para>
 
     <para>
@@ -215,8 +191,8 @@ make</userinput></screen>
     </para>
 
     <para>
-      <option>--disable-gudev</option>: Use this switch if you don't have GUdev
-      installed.
+      <option>--disable-gudev</option>: Use this switch if you don't have
+      GUdev installed.
     </para>
 
     <para>
@@ -244,6 +220,7 @@ make</userinput></screen>
         </seg>
         <seg>
           /usr/include/colord-1,
+          /usr/lib/colord,
           /usr/lib/colord-plugins,
           /usr/lib/colord-sensors,
           /usr/share/color,
