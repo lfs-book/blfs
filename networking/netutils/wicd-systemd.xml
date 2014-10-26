@@ -40,6 +40,14 @@
 
     &lfs76_checked;
 
+    <note>
+      <para>
+        Make sure that you disable the <command>systemd-networkd</command> service
+        or configure it not to manage the interfaces you want to manage with
+        <application>Wicd</application>.
+      </para>
+    </note>
+
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -107,14 +115,11 @@
     <para>Install <application>Wicd</application> by running the following
     commands:</para>
 
-<screen><userinput>sed -i '/wpath.logrotate\|wpath.systemd/d' setup.py &amp;&amp;
-rm po/*.po                                          &amp;&amp;
-
+<screen><userinput>rm po/*.po &amp;&amp;
 python setup.py configure --no-install-kde     \
                           --no-install-acpi    \
                           --no-install-pmutils \
-                          --no-install-init    \
-                          --docdir=/usr/share/doc/wicd-&wicd-version;</userinput></screen>
+                          --no-install-init</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
 
@@ -126,10 +131,6 @@ python setup.py configure --no-install-kde     \
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para><command>sed -i '/wpath...</command>: This <command>sed</command>
-    prevents installation of <command>logrotate</command> and systemd
-    configuration files. You may omit it if you use these utilities.</para>
 
     <para><command>rm po/*.po</command>: This command removes the international
     messages associated with this package.  The command is required unless
@@ -169,26 +170,19 @@ python setup.py configure --no-install-kde     \
     </sect3>
 
     <sect3 id="wicd-init">
-      <title>Configuration Information</title>
+      <title>Systemd Units</title>
 
-      <para>To automatically start Wicd at boot time, you need to first install
-      the Wicd bootscript,
-      <filename>/etc/rc.d/init.d/wicd</filename>,
-      included in the <xref linkend="bootscripts"/> package
-      (as user <systemitem class="username">root</systemitem>):</para>
+      <para>
+        To start the <command>wicd</command> daemon at boot, enable
+        the previously installed systemd unit by running the following command
+        as the <systemitem class="username">root</systemitem> user:
+      </para>
 
       <indexterm zone="wicd wicd-init">
-        <primary sortas="f-wicd">wicd (bootscript)</primary>
+        <primary sortas="f-wicd">wicd</primary>
       </indexterm>
 
-      <screen role='root'><userinput>make install-wicd</userinput></screen>
-
-      <para>Since Wicd will now handle all configuration of network devices,
-      the network bootscript installed by LFS should be disabled. This can be
-      achieved by either removing any <filename>S*network</filename> and
-      <filename>K*network</filename> symlinks in the <filename>/etc/rc*.d</filename>
-      directories or by setting <literal>ONBOOT=no</literal> in any
-      <filename>/etc/sysconfig/ifconfig.*</filename> files.</para>
+      <screen role="root"><userinput>systemctl enable wicd</userinput></screen>
 
       <para>No manual configuration of Wicd is needed if you use the graphical
       frontends. If you are only going to use Wicd from command-line, you can configure

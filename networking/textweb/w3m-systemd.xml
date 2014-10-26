@@ -71,16 +71,15 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required"><xref linkend="gc"/></para>
 
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="imlib2"/>
+    </para>
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gpm"/>,
       <xref linkend="openssl"/>,
-      <xref linkend="imlib2"/>,
-      <xref linkend="gtk2"/>,
-      <ulink url="http://ftp.gnome.org/pub/gnome/sources/imlib/1.9/">Imlib</ulink>
-        (not recommended: obsolete, abandoned upstream,
-        <ulink url="http://bugs.debian.org/448360">buggy</ulink>, and gives no
-        additional functionality as compared to other image loading libraries),
       <xref linkend="gdk-pixbuf"/>,
       <xref linkend="compface"/>, and
       <ulink url="http://packages.debian.org/unstable/text/nkf">nkf</ulink>,
@@ -102,7 +101,8 @@
 sed -i 's/file_handle/file_foo/' istream.{c,h} &amp;&amp;
 sed -i 's#gdk-pixbuf-xlib-2.0#&amp; x11#' configure &amp;&amp;
 
-./configure --prefix=/usr --sysconfdir=/etc &amp;&amp;
+./configure --prefix=/usr --sysconfdir=/etc --with-imagelib=imlib2 &amp;&amp;
+sed -i "s:lImlib2:&amp; -lX11:" Makefile &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -132,11 +132,28 @@ install -v -m644    doc/{HISTORY,READ*,keymap.*,menu.*,*.html} \
 
     <para><command>sed -i 's#gdk-pixbuf-xlib-2.0#&amp; x11#'
     configure</command>: This sed fixes compiling <application>w3m</application>
-    using <xref linkend="gtk2"/> as its image library. It has no impact if
-    <xref linkend="gtk2"/> is not installed.</para>
+    using <xref linkend="gdk-pixbuf"/> as its image library. It has no impact if
+    <xref linkend="gdk-pixbuf"/> is not installed.</para>
 
-    <para><option>--sysconfdir=/etc</option>: This option puts the configuration
-    files in /etc.</para>
+    <para>
+      <parameter>--with-imagelib=imlib2</parameter>: This switch sets
+      <xref linkend="imlib2"/> as the default image loading library. Remove it
+      if you don't need image loading capabilities or you don't want to
+      install X11. Note that build will fail if Xorg Libraries are present
+      and this switch is not used.
+    </para>
+
+    <para>
+      <parameter>--with-imagelib=gdk-pixbuf</parameter>: Use this switch if you
+      want to use <xref linkend="gdk-pixbuf"/> as the image loading library.
+    </para>
+
+    <para>
+      <command>sed -i "s:lImlib2:&amp; -lX11:" Makefile</command>: This sed
+      fixes building when using <xref linkend="imlib2"/> as the image
+      loading library.
+    </para>
+
   </sect2>
 
   <sect2 role="configuration">
