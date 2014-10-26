@@ -39,6 +39,14 @@
 
     &lfs76_checked;
 
+    <note>
+      <para>
+        Make sure that you disable the <command>systemd-networkd</command> service
+        or configure it not to manage the interfaces you want to manage with
+        <application>DHCP</application> client.
+      </para>
+    </note>
+
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -253,66 +261,38 @@ EOF</userinput></screen>
 <screen role="root"><userinput>install -v -dm 755 /var/lib/dhclient</userinput></screen>
 
       <para>
+        If you want to configure network interfaces at boot using
+        <command>dhclient</command>, you need to install the
+        systemd unit included in <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>make install-dhclient</userinput></screen>
+
+      <indexterm zone="dhcp dhclient-config">
+        <primary sortas="f-dhclient">dhclient</primary>
+      </indexterm>
+
+      <para>
         At this point you can test if <command>dhclient</command> is
         behaving as expected by running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>dhclient <replaceable>&lt;eth0&gt;</replaceable></userinput></screen>
+<screen role="root"><userinput>systemctl start dhclient@<replaceable>eth0</replaceable></userinput></screen>
 
       <para>
-        Replace <replaceable>&lt;eth0&gt;</replaceable> with your
-        desired interface. If you want more verbose output, add the
-        <command>-v</command> parameter to the command above.
-      </para>
-
-      <para id="dhclient-service">
-        If you want to configure network interfaces at boot using
-        <command>dhclient</command>, you need to install the
-        <filename>/lib/services/dhclient</filename> script
-        included in <xref linkend="bootscripts"/> package:
-      </para>
-
-<screen role="root"><userinput>make install-service-dhclient</userinput></screen>
-
-      <indexterm zone="dhcp dhclient-service">
-        <primary sortas="f-dhclient">dhclient (service script)</primary>
-      </indexterm>
-
-      <para id="dhclient-ifconfig">
-        Next, create the <filename>/etc/sysconfig/ifconfig.eth0</filename>
-        configuration file with the following commands as the
+        To start <command>dhclient</command> on a specific interface
+        at boot, enable the previously installed systemd unit by
+        running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>cat &gt; /etc/sysconfig/ifconfig.eth0 &lt;&lt; "EOF"
-<literal>ONBOOT="yes"
-IFACE="eth0"
-SERVICE="dhclient"
-DHCP_START=""
-DHCP_STOP=""
-
-# Set PRINTIP="yes" to have the script print
-# the DHCP assigned IP address
-PRINTIP="no"
-
-# Set PRINTALL="yes" to print the DHCP assigned values for
-# IP, SM, DG, and 1st NS. This requires PRINTIP="yes".
-PRINTALL="no"</literal>
-EOF</userinput></screen>
-
-      <indexterm zone="dhcp dhclient-ifconfig">
-        <primary sortas="e-etc-sysconfig-...-dhclient">/etc/sysconfig/ifconfig.eth0</primary>
-      </indexterm>
+<screen role="root"><userinput>systemctl enable dhclient@<replaceable>eth0</replaceable></userinput></screen>
 
       <para>
-        Adjust the file to suit your needs.
-      </para>
-
-      <para>
-        For more information on the appropriate <envar>DHCP_START</envar>
-        and <envar>DHCP_STOP</envar> values see
-        <command>man 8 dhclient</command>.
+        Replace <replaceable>eth0</replaceable> with the actual interface name.
       </para>
 
     </sect3>
@@ -369,11 +349,11 @@ EOF</userinput></screen>
 
 <screen role="root"><userinput>install -v -dm 755 /var/lib/dhcpd</userinput></screen>
 
-       <para>
-        If you want to start the DHCP Server at boot, install
-        the <filename>/etc/rc.d/init.d/dhcpd</filename>
-        init script included in the <xref linkend="bootscripts"/>
-        package:
+      <para>
+        To start the <command>dhcpd</command> daemon at boot,
+        install the systemd unit from the <xref linkend="bootscripts"/>
+        package by running the following command as the
+        <systemitem class="username">root</systemitem> user:
       </para>
 
 <screen role="root"><userinput>make install-dhcpd</userinput></screen>
@@ -384,7 +364,7 @@ EOF</userinput></screen>
 
       <para>
         You will need to edit the
-        <filename>/etc/sysconfig/dhcpd</filename> in order
+        <filename>/etc/default/dhcpd</filename> file in order
         to set the interface on which <command>dhcpd</command>
         will serve the DHCP requests.
       </para>

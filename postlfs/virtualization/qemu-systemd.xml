@@ -125,13 +125,10 @@
     <para>The Intel or AMD settings are not both required, but the one matching
     your system processor is required.</para>
 
-    <para>For networking, check that <xref linkend='bridgeutils'/> is installed
+    <para>For networking, check that <xref linkend="bridgeutils"/> is installed
     and the following options in the kernel configuration are enabled:</para>
 
-<screen><literal>Networking support  ---&gt;
-  Networking options  ---&gt;
-    802.1d Ethernet Bridging: Y or M
-Device Drivers  ---&gt;
+<screen><literal>Device Drivers  ---&gt;
   Network device support  ---&gt;
     Universal TUN/TAP device driver support: Y or M</literal></screen>
 
@@ -260,7 +257,7 @@ EOF</userinput></screen>
 
     <itemizedlist spacing="compact">
       <listitem>
-        <para>Set up bridging with <xref linkend='bridgeutils'/>.</para>
+        <para>Set up bridging using <xref linkend="network-bridge"/>.</para>
       </listitem>
 
       <listitem>
@@ -269,9 +266,9 @@ EOF</userinput></screen>
 <screen role="root"><userinput>sysctl -w net.ipv4.ip_forward=1</userinput></screen>
 
         <para>To make this permanent, add the command to
-        <filename>/etc/syssysctl.conf:</filename></para>
+        <filename>/etc/sysctl.d/60-net-forward.conf:</filename></para>
 
-<screen role="root"><userinput>cat &gt;&gt; /etc/sysctl.conf &lt;&lt; EOF
+<screen role="root"><userinput>cat &gt;&gt; /etc/sysctl.d/60-net-forward.conf &lt;&lt; "EOF"
 net.ipv4.ip_forward=1
 EOF</userinput></screen>
 
@@ -281,16 +278,14 @@ EOF</userinput></screen>
         <para>Create scripts for qemu to attach the client network
         device, usually visible as tap0, to the host bridge.</para>
 
-<screen role="root"><userinput>cat &gt; /etc/qemu-ifup &lt;&lt; EOF
+<screen role="root"><userinput>cat &gt; /etc/qemu-ifup &lt;&lt; "EOF"
 #!/bin/bash
 
 switch=br0
 
-if [ -n "\$1" ]; then
+if [ -n "$1" ]; then
   # Add new tap0 interface to bridge
-  /sbin/ip link set \$1 up
-  sleep 0.5s
-  /usr/sbin/brctl addif \$switch \$1
+  /usr/sbin/brctl addif $switch $1
 else
   echo "Error: no interface specified"
   exit 1
@@ -301,14 +296,14 @@ EOF
 
 chmod +x /etc/qemu-ifup</userinput></screen>
 
-<screen role="root"><userinput>cat &gt; /etc/qemu-ifdown &lt;&lt; EOF
+<screen role="root"><userinput>cat &gt; /etc/qemu-ifdown &lt;&lt; "EOF"
 #!/bin/bash
 
 switch=br0
 
-if [ -n "\$1" ]; then
+if [ -n "$1" ]; then
   # Remove tap0 interface from bridge
-  /usr/sbin/brctl delif \$switch \$1
+  /usr/sbin/brctl delif $switch $1
 else
   echo "Error: no interface specified"
   exit 1
@@ -322,9 +317,9 @@ chmod +x /etc/qemu-ifdown</userinput></screen>
       </listitem>
     </itemizedlist>
 
-      <note><para>The backslashes in the above script are for convenience
+      <!-- <note><para>The backslashes in the above script are for convenience
       for cut/paste operations.  The backslashes should <emphasis>not</emphasis>
-      appear in the final scripts.</para></note>
+      appear in the final scripts.</para></note> -->
 
     <itemizedlist spacing="compact">
       <listitem>
