@@ -6,12 +6,11 @@
 
   <!ENTITY mesalib-download-http " ">
   <!ENTITY mesalib-download-ftp
-  "ftp://ftp.freedesktop.org/pub/mesa/&mesalib-version;/MesaLib-&mesalib-version;.tar.bz2">
+           "ftp://ftp.freedesktop.org/pub/mesa/&mesalib-version;/MesaLib-&mesalib-version;.tar.bz2">
   <!ENTITY mesalib-md5sum        "c0a2a975899c4e7485124b388c16cd2f">
   <!ENTITY mesalib-size          "7.0 MB">
-  <!ENTITY mesalib-buildsize     "253 MB (additional 2 MB for the docs)">
+  <!ENTITY mesalib-buildsize     "255 MB">
   <!ENTITY mesalib-time          "5.2 SBU">
-
 ]>
 
 <sect1 id="mesalib" xreflabel="MesaLib-&mesalib-version;">
@@ -86,30 +85,29 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="xorg7-lib"/>,
-      <xref linkend="libdrm"/>, and
-      <xref linkend="python2"/>
+      <xref linkend="libdrm"/>,
+      <xref linkend="python2"/> and
+      <xref linkend="xorg7-lib"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="elfutils"/> (required for radeon 3d drivers),
-      <xref linkend="libvdpau"/> (to build VDPAU drivers),
-      <xref linkend="llvm"/> (required for radeon 3d drivers and also for
+      <xref linkend="elfutils"/> (required for Radeon 3D drivers),
+      <xref linkend="libvdpau"/> (to build VDPAU drivers for supported hardware),
+      <xref linkend="llvm"/> (required for Radeon 3D drivers and also for
       llvmpipe which is intended to be the fastest of the three sw rasterizers,
-      see <ulink url="http://www.mesa3d.org/faq.html#part3"></ulink> )
+      see <ulink url="http://www.mesa3d.org/faq.html#part3"></ulink>) and
+      <xref linkend="wayland"/> (required for <filename>libwayland-egl</filename>
+      library which is used by many packages that use
+      <application>Wayland</application>)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="ftp://ftp.freedesktop.org/pub/mesa/demos/">mesa-demos</ulink>
-      provides more than 300 extra demos to test
-      <application>MesaLib</application>; two of them overwrites the ones
-      included by
-      <filename>MesaLib-&mesalib-version;-add_xdemos-1.patch</filename>;
-      to avoid that, install in a different prefix or add, e.g.
-      <option>--program-prefix=md</option> to configure, and
-      <ulink url="http://wayland.freedesktop.org/">Wayland</ulink>
+      <ulink url="http://libclc.llvm.org/">libclc</ulink>
+      (to build Radeon OpenCL library) and
+      <ulink url="http://omxil.sourceforge.net/">libomxil-bellagio</ulink>
+      (to build Radeon OpenMAX driver)
     </para>
 
     <note>
@@ -119,7 +117,7 @@
         need to modify the instructions if you choose not to install them.
         Please note that <application>elfutils</application> and
         <application>LLVM</application> are <emphasis>required</emphasis>
-        for Radeon 3D drivers.  For an explanation of gallium please see
+        for Radeon 3D drivers. For an explanation of Gallium please see
         <ulink url="https://en.wikipedia.org/wiki/Gallium3D"></ulink>.
       </para>
     </note>
@@ -155,20 +153,18 @@
       commands:
     </para>
 
-<screen><userinput>./autogen.sh CFLAGS="-O2" CXXFLAGS="-O2"   \
-            --prefix=$XORG_PREFIX          \
-            --sysconfdir=/etc              \
-            --enable-texture-float         \
-            --enable-gles1                 \
-            --enable-gles2                 \
-            --enable-openvg                \
-            --enable-osmesa                \
-            --enable-xa                    \
-            --enable-gbm                   \
-            --enable-gallium-egl           \
-            --enable-gallium-gbm           \
-            --enable-glx-tls               \
-            --with-egl-platforms="drm,x11" \
+<screen><userinput>./autogen.sh CFLAGS="-O2" CXXFLAGS="-O2" \
+            --prefix=/usr                \
+            --sysconfdir=/etc            \
+            --disable-gallium-egl        \
+            --enable-texture-float       \
+            --enable-gles1               \
+            --enable-gles2               \
+            --enable-osmesa              \
+            --enable-xa                  \
+            --enable-gbm                 \
+            --enable-glx-tls             \
+            --with-egl-platforms="drm,x11,wayland" \
             --with-gallium-drivers="nouveau,r300,r600,radeonsi,svga,swrast" &amp;&amp;
 make</userinput></screen>
 
@@ -177,7 +173,7 @@ make</userinput></screen>
       running the following command:
     </para>
 
-<screen><userinput>make -C xdemos DEMOS_PREFIX=$XORG_PREFIX</userinput></screen>
+<screen><userinput>make -C xdemos DEMOS_PREFIX=/usr</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -195,7 +191,7 @@ make</userinput></screen>
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make -C xdemos DEMOS_PREFIX=$XORG_PREFIX install</userinput></screen>
+<screen role="root"><userinput>make -C xdemos DEMOS_PREFIX=/usr install</userinput></screen>
 
     <para>
       If desired, install the optional documentation by running
@@ -212,16 +208,17 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>patch -Np1...</command>: Fix various problems
-      introduced with LLVM-3.5.0.
-    </para>
-
-    <para>
       <parameter>CFLAGS="-O2" CXXFLAGS="-O2"</parameter>: By default,
       <application>Autoconf</application> sets CFLAGS and CXXFLAGS to
       "-g -O2". That results in binaries and libraries being built with
       debugging symbols which make them bigger. Override the default
       flags to omit -g compiler flag so the final libraries are smaller.
+    </para>
+
+    <para>
+      <parameter>--disable-gallium-egl</parameter>: This switch disables
+      the egl_gallium loader in favor of egl_dri2 loader which supports
+      both DRI and Gallium drivers.
     </para>
 
     <para>
@@ -242,11 +239,6 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
     </para>
 
     <para>
-      <parameter>--enable-openvg</parameter>: This switch enables support for
-      OpenVG API.
-    </para>
-
-    <para>
       <parameter>--enable-osmesa</parameter>: This switch enables building of
       the <filename class="libraryfile">libOSMesa</filename> library.
     </para>
@@ -262,11 +254,6 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
     </para>
 
     <para>
-      <parameter>--enable-gallium-egl</parameter>: This switch enables optional
-      EGL state tracker for Gallium.
-    </para>
-
-    <para>
       <parameter>--enable-gallium-gbm</parameter>: This switch enables optional
       GBM state tracker for Gallium.
     </para>
@@ -279,7 +266,9 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
     <para>
       <parameter>--with-egl-platforms="..."</parameter>: This parameter
       controls for which platforms EGL should be built. Available
-      platforms are drm, x11 and wayland.
+      platforms are drm, x11 and wayland. Remove <option>wayland</option>
+      from the list if you have not installed
+      <application>Wayland</application>.
     </para>
 
     <para>
@@ -295,11 +284,6 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
       <option>--enable-r600-llvm-compiler</option>: Use this switch to
       enable experimental R600 <application>LLVM</application> backend
       for graphics shaders which claims to speed up the driver.
-    </para>
-
-    <para>
-      <option>--enable-sysfs</option>: Use this switch to enable simple PCI
-      identification method, required for building DRI on systems without udev.
     </para>
 
   </sect2>
@@ -323,23 +307,23 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
           libGLESv1_CM.so,
           libGLESv2.so,
           libGL.so,
-          libOpenVG.so,
-          libOSMesa.so, and
+          libOSMesa.so,
+          libwayland-egl.so, and
           libxatracker.so
-          <!--libXvMCnouveau.so and libXvMCr600.so-->
         </seg>
         <seg>
-          $XORG_PREFIX/include/EGL,
-          $XORG_PREFIX/include/GL,
-          $XORG_PREFIX/include/GLES,
-          $XORG_PREFIX/include/GLES2,
-          $XORG_PREFIX/include/GLES3,
-          $XORG_PREFIX/include/KHR,
-          $XORG_PREFIX/include/VG,
-          $XORG_PREFIX/lib/dri,
-          $XORG_PREFIX/lib/egl,
-          $XORG_PREFIX/lib/gbm,
-          $XORG_PREFIX/lib/vdpau, and
+          /usr/include/EGL,
+          /usr/include/GL,
+          /usr/include/GLES,
+          /usr/include/GLES2,
+          /usr/include/GLES3,
+          /usr/include/KHR,
+          /usr/include/VG,
+          /usr/lib/dri,
+          /usr/lib/egl,
+          /usr/lib/gallium-pipe,
+          /usr/lib/gbm,
+          /usr/lib/vdpau, and
           /usr/share/doc/MesaLib-&mesalib-version; (optional)
         </seg>
       </seglistitem>
@@ -438,18 +422,6 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libOpenVG">
-        <term><filename class="libraryfile">libOpenVG.so</filename></term>
-        <listitem>
-          <para>
-            is the <application>Mesa</application> OpenVG 1.0 library.
-          </para>
-          <indexterm zone="mesalib libOpenVG">
-            <primary sortas="c-libOpenVG">libOpenVG.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="libOSMesa">
         <term><filename class="libraryfile">libOSMesa.so</filename></term>
         <listitem>
@@ -458,6 +430,18 @@ cp -rfv docs/* /usr/share/doc/MesaLib-&mesalib-version;</userinput></screen>
           </para>
           <indexterm zone="mesalib libOSMesa">
             <primary sortas="c-libOSMesa">libOSMesa.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libwayland-egl">
+        <term><filename class="libraryfile">libwayland-egl.so</filename></term>
+        <listitem>
+          <para>
+            is the <application>Wayland</application> specific EGL library.
+          </para>
+          <indexterm zone="mesalib libwayland-egl">
+            <primary sortas="c-libwayland-egl">libwayland-egl.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

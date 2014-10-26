@@ -67,6 +67,16 @@
         </listitem>
       </itemizedlist>
 
+      <bridgehead renderas="sect4">Additional Downloads</bridgehead>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            Required patch:
+            <ulink url="&patch-root;/xf86-video-vmware-&xorg-vmware-driver-version;-upstream_fixes-1.patch"/>
+          </para>
+        </listitem>
+      </itemizedlist>
+
       <bridgehead renderas="sect4">Xorg VMware Driver Dependencies</bridgehead>
 
       <bridgehead renderas="sect5">Required</bridgehead>
@@ -106,7 +116,8 @@
         commands:
       </para>
 
-<screen><userinput>sed -i "/xf86xv.h/i #include &lt;xorg-server.h&gt;" vmwgfx/vmwgfx_overlay.c &amp;&amp;
+<screen><userinput>patch -Np1 -i ../xf86-video-vmware-&xorg-vmware-driver-version;-upstream_fixes-1.patch &amp;&amp;
+sed -i "/xf86xv.h/i #include &lt;xorg-server.h&gt;" vmwgfx/vmwgfx_overlay.c &amp;&amp;
 
 ./configure $XORG_CONFIG &amp;&amp;
 make</userinput></screen>
@@ -120,14 +131,17 @@ make</userinput></screen>
       </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
     </sect3>
 
     <sect3>
       <title>Command Explanations</title>
+
       <para>
         <command>sed -i ...</command>: This sed fixes building with the latest
         version of <application>Glibc</application>.
       </para>
+
     </sect3>
 
     <sect3 role="content">
