@@ -77,7 +77,6 @@
       <xref linkend="avahi"/>,
       <xref linkend="cups"/>,
       <xref linkend="gnutls"/>,
-      <xref linkend="libcap-pam"/>,
       <xref linkend="libgpg-error"/>,
       <xref linkend="linux-pam"/>,
       <xref linkend="mitkrb"/>,
@@ -103,13 +102,18 @@
 
     <note>
       <para>If you wish to run the test suite after the binaries are built,
-      you must add the <option>-/-enable-socket-wrapper</option> 
-      and <option>-/-enable-selftest</option> parameters to
+      you must add the <option>--enable-socket-wrapper</option> 
+      and <option>--enable-selftest</option> parameters to
       the <command>configure</command> script below. You may want to run
-      <command>configure</command> with the <option>-/-help</option> parameter
+      <command>configure</command> with the <option>--help</option> parameter
       first. There may be other parameters needed to take advantage of
       optional dependencies.</para>
     </note>
+
+    <para>Fix a build failure when building on a system with
+    <application>systemd</application> installed:</para>
+
+<screen><userinput>sed "s:systemd-daemon:systemd:g" -i wscript lib/util/wscript_build</userinput></screen>
 
     <para>Install <application>Samba</application> by running the following
     commands:</para>
@@ -120,7 +124,6 @@
     --localstatedir=/var                \
     --with-piddir=/run/samba            \
     --with-pammodulesdir=/lib/security  \
-    --without-systemd                   \
     --enable-fhs                        \
     --enable-nss-wrapper                &amp;&amp;
 
@@ -129,7 +132,7 @@ make</userinput></screen>
     <para>According to <application>Samba</application> developers, the
     limitation to 108 characters of the path length of a unix named pipe socket
     may be the cause of errors, so that over 1/3 of the tests might fail. For
-    this reason, the switch <option>-/-with-selftest-prefix=/tmp/quick</option>
+    this reason, the switch <option>--with-selftest-prefix=/tmp/quick</option>
     (or another path with small number of characters) can be used with
     configure. Even so, the 
     <quote><replaceable>samba3.raw.eas</replaceable></quote> test may fail,
@@ -180,11 +183,6 @@ install -v -m644    lib/ntdb/doc/design.pdf \
 
     <para><parameter>--enable-nss-wrapper</parameter>: Builds the nss-wrapper
     library.</para>
-
-    <para><parameter>--without-systemd</parameter>: Disable
-    <application>systemd</application> integration, which is not part of
-    LFS/BLFS. If you use <application>systemd</application>, replace by
-    <parameter>--with-systemd</parameter>.</para>
 <!--
     <para><option>-/-enable-socket-wrapper</option> and
     <option>-/-enable-selftest</option>: These options are required to run
@@ -404,24 +402,7 @@ install -v -m644    lib/ntdb/doc/design.pdf \
       </sect4>
 
       <sect4 id="samba-init">
-        <title>Boot Script</title>
-
-        <para>For your convenience, boot scripts have been provided for
-        <application>Samba</application>. There are two included in the
-        <xref linkend="bootscripts"/> package. The first,
-        <filename>samba</filename>, will start the <command>smbd</command>
-        and <command>nmbd</command> daemons needed to provide SMB/CIFS
-        services. The second script, <filename>winbind</filename>, starts
-        the <command>winbindd</command> daemon, used for providing Windows
-        domain services to Linux clients.</para>
-
-        <indexterm zone="samba samba-init">
-          <primary sortas="f-samba">samba</primary>
-        </indexterm>
-
-        <indexterm zone="samba samba-init">
-          <primary sortas="f-winbind">winbind</primary>
-        </indexterm>
+        <title>Systemd Units</title>
 
         <para>The default <application>Samba</application> installation uses the
         <systemitem class='username'>nobody</systemitem> user for guest access
@@ -437,16 +418,53 @@ install -v -m644    lib/ntdb/doc/design.pdf \
 useradd -c "Unprivileged Nobody" -d /dev/null -g nogroup \
     -s /bin/false -u 99 nobody</userinput></screen>
 
-        <para>Install the <filename>samba</filename> script with the following
-        command issued as the <systemitem class="username">root</systemitem>
-        user:</para>
+        <para>
+          To start the <application>Samba</application> daemons at boot,
+          install the systemd units from the <xref linkend="bootscripts"/>
+          package by running the following command as the
+          <systemitem class="username">root</systemitem> user:
+        </para>
+
+        <indexterm zone="samba samba-init">
+          <primary sortas="f-samba">samba</primary>
+        </indexterm>
 
 <screen role="root"><userinput>make install-samba</userinput></screen>
 
-        <para>If you also need the <filename>winbindd</filename>
-        script to resolve names from Windows clients, run:</para>
+        <para>
+          To start the <command>winbindd</command> daemon at boot,
+          install the systemd unit from the <xref linkend="bootscripts"/>
+          package by running the following command as the
+          <systemitem class="username">root</systemitem> user:
+        </para>
+
+        <indexterm zone="samba samba-init">
+          <primary sortas="f-winbindd">winbindd</primary>
+        </indexterm>
 
 <screen role="root"><userinput>make install-winbindd</userinput></screen>
+
+        <note>
+          <para>
+            This package comes with two types of units: A service file and a socket file.
+            The service file will start smbd daemon once at boot and it will keep running until the
+            system shuts down. The socket file will make systemd listen on smbd port (Default 445, needs
+            to be edited for anything else) and will start smbd daemon when something tries to connect
+            to that port and stop the daemon when the connection is terminated. This is
+            called socket activation.
+
+            By default, the first method is used - smbd daemon is started at boot and stopped at shutdown.
+            If the socket method is desired, you need to run as the
+            <systemitem class="username">root</systemitem> user:
+
+<screen role="root"><userinput>systemctl stop smbd &amp;&amp;
+systemctl disable smbd &amp;&amp;
+systemctl enable smbd.socket &amp;&amp;
+systemctl start smbd.socket</userinput></screen>
+
+            Note that only smbd daemon can be socket activated.
+          </para>
+        </note>
 
        </sect4>
 
