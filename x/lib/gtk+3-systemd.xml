@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gtk3-download-http "&gnome-download-http;/gtk+/&gnome-minor-14;/gtk+-&gtk3-version;.tar.xz">
-  <!ENTITY gtk3-download-ftp  "&gnome-download-ftp;/gtk+/&gnome-minor-14;/gtk+-&gtk3-version;.tar.xz">
+  <!ENTITY gtk3-download-http "&gnome-download-http;/gtk+/3.14/gtk+-&gtk3-version;.tar.xz">
+  <!ENTITY gtk3-download-ftp  "&gnome-download-ftp;/gtk+/3.14/gtk+-&gtk3-version;.tar.xz">
   <!ENTITY gtk3-md5sum        "103a3521cf792f2ee12d0d1349d79288">
   <!ENTITY gtk3-size          "15 MB">
-  <!ENTITY gtk3-buildsize     "401 MB (additional 6 MB for the test suite and 19 MB to rebuild the docs)">
-  <!ENTITY gtk3-time          "4.8 SBU (additional 0.4 SBU for the test suite and 3.7 SBU to rebuild the docs)">
+  <!ENTITY gtk3-buildsize     "465 MB">
+  <!ENTITY gtk3-time          "3.4 SBU">
 ]>
 
 <sect1 id="gtk3" xreflabel="GTK+-&gtk3-version;">
@@ -80,6 +80,12 @@
       <xref linkend="pango"/>
     </para>
 
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="libxkbcommon"/> and
+      <xref linkend="wayland"/>
+    </para>
+
     <bridgehead renderas="sect4">Optional (Required if building GNOME)</bridgehead>
     <para role="optional">
       <xref linkend="gobject-introspection"/>
@@ -91,10 +97,8 @@
       <xref linkend="cups"/>,
       <xref linkend="docbook-utils"/>,
       <xref linkend="gtk-doc"/>,
-      <xref linkend="json-glib"/>,
-      <ulink url="http://ftp.acc.umu.se/pub/gnome/sources/rest/">rest</ulink>,
-      <ulink url="http://xkbcommon.org/">libxkbcommon</ulink>, and
-      <ulink url="http://wayland.freedesktop.org/">Wayland</ulink>
+      <xref linkend="json-glib"/>, and
+      <xref linkend="librest"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -125,12 +129,12 @@
 <screen><userinput>./configure --prefix=/usr             \
             --sysconfdir=/etc         \
             --enable-broadway-backend \
-            --enable-x11-backend      \
-            --disable-wayland-backend &amp;&amp;
+            --enable-wayland-backend  \
+            --enable-x11-backend      &amp;&amp;
 make</userinput></screen>
 
     <para>
-      Some tests fail if
+      Some tests may fail if
       <filename>/usr/share/glib-2.0/schemas/gschemas.compiled</filename> is not
       found. If you wish to run the test suite, create (or update) the file
       using the following command as the
@@ -168,16 +172,20 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <option>--enable-broadway-backend</option>: switch enables the HTML5 GTK backend.
+      <parameter>--enable-broadway-backend</parameter>: This switch enables the
+      Broadway HTML5 GDK backend.
     </para>
 
     <para>
-      <option>--enable-x11-backend</option>: switch enables the X11 GDK backend.
+      <parameter>--enable-wayland-backend</parameter>: This switch enables the
+      Wayland GDK backend which is required for <application>GNOME</application>
+      Wayland support. Remove it if you have not installed the recommended
+      dependencies.      
     </para>
 
     <para>
-      <option>--disable-wayland-backend</option>: switch disables the Wayland GDK backend
-      because Wayland isn't available in BLFS.
+      <parameter>--enable-x11-backend</parameter>: This switch enables the
+      X11 GDK backend.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -211,8 +219,8 @@ make</userinput></screen>
         <application>GTK+ 3</application> application looks. An icon theme can
         be used to change the icons that appear on the application's toolbar.
         If you have installed a <application>GTK+ 3</application> theme (eg
-        <xref linkend="gnome-themes-standard"/> or an icon theme (such as <xref
-        linkend="adwaita-icon-theme"/>) you can set your prefences in
+        <xref linkend="gnome-themes-standard"/> or an icon theme (such as
+        <xref linkend="adwaita-icon-theme"/>) you can set your prefences in
         <filename>~/.config/gtk-3.0/settings.ini</filename>. Eg:
       </para>
 
@@ -220,7 +228,7 @@ make</userinput></screen>
 cat &gt; ~/.config/gtk-3.0/settings.ini &lt;&lt; "EOF"
 [Settings]
 gtk-theme-name = <replaceable>Adwaita</replaceable>
-gtk-fallback-icon-theme = <replaceable>gnome</replaceable>
+gtk-icon-theme-name = <replaceable>Adwaita</replaceable>
 EOF</userinput></screen>
 
       <para>
@@ -252,19 +260,14 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          broadwayd, 
-          gtk3-demo, 
-          gtk3-demo-application, 
-          gtk3-icon-browser, 
-          gtk3-widget-factory, 
-          gtk-encode-symbolic-svg, 
-          gtk-launch, 
+          broadwayd, gtk3-demo, gtk3-demo-application,
+          gtk3-icon-browser, gtk3-widget-factory, 
+          gtk-encode-symbolic-svg, gtk-launch,
           gtk-query-immodules-3.0, and
           gtk-update-icon-cache
         </seg>
         <seg>
           libgailutil-3.so, libgdk-3.so, and libgtk-3.so
-
         </seg>
         <seg>
           /etc/gtk-3.0,
