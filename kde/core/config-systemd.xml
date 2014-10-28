@@ -35,13 +35,10 @@
 <screen><userinput>cat &gt; ~/.xinitrc &lt;&lt; EOF
 <literal># Begin .xinitrc
 
-exec ck-launch-session dbus-launch --exit-with-session startkde
+exec dbus-launch --exit-with-session startkde
 
 # End .xinitrc</literal>
 EOF</userinput></screen>
-
-    <note><para>If you are not using <application>ConsoleKit</application>, remove
-    <userinput>ck-launch-session</userinput>.</para></note>
 
     <para>You can now start KDE using the <command>startx</command> command.</para>
 
@@ -52,18 +49,21 @@ EOF</userinput></screen>
 
     <para>KDE comes with a graphical login interface called KDM (the KDE Display
     Manager), which provides a customizable graphical login at boot. To use KDM,
-    you need to edit your <filename>/etc/inittab</filename> file (as the
-    <systemitem class="username">root</systemitem> user).
-    First, setup run-level 5 to start KDM (adjust
-    the path to kdm according to your system):</para>
+    you need to create and enable a systemd unit by running the following commands
+    as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen><userinput>cat &gt;&gt; /etc/inittab &lt;&lt; EOF
-<literal>kd:5:respawn:/opt/kde/bin/kdm</literal>
-EOF</userinput></screen>
+<screen role="root"><userinput>cat &gt; /lib/systemd/system/kdm.service &lt;&lt; EOF &amp;&amp;
+<literal>[Unit]
+Description=K Display Manager
+After=systemd-user-sessions.service
 
-    <para>Additionally, you need to change the default run-level from 3 to 5:</para>
+[Service]
+ExecStart=&kde-dir;/bin/kdm -nodaemon
 
-<screen><userinput>sed -i 's#id:3:initdefault:#id:5:initdefault:#' /etc/inittab</userinput></screen>
+[Install]
+Alias=display-manager.service</literal>
+EOF
+systemctl enable kdm</userinput></screen>
 
     <para>You can now restart your system and see the KDE login
     screen.</para>
@@ -87,7 +87,7 @@ EOF</userinput></screen>
 
     <para>Every subsequent package can be built while having
     <application>KDE</application> up and running, but remember to keep
-    <envar>&kde-dir;</envar> and <envar>&qt4-dir;</envar> set.</para>
+    <envar>&kde-dir;</envar> set.</para>
 
   </sect2>
 

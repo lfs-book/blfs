@@ -12,7 +12,7 @@
   <!ENTITY phonon-time          "0.4 SBU">
 ]>
 
-<sect1 id="phonon" xreflabel="phonon-&phonon-version;">
+<sect1 id="phonon" xreflabel="Phonon-&phonon-version;">
   <?dbhtml filename="phonon.html"?>
 
   <sect1info>
@@ -23,7 +23,7 @@
   <title>Phonon-&phonon-version;</title>
 
   <indexterm zone="phonon">
-    <primary sortas="a-phonon">phonon</primary>
+    <primary sortas="a-Phonon">Phonon</primary>
   </indexterm>
 
   <sect2 role="package">
@@ -61,8 +61,9 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <!--<xref linkend="automoc4"/> and-->
-      <xref linkend="glib2"/>
+      <xref linkend="cmake"/>,
+      <xref linkend="glib2"/> and
+      <xref linkend="qt4"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -83,10 +84,13 @@
     <application>Phonon</application> library. This package provides
     a better implementation.</para>
 
-    <note><para>If you have both Qt4 and Qt5 installed, be sure to run 
-    <userinput>source setqt4</userinput> before installing Phonon.
-    </para></note>
-  
+    <para>
+      First, silence a lot of warnings caused by using the latest toolchain
+      by running the following command:
+    </para>
+
+<screen><userinput>sed -i "s:BSD_SOURCE:DEFAULT_SOURCE:g" cmake/FindPhononInternal.cmake</userinput></screen>
+
     <para>Install <application>Phonon</application> by running the following
     commands:</para>
 
@@ -94,11 +98,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=&kde-dir;                               \
-      -DCMAKE_BUILD_TYPE=Release                                 \
-      -DCMAKE_INSTALL_LIBDIR=lib                                 \
-      -DPHONON_INSTALL_QT_EXTENSIONS_INTO_SYSTEM_QT=FALSE        \
-      -DDBUS_INTERFACES_INSTALL_DIR=/usr/share/dbus-1/interfaces \
+cmake -DCMAKE_INSTALL_PREFIX=&kde-dir;                  \
+      -DCMAKE_BUILD_TYPE=Release                          \
+      -DCMAKE_INSTALL_LIBDIR=lib                          \
+      -DPHONON_INSTALL_QT_EXTENSIONS_INTO_SYSTEM_QT=FALSE \
       -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 
@@ -121,13 +124,6 @@ make</userinput></screen>
       This switch ensures that the plugins and mkspecs files get installed in
       the correct location.
     </para>
-
-    <para>
-     <parameter>-DDBUS_INTERFACES_INSTALL_DIR=/usr/share/dbus-1/interfaces</parameter>:
-      This switch sets the correct installation path for the 
-      <application>D-Bus</application> interfaces file.
-    </para>
-
 <!--
     <para>
       <option>-DPHONON_BUILD_PHONON4QT5=ON</option>: Use this switch if you want to
