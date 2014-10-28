@@ -4,25 +4,25 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY webkitgtk26-download-http "http://webkitgtk.org/releases/webkitgtk-&webkitgtk26-version;.tar.xz">
-  <!ENTITY webkitgtk26-download-ftp  " ">
-  <!ENTITY webkitgtk26-md5sum        "92ee7b2b15cda9580b842834d4db118a">
-  <!ENTITY webkitgtk26-size          "9.6 MB">
-  <!ENTITY webkitgtk26-buildsize     "874 MB">
-  <!ENTITY webkitgtk26-time          "23 SBU (using parallelism=8)">
+  <!ENTITY webkit2gtk-download-http "http://webkitgtk.org/releases/webkitgtk-&webkit2gtk-version;.tar.xz">
+  <!ENTITY webkit2gtk-download-ftp  " ">
+  <!ENTITY webkit2gtk-md5sum        "92ee7b2b15cda9580b842834d4db118a">
+  <!ENTITY webkit2gtk-size          "9.6 MB">
+  <!ENTITY webkit2gtk-buildsize     "905 MB">
+  <!ENTITY webkit2gtk-time          "95 SBU">
 ]>
 
-<sect1 id="webkitgtk26" xreflabel="WebKitGTK+-&webkitgtk26-version;">
-  <?dbhtml filename="webkitgtk26.html"?>
+<sect1 id="webkit2gtk" xreflabel="WebKitGTK+-&webkit2gtk-version;">
+  <?dbhtml filename="webkit2gtk.html"?>
 
   <sect1info>
     <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
-  <title>WebKitGTK+-&webkitgtk26-version;</title>
+  <title>WebKitGTK+-&webkit2gtk-version;</title>
 
-  <indexterm zone="webkitgtk26">
+  <indexterm zone="webkit2gtk">
     <primary sortas="a-WebKitGTK+">WebKitGTK+</primary>
   </indexterm>
 
@@ -30,10 +30,9 @@
     <title>Introduction to WebKitGTK+</title>
 
     <para>
-      The <application>WebKitGTK+</application> is the port of the portable web
-      rendering engine <application>WebKit</application> to the
-      <application>GTK+ 3</application> and <application>GTK+ 2</application>
-      platforms.
+      The <application>WebKitGTK+</application> is the port of the portable
+      web rendering engine <application>WebKit</application> to the
+      <application>GTK+ 3</application> platform.
     </para>
 
     &lfs76_checked;
@@ -42,32 +41,32 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Download (HTTP): <ulink url="&webkitgtk26-download-http;"/>
+          Download (HTTP): <ulink url="&webkit2gtk-download-http;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download (FTP): <ulink url="&webkitgtk26-download-ftp;"/>
+          Download (FTP): <ulink url="&webkit2gtk-download-ftp;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download MD5 sum: &webkitgtk26-md5sum;
+          Download MD5 sum: &webkit2gtk-md5sum;
         </para>
       </listitem>
       <listitem>
         <para>
-          Download size: &webkitgtk26-size;
+          Download size: &webkit2gtk-size;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated disk space required: &webkitgtk26-buildsize;
+          Estimated disk space required: &webkit2gtk-buildsize;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated build time: &webkitgtk26-time;
+          Estimated build time: &webkit2gtk-time;
         </para>
       </listitem>
     </itemizedlist>
@@ -78,7 +77,6 @@
     <para role="required">
       <xref linkend="cmake"/>,
       <xref linkend="gst10-plugins-base"/>,
-      <xref linkend="gtk2"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="icu"/>,
       <xref linkend="libsecret"/>,
@@ -94,19 +92,25 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="enchant"/>,
+      <xref linkend="geoclue2"/> or
       <xref linkend="geoclue"/>,
-      <xref linkend="gobject-introspection"/>,
-      <xref linkend="hicolor-icon-theme"/>
+      <xref linkend="gobject-introspection"/> and
+      <xref linkend="gtk2"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/>,
-      <xref linkend="harfbuzz"/>,
-      <xref linkend="llvm"/>,
-      <ulink url="http://gitorious.org/geoclue2/">GeoClue2</ulink>, and
+      <xref linkend="gtk-doc"/> and
       <ulink url="http://xsltml.sourceforge.net/">MathML</ulink>
     </para>
+
+    <note>
+      <para>
+        Note that <application>WebKitGTK+</application> links against
+        <application>GTK+ 2</application> in order to be able to use
+        NPAPI plugins such as Adobe Flash.
+      </para>
+    </note>
 
     <para condition="html" role="usernotes">
       User Notes: <ulink url="&blfs-wiki;/webkitgtk"/>
@@ -116,53 +120,32 @@
   <sect2 role="installation">
     <title>Installation of WebKitGTK+</title>
 
-    <bridgehead renderas="sect3">Installation of
-    <application>WebKitGTK+</application></bridgehead>
-
     <para>
-      Install <application>WebKitGTK+</application> by running the
-      following commands:
+      Install <application>WebKitGTK+</application> by running the following
+      commands:
     </para>
 
-<screen><userinput>sed -i 's/”/\"/g' Source/WebCore/xml/XMLViewer.{css,js} &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
 
-mkdir -vp build &amp;&amp;
-cd build        &amp;&amp;
-
-cmake -DCMAKE_BUILD_TYPE=Release    \
-      -DCMAKE_INSTALL_PREFIX=/usr   \
-      -DCMAKE_SKIP_RPATH=ON         \
-      -DPORT=GTK                    \
-      -DLIB_INSTALL_DIR=/usr/lib .. &amp;&amp;
+cmake -DCMAKE_BUILD_TYPE=Release  \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_SKIP_RPATH=ON       \
+      -DPORT=GTK                  \
+      -DLIB_INSTALL_DIR=/usr/lib  \
+      -Wno-dev ..
 make</userinput></screen>
 
-    <para>
-      This package does not have a working testsuite.<!-- However, there are two
-      useable basic graphical web browsers in the build directory,
-      <application>Programs/GtkLauncher</application> and
-      <application>Programs/MiniBrowser</application>. If launching any one
-      fails, there is a problem with the build.-->
-    </para>
 
-    <note><para>
-      When installing, the Makefile does some additional compiling and linking.
-      If you do not have Xorg in /usr, the LIBRARY_PATH and PKG_CONFIG_PATH
-      variables need to be defined for the root user.  If using sudo to assume
-      root, use the -E option to pass your current environment variables for the
-      install process.
-    </para></note>
+    <para>
+      This package does not have a working testsuite.
+    </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
-
-install -vdm755 /usr/share/gtk-doc/html/webkit{2,dom}gtk-4.0, &amp;&amp;
-install -vm644  ../Documentation/webkit2gtk/html/* \
-                /usr/share/gtk-doc/html/webkit2gtk-4.0 &amp;&amp;
-install -vm644  ../Documentation/webkitdomgtk/html/* \
-                /usr/share/gtk-doc/html/webkitdomgtk-4.0</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -170,25 +153,40 @@ install -vm644  ../Documentation/webkitdomgtk/html/* \
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i ...</command>: Fixes typos in two source code files.
+      <parameter>-DCMAKE_BUILD_TYPE=Release</parameter>: This switch is used
+      to apply higher level of the compiler optimizations.
     </para>
 
     <para>
-      <option>-DUSE_SYSTEM_MALLOC=ON</option>: This switch enables building
-      against the system installed <application>malloc</application>.
+      <parameter>-DCMAKE_SKIP_RPATH=ON</parameter>: This switch is used to
+      prevent hardcoding a runtime path into the built executables.
+    </para>
+
+    <para>
+      <parameter>-DLIB_INSTALL_DIR=/usr/lib</parameter>: This switch is used
+      to get libraries to install to <filename
+      class="directory">$KF5_PREFIX/lib</filename> instead of <filename
+      class="directory">$KF5_PREFIX/lib64</filename> on a 64 bit system.
+    </para>
+
+    <para>
+      <option>-DENABLE_SPELLCHECK=OFF</option>: Use this switch if you don't
+      want to install <xref linkend="enchant"/> and don't need the spell
+      checking feature.
     </para>
 
     <para>
       <option>-DENABLE_GEOLOCATION=OFF</option>: Use this switch if you don't
       want to install <xref linkend="geoclue"/> or
-      <ulink url="http://gitorious.org/geoclue2/">GeoClue2</ulink>.
+      <xref linkend="geoclue2"/> and don't need the geolocation feature.
     </para>
 
     <para>
-      <option>-DENABLE_GTKDOC=ON</option>: Use this switch if <xref
-      linkend="gtk-doc"/> is installed and you wish to rebuild and install the
-      API documentation.
+      <option>-DENABLE_GTKDOC=ON</option>: Use this switch if you have
+      installed <xref linkend="gtk-doc"/> and wish to build the API
+      manuals.
     </para>
+
 
   </sect2>
 
@@ -196,7 +194,7 @@ install -vm644  ../Documentation/webkitdomgtk/html/* \
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
@@ -212,7 +210,7 @@ install -vm644  ../Documentation/webkitdomgtk/html/* \
           /usr/include/webkitgtk-4.0,
           /usr/lib/webkit2gtk-4.0,
           /usr/libexec/webkit2gtk-4.0,
-          /usr/share/gtk-doc/html/webkit2gtk-4.0, and
+          /usr/share/gtk-doc/html/webkit2gtk-4.0 and
           /usr/share/gtk-doc/html/webkitdomgtk-4.0
         </seg>
       </seglistitem>
@@ -230,7 +228,7 @@ install -vm644  ../Documentation/webkitdomgtk/html/* \
             is a command-line utility that allows you to run JavaScript programs
             outside of the context of a web browser.
           </para>
-          <indexterm zone="webkitgtk26 jsc">
+          <indexterm zone="webkit2gtk jsc">
             <primary sortas="b-jsc">jsc</primary>
           </indexterm>
         </listitem>
@@ -241,24 +239,23 @@ install -vm644  ../Documentation/webkitdomgtk/html/* \
         class="libraryfile">libjavascriptcoregtk-4.0.so</filename></term>
         <listitem>
           <para>
-            contains core JavaScript API functions used by
-            <command>jsc</command> and <filename
-            class="libraryfile">libwebkit2gtk-4.0</filename>.
+            contains core JavaScript API functions used by <command>jsc</command>
+            and <filename class="libraryfile">libwebkit2gtk-4.0.so</filename>.
           </para>
-          <indexterm zone="webkitgtk26 libjavascriptcoregtk-4.0">
-            <primary sortas="c-libjavascriptcoregtk-4.0">libjavascriptcoregtk-4.0.0.so</primary>
+          <indexterm zone="webkit2gtk libjavascriptcoregtk-4.0">
+            <primary sortas="c-libjavascriptcoregtk-4.0">libjavascriptcoregtk-4.0.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libwebkit2gtk-4">
+      <varlistentry id="libwebkit2gtk-4.0">
         <term><filename class="libraryfile">libwebkit2gtk-4.0.so</filename></term>
         <listitem>
           <para>
             contains the <application>WebKit2</application> API functions.
           </para>
-          <indexterm zone="webkitgtk26 libwebkit2gtk-4">
-            <primary sortas="c-libwebkit2gtk-4">libwebkit2gtk-4.0.so</primary>
+          <indexterm zone="webkit2gtk libwebkit2gtk-4.0">
+            <primary sortas="c-libwebkit2gtk-4.0">libwebkit2gtk-4.0.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
