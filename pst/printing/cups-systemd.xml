@@ -77,7 +77,7 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="colord"/>,
-      <xref linkend="dbus"/>, and
+      <xref linkend="dbus"/> and
       <xref linkend="libusb"/>
     </para>
 
@@ -90,22 +90,22 @@
       <xref linkend="mitkrb"/>,
       <xref linkend="openjdk"/>,
       <xref linkend="php"/>,
-      <xref linkend="python2"/>, and
+      <xref linkend="python2"/> and
       <xref linkend="xdg-utils"/>
-     
     </para>
 
-    <bridgehead renderas="sect4">Required (Postinstall)</bridgehead>
-    <para role="required runtime">
+    <bridgehead renderas="sect4">Required (Runtime)</bridgehead>
+    <para role="optional">
       <xref linkend="cups-filters"/>
     </para>
 
-    <bridgehead renderas="sect4">Optional (Postinstall)</bridgehead>
-    <para role="optional runtime">
+    <bridgehead renderas="sect4">Optional (Runtime)</bridgehead>
+    <para role="optional">
+      <ulink url="https://www.openprinting.org/download/foomatic/">Foomatic</ulink>,
       <xref linkend="gutenprint"/> and
-      <ulink url="http://hplipopensource.com/hplip-web/index.html">hplip</ulink> (HP printers)
+      <ulink url="http://hplipopensource.com/hplip-web/index.html">HPLIP</ulink> (HP printers)
     </para>
-      
+
     <para condition="html" role="usernotes">User Notes:
       <ulink url="&blfs-wiki;/cups"/>
     </para>
@@ -210,16 +210,14 @@
       Build <application>Cups</application> by running the following commands:
     </para>
 
-<screen><userinput>sed -i 's:555:755:g;s:444:644:g' Makedefs.in           &amp;&amp;
-sed -i '/MAN.*.EXT/s:.gz::g' \
-       configure config-scripts/cups-manpages.m4       &amp;&amp;
-sed -i '/LIBGCRYPTCONFIG/d' config-scripts/cups-ssl.m4 &amp;&amp;
+<screen><userinput>sed -i "s:555:755:g;s:444:644:g" Makedefs.in                 &amp;&amp;
+sed -i "/MAN.*.EXT/s:.gz::g" config-scripts/cups-manpages.m4 &amp;&amp;
+sed -i "/LIBGCRYPTCONFIG/d" config-scripts/cups-ssl.m4       &amp;&amp;
 
 aclocal  -I config-scripts &amp;&amp;
 autoconf -I config-scripts &amp;&amp;
 
 ./configure --libdir=/usr/lib            \
-            --disable-systemd            \
             --with-rcdir=/tmp/cupsinit   \
             --with-system-groups=lpadmin \
             --with-docdir=/usr/share/cups/doc-&cups-version; &amp;&amp;
@@ -239,7 +237,7 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install &amp;&amp;
 rm -rf /tmp/cupsinit &amp;&amp;
-ln -svnf ../cups/doc-&cups-version; /usr/share/doc/cups-&cups-version;</userinput></screen>
+ln -sfv ../cups/doc-&cups-version; /usr/share/doc/cups-&cups-version;</userinput></screen>
 
     <para>
       Create a basic <application>Cups</application> client configuration file
@@ -261,8 +259,9 @@ rm -rf /usr/share/cups/data/testprint</userinput></screen>
     <note>
       <para>
         If you reinstall or update <application>Cups</application>, commands
-        above break <xref linkend="cups-filters"/>, which needs, therefore,
-        to be reinstalled.</para>
+        above will break <xref linkend="cups-filters"/>, so it needs to be
+        reinstalled.
+      </para>
     </note>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -274,26 +273,21 @@ rm -rf /usr/share/cups/data/testprint</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed ... Makedefs.in</command>: Fix files and directories
-      permissions.
+      <command>sed -i ... Makedefs.in</command>: This sed fixes
+      permissions of the installed files and directories.
     </para>
 
     <para>
-      <command>sed ... cups-manpages.m4</command>: This sed prevents
-      compression of the man pages by default.
+      <command>sed -i ... cups-manpages.m4</command>: This sed
+      prevents compression of the man pages by default.
     </para>
 
     <para>
-      <command>sed ... cups-ssl.m4</command>: Prevent
-      <command>configure</command> script from searching
+      <command>sed -i ... cups-ssl.m4</command>: This sed prevents
+      <command>configure</command> from searching for
       <command>libgcrypt-config</command>, because
-      <application>libgcrypt</application> is not used anywere else in the
+      <application>libgcrypt</application> is not required by the
       package.
-    </para>
-
-    <para>
-      <parameter>--disable-systemd</parameter>: Systemd is not supported by
-      BLFS.
     </para>
 
     <para>
@@ -340,14 +334,13 @@ rm -rf /usr/share/cups/data/testprint</userinput></screen>
       <title>Configuration Information</title>
 
       <para>
-        Normally, printers are set up via a web browser.  The
-        <application>Cups</application> server will normally connect via
-        the url http://localhost:631.  From there printers, print
-        jobs, and the server configuration can be set up and managed.
-        Remote system administration can also be set up.  Configuration
-        can also be done from the command line via the 
-        <command>lpadmin</command>, <command>lpoptions</command>, 
-        and <command>lpstat</command> commands.
+        The <application>Cups</application> web interface can be accessed
+        via <ulink url="http://localhost:631"/>. From there, printers
+        and print jobs can be managed, and the server configuration
+        can be changed. Configuration can also be done from the command
+        line using the  <command>lpadmin</command>,
+        <command>lpoptions</command> and <command>lpstat</command>
+        commands.
       </para>
 
       <para>
@@ -401,20 +394,20 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3 id="cups-init">
-      <title>Boot Script</title>
+      <title>Systemd Units</title>
 
       <para>
-        If you want the <application>Cups</application> print service to start
-        automatically when the system is booted, install the init
-        script included in the <xref linkend="bootscripts"/>
-        package:
+        To start the <command>cupsd</command> daemon when something tries to
+        access it, enable the previously installed systemd units by running
+        the following command as the
+        <systemitem class="username">root</systemitem> user:
       </para>
 
       <indexterm zone="cups cups-init">
         <primary sortas="f-cups">cups</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-cups</userinput></screen>
+<screen role="root"><userinput>systemctl enable org.cups.cupsd</userinput></screen>
 
     </sect3>
 
@@ -434,11 +427,11 @@ EOF</userinput></screen>
           cupsdisable, cupsenable, cupsfilter, cupsreject, cupstestdsc,
           cupstestppd, ippfind, ipptool, lp, lpadmin, lpc, lpinfo, lpmove,
           lpoptions, lpq, lpr, lprm, lpstat, ppdc, ppdhtml, ppdi, ppdmerge,
-          ppdpo, and reject
+          ppdpo and reject
         </seg>
         <seg>
           libcupscgi.so, libcupsimage.so, libcupsmime.so,
-          libcupsppdc.so, and libcups.so
+          libcupsppdc.so and libcups.so
         </seg>
         <seg>
           /etc/cups,
@@ -448,7 +441,7 @@ EOF</userinput></screen>
           /usr/share/doc/cups-&cups-version;,
           /var/cache/cups,
           /var/log/cups,
-          /var/run/cups, and
+          /var/run/cups and
           /var/spool/cups
         </seg>
       </seglistitem>

@@ -5,7 +5,7 @@
   %general-entities;
 
   <!ENTITY cups-filters-download-http
-  "http://www.openprinting.org/download/cups-filters/cups-filters-&cups-filters-version;.tar.xz">
+           "http://www.openprinting.org/download/cups-filters/cups-filters-&cups-filters-version;.tar.xz">
   <!ENTITY cups-filters-download-ftp  " ">
   <!ENTITY cups-filters-md5sum        "f16a422bf3135e90b83f969c13a259cf">
   <!ENTITY cups-filters-size          "1.3 MB">
@@ -115,6 +115,13 @@
     <title>Installation of CUPS Filters</title>
 
     <para>
+      First, fix the systemd unit file to work with
+      <application>CUPS</application> 2.0 and later:
+    </para>
+
+<screen><userinput>sed -i "s:cups.service:org.cups.cupsd.service:g" utils/cups-browsed.service</userinput></screen>
+
+    <para>
       Install <application>CUPS Filters</application> by running the following
       commands:
     </para>
@@ -138,6 +145,13 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      Install the systemd unit by running the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -v -m644 utils/cups-browsed.service /lib/systemd/system/cups-browsed.service</userinput></screen>
 
   </sect2>
 
@@ -182,7 +196,27 @@ make</userinput></screen>
 
   </sect2>
 
-<!-- TODO: Write a bootscript for cups-browsed -->
+  <sect2 role="configuration">
+    <title>Configuring Cups Filters</title>
+
+    <sect3 id="cups-filters-init">
+      <title>Systemd Units</title>
+
+      <para>
+        To start the <command>cups-browsed</command> daemon at boot, enable
+        the previously installed systemd unit by running the following command
+        as the <systemitem class="username">root</systemitem> user:
+      </para>
+
+      <indexterm zone="cups-filters cups-filters-init">
+        <primary sortas="f-cups-browsed">cups-browsed</primary>
+      </indexterm>
+
+<screen role="root"><userinput>systemctl enable cups-browsed</userinput></screen>
+
+    </sect3>
+
+  </sect2>
 
   <sect2 role="content">
     <title>Contents</title>
