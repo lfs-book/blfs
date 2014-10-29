@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY tracker-download-http "&gnome-download-http;/tracker/1.0/tracker-&tracker-version;.tar.xz">
+  <!ENTITY tracker-download-ftp  "&gnome-download-ftp;/tracker/1.0/tracker-&tracker-version;.tar.xz">
+  <!ENTITY tracker-md5sum        "b4e3462c8dfbd423ec5de4836bd5677b">
+  <!ENTITY tracker-size          "5.8 MB">
+  <!ENTITY tracker-buildsize     "130 MB">
+  <!ENTITY tracker-time          "0.9 SBU">
+]>
+
+<sect1 id="tracker" xreflabel="Tracker-&tracker-version;">
+  <?dbhtml filename="tracker.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>Tracker-&tracker-version;</title>
+
+  <indexterm zone="tracker">
+    <primary sortas="a-tracker">tracker</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Tracker</title>
+
+    <para>
+      <application>Tracker</application> is a semantic data storage for desktop
+      and mobile devices.
+    </para>
+
+    &lfs76_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&tracker-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&tracker-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &tracker-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &tracker-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &tracker-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &tracker-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Tracker Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="icu"/>,
+      <xref linkend="libpng"/>,
+      <xref linkend="sqlite"/>, and
+      <xref linkend="vala"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="gtk3"/>,
+      <xref linkend="gobject-introspection"/>,
+      <xref linkend="gst10-plugins-base"/>,
+      <xref linkend="libgee08"/>,
+      <xref linkend="libgsf"/>,
+      <xref linkend="libjpeg"/>,
+      <xref linkend="libmediaart"/>,
+      <xref linkend="libtiff"/>,
+      <xref linkend="libxml2"/>,
+      <xref linkend="nautilus"/>,
+      <xref linkend="NetworkManager"/>,
+      <xref linkend="poppler"/>,
+      <xref linkend="totem-pl-parser"/>, and
+      <xref linkend="upower"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="exempi"/>,
+      <xref linkend="ffmpeg"/>,
+      <xref linkend="flac"/>,
+      <xref linkend="giflib"/>,
+      <xref linkend="gtk-doc"/> (requires Dia and Graphviz),
+      <xref linkend="libexif"/>,
+      <xref linkend="libvorbis"/>,
+      <xref linkend="taglib"/>,
+      <ulink url="http://cihar.com/software/enca/">Enca</ulink>,
+      <ulink url="&gnome-download-http;/gupnp-dlna/">GuPNP-DLNA</ulink>,
+      <ulink url="http://sourceforge.net/projects/libcue/">libcue</ulink>,
+      <ulink url="https://git.gnome.org/browse/libgrss/">libgrss</ulink>,
+      <ulink url="&gnome-download-http;/libgxps/">libgxps</ulink>,
+      <ulink url="http://libiptcdata.sourceforge.net/">libiptcdata</ulink>,
+      <ulink url="http://libosinfo.org/">libosinfo</ulink>, and
+      <ulink url="https://www.gnu.org/software/libunistring/">libunistring</ulink>
+    </para>
+
+    <para condition="html" role="usernotes">User Notes:
+      <ulink url="&blfs-wiki;/tracker"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Tracker</title>
+
+    <para>
+      First, fix building with recent versions of <application>Giflib</application>:
+    </para>
+
+<screen><userinput>sed -i "/DGifCloseFile/s:gifFile:&amp;, NULL:g" src/tracker-extract/tracker-extract-gif.c</userinput></screen>
+
+    <para>
+      Install <application>Tracker</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr             \
+            --sysconfdir=/etc         \
+            --disable-static          \
+            --disable-unit-tests      \
+            --disable-miner-evolution \
+            --disable-miner-firefox   \
+            --disable-miner-thunderbird &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not have a working testsuite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <parameter>--disable-unit-tests</parameter>: This switch prevents
+      unit tests from being installed.
+    </para>
+
+    <para>
+      <parameter>--disable-miner-*</parameter>: These miners have been
+      reported to cause problems, so we turn them off. Additionally,
+      the <application>Evolution</application> miner doesn't build
+      with latest version of <application>Evolution</application>.
+    </para>
+
+    <para>
+      <option>--enable-libflac</option>: Use this switch if you have
+      installed <xref linkend="flac"/> and wish to build the
+      <application>Tracker</application> extractor for FLAC metadata.
+    </para>
+
+    <para>
+      <option>--enable-libvorbis</option>: Use this switch if you have
+      installed <xref linkend="libvorbis"/> and wish to build the
+      <application>Tracker</application> extractor for OGG metadata.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          tracker-control, tracker-import, tracker-info,
+          tracker-needle, tracker-preferences, tracker-search,
+          tracker-sparql, tracker-stats, and tracker-tag
+        </seg>
+        <seg>
+          libtracker-control-1.0.so, libtracker-miner-1.0.so,
+          libtracker-sparql-1.0.so, and
+          libnautilus-tracker-tags.so (<application>Nautilus</application> Extension)
+        </seg>
+        <seg>
+          /usr/include/tracker-1.0,
+          /usr/lib/tracker-1.0,
+          /usr/share/gtk-doc/html/libtracker-{control,miner,sparql}, and
+          /usr/share/tracker
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="tracker-control">
+        <term><command>tracker-control</command></term>
+        <listitem>
+          <para>
+            manages and checks status of all Tracker processes and data.
+          </para>
+          <indexterm zone="tracker tracker-control">
+            <primary sortas="b-tracker-control">tracker-control</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker-import">
+        <term><command>tracker-import</command></term>
+        <listitem>
+          <para>
+            allows data to be imported to the database by providing files
+            with Turtle content.
+          </para>
+          <indexterm zone="tracker tracker-import">
+            <primary sortas="b-tracker-import">tracker-import</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker-info">
+        <term><command>tracker-info</command></term>
+        <listitem>
+          <para>
+            asks for all the known metadata available for the given file.
+          </para>
+          <indexterm zone="tracker tracker-info">
+            <primary sortas="b-tracker-info">tracker-info</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker-needle">
+        <term><command>tracker-needle</command></term>
+        <listitem>
+          <para>
+            is a graphical front end for Tracker which has similar
+            features to tracker-search
+          </para>
+          <indexterm zone="tracker tracker-needle">
+            <primary sortas="b-tracker-needle">tracker-needle</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker-preferences">
+        <term><command>tracker-preferences</command></term>
+        <listitem>
+          <para>
+            is a graphical configuration front end for the tracker-miner-fs.
+          </para>
+          <indexterm zone="tracker tracker-preferences">
+            <primary sortas="b-tracker-preferences">tracker-preferences</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker-search">
+        <term><command>tracker-search</command></term>
+        <listitem>
+          <para>
+             searches all indexed content for an expression.
+          </para>
+          <indexterm zone="tracker tracker-search">
+            <primary sortas="b-tracker-search">tracker-search</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker-sparql">
+        <term><command>tracker-sparql</command></term>
+        <listitem>
+          <para>
+            allows the caller to run an RDF query on the database.
+          </para>
+          <indexterm zone="tracker tracker-sparql">
+            <primary sortas="b-tracker-sparql">tracker-sparql</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker-stats">
+        <term><command>tracker-stats</command></term>
+        <listitem>
+          <para>
+            returns statistics based on the ontology classes outlined
+            in the Nepomuk ontology specification.
+          </para>
+          <indexterm zone="tracker tracker-stats">
+            <primary sortas="b-tracker-stats">tracker-stats</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker-tag">
+        <term><command>tracker-tag</command></term>
+        <listitem>
+          <para>
+            allows the caller add tags, remove tags and list tags by
+            URN or to list all tags and the files associated with them.
+          </para>
+          <indexterm zone="tracker tracker-tag">
+            <primary sortas="b-tracker-tag">tracker-tag</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libtracker-control-1.0">
+        <term><filename class="libraryfile">libtracker-control-1.0.so</filename></term>
+        <listitem>
+          <para>
+            contains functions required to monitor/control Tracker miners.
+          </para>
+          <indexterm zone="tracker libtracker-control-1.0">
+            <primary sortas="c-libtracker-control-1.0">libtracker-control-1.0.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libtracker-miner-1.0">
+        <term><filename class="libraryfile">libtracker-miner-1.0.so</filename></term>
+        <listitem>
+          <para>
+            contains functions required to develop Tracker data miners.
+          </para>
+          <indexterm zone="tracker libtracker-miner-1.0">
+            <primary sortas="c-libtracker-miner-1.0">libtracker-miner-1.0.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libtracker-sparql-1.0">
+        <term><filename class="libraryfile">libtracker-sparql-1.0.so</filename></term>
+        <listitem>
+          <para>
+            contains functions for performing SPARQL queries and updates in the Tracker Store.
+          </para>
+          <indexterm zone="tracker libtracker-sparql-1.0">
+            <primary sortas="c-libtracker-sparql-1.0">libtracker-sparql-1.0.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
