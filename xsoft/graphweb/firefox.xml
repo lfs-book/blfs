@@ -4,16 +4,14 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-<!--  <!ENTITY firefox-download-http
-           "http://releases.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">-->
   <!ENTITY firefox-download-http
            "http://ftp.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">
   <!ENTITY firefox-download-ftp
            "ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.bz2">
-  <!ENTITY firefox-md5sum        "5a1c4b0b2349e3db94b45bd3f03f9288">
+  <!ENTITY firefox-md5sum        "385ad037451f141b68515c73cad01704">
   <!ENTITY firefox-size          "148 MB">
-  <!ENTITY firefox-buildsize     "4.1 GB (100 MB installed)">
-  <!ENTITY firefox-time          "12 SBU (using parallelism=8)">
+  <!ENTITY firefox-buildsize     "4.9 GB (66 MB installed)">
+  <!ENTITY firefox-time          "60 SBU">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
@@ -80,8 +78,8 @@
     <para role="required">
       <xref linkend="alsa-lib"/>,
       <xref linkend="gtk2"/>,
-      <xref linkend="zip"/>, and
-      <xref linkend="unzip"/>
+      <xref linkend="unzip"/> and
+      <xref linkend="zip"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -97,25 +95,28 @@
 
     <note>
       <para>
-        If you don't install recommended dependencies, then internal copies of
-        those packages will be used. They might be tested to work, but they can
-        be out of date or contain security holes.
+        If you don't install recommended dependencies,
+        then internal copies of those packages will
+        be used. They might be tested to work, but
+        they can be out of date or contain security
+        holes.
       </para>
     </note>
 
     <note>
       <para>
         With <application>Firefox-31.0</application> and later versions, you
-        must have installed <application>Openssl</application> before
-        <application>Python 2</application> or the build system will quickly
+        must have installed <application>OpenSSL</application> before
+        <application>Python 2</application>, or the build system will quickly
         fail with output including "ImportError: cannot import name
         HTTPSHandler". If you are in any doubt about this (e.g. upgrading
         from an older version of Firefox), check if
         <filename>/usr/lib/python2.7/lib-dynload/_ssl.so</filename> exists.
         If it does not, reinstall <xref linkend="python2"/> (after
-        installing <xref linkend="openssl"/>.  The latest version of any
+        installing <xref linkend="openssl"/>  - the latest version of any
         <emphasis>currently maintained</emphasis> version of Openssl should
-        be satisfactory if already installed. 
+        be satisfactory if already installed - if that package has not already
+        been installed).
       </para>
     </note>
 
@@ -135,7 +136,7 @@
       <xref linkend="pulseaudio"/>,
       <xref linkend="startup-notification"/>,
       <xref linkend="wget"/>,
-      <xref linkend="wireless_tools"/>, and
+      <xref linkend="wireless_tools"/> and
       <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>
     </para>
 
@@ -148,14 +149,14 @@
     <title>Installation of Firefox</title>
 
     <para>
-      The configuration of <application>Firefox</application> is accomplished
-      by creating a <filename>mozconfig</filename> file containing the desired
-      configuration options. A default <filename>mozconfig</filename> is
-      created below. To see the entire list of available configuration options
-      (and an abbreviated description of each one), issue <command>./configure
+      The configuration of <application>Firefox</application> is accomplished by
+      creating a <filename>mozconfig</filename> file containing the desired
+      configuration options. A default <filename>mozconfig</filename> is created
+      below. To see the entire list of available configuration options (and an
+      abbreviated description of each one), issue <command>./configure
       --help</command>. You may also wish to review the entire file and
-      uncomment any other desired options.  Create the file by issuing the
-      following command:
+      uncomment any other desired options.
+      Create the file by issuing the following command:
     </para>
 
 <screen><userinput>cat &gt; mozconfig &lt;&lt; "EOF"
@@ -209,7 +210,6 @@ ac_add_options --disable-crashreporter
 ac_add_options --disable-updater
 ac_add_options --disable-tests
 
-ac_add_options --enable-optimize
 ac_add_options --enable-strip
 ac_add_options --enable-install-strip
 
@@ -237,39 +237,36 @@ EOF</userinput></screen>
       commands:
     </para>
 
-    <note><para>
-      If you are compiling <application>Firefox</application> in chroot, make
-      sure you have <envar>$SHELL</envar> environment variable set or prepend
-      <envar>SHELL=/bin/sh</envar> to the first make command below.
-    </para></note>
-
-<screen><userinput>test $(uname -m) = "i686" &amp;&amp; sed -i 's/enable-optimize/disable-optimize/' mozconfig || true &amp;&amp;
-make -f client.mk</userinput></screen>
+<screen><userinput>make -f client.mk</userinput></screen>
 
     <para>
       This package does not come with a test suite.
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Install <application>Firefox</application> by running the following
+      commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>make -f client.mk install INSTALL_SDK= &amp;&amp;
 
 mkdir -pv /usr/lib/mozilla/plugins &amp;&amp;
-ln -sfv ../../mozilla/plugins /usr/lib/firefox-&firefox-version;/browser</userinput></screen>
+ln -sfv ../mozilla/plugins /usr/lib/firefox-&firefox-version;</userinput></screen>
+
+    <para>
+      The above instruction just installs the parts you need to run
+      <application>Firefox</application>. Alternatively, if you want to
+      install the full <application>Firefox</application> development
+      environment, run the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make -C firefox-build-dir install</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <command>test $(uname -m) = "i686" &amp;&amp; sed ...</command>:
-      On this version of firefox, an old bug has reappeared in 32-bit builds.
-      With optimization, the install fails with a Python error.  This
-      command will fix i686 builds and preserve the optimization on x86_64.
-    </para>
 
     <para>
       <command>make -f client.mk ...</command>: Mozilla products are packaged to
@@ -279,25 +276,8 @@ ln -sfv ../../mozilla/plugins /usr/lib/firefox-&firefox-version;/browser</userin
       get initial configuration and setup parameters.
     </para>
 
-     <para>
-      <command>make -C firefox-build-dir install</command>: This runs
-      <command>make install</command> in firefox-build-dir.
-    </para>
-
     <para>
-      <command>ln -sfv ... /usr/bin/firefox</command>: This puts a symbolic link
-      to the <command>firefox</command> executable in your <envar>PATH</envar>
-      variable.
-    </para>
-
-    <para>
-      <command>mkdir -p /usr/lib/mozilla/plugins</command>: This checks
-      that <filename class="directory">/usr/lib/mozilla/plugins</filename>
-      exists.
-    </para>
-
-    <para>
-      <command>ln -sv ... /usr/lib/firefox-&firefox-version;/browser</command>:
+      <command>ln -sfv ... /usr/lib/firefox-&firefox-version;/browser</command>:
       This command creates a symbolic link to <filename
       class="directory">/usr/lib/mozilla/plugins</filename>. It's not really
       needed, as <application>Firefox</application> checks <filename
@@ -329,7 +309,6 @@ ln -sfv ../../mozilla/plugins /usr/lib/firefox-&firefox-version;/browser</userin
     </para>
 
 <screen role="root"><userinput>mkdir -pv /usr/share/applications &amp;&amp;
-mkdir -pv /usr/share/pixmaps &amp;&amp;
 
 cat &gt; /usr/share/applications/firefox.desktop &lt;&lt; "EOF" &amp;&amp;
 <literal>[Desktop Entry]
@@ -346,8 +325,15 @@ MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xm
 StartupNotify=true</literal>
 EOF
 
-ln -sfv /usr/lib/firefox-&firefox-version;/browser/icons/mozicon128.png \
-        /usr/share/pixmaps/firefox.png</userinput></screen>
+for s in 16 32 48
+do
+install -v -Dm644 /usr/lib/firefox-&firefox-version;/browser/chrome/icons/default/default${s}.png \
+                  /usr/share/icons/hicolor/${s}x${s}/apps/firefox.png
+done &amp;&amp;
+install -v -Dm644 /usr/lib/firefox-&firefox-version;/browser/icons/mozicon128.png \
+                  /usr/share/icons/hicolor/128x128/apps/firefox.png &amp;&amp;
+gtk-update-icon-cache -qf /usr/share/icons/hicolor &amp;&amp;
+unset s</userinput></screen>
 
   </sect2>
 
@@ -357,19 +343,18 @@ ln -sfv /usr/lib/firefox-&firefox-version;/browser/icons/mozicon128.png \
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
-      <segtitle>Installed Directory</segtitle>
+      <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
           firefox
         </seg>
         <seg>
-          Numerous libraries, browser components, plugins, extensions, and
-          helper modules installed in
-          <filename class="directory">/usr/lib/firefox-&firefox-version;</filename>
+          None
         </seg>
         <seg>
-          /usr/lib/firefox-&firefox-version;
+          /usr/lib/firefox-&firefox-version; and
+          /usr/lib/mozilla/plugins
         </seg>
       </seglistitem>
     </segmentedlist>
