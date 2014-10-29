@@ -4,8 +4,8 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY tigervnc-download-http " ">
-  <!ENTITY tigervnc-download-ftp "&sourceforge-repo;/project/tigervnc/tigervnc/&tigervnc-version;/tigervnc-&tigervnc-version;.tar.gz">
+  <!ENTITY tigervnc-download-http "&sourceforge-repo;/tigervnc/tigervnc-&tigervnc-version;.tar.gz">
+  <!ENTITY tigervnc-download-ftp  " ">
   <!ENTITY tigervnc-md5sum        "e80b16aa74f1d8e89f284a6aef99955d">
   <!ENTITY tigervnc-size          "6.6 MB">
   <!ENTITY tigervnc-buildsize     "168 MB">
@@ -128,7 +128,7 @@ patch -Np1 -i ../tigervnc-&tigervnc-version;-gethomedir-1.patch &amp;&amp;
 patch -Np1 -i ../tigervnc-&tigervnc-version;-getmaster-1.patch  &amp;&amp;
 patch -Np1 -i ../tigervnc-&tigervnc-version;-xorg115-1.patch    &amp;&amp;
 
-cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr &amp;&amp;
+cmake -DCMAKE_INSTALL_PREFIX=/usr -Wno-dev &amp;&amp;
 make &amp;&amp;
 
 pushd unix/xserver                  &amp;&amp;

@@ -9,8 +9,8 @@
   <!ENTITY gparted-download-ftp  " ">
   <!ENTITY gparted-md5sum        "d9df57f9d4b4dbd148644774f8bbccfb">
   <!ENTITY gparted-size          "2.1 MB">
-  <!ENTITY gparted-buildsize     "78 MB (additional 4 MB, building the optional documentation)">
-  <!ENTITY gparted-time          "0.9 SBU (additional 0.1 SBU, building the optional documentation)">
+  <!ENTITY gparted-buildsize     "80 MB">
+  <!ENTITY gparted-time          "1.0 SBU">
 ]>
 
 <sect1 id="gparted" xreflabel="Gparted-&gparted-version;">
@@ -143,7 +143,7 @@ make</userinput></screen>
       <xref linkend="reiserfs"/>,
       <xref linkend="xfsprogs"/>,
       <ulink url="https://btrfs.wiki.kernel.org/index.php/Btrfs_source_repositories">
-        btrfs-progs</ulink>,
+      btrfs-progs</ulink>,
       <ulink url="http://www.daniel-baumann.ch/software/dosfstools/">dosfstools</ulink>,
       <ulink url="http://ftp.gnu.org/pub/gnu/mtools/">mtools</ulink> (required
       to read and write FAT16/32 volume labels and UUIDs),
@@ -155,65 +155,53 @@ make</userinput></screen>
 
     <para>
       Root privileges are required to run Gparted. If you wish to run the
-      application from the menu, further applications and configurations are
-      necessary. Examples of applications that may be used:
-      <ulink url="http://people.debian.org/~kov/gksu">gksu</ulink>,
-      <ulink url="https://launchpad.net/kdesudo">kdesudo</ulink>, or
-      <ulink url="https://github.com/tarakbumba/xdg-su">xdg-su</ulink>.
-      Other solution is to use <application>pkexec</application>, from
-      <xref linkend="polkit"/>, but some configuration is necessary.
-      Another simple solution is <xref linkend="ssh-askpass"/>. Below, we
-      describe these two alternatives: "ssh-askpass" and "pkexec".
+      application from the menu, further packages and configuration are
+      necessary. One solution is to use <command>pkexec</command>
+      from <xref linkend="polkit"/>. Another solution is to use <xref
+      linkend="ssh-askpass"/>.
     </para>
 
     <sect3 role="ssh-askpass">
       <title>ssh-askpass</title>
         <para>
-          To optionally use <xref linkend="ssh-askpass"/> if it is installed in
-          your system, run the following commands as the
-          <systemitem class="username">root</systemitem> user:
+          To optionally use <xref linkend="ssh-askpass"/>, run the following
+          commands as the <systemitem class="username">root</systemitem> user:
         </para>
 
-<screen role="root"><userinput>cp -v /usr/share/applications/gparted.desktop /usr/share/applications/gparted.desktop.back &amp;&amp;
-sed -i 's/Exec=/Exec=sudo -A /'               /usr/share/applications/gparted.desktop      &amp;&amp;</userinput></screen>
+<screen role="root"><userinput>cp -v  /usr/share/applications/gparted.desktop \
+       /usr/share/applications/gparted.desktop.back &amp;&amp;
 
-        <para>
-         Now, clicking in the menu item for Gparted, a dialog appears in the
-         screen, asking for the administrator password.</para>
+sed -i 's/Exec=/Exec=sudo -A /'
+       /usr/share/applications/gparted.desktop      &amp;&amp;</userinput></screen>
 
     </sect3>
 
     <sect3 role="pkexec">
       <title>pkexec</title>
+
         <para>
-          To optionally use <application>pkexec</application>, you need
-          <xref linkend="polkit-gnome"/> or <xref linkend="lxpolkit"/>, and
-          <xref linkend="systemd"/> installed with support to
-          <xref linkend="linux-pam"/> and <xref linkend="polkit"/>. As the
-          <systemitem class="username">root</systemitem> user, configure
-          <xref linkend="gparted"/> and <xref linkend="polkit"/> with the
-          following commands:
+          To optionally use <command>pkexec</command>, you need
+          <xref linkend="polkit-gnome"/> or <xref linkend="lxpolkit"/> or
+          any Polkit authentication agent provided by your desktop
+          environment and  <xref linkend="systemd"/> (for Logind). Run the
+          following commands as the <systemitem
+          class="username">root</systemitem> user:
         </para>
 
-<screen role="root"><userinput>cp -v /usr/share/applications/gparted.desktop \
-                                     /usr/share/applications/gparted.desktop.back &amp;&amp;
+<screen role="root"><userinput>cp -v  /usr/share/applications/gparted.desktop \
+       /usr/share/applications/gparted.desktop.back &amp;&amp;
+
 sed -i 's:/usr/sbin/gparted:/usr/sbin/gparted_polkit:' \
-                                     /usr/share/applications/gparted.desktop      &amp;&amp;
+       /usr/share/applications/gparted.desktop      &amp;&amp;
 
 cat &gt; /usr/sbin/gparted_polkit &lt;&lt; "EOF" &amp;&amp;
-<literal>#!/bin/bash
+<literal>#!/bin/sh
 
 pkexec /usr/sbin/gparted $@</literal>
 EOF
-chmod -v 0755 /usr/sbin/gparted_polkit</userinput></screen>
+chmod -v 755 /usr/sbin/gparted_polkit
 
-        <para>
-          Still as the <systemitem class="username">root</systemitem> user,
-          configure <xref linkend="polkit"/> and <xref linkend="gparted"/> to
-          use <application>pkexec</application>:
-        </para>
-
-<screen role="root"><userinput>cat &gt; /usr/share/polkit-1/actions/org.gnome.gparted.policy &lt;&lt; "EOF"
+cat &gt; /usr/share/polkit-1/actions/org.gnome.gparted.policy &lt;&lt; "EOF"
 <literal>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;!DOCTYPE policyconfig PUBLIC
  "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
@@ -234,11 +222,7 @@ chmod -v 0755 /usr/sbin/gparted_polkit</userinput></screen>
 
 &lt;/policyconfig&gt;</literal>
 EOF
-chmod -v 0644 /usr/share/polkit-1/actions/org.gnome.gparted.policy</userinput></screen>
-
-        <para>
-         Now, clicking in the menu item for Gparted, a dialog appears in the
-         screen, asking for the administrator password.</para>
+chmod -v 644 /usr/share/polkit-1/actions/org.gnome.gparted.policy</userinput></screen>
 
     </sect3>
 
