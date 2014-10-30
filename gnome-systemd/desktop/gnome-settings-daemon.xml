@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY gnome-settings-daemon-download-http
-           "&gnome-download-http;/gnome-settings-daemon/&gnome-minor;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+           "&gnome-download-http;/gnome-settings-daemon/&gnome-minor14;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
   <!ENTITY gnome-settings-daemon-download-ftp
-           "&gnome-download-ftp;/gnome-settings-daemon/&gnome-minor;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
-  <!ENTITY gnome-settings-daemon-md5sum        "63b053c499e73e522b316c54224b22dc">
+           "&gnome-download-ftp;/gnome-settings-daemon/&gnome-minor14;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+  <!ENTITY gnome-settings-daemon-md5sum        "2151ac3352a9cfaff6adf1902f7c96c7">
   <!ENTITY gnome-settings-daemon-size          "1.6 MB">
-  <!ENTITY gnome-settings-daemon-buildsize     "70 MB">
-  <!ENTITY gnome-settings-daemon-time          "0.7 SBU">
+  <!ENTITY gnome-settings-daemon-buildsize     "78 MB">
+  <!ENTITY gnome-settings-daemon-time          "0.8 SBU">
 ]>
 
 <sect1 id="gnome-settings-daemon" xreflabel="gnome-settings-daemon-&gnome-settings-daemon-version;">
@@ -79,7 +79,6 @@
     <para role="required">
       <xref linkend="colord"/>,
       <xref linkend="geoclue2"/>,
-      <xref linkend="geocode-glib"/>,
       <xref linkend="gnome-desktop"/>,
       <xref linkend="libcanberra"/>,
       <xref linkend="libgweather"/>,
@@ -94,8 +93,9 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="cups"/>,
-      <xref linkend="ibus"/>, and
-      <xref linkend="nss"/>
+      <xref linkend="NetworkManager"/>,
+      <xref linkend="nss"/>, and
+      <xref linkend="wayland"/>
     </para>
 
     <note>
@@ -119,10 +119,9 @@
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr        \
-            --sysconfdir=/etc    \
-            --disable-packagekit \
-            --disable-static     &amp;&amp;
+<screen><userinput>./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --disable-static  &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -140,11 +139,6 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para>
-      <parameter>--disable-packagekit</parameter>: This switch disables
-      use of PackageKit which isn't suitable for BLFS.
-    </para>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 
@@ -160,8 +154,9 @@ make</userinput></screen>
     </para>
 
     <para>
-      <option>--disable-ibus</option>: Use this switch if you have not
-      installed recommended dependency <application>IBus</application>.
+      <option>--disable-network-manager</option>: Use this switch if
+      you have not installed recommended dependency
+      <application>NetworkManager</application>.
     </para>
 
     <para>
@@ -169,6 +164,11 @@ make</userinput></screen>
       you have not installed recommended dependency
       <application>NSS</application> and wish to disable SmartCard
       support.
+    </para>
+
+    <para>
+      <option>--disable-wayland</option>: Use this switch if you have not
+      installed recommended dependency <application>Wayland</application>.
     </para>
 
   </sect2>
@@ -191,7 +191,6 @@ make</userinput></screen>
         <seg>
           /etc/gnome-settings-daemon,
           /usr/include/gnome-settings-daemon-3.0,
-          /usr/lib/gnome-settings-daemon,
           /usr/lib/gnome-settings-daemon-3.0,
           /usr/share/gnome-settings-daemon and
           /usr/share/gnome-settings-daemon-3.0
