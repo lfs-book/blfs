@@ -91,9 +91,9 @@
       running the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr  \
-            --disable-zlib \
-            --datadir=/usr/share/misc &amp;&amp;
+<screen><userinput>sed -i '/^usbids/ s:usb.ids:hwdata/&amp;:' lsusb.py &amp;&amp;
+
+./configure --prefix=/usr --datadir=/usr/share/hwdata &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -126,19 +126,15 @@ mv -v /usr/sbin/update-usbids.sh /usr/sbin/update-usbids</userinput></screen>
 
     <para>
       The <filename>usb.ids</filename> data file is constantly being
-      updated. To get a current version of this file, run
-      <command>update-usbids</command> as the <systemitem
-      class="username">root</systemitem> user. This program requires the
-      <xref linkend="which"/> script or program to find <xref linkend="lynx"/>
-      or <xref linkend="wget"/> which are used to download the most current file,
-      and replace the existing file in
-      <filename class="directory">/usr/share/misc</filename>.
-    </para>
+      updated. To get a current version of this file, run, as the <systemitem
+      class="username">root</systemitem> user:</para>
+
+<screen role="root"><userinput>wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</userinput></screen>
 
     <para>
       You may wish to add an entry to
       <systemitem class="username">root</systemitem>'s (or any other user who has
-      write privilege to <filename class="directory">/usr/share/misc</filename>)
+      write privilege to <filename class="directory">/usr/share/hwdata</filename>)
       crontab to automatically update the <filename>usb.ids</filename> file
       periodically.
     </para>
