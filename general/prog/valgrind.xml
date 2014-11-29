@@ -100,8 +100,8 @@
     <para>Install <application>Valgrind</application> by running the following
     commands:</para>
 
-<screen><userinput>sed -i 's|/doc/valgrind||' docs/Makefile.in &amp;&amp;
-
+<screen><userinput>sed -i 's/-mt//g' configure &amp;&amp;
+sed -i 's|/doc/valgrind||' docs/Makefile.in &amp;&amp;
 ./configure --prefix=/usr \
             --datadir=/usr/share/doc/valgrind-&valgrind-version; &amp;&amp;
 make</userinput></screen>
@@ -128,6 +128,11 @@ popd</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>sed -i 's/-mt//g' configure</command>: Fixes configure script to
+      find newer versions of Boost.
+    </para>
 
     <para>
       <command>sed s|/doc/valgrind|| ... </command>: This sed provides for 
