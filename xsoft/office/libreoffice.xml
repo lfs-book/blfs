@@ -7,28 +7,28 @@
   <!ENTITY libreoffice-dl "http://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "86aa9cad125fec16c5cd1d9d964e1d20">
+  <!ENTITY libreoffice-core-md5sum        "98312fcb1e1ab37321f29f64f312160a">
   <!ENTITY libreoffice-core-size          "146 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "996ec400156194fe26d24ffbccbc5b7a">
+  <!ENTITY libreoffice-dict-md5sum        "c323e5d646b3681c81fdd98510c2ae5a">
   <!ENTITY libreoffice-dict-size          "36 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "63a59a4c77a72856b47caf1871cfc48f">
+  <!ENTITY libreoffice-help-md5sum        "71ed47d8148dd66275bd87699b31c242">
   <!ENTITY libreoffice-help-size          "1.8 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum        "0236e56349006fc8fec8e7df749c13b1">
-  <!ENTITY libreoffice-translations-size          "121 MB">
+  <!ENTITY libreoffice-translations-md5sum        "6e405e2b499ce28bce1e926bcb7268da">
+  <!ENTITY libreoffice-translations-size          "122 MB">
 
   <!-- This package has some peculiarities, some discussed in the text.
   Two values for SBU and buildsize are given due to the large difference
   measured by editors, depending on architecture and sometimes installed
   dependencies (with-system... -->
 
-  <!ENTITY libreoffice-buildsize          "6.6 GB (570 MB installed), with translations">
-  <!ENTITY libreoffice-time               "61 SBU (using parallelism=4), with translations">
+  <!ENTITY libreoffice-buildsize          "7.86 GB (538 MB installed), with translations">
+  <!ENTITY libreoffice-time               "185.2 SBU (using parallelism=2), with translations">
 
   <!-- [bdubbs]  For version 4.3.2.2 Built on x86_64 using -\-with-parallelism=4 -->
 
@@ -381,16 +381,11 @@ ln -sv ../../libreoffice-translations-&libreoffice-dlversion;.tar.xz src/</useri
 
 sed -e "/gzip -f/d"   \
     -e "s|.1.gz|.1|g" \
-    -i bin/distro-install-desktop-integration        &amp;&amp;
+    -i bin/distro-install-desktop-integration &amp;&amp;
 
 sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
 
-chmod -v +x bin/unpack-sources                       &amp;&amp;
-
-sed -e "s/target\.mk/langlist\.mk/"                \
-    -e "s/tar -xf/tar -x --strip-components=1 -f/" \
-    -e "/tar -x/s/lo_src_dir/start_dir/"           \
-    -i bin/unpack-sources                            &amp;&amp;
+chmod -v +x bin/unpack-sources &amp;&amp;
 
 ./autogen.sh --prefix=$LO_PREFIX         \
              --sysconfdir=/etc           \
@@ -484,8 +479,7 @@ unset i</userinput></screen>
 
     <para>
       <command>sed -e ...</command>: The first sed prevents compression of the
-      manual pages, the second one prevents install from failing, and
-      the third one fixes the unpack script.
+      manual pages, the second one prevents install from failing.
     </para>
 
     <para>
