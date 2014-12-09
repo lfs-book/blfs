@@ -6,10 +6,10 @@
 
   <!ENTITY qca-download-http "http://delta.affinix.com/download/qca/2.0/qca-&qca-version;.tar.bz2">
   <!ENTITY qca-download-ftp  " ">
-  <!ENTITY qca-md5sum        "fc15bd4da22b8096c51fcfe52d2fa309">
-  <!ENTITY qca-size          "4.3 MB">
-  <!ENTITY qca-buildsize     "110 MB">
-  <!ENTITY qca-time          "2.2 SBU">
+  <!ENTITY qca-md5sum        "c2b00c732036244701bae4853a2101cf">
+  <!ENTITY qca-size          "933 KB">
+  <!ENTITY qca-buildsize     "29.2 MB">
+  <!ENTITY qca-time          "1.9 SBU">
 ]>
 
 <sect1 id="qca" xreflabel="qca-&qca-version;">
@@ -62,8 +62,25 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-    <xref linkend="qt4"/> and
-    <xref linkend="which"/>
+    <xref linkend="cmake"/> and
+    <xref linkend="qt4"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="cacerts"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="cyrus-sasl"/>,
+      <xref linkend="gnupg2"/>,
+      <xref linkend="libgcrypt"/>,
+      <xref linkend="nss"/>,
+      <xref linkend="openssl"/>,
+      <xref linkend="qt5"/>,
+      <ulink url="http://botan.randombit.net/">Botan</ulink> and
+      <ulink url="https://github.com/OpenSC/pkcs11-helper">pkcs11-helper</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -77,8 +94,19 @@
     <para>Install <application>Qca</application> by running the following
     commands:</para>
 
-<screen><userinput>sed -i '217s@set@this->set@' src/botantools/botan/botan/secmem.h &amp;&amp;
-./configure --prefix=/usr --no-separate-debug-info &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_BUILD_TYPE=Release  \
+      -DQT4_BUILD=ON              \
+      -DQCA_DOC_INSTALL_DIR=/usr/share/doc/qca-2.1.0            \
+      -DQCA_FEATURE_INSTALL_DIR=/usr/share/qt4/mkspecs/features \
+      -DQCA_INCLUDE_INSTALL_DIR=/usr/include/qt4                \
+      -DQCA_PRIVATE_INCLUDE_INSTALL_DIR=/usr/include/qt4        \
+      -DQCA_PLUGINS_INSTALL_DIR=/usr/lib/qt4/plugins            \
+      -Wno-dev .. &amp;&amp;
+
 make</userinput></screen>
 
     <para>To test the results, issue <command>make test</command>.</para>
@@ -87,17 +115,46 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+    <para>
+      If <application>Qt4</application> isn't installed in
+      <filename class="directory">/usr</filename>, ensure
+      it can properly find the modules installed by this
+      package by running the following commands as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>if [[ ${QT4DIR} != "/usr" ]]
+then
+   ln -sfv /usr/include/qt4/QtCrypto                  \
+           ${QT4DIR}/include/qt4/                     &amp;&amp;
+   ln -sfv /usr/share/qt4/mkspecs/features/crypto.prf \
+           ${QT4DIR}/share/qt4/mkspecs/features/      &amp;&amp;
+
+   install -v -dm755 ${QT4DIR}/lib/qt4/plugins/crypto &amp;&amp;
+
+   for file in /usr/lib/qt4/plugins/crypto/*
+   do
+       ln -sfv ${file} ${QT4DIR}/lib/qt4/plugins/crypto/
+   done &amp;&amp;
+
+   unset file
+fi</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para><command>sed -i '217s@set@...</command>: This sed fixes compiling with
-    <application>GCC</application> 4.7 and newer. It is safe to omit when compiling
-    with older <application>GCC</application> versions.</para>
+    <para><parameter>-DCMAKE_BUILD_TYPE=Release</parameter>: This switch is used 
+    to apply higher level of the compiler optimizations.</para>
   
-    <para><option>--no-separate-debug-info</option>: Prevents installation
-    of a separate library and program file with debug information.</para>
+    <para><parameter>-DQT4_BUILD=ON</parameter>: This switch is used to ensure 
+    that <application>Qt4</application> version of the library is built even if 
+    <application>Qt5</application> is present.</para>
+
+    <para><parameter>-DQCA_*_INSTALL_DIR=...</parameter>: These switches are used 
+    to ensure that files depending on the <application>Qt4</application>
+     installation prefix are installed in the correct locations.</para>
 
   </sect2>
 
@@ -110,9 +167,17 @@ make</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>qcatool2</seg>
+        <seg>mozcerts and qcatool2</seg>
         <seg>libqca.so</seg>
-        <seg>/usr/include/QtCrypto</seg>
+        <seg>
+          /usr/include/qt4/QtCrypto,
+          /usr/lib/cmake/Qca,
+          /usr/lib/qt4/plugins/crypto and,
+          depending on the <application>Qt4</application>
+          installation prefix,
+          $QT4DIR/include/qt4/QtCrypto and
+          $QT4DIR/lib/qt4/plugins/crypto
+        </seg>
       </seglistitem>
     </segmentedlist>
 
@@ -120,6 +185,17 @@ make</userinput></screen>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="mozcerts">
+        <term><command>mozcerts</command></term>
+        <listitem>
+          <para>is a command line tool for converting certdata.txt into
+          outfile.pem files.</para>
+          <indexterm zone="qca mozcerts">
+            <primary sortas="b-mozcerts">mozcerts</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
 
       <varlistentry id="qcatool2">
         <term><command>qcatool2</command></term>
