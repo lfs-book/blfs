@@ -6,10 +6,10 @@
 
   <!ENTITY mercurial-download-http "http://mercurial.selenic.com/release/mercurial-&mercurial-version;.tar.gz">
   <!ENTITY mercurial-download-ftp  " ">
-  <!ENTITY mercurial-md5sum        "ca6d1a0b0fd255fb1b9fb3fa46a856b8">
-  <!ENTITY mercurial-size          "3.9 MB">
-  <!ENTITY mercurial-buildsize     "33.9 MB (additional 23.6 MB for the tests and 1 MB for docs generation)">
-  <!ENTITY mercurial-time          "less than 0.1 SBU (additional 13.1 SBU for tests)">
+  <!ENTITY mercurial-md5sum        "65783a60aefb46a11296b587e9403537">
+  <!ENTITY mercurial-size          "4.1 MB">
+  <!ENTITY mercurial-buildsize     "45 MB">
+  <!ENTITY mercurial-time          "less than 0.1 SBU">
 ]>
 
 <sect1 id="mercurial" xreflabel="Mercurial-&mercurial-version;">
@@ -35,7 +35,7 @@
     written in <application>Python</application> and is used by projects such as
     Mozilla and Vim.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,11 +68,11 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-    <xref linkend="bazaar"/>,
     <xref linkend="cvs"/>,
     <xref linkend="git"/>,
-    <xref linkend="gnupg2"/> (<command>gpg2</command> with Python bindings),
+    <xref linkend="gnupg2"/>,
     <xref linkend="subversion"/> (with Python bindings),
+    <ulink url="https://launchpad.net/bzr">Bazaar</ulink>,
     <ulink url="http://docutils.sourceforge.net/">Docutils</ulink> (required to build the documentation),
     <ulink url="http://pypi.python.org/pypi/pyflakes">pyflakes</ulink>,
     <ulink url="http://pygments.org/">pygments</ulink>, and
@@ -98,37 +98,19 @@
 
 <screen><userinput>make doc</userinput></screen>
 
-    <para>Running the test suite is optional. If there are failures, e.g.
-    test-parse-date.t, those tests can be disabled. To test the results in the
-    subdiretory <filename class="directory">tests/tmp</filename>, skipping
-    failing tests, issue:</para>
+    <para>
+      To test the results, issue <command>make check</command>.
+      The test suite takes a long time to complete and the
+      results have no meaning to an end user.
+    </para>
 
-<screen><userinput>cat &gt; tests/blacklists/failed-tests &lt;&lt; "EOF"
-<literal># Test Failures
-  test-parse-date.t</literal>
-EOF
-rm -rf tests/tmp &amp;&amp;
-TESTFLAGS="--tmpdir tmp --blacklist blacklists/failed-tests" \
-make check</userinput></screen>
-
-    <para>Tests may be run in parallel, just add <quote>-j$(getconf
-    _NPROCESSORS_ONLN)</quote> to TESTFLAGS. In order to investigate a
-    particular apparently failing test, e.g <quote>test-parse-date.t</quote>,
-    issue the following commands (notice that omitting <option>--debug</option>
-    sometimes modifies the result):</para>
-
-<screen><userinput>pushd tests &amp;&amp;
-rm -rf tmp  &amp;&amp;
-./run-tests.py --debug --tmpdir tmp test-parse-date.t &amp;&amp;
-popd</userinput></screen>
-
-    <para>Install <application>Mercurial</application> by running
-    the following command (as <systemitem class="username">root</systemitem>):</para>
+    <para>Install <application>Mercurial</application> by running the following
+    command (as <systemitem class="username">root</systemitem>):</para>
 
 <screen role="root"><userinput>make PREFIX=/usr install-bin</userinput></screen>
 
-    <para>If you built the documentation, install it by running
-    the following command (as <systemitem class="username">root</systemitem>):</para>
+    <para>If you built the documentation, install it by running the following
+    command (as <systemitem class="username">root</systemitem>):</para>
 
 <screen role="root"><userinput>make PREFIX=/usr install-doc</userinput></screen>
 
@@ -188,10 +170,17 @@ EOF</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>hg</seg>
-        <seg>several under /usr/lib/python&python2-majorver;/site-packages/mercurial</seg>
-        <seg>/etc/mercurial, /usr/lib/python&python2-majorver;/site-packages/hgext and
-             /usr/lib/python&python2-majorver;/site-packages/mercurial</seg>
+        <seg>
+          hg
+        </seg>
+        <seg>
+          several internal modules under
+          /usr/lib/python&python2-majorver;/site-packages/mercurial
+        </seg>
+        <seg>
+          /etc/mercurial, /usr/lib/python&python2-majorver;/site-packages/hgext
+          and /usr/lib/python&python2-majorver;/site-packages/mercurial
+        </seg>
       </seglistitem>
     </segmentedlist>
 

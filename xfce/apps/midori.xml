@@ -7,10 +7,10 @@
   <!ENTITY midori-download-http
            "http://www.midori-browser.org/downloads/midori_&midori-version;_all_.tar.bz2">
   <!ENTITY midori-download-ftp  " ">
-  <!ENTITY midori-md5sum        "a0af659e0f1d6edb2c97aefdc8c0f097">
-  <!ENTITY midori-size          "1.3 MB">
-  <!ENTITY midori-buildsize     "71 MB (additional 2 MB for the tests)">
-  <!ENTITY midori-time          "0.7 SBU (additional less than 0.1 SBU for the tests)">
+  <!ENTITY midori-md5sum        "2f250a5015923b6eeca606629e7bf042">
+  <!ENTITY midori-size          "1.4 MB">
+  <!ENTITY midori-buildsize     "87 MB">
+  <!ENTITY midori-time          "0.6 SBU">
 ]>
 
 <sect1 id="midori" xreflabel="Midori-&midori-version;">
@@ -35,7 +35,7 @@
       <application>WebKitGTK+</application>.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,8 +76,9 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="cmake"/>,
+      <xref linkend="gcr"/>,
       <xref linkend="libnotify"/>,
-      <xref linkend="webkitgtk2"/> (see "Command Explanations"), and
+      <xref linkend="webkitgtk2"/> (Compiled against either GTK+ 2 or GTK+ 3 - see "Command Explanations"), and
       <xref linkend="vala"/>
     </para>
 
@@ -88,7 +89,6 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gcr"/>,
       <xref linkend="gtk-doc"/> and
       <xref linkend="libzeitgeist"/>
     </para>
@@ -106,8 +106,9 @@
       commands:
     </para>
 
-<screen><userinput>mkdir -v build &amp;&amp;
-cd build &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
 cmake -DCMAKE_INSTALL_PREFIX=/usr \
       -DCMAKE_BUILD_TYPE=Release  \
       -DUSE_ZEITGEIST=OFF         \
@@ -116,11 +117,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr \
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command> from an X
-      terminal emulator. Test suite performance is poor: almost 1/3 fails.
-      Another simple test is to run <command>midori/midori</command> from the
-      <filename class="directory">build</filename> directory,
-      before installing.
+      This package does not have a working testsuite.
     </para>
 
     <para>
@@ -137,17 +134,17 @@ make</userinput></screen>
     used to apply a higher level of compiler optimizations.</para>
 
     <para>
-      <parameter>-DUSE_ZEITGEIST=OFF</parameter>: Remove this switch if
-      <xref linkend="libzeitgeist"/> is installed. 
+      <parameter>-DUSE_ZEITGEIST=OFF</parameter>: This switch disables Zeitgeist
+      support. Remove it if you have installed <xref linkend="libzeitgeist"/>. 
     </para>
 
     <para>
       <option>-DUSE_GTK3=1</option>: Use this switch if you want to build
-      <application>Midori</application> with
-      <application>WebKitGTK+</application> built against <application>GTK+
-      3</application>, because by default it chooses
-      <application>WebKitGTK+</application> built against <application>GTK+
-      2</application>.
+      <application>Midori</application> using
+      <application>WebKitGTK+</application> built against
+      <application>GTK+ 3</application>. <command>cmake</command>
+      defaults to the <application>WebKitGTK+</application> built
+      against <application>GTK+ 2</application>.
     </para>
 
     <para>

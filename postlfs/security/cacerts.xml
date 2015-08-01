@@ -7,9 +7,9 @@
   <!ENTITY certhost              "http://mxr.mozilla.org">
   <!ENTITY certdir               "/mozilla/source/security/nss/lib/ckfw/builtins">
   <!ENTITY ca-bundle-download    "&sources-anduin-other-http;/certdata.txt">
-  <!ENTITY ca-bundle-size        "1.2 MB">
-  <!ENTITY cacerts-buildsize     "1.2 MB">
-  <!ENTITY cacerts-time          "less than 0.1 SBU">
+  <!ENTITY ca-bundle-size        "1.6 MB">
+  <!ENTITY cacerts-buildsize     "6 MB">
+  <!ENTITY cacerts-time          "0.1 SBU">
 ]>
 
 <sect1 id="cacerts" xreflabel="Certificate Authority Certificates">
@@ -30,7 +30,7 @@
   can also be used by other applications either directly of indirectly through
   <application>openssl</application>.</para>
 
-  &lfs76_checked;
+  &lfs77_checked;
 
   <indexterm zone="cacerts">
     <primary sortas="a-cacerts">Certificate Authority Certificates</primary>
@@ -45,7 +45,7 @@
         <para>CA Certificate Download: <ulink url="&ca-bundle-download;"/></para>
       </listitem>
       <listitem>
-        <para>CA Bundle size: &ca-bundle-size;</para>
+        <para>CA Certificate size: &ca-bundle-size;</para>
       </listitem>
       <listitem>
         <para>Estimated disk space required: &cacerts-buildsize;</para>
@@ -65,13 +65,17 @@
     <bridgehead renderas="sect3">Certificate Authority Certificates Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required"><xref linkend="openssl"/></para>
+    <para role="required">
+      <xref linkend="openssl"/>
+    </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended"><xref linkend="wget"/></para>
+    <para role="recommended">
+      <xref linkend="wget"/>
+    </para>
 
     <para condition="html" role="usernotes">User Notes:
-    <ulink url='&blfs-wiki;/cacerts'/></para>
+    <ulink url="&blfs-wiki;/cacerts"/></para>
   </sect2>
 
   <sect2 role="installation">
@@ -85,7 +89,7 @@
 <literal>#!/usr/bin/perl -w
 
 # Used to generate PEM encoded files from Mozilla certdata.txt.
-# Run as ./mkcrt.pl > certificate.crt
+# Run as ./make-cert.pl > certificate.crt
 #
 # Parts of this script courtesy of RedHat (mkcabundle.pl)
 #
@@ -178,7 +182,7 @@ SSLDIR="/etc/ssl"
 
 mkdir "${TEMPDIR}/certs"
 
-# Get a list of staring lines for each cert
+# Get a list of starting lines for each cert
 CERTBEGINLIST=$(grep -n "^# Certificate" "${certdata}" | cut -d ":" -f1)
 
 # Get a list of ending lines for each cert
@@ -196,7 +200,7 @@ for certbegin in ${CERTBEGINLIST}; do
   sed -n "${certbegin},${certend}p" "${certdata}" > "${TEMPDIR}/certs/${certbegin}.tmp"
 done
 
-unset CERTBEGINLIST CERTDATA CERTENDLIST certebegin certend
+unset CERTBEGINLIST CERTDATA CERTENDLIST certbegin certend
 
 mkdir -p certs
 rm -f certs/*      # Make sure the directory is clean
@@ -245,9 +249,9 @@ chmod +x /usr/bin/make-ca.sh</userinput></screen>
    Again create this script as the <systemitem
    class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>cat > /usr/bin/remove-expired-certs.sh &lt;&lt; "EOF"
+<screen role="root"><userinput>cat > /usr/sbin/remove-expired-certs.sh &lt;&lt; "EOF"
 <literal>#!/bin/sh
-# Begin /usr/bin/remove-expired-certs.sh
+# Begin /usr/sbin/remove-expired-certs.sh
 #
 # Version 20120211
 
@@ -301,7 +305,7 @@ for cert in $certs; do
 done</literal>
 EOF
 
-chmod +x /usr/bin/remove-expired-certs.sh</userinput></screen>
+chmod u+x /usr/sbin/remove-expired-certs.sh</userinput></screen>
 
    <para>The following commands will fetch the certificates and convert them to
    the correct format.  If desired, a web browser may be used instead of
@@ -313,11 +317,12 @@ chmod +x /usr/bin/remove-expired-certs.sh</userinput></screen>
 rm -f certdata.txt &amp;&amp;
 wget $URL          &amp;&amp;
 make-ca.sh         &amp;&amp;
-remove-expired-certs.sh certs</userinput></screen>
+unset URL</userinput></screen>
 
    <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>SSLDIR=/etc/ssl                                              &amp;&amp;
+remove-expired-certs.sh certs                                &amp;&amp;
 install -d ${SSLDIR}/certs                                   &amp;&amp;
 cp -v certs/*.pem ${SSLDIR}/certs                            &amp;&amp;
 c_rehash                                                     &amp;&amp;
@@ -381,7 +386,7 @@ unset SSLDIR</userinput></screen>
       <varlistentry id="remove-expired-certs">
         <term><command>remove-expired-certs.sh</command></term>
         <listitem>
-          <para>is a utility <application>perl</application> script that
+          <para>is a utility shell script that
           removes expired certificates from a directory.  The default
           directory is <filename class='directory'>/etc/ssl/certs</filename>.</para>
           <indexterm zone="cacerts remove-expired-certs">

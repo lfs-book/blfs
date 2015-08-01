@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY wireshark-download-http "http://www.wireshark.org/download/src/all-versions/wireshark-&wireshark-version;.tar.bz2">
-  <!ENTITY wireshark-download-ftp  " ">
-  <!ENTITY wireshark-md5sum        "2f2a16be8b087227cb17733c72288ae4">
+  <!ENTITY wireshark-download-http "https://www.wireshark.org/download/src/all-versions/wireshark-&wireshark-version;.tar.bz2">
+  <!ENTITY wireshark-download-ftp  "ftp://ftp.uni-kl.de/pub/wireshark/src/wireshark-&wireshark-version;.tar.bz2">
+  <!ENTITY wireshark-md5sum        "25ad2bc1c2a21396827c238fcff51bf3">
   <!ENTITY wireshark-size          "28 MB">
-  <!ENTITY wireshark-buildsize     "750 MB (up to 1.5 GB)">
-  <!ENTITY wireshark-time          "7.32 SBU">
+  <!ENTITY wireshark-buildsize     "1.6 GB">
+  <!ENTITY wireshark-time          "6.0 SBU">
 ]>
 
 <sect1 id="wireshark" xreflabel="Wireshark-&wireshark-version;">
@@ -29,16 +29,21 @@
   <sect2 role="package">
     <title>Introduction to Wireshark</title>
 
-    <para>The <application>Wireshark</application> package contains a network
-    protocol analyzer, also known as a <quote>sniffer</quote>. This is useful
-    for analyzing data captured <quote>off the wire</quote> from a live network
-    connection, or data read from a capture file.
-    <application>Wireshark</application> provides both a graphical and a TTY-mode
-    front-end for examining captured network packets from over 500 protocols,
-    as well as the capability to read capture files from many other popular
-    network analyzers.</para>
+    <para>
+      The <application>Wireshark</application> package contains a network
+      protocol analyzer, also known as a <quote>sniffer</quote>. This is useful
+      for analyzing data captured <quote>off the wire</quote> from a live
+      network connection, or data read from a capture file.
+    </para>
 
-    &lfs76_checked;
+    <para>
+      <application>Wireshark</application> provides both a graphical and a
+      TTY-mode front-end for examining captured network packets from over 500
+      protocols, as well as the capability to read capture files from many
+      other popular network analyzers.
+    </para>
+
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -65,26 +70,19 @@
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
-        <para>Additional Documentation:
-           <ulink url="http://www.wireshark.org/download/docs/"/>
+        <para>
+          Additional Documentation:
+          <ulink url="https://www.wireshark.org/download/docs/"/>
+          (contains links to docs in a variety of formats)
          </para>
       </listitem>
     </itemizedlist>
-
-    <para>From this page you can download many different docs in a variety
-    of formats.</para>
-
     <bridgehead renderas="sect3">Wireshark dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="glib2"/> (to build the TTY-mode front-end only)
+      <xref linkend="glib2"/>
     </para>
-
-    <para>Note that you need <application>GTK+</application> or
-    <application>Qt</application> installed, otherwise, pass
-    <option>--disable-wireshark</option> to the
-    <command>configure</command> command.</para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
@@ -112,62 +110,59 @@
       <xref linkend="qt5"/>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/wireshark"/></para>
-
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/wireshark"/>
+    </para>
   </sect2>
 
   <sect2 role="kernel" id="wireshark-kernel">
     <title>Kernel Configuration</title>
 
-      <para>The kernel must have the Packet protocol enabled for
-      <application>Wireshark</application> to capture live packets from the
-      network.</para>
+    <para>
+      The kernel must have the Packet protocol enabled for <application>
+      Wireshark</application> to capture live packets from the network:
+    </para>
       
-<screen><literal>Networking support: Y
-  Networking options:
-    Packet: sockets monitoring interface: M or Y</literal></screen>
+<screen><literal>[*] Networking support ---&gt;          [CONFIG_NET]
+      Networking options ---&gt;
+        &lt;*/M&gt; Packet socket          [CONFIG_PACKET]</literal></screen>
 
-      <para>If built as a module, the name is
-      <filename>af_packet.ko</filename>.</para>
-
-      <indexterm zone="wireshark wireshark-kernel">
-        <primary sortas="d-Capturing-network-packets">Capturing network
-        packets</primary>
-      </indexterm>
+    <indexterm zone="wireshark wireshark-kernel">
+      <primary sortas="d-Capturing-network-packets">
+        Capturing network packets
+      </primary>
+    </indexterm>
 
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of Wireshark</title>
 
-    <para>Optionally, fix the description of the program in the title.
-    The first change overwrites the default "SVN Unknown" in the title
-    and the second overwrites a utility script that resets the version
-    to "unknown".</para>
+    <para>
+      Optionally, fix the description of the program in the title.
+      The first change overwrites the default <quote>SVN Unknown</quote> in
+      the title and the second overwrites a utility script that resets the
+      version to <quote>unknown</quote>.
+    </para>
 
-<screen><userinput>cat > svnversion.h &lt;&lt; "EOF"
+<screen><userinput>cat > svnversion.h &lt;&lt; "EOF" &amp;&amp;
 #define SVNVERSION "BLFS"
 #define SVNPATH "source"
 EOF
 
 cat > make-version.pl &lt;&lt; "EOF"
-#!/usr/bin/perl
+<literal>#!/usr/bin/perl</literal>
 EOF</userinput></screen>
 
-    <para><application>Wireshark</application> is a very large and complex
-    application.  These instructions provide additional security measures to
-    ensure that only trusted users are allowed to view network traffic.  First,
-    set up a system group for wireshark.  As the <systemitem
-    class="username">root</systemitem> user:</para>
+    <para>
+      <application>Wireshark</application> is a very large and complex
+      application. These instructions provide additional security measures to
+      ensure that only trusted users are allowed to view network traffic. First,
+      set up a system group for wireshark.  As the <systemitem
+      class="username">root</systemitem> user:
+    </para>
 
 <screen role="root"><userinput>groupadd -g 62 wireshark</userinput></screen>
-
-    <para>If you want an unpriviledged user to execute
-    <application>wireshark</application>, run the following command as the
-    <systemitem class="username">root</systemitem> user:</para>
-
-<screen><userinput>usermod -a -G wireshark <replaceable>&lt;username&gt;</replaceable></userinput></screen>
 
     <para>
       If you have both <application>GTK+2</application> and
@@ -189,7 +184,9 @@ EOF</userinput></screen>
       installed, issue:
     </para>
 
-<screen><userinput>export QT_SELECT=qt5</userinput></screen>
+<screen><userinput>sed -i "s:moc;:moc-qt5;:g" configure &amp;&amp;
+sed -i "s:uic;:uic-qt5;:g" configure &amp;&amp;
+sed -i "s:(AM_V_RCC)rcc:&amp;-qt5:g" ui/qt/Makefile.in</userinput></screen>
 
     <para>
       If you want to build the <application>Qt4</application> GUI and have both
@@ -197,7 +194,10 @@ EOF</userinput></screen>
       installed, issue:
     </para>
 
-<screen><userinput>sed -i "s:Qt5 Qt:Qt:g" configure</userinput></screen>
+<screen><userinput>sed -i "s:Qt5 Qt:Qt:g" configure     &amp;&amp;
+sed -i "s:moc;:moc-qt4;:g" configure &amp;&amp;
+sed -i "s:uic;:uic-qt4;:g" configure &amp;&amp;
+sed -i "s:(AM_V_RCC)rcc:&amp;-qt4:g" ui/qt/Makefile.in</userinput></screen>
 
     <para>
       Install <application>Wireshark</application> by running the following
@@ -210,9 +210,13 @@ EOF</userinput></screen>
             --without-qt      &amp;&amp;
 make</userinput></screen>
 
-    <para>This package does not come with a test suite.</para>
+    <para>
+      This package does not come with a test suite.
+    </para>
 
-    <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
 
@@ -232,7 +236,8 @@ fi &amp;&amp;
 
 if [ -e /usr/bin/wireshark-qt ]; then
    install -v -Dm644 wireshark.desktop /usr/share/applications/wireshark-qt.desktop &amp;&amp;
-   sed -i "/Exec/s:wireshark:&amp;-qt:g" /usr/share/applications/wireshark-qt.desktop
+   sed -i "s:Exec.*wireshark:&amp;-qt:g" /usr/share/applications/wireshark-qt.desktop   &amp;&amp;
+   sed -i "s:Name.*Wireshark:&amp; (Qt):g" /usr/share/applications/wireshark-qt.desktop
 fi &amp;&amp;
 
 for size in 16 24 32 48 64 128 256 ; do
@@ -242,23 +247,30 @@ for size in 16 24 32 48 64 128 256 ; do
                       /usr/share/icons/hicolor/${size}x${size}/mimetypes/application-vnd.tcpdump.pcap.png
 done &amp;&amp;
 
-unset size &amp;&amp;
-unset QT_SELECT</userinput></screen>
+unset size</userinput></screen>
 
-    <para>If you downloaded any of the documentation files from the page
-    listed in the 'Additional Downloads', install them by issuing the following
-    commands as the <systemitem class="username">root</systemitem> user:</para>
+    <para>
+      If you downloaded any of the documentation files from the page
+      listed in the 'Additional Downloads', install them by issuing the
+      following commands as the <systemitem class="username">root</systemitem>
+      user:
+    </para>
 
 <screen role="root"><userinput>install -v -m644 <replaceable>&lt;Downloaded_Files&gt;</replaceable> /usr/share/doc/wireshark-&wireshark-version;</userinput></screen>
 
-  <para>Now, set ownership and permissions of sensitive applications to
-  only allow authorized users.  As the <systemitem
-  class="username">root</systemitem> user:</para>
+    <para>
+      Now, set ownership and permissions of sensitive applications to only
+      allow authorized users.  As the <systemitem class="username">root
+      </systemitem> user:
+    </para>
 
 <screen role="root"><userinput>chown -v root:wireshark /usr/bin/{tshark,dumpcap} &amp;&amp;
 chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
 
-  <para>Finally, add any users to the wireshark group (as root user):</para>
+    <para>
+      Finally, add any users to the wireshark group (as <systemitem class=
+      "username">root</systemitem> user):
+    </para>
 
 <screen role="root"><userinput>usermod -a -G wireshark &lt;username&gt;</userinput></screen>
 
@@ -352,7 +364,8 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         </seg>
         <seg>
           /usr/lib/wireshark,
-          /usr/share/doc/wireshark-&wireshark-version; and
+          /usr/share/doc/wireshark-&wireshark-version;,
+          /usr/share/pixmaps/wireshark and
           /usr/share/wireshark
         </seg>
       </seglistitem>

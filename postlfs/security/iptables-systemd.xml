@@ -36,7 +36,7 @@
       any form of a firewall.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,9 +84,12 @@
       A firewall in Linux is accomplished through a portion of the
       kernel called netfilter. The interface to netfilter is
       <application>Iptables</application>. To use it, the appropriate
-      kernel configuration parameters are found in Networking Support &rArr;
-      Networking Options &rArr; Network Packet Filtering Framework.
+      kernel configuration parameters are found in:
     </para>
+
+<screen><literal>[*] Networking support  ---&gt;                                    [CONFIG_NET]
+      Networking Options  ---&gt;
+        [*] Network packet filtering framework (Netfilter) ---&gt; [CONFIG_NETFILTER]</literal></screen>
 
     <indexterm zone="iptables iptables-kernel">
       <primary sortas="d-iptables">Iptables</primary>
@@ -124,10 +127,10 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr                \
-            --sbindir=/sbin              \
-            --with-xtlibdir=/lib/xtables \
-            --enable-libipq &amp;&amp;
+<screen><userinput>./configure --prefix=/usr   \
+            --sbindir=/sbin \
+            --enable-libipq \
+            --with-xtlibdir=/lib/xtables &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -136,6 +139,7 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install &amp;&amp;
 ln -sfv ../../sbin/xtables-multi /usr/bin/iptables-xml &amp;&amp;
+
 for file in ip4tc ip6tc ipq iptc xtables
 do
   mv -v /usr/lib/lib${file}.so.* /lib &amp;&amp;
@@ -210,7 +214,7 @@ done</userinput></screen>
       <seglistitem>
         <seg>
           ip6tables, ip6tables-restore, ip6tables-save, iptables, iptables-restore,
-          iptables-save, iptables-xml, and xtables-multi
+          iptables-save, iptables-xml, nfsynproxy (optional) and xtables-multi
         </seg>
         <seg>
           libip4tc.so, libip6tc.so, libipq.so, libiptc.so, and libxtables.so
@@ -305,6 +309,18 @@ done</userinput></screen>
           </para>
           <indexterm zone="iptables nfsynproxy">
             <primary sortas="b-nfsynproxy">nfsynproxy</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xtables-multi">
+        <term><command>xtables-multi</command></term>
+        <listitem>
+          <para>
+            is a binary that behaves according to the name it is called by.
+          </para>
+          <indexterm zone="iptables xtables-multi">
+            <primary sortas="b-xtables-multi">xtables-multi</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -8,9 +8,9 @@
 
   <!ENTITY libva-download-http "&libva-http;/libva/libva-&libva-version;.tar.bz2">
   <!ENTITY libva-download-ftp  " ">
-  <!ENTITY libva-md5sum        "8e3e7096750c14d1f98da807df7c1ba5">
+  <!ENTITY libva-md5sum        "d6d34cd725a0100a5e476e711838e1b1">
   <!ENTITY libva-size          "744 KB">
-  <!ENTITY libva-buildsize     "18 MB">
+  <!ENTITY libva-buildsize     "20 MB">
   <!ENTITY libva-time          "0.2 SBU">
 ]>
 
@@ -44,7 +44,7 @@
       subpicture blending, and rendering.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,18 +84,36 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="mesalib"/>
+      <xref linkend="libdrm"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="mesalib"/>,
+      <xref linkend="wayland"/> and
+      <xref linkend="xorg7-lib"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="doxygen"/> and
-      <xref linkend="wayland"/>
+      <xref linkend="doxygen"/>
     </para>
+
+    <note>
+      <para>
+        There is a circular dependency between <xref linkend="mesalib"/>
+        and this package. If you need the VAAPI driver provided by
+        <xref linkend="mesalib"/>, build this package without EGL and
+        GLX support, install <application>MesaLib</application>, then
+        reinstall this package with EGL and GLX support.
+      </para>
+    </note>
 
     <bridgehead renderas="sect4">Runtime Dependency</bridgehead>
     <para role="optional">
-      At least one of <xref linkend="libva-drivers"/>
+      At least one of <xref linkend="libva-drivers"/> or the
+      driver shipped within <xref linkend="mesalib"/> for the
+      Radeon hardware.
     </para>
 
     <para condition="html" role="usernotes">
@@ -144,12 +162,13 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          avcenc, h264encode, loadjpeg, mpeg2vaenc, mpeg2vldemo,
-          putsurface, putsurface_wayland, and vainfo
+          avcenc, h264encode, jpegenc, loadjpeg, mpeg2vaenc,
+          mpeg2vldemo, putsurface, putsurface_wayland and
+          vainfo
         </seg>
         <seg>
           libva-drm.so, libva-egl.so, libva-glx.so, libva.so,
-          libva-tpi.so, libva-wayland.so, and libva-x11.so
+          libva-tpi.so, libva-wayland.so and libva-x11.so
         </seg>
         <seg>
           /usr/include/va

@@ -12,7 +12,7 @@
   <!ENTITY sane-be-md5sum        "1ca68e536cd7c1852322822f5f6ac3a4">
   <!ENTITY sane-be-size          "5.6 MB">
   <!ENTITY sane-be-buildsize     "97 MB">
-  <!ENTITY sane-be-time          "1 SBU">
+  <!ENTITY sane-be-time          "1.0 SBU">
 
   <!ENTITY sane-fe-download-http "http://alioth.debian.org/frs/download.php/file/1140/sane-frontends-&sane-fe-version;.tar.gz">
   <!ENTITY sane-fe-download-ftp  "ftp://ftp2.sane-project.org/pub/sane/sane-frontends-&sane-fe-version;.tar.gz">
@@ -50,7 +50,7 @@
     ends. The back ends are drivers for the supported scanners and cameras. The
     front ends are user interfaces to access the backends.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <!-- The upstream web site has the md5sums for the tarballs:
          http://www.sane-project.org/sane-md5sums.txt.
@@ -136,11 +136,11 @@
       <xref linkend="libjpeg"/>,
       <xref linkend="libtiff"/>,
       <xref linkend="libusb"/>,
+      <xref linkend="v4l-utils"/>,
       <ulink url="http://www.net-snmp.org/">Net-SNMP</ulink>,
       <ulink url="http://cyberelk.net/tim/libieee1284/">libieee1284</ulink>,
-      <ulink url="http://www.gphoto.org/">libgphoto2</ulink>,
-      <ulink url="http://linuxtv.org/downloads/v4l-utils/">Video4Linux</ulink>, and
-      <xref linkend="texlive"/>
+      <ulink url="http://www.gphoto.org/">libgphoto2</ulink>, and
+      <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
     </para>
 
     <bridgehead renderas="sect4">Optional (Front Ends)</bridgehead>
@@ -212,6 +212,13 @@
         </para>
       </note>
 
+      <para>
+        Fix linking with the systemd library when using <application>systemd</application>
+        210 and later:
+      </para>
+
+<screen><userinput>sed -i "s:systemd-daemon:systemd:g" configure configure.in</userinput></screen>
+
       <para>For a USB scanner, if you are linking to <xref linkend="libusb"/>,
       include the configure switch --enable-libusb_1_0. Install
       <application>SANE</application>-backends by running the following
@@ -244,14 +251,14 @@ exit</userinput></screen>
 
       <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>make install                                         &amp;&amp;
-install -m 644 -v tools/udev/libsane.rules           \
-                  /etc/udev/rules.d/65-scanner.rules &amp;&amp;
-chgrp -v scanner  /var/lock/sane</userinput></screen>
+<screen role="root"><userinput>make install                                        &amp;&amp;
+install -v -m644 tools/udev/libsane.rules           \
+                 /etc/udev/rules.d/65-scanner.rules &amp;&amp;
+chgrp -v scanner /var/lock/sane</userinput></screen>
 
       <para>With the scanner on, run <command>scanimage -L</command> and the
-      name and location of the device should appear. Of course, you need the
-      device drivers configured, in order to run this test.</para>
+      name and location of the device should appear. You need to configure
+      the device drivers in order to run this test.</para>
 
     </sect3>
 
@@ -270,7 +277,7 @@ chgrp -v scanner  /var/lock/sane</userinput></screen>
       use the following commands:</para>
 
 <screen><userinput>sed -i -e "/SANE_CAP_ALWAYS_SETTABLE/d" src/gtkglue.c &amp;&amp;
-./configure --prefix=/usr &amp;&amp;
+./configure --prefix=/usr --mandir=/usr/share/man &amp;&amp;
 make</userinput></screen>
 
       <para>This package does not come with a test suite.</para>
@@ -286,7 +293,7 @@ install -v -m644 doc/sane.png xscanimage-icon-48x48-2.png \
       <command>xscanimage</command> as a scanning plugin, issue the following
       command as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>ln -v -s ../../../../bin/xscanimage /usr/lib/gimp/2.0/plug-ins</userinput></screen>
+<screen role="root"><userinput>ln -sfv ../../../../bin/xscanimage /usr/lib/gimp/2.0/plug-ins</userinput></screen>
 
       <note>
         <para>
@@ -387,7 +394,7 @@ Type=Application
 Categories=Application;Graphics
 EOF
 
-ln -svf ../sane/xscanimage-icon-48x48-2.png /usr/share/pixmaps/xscanimage.png</userinput></screen>
+ln -sfv ../sane/xscanimage-icon-48x48-2.png /usr/share/pixmaps/xscanimage.png</userinput></screen>
 
       </sect4>
 

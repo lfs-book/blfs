@@ -6,10 +6,10 @@
 
   <!ENTITY gtk2-download-http "&gnome-download-http;/gtk+/2.24/gtk+-&gtk2-version;.tar.xz">
   <!ENTITY gtk2-download-ftp  "&gnome-download-ftp;/gtk+/2.24/gtk+-&gtk2-version;.tar.xz">
-  <!ENTITY gtk2-md5sum        "612350704dd3aacb95355a4981930c6f">
-  <!ENTITY gtk2-size          "12.7 MB">
-  <!ENTITY gtk2-buildsize     "248 MB">
-  <!ENTITY gtk2-time          "2.7 SBU">
+  <!ENTITY gtk2-md5sum        "bfacf87b2ea67e4e5c7866a9003e6526">
+  <!ENTITY gtk2-size          "13 MB">
+  <!ENTITY gtk2-buildsize     "376 MB">
+  <!ENTITY gtk2-time          "2.8 SBU">
 ]>
 
 <sect1 id="gtk2" xreflabel="GTK+-&gtk2-version;">
@@ -35,7 +35,7 @@
       for applications.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,6 +89,9 @@
     <para role="optional">
       <xref linkend="cups"/>,
       <xref linkend="docbook-utils"/>,
+      <xref linkend="DocBook"/>,
+      <xref linkend="docbook-xsl"/> and
+      <xref linkend="libxslt"/> (to build the manual pages),
       <xref linkend="gobject-introspection"/> and
       <xref linkend="gtk-doc"/>
     </para>
@@ -106,18 +109,13 @@
       commands:
     </para>
 
-<screen><userinput>sed -i 's#l \(gtk-.*\).sgml#&amp; -o \1#' docs/{faq,tutorial}/Makefile.in &amp;&amp;
-sed -i 's#.*@man_#man_#' docs/reference/gtk/Makefile.in               &amp;&amp;
-sed -i -e 's#pltcheck.sh#$(NULL)#g' gtk/Makefile.in                   &amp;&amp;
+<screen><userinput>sed -i "s#l \(gtk-.*\).sgml#&amp; -o \1#" docs/{faq,tutorial}/Makefile.in &amp;&amp;
 ./configure --prefix=/usr --sysconfdir=/etc                           &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>. Note that you
-      must run the tests from a session with X Window Display capability (i.e.,
-      not a text-based terminal/console) as the tests attempt to open an X
-      window, and the tests can take an excessively long time. Using an X
-      Window, the tests should take less than 0.3 SBU.
+      To test the results, issue: <command>make check</command> from an
+      X terminal emulator.
     </para>
 
     <para>
@@ -143,8 +141,8 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i 's#l \(gtk-.*\).sgml#&amp; -o \1#'
-      docs/{faq,tutorial}/Makefile.in</command>: If you have
+      <command>sed -e "s#l \(gtk-.*\).sgml#&amp; -o \1#"
+      -i docs/{faq,tutorial}/Makefile.in</command>: If you have
       <xref linkend="docbook-utils"/> installed (specifically, if configure
       finds <command>db2html</command>) then it will try to use it to rebuild
       some of its HTML documentation and fail due to bugs in some of the
@@ -152,22 +150,15 @@ make</userinput></screen>
       <filename>Makefile</filename>s.
     </para>
 
-    <para>
-      <command>sed -i 's#.*@man_#man_#' docs/reference/gtk/Makefile.in</command>:
-      This <command>sed</command> fixes one of the <filename>Makefile</filename>s
-      so it installs the man pages for <command>gtk-builder-convert</command>,
-      <command>gtk-query-immodules-2.0</command>, and
-      <command>gtk-update-icon-cache</command>.
-    </para>
-
-    <para>
-      <command>sed -i -e 's#pltcheck.sh#$(NULL)#g' gtk/Makefile.in</command>:
-      This <command>sed</command> disables one test known to fail. 
-      It is not necessary if not running the tests.
-    </para>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
+
+    <para>
+      <option>--enable-man</option>: Use this switch if you have installed
+      <xref linkend="DocBook"/>, <xref linkend="docbook-xsl"/> and
+      <xref linkend="libxslt"/> and want to build and install manual pages
+      for the programs provided by this package.
+    </para>
 
   </sect2>
 
@@ -195,7 +186,8 @@ make</userinput></screen>
       </indexterm>
     </sect3>
 
-    <sect3><title>Configuration Information</title>
+    <sect3>
+      <title>Configuration Information</title>
 
       <para>
         <application>GTK+ 2</application> themes change the way a
@@ -205,13 +197,13 @@ make</userinput></screen>
         <application>GTK+ 2</application> theme (such as <xref
         linkend="gnome-themes-standard"/>) or a
         <application>GTK+ 2</application> icon theme (such as
-        <xref linkend="gnome-icon-theme"/>) you can set your preferences in
+        <xref linkend="adwaita-icon-theme"/>) you can set your preferences in
         <filename>~/.gtkrc-2.0</filename>:
       </para>
 
 <screen><userinput>cat &gt; ~/.gtkrc-2.0 &lt;&lt; "EOF"
 include "/usr/share/themes/<replaceable>Adwaita</replaceable>/gtk-2.0/gtkrc"
-gtk-icon-theme-name = "<replaceable>gnome</replaceable>"
+gtk-icon-theme-name = "<replaceable>Adwaita</replaceable>"
 EOF</userinput></screen>
 
       <para>
@@ -252,15 +244,14 @@ EOF</userinput></screen>
           gtk-update-icon-cache
         </seg>
         <seg>
-          libgailutil.so, libgdk-x11-2.0.so, libgtk-x11-2.0.so,
-          and several under /usr/lib/gtk-2.0 subdirectories
+          libgailutil.so, libgdk-x11-2.0.so, and libgtk-x11-2.0.so
         </seg>
         <seg>
           /etc/gtk-2.0,
           /usr/include/{gail-1.0,gtk-2.0,gtk-unix-print-2.0},
           /usr/lib/gtk-2.0,
-          /usr/share/gtk-2.0,
           /usr/share/doc/gtk+-&gtk2-version;,
+          /usr/share/gtk-2.0,
           /usr/share/gtk-doc/html/{gail-libgail-util,gdk2,gtk2}, and
           /usr/share/themes/{Default,Emacs,Raleigh}
         </seg>

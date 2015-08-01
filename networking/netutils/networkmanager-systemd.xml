@@ -8,10 +8,10 @@
            "&gnome-download-http;/NetworkManager/1.0/NetworkManager-&NetworkManager-version;.tar.xz">
   <!ENTITY NetworkManager-download-ftp
            "&gnome-download-ftp;/NetworkManager/1.0/NetworkManager-&NetworkManager-version;.tar.xz">
-  <!ENTITY NetworkManager-md5sum        "71cae8707a90fa92e28cafbc9262b548">
-  <!ENTITY NetworkManager-size          "3.0 MB">
-  <!ENTITY NetworkManager-buildsize     "232.3 MB (includes building documentation and tests.)">
-  <!ENTITY NetworkManager-time          "2.9 SBU (includes building documentation and tests.)">
+  <!ENTITY NetworkManager-md5sum        "5a4899f89edcbdd1ac46d2d947e8d6eb">
+  <!ENTITY NetworkManager-size          "3.1 MB">
+  <!ENTITY NetworkManager-buildsize     "319 MB">
+  <!ENTITY NetworkManager-time          "1.6 SBU">
 ]>
 
 <sect1 id="NetworkManager" xreflabel="NetworkManager-&NetworkManager-version;">
@@ -39,12 +39,12 @@
       detected and re-joined automatically the next time it's available.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <note>
       <para>
-        Make sure you disable <command>systemd-networkd</command> service
-        or make it not configure the connections you want to manage with
+        Make sure that you disable the <command>systemd-networkd</command> service
+        or configure it not to manage the interfaces you want to manage with
         <application>NetworkManager</application>.
       </para>
     </note>
@@ -88,11 +88,10 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="dbus-glib"/>,
+      <xref linkend="libgudev"/>,
       <xref linkend="libndp"/>,
-      <xref linkend="libnl"/>,
-      <xref linkend="nss"/>,
-      (or <xref linkend="gnutls"/>), and
-      <xref linkend="systemd"/> (for GUdev and Logind)
+      <xref linkend="libnl"/> and
+      <xref linkend="nss"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -103,7 +102,8 @@
       <xref linkend="iptables"/>,
       <xref linkend="libsoup"/>,
       <xref linkend="newt"/> (for <command>nmtui</command>),
-      <xref linkend="polkit"/>, and
+      <xref linkend="polkit"/>,
+      <xref linkend="systemd"/> and
       <xref linkend="vala"/>
     </para>
 
@@ -115,9 +115,10 @@
       <xref linkend="pygobject3"/>,
       <xref linkend="qt4"/>,
       <xref linkend="valgrind"/>,
-      <xref linkend="wpa_supplicant"/> (built with D-Bus support), 
-      <ulink url="http://libteam.org/">libteam</ulink>, and
-      <ulink url="http://search.cpan.org/~ingy/YAML-1.13/">YAML</ulink> (perl module to build documentation)
+      <xref linkend="wpa_supplicant"/> (built with D-Bus support),
+      <ulink url="http://libteam.org/">libteam</ulink>,
+      <ulink url="https://www.samba.org/ftp/ppp/">PPP</ulink> and
+      <ulink url="https://www.roaringpenguin.com/products/pppoe">RP-PPPoE</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -134,7 +135,8 @@
             --disable-ppp                   \
             --with-nmtui                    \
             --with-session-tracking=systemd \
-            --with-systemdsystemunitdir=/lib/systemd/system &amp;&amp;
+            --with-systemdsystemunitdir=/lib/systemd/system \
+            --docdir=/usr/share/doc/NetworkManager-&NetworkManager-version;    &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -271,20 +273,18 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          NetworkManager, nm-online, nmcli, nmtui, nmtui-connect,
+          NetworkManager, nmcli, nm-online, nmtui, nmtui-connect,
           nmtui-edit, and nmtui-hostname
         </seg>
         <seg>
-          libnm-glib.so, libnm-glib-vpn.so, libnm-util.so and libnm.so
+          libnm.so, libnm-glib.so, libnm-glib-vpn.so, and libnm-util.so
         </seg>
         <seg>
           /etc/NetworkManager,
-          /usr/include/libnm-glib,
-          /usr/include/NetworkManager,
+          /usr/include/{libnm,libnm-glib,NetworkManager},
           /usr/lib/NetworkManager,
-          /usr/share/doc/NetworkManager,
-          /usr/share/gtk-doc/html/libnm-glib,
-          /usr/share/gtk-doc/html/libnm-util,
+          /usr/share/doc/NetworkManager-&NetworkManager-version;,
+          /usr/share/gtk-doc/html/{libnm,libnm-glib,libnm-util},
           /usr/share/gtk-doc/html/NetworkManager,
           /var/lib/NetworkManager, and
           /var/run/NetworkManager
@@ -425,18 +425,6 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libnm">
-        <term><filename class="libraryfile">libnm.so</filename></term>
-        <listitem>
-          <para>
-            contains functions used by <application>NetworkManager</application>
-            utils.
-          </para>
-          <indexterm zone="NetworkManager libnm">
-            <primary sortas="c-libnm">libnm.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
     </variablelist>
 
   </sect2>

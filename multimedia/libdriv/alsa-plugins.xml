@@ -6,9 +6,9 @@
 
   <!ENTITY alsa-plugins-download-http "&alsa-download-http;/plugins/alsa-plugins-&alsa-plugins-version;.tar.bz2">
   <!ENTITY alsa-plugins-download-ftp  "&alsa-download-ftp;/plugins/alsa-plugins-&alsa-plugins-version;.tar.bz2">
-  <!ENTITY alsa-plugins-md5sum        "6fcbbb31e96f8ebc5fb926184a717aa4">
+  <!ENTITY alsa-plugins-md5sum        "a66797b4471e3cbe96575207bfbe252c">
   <!ENTITY alsa-plugins-size          "360 KB">
-  <!ENTITY alsa-plugins-buildsize     "4.4 MB">
+  <!ENTITY alsa-plugins-buildsize     "5.0 MB">
   <!ENTITY alsa-plugins-time          "less than 0.1 SBU">
 ]>
 
@@ -34,7 +34,7 @@
       plugins for various audio libraries and sound servers.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -99,7 +99,8 @@
       running the following commands:
     </para>
 
-<screen><userinput>./configure &amp;&amp;
+<screen><userinput>sed -i "/speex_preprocess.h/i#include &lt;stdint.h&gt;" speex/pcm_speex.c &amp;&amp;
+./configure &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -111,6 +112,16 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <command>sed ... speex/pcm_speex.c</command>: This sed prevents a
+      build failure when speexdsp-1.2rc2 is installed.
+    </para>
 
   </sect2>
 

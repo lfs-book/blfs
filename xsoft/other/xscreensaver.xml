@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY xscreensaver-download-http "http://www.jwz.org/xscreensaver/xscreensaver-&xscreensaver-version;.tar.gz">
+  <!ENTITY xscreensaver-download-ftp  " ">
+  <!ENTITY xscreensaver-md5sum        "c003f79502e67f46aa5bedf24cbbd77c">
+  <!ENTITY xscreensaver-size          "11 MB">
+  <!ENTITY xscreensaver-buildsize     "204 MB">
+  <!ENTITY xscreensaver-time          "1 SBU">
+]>
+
+<sect1 id="xscreensaver" xreflabel="XScreenSaver-&xscreensaver-version;">
+  <?dbhtml filename="xscreensaver.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy: krejzi $</othername>
+    <date>$Date: 2014-10-29 21:20:13 +0100 (Wed, 29 Oct 2014) $</date>
+  </sect1info>
+
+  <title>XScreenSaver-&xscreensaver-version;</title>
+
+  <indexterm zone="xscreensaver">
+    <primary sortas="a-XScreenSaver">XScreenSaver</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to XScreenSaver</title>
+
+    <para>
+      The <application>XScreenSaver</application> is a modular screen saver
+      and locker for the X Window System. It is highly customizable and
+      allows the use of any program that can draw on the root window as a
+      display mode. The purpose of <application>XScreenSaver</application> is
+      to display pretty pictures on your screen when it is not in use, in
+      keeping with the philosophy that unattended monitors should always be
+      doing something interesting, just like they do in the movies. However,
+      <application>XScreenSaver</application> can also be used as a screen
+      locker, to prevent others from using your terminal while you are away.
+    </para>
+
+    &lfs77_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&xscreensaver-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&xscreensaver-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &xscreensaver-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &xscreensaver-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &xscreensaver-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &xscreensaver-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">XScreenSaver Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="libglade"/> and
+      <xref linkend="xorg7-app"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="glu"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="gdm"/>,
+      <ulink url="http://linas.org/gle/">GLE</ulink> and
+      <xref linkend="linux-pam"/>
+    </para>
+
+    <para condition="html" role="usernotes">User Notes:
+      <ulink url="&blfs-wiki;/xscreensaver"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of XScreenSaver</title>
+
+    <para>
+      Install <application>XScreenSaver</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <option>--with-setuid-hacks</option>: This switch allows some demos
+      to be installed setuid <systemitem class="username">root</systemitem>
+      which is needed in order to ping other hosts.
+    </para>
+
+  </sect2>
+
+  <sect2 role="configuration">
+    <title>Configuring XScreenSaver</title>
+
+    <sect3 id="xscreensaver-config">
+      <title>Config Files</title>
+
+      <para>
+        <filename>/etc/X11/app-defaults/XScreenSaver</filename> and
+        <filename>~/.xscreensaver</filename>
+      </para>
+
+      <indexterm zone="xscreensaver xscreensaver-config">
+        <primary sortas="e-etc-X11-app-defaults-XScreenSaver">/etc/X11/app-defaults/XScreenSaver</primary>
+      </indexterm>
+      <indexterm zone="xscreensaver xscreensaver-config">
+        <primary sortas="e-AA.xscreensaver">~/.xscreensaver</primary>
+      </indexterm>
+
+    </sect3>
+
+    <sect3>
+      <title>Linux PAM Configuration</title>
+
+      <para>
+        If you have built <application>XScreenSaver</application> with
+        <application>Linux PAM</application> support, you need to create
+        <application>PAM</application> configuration file to get
+        <application>XScreenSaver</application> to work correctly with BLFS.
+      </para>
+
+      <para>
+        Issue the following commands as the <systemitem class="username">root</systemitem>
+        user to create the configuration file for <application>Linux PAM</application>:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/pam.d/xscreensaver &lt;&lt; "EOF"
+<literal># Begin /etc/pam.d/xscreensaver
+
+auth    include system-auth
+account include system-account
+
+# End /etc/pam.d/xscreensaver</literal>
+EOF</userinput></screen>
+
+    </sect3>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          xscreensaver, xscreensaver-command, xscreensaver-demo, xscreensaver-getimage,
+          xscreensaver-getimage-file, xscreensaver-getimage-video,
+          xscreensaver-gl-helper and xscreensaver-text
+        </seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          /usr/libexec/xscreensaver and
+          /usr/share/xscreensaver
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="xscreensaver-prog">
+        <term><command>xscreensaver</command></term>
+        <listitem>
+          <para>
+            is a screen saver and locker daemon.
+          </para>
+          <indexterm zone="xscreensaver xscreensaver-prog">
+            <primary sortas="b-xscreensaver">xscreensaver</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xscreensaver-command">
+        <term><command>xscreensaver-command</command></term>
+        <listitem>
+          <para>
+            controls a running <command>xscreensaver</command>
+            process by sending it client messages.
+          </para>
+          <indexterm zone="xscreensaver xscreensaver-command">
+            <primary sortas="b-xscreensaver-command">xscreensaver-command</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xscreensaver-demo">
+        <term><command>xscreensaver-demo</command></term>
+        <listitem>
+          <para>
+            is a graphical front-end for setting the parameters used
+            by the background <command>xscreensaver</command> daemon.
+          </para>
+          <indexterm zone="xscreensaver xscreensaver-demo">
+            <primary sortas="b-xscreensaver-demo">xscreensaver-demo</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xscreensaver-getimage">
+        <term><command>xscreensaver-getimage</command></term>
+        <listitem>
+          <para>
+            is a helper program for the <command>xscreensaver</command>
+            modules that manipulate images.
+          </para>
+          <indexterm zone="xscreensaver xscreensaver-getimage">
+            <primary sortas="b-xscreensaver-getimaage">xscreensaver-getimage</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xscreensaver-getimage-file">
+        <term><command>xscreensaver-getimage-file</command></term>
+        <listitem>
+          <para>
+            is a helper program for the <command>xscreensaver</command>
+            modules that manipulate images.
+          </para>
+          <indexterm zone="xscreensaver xscreensaver-getimage-file">
+            <primary sortas="b-xscreensaver-getimaage-file">xscreensaver-getimage-file</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xscreensaver-getimage-video">
+        <term><command>xscreensaver-getimage-video</command></term>
+        <listitem>
+          <para>
+            is a helper program for the <command>xscreensaver</command>
+            modules that manipulate images.
+          </para>
+          <indexterm zone="xscreensaver xscreensaver-getimage-video">
+            <primary sortas="b-xscreensaver-getimaage-video">xscreensaver-getimage-video</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xscreensaver-gl-helper">
+        <term><command>xscreensaver-gl-helper</command></term>
+        <listitem>
+          <para>
+            is a helper program for the <command>xscreensaver</command>
+            OpenGL modules.
+          </para>
+          <indexterm zone="xscreensaver xscreensaver-gl-helper">
+            <primary sortas="b-xscreensaver-gl-helper">xscreensaver-gl-helper</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xscreensaver-text">
+        <term><command>xscreensaver-text</command></term>
+        <listitem>
+          <para>
+            prints some text to stdout, for use by screen savers.
+          </para>
+          <indexterm zone="xscreensaver xscreensaver-text">
+            <primary sortas="b-xscreensaver-text">xscreensaver-text</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

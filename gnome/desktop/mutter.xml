@@ -6,10 +6,10 @@
 
   <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-minor14;/mutter-&mutter-version;.tar.xz">
   <!ENTITY mutter-download-ftp  "&gnome-download-ftp;/mutter/&gnome-minor14;/mutter-&mutter-version;.tar.xz">
-  <!ENTITY mutter-md5sum        "28fdb6b2464d0a278013859f469a474b">
-  <!ENTITY mutter-size          "1.5 MB">
-  <!ENTITY mutter-buildsize     "39.3 MB">
-  <!ENTITY mutter-time          "0.7 SBU">
+  <!ENTITY mutter-md5sum        "0f5b6beea5ae58c9ad1073ca8e47e19a">
+  <!ENTITY mutter-size          "1.6 MB">
+  <!ENTITY mutter-buildsize     "62 MB">
+  <!ENTITY mutter-time          "0.8 SBU">
 ]>
 
 <sect1 id="mutter" xreflabel="Mutter-&mutter-version;">
@@ -31,12 +31,12 @@
 
     <para>
       <application>Mutter</application> is the window manager for
-      <application>GNOME</application>. It is not invoked directly, but from
-      <application>gnome-session</application> (on a machine with a hardware
-      accelerated video driver).
+      <application>GNOME</application>. It is not invoked directly,
+      but from <application>GNOME Session</application> (on a
+      machine with a hardware accelerated video driver).
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,6 +78,7 @@
     <para role="required">
       <xref linkend="clutter"/>,
       <xref linkend="gnome-desktop"/>,
+      <xref linkend="libxkbcommon"/>,
       <xref linkend="upower"/>, and
       <xref linkend="zenity"/>
     </para>
@@ -87,6 +88,17 @@
       <xref linkend="gobject-introspection"/>,
       <xref linkend="libcanberra"/>, and
       <xref linkend="startup-notification"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended (Required to
+    build the Wayland compositor)</bridgehead>
+    <para role="recommended">
+      <xref linkend="libinput"/>,
+      <xref linkend="wayland"/>, and
+      <xref linkend="xorg-server"/> (with <command>Xwayland</command>).
+      Additionally, <xref linkend="cogl"/>, <xref linkend="clutter"/>
+      and <xref linkend="gtk3"/> need to be built with
+      <application>Wayland</application> support.
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -104,7 +116,7 @@
     </para>
 
 <screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
-make CFLAGS=-Wno-error</userinput></screen>
+make</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -145,8 +157,9 @@ make CFLAGS=-Wno-error</userinput></screen>
           libmutter.so
         </seg>
         <seg>
-          /usr/include/mutter, and
-          /usr/lib/mutter
+          /usr/include/mutter,
+          /usr/lib/mutter, and
+          /usr/share/gtk-doc/html/meta
         </seg>
       </seglistitem>
     </segmentedlist>

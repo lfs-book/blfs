@@ -9,8 +9,8 @@
   <!ENTITY gnome-color-manager-download-ftp
            "&gnome-download-ftp;/gnome-color-manager/&gnome-minor14;/gnome-color-manager-&gnome-color-manager-version;.tar.xz">
   <!ENTITY gnome-color-manager-md5sum        "800ea5d887e3d93a7b6000d89f5e3508">
-  <!ENTITY gnome-color-manager-size          "2.5 MB">
-  <!ENTITY gnome-color-manager-buildsize     "18.0 MB">
+  <!ENTITY gnome-color-manager-size          "2.6 MB">
+  <!ENTITY gnome-color-manager-buildsize     "26 MB">
   <!ENTITY gnome-color-manager-time          "0.2 SBU">
 ]>
 
@@ -37,7 +37,7 @@
       it easy to manage, install and generate color profiles.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,15 +78,16 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="colord-gtk"/>,
+      <xref linkend="itstool"/>,
       <xref linkend="lcms2"/>,
-      <xref linkend="libcanberra"/>,
-      <xref linkend="libexif"/>, and
-      <xref linkend="yelp-xsl"/>
+      <xref linkend="libcanberra"/>, and
+      <xref linkend="libexif"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="exiv2"/> and
+      <xref linkend="appstream-glib"/>,
+      <xref linkend="exiv2"/>, and
       <xref linkend="vte"/>
     </para>
 
@@ -108,8 +109,7 @@
       commands:
     </para>
 
-<screen><userinput>sed -i "/\tman/d" Makefile.in &amp;&amp;
-./configure --prefix=/usr --disable-packagekit &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --disable-packagekit &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -122,12 +122,6 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <command>sed -i "/\tman/d" Makefile.in</command>: This sed prevents
-      man pages from being built even if <xref linkend="docbook-utils"/>
-      package is present. Building man pages is currently broken.
-    </para>
 
     <para>
       <parameter>--disable-packagekit</parameter>: This switch disables

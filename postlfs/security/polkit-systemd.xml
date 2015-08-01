@@ -36,7 +36,7 @@
       communicate with privileged processes.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,6 +68,16 @@
       <listitem>
         <para>
           Estimated build time: &polkit-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/polkit-&polkit-version;-upstream_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -109,7 +119,7 @@
 
     <bridgehead renderas="sect4">Required Runtime Dependencies</bridgehead>
     <para role="required">
-      <xref linkend="systemd"/> (for Logind)
+      <xref linkend="systemd"/>
     </para>
 
     <note>
@@ -150,7 +160,8 @@ useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
         This can cause problems if building the package in chroot,
         where the <command>configure</command> would fail to
         detect <application>systemd</application>. To workaround
-        the problem, simply run the following command:
+        the problem, simply run the following command after the
+        patch has been applied:
       </para>
 
 <screen><userinput>sed -i "s:/sys/fs/cgroup/systemd/:/sys:g" configure</userinput></screen>
@@ -161,7 +172,8 @@ useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr        \
+<screen><userinput>patch -Np1 -i ../polkit-&polkit-version;-upstream_fixes-1.patch &amp;&amp;
+./configure --prefix=/usr        \
             --sysconfdir=/etc    \
             --localstatedir=/var \
             --disable-static     &amp;&amp;

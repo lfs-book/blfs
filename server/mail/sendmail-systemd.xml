@@ -8,8 +8,8 @@
   <!ENTITY sendmail-download-http "http://www.sendmail.org/ftp/sendmail.&sendmail-version;.tar.gz"> -->
   <!ENTITY sendmail-download-http " ">
   <!ENTITY sendmail-download-ftp  "ftp://ftp.sendmail.org/pub/sendmail/sendmail.&sendmail-version;.tar.gz">
-  <!ENTITY sendmail-md5sum        "6a3bdceffa592316f830be289a4bd783">
-  <!ENTITY sendmail-size          "2.0 MB">
+  <!ENTITY sendmail-md5sum        "a45308a08d8ce64be91b7d86a7523e4f">
+  <!ENTITY sendmail-size          "2.1 MB">
   <!ENTITY sendmail-buildsize     "16 MB">
   <!ENTITY sendmail-time          "0.3 SBU">
 ]>
@@ -34,7 +34,7 @@
     <para>The <application>sendmail</application> package contains a Mail
     Transport Agent (MTA).</para>
 
-    &lfs76_built;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -117,15 +117,11 @@ EOF</userinput></screen>
 define(`confMANOWN',`root')
 define(`confSBINGRP',`root')
 define(`confUBINGRP',`root')
-define(`confUBINOWN',`root')
-</literal>
+define(`confUBINOWN',`root')</literal>
 EOF
 
 sed -i 's|/usr/man/man|/usr/share/man/man|' \
     devtools/OS/Linux           &amp;&amp;
-
-sed -i -r "s/^# if (DB.*)$/# if (\1) || DB_VERSION_MAJOR >= 5/" \
-    include/sm/bdb.h            &amp;&amp;
 
 cd sendmail                     &amp;&amp;
 sh Build                        &amp;&amp;
@@ -229,6 +225,10 @@ cd ../..</userinput></screen>
     <sect3>
       <title>Configuration Information</title>
 
+      <note><para>Ensure you have a fully qualified domain name defined
+      in <filename>/etc/hosts</filename> for your system before proceeding.
+      </para></note>
+
       <para>Create the <filename>/etc/mail/local-host-names</filename> and
       <filename>/etc/mail/aliases</filename> files using the following
       commands as the <systemitem class="username">root</systemitem>
@@ -240,7 +240,7 @@ cat &gt; /etc/mail/aliases &lt;&lt; "EOF"
 MAILER-DAEMON: root</literal>
 
 EOF
-newaliases -v</userinput></screen>
+newaliases</userinput></screen>
 
       <para><application>sendmail</application>'s primary configuration file,
       <filename>/etc/mail/sendmail.cf</filename>, is complex and not meant to be

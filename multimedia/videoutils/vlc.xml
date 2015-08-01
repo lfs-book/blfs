@@ -4,14 +4,13 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY vlc-download-http
-           "http://download.videolan.org/pub/videolan/vlc/&vlc-version;/vlc-&vlc-version;.tar.xz">
-  <!ENTITY vlc-download-ftp
-           "ftp://ftp.videolan.org/pub/videolan/vlc/&vlc-version;/vlc-&vlc-version;.tar.xz">
-  <!ENTITY vlc-md5sum        "3941b561f590cc95ca5e795213cba2f2">
-  <!ENTITY vlc-size          "19 MB">
-  <!ENTITY vlc-buildsize     "494 MB (additional 1 MB for the tests)">
-  <!ENTITY vlc-time          "4.7 SBU (additional less than 0.1 SBU for the tests)">
+  <!ENTITY vlc-download-http "http://download.videolan.org/vlc/&vlc-version;/vlc-&vlc-version;.tar.xz">
+      <!ENTITY vlc-download-ftp " ">
+<!--  <!ENTITY vlc-download-ftp "ftp://ftp.videolan.org/pub/videolan/vlc/&vlc-version;/vlc-&vlc-version;.tar.xz">-->
+  <!ENTITY vlc-md5sum        "42273945758b521c408fabc7fd6d9946">
+  <!ENTITY vlc-size          "20 MB">
+  <!ENTITY vlc-buildsize     "697 MB">
+  <!ENTITY vlc-time          "4.5 SBU">
 ]>
 
 <sect1 id="vlc" xreflabel="VLC-&vlc-version;">
@@ -40,7 +39,7 @@
       network.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -101,15 +100,15 @@
       <xref linkend="libdvdread"/>,
       <xref linkend="libdvdnav"/>,
       <xref linkend="samba"/>,
+      <xref linkend="v4l-utils"/>,
       <ulink url="http://www.videolan.org/developers/libbluray.html">libbluray</ulink>,
       <ulink url="http://sourceforge.net/projects/libdc1394/">libdc1394</ulink>,
       <ulink url="http://sourceforge.net/projects/libcddb/">libcddb</ulink>,
       <ulink url="http://code.google.com/p/libproxy/">libproxy</ulink>,
       <ulink url="http://www.live555.com/">Live555</ulink>,
-      <ulink url="http://sourceforge.net/projects/opencvlibrary/">OpenCV</ulink>,
-      <ulink url="http://linuxtv.org/downloads/v4l-utils/">Video4Linux</ulink>, and
+      <ulink url="http://sourceforge.net/projects/opencvlibrary/">OpenCV</ulink>, and
       <ulink url="http://www.gnu.org/software/vcdimager/">VCDImager</ulink>
-      (requires <ulink url="http://www.gnu.org/software/libcdio/">libcdio</ulink>)
+      (requires <xref linkend="libcdio"/>)
     </para>
 
     <bridgehead renderas="sect4">Optional mux/demux plugins</bridgehead>
@@ -172,7 +171,8 @@
 
     <bridgehead renderas="sect4">Optional interface plugins</bridgehead>
     <para role="optional">
-      <xref linkend="qt4"/> (required for the graphical user interface),
+      <xref linkend="qt4"/> or
+      <xref linkend="qt5"/> (required for the graphical user interface),
       <ulink url="http://pkgbuild.com/~giovanni/libtar/">libtar</ulink>, and
       <ulink url="http://www.lirc.org/">LIRC</ulink>
     </para>
@@ -211,10 +211,8 @@
       Install <application>VLC</application> by running the following commands:
     </para>
 
-<screen><userinput>sed -i 's:libsmbclient.h:samba-4.0/&amp;:' modules/access/smb.c &amp;&amp;
-./bootstrap                                                 &amp;&amp;
-sed "s:&lt; 56:&lt; 57:g" -i configure                            &amp;&amp;
-./configure --prefix=/usr                                   &amp;&amp;
+<screen><userinput>sed "s:&lt; 56:&lt; 57:g" -i configure &amp;&amp;
+./configure --prefix=/usr        &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -237,7 +235,7 @@ make</userinput></screen>
 
     <para>
       <command>sed ... configure</command>: This sed fixes compilation with
-      <application>ffmpeg</application> 2.4.
+      <application>FFMpeg</application> 2.4.
     </para>
 
     <para>

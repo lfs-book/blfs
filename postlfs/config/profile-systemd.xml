@@ -198,11 +198,12 @@ EOF</userinput></screen>
 <literal># Setup for /bin/ls and /bin/grep to support color, the alias is in /etc/bashrc.
 if [ -f "/etc/dircolors" ] ; then
         eval $(dircolors -b /etc/dircolors)
-
-        if [ -f "$HOME/.dircolors" ] ; then
-                eval $(dircolors -b $HOME/.dircolors)
-        fi
 fi
+
+if [ -f "$HOME/.dircolors" ] ; then
+        eval $(dircolors -b $HOME/.dircolors)
+fi
+
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'</literal>
 EOF</userinput></screen>
@@ -229,7 +230,11 @@ if [ -d /usr/local/bin ]; then
 fi
 if [ -d /usr/local/sbin -a $EUID -eq 0 ]; then
         pathprepend /usr/local/sbin
-fi</literal>
+fi
+
+# Set some defaults before other applications add to these paths.
+pathappend /usr/share/man  MANPATH
+pathappend /usr/share/info INFOPATH</literal>
 EOF</userinput></screen>
 
     </sect3>

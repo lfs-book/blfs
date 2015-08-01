@@ -6,10 +6,10 @@
 
   <!ENTITY qemu-download-http "http://wiki.qemu.org/download/qemu-&qemu-version;.tar.bz2">
   <!ENTITY qemu-download-ftp  " ">
-  <!ENTITY qemu-md5sum        "0ff197c4ed4b695620bc4734e77c888f">
-  <!ENTITY qemu-size          "22 MB">
-  <!ENTITY qemu-buildsize     "286 MB">
-  <!ENTITY qemu-time          "1.6 SBU">
+  <!ENTITY qemu-md5sum        "2fab3ea4460de9b57192e5b8b311f221">
+  <!ENTITY qemu-size          "24 MB">
+  <!ENTITY qemu-buildsize     "291 MB">
+  <!ENTITY qemu-time          "1.4 SBU">
 ]>
 
 <sect1 id="qemu" xreflabel="qemu-&qemu-version;">
@@ -33,7 +33,7 @@
     for Linux on x86 hardware containing virtualization extensions (Intel VT or
     AMD-V).</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,10 +74,17 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="alsa"/>,
+      <xref linkend="bluez"/>,
       <xref linkend="check"/>,
       <xref linkend="curl"/>,
+      <xref linkend="cyrus-sasl"/>,
+      <xref linkend="gtk2"/>,
+      <xref linkend="gtk3"/>,
+      <xref linkend="libusb"/>,
+      <xref linkend="lzo"/>,
+      <xref linkend="nss"/> (for libcacard.so),
       <xref linkend="mesalib"/>, and
-      <xref linkend="cyrus-sasl"/>
+      <xref linkend="vte"/>
     </para>
 
     <note>
@@ -110,13 +117,13 @@
   <sect2 role="kernel" id='qemu-kernel'>
     <title>Kernel Configuration</title>
 
-    <para>Enable the following options in the kernel configuration
-    and recompile the kernel if necessary:</para>
+    <para>Enable the following options in the kernel configuration and
+    recompile the kernel if necessary:</para>
 
-<screen><literal>Virtualization:  ---&gt;
-  Kernel-based Virtual Machine (KVM) support: Y or M
-    KVM for Intel processors support: Y or M
-    KVM for AMD processors support: Y or M</literal></screen>
+<screen><literal>[*] Virtualization:  ---&gt;                            [CONFIG_VIRTUALIZATION]
+  &lt;*/M&gt;   Kernel-based Virtual Machine (KVM) support [CONFIG_KVM]
+  &lt;*/M&gt;     KVM for Intel processors support         [CONFIG_KVM_INTEL]
+  &lt;*/M&gt;     KVM for AMD processors support           [CONFIG_KVM_AMD]</literal></screen>
 
     <indexterm zone="qemu qemu-kernel">
       <primary sortas="d-qemu">qemu</primary>
@@ -125,15 +132,15 @@
     <para>The Intel or AMD settings are not both required, but the one matching
     your system processor is required.</para>
 
-    <para>For networking, check that <xref linkend="bridgeutils"/> is installed
+    <para>For networking, check that <xref linkend='bridgeutils'/> is installed
     and the following options in the kernel configuration are enabled:</para>
 
-<screen><literal><!--Networking support  - - -&gt;
-  Networking options  - - -&gt;
-    802.1d Ethernet Bridging: Y or M
--->Device Drivers  ---&gt;
-  Network device support  ---&gt;
-    Universal TUN/TAP device driver support: Y or M</literal></screen>
+<screen><literal>[*] Networking support  ---&gt;                         [CONFIG_NET]
+  Networking options  ---&gt;
+    &lt;*/M&gt; 802.1d Ethernet Bridging                   [CONFIG_BRIDGE]
+Device Drivers  ---&gt;
+  [*] Network device support  ---&gt;                   [CONFIG_NETDEVICES]
+    &lt;*/M&gt;    Universal TUN/TAP device driver support [CONFIG_TUN]</literal></screen>
 
   </sect2>
 
@@ -143,11 +150,7 @@
     <para>Install <application>qemu</application> by running the following
     commands:</para>
 
-<screen><userinput>sed -e '/#include &lt;sys\/capability.h&gt;/ d' \
-    -e '/#include "virtio-9p-marshal.h"/ i#include &lt;sys\/capability.h&gt;' \
-    -i fsdev/virtfs-proxy-helper.c &amp;&amp;
-
-./configure --prefix=/usr \
+<screen><userinput>./configure --prefix=/usr \
             --sysconfdir=/etc \
             --docdir=/usr/share/doc/qemu-&qemu-version; \
             --target-list=x86_64-softmmu &amp;&amp;
@@ -162,7 +165,7 @@ make</userinput></screen>
 
     <para>
       You will need a dedicated group that will contain users (other than root)
-      allowed to access the KVM device. Add the group by running the following
+      allowed to access the KVM device.  Create this group by running the following 
       command as the <systemitem class="username">root</systemitem> user:
     </para>
 
@@ -199,10 +202,6 @@ EOF</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para><command>sed -e '/#include ... fsdev/virtfs-proxy-helper.c</command>:
-    Fixes <application>qemu-&qemu-version;</application> to build with
-    <application>libcap-&libcap-version;</application>.</para>
-
     <para><parameter>--target-list=x86_64-softmmu</parameter>: This switch
     limits the build target to the x86_64 architecture.  For other 
     hardware emulation see the --target-list list in <command>configure</command>'s
@@ -233,7 +232,7 @@ EOF</userinput></screen>
     <userinput>qemu</userinput> from an X Window System based terminal.</para></note>
 
     <para>To install an operating system, download an iso of your choice or use
-    a pre-intalled cdrom device.  For the purposes of this example, use
+    a pre-installed cdrom device.  For the purposes of this example, use
     Fedora 16 that is downloaded as
     <filename>Fedora-16-x86_64-Live-LXDE.iso</filename> in the current
     directory.  Run the following:</para>
@@ -286,6 +285,23 @@ EOF</userinput></screen>
       </listitem>
 
       <listitem>
+        <para>Allow the network connection when running as a part of the 
+        kvm group:</para>
+
+<screen role="root"><userinput>chgrp kvm  /usr/libexec/qemu-bridge-helper &amp;&amp;
+chmod 4750 /usr/libexec/qemu-bridge-helper</userinput></screen>
+
+      </listitem>
+
+      <listitem>
+        <para>Set up a required configuration file:</para>
+
+<screen role="root"><userinput>echo 'allow br0' &gt; /etc/qemu/bridge.conf</userinput></screen>
+
+      </listitem>
+
+<!--
+      <listitem>
         <para>Create scripts for qemu to attach the client network
         device, usually visible as tap0, to the host bridge.</para>
 
@@ -328,18 +344,19 @@ chmod +x /etc/qemu-ifdown</userinput></screen>
       </listitem>
     </itemizedlist>
 
-      <!-- <note><para>The backslashes in the above script are for convenience
+      <note><para>The backslashes in the above script are for convenience
       for cut/paste operations.  The backslashes should <emphasis>not</emphasis>
-      appear in the final scripts.</para></note> -->
+      appear in the final scripts.</para></note>
 
-    <itemizedlist spacing="compact">
+    <itemizedlist spacing="compact"> -->
       <listitem>
-        <para>Start qemu with "-net nic -net tap" options.  </para>
+        <!--<para>Start qemu with "-net nic -net tap" options.  </para>-->
+        <para>Start qemu with "-net nic -net bridge" options.  </para>
       </listitem>
 
       <listitem>
         <para>If a connection, such as ssh, from the local network to the
-        client VM is desired, the client should probably be configured
+        client VM is desired, the client should be configured
         with a static IP address.</para>
       </listitem>
 

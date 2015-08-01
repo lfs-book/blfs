@@ -6,10 +6,10 @@
 
   <!ENTITY dhcp-download-http " ">
   <!ENTITY dhcp-download-ftp  "ftp://ftp.isc.org/isc/dhcp/&dhcp-version;/dhcp-&dhcp-version;.tar.gz">
-  <!ENTITY dhcp-md5sum        "b3a42ece3c7f2cd2e74a3e12ca881d20">
-  <!ENTITY dhcp-size          "8.6 MB">
-  <!ENTITY dhcp-buildsize     "109 MB">
-  <!ENTITY dhcp-time          "0.4 SBU">
+  <!ENTITY dhcp-md5sum        "5a284875dd2c12ddd388416d69156a67">
+  <!ENTITY dhcp-size          "8.8 MB">
+  <!ENTITY dhcp-buildsize     "110 MB">
+  <!ENTITY dhcp-time          "0.5 SBU">
 ]>
 
 <sect1 id="dhcp" xreflabel="DHCP-&dhcp-version;">
@@ -37,12 +37,12 @@
       network addresses on private networks.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <note>
       <para>
-        Make sure you disable <command>systemd-networkd</command> service or
-        make it not configure the connections you want to manage with
+        Make sure that you disable the <command>systemd-networkd</command> service
+        or configure it not to manage the interfaces you want to manage with
         <application>DHCP</application> client.
       </para>
     </note>
@@ -106,11 +106,23 @@
     <title>Kernel Configuration</title>
 
     <para>
-      You must have Packet Socket support (Networking Support &rArr;
-      Networking Options &rArr; Packet Socket) compiled into the kernel.
-      If you do not have IPv6 support (Networking Support &rArr;
-      Networking Options &rArr; The IPv6 Protocol) compiled in, then you
-      must use the missing_ipv6 patch.
+      You must have Packet Socket support:
+    </para>
+
+<screen><literal>[*] Networking support ---&gt;          [CONFIG_NET]
+      Networking options ---&gt;
+        &lt;*&gt; Packet socket            [CONFIG_PACKET]</literal></screen>
+
+    <para>
+      If you do not have IPv6 support:
+    </para>
+
+<screen><literal>[*] Networking support ---&gt;          [CONFIG_NET]
+      Networking Options ---&gt;
+        &lt;*&gt; The IPv6 Protocol ---&gt;   [CONFIG_IPV6]</literal></screen>
+
+    <para>
+       compiled in, then you must use the <quote>missing_ipv6</quote> patch.
     </para>
 
     <indexterm zone="dhcp dhcp-kernel">
@@ -132,7 +144,7 @@
     <note>
       <para>
         Be careful with the instructions below. The single and
-        double quotes are important beecause the defined
+        double quotes are important because the defined
         variables are used verbatim in the code.
       </para>
     </note>

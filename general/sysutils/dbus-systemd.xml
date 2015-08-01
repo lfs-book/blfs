@@ -45,7 +45,7 @@
 
     <para>
       This package is known to build and work properly using an
-      LFS-7.6 systemd platform using dbus-1.8.6 source.
+      LFS-7.7 systemd platform using dbus-1.8.18 source.
     </para>
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
@@ -79,14 +79,11 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      For the tests:
       <xref linkend="dbus-glib"/>,
       <xref linkend="dbus-python"/>, and
-      <xref linkend="pygobject2"/>;
-      for the API documentation:
-      <xref linkend="doxygen"/>; 
-      for man pages and XML/HTML documentation:
-      <xref linkend="xmlto"/>
+      <xref linkend="pygobject2"/> (all three for the test suite),
+      <xref linkend="doxygen"/> (for the API documentation) and
+      <xref linkend="xmlto"/> (for man pages and XML/HTML documentation)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -147,10 +144,10 @@ ln -sfv ../../lib/$(readlink /usr/lib/libdbus-1.so) /usr/lib/libdbus-1.so</useri
 
     <para>
       The <application>D-Bus</application> tests cannot be run until after
-      <xref linkend="dbus-glib"/> has been installed.  They must be run as
+      <xref linkend="dbus-glib"/> has been installed. They must be run as
       an unprivileged user from a local session. If you want to run only
       the unit tests, replace <parameter>--enable-tests</parameter> in the
-      command below by <parameter>--enable-embedded-tests</parameter>,
+      command below with <parameter>--enable-embedded-tests</parameter>,
       otherwise <xref linkend="dbus-python"/> has to be installed before
       the tests are run. The tests require passing additional parameters to
       <command>configure</command> and exposing additional functionality in
@@ -164,13 +161,6 @@ ln -sfv ../../lib/$(readlink /usr/lib/libdbus-1.so) /usr/lib/libdbus-1.so</useri
 make                                        &amp;&amp;
 make check                                  &amp;&amp;
 make distclean</userinput></screen>
-
-    <para>
-      If <command>run-test.sh</command> fails, it can be disabled with the
-      following sed, before running the commands for the tests:
-    </para>
-
-<screen><userinput>sed -i -e 's:run-test.sh:$(NULL):g' test/name-test/Makefile.in</userinput></screen>
 
     <para>
       Note there has been a report that the tests may fail if running

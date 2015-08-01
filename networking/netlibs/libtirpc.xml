@@ -6,9 +6,9 @@
 
   <!ENTITY libtirpc-download-http "&sourceforge-repo;/libtirpc/libtirpc-&libtirpc-version;.tar.bz2">
   <!ENTITY libtirpc-download-ftp  " ">
-  <!ENTITY libtirpc-md5sum        "8cd41a5ef5a9b50d0fb6abb98af15368">
-  <!ENTITY libtirpc-size          "452 KB">
-  <!ENTITY libtirpc-buildsize     "6.4 MB">
+  <!ENTITY libtirpc-md5sum        "373d5ad46b1d19759ec763a9f0afcf4d">
+  <!ENTITY libtirpc-size          "480 KB">
+  <!ENTITY libtirpc-buildsize     "8.5 MB">
   <!ENTITY libtirpc-time          "less than 0.1 SBU">
 ]>
 
@@ -36,7 +36,7 @@
       used to be in glibc.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -72,6 +72,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/libtirpc-&libtirpc-version;-api_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <!-- Not needed for LFS 7.5, Glibc RPC interface is exported again
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
@@ -100,14 +110,17 @@
     <title>Installation of libtirpc</title>
 
     <para>
+      First, fix some API issues:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../libtirpc-0.3.2-api_fixes-1.patch</userinput></screen>
+
+    <para>
       Install <application>libtirpc</application> by running the following
       commands:
     </para>
 
-<screen><userinput><!--patch -Np1 -i ../libtirpc-&libtirpc-version;-remove_nis-1.patch &amp;&amp;
-autoreconf -fi &amp;&amp;
-
--->./configure --prefix=/usr     \
+<screen><userinput>./configure --prefix=/usr     \
             --sysconfdir=/etc \
             --disable-static  \
             --disable-gssapi  &amp;&amp;
@@ -162,7 +175,7 @@ ln -sfv ../../lib/$(readlink /usr/lib/libtirpc.so) /usr/lib/libtirpc.so</userinp
           libtirpc.so
         </seg>
         <seg>
-          /usr/include/libtirpc
+          /usr/include/tirpc
         </seg>
       </seglistitem>
     </segmentedlist>

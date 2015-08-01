@@ -4,12 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY libdvdnav-download-http
-  "http://download.videolan.org/pub/videolan/libdvdnav/&libdvdnav-version;/libdvdnav-&libdvdnav-version;.tar.bz2">
+  <!ENTITY libdvdnav-download-http "http://download.videolan.org/videolan/libdvdnav/&libdvdnav-version;/libdvdnav-&libdvdnav-version;.tar.bz2">
   <!ENTITY libdvdnav-download-ftp  " ">
-  <!ENTITY libdvdnav-md5sum        "8a1b2ebfe81daecb590893cb9093f832">
-  <!ENTITY libdvdnav-size          "348 KB">
-  <!ENTITY libdvdnav-buildsize     "7.2 MB">
+  <!ENTITY libdvdnav-md5sum        "e9ea4de3bd8f204e61301d407d09f033">
+  <!ENTITY libdvdnav-size          "364 KB">
+  <!ENTITY libdvdnav-buildsize     "3.9 MB">
   <!ENTITY libdvdnav-time          "less than 0.1 SBU">
 ]>
 
@@ -30,58 +29,92 @@
   <sect2 role="package">
     <title>Introduction to Libdvdnav</title>
 
-    <para><application>libdvdnav</application> is a library that allows easy use
-    of sophisticated DVD navigation features such as DVD menus, multiangle
-    playback and even interactive DVD games.</para>
+    <para>
+      <application>libdvdnav</application> is a library that allows easy use
+      of sophisticated DVD navigation features such as DVD menus, multiangle
+      playback and even interactive DVD games.
+    </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
-        <para>Download (HTTP): <ulink url="&libdvdnav-download-http;"/></para>
+        <para>
+          Download (HTTP): <ulink url="&libdvdnav-download-http;"/>
+        </para>
       </listitem>
       <listitem>
-        <para>Download (FTP): <ulink url="&libdvdnav-download-ftp;"/></para>
+        <para>
+          Download (FTP): <ulink url="&libdvdnav-download-ftp;"/>
+        </para>
       </listitem>
       <listitem>
-        <para>Download MD5 sum: &libdvdnav-md5sum;</para>
+        <para>
+          Download MD5 sum: &libdvdnav-md5sum;
+        </para>
       </listitem>
       <listitem>
-        <para>Download size: &libdvdnav-size;</para>
+        <para>
+          Download size: &libdvdnav-size;
+        </para>
       </listitem>
       <listitem>
-        <para>Estimated disk space required: &libdvdnav-buildsize;</para>
+        <para>
+          Estimated disk space required: &libdvdnav-buildsize;
+        </para>
       </listitem>
       <listitem>
-        <para>Estimated build time: &libdvdnav-time;</para>
+        <para>
+          Estimated build time: &libdvdnav-time;
+        </para>
       </listitem>
     </itemizedlist>
 
     <bridgehead renderas="sect3">Libdvdnav Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required"><xref linkend="libdvdread"/></para>
+    <para role="required">
+      <xref linkend="libdvdread"/>
+    </para>
 
     <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/libdvdnav"/></para>
+      <ulink url="&blfs-wiki;/libdvdnav"/>
+    </para>
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of Libdvdnav</title>
 
-    <para>Install <application>libdvdnav</application> by running the
-    following commands:</para>
+    <para>
+      Install <application>libdvdnav</application> by running the
+      following commands:
+    </para>
 
-<screen><userinput>./configure --prefix=/usr --docdir=/usr/share/doc/libdvdnav-&libdvdnav-version; &amp;&amp;
+<screen><userinput>./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/libdvdnav-&libdvdnav-version; &amp;&amp;
 make</userinput></screen>
 
-    <para>This package does not come with a test suite.</para>
+    <para>
+      This package does not come with a test suite.
+    </para>
 
-    <para>Now, as the <systemitem class="username">root</systemitem>
-    user:</para>
+    <para>
+      Now, as the <systemitem class="username">root</systemitem>
+      user:
+    </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
+
   </sect2>
 
   <sect2 role="content">
@@ -89,13 +122,20 @@ make</userinput></screen>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Library</segtitle>
-      <segtitle>Installed Directory</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>dvdnav-config</seg>
-        <seg>libdvdnav.so and libdvdnavmini.so</seg>
-        <seg>/usr/include/dvdnav</seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          libdvdnav.so
+        </seg>
+        <seg>
+          /usr/include/dvdnav and
+          /usr/share/doc/libdvdnav-&libdvdnav-version;
+        </seg>
       </seglistitem>
     </segmentedlist>
 
@@ -107,22 +147,17 @@ make</userinput></screen>
       <varlistentry id="libdvdnav-lib">
         <term><filename class="libraryfile">libdvdnav.so</filename></term>
         <listitem>
-          <para>DVD navigation library.</para>
+          <para>
+            DVD navigation library.
+          </para>
           <indexterm zone="libdvdnav libdvdnav-lib">
             <primary sortas="c-libdvdnav">libdvdnav.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-       <varlistentry id="libdvdnavmini-lib">
-        <term><filename class="libraryfile">libdvdnavmini.so</filename></term>
-        <listitem>
-          <para>DVD navigation mini library.</para>
-          <indexterm zone="libdvdnav libdvdnavmini-lib">
-            <primary sortas="c-libdvdnavmini">libdvdnavmini.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
     </variablelist>
+
   </sect2>
+
 </sect1>

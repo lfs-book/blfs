@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY apache-ant-download-http "http://archive.apache.org/dist/ant/source/apache-ant-&apache-ant-version;-src.tar.bz2">
+  <!ENTITY apache-ant-download-http "https://archive.apache.org/dist/ant/source/apache-ant-&apache-ant-version;-src.tar.bz2">
   <!ENTITY apache-ant-download-ftp  " ">
-  <!ENTITY apache-ant-md5sum        "7a7253ec047195d755c5318a4de8a3a4">
+  <!ENTITY apache-ant-md5sum        "1eddcf051c8a7010c46ca940c63d478d">
   <!ENTITY apache-ant-size          "3.6 MB">
-  <!ENTITY apache-ant-buildsize     "108 MB">
+  <!ENTITY apache-ant-buildsize     "183 MB">
   <!ENTITY apache-ant-time          "0.3 SBU">
 ]>
 
@@ -30,8 +30,8 @@
     <title>Introduction to Apache Ant</title>
 
     <para>The <application>Apache Ant</application> package is a
-    <application>Java</application>-based build tool. In theory, it is kind of
-    like <command>make</command>, but without <command>make</command>'s
+    <application>Java</application>-based build tool. In theory, it is
+    like the <command>make</command> command, but without <command>make</command>'s
     wrinkles. <application>Ant</application> is different. Instead of a model
     that is extended with shell-based commands, <application>Ant</application>
     is extended using <application>Java</application> classes. Instead of
@@ -39,7 +39,7 @@
     a target tree that executes various tasks. Each task is run by an object
     that implements a particular task interface.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,13 +77,6 @@
           Required file: <ulink
              url="http://hamcrest.googlecode.com/files/hamcrest-&hamcrest-version;.tgz">
                   http://hamcrest.googlecode.com/files/hamcrest-&hamcrest-version;.tgz </ulink>
-        </para>
-      </listitem>
-      <listitem>
-        <para>Optional documentation: <ulink
-      url="https://archive.apache.org/dist/ant/manual/apache-ant-&apache-ant-version;-manual.tar.bz2">
-           https://archive.apache.org/dist/ant/manual/apache-ant-&apache-ant-version;-manual.tar.bz2
-                                      </ulink>
         </para>
       </listitem>
     </itemizedlist>
@@ -133,10 +126,6 @@
 cp -v ../junit-&junit-version;.jar \
       hamcrest-&hamcrest-version;/hamcrest-core-&hamcrest-version;.jar lib/optional</userinput></screen>
 
-    <para>If you wish to install the documentation, unpack it:</para>
-
-<screen><userinput>tar -xvf ../apache-ant-&apache-ant-version;-manual.tar.bz2</userinput></screen>
-
     <para>Install <application>Apache Ant</application> by running the following
     commands:</para>
 
@@ -145,26 +134,16 @@ cp -v ../junit-&junit-version;.jar \
     <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>./build.sh -Ddist.dir=/opt/ant-&apache-ant-version; dist &amp;&amp;
-ln -v -sfn ant-&apache-ant-version; /opt/ant</userinput></screen>
+ln -sfvn ant-&apache-ant-version; /opt/ant</userinput></screen>
 
-  <note><para>Make sure the JAVA_HOME environment variable is set for the
-  <systemitem class="username">root</systemitem> user.</para></note>
-
-    <para>Install the documentation as the
-    <systemitem class="username">root</systemitem> user:</para>
-
-<screen role="root"><userinput>install -m755 -d /opt/ant-&apache-ant-version;/docs &amp;&amp;
-cp -Rv apache-ant-&apache-ant-version;/* /opt/ant-&apache-ant-version;/docs</userinput></screen>
+    <note><para>Make sure the JAVA_HOME environment variable is set for the
+    <systemitem class="username">root</systemitem> user.</para></note>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-<!--    <para><command>sed -i 's/jars...</command>: If the
-    <application>JUnit</application> package is not installed, the regression
-    tests cannot be performed.</para>
--->
     <para><command>cp -v ... lib/optional</command>:
     This command copies the JUnit and hamcrest jar files into the directory where
     Apache Ant will look for it.</para>
@@ -174,7 +153,7 @@ cp -Rv apache-ant-&apache-ant-version;/* /opt/ant-&apache-ant-version;/docs</use
     installs the package into
     <filename class='directory'>/opt/ant-&apache-ant-version;</filename>.</para>
 
-    <para><command>ln -v -sfn ant-&apache-ant-version; /opt/ant</command>: This
+    <para><command>ln -sfvn ant-&apache-ant-version; /opt/ant</command>: This
     command is optional, and creates a convenience symlink.</para>
 
   </sect2>
@@ -207,13 +186,21 @@ cp -Rv apache-ant-&apache-ant-version;/* /opt/ant-&apache-ant-version;/docs</use
       <title>Configuration Information</title>
 
       <para>Some packages will require <command>ant</command> to be in the
-      search path and the <envar>$ANT_HOME</envar> environment variable
-      defined. Satisfy these requirements by adding the following lines to
-      <filename>/etc/profile</filename> or to individual user's
-      <filename>~/.profile</filename> or <filename>~/.bashrc</filename> files:</para>
+      search path and the <envar>ANT_HOME</envar> environment variable
+      defined. Satisfy these requirements by issuing, as the <systemitem
+      class="username">root</systemitem> user:</para>
 
-<screen><literal>export PATH=$PATH:/opt/ant/bin
-export ANT_HOME=/opt/ant</literal></screen>
+<screen role="root"><userinput>cat &gt;&gt; /etc/profile.d/extrapaths.sh &lt;&lt; EOF
+<literal># Begin Apache-ant addition
+
+pathappend /opt/ant/bin
+export ANT_HOME=/opt/ant
+
+# End Apache-ant addition</literal>
+EOF</userinput></screen>
+
+      <para>The above instrutions assume you have configured your system as
+      described in <xref linkend="postlfs-config-profile"/>.</para>
 
     </sect3>
 

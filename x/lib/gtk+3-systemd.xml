@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gtk3-download-http "&gnome-download-http;/gtk+/3.14/gtk+-&gtk3-version;.tar.xz">
-  <!ENTITY gtk3-download-ftp  "&gnome-download-ftp;/gtk+/3.14/gtk+-&gtk3-version;.tar.xz">
-  <!ENTITY gtk3-md5sum        "34340b3ede9c1cfee3c6e2ec5f6eccc5">
-  <!ENTITY gtk3-size          "15 MB">
-  <!ENTITY gtk3-buildsize     "346 MB (includes test suite and documentation)">
-  <!ENTITY gtk3-time          "9.9 SBU (includes test suite and documentation)">
+  <!ENTITY gtk3-download-http "&gnome-download-http;/gtk+/3.16/gtk+-&gtk3-version;.tar.xz">
+  <!ENTITY gtk3-download-ftp  "&gnome-download-ftp;/gtk+/3.16/gtk+-&gtk3-version;.tar.xz">
+  <!ENTITY gtk3-md5sum        "c7497aaf6730524a127597b768a73bd7">
+  <!ENTITY gtk3-size          "18 MB">
+  <!ENTITY gtk3-buildsize     "501 MB">
+  <!ENTITY gtk3-time          "4.8 SBU">
 ]>
 
 <sect1 id="gtk3" xreflabel="GTK+-&gtk3-version;">
@@ -35,7 +35,7 @@
       applications.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -82,6 +82,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="hicolor-icon-theme"/>,
       <xref linkend="libxkbcommon"/> and
       <xref linkend="wayland"/>
     </para>
@@ -93,12 +94,13 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="adwaita-icon-theme"/> (needed to run some tests),
       <xref linkend="colord"/>,
       <xref linkend="cups"/>,
       <xref linkend="docbook-utils"/>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="json-glib"/>, and
-      <xref linkend="librest"/>
+      <xref linkend="rest"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -108,18 +110,6 @@
 
   <sect2 role="installation">
     <title>Installation of GTK+ 3</title>
-
-    <note>
-      <para>
-        <application>GTK+ 3</application> will overwrite
-        <command>gtk-update-icon-cache</command> from <xref linkend="gtk2"/> if
-        it is installed.  There is nothing wrong about that assuming that both
-        programs provide same functionality.  If you wish to keep one from
-        <application>GTK+ 2</application> you can add
-        <option>--enable-gtk2-dependency</option> to the
-        <command>configure</command> command.
-      </para>
-    </note>
 
     <para>
       Install <application>GTK+ 3</application> by running the following
@@ -134,7 +124,7 @@
 make</userinput></screen>
 
     <para>
-      Some tests fail if
+      Some tests may fail if
       <filename>/usr/share/glib-2.0/schemas/gschemas.compiled</filename> is not
       found. If you wish to run the test suite, create (or update) the file
       using the following command as the
@@ -216,11 +206,11 @@ make</userinput></screen>
 
       <para>
         <application>GTK+ 3</application> themes change the way a
-        <application>GTK+ 3</application> application looks. An icon theme can be
-        used to change the icons that appear on the application's toolbar. If
-        you have installed a <application>GTK+ 3</application> theme (eg
+        <application>GTK+ 3</application> application looks. An icon theme can
+        be used to change the icons that appear on the application's toolbar.
+        If you have installed a <application>GTK+ 3</application> theme (eg
         <xref linkend="gnome-themes-standard"/> or an icon theme (such as
-        <xref linkend="gnome-icon-theme"/>) you can set your prefences in
+        <xref linkend="adwaita-icon-theme"/>) you can set your prefences in
         <filename>~/.config/gtk-3.0/settings.ini</filename>. Eg:
       </para>
 
@@ -228,7 +218,7 @@ make</userinput></screen>
 cat &gt; ~/.config/gtk-3.0/settings.ini &lt;&lt; "EOF"
 [Settings]
 gtk-theme-name = <replaceable>Adwaita</replaceable>
-gtk-icon-theme-name = <replaceable>gnome</replaceable>
+gtk-icon-theme-name = <replaceable>Adwaita</replaceable>
 EOF</userinput></screen>
 
       <para>
@@ -260,18 +250,14 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          broadwayd, 
-          gtk-launch, 
-          gtk-query-immodules-3.0,
-          gtk-update-icon-cache,
-          gtk3-demo, 
-          gtk3-demo-application, and
-          gtk3-widget-factory
+          broadwayd, gtk3-demo, gtk3-demo-application,
+          gtk3-icon-browser, gtk3-widget-factory, 
+          gtk-encode-symbolic-svg, gtk-launch,
+          gtk-query-immodules-3.0, and
+          gtk-update-icon-cache
         </seg>
         <seg>
-          libgailutil-3.so, libgdk-3.so, and libgtk-3.so, and several under
-          /usr/lib/gtk-3.0/3.0.0/{immodules,printbackends}
-
+          libgailutil-3.so, libgdk-3.so, and libgtk-3.so
         </seg>
         <seg>
           /etc/gtk-3.0,
@@ -300,6 +286,20 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="gtk3 broadwayd">
             <primary sortas="b-broadwayd">broadwayd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gtk-encode-symbolic-svg">
+        <term><command>gtk-encode-symbolic-svg</command></term>
+        <listitem>
+          <para>
+            converts symbolic svg icons into specially prepared png files.
+            <application>GTK+ 3</application> can load and recolor these pngs,
+            just like original svgs, but loading them is much faster.
+          </para>
+          <indexterm zone="gtk3 gtk-encode-symbolic-svg">
+            <primary sortas="b-gtk-encode-symbolic-svg">gtk-encode-symbolic-svg</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -367,6 +367,20 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="gtk3 gtk3-demo-application">
             <primary sortas="b-gtk3-demo-application">gtk3-demo-application</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gtk3-icon-browser">
+        <term><command>gtk3-icon-browser</command></term>
+        <listitem>
+          <para>
+            is a utility to explore the icons in the current icon theme. It
+            shows icons in various sizes, their symbolic variants where
+            available, as well as a description of the icon and its context.
+          </para>
+          <indexterm zone="gtk3 gtk3-icon-browser">
+            <primary sortas="b-gtk3-icon-browser">gtk3-icon-browser</primary>
           </indexterm>
         </listitem>
       </varlistentry>

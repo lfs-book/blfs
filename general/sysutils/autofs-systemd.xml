@@ -6,9 +6,9 @@
 
   <!ENTITY autofs-download-http "http://www.kernel.org/pub/linux/daemons/autofs/v5/autofs-&autofs-version;.tar.xz">
   <!ENTITY autofs-download-ftp  "ftp://ftp.kernel.org/pub/linux/daemons/autofs/v5/autofs-&autofs-version;.tar.xz">
-  <!ENTITY autofs-md5sum        "4c34cacea07db3681b0da1befa229ec4">
+  <!ENTITY autofs-md5sum        "889c9d2f0e76f08ae0ff0d206f119098">
   <!ENTITY autofs-size          "284 KB">
-  <!ENTITY autofs-buildsize     "9.7 MB">
+  <!ENTITY autofs-buildsize     "11 MB">
   <!ENTITY autofs-time          "0.1 SBU">
 ]>
 
@@ -36,7 +36,7 @@
       based on a set of pre-configured maps.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,16 +89,16 @@
     </para>
 
 <screen><literal>File systems ---&gt;
-  Kernel automounter version 4 support (also supports v3): Y or M</literal></screen>
+  &lt;*/M&gt; Kernel automounter version 4 support (also supports v3) [CONFIG_AUTOFS4_FS]</literal></screen>
 
     <para>
       Optionally, enable the following options in the kernel configuration:
     </para>
 
 <screen><literal>File systems  ---&gt;
-  Network File Systems  ---&gt;
-    NFS client support: Y or M
-    CIFS support (advanced network filesystem, SMBFS successor): Y or M</literal></screen>
+  [*] Network File Systems  ---&gt;                                      [CONFIG_NETWORK_FILESYSTEMS]
+    &lt;*/M&gt; NFS client support                                          [CONFIG_NFS_FS]
+    &lt;*/M&gt; CIFS support (advanced network filesystem, SMBFS successor) [CONFIG_CIFS]</literal></screen>
 
     <para>Recompile and install the new kernel, if necessary.</para>
 
@@ -111,9 +111,7 @@
     <para>Install <application>Autofs</application> by running the following
     commands:</para>
 
-<screen><userinput>sed -i -e '/include.*config.h/ i #include &lt;stdarg.h&gt;' lib/defaults.c &amp;&amp;
-
-./configure --prefix=/         \
+<screen><userinput>./configure --prefix=/         \
             --with-systemd     \
             --without-openldap \
             --mandir=/usr/share/man &amp;&amp;
@@ -131,19 +129,19 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed ... lib/defaults.c</command>: Fix a build problem with current
-      headers.
-    </para>
-
-    <para>
       <parameter>--with-systemd</parameter>: This switch enables installation of
       the bundled systemd units.
     </para>
 
     <para>
-      <option>--without-openldap</option>: This switch disables openldap if found.  If
-      openldap is desired, omit this switch.  Note that openldap support in autofs
-      requires <xref linkend="mitkrb"/>.
+      <parameter>--without-openldap</parameter>: This switch disables openldap if
+      found.  If openldap is desired, omit this switch.  Note that openldap
+      support in autofs requires <xref linkend="mitkrb"/>.
+    </para>
+
+    <para>
+      <option>--with-libtirpc</option>: This switch enables libtirpc support if
+      available.
     </para>
 
   </sect2>
@@ -219,8 +217,8 @@ EOF</userinput></screen>
       <note>
         <para>An alternative method would be to specify another automount
         location such as <filename
-        class='directory'>/var/lib/auto/cdrom</filename> and create a
-        symbolic link from <filename class='directory'>/media/cdrom</filename>
+        class="directory">/var/lib/auto/cdrom</filename> and create a
+        symbolic link from <filename class="directory">/media/cdrom</filename>
         to the automount location.</para>
       </note>
 
@@ -288,11 +286,14 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>automount</seg>
-        <seg>lookup_dir.so, lookup_file.so, lookup_hosts.so, lookup_ldap.so,
-             lookup_multi.so, lookup_nisplus.so, lookup_program.so,
-             lookup_userhome.so, lookup_yp.so, mount_afs.so, mount_autofs.so,
-             mount_bind.so, mount_changer.so, mount_ext2.so, mount_generic.so,
-             mount_nfs.so, parse_sun.so</seg>
+        <seg>
+          lookup_dir.so, lookup_file.so, lookup_files.so, lookup_hosts.so,
+          lookup_ldap.so, lookup_multi.so, lookup_nis.so, lookup_nisplus.so,
+          lookup_program.so, lookup_userhome.so, lookup_yp.so, mount_afs.so,
+          mount_autofs.so, mount_bind.so, mount_changer.so, mount_ext2.so,
+          mount_ext3.so, mount_ext4.so, mount_generic.so, mount_nfs.so,
+          mount_nfs4.so, parse_amd.so, and parse_sun.so
+        </seg>
         <seg>/lib/autofs</seg>
       </seglistitem>
     </segmentedlist>

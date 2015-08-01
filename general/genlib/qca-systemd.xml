@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY qca-download-http "http://delta.affinix.com/download/qca/2.0/qca-&qca-version;.tar.gz">
+  <!ENTITY qca-download-ftp  " ">
+  <!ENTITY qca-md5sum        "c2b00c732036244701bae4853a2101cf">
+  <!ENTITY qca-size          "956 KB">
+  <!ENTITY qca-buildsize     "33 MB">
+  <!ENTITY qca-time          "1.5 SBU">
+]>
+
+<sect1 id="qca" xreflabel="Qca-&qca-version;">
+  <?dbhtml filename="qca.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy: krejzi $</othername>
+    <date>$Date: 2014-10-26 16:35:43 +0100 (Sun, 26 Oct 2014) $</date>
+  </sect1info>
+
+  <title>Qca-&qca-version;</title>
+
+  <indexterm zone="qca">
+    <primary sortas="a-Qca">Qca</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Qca</title>
+
+    <para>
+      <application>Qca</application> aims to provide a straightforward
+      and cross-platform crypto API, using <application>Qt</application>
+      datatypes and conventions. <application>Qca</application> separates
+      the API from the implementation, using plugins known as Providers.
+    </para>
+
+    &lfs77_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&qca-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&qca-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &qca-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &qca-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &qca-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &qca-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Qca Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="cmake"/> and
+      <xref linkend="qt4"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="cacerts"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="cyrus-sasl"/>,
+      <xref linkend="gnupg2"/>,
+      <xref linkend="libgcrypt"/>,
+      <xref linkend="nss"/>,
+      <xref linkend="openssl"/>,
+      <xref linkend="qt5"/>,
+      <ulink url="http://botan.randombit.net/">Botan</ulink> and
+      <ulink url="https://github.com/OpenSC/pkcs11-helper">pkcs11-helper</ulink>
+    </para>
+
+    <note>
+      <para>
+        Even though this package can be built against
+        <application>Qt5</application>, the instructions below don't
+        cover such installation because the changes needed to the
+        instructions below are too invasive. If you need
+        <application>Qt5</application> version of the library, check
+        the "KDE Frameworks 5" chapter for instructions.
+      </para>
+    </note>
+
+    <para condition="html" role="usernotes">User Notes:
+      <ulink url="&blfs-wiki;/qca"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Qca</title>
+
+    <para>
+      First, silence a lot of warnings caused by using the latest toolchain
+      by running the following command:
+    </para>
+
+<screen><userinput>sed -i "/BSD_SOURCE/d" CMakeLists.txt</userinput></screen>
+
+    <para>
+      Install <application>Qca</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_BUILD_TYPE=Release  \
+      -DQT4_BUILD=ON              \
+      -DQCA_DOC_INSTALL_DIR=/usr/share/doc/qca-&qca-version;            \
+      -DQCA_FEATURE_INSTALL_DIR=/usr/share/qt4/mkspecs/features \
+      -DQCA_INCLUDE_INSTALL_DIR=/usr/include/qt4                \
+      -DQCA_PRIVATE_INCLUDE_INSTALL_DIR=/usr/include/qt4        \
+      -DQCA_PLUGINS_INSTALL_DIR=/usr/lib/qt4/plugins            \
+      -Wno-dev .. &amp;&amp;
+
+make</userinput></screen>
+
+    <para>
+      To test the results, issue <command>make test</command>.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      If <application>Qt4</application> isn't installed in
+      <filename class="directory">/usr</filename>, ensure
+      it can properly find the modules installed by this
+      package by running the following commands as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>if [[ ${QT4DIR} != "/usr" ]]
+then
+   ln -sfv /usr/include/qt4/QtCrypto                  \
+           ${QT4DIR}/include/qt4/                     &amp;&amp;
+   ln -sfv /usr/share/qt4/mkspecs/features/crypto.prf \
+           ${QT4DIR}/share/qt4/mkspecs/features/      &amp;&amp;
+
+   install -v -dm755 ${QT4DIR}/lib/qt4/plugins/crypto &amp;&amp;
+
+   for file in /usr/lib/qt4/plugins/crypto/*
+   do
+       ln -sfv ${file} ${QT4DIR}/lib/qt4/plugins/crypto/
+   done &amp;&amp;
+
+   unset file
+fi</userinput></screen>
+
+    <note>
+      <para>
+        If you upgrade <application>Qt4</application> per BLFS
+        instructions, make sure you re-run the commands above.
+      </para>
+    </note>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>-DCMAKE_BUILD_TYPE=Release</parameter>: This switch is used
+      to apply higher level of the compiler optimizations.
+    </para>
+
+    <para>
+      <parameter>-DQT4_BUILD=ON</parameter>: This switch is used to ensure
+      that  <application>Qt4</application> version of the library is built
+      even if <application>Qt5</application> is present.
+    </para>
+
+    <para>
+      <parameter>-DQCA_*_INSTALL_DIR=...</parameter>: These switches are used
+      to ensure that files depending on the <application>Qt4</application>
+      installation prefix are installed in the correct locations.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          mozcerts and qcatool
+        </seg>
+        <seg>
+          libqca.so
+        </seg>
+        <seg>
+          /usr/include/qt4/QtCrypto,
+          /usr/lib/cmake/Qca,
+          /usr/lib/qt4/plugins/crypto and,
+          depending on the <application>Qt4</application>
+          installation prefix,
+          $QT4DIR/include/qt4/QtCrypto and
+          $QT4DIR/lib/qt4/plugins/crypto
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="mozcerts">
+        <term><command>mozcerts</command></term>
+        <listitem>
+          <para>
+            is a command line tool for converting certdata.txt into
+            outfile.pem files.
+          </para>
+          <indexterm zone="qca mozcerts">
+            <primary sortas="b-mozcerts">mozcerts</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="qcatool">
+        <term><command>qcatool</command></term>
+        <listitem>
+          <para>
+            is a command line tool for performing various cryptographic
+	    operations with <application>Qca</application>.
+          </para>
+          <indexterm zone="qca qcatool">
+            <primary sortas="b-qcatool">qcatool</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libqca">
+        <term><filename class="libraryfile">libqca.so</filename></term>
+        <listitem>
+          <para>
+            is the Qt Cryptography Architecture (Qca) library.
+          </para>
+          <indexterm zone="qca libqca">
+            <primary sortas="c-libqca">libqca.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!-- Place this in the general.ent file
+  <!ENTITY TEMPLATE-version "">
+  -->
+
+  <!ENTITY lxdm-download-http "http://downloads.sourceforge.net/lxdm/lxdm-&lxdm-version;.tar.xz">
+  <!ENTITY lxdm-download-ftp  " ">
+  <!ENTITY lxdm-md5sum        "a51686720e606ca456d7f56ae4159d1f">
+  <!ENTITY lxdm-size          "232 KB">
+  <!ENTITY lxdm-buildsize     "4.7 MB">
+  <!ENTITY lxdm-time          "less than 0.1 SBU ">
+]>
+
+<sect1 id="lxdm" xreflabel="LXDM-&lxdm-version;">
+  <?dbhtml filename="lxdm.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy: krejzi $</othername>
+    <date>$Date: 2014-10-26 16:42:45 +0100 (Sun, 26 Oct 2014) $</date>
+  </sect1info>
+
+  <title>LXDM-&lxdm-version;</title>
+
+  <indexterm zone="lxdm">
+    <primary sortas="a-LXDM">LXDM</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to LXDM</title>
+
+    <para>
+      The <application>LXDM</application> is a lightweight Display Manager for
+      the <application>LXDE</application> desktop. It can also be used as an
+      alternative to other Display Managers such as
+      <application>GNOME's</application> <application>GDM</application> or
+      <application>KDE's</application> <application>KDM</application>.
+    </para>
+
+    &lfs77_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&lxdm-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&lxdm-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &lxdm-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &lxdm-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &lxdm-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &lxdm-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">LXDM Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="gtk2"/>,
+      <xref linkend="iso-codes"/> and
+      <xref linkend="librsvg"/> (runtime, for default theme background)
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+     <xref linkend="systemd"/> and
+     <xref linkend="linux-pam"/>
+    </para>
+    
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="gtk3"/>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/lxdm"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of LXDM</title>
+
+    <para>
+      First, some fixes.
+    </para>
+
+<screen><userinput>cat &gt; pam/lxdm &lt;&lt; "EOF" &amp;&amp;
+<literal>#%PAM-1.0
+auth        required    pam_unix.so
+auth        requisite   pam_nologin.so
+account     required    pam_unix.so
+password    required    pam_unix.so
+session     required    pam_unix.so</literal>
+EOF
+
+sed -i 's:sysconfig/i18n:profile.d/i18n.sh:g' data/lxdm.in &amp;&amp;
+sed -i 's:/etc/xprofile:/etc/profile:g' data/Xsession &amp;&amp;
+sed -e 's/^bg/#&amp;/'        \
+    -e '/reset=1/ s/# //' \
+    -e 's/logou$/logout/' \
+    -e "/arg=/a arg=$XORG_PREFIX/bin/X" \
+    -i data/lxdm.conf.in</userinput></screen>
+
+    <para>
+      Install <application>LXDM</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --with-pam        \
+            --with-systemdsystemunitdir=no &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <!--Optional section-->
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <command>cat &gt; pam/lxdm &lt;&lt; "EOF" ...</command>: Replace default
+      <filename>/etc/pam.d/lxdm</filename> by another one appropriate for BLFS.
+    </para>
+
+    <para>
+      <command>sed -i ... data/lxdm.conf.in</command>: Modifications in the
+      default configuration:
+      (1) fix the background to the default one;
+      (2) restart X when session is close;
+      (3) typo; and
+      (4) include <envar>XORG_PREFIX</envar>, which may be different from
+      <filename class="directory">/usr</filename>.
+    </para>
+
+    <para>
+      <command>sed -i ... data/Xsession</command>: Source
+      <filename>/etc/profile</filename>, instead of other file, according to
+      BLFS standard.
+    </para>
+
+    <para>
+      <command>sed -i ... data/lxdm.in</command>: Fix greeter's locale for BLFS
+      specification.
+    </para>
+
+    <para>
+      <option>--with-pam</option>: This option enables use of pam
+      authentication.
+    </para>
+
+    <para>
+      <option>--with-systemdsystemunitdir=no</option>: BLFS does not support
+      systemd.
+    </para>
+
+  </sect2>
+
+  <sect2 role="configuration">
+    <title>Configuring LXDM</title>
+
+   <sect3 id="lxdm-config">
+      <title>Config Files</title>
+
+      <para>
+        <filename>/etc/lxdm/lxdm.conf</filename>
+      </para>
+
+      <indexterm zone="lxdm lxdm-config">
+        <primary sortas="e-etc-lxdm-lxdm.conf">/etc/lxdm/lxdm.conf</primary>
+      </indexterm>
+
+    </sect3>
+
+   <sect3 id="lxdm-init">
+      <title>Boot Script</title>
+
+      <para>
+        Install the <filename>/etc/rc.d/init.d/lxdm</filename> init script from
+        the <xref linkend="bootscripts"/> package.
+      </para>
+
+      <indexterm zone="lxdm lxdm-init">
+        <primary sortas="f-lxdm">lxdm</primary>
+      </indexterm>
+
+<screen role="root"><userinput>make install-lxdm</userinput></screen>
+
+    </sect3>
+
+    <sect3>
+      <title>Configuration Information</title>
+
+      <para>
+        The LXDM daemon configuration <filename>/etc/lxdm/lxdm.conf</filename>
+        file options includes numlock on/off, backgraound image (bg), session,
+        etc.  You can set a default session by uncommenting the line:
+        session=/usr/bin/startlxde and replacing <command>startlxde</command>
+        with your session of choice. For <application>GNOME</application>
+        session=/usr/bin/gnome-session.  For <application>OPENBOX</application>
+        session=/usr/bin/openbox-session and for
+        <application>XFCE</application> session=/usr/bin/startxfce4.
+      </para>
+
+      <para>
+        It is also possible to set the preferred session on a per-user basis by
+        editing the ~/.dmrc file for each user and adding:
+        <screen><literal>[Desktop]
+        Session=xfce</literal></screen>
+      </para>
+
+      <para>
+        You can replace the default dummy face in the greeting screen by other
+        image representing your user. For that, copy or symlink the desired
+        image to your home directory, with the name <filename>.face</filename>.
+      </para>
+
+    </sect3>
+
+    <sect3>
+      <title>Starting lxdm</title>
+
+      <para>
+        You can manually start <command>lxdm</command>, e.g, if the bootscript
+        has been installed, by running, as <systemitem
+        class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>/etc/rc.d/init.d/lxdm start</userinput></screen>
+
+      <para>
+        By definition, X should be executed at runlevel 5, consequently, the
+        same is true for <application>lxdm</application>. However, BLFS default
+        runlevel is 3. Changing to runlevel 5, from the terminal, as
+        <systemitem class="username">root</systemitem> user, makes the
+        <command>lxdm</command> bootscript to be executed, obtaining the
+        greeter screen:
+      </para>
+
+<screen role="root"><userinput>init 5</userinput></screen>
+
+      <para>
+          In order to permanently set the default to 5, obtaining the
+          <command>lxdm</command> greeter screen automatically, you can modify
+          <filename>/etc/inittab</filename>, as <systemitem
+          class="username">root</systemitem> user (the instructions below also
+          make a backup, so you can easily revert the modification):
+      </para>
+
+<screen role="root"><userinput>cp -v /etc/inittab{,-orig} &amp;&amp;
+sed -i '/initdefault/ s/3/5/' /etc/inittab</userinput></screen>
+
+      <para>
+          One important script, executed after login, is
+          <filename>/etc/lxdm/Xsession</filename>, which we have fixed to fit
+          BLFS specifications.
+      </para>
+
+    </sect3>
+  
+  </sect2>
+  <!--Required section-->
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          lxdm, lxdm-binary and lxdm-config, and, under /usr/libexec/,
+          lxdm-greeter-gdk, lxdm-greeter-gtk, lxdm-numlock, and lxdm-session.
+        </seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          /etc/lxdm and
+          /usr/share/lxdm
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <!-- If the program or library name conflicts (is the same) as the
+      package name, add -prog or -lib to the varlistentry entity id
+      and the 2nd entry of the indexterm zone entity -->
+
+      <varlistentry id="lxdm-prog">
+        <term><command>lxdm</command></term>
+        <listitem>
+          <para>
+            is a script to execute <command>lxdm-binary</command>
+          </para>
+          <indexterm zone="lxdm lxdm-prog">
+            <primary sortas="b-lxdm">lxdm</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lxdm-bin">
+        <term><command>lxdm-binary</command></term>
+        <listitem>
+          <para>
+             is the actual Display Manager; needs to be executed with option
+             <option>-d</option> to daemonize
+          </para>
+          <indexterm zone="lxdm lxdm-bin">
+            <primary sortas="b-lxdm">lxdm</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lxdm-config-prog">
+        <term><command>lxdm-config</command></term>
+        <listitem>
+          <para>
+            is a graphical customizing program
+          </para>
+          <indexterm zone="lxdm lxdm-config">
+            <primary sortas="b-lxdm">lxdm</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lxdm-greeter-gtk">
+        <term><command>lxdm-greeter-gtk</command></term>
+        <listitem>
+          <para>
+            is the graphical login greeter, where, between other options, user
+            name is chosen and password is typed (if not in auto login mode)
+          </para>
+          <indexterm zone="lxdm lxdm-greeter-gtk">
+            <primary sortas="b-lxdm">lxdm</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lxdm-numlock">
+        <term><command>lxdm-numlock</command></term>
+        <listitem>
+          <para>
+            is a program to set the numlock key, if so defined in
+            <filename>/etc/lxdm/lxdm.conf</filename>
+          </para>
+          <indexterm zone="lxdm lxdm-numlock">
+            <primary sortas="b-lxdm">lxdm</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+</sect1>

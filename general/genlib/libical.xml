@@ -3,14 +3,15 @@
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
+
 <!ENTITY libical-download-http "https://github.com/libical/libical/releases/download/v&libical-version;/libical-&libical-version;.tar.gz">
-<!--
-  <!ENTITY libical-download-http "http://downloads.sourceforge.net/freeassociation/libical-&libical-version;.tar.gz">-->
+  <!--
+  <!ENTITY libical-download-http "https://github.com/libical/libical/archive/v&libical-version;.tar.gz">-->
   <!ENTITY libical-download-ftp  " ">
-  <!ENTITY libical-md5sum        "d26a58149aaae9915fa79fb35c8de6fc">
-  <!ENTITY libical-size          "687 KB">
-  <!ENTITY libical-buildsize     "17.2 MB">
-  <!ENTITY libical-time          "0.2 SBU">
+  <!ENTITY libical-md5sum        "af91db06b22559f863869c5a382ad08a">
+  <!ENTITY libical-size          "704 KB">
+  <!ENTITY libical-buildsize     "12 MB (additional 13 MB for the API documentation)">
+  <!ENTITY libical-time          "0.1 SBU">
 ]>
 
 <sect1 id="libical" xreflabel="libical-&libical-version;">
@@ -35,9 +36,26 @@
       of the iCalendar protocols and data formats.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
+<!--
+    <note>
+
+      <para>The download link below obtains
+      <filename>libical-&libical-version;.tar.gz</filename> if a web browser
+      such as <xref linkend="firefox"/> is used. This is the correct name
+      for the archive, because it saves the file as <filename
+      class="directory">libical-&libical-version;</filename>. However, if
+      another method is used for downloading, e.g. <xref linkend="wget"/>, the
+      file name is <filename>v&libical-version;.tar.gz</filename>, which is not
+      acceptable. The file should be renamed to the correct filename
+      <filename>libical-&libical-version;.tar.gz</filename>. You can achieve
+      this automatically by using the command:</para>
+    
+ <screen><userinput>wget <ulink url="&libical-download-http;"/> -O libical-&libical-version;.tar.gz</userinput></screen>
+    </note>
+-->
     <itemizedlist spacing="compact">
       <listitem>
         <para>
@@ -80,6 +98,11 @@
       <xref linkend="cmake"/>
     </para>
 
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="doxygen"/> (for the API documentation)
+    </para>
+
     <!-- Can't be built using CMake
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
@@ -110,6 +133,13 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr \
 make</userinput></screen>
 
     <para>
+      If you have <xref linkend="doxygen"/> installed and wish to build the API
+      documentation, issue:
+    </para>
+
+<screen><userinput>make docs</userinput></screen>
+
+    <para>
       To test the results, issue: <command>make test</command>.
     </para>
 
@@ -119,6 +149,14 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+    <para>
+      If you have built the API documentation, install by issuing, as
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -vdm755 /usr/share/doc/libical-&libical-version;/html &amp;&amp;
+cp -vr apidocs/html/* /usr/share/doc/libical-&libical-version;/html</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
@@ -127,6 +165,11 @@ make</userinput></screen>
     <para>
       <parameter>-DCMAKE_BUILD_TYPE=Release</parameter>: This switch is used
       to apply higher level of the compiler optimizations.
+    </para>
+
+    <para>
+      <parameter>-DSHARED_ONLY=yes</parameter>: This switch is used
+      in order to only build the shared libraries.
     </para>
 
     <!-- No CMake equivalents
@@ -155,10 +198,11 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          libical.{so,a}, libicalss.{so,a} and libicalvcal.{so,a}
+          libical.so, libicalss.so and libicalvcal.so
         </seg>
         <seg>
-          /usr/include/libical
+          /usr/include/libical and
+          /usr/share/doc/libical-&libical-version;/html
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -169,39 +213,39 @@ make</userinput></screen>
       <?dbhtml list-presentation="table"?>
 
       <varlistentry id="libical-lib">
-        <term><filename class="libraryfile">libical.{so,a}</filename></term>
+        <term><filename class="libraryfile">libical.so</filename></term>
         <listitem>
           <para>
             contains the <application>libical</application> API
             functions.
           </para>
           <indexterm zone="libical libical-lib">
-            <primary sortas="c-libical">libical.{so,a}</primary>
+            <primary sortas="c-libical">libical.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
       <varlistentry id="libicalss">
-        <term><filename class="libraryfile">libicalss.{so,a}</filename></term>
+        <term><filename class="libraryfile">libicalss.so</filename></term>
         <listitem>
           <para>
             is a library that allows you to store iCal component data
             to disk in a variety of ways.
           </para>
           <indexterm zone="libical libicalss">
-            <primary sortas="c-libicalss">libicalss.{so,a}</primary>
+            <primary sortas="c-libicalss">libicalss.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
       <varlistentry id="libicalvcal">
-        <term><filename class="libraryfile">libicalvcal.{so,a}</filename></term>
+        <term><filename class="libraryfile">libicalvcal.so</filename></term>
         <listitem>
           <para>
             is a vCard/vCalendar C interface.
           </para>
           <indexterm zone="libical libicalvcal">
-            <primary sortas="c-libicalvcal">libicalvcal.{so,a}</primary>
+            <primary sortas="c-libicalvcal">libicalvcal.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

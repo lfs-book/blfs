@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY gnutls-download-http " ">
-  <!ENTITY gnutls-download-ftp  "ftp://ftp.gnutls.org/gcrypt/gnutls/v3.3/gnutls-&gnutls-version;.tar.xz">
-  <!ENTITY gnutls-md5sum        "ff61b77e39d09f1140ab5a9cf52c58b6">
-  <!ENTITY gnutls-size          "5.9 MB">
-  <!ENTITY gnutls-buildsize     "106 MB (additional 8 MB for the tests)">
-  <!ENTITY gnutls-time          "1.0 SBU (additional 2.2 SBU for the tests)">
+  <!ENTITY gnutls-download-ftp  "ftp://ftp.gnutls.org/gcrypt/gnutls/v3.4/gnutls-&gnutls-version;.tar.xz">
+  <!ENTITY gnutls-md5sum        "4fb4a6253e09aa070e6c467cbb51ba33">
+  <!ENTITY gnutls-size          "6.2 MB">
+  <!ENTITY gnutls-buildsize     "128 MB (with built in API documentation; additional 16 MB for tests)">
+  <!ENTITY gnutls-time          "0.8 SBU (additional 2.6 SBU for tests)">
 ]>
 
 <sect1 id="gnutls" xreflabel="GnuTLS-&gnutls-version;">
@@ -45,15 +45,15 @@
     </para>
 
     <para>
-      <application>GnuTLS</application> provides support for TLS 1.1, TLS
-      1.0 and SSL 3.0 protocols, TLS extensions, including server name and max
+      <application>GnuTLS</application> provides support for TLS 1.2, TLS 1.1,
+      TLS 1.0, and SSL 3.0 protocols, TLS extensions, including server name and max
       record size. Additionally, the library supports authentication using the
       SRP protocol, X.509 certificates and OpenPGP keys, along with support for
       the TLS Pre-Shared-Keys (PSK) extension, the Inner Application (TLS/IA)
       extension and X.509 and OpenPGP certificate handling.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -99,15 +99,17 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="cacerts"/>,
-      <xref linkend="libtasn1"/>, and
+      <xref linkend="libtasn1"/> and
       <xref linkend="p11-kit"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="doxygen"/>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="guile"/>,
       <xref linkend="libidn"/>,
+      <xref linkend="texlive"/> or <xref linkend="tl-installer"/>,
       <xref linkend="unbound"/> (to build the DANE library), 
       <xref linkend="valgrind"/> (used during the test suite),
       <ulink url="http://ftp.gnu.org/gnu/autogen/">Autogen</ulink>, and
@@ -148,10 +150,11 @@ make</userinput></screen>
 <screen role="root"><userinput>make install</userinput></screen>
 
     <para>
-      If you did not pass the <option>--enable-gtk-doc</option> parameter
-      to the <command>configure</command> script, you can install the API documentation
-      to the <filename class="directory">/usr/share/gtk-doc/html/gnutls</filename>
-      directory using the following command as the
+      If you did not pass the <option>--enable-gtk-doc</option> parameter to
+      the <command>configure</command> script, you can install the API
+      documentation to the <filename
+      class="directory">/usr/share/gtk-doc/html/gnutls</filename> directory
+      using the following command as the
       <systemitem class="username">root</systemitem> user:
     </para>
 
@@ -162,14 +165,18 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para>
-      <option>--without-p11-kit</option>: This switch disables
-      PKCS#11 support. Use it if you have not installed 
-      <xref linkend="p11-kit"/>.
-    </para>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
+
+    <para>
+      <option>--enable-openssl-compatibility</option>: Use this switch if you
+      want to build the OpenSSL compatibility library.
+    </para>
+
+    <para>
+      <option>--without-p11-kit</option>: Use this switch if you have not
+      installed <application>p11-kit</application>.
+    </para>
 
   </sect2>
 
@@ -187,9 +194,8 @@ make</userinput></screen>
           gnutls-serv, ocsptool, p11tool, psktool, and srptool
         </seg>
         <seg>
-          libgnutls.so, libgnutls-dane.so,
-          libgnutls-openssl.so, libgnutlsxx.so, and
-          guile-gnutls-v-2.so (<application>Guile</application> Module)
+          libgnutls.so, libgnutls-dane.so, libgnutlsxx.so, and
+          guile-gnutls-v-2.so (<application>Guile</application> Module
         </seg>
         <seg>
           /usr/include/gnutls,

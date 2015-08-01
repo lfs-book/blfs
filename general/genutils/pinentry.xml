@@ -6,9 +6,9 @@
 
   <!ENTITY pinentry-download-http " ">
   <!ENTITY pinentry-download-ftp  "ftp://ftp.gnupg.org/gcrypt/pinentry/pinentry-&pinentry-version;.tar.bz2">
-  <!ENTITY pinentry-md5sum        "40a05856cb3accf6679987b7899b0f5a">
-  <!ENTITY pinentry-size          "456 KB">
-  <!ENTITY pinentry-buildsize     "9.8 MB">
+  <!ENTITY pinentry-md5sum        "50dd255d23839079e15a02761f11d4c8">
+  <!ENTITY pinentry-size          "500 KB">
+  <!ENTITY pinentry-buildsize     "15 MB">
   <!ENTITY pinentry-time          "0.1 SBU">
 ]>
 
@@ -37,11 +37,11 @@
     the <command>gpg-agent</command> daemon, but can be run from the command
     line as well. There are programs for various text-based and GUI
     environments, including interfaces designed for
-    <application>Ncurses</application> (text-based),
-    <application>GTK+</application>, <application>GTK+2</application>,
-    <application>Qt3</application>, and <application>Qt4</application>.</para>
+    <application>Ncurses</application> (text-based), and for the common
+    <application>GTK</application> and <application>Qt</application>
+    toolkits.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,7 +69,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk2"/> and
+      <xref linkend="gcr"/>,
+      <xref linkend="gtk2"/>,
+      <xref linkend="libsecret"/> and
       <xref linkend="qt4"/>
     </para>
 
@@ -81,13 +83,11 @@
   <sect2 role="installation">
     <title>Installation of PIN-Entry</title>
 
-    <para>If both <xref linkend="qt4"/> and <xref linkend="qt5"/> are
-    installed, use <command>source setqt4</command>, before starting.</para>
-
     <para>Install <application>PIN-Entry</application> by running the following
     commands:</para>
 
-<screen><userinput>sed -i 's:../../../s/pinentry/qt4/::' qt4/*.moc &amp;&amp;
+<screen><userinput>sed -i 's:ncursesw/::' pinentry/pinentry-curses.c &amp;&amp;
+
 ./configure --prefix=/usr &amp;&amp;
 make</userinput></screen><!-- &amp;&amp;
 
@@ -125,7 +125,9 @@ install -v -m644 doc/pinentry.{pdf,ps,dvi} \
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i ... qt4/*.moc</command> Fix some header locations.
+      <command>sed -i ... pinentry/pinentry-curses.c</command>: This
+      <command>sed</command> fixes detection of the
+      <application>Ncurses</application> headers.
     </para>
 
   </sect2>
@@ -136,13 +138,15 @@ install -v -m644 doc/pinentry.{pdf,ps,dvi} \
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
-      <segtitle>Installed Directory</segtitle>
+      <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>pinentry (symlink), pinentry-curses, pinentry-gtk-2,
-          pinentry-qt4, and pinentry-tty</seg>
+        <seg>
+          pinentry (symlink), pinentry-curses, pinentry-gnome3,
+          pinentry-gtk-2, pinentry-qt4, and pinentry-tty
+        </seg>
         <seg>None</seg>
-        <seg>None<!--/usr/share/doc/pinentry-&pinentry-version;--></seg>
+        <seg>None</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -165,51 +169,40 @@ install -v -m644 doc/pinentry.{pdf,ps,dvi} \
       <varlistentry id="pinentry-curses">
         <term><command>pinentry-curses</command></term>
         <listitem>
-          <para> is an <application>Ncurses</application> text-based
+          <para>is an <application>Ncurses</application> text-based
           <application>PIN-Entry</application> program.</para>
           <indexterm zone="pinentry pinentry-curses">
             <primary sortas="b-pinentry-curses">pinentry-curses</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-<!--
-      <varlistentry id="pinentry-gtk">
-        <term><command>pinentry-gtk</command></term>
+
+      <varlistentry id="pinentry-gnome3">
+        <term><command>pinentry-gnome3</command></term>
         <listitem>
-          <para> is a <application>GTK+</application> GUI
-          <application>PIN-Entry</application> program.</para>
-          <indexterm zone="pinentry pinentry-gtk">
-            <primary sortas="b-pinentry-gtk">pinentry-gtk</primary>
+          <para> is a <application>GNOME-3</application>
+          <application>PIN-Entry</application> helper program.</para>
+          <indexterm zone="pinentry pinentry-gnome3">
+            <primary sortas="b-pinentry-gnome3">pinentry-gnome3</primary>
           </indexterm>
         </listitem>
-      </varlistentry>-->
+      </varlistentry>
 
       <varlistentry id="pinentry-gtk-2">
         <term><command>pinentry-gtk-2</command></term>
         <listitem>
-          <para> is a <application>GTK+2</application> GUI
+          <para> is a <application>GTK+2</application> based
           <application>PIN-Entry</application> program.</para>
           <indexterm zone="pinentry pinentry-gtk-2">
             <primary sortas="b-pinentry-gtk-2">pinentry-gtk-2</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-<!--
-      <varlistentry id="pinentry-qt">
-        <term><command>pinentry-qt</command></term>
-        <listitem>
-          <para> is a <application>Qt3</application> GUI
-          <application>PIN-Entry</application> program.</para>
-          <indexterm zone="pinentry pinentry-qt">
-            <primary sortas="b-pinentry-qt">pinentry-qt</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>-->
 
       <varlistentry id="pinentry-qt4">
         <term><command>pinentry-qt4</command></term>
         <listitem>
-          <para> is a <application>Qt4</application> GUI
+          <para> is a <application>Qt4</application> based
           <application>PIN-Entry</application> program.</para>
           <indexterm zone="pinentry pinentry-qt4">
             <primary sortas="b-pinentry-qt4">pinentry-qt4</primary>
@@ -220,7 +213,7 @@ install -v -m644 doc/pinentry.{pdf,ps,dvi} \
       <varlistentry id="pinentry-tty">
         <term><command>pinentry-tty</command></term>
         <listitem>
-          <para> is a <application>tty</application>
+          <para> is a <application>tty</application> based
           <application>PIN-Entry</application> program.</para>
           <indexterm zone="pinentry pinentry-tty">
             <primary sortas="b-pinentry-tty">pinentry-tty</primary>

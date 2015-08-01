@@ -6,10 +6,10 @@
 
   <!ENTITY xorg-server-download-http "&xorg-download-http;/xserver/xorg-server-&xorg-server-version;.tar.bz2">
   <!ENTITY xorg-server-download-ftp  "&xorg-download-ftp;/xserver/xorg-server-&xorg-server-version;.tar.bz2">
-  <!ENTITY xorg-server-md5sum        "89620960b13515db8d0a8dbb92a1378a">
-  <!ENTITY xorg-server-size          "5.5 MB">
-  <!ENTITY xorg-server-buildsize     "402 MB">
-  <!ENTITY xorg-server-time          "2.3 SBU">
+  <!ENTITY xorg-server-md5sum        "397e405566651150490ff493e463f1ad">
+  <!ENTITY xorg-server-size          "5.6 MB">
+  <!ENTITY xorg-server-buildsize     "535 MB">
+  <!ENTITY xorg-server-time          "1.6 SBU">
 ]>
 
 <sect1 id="xorg-server" xreflabel="Xorg-Server-&xorg-server-version;">
@@ -34,7 +34,7 @@
       of the X Window system.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,28 +84,33 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="openssl"/> or
       <xref linkend="nettle"/> or
-      <xref linkend="libgcrypt"/>,
+      <xref linkend="libgcrypt"/> or
+      <xref linkend="openssl"/>,
+      <xref linkend="libpciaccess"/>,
       <xref linkend="pixman"/>,
-      <xref linkend="xorg7-font"/>, and
+      <xref linkend="xorg7-font"/> and
       <xref linkend="xkeyboard-config"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="libepoxy"/> (for Glamor),
-      <xref linkend="wayland"/> (both for <command>Xwayland</command>) and
-      <xref linkend="systemd"/> (for Logind)
+      <xref linkend="libepoxy"/> (required to build Glamor),
+      <xref linkend="wayland"/> (both for <command>Xwayland</command>),
+      <xref linkend="systemd"/> and
+      <xref linkend="xcb-util-keysyms"/> (used by <command>Xnest</command>)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
-    <para>
+    <para role="optional">
       <xref linkend="acpid"/> (runtime),
       <xref linkend="doxygen"/> (to build API documentation),
       <xref linkend="fop"/>, (to build documentation),
       <xref linkend="gs"/> (to build documentation),
-      <xref linkend="xmlto"/>, (to build documentation), and
+      <xref linkend="xcb-util-image"/>,
+      <xref linkend="xcb-util-renderutil"/>,
+      <xref linkend="xcb-util-wm"/> (all three to build <command>Xephyr</command>),
+      <xref linkend="xmlto"/>, (to build documentation) and
       <ulink url="http://download.savannah.gnu.org/releases/libunwind/">libunwind</ulink>
     </para>
 
@@ -118,8 +123,8 @@
     <title>Installation of Xorg Server</title>
 
     <para>
-      If you have downloaded the optional patch, apply it by running
-      the following command:
+      If you have downloaded the optional patch, apply it by running the
+      following command:
     </para>
 
 <screen><userinput>patch -Np1 -i ../xorg-server-&xorg-server-version;-add_prime_support-1.patch</userinput></screen>
@@ -128,11 +133,10 @@
       Install the server by running the following commands:
     </para>
 
-<screen><userinput>./configure $XORG_CONFIG                    \
-           --with-xkb-output=/var/lib/xkb   \
-           --enable-dmx                     \
-           --enable-glamor                  \
-           --enable-suid-wrapper            &amp;&amp;
+<screen><userinput>./configure $XORG_CONFIG         \
+           --enable-glamor       \
+           --enable-suid-wrapper \
+           --with-xkb-output=/var/lib/xkb &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -153,22 +157,40 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>--enable-dmx</parameter>: This switch enables building of the DMX
-      (Distributed Multihead X) server.
-    </para>
-
-    <para>
       <parameter>--enable-glamor</parameter>: This switch enables building
       of the Glamor DIX module which is required by some drivers and
       <command>Xwayland</command>. Remove it if you don't want to install
       <application>libepoxy</application> and are not going to need
       <command>Xwayland</command> or you don't have any hardware that
-      requires Glamor (Radeon "Southern Islands" and later GPUs).
+      requires Glamor (Radeon "Southern Islands" and later GPUs). It is
+      also required to build the modesetting driver, which is a generic
+      Xorg Video driver for hardware that has a KMS driver.
     </para>
 
     <para>
-      <parameter>--enable-suid-wrapper</parameter>: This switch enables building of
-      the suid-root wrapper for legacy driver support on rootless xserver systems.
+      <parameter>--enable-suid-wrapper</parameter>: This switch enables building
+      of the suid-root wrapper for legacy driver support on rootless xserver
+      systems.
+    </para>
+
+    <para>
+      <option>--enable-dmx</option>: This switch enables building of the DMX
+      (Distributed Multihead X) server. Use it if you want to build DMX.
+    </para>
+
+    <para>
+      <option>--enable-kdrive</option>: This switch enables building of the
+      kdrive servers such as <command>Xephyr</command> and
+      <command>Xfbdev</command>. Use it if you have installed optional
+      xcb-util packages and want to build the mentioned programs.
+    </para>
+
+    <para>
+      <option>--disable-systemd-logind --enable-install-setuid</option>: These
+      switches disable <command>systemd-logind</command> integration and
+      restore the setuid bit to the <command>Xorg</command> executable,
+      allowing <application>Xorg Server</application> to work without having
+      the <application>systemd</application> PAM module installed and set up.
     </para>
 
   </sect2>
@@ -179,21 +201,25 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Xorg Driver</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
           cvt, dmxaddinput, dmxaddscreen, dmxinfo, dmxreconfig, dmxresize,
           dmxrminput, dmxrmscreen, dmxtodmx, dmxwininfo, gtf, vdltodmx, X,
-          Xdmx, xdmxconfig, Xnest, Xorg, Xvfb, and Xwayland
+          Xdmx, xdmxconfig, Xephyr, Xfbdev, Xnest, Xorg, Xvfb and Xwayland
         </seg>
         <seg>
           None
         </seg>
         <seg>
+          modesetting_drv.so
+        </seg>
+        <seg>
           $XORG_PREFIX/include/xorg,
           $XORG_PREFIX/lib/xorg,
-          $XORG_PREFIX/share/X11/xorg.conf.d, and
+          $XORG_PREFIX/share/X11/xorg.conf.d and
           /var/lib/xkb
         </seg>
       </seglistitem>
@@ -265,6 +291,31 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="Xdmx-x7">
+        <term><command>Xdmx</command></term>
+        <listitem>
+          <para>
+            is a distributed multi-head X server.
+          </para>
+          <indexterm zone="xorg-server Xdmx-x7">
+            <primary sortas="b-Xdmx">Xdmx</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="Xephyr-x7">
+        <term><command>Xephyr</command></term>
+        <listitem>
+          <para>
+            is a nested X server that supports modern
+            X extensions.
+          </para>
+          <indexterm zone="xorg-server Xephyr-x7">
+            <primary sortas="b-Xephyr">Xephyr</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="Xnest-x7">
         <term><command>Xnest</command></term>
         <listitem>
@@ -309,6 +360,20 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
           </para>
           <indexterm zone="xorg-server xdmxconfig-x7">
             <primary sortas="b-xdmxconfig">xdmxconfig</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="modesetting_drv-x7">
+        <term><filename class="libraryfile">modesetting_drv.so</filename></term>
+        <listitem>
+          <para>
+            is a Xorg video driver for machines using Kernel Mode Setting (KMS).
+            It will use Glamor for 2D acceleration if it has been enabled and
+            the hardware has proper 3D support.
+          </para>
+          <indexterm zone="xorg-server modesetting_drv-x7">
+            <primary sortas="c-modesetting_drv">modesetting_drv.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

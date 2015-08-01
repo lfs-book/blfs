@@ -6,10 +6,10 @@
 
   <!ENTITY webkitgtk2-download-http "http://webkitgtk.org/releases/webkitgtk-&webkitgtk2-version;.tar.xz">
   <!ENTITY webkitgtk2-download-ftp  " ">
-  <!ENTITY webkitgtk2-md5sum        "e1a10b4730f501980e3681db9b0e5d25">
-  <!ENTITY webkitgtk2-size          "9.3 MB">
-  <!ENTITY webkitgtk2-buildsize     "808 MB (for webkitgtk-3.0, 619 MB for webkit-1.0)">
-  <!ENTITY webkitgtk2-time          "59.4 SBU (using parallelism=2, For webkitgtk-3.0, and 48.3 SBU for webkit-1.0)">
+  <!ENTITY webkitgtk2-md5sum        "312fd29eb7f5970660c6a64b8bf8420e">
+  <!ENTITY webkitgtk2-size          "9.4 MB">
+  <!ENTITY webkitgtk2-buildsize     "972 MB (GTK+ 3 Build), 688 MB (GTK+ 2 Build)">
+  <!ENTITY webkitgtk2-time          "95 SBU (GTK+ 3 Build), 75 SBU (GTK+ 2 Build)">
 ]>
 
 <sect1 id="webkitgtk2" xreflabel="WebKitGTK+-&webkitgtk2-version;">
@@ -32,10 +32,11 @@
     <para>
       The <application>WebKitGTK+</application> is the port of the portable
       web rendering engine <application>WebKit</application> to the
-      <application>GTK+ 3</application> platform.
+      <application>GTK+ 3</application> and <application>GTK+ 2</application>
+      platforms.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,13 +80,13 @@
       <xref linkend="gtk3"/> or
       <xref linkend="gtk2"/> or both,
       <xref linkend="icu"/>,
+      <xref linkend="libgudev"/>,
       <xref linkend="libsecret"/>,
       <xref linkend="libsoup"/>,
       <xref linkend="libwebp"/>,
       <xref linkend="mesalib"/>,
       <xref linkend="ruby"/>,
-      <xref linkend="sqlite"/>,
-      <xref linkend="systemd"/> (for GUdev) and
+      <xref linkend="sqlite"/> and
       <xref linkend="which"/>
     </para>
 
@@ -141,8 +142,11 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --enable-introspection &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build3 &amp;&amp;
+pushd build3 &amp;&amp;
+../configure --prefix=/usr --enable-introspection &amp;&amp;
+make &amp;&amp;
+popd</userinput></screen>
 
     <para>
       To build <application>WebKitGTK+</application> against
@@ -150,46 +154,49 @@ make</userinput></screen>
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --with-gtk=2.0 --disable-webkit2 &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build2 &amp;&amp;
+pushd build2 &amp;&amp;
+../configure --prefix=/usr --with-gtk=2.0 --disable-webkit2 &amp;&amp;
+make &amp;&amp;
+popd</userinput></screen>
 
     <para>
       This package does not have a working testsuite. However, there are two
-      useable basic graphical web browsers in the source directory,
+      useable basic graphical web browsers in the build directory,
       <application>Programs/GtkLauncher</application> and
       <application>Programs/MiniBrowser</application>. If launching any one
       fails, there is a problem with the build.
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>make install</userinput></screen>
-
-    <para>
       If you have built the package against <application>GTK+ 3</application>,
-      rename the following directory to avoid conflicts with the package
-      built against <application>GTK+ 2</application> by running the
-      following commands as the <systemitem
+      install it by running the following commands as the <systemitem
       class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>rm -rf /usr/share/gtk-doc/html/webkit{,dom}gtk-3.0 &amp;&amp;
-mv -v /usr/share/gtk-doc/html/webkitdomgtk{,-3.0}  &amp;&amp;
-mv -v /usr/share/gtk-doc/html/webkitgtk{,-3.0}</userinput></screen>
+<screen role="root"><userinput>make -C build3 install                             &amp;&amp;
+rm -rf /usr/share/gtk-doc/html/webkit{,dom}gtk-3.0 &amp;&amp;
+if [ -e /usr/share/gtk-doc/html/webkitdomgtk ]; then
+  mv -v /usr/share/gtk-doc/html/webkitdomgtk{,-3.0}
+fi
+if [ -e /usr/share/gtk-doc/html/webkitgtk ]; then
+  mv -v /usr/share/gtk-doc/html/webkitgtk{,-3.0}
+fi</userinput></screen>
 
     <para>
       If you have built the package against <application>GTK+ 2</application>,
-      rename the following directory to avoid conflicts with the package
-      built against <application>GTK+ 3</application> by running the
-      following commands as the <systemitem
+      install it by running the following commands as the <systemitem
       class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>rm -rf /usr/share/gtk-doc/html/webkit{,dom}gtk-1.0 &amp;&amp;
-mv -v /usr/share/gtk-doc/html/webkitdomgtk{,-1.0}  &amp;&amp;
-mv -v /usr/share/gtk-doc/html/webkitgtk{,-1.0}</userinput></screen>
+<screen role="root"><userinput>make -C build2 install                             &amp;&amp;
+rm -rf /usr/share/gtk-doc/html/webkit{,dom}gtk-1.0 &amp;&amp;
+if [ -e /usr/share/gtk-doc/html/webkitdomgtk ]; then
+  mv -v /usr/share/gtk-doc/html/webkitdomgtk{,-1.0}
+fi
+if [ -e /usr/share/gtk-doc/html/webkitgtk ]; then
+  mv -v /usr/share/gtk-doc/html/webkitgtk{,-1.0}
+fi</userinput></screen>
 
   </sect2>
 
@@ -229,7 +236,7 @@ mv -v /usr/share/gtk-doc/html/webkitgtk{,-1.0}</userinput></screen>
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 

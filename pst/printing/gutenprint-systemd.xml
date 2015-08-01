@@ -39,7 +39,7 @@
     <ulink url="http://gutenprint.sourceforge.net/p_Supported_Printers.php"/>.
     </para>
 
-    &lfs76_checked;
+    &lfs77_built;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,7 +68,7 @@
     <!-- recommend cups since we describe how to use it, and the gimp
     so that we can use gutenprint's driver to print photos there -->
     <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended"><xref linkend="cups"/>, and
+    <para role="recommended"><xref linkend="cups"/> and
     <xref linkend="gimp"/></para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -78,8 +78,8 @@
 
     <bridgehead renderas="sect4">Optional (to Regenerate Documentation)</bridgehead>
     <para role="optional"><xref linkend="imagemagick"/>,
-    <xref linkend="texlive"/>,
-    <xref linkend="doxygen"/>, and
+    <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
+    <xref linkend="doxygen"/> and
     <xref linkend="docbook-utils"/></para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -98,11 +98,11 @@
       recompile the kernel:
     </para>
 
-<screen>Device Drivers  ---&gt;
-  USB support  ---&gt;
-    OHCI HCD (USB 1.1) support: Y or M
-    UHCI HCD (most Intel and VIA) support: Y or M
-    USB Printer support: Y or M</screen>
+<screen><literal>Device Drivers  ---&gt;
+  [*] USB support  ---&gt;                          [CONFIG_USB_SUPPORT]
+    &lt;*/M&gt;  OHCI HCD (USB 1.1) support            [CONFIG_USB_OHCI_HCD]
+    &lt;*/M&gt;  UHCI HCD (most Intel and VIA) support [CONFIG_USB_UHCI_HCD]
+    &lt;*/M&gt;  USB Printer support                   [CONFIG_USB_PRINTER]</literal></screen>
 
     <indexterm zone="gutenprint escputil">
       <primary sortas="d-escputil">escputil for usb printers</primary>
@@ -132,11 +132,11 @@ make</userinput></screen>
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-install -v -m755 -d /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprint{,ui2} &amp;&amp;
-install -v -m644    doc/gutenprint/html/* \
-                    /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprint &amp;&amp;
-install -v -m644    doc/gutenprintui2/html/* \
-                    /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprintui2</userinput></screen>
+install -v -dm755 /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprint{,ui2} &amp;&amp;
+install -v -m644  doc/gutenprint/html/* \
+                  /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprint &amp;&amp;
+install -v -m644  doc/gutenprintui2/html/* \
+                  /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprintui2</userinput></screen>
 
   </sect2>
 
@@ -172,7 +172,7 @@ install -v -m644    doc/gutenprintui2/html/* \
       drivers, it has to be restarted (as the <systemitem
       class="username">root</systemitem> user):</para>
 
-<screen role="root"><userinput>systemctl restart cups</userinput></screen>
+<screen role="root"><userinput>systemctl restart org.cups.cupsd</userinput></screen>
 
       <!-- <para>This command may take a long time (up to 10 minutes)
       to complete. Don't panic while <application>CUPS</application>

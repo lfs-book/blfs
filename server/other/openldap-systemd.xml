@@ -8,8 +8,8 @@
   <!ENTITY openldap-download-ftp  "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/openldap-&openldap-version;.tgz">
   <!ENTITY openldap-md5sum        "423c1f23d2a0cb96b3e9baf7e9d7dda7">
   <!ENTITY openldap-size          "5.4 MB">
-  <!ENTITY openldap-buildsize     "47 MB (client) 101 MB (server - additional 5 MB for the tests)">
-  <!ENTITY openldap-time          "0.9 SBU (client) 1.8 SBU (server - additional 3.4 SBU for the tests)">
+  <!ENTITY openldap-buildsize     "47 MB (client), 101 MB (server, additional 5 MB for the tests)">
+  <!ENTITY openldap-time          "0.6 SBU (client), 1.1 SBU (server, additional 3.4 SBU for the tests)">
 ]>
 
 <sect1 id="openldap" xreflabel="OpenLDAP-&openldap-version;">
@@ -34,7 +34,7 @@
       source implementation of the Lightweight Directory Access Protocol.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,29 +75,12 @@
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/openldap-&openldap-version;-blfs_paths-1.patch"/>
+          <ulink url="&patch-root;/openldap-&openldap-version;-consolidated-1.patch"/>
         </para>
       </listitem>
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/openldap-&openldap-version;-symbol_versions-1.patch"/>
-        </para>
-      </listitem>
-      <!-- <listitem>
-        <para>
-          Optional patch:
-          <ulink url="&patch-root;/openldap-&openldap-version;-ntlm-1.patch"/>
-        </para>
-      </listitem> -->
     </itemizedlist>
 
     <bridgehead renderas="sect3">OpenLDAP Dependencies</bridgehead>
-
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required">
-      <xref linkend="db"/> (only if building server)
-    </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
@@ -107,12 +90,14 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="db"/> (not recommended by the
+      developers due to license incompatiblities),
       <xref linkend="icu"/>,
       <xref linkend="mariadb"/> or
       <xref linkend="postgresql"/>,
-      <ulink url="http://www.openslp.org/">OpenSLP</ulink>,
-      <xref linkend="pth"/> and
-      <xref linkend="unixodbc"/>
+      <xref linkend="pth"/>,
+      <xref linkend="unixodbc"/> and
+      <ulink url="http://www.openslp.org/">OpenSLP</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -123,30 +108,17 @@
   <sect2 role="installation">
     <title>Installation of OpenLDAP</title>
 
-    <!-- <important>
-      <para>
-        Without the following patch, the <application>Evolution</application>
-        Exchange addressbook integration uses simple binds with cleartext
-        passwords. If you are going to build
-        <application>Evolution Data Server</application> with
-        <application>OpenLDAP</application> support, apply the following patch:
-      </para>
-
-<screen><userinput>patch -Np1 -i ../openldap-&openldap-version;-ntlm-1.patch</userinput></screen>
-    </important> -->
-
     <note>
       <para>
         If you only need to install the client side <command>ldap*</command>
-        binaries, corresponding man pages, libraries and header files (referred to
-        as a <quote>client-only</quote> install), issue these
-        commands instead of the following ones (no test suite available):
+        binaries, corresponding man pages, libraries and header files (referred
+        to as a <quote>client-only</quote> install), issue these commands
+        instead of the following ones (no test suite available):
       </para>
 
-<screen><userinput>patch -Np1 -i ../openldap-&openldap-version;-blfs_paths-1.patch &amp;&amp;
-patch -Np1 -i ../openldap-&openldap-version;-symbol_versions-1.patch &amp;&amp;
+<screen><userinput>patch -Np1 -i ../openldap-&openldap-version;-consolidated-1.patch &amp;&amp;
 autoconf &amp;&amp;
-sed -i '/6.0.20/ a\\t__db_version_compat' configure &amp;&amp;
+
 ./configure --prefix=/usr     \
             --sysconfdir=/etc \
             --disable-static  \
@@ -164,6 +136,20 @@ make</userinput></screen>
 
     </note>
 
+    <warning>
+      <para>
+        If upgrading from a previos installation that used Berkeley DB as
+        the backend, you will need to dump the database(s) using the
+        <command>slapcat</command> utility, relocate all files in
+        <filename class="directory">/var/lib/openldap</filename>, change all
+        instances of <option>bdb</option> to <option>mdb</option> in
+        <filename>/etc/openldap/slapd.conf</filename> and any files in
+        <filename class="directory">/etc/openldap/slapd.d</filename>, and import
+        using the <command>slapadd</command> utility after the installation is
+        completed.
+      </para>
+    </warning>
+
     <para>
       There should be a dedicated user and group to take control
       of the <command>slapd</command> daemon after it is
@@ -180,9 +166,9 @@ useradd -c "OpenLDAP Daemon Owner" -d /var/lib/openldap -u 83 \
       running the following commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../openldap-&openldap-version;-blfs_paths-1.patch &amp;&amp;
-patch -Np1 -i ../openldap-&openldap-version;-symbol_versions-1.patch &amp;&amp;
+<screen><userinput>patch -Np1 -i ../openldap-&openldap-version;-consolidated-1.patch &amp;&amp;
 autoconf &amp;&amp;
+
 ./configure --prefix=/usr         \
             --sysconfdir=/etc     \
             --localstatedir=/var  \
@@ -196,6 +182,8 @@ autoconf &amp;&amp;
             --enable-rlookups     \
             --enable-backends=mod \
             --enable-overlays=mod \
+            --disable-bdb         \
+            --disable-hdb         \
             --disable-ndb         \
             --disable-sql &amp;&amp;
 make depend &amp;&amp;
@@ -211,16 +199,13 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install &amp;&amp;
 
-chmod -v 700 /var/lib/openldap                                         &amp;&amp;
-chown -v -R ldap:ldap /var/lib/openldap                                &amp;&amp;
-chmod -v 640 /etc/openldap/{slapd.{conf,ldif},DB_CONFIG.example}       &amp;&amp;
-chown -v root:ldap /etc/openldap/{slapd.{conf,ldif},DB_CONFIG.example} &amp;&amp;
-install -v -dm700 -o ldap -g ldap /etc/openldap/slapd.d                &amp;&amp;
+install -v -dm700 -o ldap -g ldap /var/lib/openldap     &amp;&amp;
+install -v -dm700 -o ldap -g ldap /etc/openldap/slapd.d &amp;&amp;
+chmod -v 640       /etc/openldap/slapd.{conf,ldif}      &amp;&amp;
+chown -v root:ldap /etc/openldap/slapd.{conf,ldif}      &amp;&amp;
 
-install -v -dm755  /usr/share/doc/openldap-&openldap-version; &amp;&amp;
-cp -vfr doc/drafts /usr/share/doc/openldap-&openldap-version; &amp;&amp;
-cp -vfr doc/rfc    /usr/share/doc/openldap-&openldap-version; &amp;&amp;
-cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></screen>
+install -v -dm755              /usr/share/doc/openldap-&openldap-version; &amp;&amp;
+cp -vfr doc/{drafts,rfc,guide} /usr/share/doc/openldap-&openldap-version;</userinput></screen>
 
     <para>
       Having slapd configuration files and ldap databases in /var/lib/openldap
@@ -278,6 +263,14 @@ cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></scree
     <para>
       <parameter>--enable-overlays</parameter>: This switch enables
       all available overlays.
+    </para>
+
+    <para>
+      <parameter>--disable-bdb --disable-hdb</parameter>: These
+      switches disable
+      <application>Berkeley DB</application> backend due to
+      license incompatiblities with latest version of
+      <application>Berkeley DB</application>.
     </para>
 
     <para>
@@ -375,9 +368,9 @@ cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></scree
         </listitem>
         <listitem>
           <para>
-            The <ulink url="http://www.openldap.org/doc/admin24/">
-            OpenLDAP 2.4 Administrator's Guide</ulink>
-            (also installed locally in <filename class='directory'>
+            The <ulink url="http://www.openldap.org/doc/admin24/"> OpenLDAP 2.4
+            Administrator's Guide</ulink> (also installed locally in
+            <filename class="directory">
             /usr/share/doc/openldap-&openldap-version;/guide/admin</filename>).
           </para>
         </listitem>
@@ -453,7 +446,7 @@ cp -vfr doc/guide  /usr/share/doc/openldap-&openldap-version;</userinput></scree
 <screen><computeroutput># extended LDIF
 #
 # LDAPv3
-# base &lt;&gt; with scope base
+# base &lt;&gt; with scope baseObject
 # filter: (objectclass=*)
 # requesting: namingContexts
 #

@@ -32,7 +32,7 @@
     <para>The <application>mdadm</application> package contains administration
     tools for software RAID.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -66,18 +66,17 @@
 
     <para>Enable the following options in the kernel configuration
     and recompile the kernel, if necessary.  Only the RAID types desired
-    are required.  </para>
+    are required.</para>
 
-<screen><literal>File Systems:
-  Device Drivers:
-    Multiple devices driver support (RAID and LVM): Y
-      RAID support: Y or M
-        Autodetect RAID arrays during kernel boot: Y
-        Linear (append) mode: Y or M
-        RAID-0 (striping) mode : Y or M
-        RAID-1 (mirroring) mode : Y or M
-        RAID-10 (mirrored striping) mode: Y or M
-        RAID-4/RAID-5/RAID-6 mode : Y or M</literal></screen>
+<screen><literal>Device Drivers ---&gt;
+  [*] Multiple devices driver support (RAID and LVM) ---&gt; [CONFIG_MD]
+    &lt;*&gt; RAID support                                      [CONFIG_BLK_DEV_MD]
+    [*]   Autodetect RAID arrays during kernel boot       [CONFIG_MD_AUTODETECT]
+    &lt;*/M&gt;  Linear (append) mode                           [CONFIG_MD_LINEAR]
+    &lt;*/M&gt;  RAID-0 (striping) mode                         [CONFIG_MD_RAID0]
+    &lt;*/M&gt;  RAID-1 (mirroring) mode                        [CONFIG_MD_RAID1]
+    &lt;*/M&gt;  RAID-10 (mirrored striping) mode               [CONFIG_MD_RAID10]
+    &lt;*/M&gt;  RAID-4/RAID-5/RAID-6 mode                      [CONFIG_MD_RAID456]</literal></screen>
 
     <indexterm zone="mdadm mdadm-kernel">
       <primary sortas="d-mdadm">mdadm</primary>
@@ -89,10 +88,12 @@
     <title>Installation of mdadm</title>
 
     <para>
-      First, fix a problem inroduced by <application>&gcc-490;</application>:
+      First, fix problems introduced by <application>&gcc-490;</application>
+      and <application>gcc-5</application>:
     </para>
 
-<screen><userinput>sed -i 's/Wall -Werror/Wall/' Makefile</userinput></screen>
+<screen><userinput>sed -i 's/Wall -Werror/Wall/' Makefile &amp;&amp;
+sed -i 's/\(^inline\)/static \1/' bitmap.c</userinput></screen>
 
     <para>Install <application>mdadm</application> by running the following
     commands:</para>

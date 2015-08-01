@@ -34,7 +34,7 @@
       client library, with a C interface.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -94,6 +94,12 @@
   <sect2 role="installation">
     <title>Installation of neon</title>
 
+    <para>Fix some code when building with gnutls-3.4 and later:</para>
+
+<screen><userinput>sed -e 's/gnutls_retr_st/gnutls_retr2_st/' \
+    -e 's/type = type/cert_&amp;/' \
+    -i src/ne_gnutls.c</userinput></screen>
+
     <para>
       Install <application>neon</application> by running the following
       commands:
@@ -119,12 +125,12 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <option>--with-ssl</option>: This switch enables SSL support
+      <parameter>--with-ssl</parameter>: This switch enables SSL support
       using <application>OpenSSL</application> or
       <application>GnuTLS</application> respectively. Remove it if
       you don't have any of these installed. To force
       <application>GnuTLS</application> usage when both are present,
-      simply pass <parameter>--with-ssl=gnutls</parameter> to the
+      simply pass <option>--with-ssl=gnutls</option> to the
       <command>configure</command> script.
     </para>
 

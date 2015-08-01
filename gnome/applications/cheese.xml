@@ -7,9 +7,9 @@
   <!ENTITY cheese-download-http "&gnome-download-http;/cheese/&gnome-minor14;/cheese-&cheese-version;.tar.xz">
   <!ENTITY cheese-download-ftp  "&gnome-download-ftp;/cheese/&gnome-minor14;/cheese-&cheese-version;.tar.xz">
   <!ENTITY cheese-md5sum        "eef03ea68fe5372e3d6a0512ffd84e6d">
-  <!ENTITY cheese-size          "1.7 MB">
-  <!ENTITY cheese-buildsize     "18.3 MB">
-  <!ENTITY cheese-time          "0.5 SBU">
+  <!ENTITY cheese-size          "1.8 MB">
+  <!ENTITY cheese-buildsize     "30 MB">
+  <!ENTITY cheese-time          "0.3 SBU">
 ]>
 
 <sect1 id="cheese" xreflabel="Cheese-&cheese-version;">
@@ -34,7 +34,7 @@
       photos and videos with fun graphical effects.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,29 +74,32 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="clutter-gst2"/>,
+      <xref linkend="clutter-gst"/>,
       <xref linkend="clutter-gtk"/>,
       <xref linkend="gnome-desktop"/>,
       <xref linkend="gnome-video-effects"/>,
       <xref linkend="gst10-plugins-bad"/>,
-      <xref linkend="gst10-plugins-good"/>,
-      <xref linkend="libcanberra"/>,
-      <xref linkend="librsvg"/>,
-      <xref linkend="systemd"/> (for GUdev), and
-      <xref linkend="yelp-xsl"/>
+      <xref linkend="gst10-plugins-good"/> (built with
+      <xref linkend="v4l-utils"/> support),
+      <xref linkend="itstool"/>,
+      <xref linkend="libcanberra"/>, and
+      <xref linkend="libgudev"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="appdata-tools"/>,
+      <xref linkend="appstream-glib"/>,
       <xref linkend="gobject-introspection"/>, and
       <xref linkend="vala"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/> and
-      <xref linkend="nautilus-sendto"/>
+      <xref linkend="DocBook"/>,
+      <xref linkend="docbook-xsl"/>, and
+      <xref linkend="libxslt"/> (to build manual pages),
+      <xref linkend="gtk-doc"/>, and
+      <ulink url="http://ltp.sourceforge.net/coverage/lcov.php">LCOV</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -104,6 +107,25 @@
     </para>
   </sect2>
 
+  <sect2 role="kernel" id="cheese-kernel">
+      <title>Kernel Configuration</title>
+
+    <para>
+      Depending on your camera, enable the appropriate options and recompile the
+      kernel if necessary:
+    </para>
+
+<screen><literal>Device Drivers  ---&gt;
+  Multimedia support ---&gt;
+    &lt;*&gt; Cameras/video grabbers support  [CONFIG_MEDIA_CAMERA_SUPPORT]
+    &lt;*&gt; Media USB Adapter  ---&gt;         [CONFIG_MEDIA_USB_SUPPORT]
+              Select device(s) as needed</literal></screen>
+
+      <indexterm zone="cheese cheese-kernel">
+        <primary sortas="d-cheese">cheese</primary>
+      </indexterm>
+  </sect2>
+ 
   <sect2 role="installation">
     <title>Installation of Cheese</title>
 

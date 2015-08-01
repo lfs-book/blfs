@@ -5,14 +5,14 @@
   %general-entities;
 
   <!ENTITY qt5-major "5.4">
-  <!ENTITY qt5-url   "http://download.qt-project.org/official_releases/qt/&qt5-major;/&qt5-version;/single">
+  <!ENTITY qt5-url   "http://download.qt.io/official_releases/qt/&qt5-major;/&qt5-version;/single">
 
   <!ENTITY qt5-download-http "&qt5-url;/qt-everywhere-opensource-src-&qt5-version;.tar.xz">
   <!ENTITY qt5-download-ftp  " ">
-  <!ENTITY qt5-md5sum        "21843b00ecde8956217faab391bc007b">
-  <!ENTITY qt5-size          "278 MB">
-  <!ENTITY qt5-buildsize     "4.76 GB (169 MB installed)">
-  <!ENTITY qt5-time          "68.6 SBU (using parallelism=2)">
+  <!ENTITY qt5-md5sum        "c23bd0f14d66e7901d24906a1edce9b0">
+  <!ENTITY qt5-size          "269 MB">
+  <!ENTITY qt5-buildsize     "6.7 GB (175 MB installed)">
+  <!ENTITY qt5-time          "84 SBU">
 ]>
 
 <sect1 id="qt5" xreflabel="Qt-&qt5-version;">
@@ -41,7 +41,7 @@
       and consoles for servers. 
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -85,7 +85,7 @@
       <xref linkend="mesalib"/>,
       <xref linkend="xcb-util-image"/>,
       <xref linkend="xcb-util-keysyms"/>,
-      <xref linkend="xcb-util-renderutil"/>, and
+      <xref linkend="xcb-util-renderutil"/> and
       <xref linkend="xcb-util-wm"/>
     </para>
 
@@ -93,33 +93,42 @@
     <para role="recommended">
       <xref linkend="cacerts"/>,
       <xref linkend="cups"/>,
-      <xref linkend="dbus"/>,
       <xref linkend="glib2"/>,
-      <xref linkend="gst-plugins-base"/>,
+      <xref linkend="gst-plugins-base"/> (required for QtMultimedia),
+      <xref linkend="gst10-plugins-base"/> (required for QtWebKit HTML5 Audio and Video Support),
       <xref linkend="harfbuzz"/>,
-      <xref linkend="icu"/> (unicode support, also required for QtWebKit),
+      <xref linkend="icu"/> (Unicode support, also required for QtWebKit),
+      <xref linkend="jasper"/>,
       <xref linkend="libjpeg"/>,
       <xref linkend="libmng"/>,
       <xref linkend="libpng"/>,
       <xref linkend="libtiff"/>,
+      <xref linkend="libwebp"/>,
       <xref linkend="libxkbcommon"/>,
+      <xref linkend="libxslt"/> (required for QtWebKit),
       <xref linkend="mtdev"/>,
+      <xref linkend="nss"/> (required for QtWebEngine),
       <xref linkend="openssl"/>,
       <xref linkend="pcre"/>,
-      <xref linkend="ruby"/> (required for QtWebKit), and
-      <xref linkend="sqlite"/>
+      <xref linkend="ruby"/> (required for QtWebKit),
+      <xref linkend="sqlite"/> and
+      <xref linkend="wayland"/> (<xref linkend="mesalib"/> must be built with
+      <application>Wayland</application> support)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="bluez"/>,
       <xref linkend="geoclue"/>,
-      <xref linkend="gst10-plugins-base"/> (QtWebKit HTML5 Video Support),
       <xref linkend="gtk2"/> (GTK+ Theme Support),
       <xref linkend="ibus"/>,
       <xref linkend="mariadb"/>,
       <xref linkend="postgresql"/>,
-      <xref linkend="pulseaudio"/>, and 
-      <xref linkend="unixodbc"/>
+      <xref linkend="pulseaudio"/>,
+      <xref linkend="unixodbc"/>,
+      <ulink url="http://www.directfb.org/">DirectFB</ulink>,
+      <ulink url="http://www.firebirdsql.org/">Firebird</ulink> and
+      <ulink url="http://kcat.strangesoft.net/openal-releases/">OpenAL-Soft</ulink>
     </para>
 
     <bridgehead renderas="sect4">Runtime Dependency</bridgehead>
@@ -193,14 +202,14 @@
       </para>
 
 <screen role="root"><userinput>mv /opt/qt{5,-&qt5-version;}
-ln -sfv qt-&qt5-version; /opt/qt5</userinput></screen>
+ln -sfvn qt-&qt5-version; /opt/qt5</userinput></screen>
 
       <para>
         Later on, you may want to install other versions of
         <application>Qt5</application>. To do that, just remove the symlink
         and use <filename class="directory">/opt/qt5</filename> as the
         prefix again. Which version of <application>Qt5</application> you
-        use depends only on where the symlink points to.
+        use depends only on where the symlink points.
       </para>
     </tip>
 
@@ -277,14 +286,16 @@ ln -sfv qt-&qt5-version; /opt/qt5</userinput></screen>
             -docdir         $QT5PREFIX/share/doc/qt5          \
             -translationdir $QT5PREFIX/share/qt5/translations \
             -examplesdir    $QT5PREFIX/share/doc/qt5/examples \
-            -confirm-license \
-            -opensource      \
-            -dbus-linked     \
-            -openssl-linked  \
-            -system-harfbuzz \
-            -system-sqlite   \
-            -nomake examples \
-            -optimized-qmake &amp;&amp;
+            -confirm-license  \
+            -opensource       \
+            -dbus-linked      \
+            -openssl-linked   \
+            -journald         \
+            -system-harfbuzz  \
+            -system-sqlite    \
+            -nomake examples  \
+            -no-rpath         \
+            -optimized-qmake  &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -322,8 +333,7 @@ make</userinput></screen>
 <screen role="root"><userinput>sed -e "s:$PWD/qtbase:$QT5PREFIX/lib/qt5:g" \
     -i $QT5PREFIX/lib/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri &amp;&amp;
 
-find $QT5PREFIX/lib/lib{Enginio,qgsttools_p,Qt5*}.prl -exec sed -i -r \
-     '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/\1/' {} \;</userinput></screen>
+sed -i '/^QMAKE_PRL_BUILD_DIR/d' $QT5PREFIX/lib/lib{Enginio,qgsttools_p,Qt5*}.prl</userinput></screen>
 
     <para>
       Install images and create the menu entries for installed
@@ -408,9 +418,10 @@ EOF</userinput></screen>
             moc pixeltool qcollectiongenerator qdbus qdbuscpp2xml   \
             qdbusviewer qdbusxml2cpp qdoc qhelpconverter            \
             qhelpgenerator qlalr qmake qml qml1plugindump qmlbundle \
-            qmlimportscanner qmlmin qmlplugindump qmlprofiler       \
-            qmlscene qmltestrunner qmlviewer qtdiag qtpaths         \
-            rcc syncqt.pl uic xmlpatterns xmlpatternsvalidator
+            qmleasing qmlimportscanner qmllint qmlmin qmlplugindump \
+            qmlprofiler qmlscene qmltestrunner qmlviewer qtdiag     \
+            qtpaths qtwaylandscanner rcc sdpscanner syncqt.pl uic   \
+            xmlpatterns xmlpatternsvalidator
 do
   ln -sfrv $QT5BINDIR/$file /usr/bin/$file-qt5
 done
@@ -428,7 +439,7 @@ unset file</userinput></screen>
 
     <para>
       <parameter>-opensource</parameter>: Install the opensource
-      version of <application>Qt</application>.
+      version of <application>Qt5</application>.
     </para>
 
     <para>
@@ -437,10 +448,18 @@ unset file</userinput></screen>
     </para>
 
     <para>
-      <parameter>-nomake examples</parameter>: This switch
-      disables building of the example programs included
-      in the source tarball. Remove it if you want to build
-      them.
+      <parameter>-dbus-linked -openssl-linked</parameter>: These
+      switches enable explicit linking of the
+      <application>D-Bus</application> and
+      <application>OpenSSL</application> libraries into
+      <application>Qt5</application> libraries instead of
+      <command>dlopen()</command>-ing them.
+    </para>
+
+    <para>
+      <parameter>-journald</parameter>: This switch sets
+      <command>systemd-journald</command> as the default logging
+      target for <application>Qt5</application> apps.
     </para>
 
     <para>
@@ -456,12 +475,18 @@ unset file</userinput></screen>
     </para>
 
     <para>
-      <parameter>-dbus-linked -openssl-linked</parameter>: These
-      switches enable explicit linking of the
-      <application>D-Bus</application> and
-      <application>OpenSSL</application> libraries into
-      <application>Qt5</application> libraries instead of
-      <command>dlopen()</command>-ing them.
+      <parameter>-nomake examples</parameter>: This switch
+      disables building of the example programs included
+      in the source tarball. Remove it if you want to build
+      them.
+    </para>
+
+    <para>
+      <parameter>-no-rpath</parameter>: This switch prevents
+      linking with hardcoded runtime path in order to prevent
+      the build from failing if another
+      <application>Qt5</application> instance already exists
+     in the installation prefix.
     </para>
 
     <para>
@@ -477,11 +502,26 @@ unset file</userinput></screen>
     <sect3 id="qt5-config">
       <title>Configuration Information</title>
 
+      <para>
+        Ensure that environment variables needed by certain packages
+        are set by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/profile.d/qt5.sh &lt;&lt; EOF
+<literal># Begin /etc/profile.d/qt5.sh
+
+export QT5DIR=$QT5PREFIX
+export QT5BINDIR=$QT5BINDIR
+
+# End /etc/profile.d/qt5.sh</literal>
+EOF</userinput></screen>
+
       <note>
         <para>
           If you have installed <application>Qt5</application>
           in <filename class="directory">/usr</filename> you
-          can skip this section.
+          can skip the rest of this section.
         </para>
       </note>
 
@@ -522,6 +562,10 @@ ldconfig</userinput></screen>
 <screen role="root"><userinput>cat &gt; /etc/profile.d/qt5.sh &lt;&lt; EOF
 <literal># Begin /etc/profile.d/qt5.sh
 
+export QT5DIR=$QT5PREFIX
+export QT5BINDIR=$QT5BINDIR
+
+pathappend $QT5PREFIX               CMAKE_PREFIX_PATH
 pathappend $QT5PREFIX/lib/pkgconfig PKG_CONFIG_PATH
 
 # End /etc/profile.d/qt5.sh</literal>
@@ -537,6 +581,10 @@ EOF</userinput></screen>
 <screen role="root"><userinput>cat &gt; /etc/profile.d/qt5.sh &lt;&lt; EOF
 <literal># Begin /etc/profile.d/qt5.sh
 
+export QT5DIR=$QT5PREFIX
+export QT5BINDIR=$QT5BINDIR
+
+pathappend $QT5PREFIX               CMAKE_PREFIX_PATH
 pathappend $QT5BINDIR               PATH
 pathappend $QT5PREFIX/lib/pkgconfig PKG_CONFIG_PATH
 
@@ -568,33 +616,52 @@ EOF</userinput></screen>
       <seglistitem>
         <seg>
           assistant, designer, lconvert, linguist, lrelease,
-          lupdate, moc, pixeltool, qcollectiongenerator, qdbuscpp2xml,
-          qdbus, qdbusviewer, qdbusxml2cpp, qdoc, qhelpconverter,
-          qhelpgenerator, qlalr, qmake, qml1plugindump, qmlbundle,
-          qmlimportscanner, qmlmin, qmlplugindump, qmlprofiler, qml,
-          qmlscene, qmltestrunner, qmlviewer, qtdiag, qtpaths, rcc,
-          syncqt.pl, uic, xmlpatterns, and xmlpatternsvalidator
+          lupdate, moc, pixeltool, qcollectiongenerator, qdbus,
+          qdbuscpp2xml, qdbusviewer, qdbusxml2cpp, qdoc, qhelpconverter,
+          qhelpgenerator, qlalr, qmake, qml, qml1plugindump, qmlbundle,
+          qmleasing, qmlimportscanner, qmllint, qmlmin, qmlplugindump,
+          qmlprofiler, qmlscene, qmltestrunner, qmlviewer, qtdiag,
+          qtpaths, qtwaylandscanner, rcc, sdpscanner, syncqt.pl, uic,
+          xmlpatterns, and xmlpatternsvalidator
         </seg>
         <seg>
           libEnginio.so, libqgsttools_p.so, libQt5Bluetooth.so,
           libQt5Bootstrap.a, libQt5CLucene.so, libQt5Concurrent.so,
           libQt5Core.so, libQt5DBus.so, libQt5Declarative.so,
           libQt5DesignerComponents.so, libQt5Designer.so, libQt5Gui.so,
-          libQt5Help.so, libQt5MultimediaQuick_p.so, libQt5Multimedia.so,
-          libQt5MultimediaWidgets.so, libQt5Network.so, libQt5Nfc.so,
-          libQt5OpenGLExtensions.a, libQt5OpenGL.so, libQt5PlatformSupport.a,
-          libQt5Positioning.so, libQt5PrintSupport.so, libQt5QmlDevTools.a,
-          libQt5Qml.so, libQt5QuickParticles.so, libQt5QuickWidgets.so,
-          libQt5Quick.so, libQt5QuickTest.so, libQt5Script.so,
-          libQt5ScriptTools.so, libQt5Sensors.so, libQt5SerialPort.so,
-          libQt5Sql.so, libQt5Svg.so, libQt5Test.so, libQt5UiTools.a,
-          libQt5WebKit.so, libQt5WebKitWidgets.so, libQt5WebSockets.so,
-          libQt5Widgets.so, libQt5X11Extras.so, libQt5XmlPatterns.so,
-          libQt5Xml.so, and several plugins under /opt/qt5/{imports,plugins,qml}
+          libQt5Help.so, libQt5Location.so, libQt5MultimediaQuick_p.so,
+          libQt5Multimedia.so, libQt5MultimediaWidgets.so,
+          libQt5Network.so, libQt5Nfc.so, libQt5OpenGLExtensions.a,
+          libQt5OpenGL.so, libQt5PlatformSupport.a, libQt5Positioning.so,
+          libQt5PrintSupport.so, libQt5QmlDevTools.a, libQt5Qml.so,
+          libQt5QuickParticles.so, libQt5Quick.so, libQt5QuickTest.so,
+          libQt5QuickWidgets.so, libQt5Script.so, libQt5ScriptTools.so,
+          libQt5Sensors.so, libQt5SerialPort.so, libQt5Sql.so, libQt5Svg.so,
+          libQt5Test.so, libQt5UiTools.a, libQt5WaylandClient.so,
+          libQt5WebChannel.so, libQt5WebEngineCore.so, libQt5WebEngine.so,
+          libQt5WebEngineWidgets.so, libQt5WebKit.so, libQt5WebKitWidgets.so,
+          libQt5WebSockets.so, libQt5Widgets.so, libQt5X11Extras.so,
+          libQt5XmlPatterns.so, and libQt5Xml.so
         </seg>
         <seg>
           $QT5PREFIX/include/qt5,
           $QT5PREFIX/lib/qt5,
+          $QT5PREFIX/lib/cmake/{Qt5,Qt5Bluetooth,Qt5Concurrent},
+          $QT5PREFIX/lib/cmake/{Qt5Core,Qt5DBus,Qt5Declarative},
+          $QT5PREFIX/lib/cmake/{Qt5Designer,Qt5Enginio,Qt5Gui},
+          $QT5PREFIX/lib/cmake/{Qt5Help,Qt5LinguistTools,Qt5Location},
+          $QT5PREFIX/lib/cmake/{Qt5Multimedia,Qt5MultimediaWidgets},
+          $QT5PREFIX/lib/cmake/{Qt5Network,Qt5Nfc,Qt5OpenGL},
+          $QT5PREFIX/lib/cmake/{Qt5OpenGLExtensions,Qt5Positioning},
+          $QT5PREFIX/lib/cmake/{Qt5PrintSupport,Qt5Qml,Qt5Quick},
+          $QT5PREFIX/lib/cmake/{Qt5QuickTest,Qt5QuickWidgets,Qt5Script},
+          $QT5PREFIX/lib/cmake/{Qt5ScriptTools,Qt5Sensors,Qt5SerialPort},
+          $QT5PREFIX/lib/cmake/{Qt5Sql,Qt5Svg,Qt5Test,Qt5UiTools},
+          $QT5PREFIX/lib/cmake/{Qt5WaylandClient,Qt5WebChannel},
+          $QT5PREFIX/lib/cmake/{Qt5WebEngine,Qt5WebEngineCore},
+          $QT5PREFIX/lib/cmake/{Qt5WebEngineWidgets,Qt5WebKit},
+          $QT5PREFIX/lib/cmake/{Qt5WebKitWidgets,Qt5WebSockets,Qt5Widgets},
+          $QT5PREFIX/lib/cmake/{Qt5X11Extras,Qt5Xml,Qt5XmlPatterns},
           $QT5PREFIX/share/doc/qt5, and
           $QT5PREFIX/share/qt5
         </seg>
@@ -629,6 +696,19 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="qt5 designer-qt5">
             <primary sortas="b-designer-qt5">designer</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lconvert-qt5">
+        <term><command>lconvert</command></term>
+        <listitem>
+          <para>
+            is part of Qt5's Linguist tool chain. It can be used as a
+            standalone tool to convert and filter translation data files.
+          </para>
+          <indexterm zone="qt5 lconvert-qt5">
+            <primary sortas="b-lconvert-qt5">lconvert</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -695,6 +775,19 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="qt5 pixeltool-qt5">
             <primary sortas="b-pixeltool-qt5">pixeltool</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="qdbus-qt5">
+        <term><command>qdbus</command></term>
+        <listitem>
+          <para>
+            lists available services, object paths,  methods, signals, and
+            properties of objects on a bus.
+          </para>
+          <indexterm zone="qt5 qdbus-qt5">
+            <primary sortas="b-qdbus-qt5">qdbus</primary>
           </indexterm>
         </listitem>
       </varlistentry>

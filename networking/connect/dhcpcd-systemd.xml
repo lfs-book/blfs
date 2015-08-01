@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY dhcpcd-download-http "http://roy.marples.name/downloads/dhcpcd/dhcpcd-&dhcpcd-version;.tar.bz2">
-  <!ENTITY dhcpcd-download-ftp  " ">
+  <!ENTITY dhcpcd-download-ftp  "ftp://roy.marples.name/pub/dhcpcd/dhcpcd-&dhcpcd-version;.tar.bz2">
   <!--<!ENTITY dhcpcd-download-ftp  "ftp://ftp.osuosl.org/pub/gentoo/distfiles/dhcpcd-&dhcpcd-version;.tar.bz2">-->
-  <!ENTITY dhcpcd-md5sum        "654cc690d1d490d139946845ea4fbbed">
-  <!ENTITY dhcpcd-size          "152 KB">
-  <!ENTITY dhcpcd-buildsize     "2.2 MB">
+  <!ENTITY dhcpcd-md5sum        "374fcac1877078a2fc0ef8cd1617a869">
+  <!ENTITY dhcpcd-size          "176 KB">
+  <!ENTITY dhcpcd-buildsize     "2.5 MB">
   <!ENTITY dhcpcd-time          "less than 0.1 SBU">
 ]>
 
@@ -36,12 +36,12 @@
     addresses. dhcpcd strives to be a fully featured, yet very lightweight
     DHCP client.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <note>
       <para>
-        Make sure you disable <command>systemd-networkd</command> service or
-        make it not configure the connections you want to manage with
+        Make sure that you disable the <command>systemd-networkd</command> service
+        or configure it not to manage the interfaces you want to manage with
         <application>dhcpcd</application>.
       </para>
     </note>
@@ -68,6 +68,13 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">dhcpcd Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="llvm"/> (with Clang)
+    </para>
+
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/dhcpcd"/></para>
 
@@ -75,13 +82,6 @@
 
   <sect2 role="installation">
     <title>Installation of dhcpcd</title>
-
-    <para>
-      First, silence a lot of warnings caused by using the latest toolchain
-      by running the following command:
-    </para>
-
-<screen><userinput>sed -i "s:BSD_SOURCE:DEFAULT_SOURCE:g" configure</userinput></screen>
 
     <para>Install <application>dhcpcd</application> by running the following
     commands:</para>

@@ -34,7 +34,7 @@
     <xref linkend="sane"/>. It has additional features to improve the image
     quality and ease of use compared to <command>xscanimage</command>.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,8 +89,9 @@
     commands:</para>
 
 <!--sed -i -e 's/netscape/xdg-open/'                   src/xsane.h      &amp;&amp;-->
-<screen><userinput>sed -i -e 's/png_ptr->jmpbuf/png_jmpbuf(png_ptr)/' src/xsane-save.c &amp;&amp;
-./configure --prefix=/usr                                           &amp;&amp;
+<screen><userinput>sed -e 's/png_ptr->jmpbuf/png_jmpbuf(png_ptr)/' \
+    -i src/xsane-save.c                         &amp;&amp;
+./configure --prefix=/usr                       &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -98,7 +99,7 @@ make</userinput></screen>
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make xsanedocdir=/usr/share/doc/xsane-&xsane-version; install &amp;&amp;
-ln -v -s ../../doc/xsane-&xsane-version; /usr/share/sane/xsane/doc</userinput></screen>
+ln -sfv ../../doc/xsane-&xsane-version; /usr/share/sane/xsane/doc</userinput></screen>
 <!--
     <para>If you have not installed <xref linkend="xdg-utils"/> and have not
     issued the first sed:</para>-->
@@ -106,21 +107,21 @@ ln -v -s ../../doc/xsane-&xsane-version; /usr/share/sane/xsane/doc</userinput></
     following command,  as the <systemitem class="username">root</systemitem>
     user:</para>
 
-<screen role="root"><userinput>ln -v -s &lt;browser&gt; /usr/bin/netscape</userinput></screen>
+<screen role="root"><userinput>ln -sfv &lt;browser&gt; /usr/bin/netscape</userinput></screen>
 
     <note><para>Be sure to replace &lt;browser&gt; with the browser of your
     choice on your system.</para></note>
 
     <para>Alternatively, if the environment variable BROWSER is set to the
-    browser you want to use, eg, BROWSER="/usr/bin/firefox", the first time you
-    run <command>xsane</command>, it will be recorded in ~/.sane/xsane/xsane.rc.
-    If you wish to change it, edit this file, or remove it, and use the
-    instructions above, so that a new one is created.</para>
+    browser you want to use, eg, BROWSER="/usr/bin/firefox", it will be
+    saved in ~/.sane/xsane/xsane.rc the first time you run
+    <command>xsane</command>. If you wish to change it, edit or remove the
+    mentioned file and use the instructions above to create a new one.</para>
 
     <para>If <application>GIMP</application> is installed, issue the following
     command as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>ln -v -s /usr/bin/xsane /usr/lib/gimp/2.0/plug-ins/</userinput></screen>
+<screen role="root"><userinput>ln -sfv /usr/bin/xsane /usr/lib/gimp/2.0/plug-ins/</userinput></screen>
 
   </sect2>
 
@@ -131,14 +132,14 @@ ln -v -s ../../doc/xsane-&xsane-version; /usr/share/sane/xsane/doc</userinput></
     This is to use <command>xdg-open</command> for the help documentation,
     instead of the hardcoded browser.</para>-->
 
-    <para><command>ln -v -s ../../doc/xsane-&xsane-version;
+    <para><command>ln -sfv ../../doc/xsane-&xsane-version;
     /usr/share/sane/xsane/doc</command>: This symlink is created to ensure that
     any program that looks for the <application>XSane</application>
     documentation in the default location will find it, as the documentation
     is installed in an alternate location specified in the
     <command>make install</command> command.</para>
 
-    <para><command>ln -v -s /usr/bin/xsane /usr/lib/gimp/2.0/plug-ins/</command>:
+    <para><command>ln -sfv /usr/bin/xsane /usr/lib/gimp/2.0/plug-ins/</command>:
     This creates a link in the system-wide <application>GIMP</application>
     <filename class='directory'>plug-ins</filename> directory so that users can
     access <application>XSane</application> directly from

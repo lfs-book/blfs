@@ -33,14 +33,12 @@
     </para>
 
     <para>
-      There are two reasons why <application>systemd</application>
-      needs to be rebuilt. Some packages require GUdev library to
-      be present in order to compile while others expect working
-      <command>systemd-logind</command> service in order to work
-      properly. To build the GUdev library, make sure that you have
-      installed first set of required dependencies. In order to get
-      <command>systemd-logind</command> to work properly, make sure
-      that you have installed second set of required dependencies.
+      The main reason why <application>systemd</application>
+      needs to be rebuilt is that some packages expect
+      working <command>systemd-logind</command> service
+      which requires a PAM module from the
+      <application>systemd</application> source that
+      couldn't be built in LFS.
     </para>
 
     <para>
@@ -57,7 +55,7 @@
 
     <para>
       This package is known to build and work properly using an
-      LFS-7.6 systemd platform using systemd-216 source.
+      LFS-7.7 systemd platform using systemd-221 source.
     </para>
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
@@ -90,13 +88,7 @@
 
     <bridgehead renderas="sect3">systemd Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required (GUdev)</bridgehead>
-    <para role="required">
-      <xref linkend="glib2"/> and
-      <xref linkend="gobject-introspection"/>
-    </para>
-
-    <bridgehead renderas="sect4">Required (Logind)</bridgehead>
+    <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="linux-pam"/>
     </para>
@@ -108,20 +100,28 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="cacerts"/>,
       <xref linkend="curl"/>,
       <xref linkend="elfutils"/>,
       <xref linkend="gnutls"/>,
-      <xref linkend="gtk-doc"/>,
+      <xref linkend="iptables"/>,
       <xref linkend="libgcrypt"/>,
       <xref linkend="libidn"/>,
+      <xref linkend="libxkbcommon"/>,
+      <xref linkend="python2"/> or
       <xref linkend="python3"/>,
+      <xref linkend="qemu"/>,
       <xref linkend="valgrind"/>,
-      <ulink url="https://code.google.com/p/cryptsetup/">cryptsetup</ulink>,
+      <ulink url="https://www.kernel.org/pub/linux/utils/cryptsetup/">cryptsetup</ulink>,
+      <ulink url="http://sourceforge.net/projects/gnu-efi/">gnu-efi</ulink>,
+      <ulink url="https://www.kernel.org/pub/linux/utils/kernel/kexec/">kexec-tools</ulink>,
       <ulink url="https://www.gnu.org/software/libmicrohttpd/">libmicrohttpd</ulink>,
-      <ulink url="http://fukuchi.org/works/qrencode/">libqrencode</ulink>,
       <ulink url="http://sourceforge.net/projects/libseccomp/">libseccomp</ulink>,
-      <ulink url="http://lxml.de/">lxml</ulink> (Python Module), and
-      <ulink url="https://code.google.com/p/lz4/">lz4</ulink>
+      <ulink url="http://lxml.de/">lxml</ulink> (Python Module),
+      <ulink url="https://code.google.com/p/lz4/">lz4</ulink>,
+      <ulink url="http://fukuchi.org/works/qrencode/">qrencode</ulink>,
+      <ulink url="http://sourceforge.net/projects/linuxquota/">quota-tools</ulink> and
+      <ulink url="https://pypi.python.org/pypi/Sphinx">Sphinx</ulink>
     </para>
 
     <note>
@@ -139,11 +139,11 @@
       </para>
     </note>
 
-    <bridgehead renderas="sect4">Optional (for rebuilding manual pages)</bridgehead>
+    <bridgehead renderas="sect4">Optional (to rebuild the manual pages)</bridgehead>
     <para role="optional">
-      <xref linkend="libxslt"/>,
-      <xref linkend="DocBook"/>, and
-      <xref linkend="docbook-xsl"/>
+      <xref linkend="DocBook"/>,
+      <xref linkend="docbook-xsl"/> and
+      <xref linkend="libxslt"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -161,6 +161,18 @@
 <screen><userinput>patch -Np1 -i ../systemd-${SYSTEMD_VERSION}-compat-1.patch</userinput></screen>
 
     <para>
+      Additionally, apply any patch that is also applied in LFS.
+    </para>
+
+    <para>
+      Disable two tests that always fail:
+    </para>
+
+<screen><userinput>sed -e 's:test/udev-test.pl ::g'  \
+    -e 's:test-copy$(EXEEXT) ::g' \
+    -i Makefile.in</userinput></screen>
+
+    <para>
       Rebuild <application>systemd</application> by running the
       following commands:
     </para>
@@ -175,6 +187,7 @@
             --disable-firstboot    \
             --disable-ldconfig     \
             --disable-sysusers     \
+            --without-python       \
             --docdir=/usr/share/doc/systemd-${SYSTEMD_VERSION} &amp;&amp;
 make</userinput></screen>
 
@@ -239,19 +252,18 @@ make</userinput></screen>
     <title>Configuring systemd</title>
 
     <para>
-      If the <application>systemd</application> PAM module was built,
-      the <filename>/etc/pam.d/system-sesion</filename> file needs to
+      The <filename>/etc/pam.d/system-sesion</filename> file needs to
       be modified and a new file needs to be created in order for
       <command>systemd-logind</command> to work correctly. To accomplish
       that, run the following commands as the <systemitem
      class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>cat &gt;&gt; /etc/pam.d/system-session &lt;&lt; "EOF"
+<screen role="root"><userinput>cat &gt;&gt; /etc/pam.d/system-session &lt;&lt; "EOF" &amp;&amp;
 <literal># Begin Systemd addition
     
 session   required    pam_loginuid.so
--session   optional    pam_systemd.so
+session   optional    pam_systemd.so
 
 # End Systemd addition</literal>
 EOF
@@ -303,12 +315,11 @@ EOF</userinput></screen>
           None
         </seg>
         <seg>
-          libgudev-1.0.so and pam_systemd.so
+          pam_systemd.so
           (in <filename class="directory">/lib/security</filename>)
         </seg>
         <seg>
-          /usr/include/gudev-1.0 and
-          /usr/share/gtk-doc/html/gudev
+          None
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -317,18 +328,6 @@ EOF</userinput></screen>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
-
-      <varlistentry id="libgudev-1.0">
-        <term><filename class="libraryfile">libgudev-1.0.so</filename></term>
-        <listitem>
-          <para>
-            is a GObject-based wrapper library for libudev.
-          </para>
-          <indexterm zone="systemd libgudev-1.0">
-            <primary sortas="c-libgudev-1.0">libgudev-1.0.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
 
       <varlistentry id="pam_systemd">
         <term><filename class="libraryfile">pam_systemd.so</filename></term>

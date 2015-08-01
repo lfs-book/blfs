@@ -6,10 +6,10 @@
 
   <!ENTITY lvm2-download-http " ">
   <!ENTITY lvm2-download-ftp  "ftp://sources.redhat.com/pub/lvm2/LVM2.&lvm2-version;.tgz">
-  <!ENTITY lvm2-md5sum        "de826e0736070aed70148ea5ec0ecff9">
-  <!ENTITY lvm2-size          "1.5 MB">
-  <!ENTITY lvm2-buildsize     "27 MB (additional 8 MB to run the test suite)">
-  <!ENTITY lvm2-time          "0.4 SBU (additional 5.4 SBU to run the test suite)">
+  <!ENTITY lvm2-md5sum        "a88bf7d68955635d009a5aec1ffecc48">
+  <!ENTITY lvm2-size          "1.6 MB">
+  <!ENTITY lvm2-buildsize     "30 MB (additional 10 MB to run the test suite)">
+  <!ENTITY lvm2-time          "0.4 SBU (additional 8.2 SBU to run the test suite)">
 ]>
 
 <sect1 id="lvm2" xreflabel="LVM2-&lvm2-version;">
@@ -36,7 +36,7 @@
       shrinking of logical partitions.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,7 +89,7 @@
     <title>Kernel Configuration</title>
 
     <para>
-      Enable the following option in the kernel configuration
+      Enable the following options in the kernel configuration
       and recompile the kernel:
     </para>
 
@@ -100,11 +100,11 @@
     </para></note>
 
 <screen><literal>Device Drivers ---&gt;
-  Multiple devices driver support (RAID and LVM): Y
-    Device mapper support: Y or M
-    Crypt target support: (optional)
-    Snapshot target: (optional)
-    Mirror target: (optional) </literal></screen>
+  [*] Multiple devices driver support (RAID and LVM) ---&gt; [CONFIG_MD]
+    &lt;*/M&gt;   Device mapper support                         [CONFIG_BLK_DEV_DM]
+    &lt;*/M/ &gt;   Crypt target support                        [CONFIG_DM_CRYPT]
+    &lt;*/M/ &gt;   Snapshot target                             [CONFIG_DM_SNAPSHOT]
+    &lt;*/M/ &gt;   Mirror target                               [CONFIG_DM_MIRROR]</literal></screen>
 
     <indexterm zone="lvm2 lvm2-kernel">
       <primary sortas="d-lvm2">lvm2</primary>
@@ -130,12 +130,14 @@
 make</userinput></screen>
 
     <para>
-      The check command must be run as the <systemitem
+      <!--The check command must be run as the <systemitem
       class="username">root</systemitem> user.  Also the tests are known to
       hang if at least one partition on a hard drive is not set up as a Linux
-      LVM partition (type 8e00). To test the results, issue: <command>make
+      LVM partition (type 8e00).-->To test the results, issue: <command>make -k
       check</command> as the <systemitem class="username">root</systemitem>
-      user.
+      user. At least one partition on a hard drive must be set up as a Linux
+      LVM partition (type 8e00). The test timings are very dependent on the
+      speed of the disk(s) and on the number of enabled kernel options.
     </para>
 
     <para>
@@ -189,8 +191,8 @@ make</userinput></screen>
       <seglistitem>
         <seg>
           blkdeactivate, dmeventd (optional), dmsetup, fsadm, lvm, lvmconf,
-          lvmdump, vgimportclone. There are also numerous symbolic links to
-          lvm that implement specific functionality
+          lvmdump, and vgimportclone. There are also numerous symbolic links to
+          lvm that implement specific functionalities
         </seg>
         <seg>
           libdevmapper.so, liblvm2app.so and liblvm2cmd.so; optional:

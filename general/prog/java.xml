@@ -6,17 +6,17 @@
 
   <!ENTITY anduin-download             "http://anduin.linuxfromscratch.org/files/BLFS/OpenJDK-&openjdk-version;">
   <!ENTITY openjdk-download-binary-x86 "&anduin-download;/OpenJDK-&openjdk-version;-i686-bin.tar.xz">
-  <!ENTITY openjdk-bin-md5sum-x86      "191bc00a0f1eccb1545f67f0f40723cd">
+  <!ENTITY openjdk-bin-md5sum-x86      "8b90cf0456acf225d9e317f3d1eeb4bc">
   <!ENTITY openjdk-bin-size-x86        "57 MB">
-  <!ENTITY openjdk-bin-buildsize-x86   "165 MB">
+  <!ENTITY openjdk-bin-buildsize-x86   "166 MB">
 
   <!ENTITY openjdk-download-binary-x64 "&anduin-download;/OpenJDK-&openjdk-version;-x86_64-bin.tar.xz">
-  <!ENTITY openjdk-bin-md5sum-x64      "110bb2b6f0baea7abe173bf8131e82c9">
-  <!ENTITY openjdk-bin-size-x64        "57 MB">
+  <!ENTITY openjdk-bin-md5sum-x64      "ad1859e7497d0b49e53e59d8fb9cdc0b">
+  <!ENTITY openjdk-bin-size-x64        "58 MB">
   <!ENTITY openjdk-bin-buildsize-x64   "169 MB">
 ]>
 
-<sect1 id="java" xreflabel="java-&openjdk-version;">
+<sect1 id="java" xreflabel="Java-&openjdk-version;">
   <?dbhtml filename="java.html"?>
 
   <sect1info>
@@ -81,7 +81,7 @@
     directory to allow for multiple installations, including a source based
     version.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Binary Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -126,16 +126,18 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of the Java BinaryJDK </title>
+    <title>Installation of the Java Binary JDK</title>
+
     <para>Begin by extracting the appropriate binary tarball for your
     architecture and changing to the extracted directory. Install the binary
     <application>OpenJDK</application> with the following commands as the
     <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>install -vdm755 /opt/OpenJDK-&openjdk-version;-bin &amp;&amp;
+<screen role="root"><userinput>install -v -dm755 /opt/OpenJDK-&openjdk-version;-bin &amp;&amp;
 mv -v * /opt/OpenJDK-&openjdk-version;-bin         &amp;&amp;
 chown -R root:root /opt/OpenJDK-&openjdk-version;-bin</userinput></screen>
 
+<!--
     <para>Configure the temporary <application>OpenJDK</application>
     installation by issuing the following commands (note that if you logout
     and login back before having definitely configured
@@ -145,13 +147,31 @@ chown -R root:root /opt/OpenJDK-&openjdk-version;-bin</userinput></screen>
 export JAVA_HOME=/opt/OpenJDK-&openjdk-version;-bin &amp;&amp;
 export PATH="$PATH:/opt/OpenJDK-&openjdk-version;-bin/bin"</userinput></screen>
 
-    <para> Do not forget to reboot or to source the profile file after
+    <para>You may also include those instructions into a file in the <filename
+    class="directory">/etc/profile.d</filename> directory. Do not forget to
+    logout and login back, or to source the profile file after
     modification.</para>
+-->
 
-    <para>The binary version is now installed. If you don't want to compile the
-    sources, skip ahead to the <xref linkend='openjdk-config'/> section.
-    Otherwise, continue to the <xref linkend='junit'/>, <xref
-    linkend='apache-ant'/>, and <xref linkend='openjdk'/> sections.</para>
+    <para>
+      The binary version is now installed. You may create a symlink to that
+      version by issuing, as the <systemitem class="username">root</systemitem>
+      user:
+    </para>
+
+<screen role="root"><userinput>ln -sfnv OpenJDK-&openjdk-version;-bin /opt/jdk</userinput></screen>
+
+    <para>
+      You may now proceed to <xref linkend="ojdk-conf"/>, where the
+      instructions assume that the above link exists.
+    </para>
+
+<!--
+If you don't want to compile the
+      sources, skip ahead to the <xref linkend='openjdk-config'/> section.
+    Otherwise, continue to the <xref linkend='apache-ant'/>,
+    <xref linkend='junit'/>, and <xref linkend='openjdk'/> sections.</para>
+-->
     
   </sect2>
 

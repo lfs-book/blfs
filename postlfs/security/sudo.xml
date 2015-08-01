@@ -6,10 +6,10 @@
 
   <!ENTITY sudo-download-http "http://www.sudo.ws/sudo/dist/sudo-&sudo-version;.tar.gz">
   <!ENTITY sudo-download-ftp  "ftp://ftp.sudo.ws/pub/sudo/sudo-&sudo-version;.tar.gz">
-  <!ENTITY sudo-md5sum        "5065deec62e8cd514fb04d1d1253db03">
-  <!ENTITY sudo-size          "2.3 MB">
-  <!ENTITY sudo-buildsize     "24 MB (additional 2 MB for tests)">
-  <!ENTITY sudo-time          "0.5 SBU (additional 0.1 SBU for tests)">
+  <!ENTITY sudo-md5sum        "f61577ec330ad1bd504c0e2eec6ea2d8">
+  <!ENTITY sudo-size          "2.4 MB">
+  <!ENTITY sudo-buildsize     "24 MB">
+  <!ENTITY sudo-time          "0.4 SBU">
 ]>
 
 <sect1 id="sudo" xreflabel="Sudo-&sudo-version;">
@@ -37,7 +37,7 @@
       logging the commands and arguments.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -104,6 +104,7 @@
 is written otherwise           -disable-static           \-->
 <screen><userinput>./configure --prefix=/usr              \
             --libexecdir=/usr/lib      \
+            --with-secure-path         \
             --with-all-insults         \
             --with-env-editor          \
             --docdir=/usr/share/doc/sudo-&sudo-version; \
@@ -120,7 +121,8 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+ln -sfv libsudo_util.so.0.0.0 /usr/lib/sudo/libsudo_util.so.0</userinput></screen>
 
   </sect2>
 
@@ -132,6 +134,13 @@ make</userinput></screen>
      private programs are installed.  Everything in that directory is a library, so
      they belong under <filename class="directory">/usr/lib</filename> instead of
      <filename class="directory">/usr/libexec</filename>.
+    </para>
+
+    <para>
+      <parameter>--with-secure-path</parameter>: This switch transparently adds
+      <filename class="directory">/sbin</filename> and <filename
+      class="directory">/usr/sbin</filename> directories to the
+      <envar>PATH</envar> environment variable.
     </para>
 
     <para>
@@ -149,7 +158,7 @@ make</userinput></screen>
     </para>
 
     <para>
-      <option>--without-pam</option>: Avoids to build <application>PAM</application>
+      <option>--without-pam</option>: Avoids building <application>PAM</application>
       support when <application>PAM</application> is installed on the system.
     </para>
 
@@ -163,6 +172,12 @@ make</userinput></screen>
         <command>configure --help</command> output for a complete list.
       </para>
     </note>
+
+    <para>
+      <command>ln -sfv libsudo_util...</command>: Works around a bug in the
+      installation process, which links the versioned library to the
+      previously installed version (when present) instead of the new one.
+    </para>
 
   </sect2>
 
@@ -268,10 +283,10 @@ chmod 644 /etc/pam.d/sudo</userinput></screen>
         </seg>
         <seg>
           /etc/sudoers.d,
-          /run/sudo,
           /usr/lib/sudo,
-          /usr/share/doc/sudo-&sudo-version;, and
-          /var/lib/sudo
+          /usr/share/doc/sudo-&sudo-version;,
+          /var/lib/sudo, and
+          /var/run/sudo
         </seg>
       </seglistitem>
     </segmentedlist>

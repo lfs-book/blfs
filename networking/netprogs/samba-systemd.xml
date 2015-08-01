@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY samba-download-http "http://ftp.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
-  <!ENTITY samba-download-ftp  "ftp://ftp.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
-  <!ENTITY samba-md5sum        "9f7bae123ed39d2aa9ba842d3a138d54">
-  <!ENTITY samba-size          "18.6 MB">
-  <!ENTITY samba-buildsize     "353 MB (additional 396 MB for the quicktest, reputedly up to 500 MB additional for all tests)">
-  <!ENTITY samba-time          "8.4 SBU (additional 4.3 SBU for the quicktest, reputedly up to 110 SBU to run all tests)">
+  <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
+  <!ENTITY samba-download-ftp  " ">
+  <!ENTITY samba-md5sum        "77f138cc0736549b03872279364766e0">
+  <!ENTITY samba-size          "20 MB">
+  <!ENTITY samba-buildsize     "490 MB (additional 399 MB for the quicktest, reputedly up to 500 MB additional for all tests)">
+  <!ENTITY samba-time          "6.6 SBU (additional 6.9 SBU for the quicktest, reputedly up to 110 SBU to run all tests)">
 ]>
 
 <sect1 id="samba" xreflabel="Samba-&samba-version;">
@@ -36,7 +36,7 @@
     Active Directory domain and a NetBIOS (rfc1001/1002) nameserver (which
     among other things provides LAN browsing support).</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -60,6 +60,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/samba-&samba-version;-gnutls34-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Samba Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -69,24 +79,31 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="libxslt"/> (for documentation)
+      <xref linkend="libxslt"/> (for documentation) and
+      <xref linkend="openldap"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="avahi"/>,
       <xref linkend="cups"/>,
+      <xref linkend="gnutls"/>,
+      <xref linkend="libarchive"/>,
+      <xref linkend="libgpg-error"/>,
       <xref linkend="linux-pam"/>,
       <xref linkend="mitkrb"/>,
-      <xref linkend="openldap"/>,
       <xref linkend="popt"/>,
       <xref linkend="valgrind"/> (optionally used by the test suite),
       <xref linkend="xfsprogs"/>,
+      <ulink url="https://ctdb.samba.org/">ctdb</ulink>,
       <ulink url="https://people.gnome.org/~veillard/gamin/">Gamin</ulink>,
-      <ulink url="http://ctdb.samba.org/">ctdb</ulink>,
+      <ulink url="http://www.h5l.org/">Heimdal</ulink>,
+      <ulink url="http://ftp.de.debian.org/debian/pool/main/liba/libaio/">libaio</ulink>,
       <ulink url="http://www.nongnu.org/libunwind/">libunwind</ulink>,
-      <ulink url="http://www.openafs.org/">OpenAFS</ulink>, and
-      <ulink url="http://tdb.samba.org/">tdb</ulink>
+      <ulink url="https://www.samba.org/ftp/ldb/">ldb</ulink>,
+      <ulink url="http://www.openafs.org/">OpenAFS</ulink>,
+      <ulink url="https://tevent.samba.org/">tevent</ulink>, and
+      <ulink url="https://tdb.samba.org/">tdb</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -97,39 +114,34 @@
   <sect2 role="installation">
     <title>Installation of Samba</title>
 
-<!--    <note>
-      <para>If you wish to run the test suite after the binaries are built,
-      you must add the <option>- -enable-socket-wrapper</option> 
-      and <option>- -enable-selftest</option> parameters to
-      the <command>configure</command> script below. You may want to run
-      <command>configure</command> with the <option>- -help</option> parameter
-      first. There may be other parameters needed to take advantage of
-      optional dependencies.</para>
-    </note>-->
-
-    <para>Fix a build failure when building on a system with
-    <application>systemd</application> installed:</para>
-
-<screen><userinput>sed "s:systemd-daemon:systemd:g" -i wscript lib/util/wscript_build</userinput></screen>
+    <note>
+      <para>If you wish to run the test suite after the binaries are built, you
+      must add the <option>--enable-selftest</option> parameter to the
+      <command>configure</command> script below. You may want to run
+      <command>configure</command> with the <option>--help</option> parameter
+      first. There may be other parameters needed to take advantage of optional
+      dependencies.</para>
+    </note>
 
     <para>Install <application>Samba</application> by running the following
     commands:</para>
 
-<screen><userinput>./configure                             \
+<screen><userinput>patch -Np1 -i ../samba-&samba-version;-gnutls34-1.patch &amp;&amp;
+
+./configure                             \
     --prefix=/usr                       \
     --sysconfdir=/etc                   \
     --localstatedir=/var                \
     --with-piddir=/run/samba            \
     --with-pammodulesdir=/lib/security  \
-    --enable-fhs                        \
-    --enable-nss-wrapper                &amp;&amp;
+    --enable-fhs                        &amp;&amp;
 
 make</userinput></screen>
 
-<!--    <para>According to <application>Samba</application> developers, the
+    <para>According to <application>Samba</application> developers, the
     limitation to 108 characters of the path length of a unix named pipe socket
     may be the cause of errors, so that over 1/3 of the tests might fail. For
-    this reason, the switch <option>- -with-selftest-prefix=/tmp/quick</option>
+    this reason, the switch <option>--with-selftest-prefix=/tmp/quick</option>
     (or another path with small number of characters) can be used with
     configure. Even so, the 
     <quote><replaceable>samba3.raw.eas</replaceable></quote> test may fail,
@@ -142,34 +154,33 @@ make</userinput></screen>
     <para>To test the results, as the <systemitem
     class="username">root</systemitem> user, issue: <command>make
     quicktest</command>.  There are other targets (test, subunit-test)
-    available, but take a very long time (over 100 SBU).</para>-->
-    <para>This package does not have a working test suite.</para>
+    available, but take a very long time (over 100 SBU).</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
 
-mv -v /usr/lib/libnss_win{s,bind}.so*   /lib                       &amp;&amp;
-ln -v -sf ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so &amp;&amp;
-ln -v -sf ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so    &amp;&amp;
+mv -v /usr/lib/libnss_win{s,bind}.so* /lib                       &amp;&amp;
+ln -sfv ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so &amp;&amp;
+ln -sfv ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so    &amp;&amp;
 
-install -v -m644    examples/smb.conf.default /etc/samba &amp;&amp;
+install -v -m644  examples/smb.conf.default /etc/samba &amp;&amp;
 
-mkdir -pv /etc/openldap/schema                        &amp;&amp;
+install -v -dm755 /etc/openldap/schema                 &amp;&amp;
 
-install -v -m644    examples/LDAP/README              \
-                    /etc/openldap/schema/README.LDAP  &amp;&amp;
+install -v -m644  examples/LDAP/README                 \
+                  /etc/openldap/schema/README.LDAP     &amp;&amp;
                     
-install -v -m644    examples/LDAP/samba*              \
-                    /etc/openldap/schema              &amp;&amp;
+install -v -m644  examples/LDAP/samba*                 \
+                  /etc/openldap/schema                 &amp;&amp;
                     
-install -v -m755    examples/LDAP/{get*,ol*} \
-                    /etc/openldap/schema              &amp;&amp;
+install -v -m755  examples/LDAP/{get*,ol*}             \
+                  /etc/openldap/schema                 &amp;&amp;
 
-install -v -m755 -d /usr/share/doc/samba-&samba-version; &amp;&amp;
+install -v -dm755 /usr/share/doc/samba-&samba-version;          &amp;&amp;
 
-install -v -m644    lib/ntdb/doc/design.pdf \
-                    /usr/share/doc/samba-&samba-version;</userinput></screen>
+install -v -m644  lib/ntdb/doc/design.pdf \
+                  /usr/share/doc/samba-&samba-version;</userinput></screen>
 
   </sect2>
 
@@ -178,23 +189,20 @@ install -v -m644    lib/ntdb/doc/design.pdf \
 
     <para><parameter>--enable-fhs</parameter>: Assigns all other file paths in
     a manner compliant with the Filesystem Hierarchy Standard (FHS).</para>
+<!--
+    <para><option>-/-enable-socket-wrapper</option> and
+    <option>-/-enable-selftest</option>: These options are required to run
+    the test suite.</para>-->
 
-    <para><parameter>--enable-nss-wrapper</parameter>: Builds the nss-wrapper
-    library.</para>
-
-<!--    <para><option>- -enable-socket-wrapper</option> and
-    <option>- -enable-selftest</option>: These options are required to run
-    the test suite.</para>
-
-    <para><option>- -with-selftest-prefix=SELFTEST_PREFIX</option>: This option
-    specify the test suite work directory (default=./st).</para>-->
+    <para><option>--with-selftest-prefix=SELFTEST_PREFIX</option>: This option
+    specify the test suite work directory (default=./st).</para>
 
     <para><command>mv -v /usr/lib/libnss_win{s,bind}.so* /lib</command>:
     The nss libraries are installed in /usr/lib by default. Move them to
     /lib.</para>
 
-    <para><command>ln -v -sf ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so</command>
-    and <command>ln -v -sf ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so</command>:
+    <para><command>ln -sfv ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so</command>
+    and <command>ln -sfv ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so</command>:
     These symlinks are required when applicates build against these libraries.</para>
 
     <para><command>install -v -m644 examples/LDAP/* /etc/openldap/schema</command>:
@@ -233,7 +241,7 @@ install -v -m644    lib/ntdb/doc/design.pdf \
       following command as the <systemitem class="username">root</systemitem>
       user:</para>
 
-<screen role="root"><userinput>ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
+<screen role="root"><userinput>ln -sfv /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
 
     </sect3>
 
@@ -408,14 +416,15 @@ install -v -m644    lib/ntdb/doc/design.pdf \
         <option>guest account =</option> parameter in the
         <filename>/etc/samba/smb.conf</filename> file. If you utilize the
         <option>guest account =</option> parameter, ensure this user exists in
-        the <filename>/etc/passwd</filename> file. To use the default user,
+        the <filename>/etc/passwd</filename> file.<!-- To use the default user,
         issue the following commands as the
-        <systemitem class='username'>root</systemitem> user:</para>
+        <systemitem class='username'>root</systemitem> user:--></para>
 
+<!--
 <screen role="root"><userinput>groupadd -g 99 nogroup &amp;&amp;
 useradd -c "Unprivileged Nobody" -d /dev/null -g nogroup \
     -s /bin/false -u 99 nobody</userinput></screen>
-
+-->
         <para>
           To start the <application>Samba</application> daemons at boot,
           install the systemd units from the <xref linkend="bootscripts"/>
@@ -480,34 +489,39 @@ systemctl start smbd.socket</userinput></screen>
 
       <seglistitem>
 
-        <seg>cifsdd, dbwrap_tool, eventlogadm, gentest, ldbadd, ldbdel, ldbedit,
-        ldbmodify, ldbrename, ldbsearch, locktest, masktest, ndrdump, net, nmbd,
-        nmblookup, nmblookup4, ntdbbackup, ntdbdump, ntdbrestore, ntdbtool,
-        ntlm_auth, oLschema2ldif, pdbedit, pidl, profiles, regdiff, regpatch,
-        regshell, regtree, rpcclient, samba, samba_dnsupdate, samba_kcc,
-        samba-regedit, samba_spnupdate, samba-tool, samba_upgradedns, sharesec,
-        smbcacls, smbclient, smbclient4, smbcontrol, smbcquotas, smbd, smbget,
-        smbpasswd, smbspool, smbstatus, smbtar, smbta-util, smbtorture, smbtree,
-        tdbbackup, tdbdump, tdbrestore, tdbtool, testparm, wbinfo, and
-        winbindd</seg>
+        <seg>
+          cifsdd, dbwrap_tool, eventlogadm, gentest, ldbadd, ldbdel, ldbedit,
+          ldbmodify, ldbrename, ldbsearch, locktest, masktest, ndrdump, net,
+          nmbd, nmblookup, ntdbbackup, ntdbdump, ntdbrestore, ntdbtool,
+          ntlm_auth, oLschema2ldif, pdbedit, pidl, profiles, regdiff, regpatch,
+          regshell, regtree, rpcclient, samba, samba_dnsupdate, samba_kcc,
+          samba-regedit, samba_spnupdate, samba-tool, samba_upgradedns,
+          sharesec, smbcacls, smbclient, smbcontrol, smbcquotas, smbd, smbget,
+          smbpasswd, smbspool, smbstatus, smbtar, smbta-util, smbtorture,
+          smbtree, tdbbackup, tdbdump, tdbrestore, tdbtool, testparm, wbinfo,
+          and winbindd
+        </seg>
 
-        <seg>libdcerpc-atsvc.so, libdcerpc-binding.so, libdcerpc-samr.so,
-        libdcerpc-server.so, libdcerpc.so, libgensec.so, libndr-krb5pac.so,
-        libndr-nbt.so, libndr.so, libndr-standard.so, libnetapi.so,
-        libnss_winbind.so, libnss_wins.so, libpdb.so, libregistry.so,
-        libsamba-credentials.so, libsamba-hostconfig.so, libsamba-policy.so,
-        libsamba-util.so, libsamdb.so, libsmbclient-raw.so, libsmbclient.so,
-        libsmbconf.so, libsmbldap.so, libsmbsharemodes.so, libtevent-util.so,
-        libtorture.so, libwbclient.so, mit_samba.so, and
-        winbind_krb5_locator.so; the pam_winbind.so and pam_smbpass.so PAM
-        libraries; and assorted character set, filesystem and support modules
-        under /usr/lib/{python&python2-majorver;,samba}</seg>
+        <seg>
+          libdcerpc-atsvc.so, libdcerpc-binding.so, libdcerpc-samr.so,
+          libdcerpc-server.so, libdcerpc.so, libgensec.so, libndr-krb5pac.so,
+          libndr-nbt.so, libndr.so, libndr-standard.so, libnetapi.so,
+          libnss_winbind.so, libnss_wins.so, libregistry.so,
+          libsamba-credentials.so, libsamba-hostconfig.so, libsamba-passdb.so,
+          libsamba-policy.so, libsamba-util.so, libsamdb.so,
+          libsmbclient-raw.so, libsmbclient.so, libsmbconf.so, libsmbldap.so,
+          libtevent-util.so, libtorture.so, libwbclient.so, mit_samba.so,
+          winbind_krb5_locator.so, pam_winbind.so, and pam_smbpass.so (PAM
+          modules)
+        </seg>
         
-        <seg>/etc/samba, /run/samba, /usr/include/samba-4.0,
-        /usr/lib/perl5/vendor_perl/5.x.y/Parse/Pidl/{Samba{3,4},Wireshark},
-        /usr/lib/python&python2-majorver;/site-packages/samba, /usr/lib/samba,
-        /usr/share/doc/samba-&samba-version;, /usr/share/samba, and
-        /var/{cache,lib,lock,log,run}/samba</seg>
+        <seg>
+          /etc/samba, /run/samba, /usr/include/samba-4.0,
+          /usr/lib/perl5/vendor_perl/5.x.y/Parse/Pidl/{Samba{3,4},Wireshark},
+          /usr/lib/python&python2-majorver;/site-packages/samba,
+          /usr/lib/samba, /usr/share/doc/samba-&samba-version;,
+          /usr/share/samba, and /var/{cache,lib,lock,log,run}/samba
+        </seg>
 
       </seglistitem>
     </segmentedlist>
@@ -907,7 +921,7 @@ systemctl start smbd.socket</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
       <varlistentry id="libsmbsharemodes">
         <term><filename class='libraryfile'>libsmbsharemodes.so</filename></term>
         <listitem>
@@ -917,7 +931,7 @@ systemctl start smbd.socket</userinput></screen>
             <primary sortas="c-libsmbsharemodes">libsmbsharemodes.so</primary>
           </indexterm>
         </listitem>
-      </varlistentry>
+      </varlistentry>-->
 
       <varlistentry id="libwbclient">
         <term><filename class='libraryfile'>libwbclient.so</filename></term>

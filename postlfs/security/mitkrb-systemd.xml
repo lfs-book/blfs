@@ -6,10 +6,10 @@
 
   <!ENTITY mitkrb-download-http "http://web.mit.edu/kerberos/www/dist/krb5/&mitkrb-major-version;/krb5-&mitkrb-version;-signed.tar">
   <!ENTITY mitkrb-download-ftp  " ">
-  <!ENTITY mitkrb-md5sum        "addb5fd7150f76059ed2a11a3970c957">
-  <!ENTITY mitkrb-size          "11.5 MB">
-  <!ENTITY mitkrb-buildsize     "99.1 MB (Additional 25 MB if running the testsuite)">
-  <!ENTITY mitkrb-time          "1.2 SBU (additional 4.4 SBU if running the testsuite)">
+  <!ENTITY mitkrb-md5sum        "f7ebfa6c99c10b16979ebf9a98343189">
+  <!ENTITY mitkrb-size          "12 MB">
+  <!ENTITY mitkrb-buildsize     "142 MB (Additional 28 MB for the testsuite)">
+  <!ENTITY mitkrb-time          "0.9 SBU (additional 5.0 SBU for the testsuite)">
 ]>
 
 <sect1 id="mitkrb" xreflabel="MIT Kerberos V5-&mitkrb-version;">
@@ -38,7 +38,7 @@
       networks or the Internet.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,11 +78,14 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="bind-utils"/> (used during the testsuite),
       <xref linkend="dejagnu"/> (for full test coverage),
       <xref linkend="gnupg2"/> (to authenticate the package),
       <xref linkend="keyutils"/>,
       <xref linkend="openldap"/>,
-      <xref linkend="python2"/> (used during the testsuite) and
+      <xref linkend="openssl"/>,
+      <xref linkend="python2"/> (used during the testsuite),
+      <xref linkend="tcl"/> and
       <xref linkend="rpcbind"/> (used during the testsuite)
     </para>
 
@@ -114,27 +117,27 @@
     <para>
       After unpacking the distribution tarball and if you have
       <xref linkend="gnupg2"/> installed, you can
-      authenticate the package.  First, check the contents of the file
+      authenticate the package. First, check the contents of the file
       <filename>krb5-&mitkrb-version;.tar.gz.asc</filename>.
     </para>
 
-<screen><userinput>gpg --verify krb5-&mitkrb-version;.tar.gz.asc krb5-&mitkrb-version;.tar.gz</userinput></screen>
+<screen><userinput>gpg2 --verify krb5-&mitkrb-version;.tar.gz.asc krb5-&mitkrb-version;.tar.gz</userinput></screen>
 
     <para>You will probably see output similar to:</para>
 
-<screen>Signature made Tue 12 Aug 2014 12:53:10 AM CEST using RSA key ID 749D7889
-gpg: Can't check signature: public key not found</screen>
+<screen><literal>gpg: Signature made Fri May  8 23:40:13 2015 utc using RSA key ID 0055C305
+gpg: Can't check signature: No public key</literal></screen>
 
     <para>
       You can import the public key with:
     </para>
 
-<screen><userinput>gpg --pgp2 --keyserver pgp.mit.edu --recv-keys 0x749D7889</userinput></screen>
+<screen><userinput>gpg2 --keyserver pgp.mit.edu --recv-keys 0055C305</userinput></screen>
 
     <para>
-      Now re-verify the package with the first command above.  You should  get a
+      Now re-verify the package with the first command above. You should get a
       indication of a good signature, but the key will still not be certified
-      with a trusted signature.  Trusting the downloaded key is a separate
+      with a trusted signature. Trusting the downloaded key is a separate
       operation but it is up to you to determine the level of trust.
     </para>
 
@@ -146,9 +149,7 @@ gpg: Can't check signature: public key not found</screen>
 <screen><userinput>cd src &amp;&amp;
 sed -e "s@python2.5/Python.h@&amp; python2.7/Python.h@g" \
     -e "s@-lpython2.5]@&amp;,\n  AC_CHECK_LIB(python2.7,main,[PYTHON_LIB=-lpython2.7])@g" \
-    -i configure.in &amp;&amp;<!-- Tests passed fine without this.
-sed -e 's@\^u}@^u cols 300}@' \
-    -i tests/dejagnu/config/default.exp &amp;&amp; -->
+    -i configure.in &amp;&amp;
 autoconf &amp;&amp;
 ./configure --prefix=/usr            \
             --sysconfdir=/etc        \
@@ -179,6 +180,7 @@ for LIBRARY in gssapi_krb5 gssrpc k5crypto kadm5clnt kadm5srv \
                kdb5 kdb_ldap krad krb5 krb5support verto ; do
     [ -e  /usr/lib/lib$LIBRARY.so ] &amp;&amp; chmod -v 755 /usr/lib/lib$LIBRARY.so
 done &amp;&amp;
+unset LIBRARY &amp;&amp;
 
 mv -v /usr/lib/libkrb5.so.*        /lib &amp;&amp;
 mv -v /usr/lib/libk5crypto.so.*    /lib &amp;&amp;
@@ -192,9 +194,7 @@ mv -v /usr/bin/ksu /bin &amp;&amp;
 chmod -v 755 /bin/ksu   &amp;&amp;
 
 install -v -dm755 /usr/share/doc/krb5-&mitkrb-version; &amp;&amp;
-cp -rfv ../doc/*  /usr/share/doc/krb5-&mitkrb-version; &amp;&amp;
-
-unset LIBRARY</userinput></screen>
+cp -rfv ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
 
 
   </sect2>
@@ -203,10 +203,8 @@ unset LIBRARY</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -e ...</command>: The first <command>sed</command> fixes
-      <application>Python</application> detection.<!-- The second one increases
-      the width of the virtual terminal used for some tests, to prevent
-      some spurious characters to be echoed, which is taken as a failure. -->
+      <command>sed -e ...</command>: This <command>sed</command> fixes
+      <application>Python</application> detection.
     </para>
 
     <para>
@@ -496,9 +494,9 @@ EOF</userinput></screen>
           sserver, uuclient and uuserver
         </seg>
         <seg>
-          libgssapi_krb5.so, libgssrpc.so, libk5crypto.so,
-          libkadm5clnt.so, libkadm5srv.so, libkdb5.so, libkdb_ldap.so
-          (optional), libkrad.so, libkrb5.so, libkrb5support.so, and
+          libgssapi_krb5.so, libgssrpc.so, libk5crypto.so, libkadm5clnt_mit.so,
+          libkadm5clnt.so, libkadm5srv_mit.so, libkadm5srv.so, libkdb_ldap.so
+          (optional), libkdb5.so, libkrad.so, libkrb5.so, libkrb5support.so, and
           libverto.so
         </seg>
         <seg>

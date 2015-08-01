@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY seamonkey-download-http
-  "https://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.bz2">
+           "&mozilla-http;/seamonkey/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.bz2">
   <!ENTITY seamonkey-download-ftp
-  "ftp://ftp.mozilla.org/pub/mozilla.org/seamonkey/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.bz2">
-  <!ENTITY seamonkey-md5sum        "44b6f9cfc2a95fd08dba35ff236d306e">
-  <!ENTITY seamonkey-size          "180 MB">
-  <!ENTITY seamonkey-buildsize     "4.1 GB (77 MB installed)">
-  <!ENTITY seamonkey-time          "17 SBU (using parallelism=4)">
+           "&mozilla-ftp;/seamonkey/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.bz2">
+  <!ENTITY seamonkey-md5sum        "d9b1f863cb8808ca92a2d9ac004ae5ee">
+  <!ENTITY seamonkey-size          "194 MB">
+  <!ENTITY seamonkey-buildsize     "3.6 GB (72 MB installed)">
+  <!ENTITY seamonkey-time          "61 SBU">
 ]>
 
 <sect1 id="seamonkey" xreflabel="SeaMonkey-&seamonkey-version;">
@@ -46,7 +46,7 @@
       based on the <application>Mozilla</application> source code.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -88,34 +88,62 @@
     <para role="required">
       <xref linkend="alsa-lib"/>,
       <xref linkend="gtk2"/>,
-      <xref linkend="zip"/>, and
-      <xref linkend="unzip"/>.
+      <xref linkend="unzip"/>,
+      <xref linkend="yasm"/> and
+      <xref linkend="zip"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="yasm"/> or <xref linkend="libvpx"/>
-      (to allow <application>SeaMonkey</application> to play webm videos).
+      <xref linkend="icu"/>,
+      <xref linkend="libevent"/>,
+      <xref linkend="libvpx"/>,
+      <xref linkend="nspr"/>,
+      <xref linkend="nss"/> and
+      <xref linkend="sqlite"/>
     </para>
+
+    <note>
+      <para>
+        If you don't install recommended dependencies, then internal copies of
+        those packages will be used. They might be tested to work, but they can
+        be out of date or contain security holes.
+      </para>
+    </note>
+
+    <note>
+      <para>
+        You must have installed <application>OpenSSL</application> before
+        <application>Python 2</application>, or the build system will quickly
+        fail with output including "ImportError: cannot import name
+        HTTPSHandler". If you are in any doubt about this (e.g. upgrading from
+        an older version of SeaMonkey), check if
+        <filename>/usr/lib/python&python2-majorver;/lib-dynload/_ssl.so</filename>
+        exists. If it does not, reinstall <xref linkend="python2"/> (after
+        installing <xref linkend="openssl"/>. The latest version of any
+        <emphasis>currently maintained</emphasis> version of OpenSSL should be
+        satisfactory if already installed.
+      </para>
+    </note>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="curl"/>,
       <xref linkend="dbus-glib"/>,
-      <xref linkend="startup-notification"/>,
-      <xref linkend="sqlite"/>,
-      <xref linkend="libevent"/>,
       <xref linkend="doxygen"/>,
       <xref linkend="gst-plugins-base"/> (with
       <xref linkend="gst-plugins-good"/> and
-      <xref linkend="gst-ffmpeg"/> at runtime),
+      <xref linkend="gst-ffmpeg"/> at runtime), or
+      <xref linkend="gst10-plugins-base"/> (with
+      <xref linkend="gst10-plugins-good"/> and
+      <xref linkend="gst10-libav"/> at runtime),
       <xref linkend="libnotify"/>,
-      <xref linkend="nspr"/>,
-      <xref linkend="nss"/>,
       <xref linkend="openjdk"/>,
       <xref linkend="pulseaudio"/>,
-      <xref linkend="wireless_tools"/>,
-      <xref linkend="valgrind"/> (only for testing the jemalloc code),
-      <xref linkend="wget"/>, and
+      <xref linkend="startup-notification"/>,
+      <xref linkend="valgrind"/>,
+      <xref linkend="wget"/>,
+      <xref linkend="wireless_tools"/> and
       <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>
     </para>
 
@@ -126,14 +154,7 @@
 
   <sect2 role="installation">
     <title>Installation of SeaMonkey</title>
-<!--
-    <para>
-      If you have not installed <xref linkend="wireless_tools"/>, apply the
-      patch or the installer will fail:
-    </para>
 
-<screen><userinput>patch -p1 &lt; ../seamonkey-&seamonkey-version;-necko-wifi-1.patch</userinput></screen>
--->
     <para>
       The configuration of <application>SeaMonkey</application> is accomplished
       by creating a <filename>mozconfig</filename> file containing the desired
@@ -145,65 +166,101 @@
       issuing the following command:
     </para>
 
-<screen><?dbfo keep-together="auto"?><userinput>cat &gt; mozconfig &lt;&lt; EOF
-<literal># If you have a multicore machine you can speed up the build by running
-# several jobs at once, but if you have a single core, delete this line:
-mk_add_options MOZ_MAKE_FLAGS="-j$(getconf _NPROCESSORS_ONLN)"
+<screen><?dbfo keep-together="auto"?><userinput>cat &gt; mozconfig &lt;&lt; "EOF"
+<literal># If you have a multicore machine, all cores will be used by default.
+# If desired, you can reduce the number of cores used, e.g. to 1, by
+# uncommenting the next line and setting a valid number of CPU cores.
+#mk_add_options MOZ_MAKE_FLAGS="-j1"
 
-# If you have installed Yasm delete this option:
-ac_add_options --disable-webm
-
-# If you have installed DBus-Glib delete this option:
+# If you have installed DBus-Glib comment out this line:
 ac_add_options --disable-dbus
 
-# If you have installed wireless-tools delete this option:
+# If you have installed dbus-glib, and you have installed (or will install)
+# wireless-tools, and you wish to use geolocation web services, comment out
+# this line
 ac_add_options --disable-necko-wifi
 
-# If you have installed libnotify delete this option:
+# If you have installed libnotify comment out this line:
 ac_add_options --disable-libnotify
 
 # Comment out following option if you have PulseAudio installed
 ac_add_options --disable-pulseaudio
 
-# GStreamer is necessary for H.264 video playback in HTML5 Video Player;
-# to be enabled, also remember to set "media.gstreamer.enabled" to "true"
-# in about:config. If you do *not* have GStreamer 0.x.y, uncomment this line:
+# GStreamer is necessary for H.264 video playback in HTML5 Video Player.
+# To enable it, make sure you also set "media.gstreamer.enabled" to
+# "true" in about:config.
+
+# If you don't have GStreamer 0.10.x installed, uncomment this line:
 #ac_add_options --disable-gstreamer
+# or uncomment this line if you have GStreamer 1.x.y installed:
+#ac_add_options --enable-gstreamer=1.0
 
-# Uncomment these if you have installed them:
-# ac_add_options --enable-startup-notification
-# ac_add_options --enable-system-hunspell
-# ac_add_options --enable-system-sqlite
-# ac_add_options --with-system-libevent
-# ac_add_options --with-system-libvpx
-# ac_add_options --with-system-nspr
-# ac_add_options --with-system-nss
+# Uncomment these lines if you have installed optional dependencies:
+#ac_add_options --enable-system-hunspell
+#ac_add_options --enable-startup-notification
 
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/moz-build-dir
-ac_add_options --disable-crashreporter
-ac_add_options --disable-debug
-ac_add_options --disable-debug-symbols
-ac_add_options --disable-installer
-ac_add_options --disable-static
-ac_add_options --disable-tests
-ac_add_options --disable-updater
+# Comment out following options if you have not installed
+# recommended dependencies:
+ac_add_options --enable-system-sqlite
+ac_add_options --with-system-libevent
+ac_add_options --with-system-libvpx
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+ac_add_options --with-system-icu
+
+# The BLFS editors recommend not changing anything below this line:
+ac_add_options --prefix=/usr
 ac_add_options --enable-application=suite
-ac_add_options --enable-shared
+
+ac_add_options --disable-crashreporter
+ac_add_options --disable-updater
+ac_add_options --disable-tests
+
+ac_add_options --enable-optimize
+ac_add_options --enable-strip
+ac_add_options --enable-install-strip
+
+ac_add_options --enable-gio
+ac_add_options --enable-official-branding
+ac_add_options --enable-safe-browsing
+ac_add_options --enable-url-classifier
+
 ac_add_options --enable-system-cairo
 ac_add_options --enable-system-ffi
-ac_add_options --prefix=/usr
+ac_add_options --enable-system-pixman
+
 ac_add_options --with-pthreads
+
+ac_add_options --with-system-bz2
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-png
-ac_add_options --with-system-zlib</literal>
+ac_add_options --with-system-zlib
+
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/moz-build-dir</literal>
 EOF</userinput></screen>
 
     <para>
-      The moz-build-dir directory needs to exist and match the value used in
-      mozconfig (above) for the object directory (MOZ_OBJDIR):
+      First, fix building with system freetype-2.6 or later:
     </para>
 
-<screen><userinput>mkdir -vp mozilla/moz-build-dir</userinput></screen>
+<screen><userinput>sed -i '/^ftglyph.h/ i ftfntfmt.h' mozilla/config/system-headers</userinput></screen>
+
+    <para>
+      The moz-build-dir directory needs to exist and match the value used in
+      the mozconfig above for the object directory (MOZ_OBJDIR):
+    </para>
+
+<screen><userinput>mkdir -v mozilla/moz-build-dir</userinput></screen>
+
+    <note>
+      <para>
+        If you have a multicore machine, <application>SeaMonkey</application>
+        will use all the cores by default. Exceptionally, you can reduce
+        the number of cores, e.g. to 1, by prepending the
+        <envar>MOZ_MAKE_FLAGS="-j1"</envar> environment variable to all
+        of the <command>make</command> commands below.
+      </para>
+    </note>
 
     <para>
       Compile <application>SeaMonkey</application> by running the following
@@ -213,10 +270,7 @@ EOF</userinput></screen>
 <screen><userinput>make -f client.mk</userinput></screen>
 
     <para>
-      This package does not come with a test suite. However, if
-      <application>X</application> is running it can be launched
-      from the build directory before installing with the command line:
-      <userinput>moz-build-dir/mozilla/dist/seamonkey/seamonkey</userinput>
+      This package does not come with a test suite.
     </para>
 
     <para>
@@ -224,29 +278,24 @@ EOF</userinput></screen>
       commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make -f client.mk install INSTALL_SDK= &amp;&amp;
-cp -v moz-build-dir/dist/man/man1/seamonkey.1 /usr/share/man/man1</userinput></screen>
-
-    <bridgehead renderas="sect3" id="devel-seamonkey" xreflabel="SeaMonkey">
-      All the Development Libraries and Headers
-    </bridgehead>
+<screen role="root"><userinput>make -f client.mk install INSTALL_SDK=       &amp;&amp;
+chown -R root:root /usr/lib/seamonkey-&seamonkey-version; &amp;&amp;
+install -v -m644 moz-build-dir/dist/man/man1/seamonkey.1 /usr/share/man/man1</userinput></screen>
 
     <para>
-      If you want to install the full <application>SeaMonkey</application>
-      development environment, as the
+      The above instruction just installs the parts you need to run
+      <application>SeaMonkey</application>. Alternatively, if you want to
+      install the full <application>SeaMonkey</application> development
+      environment, run the following command as the
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make -C moz-build-dir install</userinput></screen>
+<screen role="root"><userinput>make -f client.mk install</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <command>mkdir -vp mozilla/moz-build-dir</command>: fixes a build failure
-      at the beginning of the build.
-    </para>
 
     <para>
       <command>make -f client.mk</command>: Mozilla products are packaged to
@@ -260,14 +309,6 @@ cp -v moz-build-dir/dist/man/man1/seamonkey.1 /usr/share/man/man1</userinput></s
 
   <sect2 role="configuration">
     <title>Configuring SeaMonkey</title>
-
-    <para>
-      If you deleted the <option>--disable-webm</option> option from your
-      <filename>mozconfig</filename>, your <application>SeaMonkey</application>
-      can play most youtube videos without the need for the flash plugin. To
-      enable this, go to <ulink url="http://www.youtube.com/html5"/> and click
-      on 'Join the HTML5 Trial' (needs cookies enabled).
-    </para>
 
     <para>
       For installing various <application>SeaMonkey</application> plugins, refer
@@ -304,16 +345,16 @@ cp -v moz-build-dir/dist/man/man1/seamonkey.1 /usr/share/man/man1</userinput></s
     </tip>
 
     <para>
-      If you use a desktop environment like <application>Gnome</application> or
-      <application>KDE</application> you may wish to create a
-      <filename>seamonkey.desktop</filename> file so that
-      <application>SeaMonkey</application> appears in the panel's menus. If you
-      didn't enable <application>Startup-Notification</application> in your
-      mozconfig change the StartupNotify line to false. As the
-      <systemitem class="username">root</systemitem> user:
+      If you use a desktop environment such as <application>GNOME</application>
+      or <application>KDE</application>, you may want to create a desktop file
+      in order to be able to launch <application>SeaMonkey</application> from the
+      desktop menus. If you didn't enable
+      <application>Startup Notification</application> support in your mozconfig
+      then change the StartupNotify line to false. Run the following commands
+      as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>mkdir -pv /usr/share/{applications,pixmaps}              &amp;&amp;
+<screen role="root"><userinput>mkdir -pv /usr/share/{applications,pixmaps} &amp;&amp;
 
 cat &gt; /usr/share/applications/seamonkey.desktop &lt;&lt; "EOF" &amp;&amp;
 [Desktop Entry]
@@ -338,15 +379,17 @@ ln -sfv /usr/lib/seamonkey-&seamonkey-version;/chrome/icons/default/seamonkey.pn
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle>
-      <segtitle>Installed Directory</segtitle>
+      <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>seamonkey</seg>
+        <seg>
+          seamonkey
+        </seg>
         <seg>
           None
         </seg>
         <seg>
-          /usr/lib/seamonkey-&seamonkey-version;.
+          /usr/lib/seamonkey-&seamonkey-version;
         </seg>
       </seglistitem>
     </segmentedlist>

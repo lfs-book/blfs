@@ -7,9 +7,9 @@
   <!ENTITY valgrind-download-http "http://valgrind.org/downloads/valgrind-&valgrind-version;.tar.bz2">
   <!ENTITY valgrind-download-ftp  " ">
   <!ENTITY valgrind-md5sum        "60ddae962bc79e7c95cfc4667245707f">
-  <!ENTITY valgrind-size          "10.4 MB">
-  <!ENTITY valgrind-buildsize     "259.7 MB (additional 21.44 MB for tests and html documentation.)">
-  <!ENTITY valgrind-time          "1.4 SBU (additional 9.2 SBU for tests and building html documentation.)">
+  <!ENTITY valgrind-size          "10.5 MB">
+  <!ENTITY valgrind-buildsize     "401 MB and an additional 20 MB for tests">
+  <!ENTITY valgrind-time          "1.1 SBU and an additional 4.7 SBU for tests">
 ]>
 
 <sect1 id="valgrind" xreflabel="Valgrind-&valgrind-version;">
@@ -37,7 +37,7 @@
       tools. 
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -80,13 +80,13 @@
       <xref linkend="boost"/>,
       <xref linkend="llvm"/> (with Clang), 
       <xref linkend="gdb"/> (for tests), and
-      <ulink url="http://www.openmp.org/">OpenMP</ulink>
+      <ulink url="http://www.open-mpi.org/">OpenMPI</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional for regenerating the documentation</bridgehead>
     <para role="optional">
       <xref linkend="libxslt"/> and 
-      <xref linkend="texlive"/> 
+      <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -100,24 +100,26 @@
     <para>Install <application>Valgrind</application> by running the following
     commands:</para>
 
-<screen><userinput>sed -i 's/-mt//g' configure &amp;&amp;
-sed -i 's|/doc/valgrind||' docs/Makefile.in &amp;&amp;
-./configure --prefix=/usr \
-            --datadir=/usr/share/doc/valgrind-&valgrind-version; &amp;&amp;
+<screen><userinput>sed -e 's#|3.\*#&amp;|4.\*#' \
+    -e 's/-mt//g'        \
+    -e 's:2.20:2.21:g'   \
+    -i configure         &amp;&amp;
+
+sed -i "s:/doc/valgrind::g" docs/Makefile.in &amp;&amp;
+
+./configure --prefix=/usr --datadir=/usr/share/doc/valgrind-&valgrind-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
       To test the results, issue: <command>make regtest</command>.
     </para>
-
+<!--  Note to maintainer: Recheck when next texlive (2015) is released.
     <para>
       If you wish to regenerate the documentation, run:
     </para>
 
-<screen><userinput>pushd docs         &amp;&amp;
-make html-docs &amp;&amp;
-popd</userinput></screen>
-
+<screen><userinput>make -C docs download-docs</userinput></screen>
+-->
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
@@ -130,12 +132,14 @@ popd</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i 's/-mt//g' configure</command>: Fixes configure script to
-      find newer versions of Boost.
+      <command>sed -e ... configure</command>: The first expression fixes an
+      issue that prevents Valgrind from compiling on systems running Linux-4.x,
+      the second expression fixes building with Glibc 2.21, and the third
+      expression fixes the configure script to find recent versions of Boost.
     </para>
 
     <para>
-      <command>sed s|/doc/valgrind|| ... </command>: This sed provides for 
+      <command>sed -i ... docs/Makefile.in </command>: This sed provides for
       installing the documentation in a versioned directory.
     </para>
 
@@ -163,13 +167,17 @@ popd</userinput></screen>
           vgdb
         </seg>
         <seg>
-          vgpreload_core-amd64-linux.so, 
-          vgpreload_drd-amd64-linux.so, 
-          vgpreload_exp-dhat-amd64-linux.so, 
-          vgpreload_exp-sgcheck-amd64-linux.so,
-          vgpreload_helgrind-amd64-linux.so, 
-          vgpreload_massif-amd64-linux.so, and 
-          vgpreload_memcheck-amd64-linux.so
+          libcoregrind-&lt;Arch&gt;-linux.a,
+          libreplacemalloc_toolpreload-&lt;Arch&gt;-linux.a,
+          libvex-&lt;Arch&gt;-linux.a,
+          vgpreload_core-&lt;Arch&gt;-linux.so,
+          vgpreload_drd-&lt;Arch&gt;-linux.so,
+          vgpreload_exp-dhat-&lt;Arch&gt;-linux.so,
+          vgpreload_exp-sgcheck-&lt;Arch&gt;-linux.so,
+          vgpreload_helgrind-&lt;Arch&gt;-linux.so,
+          vgpreload_massif-&lt;Arch&gt;-linux.so, and
+          vgpreload_memcheck-&lt;Arch&gt;-linux.so, where
+          &lt;Arch&gt;=x86, amd64
         </seg>
         <seg>
           /usr/lib/valgrind,

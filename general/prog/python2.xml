@@ -5,16 +5,16 @@
   %general-entities;
 
   <!ENTITY python2-download-http
-          "http://www.python.org/ftp/python/&python2-version;/Python-&python2-version;.tar.xz">
+     "https://www.python.org/ftp/python/&python2-version;/Python-&python2-version;.tar.xz">
   <!ENTITY python2-download-ftp  " ">
-  <!ENTITY python2-md5sum        "38d530f7efc373d64a8fb1637e3baaa7">
-  <!ENTITY python2-size          "11.6 MB">
-  <!ENTITY python2-buildsize     "125.4 MB">
-  <!ENTITY python2-time          "6.2 SBU">
+  <!ENTITY python2-md5sum        "c685ef0b8e9f27b5e3db5db12b268ac6">
+  <!ENTITY python2-size          "12 MB">
+  <!ENTITY python2-buildsize     "227 MB (additional 18 MB for the tests)">
+  <!ENTITY python2-time          "0.8 SBU (additional 5.5 SBU for tests)">
 
   <!ENTITY python2htmldoc-download-http
-           "http://docs.python.org/ftp/python/doc/&python2-version;/python-&python2-version;-docs-html.tar.bz2">
-  <!ENTITY python2htmldoc-md5sum        "8804bc888f6b7a1cc217be1acbb59ad6">
+     "https://docs.python.org/2.7/archives/python-&python2-version;-docs-html.tar.bz2">
+  <!ENTITY python2htmldoc-md5sum        "5f07d5079327be83f450ecc459ffe249">
   <!ENTITY python2htmldoc-size          "4.4 MB">
 ]>
 
@@ -43,7 +43,7 @@
       compatibility with other dependent packages.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,17 +79,6 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-           Required patch if you wish to run the test suite:
-           <ulink url="&patch-root;/Python-&python2-version;-skip_test_gdb-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <itemizedlist spacing="compact">
       <title>Optional HTML Documentation</title>
       <listitem>
@@ -118,7 +107,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="bluez"/>
+      <xref linkend="bluez"/> and
+      <xref linkend="valgrind"/>
     </para>
 
     <bridgehead renderas="sect4">Optional (For Additional Modules)</bridgehead>
@@ -161,12 +151,6 @@
 make</userinput></screen>
 
     <para>
-      If you wish to run the test suite, disable a test that fails:
-    </para>
-
-<screen><userinput>patch -Np1 -i ../Python-&python2-version;-skip_test_gdb-1.patch</userinput></screen>
-
-    <para>
       To test the results, issue: <command>make test</command>.
     </para>
 
@@ -180,10 +164,10 @@ chmod -v 755 /usr/lib/libpython&python2-majorver;.so.1.0</userinput></screen>
     <para>
       Since <application>Python 2</application> is in maintenance mode, and
       <application>Python 3</application> is recommended by upstream for
-      development, probably, you do not need to install the documentation.
+      development, you probably don't need to install the documentation.
       However, if you still want to install documentation for both
-      <application>Python</application> versions, be sure to define PYTHONDOCS
-      variable for the version you want to use, each time you need to consult
+      <application>Python</application> versions, make sure you set PYTHONDOCS
+      variable to the version you want to use each time you need to consult
       the documentation. If you have downloaded the preformatted documentation
       from <ulink url="http://docs.python.org/download.html"/>, install it
       as the <systemitem class="username">root</systemitem> user:
@@ -259,7 +243,6 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
         </seg>
         <seg>
           libpython&python2-majorver;.so
-          and several under /usr/lib/python2.7/{config,lib-dynload}
         </seg>
         <seg>
           /usr/include/python&python2-majorver;,

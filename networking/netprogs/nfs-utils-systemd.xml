@@ -6,13 +6,13 @@
 
   <!ENTITY nfs-utils-download-http "&sourceforge-repo;/nfs/nfs-utils-&nfs-utils-version;.tar.bz2">
   <!ENTITY nfs-utils-download-ftp  " ">
-  <!ENTITY nfs-utils-md5sum        "97f157f954edb6d4d4385a0c5986f36f">
-  <!ENTITY nfs-utils-size          "768 KB">
-  <!ENTITY nfs-utils-buildsize     "20 MB">
-  <!ENTITY nfs-utils-time          "0.2 SBU">
+  <!ENTITY nfs-utils-md5sum        "1e2f3c1ed468dee02d00c534c002ea10">
+  <!ENTITY nfs-utils-size          "772 KB">
+  <!ENTITY nfs-utils-buildsize     "16 MB">
+  <!ENTITY nfs-utils-time          "0.1 SBU">
 ]>
 
-<sect1 id="nfs-utils" xreflabel="nfs-utils-&nfs-utils-version;">
+<sect1 id="nfs-utils" xreflabel="NFS-Utils-&nfs-utils-version;">
   <?dbhtml filename="nfs-utils.html"?>
 
   <sect1info>
@@ -23,38 +23,52 @@
   <title>NFS-Utils-&nfs-utils-version;</title>
 
   <indexterm zone="nfs-utils">
-    <primary sortas="a-Nfs-utils">NFS Utilities</primary>
+    <primary sortas="a-NFS-Utils">NFS-Utils</primary>
   </indexterm>
 
   <sect2 role="package">
     <title>Introduction to NFS Utilities</title>
 
-    <para>The <application>NFS Utilities</application> package contains the
-    userspace server and client tools necessary to use the kernel's NFS
-    abilities. NFS is a protocol that allows sharing file systems over the
-    network.</para>
+    <para>
+      The <application>NFS Utilities</application> package contains the
+      userspace server and client tools necessary to use the kernel's
+      NFS abilities. NFS is a protocol that allows sharing file systems
+      over the network.
+    </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing='compact'>
       <listitem>
-        <para>Download (HTTP): <ulink url="&nfs-utils-download-http;"/></para>
+        <para>
+          Download (HTTP): <ulink url="&nfs-utils-download-http;"/>
+        </para>
       </listitem>
       <listitem>
-        <para>Download (FTP): <ulink url="&nfs-utils-download-ftp;"/></para>
+        <para>
+         Download (FTP): <ulink url="&nfs-utils-download-ftp;"/>
+        </para>
       </listitem>
       <listitem>
-        <para>Download MD5 sum: &nfs-utils-md5sum;</para>
+        <para>
+          Download MD5 sum: &nfs-utils-md5sum;
+        </para>
       </listitem>
       <listitem>
-        <para>Download size: &nfs-utils-size;</para>
+        <para>
+          Download size: &nfs-utils-size;
+        </para>
       </listitem>
       <listitem>
-        <para>Estimated disk space required: &nfs-utils-buildsize;</para>
+        <para>
+          Estimated disk space required: &nfs-utils-buildsize;
+        </para>
       </listitem>
       <listitem>
-        <para>Estimated build time: &nfs-utils-time;</para>
+        <para>
+          Estimated build time: &nfs-utils-time;
+        </para>
       </listitem>
     </itemizedlist>
 
@@ -65,13 +79,21 @@
       <xref linkend="libtirpc"/>
     </para>
 
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="libevent"/>,
+      <xref linkend="libnfsidmap"/> and
+      <xref linkend="sqlite"/> (for NFSv4 support) and
+      <xref linkend="lvm2"/> (for NFSv4.1 support)
+    </para>
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="libevent"/>,
-      <xref linkend="sqlite"/> and
-      <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/">libnfsidmap</ulink> (for NFSv4 support),
+      <xref linkend="keyutils"/>,
+      <xref linkend="python2"/> (for <command>mountstats</command> and
+      <command>nfsiostat</command>),
       <xref linkend="mitkrb"/> or
-      <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/">libgssapi</ulink>, and
+      <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/">libgssapi</ulink> and
       <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/">librpcsecgss</ulink> (for GSS and RPC security support) 
     </para>
 
@@ -81,113 +103,186 @@
     </para>
 
     <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/nfs-utils"/></para>
-
+      <ulink url="&blfs-wiki;/nfs-utils"/>
+    </para>
   </sect2>
 
-  <sect2 role="kernel" id='nfs-utils-kernel'>
+  <sect2 role="kernel" id="nfs-utils-kernel">
     <title>Kernel Configuration</title>
 
-    <para>Enable the following options in the kernel configuration
-    and recompile the kernel if necessary:</para>
+    <para>
+      Enable the following options in the kernel configuration
+      and recompile the kernel if necessary:
+    </para>
 
 <screen><literal>File systems  ---&gt;
-  Network File Systems  ---&gt;
-    NFS client support: Y or M
-    NFS server support: Y or M</literal></screen>
+  [*] Network File Systems  ---&gt;         [CONFIG_NETWORK_FILESYSTEMS]
+    &lt;*/M&gt; NFS client support             [CONFIG_NFS_FS]
+    &lt;*/M&gt; NFS server support             [CONFIG_NFSD]</literal></screen>
 
-    <para>Select the appropriate sub-options that appear when the above options
-    are selected.</para>
+    <para>
+      Select the appropriate sub-options that appear when the
+      above options are selected.
+    </para>
 
     <indexterm zone="nfs-utils nfs-utils-kernel">
-      <primary sortas="d-nfs-utils">NFS Utilities</primary>
+      <primary sortas="d-NFS-Utils">NFS-Utils</primary>
     </indexterm>
 
   </sect2>
 
-  <sect2 role="installation" id='nfs-utils-install'
-         xreflabel='NFS Utilities Installation'>
+  <sect2 role="installation">
     <title>Installation of NFS Utilities</title>
 
-    <para>Before you compile the program, ensure that the
-    <systemitem class="username">nobody</systemitem> user and
-    <systemitem class="groupname">nogroup</systemitem> group have been
-    created. You can add them by running the following commands as the
-    <systemitem class="username">root</systemitem> user:</para>
+    <para>
+      Fix an issue that would prevent <command>rpc.statd</command>
+      from starting:
+    </para>
 
-<screen role="root"><userinput>groupadd -g 99 nogroup &amp;&amp;
-useradd -c "Unprivileged Nobody" -d /dev/null -g nogroup \
-    -s /bin/false -u 99 nobody</userinput></screen>
+<screen><userinput>sed -i "/daemon_init/s:\!::" utils/statd/statd.c</userinput></screen>
 
-    <note>
-      <para>The classic uid and gid values are 65534 which is also -2 when
-      interpreted as a signed 16-bit number.  These values impact other files
-      on some filesystems that do not have support for sparse files.  The
-      <systemitem class="username">nobody</systemitem> and <systemitem
-      class="groupname">nogroup</systemitem> values are relatively arbitrary.
-      The impact on a server is nil if the <filename>exports</filename> file
-      is configured correctly. If it is misconfigured, an
-      <command>ls -l</command> or <command>ps</command> listing will show a
-      uid or gid number of 65534 instead of a name. The client uses <systemitem
-      class="username">nobody</systemitem> only as the user running
-      <command>rpc.statd</command>.</para>
-    </note>
+    <para>
+      Install <application>NFS Utilities</application> by running
+      the following commands:
+    </para>
 
-    <para>Install <application>NFS Utilities</application> by running
-    the following commands:</para>
-
-<screen><userinput>./configure --prefix=/usr          \
-            --sysconfdir=/etc      \
-            --without-tcp-wrappers \
-            --disable-nfsv4        \
-            --disable-gss &amp;&amp;
+<screen><userinput>./configure --prefix=/usr           \
+            --sysconfdir=/etc       \
+            --sbindir=/sbin         \
+            --enable-libmount-mount \
+            --without-tcp-wrappers  \
+            --disable-gss           &amp;&amp;
 make</userinput></screen>
 
-    <para>If your <filename class="directory">/usr</filename> directory
-    is NFS mounted, you should install the executables in
-    <filename class="directory">/sbin</filename> by passing
-    an additional parameter <option>--sbindir=/sbin</option> to the
-    above <command>./configure</command> command.</para>
+    <para>
+      To test the results, issue: <command>make check</command>.
+    </para>
 
-    <para>To test the results, issue: <command>make check</command>.</para>
-
-    <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
 
 <!-- dev note: make statduser=$(whoami) DESTDIR=<DESTDIR> install -->
+<screen role="root"><userinput>make install &amp;&amp;
+install -v -m644 utils/mount/nfsmount.conf /etc/nfsmount.conf</userinput></screen>
 
-<screen role='root'><userinput>make install</userinput></screen>
+    <para>
+      If the NFSv4 support was not disabled, run the
+      following commands while still as the <systemitem
+      class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -v -dm555 /var/lib/nfs/rpc_pipefs &amp;&amp;
+install -v -dm755 /var/lib/nfs/v4recovery &amp;&amp;
+cat &gt; /etc/idmapd.conf &lt;&lt; "EOF"
+<literal>[General]
+Verbosity = 0
+Pipefs-Directory = /var/lib/nfs/rpc_pipefs
+Domain = localdomain
+
+[Mapping]
+Nobody-User = nobody
+Nobody-Group = nogroup
+
+[Translation]
+Method = nsswitch</literal>
+EOF</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para><parameter>--without-tcp-wrappers</parameter>: This option is
-    needed because TCP Wrappers is not in BLFS.</para>
+    <para>
+      <parameter>--enable-libmount-mount</parameter>: This switch
+      enables linking of the <command>mount.nfs</command> program
+      with the <filename>libmount</filename> library.
+    </para>
 
-    <para><parameter>--disable-nfsv4</parameter>: Disables support
-    for NFS version 4.</para>
+    <para>
+      <parameter>--without-tcp-wrappers</parameter>: This switch
+      disables TCP Wrappers support because it is not part of BLFS.
+    </para>
 
-    <para><parameter>--disable-gss</parameter>: Disables support for
-    RPCSEC GSS (RPC Security).</para>
+    <para>
+      <parameter>--disable-gss</parameter>: This switch disables
+      support for RPCSEC GSS (RPC Security). Remove it if you have
+      installed optional dependencies.
+    </para>
+
+    <para>
+      <option>--disable-nfsv4</option>: Tis switch disables support
+      for NFS version 4. Use it if you have not installed
+      recommended dependencies. It implies
+      <option>--disable-nfsv41</option>.
+    </para>
+
+    <para>
+      <option>--disable-nfsv41</option>: Tis switch disables support
+      for NFS version 4.1. Use it if you have not installed
+      <application>LVM2</application> but stil wish to enable
+      support for NFS version 4.
+    </para>
 
   </sect2>
 
   <sect2 role="configuration">
     <title>Configuring NFS Utilities</title>
 
-    <sect3 id='nfs-utils-server-config'>
-      <title>Server Configuration</title>
+    <sect3 id="nfs-utils-server-config">
+      <title>NFS Server Configuration</title>
 
-      <para><filename>/etc/exports</filename> contains the exported directories
-      on NFS servers. Refer to the <filename>exports.5</filename> manual page
-      for the syntax of this file. Also refer to the "NFS HowTo" available at
-      <ulink url="http://nfs.sourceforge.net/nfs-howto/"/> for information on
-      how to configure the servers and clients in a secure manner. For example,
-      for sharing the <filename class="directory">/home</filename> directory
-      over the local network, the following line may be added:</para>
+      <para>
+        <filename>/etc/exports</filename> contains the exported directories
+        on NFS servers. Refer to the <filename>exports.5</filename> manual page
+        for the syntax of this file. Also refer to the "NFS HowTo" available at
+        <ulink url="http://nfs.sourceforge.net/nfs-howto/"/> for information on
+        how to configure the servers and clients in a secure manner.
+      </para>
 
-<screen role="root"><userinput>/home <replaceable>&lt;192.168.0.0/24&gt;</replaceable>(rw,subtree_check,anonuid=99,anongid=99)</userinput></screen>
+      <para>
+        For sharing the <filename class="directory">/home</filename> directory
+        over the local network using NFSv3, add the following line to
+        <filename>/etc/exports</filename>:
+      </para>
+
+<screen role="root"><userinput>/home <replaceable>192.168.0.0/24</replaceable>(rw,no_subtree_check,anonuid=99,anongid=99)</userinput></screen>
+
+      <para>
+        NFSv4 exports exist in a single pseudo filesystem, where the real
+        directories are mounted with the <option>--bind</option> option.
+        In order to share <filename class="directory">/home</filename> over
+        NFSv4, you need to bind mount it into a pseudo filesystem you are
+        going to export (in this example we will use <filename
+        class="directory">/srv/nfsv4</filename>, in which case the <filename
+        class="directory">/home</filename> directory will become <filename
+        class="directory">/srv/nfsv4/home</filename>).
+      </para>
+
+<screen role="root"><userinput>install -v -dm755 /srv/nfsv4/home &amp;&amp;
+mount -v --bind /home /srv/nfsv4/home</userinput></screen>
+
+      <para>
+        To make the above change permanent, you can add the following line
+        to your <filename>/etc/fstab</filename>:
+      </para>
+
+<screen role="root"><userinput>/home /srv/nfsv4/home none bind 0 0</userinput></screen>
+
+      <para>
+        Update <filename>/etc/exports</filename> to export your NFSv4 share:
+      </para>
+
+<screen role="root"><userinput>/srv/nfsv4       <replaceable>192.168.0.0/24</replaceable>(rw,fsid=0,no_subtree_check)
+/srv/nfsv4/home  <replaceable>192.168.0.0/24</replaceable>(rw,nohide,insecure,no_subtree_check)</userinput></screen>
+
+      <note>
+        <para>
+          Be sure to replace the directory, network address and prefix above
+          to match your network. The only space in the lines above should be
+          between the directory and the network address.
+        </para>
+      </note>
 
       <indexterm zone="nfs-utils nfs-utils-server-config">
         <primary sortas="e-etc-exportfs">/etc/exportfs</primary>
@@ -203,15 +298,26 @@ make</userinput></screen>
           <systemitem class="username">root</systemitem> user:
         </para>
 
+<screen role="root"><userinput>make install-nfsv4-server</userinput></screen>
+
+        <para>
+          If you have disabled NFSv4 support, run the following
+          command as the <systemitem
+          class="username">root</systemitem> user to omit the NFSv4
+          specific systemd units:
+        </para>
+
 <screen role="root"><userinput>make install-nfs-server</userinput></screen>
 
         <indexterm zone="nfs-utils nfs-utils-server-init">
           <primary sortas="f-nfs-server">nfs-server</primary>
         </indexterm>
 
-        <para>You can edit the <filename>/etc/default/nfs-utils</filename>
-        file to change the startup options for NFS daemons. Defaults should
-        be fine for most use cases.</para>
+        <para>
+          You can edit the <filename>/etc/default/nfs-utils</filename>
+          file to change the startup options for NFS daemons. Defaults
+          should be fine for most use cases.
+        </para>
 
         <indexterm zone="nfs-utils nfs-utils-server-init">
           <primary sortas="e-etc-default-nfs-utils">/etc/default/nfs-utils</primary>
@@ -221,64 +327,48 @@ make</userinput></screen>
 
     </sect3>
 
-    <sect3 id='nfs-utils-client-config'>
+    <sect3 id="nfs-utils-client-config">
       <title>Client Configuration</title>
 
-      <para><filename>/etc/fstab</filename> contains the directories that
-      are to be mounted on the client. Alternately the partitions can be
-      mounted by using the <command>mount</command> command with the proper
-      options. To mount the <filename class="directory">/home</filename>
-      and <filename class="directory">/usr</filename> partitions, add the
-      following to the <filename>/etc/fstab</filename>:</para>
+      <para>
+        <filename>/etc/fstab</filename> contains the directories that
+        are to be mounted on the client. Alternately the partitions can be
+        mounted by using the <command>mount</command> command with the proper
+        options. To mount the <filename class="directory">/home</filename>
+        and <filename class="directory">/usr</filename> partitions, add the
+        following to the <filename>/etc/fstab</filename>:
+      </para>
 
-<screen role="root"><userinput><replaceable>&lt;server-name&gt;</replaceable>:/home  /home nfs   rw,_netdev 0 0
-<replaceable>&lt;server-name&gt;</replaceable>:/usr   /usr  nfs   ro,_netdev 0 0</userinput></screen>
+<screen role="root"><userinput><replaceable>&lt;server-name&gt;</replaceable>:/home /home nfs rw,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0
+<replaceable>&lt;server-name&gt;</replaceable>:/usr  /usr  nfs ro,x-systemd.automount,x-systemd.device-timeout=10,timeo=14 0 0</userinput></screen>
 
-      <para>The options which can be used are specified in <command>man 5 nfs</command>.
-      If both the client and server are running recent versions of linux, most of the
-      options will be negotiated. You can specify either <literal>rw</literal> or
-      <literal>ro</literal>, <literal>_netdev</literal> if the filesystem is to be
-      automatically mounted at boot, or <literal>noauto</literal> (and perhaps
-      <literal>user</literal>) for other filesystems.</para>
+      <para>
+        The options which can be used are specified in <command>man 5 nfs</command>.
+        If both the client and server are running recent versions of Linux, most of the
+        options will be negotiated. You can specify either <literal>rw</literal> or
+        <literal>ro</literal>, <literal>x-systemd.automount</literal> if the filesystem
+        is to be automatically mounted at boot, or <literal>noauto</literal> (and perhaps
+        <literal>user</literal>) for other filesystems.
+      </para>
 
-      <para>If the fileserver is not running a recent version of linux, you may need to
-      specifiy other options.</para>
-
-      <para>If you are using systemd, you may need to enable autofs v4 in your kernel,
-      and add the option <literal>comment=systemd.automount</literal>. Some machines
-      need this, because systemd tries to mount the external fs&apos;s before the network
-      is up, others do not need it. An alternative is for <systemitem
-      class="username">root</systemitem> to run <command>mount -a</command>.</para>
+      <para>
+        If the fileserver is not running a recent version of Linux, you may need to
+        specifiy other options.
+      </para>
 
       <indexterm zone="nfs-utils nfs-utils-client-config">
         <primary sortas="e-etc-fstab">/etc/fstab</primary>
       </indexterm>
 
-<!-- /etc/netconfig is installed by libtirpc
-      <para>In some circumstances an <filename>/etc/netconfig</filename> file
-      is required by an nfs client. It does no harm to create one even if it
-      is not in fact needed. As the <systemitem class="username">root</systemitem>
-      user:</para>
-
-<screen role="root"><userinput>cat &gt; /etc/netconfig &lt;&lt; "EOF"
-udp6 tpi_clts v inet6 udp - -
-tcp6 tpi_cots_ord v inet6 tcp - -
-udp tpi_clts v inet udp - -
-tcp tpi_cots_ord v inet tcp - -
-rawip tpi_raw - inet - - -
-local tpi_cots_ord - loopback - - -
-EOF</userinput></screen>
-
-      <indexterm zone="nfs-utils nfs-utils-client-config">
-        <primary sortas="e-etc-netconfig">/etc/netconfig</primary>
-      </indexterm>
--->
-
       <sect4  id="nfs-utils-client-init">
         <title>Systemd Units</title>
 
-        <note><para>The following systemd unis are not required if the
-        nfs-server units were previously installed.</para></note>
+        <note>
+          <para>
+            The following systemd unis are not required if the
+            nfs-server units were previously installed.
+          </para>
+        </note>
 
         <para>
           To start the NFS client services at boot,
@@ -307,12 +397,19 @@ EOF</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>exportfs, mountstats, mount.nfs, mount.nfs4 (link to mount.nfs),
-        nfsiostat, nfsstat, osd_login, rpc.mountd, rpc.nfsd, rpc.statd, rpcdebug,
-        showmount, sm-notify, start-statd, umount.nfs (link to mount.nfs),
-        and umount.nfs4  (link to mount.nfs)</seg>
-        <seg>None</seg>
-        <seg>/var/lib/nfs</seg>
+        <seg>
+          blkmapd, exportfs, mount.nfs, mount.nfs4 (link to mount.nfs),
+          mountstats, nfsdcltrack, nfsiostat, nfsstat, osd_login,
+          rpcdebug, rpc.idmapd, rpc.mountd, rpc.nfsd, rpc.statd, showmount,
+          sm-notify, start-statd, umount.nfs (link to mount.nfs) and
+          umount.nfs4 (link to mount.nfs)
+        </seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          /var/lib/nfs
+        </seg>
       </seglistitem>
     </segmentedlist>
 
@@ -321,22 +418,28 @@ EOF</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="exportfs">
-        <term><command>exportfs</command></term>
+      <varlistentry id="blkmapd">
+        <term><command>blkmapd</command></term>
         <listitem>
-          <para>maintains a list of NFS exported file systems.</para>
-          <indexterm zone="nfs-utils exportfs">
-            <primary sortas="b-exportfs">exportfs</primary>
+          <para>
+            is used to perform device discovery and mapping
+            for the parallel NFS (pNFS) block layout client.
+          </para>
+          <indexterm zone="nfs-utils blkmapd">
+            <primary sortas="b-blkmapd">blkmapd</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="mountstats">
-        <term><command>mountstats</command></term>
+      <varlistentry id="exportfs">
+        <term><command>exportfs</command></term>
         <listitem>
-          <para>displays NFS client per-mount statistics.</para>
-          <indexterm zone="nfs-utils mountstats">
-            <primary sortas="b-mountstats">mountstats</primary>
+          <para>
+            is used to maintain a list of NFS exported file
+            systems.
+          </para>
+          <indexterm zone="nfs-utils exportfs">
+            <primary sortas="b-exportfs">exportfs</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -344,7 +447,9 @@ EOF</userinput></screen>
       <varlistentry id="mountnfs">
         <term><command>mount.nfs</command></term>
         <listitem>
-          <para>Used to mount a network share using NFS</para>
+          <para>
+            is used to mount a network share using NFS.
+          </para>
           <indexterm zone="nfs-utils mountnfs">
             <primary sortas="b-mountnfs">mount.nfs</primary>
           </indexterm>
@@ -354,9 +459,35 @@ EOF</userinput></screen>
       <varlistentry id="mountnfs4">
         <term><command>mount.nfs4</command></term>
         <listitem>
-          <para>Used to mount a network share using NFSv4</para>
+          <para>
+            is used to mount a network share using NFSv4.
+          </para>
           <indexterm zone="nfs-utils mountnfs4">
             <primary sortas="b-mountnfs4">mount.nfs4</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="mountstats">
+        <term><command>mountstats</command></term>
+        <listitem>
+          <para>
+            is used to display NFS client per-mount statistics.
+          </para>
+          <indexterm zone="nfs-utils mountstats">
+            <primary sortas="b-mountstats">mountstats</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="nfsdcltrack">
+        <term><command>nfsdcltrack</command></term>
+        <listitem>
+          <para>
+            is the NFSv4 client tracking callout program.
+          </para>
+          <indexterm zone="nfs-utils nfsdcltrack">
+            <primary sortas="b-nfsdcltrack">nfsdcltrack</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -364,7 +495,10 @@ EOF</userinput></screen>
       <varlistentry id="nfsiostat-nfs-utils">
         <term><command>nfsiostat</command></term>
         <listitem>
-          <para>Report input/output statistics for network filesystems.</para>
+          <para>
+            is used to report input/output statistics for
+            network filesystems.
+          </para>
           <indexterm zone="nfs-utils nfsiostat-nfs-utils">
             <primary sortas="b-nfsiostat-nfs-utils">nfsiostat</primary>
           </indexterm>
@@ -374,9 +508,37 @@ EOF</userinput></screen>
       <varlistentry id="nfsstat">
         <term><command>nfsstat</command></term>
         <listitem>
-          <para>displays statistics kept about NFS client and server activity.</para>
+          <para>
+            is used to display statistics kept about NFS
+            client and server activity.
+          </para>
           <indexterm zone="nfs-utils nfsstat">
             <primary sortas="b-nfsstat">nfsstat</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="rpcdebug">
+        <term><command>rpcdebug</command></term>
+        <listitem>
+          <para>
+            is used to set or clear the kernel's NFS client and
+            server debug flags.
+          </para>
+          <indexterm zone="nfs-utils rpcdebug">
+            <primary sortas="b-rpcdebug">rpcdebug</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="rpcidmapd">
+        <term><command>rpc.idmapd</command></term>
+        <listitem>
+          <para>
+            implements the NFSv4 ID &lt;-&gt; name mapping daemon.
+          </para>
+          <indexterm zone="nfs-utils rpcidmapd">
+            <primary sortas="b-rpcidmapd">rpc.idmapd</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -384,7 +546,9 @@ EOF</userinput></screen>
       <varlistentry id="rpcmountd">
         <term><command>rpc.mountd</command></term>
         <listitem>
-          <para>implements the NFS mount protocol on an NFS server.</para>
+          <para>
+            implements the NFS mount protocol on an NFS server.
+          </para>
           <indexterm zone="nfs-utils rpcmountd">
             <primary sortas="b-rpcmountd">rpc.mountd</primary>
           </indexterm>
@@ -394,8 +558,10 @@ EOF</userinput></screen>
       <varlistentry id="rpcnfsd">
         <term><command>rpc.nfsd</command></term>
         <listitem>
-          <para>implements the user level part of the NFS
-          service on the server.</para>
+          <para>
+            implements the user level part of the NFS
+            service on the server.
+          </para>
           <indexterm zone="nfs-utils rpcnfsd">
             <primary sortas="b-rpcnfsd">rpc.nfsd</primary>
           </indexterm>
@@ -405,21 +571,13 @@ EOF</userinput></screen>
       <varlistentry id="rpcstatd">
         <term><command>rpc.statd</command></term>
         <listitem>
-          <para>is used by the NFS file locking service. Run on both sides,
-          client as well as server, when you want file locking enabled.</para>
+          <para>
+            is used by the NFS file locking service. Run on both
+            sides, client as well as server, when you want file
+            locking enabled.
+          </para>
           <indexterm zone="nfs-utils rpcstatd">
             <primary sortas="b-rpcstatd">rpc.statd</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="rpcdebug">
-        <term><command>rpcdebug</command></term>
-        <listitem>
-          <para>sets or clears the kernel's NFS client and server debug
-          flags.</para>
-          <indexterm zone="nfs-utils rpcdebug">
-            <primary sortas="b-rpcdebug">rpcdebug</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -427,7 +585,9 @@ EOF</userinput></screen>
       <varlistentry id="showmount">
         <term><command>showmount</command></term>
         <listitem>
-          <para>displays mount information for an NFS server.</para>
+          <para>
+            is used to display mount information for an NFS server.
+          </para>
           <indexterm zone="nfs-utils showmount">
             <primary sortas="b-showmount">showmount</primary>
           </indexterm>
@@ -437,7 +597,9 @@ EOF</userinput></screen>
       <varlistentry id="sm-notify">
         <term><command>sm-notify</command></term>
         <listitem>
-          <para>is used to send Network Status Monitor reboot messages.</para>
+          <para>
+            is used to send Network Status Monitor reboot messages.
+          </para>
           <indexterm zone="nfs-utils sm-notify">
             <primary sortas="b-sm-notify">sm-notify</primary>
           </indexterm>
@@ -447,9 +609,12 @@ EOF</userinput></screen>
       <varlistentry id="start-statd">
         <term><command>start-statd</command></term>
         <listitem>
-          <para>is a script called by nfsmount when mounting a filesystem with
-          locking enabled, if statd does not appear to be running. It can be
-          customised with whatever flags are appropriate for the site.</para>
+          <para>
+            is a script called by nfsmount when mounting a filesystem
+            with locking enabled, if statd does not appear to be running.
+            It can be customised with whatever flags are appropriate for
+            the site.
+          </para>
           <indexterm zone="nfs-utils start-statd">
             <primary sortas="b-start-statd">start-statd</primary>
           </indexterm>
@@ -459,7 +624,9 @@ EOF</userinput></screen>
       <varlistentry id="umountnfs">
         <term><command>umount.nfs</command></term>
         <listitem>
-          <para>Used to unmount a network share using NFS</para>
+          <para>
+            is used to unmount a network share using NFS.
+          </para>
           <indexterm zone="nfs-utils umountnfs">
             <primary sortas="b-umountnfs">umount.nfs</primary>
           </indexterm>
@@ -469,7 +636,9 @@ EOF</userinput></screen>
       <varlistentry id="umountnfs4">
         <term><command>umount.nfs4</command></term>
         <listitem>
-          <para>Used to unmount a network share using NFSv4</para>
+          <para>
+            is used to unmount a network share using NFSv4.
+          </para>
           <indexterm zone="nfs-utils umountnfs4">
             <primary sortas="b-umountnfs4">umount.nfs4</primary>
           </indexterm>

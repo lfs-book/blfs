@@ -7,10 +7,10 @@
   <!ENTITY gparted-download-http
            "&sourceforge-repo;/gparted/gparted-&gparted-version;.tar.bz2">
   <!ENTITY gparted-download-ftp  " ">
-  <!ENTITY gparted-md5sum        "d9df57f9d4b4dbd148644774f8bbccfb">
-  <!ENTITY gparted-size          "2.0 MB">
-  <!ENTITY gparted-buildsize     "78 MB (additional 4 MB, building the optional documentation)">
-  <!ENTITY gparted-time          "0.9 SBU (additional 0.1 SBU, building the optional documentation)">
+  <!ENTITY gparted-md5sum        "67c4bdf680461e1107b718aff6095ea6">
+  <!ENTITY gparted-size          "2.1 MB">
+  <!ENTITY gparted-buildsize     "94 MB">
+  <!ENTITY gparted-time          "0.9 SBU">
 ]>
 
 <sect1 id="gparted" xreflabel="Gparted-&gparted-version;">
@@ -35,7 +35,7 @@
       tools that can create, reorganise or delete disk partitions.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -171,8 +171,8 @@ make</userinput></screen>
 <screen role="root"><userinput>cp -v  /usr/share/applications/gparted.desktop \
        /usr/share/applications/gparted.desktop.back &amp;&amp;
 
-sed -i 's/Exec=/Exec=sudo -A /'
-       /usr/share/applications/gparted.desktop      &amp;&amp;</userinput></screen>
+sed -i 's/Exec=/Exec=sudo -A /' \
+       /usr/share/applications/gparted.desktop</userinput></screen>
 
     </sect3>
 
@@ -181,11 +181,10 @@ sed -i 's/Exec=/Exec=sudo -A /'
 
         <para>
           To optionally use <command>pkexec</command>, you need
-          <xref linkend="polkit-gnome"/> or <xref linkend="lxpolkit"/> or
-          any Polkit authentication agent provided by your desktop
-          environment and  <xref linkend="systemd"/> (for Logind). Run the
-          following commands as the <systemitem
-          class="username">root</systemitem> user:
+          <xref linkend="polkit-gnome"/> or any Polkit authentication agent
+          provided by your desktop environment and
+          <xref linkend="systemd"/>. Run the following commands
+          as the <systemitem class="username">root</systemitem> user:
         </para>
 
 <screen role="root"><userinput>cp -v  /usr/share/applications/gparted.desktop \
@@ -199,6 +198,7 @@ cat &gt; /usr/sbin/gparted_polkit &lt;&lt; "EOF" &amp;&amp;
 
 pkexec /usr/sbin/gparted $@</literal>
 EOF
+
 chmod -v 755 /usr/sbin/gparted_polkit
 
 cat &gt; /usr/share/polkit-1/actions/org.gnome.gparted.policy &lt;&lt; "EOF"
@@ -222,6 +222,7 @@ cat &gt; /usr/share/polkit-1/actions/org.gnome.gparted.policy &lt;&lt; "EOF"
 
 &lt;/policyconfig&gt;</literal>
 EOF
+
 chmod -v 644 /usr/share/polkit-1/actions/org.gnome.gparted.policy</userinput></screen>
 
     </sect3>

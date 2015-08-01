@@ -5,12 +5,11 @@
   %general-entities;
 
   <!ENTITY bind-download-http " ">
-  <!ENTITY bind-download-ftp
-  "ftp://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.gz">
-  <!ENTITY bind-md5sum        "bdb9af9db9d389f8b8b3db6e0bc1bfee">
-  <!ENTITY bind-size          "8.0 MB">
-  <!ENTITY bind-buildsize     "100.6 MB (additional 54.6 MB to run the test suite)">
-  <!ENTITY bind-time          "1.2 SBU (additional 4.6 SBU to run the complete test suite)">
+  <!ENTITY bind-download-ftp  "ftp://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.gz">
+  <!ENTITY bind-md5sum        "7550a262cbd0753e49f77fb4ef721522">
+  <!ENTITY bind-size          "8.1 MB">
+  <!ENTITY bind-buildsize     "137 MB (additional 47 MB to run the test suite)">
+  <!ENTITY bind-time          "0.9 SBU (additional 20 minutes, processor independent, to run the complete test suite)">
 ]>
 
 <sect1 id="bind" xreflabel="BIND-&bind-version;">
@@ -34,7 +33,7 @@
     and client utilities. If you are only interested in the utilities, refer
     to the <xref linkend="bind-utils"/>.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,16 +71,17 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="libxml2"/>,
-      <xref linkend="mitkrb"/>, and
-      <xref linkend="openssl"/>
+      <xref linkend="mitkrb"/>,
+      <xref linkend="openssl"/>, and
+      <ulink url="https://github.com/cjheath/geoip">GeoIP</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional database backends</bridgehead>
     <para role="optional">
-      <xref linkend="postgresql"/>,
-      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
       <xref linkend="db"/>,
-      <xref linkend="openldap"/>, and
+      <xref linkend="openldap"/>,
+      <xref linkend="mariadb"/>,
+      <xref linkend="postgresql"/>, and
       <xref linkend="unixodbc"/>
     </para>
 
@@ -95,8 +95,8 @@
     <bridgehead renderas="sect4">Optional (to rebuild the documentation)</bridgehead>
     <para role="optional">
       <xref linkend="doxygen"/>,
-      <xref linkend="texlive"/>, and
-      <xref linkend="libxslt"/>
+      <xref linkend="libxslt"/>, and
+      <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -115,12 +115,7 @@
     <para>Install <application>BIND</application> by running the
     following commands:</para>
 
-<screen><userinput>sed -e 's/resolver //'   \
-    -e 's/rpz //'        \
-    -e 's/statistics //' \
-    -e 's/xfer //'       \
-    -i bin/tests/system/conf.sh.in &amp;&amp;
-./configure --prefix=/usr           \
+<screen><userinput>./configure --prefix=/usr           \
             --sysconfdir=/etc       \
             --localstatedir=/var    \
             --mandir=/usr/share/man \
@@ -134,24 +129,32 @@ make</userinput></screen>
     First, as the <systemitem class="username">root</systemitem> user, set up
     some test interfaces:</para>
 
+    <note><para>If IPv6 is not enabled in the kernel, there will be several
+    error messages: "RTNETLINK answers: Operation not permitted".  These
+    messages do not afffect the tests.</para></note>
+
 <screen role="root"><userinput>bin/tests/system/ifconfig.sh up</userinput></screen>
 
-    <para>Now run the test suite as an unprivileged user:</para>
+<!--   <para>As an unprivileged user, remove some tests that fail:</para>
 
-<screen><userinput>make check 2&gt;&amp;1 | tee check.log</userinput></screen>
+<screen><userinput>
+sed -e 's/ecdsa //'   \
+    -e 's/masterformat //' \
+    -e 's/reclimit //' \
+    -e 's/tsiggss //' \
+    -i bin/tests/system/conf.sh</userinput></screen>
+
+    <para>Now run the test suite as an unprivileged user:</para>-->
+    <para>The test suite may indicate some failures depending on installed
+    optional dependencies and what configuration options are used.
+    To run the tests, as an unprivileged user, issue:</para>
+
+<screen><userinput>make -k check</userinput></screen>
 
     <para>Again as <systemitem class="username">root</systemitem>, clean up the
     test interfaces:</para>
 
 <screen role="root"><userinput>bin/tests/system/ifconfig.sh down</userinput></screen>
-
-    <para>Issue the following command to check tests that ran successfully:</para>
-
-<screen><userinput>grep "R:PASS" check.log | wc -l</userinput></screen>
-
-    <para>and the following command check tests that failed:</para>
-
-<screen><userinput>grep -A1 "R:FAIL" check.log</userinput></screen>
 
     <para>Finally, install the package as the <systemitem
     class="username">root</systemitem> user:</para>
@@ -169,9 +172,9 @@ install -v -m644 \
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para><command>sed ... bin/tests/system/conf.sh.in</command>:
-    This command removes tests that fail (some for unknown reasons).</para>
+<!--
+    <para><command>sed ... bin/tests/system/conf.sh</command>: This command
+    removes tests that fail (some for unknown reasons).</para>-->
 
     <para><parameter>--sysconfdir=/etc</parameter>: This parameter forces
     <application>BIND</application> to look for configuration
@@ -480,11 +483,8 @@ dig www.&lfs-domainname;</userinput></screen>
         <seg>libbind9.so, libdns.so, libirs.so, libisc.so, libisccc.so, 
         libisccfg.so, and liblwres.so</seg>
 
-        <seg>/srv/named, /usr/include/bind9, /usr/include/dns,
-        /usr/include/dst, /usr/include/irs, /usr/include/isc,
-        /usr/include/isccc, /usr/include/isccfg, /usr/include/lwres,
-        /usr/include/pk11, /usr/include/pkcs11, and
-        /usr/share/doc/bind-&bind-version;</seg>
+        <seg>/usr/include/{bind9,dns,dst,irs,isc,isccc,isccfg,lwres,pk11,pkcs11},
+        /usr/share/doc/bind-&bind-version; and /srv/named</seg>
       </seglistitem>
     </segmentedlist>
 

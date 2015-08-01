@@ -34,7 +34,7 @@
     Agent. This is useful for reading, writing, replying to, saving, and
     deleting your email.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -55,6 +55,15 @@
       </listitem>
       <listitem>
         <para>Estimated build time: &mutt-time;</para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing='compact'>
+      <listitem>
+        <para>Required patch: <ulink
+        url="&patch-root;/mutt-&mutt-version;-upstream_fixes-1.patch"/>
+        </para>
       </listitem>
     </itemizedlist>
 
@@ -85,15 +94,15 @@
     <para role="optional">
       <xref linkend="libxslt"/> and either
       <xref linkend="lynx"/>,
-      <xref linkend="w3m"/> or
+      <xref linkend="w3m"/>, or
       <ulink url="http://elinks.or.cz/">ELinks</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional (To Generate PDF Manual)</bridgehead>
     <para role="optional">
       <xref linkend="docbook-dsssl"/>,
-      <xref linkend="openjade"/> and
-      <xref linkend="texlive"/>
+      <xref linkend="openjade"/>, and
+      <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -106,7 +115,7 @@
 
     <note>
       <para>This version of <application>Mutt</application> is a development
-      release.  The BLFS staff has determined that it provides a stable
+      release.  The BLFS editors have determined that it provides a stable
       program and fixes two issues in the current stable version of
       <application>Mutt</application>: a segmentation fault that occurs under
       certain conditions and a compilation problem when building with recent
@@ -130,12 +139,17 @@
     <para>Install <application>Mutt</application> by running the following
     commands:</para>
 
-<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc \
+<screen><userinput>patch -Np1 -i ../mutt-&mutt-version;-upstream_fixes-1.patch &amp;&amp;
+./configure --prefix=/usr     \
+            --sysconfdir=/etc \
             --with-docdir=/usr/share/doc/mutt-&mutt-version; \
-            --enable-pop --enable-imap \
-            --enable-hcache --without-qdbm \
-            --without-tokyocabinet \
-            --with-gdbm --without-bdb &amp;&amp;
+            --enable-pop      \
+            --enable-imap     \
+            --enable-hcache   \
+            --without-qdbm    \
+            --with-gdbm       \
+            --without-bdb     \
+            --without-tokyocabinet &amp;&amp;
 make</userinput></screen>
 
     <!-- for the moment, the html is regenerated automatically if the deps are

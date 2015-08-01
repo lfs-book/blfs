@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY qt4-download-http
-           "http://download.qt-project.org/official_releases/qt/4.8/&qt4-version;/qt-everywhere-opensource-src-&qt4-version;.tar.gz">
+           "http://download.qt.io/official_releases/qt/4.8/&qt4-version;/qt-everywhere-opensource-src-&qt4-version;.tar.gz">
   <!ENTITY qt4-download-ftp  " ">
-  <!ENTITY qt4-md5sum        "2edbe4d6c2eff33ef91732602f3518eb">
-  <!ENTITY qt4-size          "231 MB">
-  <!ENTITY qt4-buildsize     "2.0 GB">
-  <!ENTITY qt4-time          "37 SBU">
+  <!ENTITY qt4-md5sum        "d990ee66bf7ab0c785589776f35ba6ad">
+  <!ENTITY qt4-size          "230 MB">
+  <!ENTITY qt4-buildsize     "2.3 GB">
+  <!ENTITY qt4-time          "39 SBU">
 ]>
 
 <sect1 id="qt4" xreflabel="Qt-&qt4-version;">
@@ -40,7 +40,7 @@
       of <application>Qt4</application> is <application>KDE</application>.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,6 +76,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch:
+          <ulink url="&patch-root;/qt-&qt4-version;-fedora_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Qt4 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -104,7 +114,7 @@
       <xref linkend="cups"/>,
       <xref linkend="gtk2"/> (GTK+ 2 theme support),
       <xref linkend="gst-plugins-base"/> (For QtWebKit HTML5 Video),
-      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="mariadb"/>,
       <xref linkend="postgresql"/>,
       <xref linkend="pulseaudio"/>, and
       <xref linkend="unixodbc"/>
@@ -182,14 +192,14 @@
       </para>
 
 <screen role="root"><userinput>mv /opt/qt{4,-&qt4-version;}
-ln -sfv qt-&qt4-version; /opt/qt4</userinput></screen>
+ln -sfvn qt-&qt4-version; /opt/qt4</userinput></screen>
 
       <para>
         Later on, you may want to install other versions of
         <application>Qt4</application>. To do that, just remove the symlink
         and use <filename class="directory">/opt/qt4</filename> as the
         prefix again. Which version of <application>Qt4</application> you
-        use depends only on where the symlink points to.
+        use depends only on where the symlink points.
       </para>
     </tip>
 
@@ -262,22 +272,21 @@ ln -sfv qt-&qt4-version; /opt/qt4</userinput></screen>
     </note>
 
     <para>
-      Fix DoS vulnerability in the GIF image handler:
+      If you are in need of any features added by the optional patch above
+      (see its header for description of the features it adds), apply it
+      by running the following command:
     </para>
 
-<screen><userinput>sed -i -e '631a if (image->isNull()) { state = Error; return -1; }' \
-    src/gui/image/qgifhandler.cpp</userinput></screen>
+<screen><userinput>patch -Np1 -i ../qt-&qt4-version;-fedora_fixes-1.patch</userinput></screen>
 
     <para>
       Install <application>Qt4</application> by running the
       following commands:
     </para>
 
-<screen><userinput>sed -i -e "/#if/d" -e "/#error/d" -e "/#endif/d" \
-     config.tests/unix/libmng/libmng.cpp &amp;&amp;
-
-sed -i '/CONFIG -/ a\isEmpty(OUTPUT_DIR): OUTPUT_DIR = ../..' \
-     src/3rdparty/webkit/Source/WebKit2/DerivedSources.pro &amp;&amp;
+<screen><userinput>sed -e '/BOOST_TT/a pp.macros["BOOST_NEXT_PRIOR_HPP_INCLUDED"];' \
+    -e '/BOOST_TT/a pp.macros["BOOST_LEXICAL_CAST_INCLUDED"];'   \
+    -i src/tools/moc/main.cpp &amp;&amp;
 
 ./configure -prefix         $QT4PREFIX                        \
             -sysconfdir     /etc/xdg                          \
@@ -340,11 +349,13 @@ rm -rf $QT4PREFIX/tests</userinput></screen>
 
 <screen role="root"><userinput>for file in 3Support CLucene Core DBus Declarative DesignerComponents \
             Designer Gui Help Multimedia Network OpenGL Script \
-            ScriptTools Sql Svg Test UiTools WebKit XmlPatterns Xml phonon; do
-
-     [ -e $QT4PREFIX/lib/libQt${file}.prl ] &amp;&amp;
-     sed -r '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/\1/' \
-         -i $QT4PREFIX/lib/libQt${file}.prl
+            ScriptTools Sql Svg Test UiTools WebKit XmlPatterns Xml phonon
+do
+  if [ -e $QT4PREFIX/lib/libQt${file}.prl ]
+  then
+    sed -r '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/\1/' \
+        -i $QT4PREFIX/lib/libQt${file}.prl
+  fi
 done
 unset file</userinput></screen>
 
@@ -458,9 +469,10 @@ unset file</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i ...</command>: First command fixes detection of
-      <application>libmng</application> 2.0 and second one prevents configure
-      script from writing to the root directory if building as privileged user.
+      <command>sed -e ...</command>: This sed fixes the
+      <command>moc</command> program to prevent it from
+      failing to parse files which include some of the
+      <application>Boost</application> headers.
     </para>
 
     <para>
@@ -524,11 +536,26 @@ unset file</userinput></screen>
     <sect3 id="qt4-config">
       <title>Configuration Information</title>
 
+      <para>
+        Ensure that environment variables needed by certain packages
+        are set by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/profile.d/qt4.sh &lt;&lt; EOF
+<literal># Begin /etc/profile.d/qt4.sh
+
+export QT4DIR=$QT4PREFIX
+export QT4BINDIR=$QT4BINDIR
+
+# End /etc/profile.d/qt4.sh</literal>
+EOF</userinput></screen>
+
       <note>
         <para>
           If you have installed <application>Qt4</application>
           in <filename class="directory">/usr</filename> you
-          can skip this section.
+          can skip the rest of this section.
         </para>
       </note>
 
@@ -569,6 +596,9 @@ ldconfig</userinput></screen>
 <screen role="root"><userinput>cat &gt; /etc/profile.d/qt4.sh &lt;&lt; EOF
 <literal># Begin /etc/profile.d/qt4.sh
 
+export QT4DIR=$QT4PREFIX
+export QT4BINDIR=$QT4BINDIR
+
 pathappend $QT4PREFIX/lib/pkgconfig PKG_CONFIG_PATH
 
 # End /etc/profile.d/qt4.sh</literal>
@@ -583,6 +613,9 @@ EOF</userinput></screen>
 
 <screen role="root"><userinput>cat &gt; /etc/profile.d/qt4.sh &lt;&lt; EOF
 <literal># Begin /etc/profile.d/qt4.sh
+
+export QT4DIR=$QT4PREFIX
+export QT4BINDIR=$QT4BINDIR
 
 pathappend $QT4BINDIR               PATH
 pathappend $QT4PREFIX/lib/pkgconfig PKG_CONFIG_PATH

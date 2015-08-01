@@ -4,14 +4,14 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY tl-installer-download-http	"http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz">
+  <!ENTITY tl-installer-download-http   "http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz">
 
   <!ENTITY tl-installer-download-ftp    " ">
-  <!ENTITY tl-installer-md5sum          "f5b1e909d5c2380cefd2cda83d288c00">
-  <!ENTITY tl-installer-date             "20140628"> <!-- in the directory name -->
+  <!ENTITY tl-installer-md5sum          "84bc572abd61dfcc1b377e71c1b9aca8">
+  <!ENTITY tl-installer-date             "20150613"> <!-- in the directory name -->
   <!ENTITY tl-installer-size            "3.2 MB">
 
-  <!ENTITY tl-installer-buildsize        "3.8 GB">
+  <!ENTITY tl-installer-buildsize        "4.2 GB">
   <!ENTITY tl-installer-time            "varies, depending on network speed and traffic">
 ]>
 
@@ -38,16 +38,15 @@
     of macros, fonts and documentation; and support for typesetting in many
     different scripts from around the world.</para>
 
-    <para>It is necessary to use a binary installer for the first install.
-    This will provide the programs, the scripts, and a lot of supporting files
-    and documentation.  After that, you can rebuild most of the programs from source
-    by following the instructions for <xref linkend="texlive"/>.  The installer
-    is updated frequently, so its md5sum will change if it is newer than what
-    is shown below.  Newer versions of the installer are expected to work with
-    these instructions, for so long as they install to a
+    <para>This page is for people who wish to use the binary installer to
+    provide the programs, the scripts, and a lot of supporting files and
+    documentation.  The installer is updated frequently, so its md5sum will
+    change if it is newer than what is shown below.  Newer versions of the
+    installer are expected to work with these instructions, for so long as they
+    install to a
     <filename class="directory">&texlive-year;/</filename> directory.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -58,7 +57,7 @@
         <para>Download (FTP): <ulink url="&tl-installer-download-ftp;"/></para>
       </listitem>
       <listitem>
-        <para>Download MD5 sum: &tl-installer-md5sum; (at &tl-installer-date;)</para>
+        <para>Download MD5 sum: &tl-installer-md5sum; (for &tl-installer-date;)</para>
       </listitem>
       <listitem>
         <para>Download size: &tl-installer-size;</para>
@@ -77,40 +76,45 @@
       <filename class="libraryfile">libc.a</filename>, but a few of the programs
       and several scripts will fail if the following packages are not present.
     </para>
-    <para>
+    <para role="recommended">
       <xref linkend="gs"/> is dynamically loaded by dvisvgm, which is used by
-     <application>asy</application>.
+     <application>asy</application>, and also by <application>asy</application>
+     itself.
     </para>
-    <para>
+    <para role="recommended">
       <xref linkend="xorg7-lib"/> and
       <xref linkend="libxcb"/> are needed for inimf, mf, pdfclose, pdfopen and
-      xdvixaw. But if you are using asy, or using <application>TeX</application>
+      xdvi-xaw. But if you are using asy, or using <application>TeX</application>
       to create a PDF file, you will need an <xref linkend="x-window-system"/>
       (for PDF files, this is to support a PDF viewer of your choice, for example
        <xref linkend="epdfview"/>).
     </para>
-    <para>
+    <para role="recommended">
       the optional non-wide-character ncurses library (for "some binary-only
       application") from the bottom of the <application>Ncurses</application>
-      page in LFS is needed for xindy.run which is used by
-      <application>xindy</application>
+      page in LFS is needed by <application>asy</application> (only for i386)
+      and also for xindy.run which is used by <application>xindy</application>
     </para>
     <para>
-      If you are building on 32-bit x86, the binary version of asy needs <ulink
+      The binary versions of <application>asy</application> need <xref
+      linkend="glu"/> and <xref linkend="freeglut"/>.
+    </para>
+    <para role="recommended">
+      If you are building for i386, the binary version of asy needs <ulink
       url="http://www.fftw.org/">FFTW</ulink>, <xref linkend="glu"/> and <ulink
       url="ftp://ftp.gnu.org/gnu/readline/readline-5.2.tar.gz">libreadline-5.2</ulink>
       : this only requires <filename>libreadline.so.5.2</filename> which can be
-      manually copied from the <filename class="directory">shm/</filename>
+      manually copied from the <filename class="directory">lib/</filename>
       directory after running <command>configure</command> and <command>make</command>
       and then symlinked as <filename>libreadline.so.5</filename>.
     </para>
     <para>
-      <xref linkend="python2"/> is used by many scripts.
+      As always with contributed binary software, it is possible that the required
+      dependencies may change when the installer is updated.
     </para>
-    <para>
-      <xref linkend="ruby"/> is used by some scripts, mostly within mtx_context
-      which is part of <application>conTeXt</application>.
-    </para>
+    <!-- text for runtime deps, shared with texlive -->
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+     href="../../xincludes/texruntime.xml"/>
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/tl-installer"/></para>
@@ -125,58 +129,42 @@
     maintainers recommend placing all files in a single directory structure.
     BLFS recommends <filename class='directory'>/opt/texlive</filename>.</para>
 
-    <para>First, unpack the installer and change into the installer's
+    <para>As with any other package, unpack the installer and change into its
     directory, <filename class='directory'>install-tl-&lt;CCYYMMDD&gt;</filename>.
     This directory name changes when the installer is updated, so replace
     &lt;CCYYMMDD&gt; by the correct directory name.</para>
 
-<screen><userinput>tar -xf install-tl-unx.tar.gz &amp;&amp;
-cd install-tl-&lt;CCYYMMDD&gt; </userinput></screen>
-
-    <note><para>The distribution binaries installed below use static linking
+    <note>
+    <para>
+    The distribution binaries installed below use static linking
     for general linux system libraries.  Additional libraries or interpreters
     as specified in the dependencies section do not need to be present during
     the install, but the programs that need them will not run until their
-    specific dependencies have been installed.</para></note>
+    specific dependencies have been installed.
+    </para>
+
+    <!-- please keep something like this in the future -->
+    <para>
+    With all contributed binary software, there may be a mismatch between the
+    builder's toolchain and your hardware.  In most of TeX this will probably
+    not matter, but in uncommon corner cases you might hit problems.
+    e.g. if your x86_64 processor does not support 3dnowext or 3dnow, the
+    2014-06-28 binary failed in conTeXt when running LuaTeX, although lualatex
+    worked, as did the i686 binaries on the same machine. In such cases, the
+    easiest solution is to install texlive from source.
+    </para>
+    </note>
 
     <para>Now, as the <systemitem class="username">root</systemitem>
     user:</para>
 
-<screen><userinput role="root">TEXLIVE_INSTALL_PREFIX=/opt/texlive ./install-tl</userinput></screen>
+<screen role="root"><userinput>TEXLIVE_INSTALL_PREFIX=/opt/texlive ./install-tl</userinput></screen>
 
     <para>This command is interactive and allows selection or modification of
     platform, packages, directories, and other options.  The full installation
-    scheme will require about 3.8 gigabytes of disk space.  The time to complete
+    scheme will require about 4.2 gigabytes of disk space.  The time to complete
     the download will depend on your internet connection speed and the
     number of packages selected.</para>
-
-    <para>After the package download is complete, the next step is to make sure
-    that the system can properly find the files.  If you set up your login
-    scripts as recommended in <xref linkend='postlfs-config-profile'/>, update
-    the needed paths by appending to the
-    <filename>extrapaths.sh</filename> script. The programs are always
-    installed in an &lt;ARCH&gt;-linux subdirectory.
-    <emphasis>Always</emphasis> replace &lt;ARCH&gt; by x86_64, for 64bit,
-    or by i386, for 32bit, respectively, depending on the architecture that
-    you are using in your actual installation location.</para>
-
-<screen><userinput role="root">cat &gt;&gt; /etc/profile.d/extrapaths.sh &lt;&lt; "EOF"
-pathappend /usr/share/man                        MANPATH
-pathappend /opt/texlive/&texlive-year;/texmf-dist/doc/man  MANPATH
-pathappend /usr/share/info                       INFOPATH
-pathappend /opt/texlive/&texlive-year;/texmf-dist/doc/info INFOPATH
-pathappend /opt/texlive/&texlive-year;/bin/&lt;ARCH&gt;-linux
-EOF</userinput></screen>
-
-    <note><para>The standard MANPATH and INFOPATH path are specified above to
-    ensure they are included.  If they are already set in the boot script
-    procedure, the pathappend function will ensure duplicates are
-    removed, so including them here will do no harm.</para></note>
-
-    <para>The new paths can be immediately activated by running <command>source
-    /etc/profile</command>.</para>
-
-    <para>At this point the binary installation is complete.</para>
 
   </sect2>
 

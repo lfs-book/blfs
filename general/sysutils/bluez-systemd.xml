@@ -6,10 +6,10 @@
 
   <!ENTITY bluez-download-http "http://www.kernel.org/pub/linux/bluetooth/bluez-&bluez-version;.tar.xz">
   <!ENTITY bluez-download-ftp  "ftp://ftp.kernel.org/pub/linux/bluetooth/bluez-&bluez-version;.tar.xz">
-  <!ENTITY bluez-md5sum        "17d497a118ea66aa8c01ab1e6fac25cd">
-  <!ENTITY bluez-size          "1.4 MB">
-  <!ENTITY bluez-buildsize     "39.4 MB (additional 17 MB for the tests)">
-  <!ENTITY bluez-time          "0.6 SBU (additional 0.2 SBU for the tests)"> 
+  <!ENTITY bluez-md5sum        "cb1db487b65dd4d57a2dd6b8f063c393">
+  <!ENTITY bluez-size          "1.6 MB">
+  <!ENTITY bluez-buildsize     "74 MB (additional 10 MB for the tests)">
+  <!ENTITY bluez-time          "0.9 SBU (additional 0.3 SBU for the tests)">
 ]>
 
 <sect1 id="bluez" xreflabel="BlueZ-&bluez-version;">
@@ -34,7 +34,7 @@
       Bluetooth protocol stack for Linux.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -103,21 +103,18 @@
       kernel if necessary:
     </para>
 
-<screen><literal>[*] Networking support ---&gt;                   [CONFIG_NET]
-  &lt;*&gt; or &lt;M&gt; Bluetooth subsystem support ---&gt; [CONFIG_BT]
-    &lt;*&gt; or &lt;M&gt; RFCOMM protocol support        [CONFIG_BT_RFCOMM]
-    [*] RFCOMM TTY support                    [CONFIG_BT_RFCOMM_TTY]
-    &lt;*&gt; or &lt;M&gt; BNEP protocol support          [CONFIG_BT_BNEP]
-    [*] Multicast filter support              [CONFIG_BT_BNEP_MC_FILTER]
-    [*] Protocol filter support               [CONFIG_BT_BNEP_PROTO_FILTER]
-    &lt;*&gt; or &lt;M&gt; HIDP protocol support          [CONFIG_BT_HIDP]
+<screen><literal>[*] Networking support ---&gt;                [CONFIG_NET]
+  &lt;/M&gt; Bluetooth subsystem support ---&gt;    [CONFIG_BT]
+    &lt;*/M&gt; RFCOMM protocol support          [CONFIG_BT_RFCOMM]
+    [*]   RFCOMM TTY support               [CONFIG_BT_RFCOMM_TTY]
+    &lt;*/M&gt; BNEP protocol support            [CONFIG_BT_BNEP]
+    [*]   Multicast filter support         [CONFIG_BT_BNEP_MC_FILTER]
+    [*]   Protocol filter support          [CONFIG_BT_BNEP_PROTO_FILTER]
+    &lt;*/M&gt; HIDP protocol support            [CONFIG_BT_HIDP]
+        Bluetooth device drivers ---&gt;
+          (Select the appropriate drivers for your Bluetooth hardware)
 
-    Bluetooth device drivers ---&gt;
-  &lt;*&gt; or &lt;M&gt; RF switch subsystem support</literal></screen> 
-
-    <para>
-      Select the appropriate drivers for your Bluetooth hardware.
-    </para>
+  &lt;*/M&gt; RF switch subsystem support ---&gt;   [CONFIG_RFKILL]</literal></screen>
 
     <indexterm zone="bluez bluez-kernel">
       <primary sortas="d-bluez">bluez</primary>
@@ -133,10 +130,10 @@
     </para>
 
 <screen><userinput>patch -Np1 -i ../bluez-&bluez-version;-obexd_without_systemd-1.patch &amp;&amp;
-./configure --prefix=/usr         \
-            --sysconfdir=/etc     \
-            --localstatedir=/var  \
-            --enable-library &amp;&amp;
+./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
+            --localstatedir=/var \
+            --enable-library     &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -264,7 +261,7 @@ EOF</screen>
       <seglistitem>
         <seg>
           bccmd, bluemoon, bluetoothctl, bluetoothd, btmon, ciptool,
-          hciattach, hciconfig, hcidump, hcitool, hid2hci, l2ping,
+          hciattach, hciconfig, hcidump, hcitool, hex2hcd, hid2hci, l2ping,
           l2test, mpris-proxy, obexd, rctest, rfcomm, and sdptool
         </seg>
         <seg>
@@ -297,6 +294,30 @@ EOF</screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="bluemoon">
+        <term><command>bluemoon</command></term>
+        <listitem>
+          <para>
+            is a Bluemoon configuration utility.
+          </para>
+          <indexterm zone="bluez bluemoon">
+            <primary sortas="b-bluemoon">bluemoon</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="bluetoothctl">
+        <term><command>bluetoothctl</command></term>
+        <listitem>
+          <para>
+            is the interactive Bluetooth control program.
+          </para>
+          <indexterm zone="bluez bluetoothctl">
+            <primary sortas="b-bluetoothctl">bluetoothctl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="bluetoothd">
         <term><command>bluetoothd</command></term>
         <listitem>
@@ -305,6 +326,19 @@ EOF</screen>
           </para>
           <indexterm zone="bluez bluetoothd">
             <primary sortas="b-bluetoothd">bluetoothd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="btmon">
+        <term><command>btmon</command></term>
+        <listitem>
+          <para>
+            provides access to the Bluetooth subsystem monitor
+            infrastructure for reading HCI traces.
+          </para>
+          <indexterm zone="bluez btmon">
+            <primary sortas="b-btmon">btmon</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -347,6 +381,20 @@ EOF</screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="hcidump">
+        <term><command>hcidump</command></term>
+        <listitem>
+          <para>
+            reads raw HCI data coming from and going to a Bluetooth
+            device and prints to screen commands, events and data
+            in a human-readable form.
+          </para>
+          <indexterm zone="bluez hcidump">
+            <primary sortas="b-hcidump">hcidump</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="hcitool">
         <term><command>hcitool</command></term>
         <listitem>
@@ -356,6 +404,19 @@ EOF</screen>
           </para>
           <indexterm zone="bluez hcitool">
             <primary sortas="b-hcitool">hcitool</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="hex2hcd">
+        <term><command>hex2hcd</command></term>
+        <listitem>
+          <para>
+            is used to convert a file needed by Broadcom devices
+            to hcd (Broadcom bluetooth firmware) format.
+          </para>
+          <indexterm zone="bluez hex2hcd">
+            <primary sortas="b-hex2hcd">hex2hcd</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -382,6 +443,30 @@ EOF</screen>
           </para>
           <indexterm zone="bluez l2ping">
             <primary sortas="b-l2ping">l2ping</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="l2test">
+        <term><command>l2test</command></term>
+        <listitem>
+          <para>
+            is L2CAP testing program.
+          </para>
+          <indexterm zone="bluez l2test">
+            <primary sortas="b-l2test">l2test</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+     <varlistentry id="obexd">
+        <term><command>obexd</command></term>
+        <listitem>
+          <para>
+            is the OBEX daemon.
+          </para>
+          <indexterm zone="bluez obexd">
+            <primary sortas="b-obexd">obexd</primary>
           </indexterm>
         </listitem>
       </varlistentry>

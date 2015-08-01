@@ -6,9 +6,9 @@
 
   <!ENTITY fuse-download-http "&sourceforge-repo;/fuse/fuse-&fuse-version;.tar.gz">
   <!ENTITY fuse-download-ftp  " ">
-  <!ENTITY fuse-md5sum        "33cae22ca50311446400daf8a6255c6a">
+  <!ENTITY fuse-md5sum        "ecb712b5ffc6dffd54f4a405c9b372d8">
   <!ENTITY fuse-size          "564 KB">
-  <!ENTITY fuse-buildsize     "9.5 MB">
+  <!ENTITY fuse-buildsize     "9.9 MB">
   <!ENTITY fuse-time          "0.1 SBU">
 ]>
 
@@ -37,7 +37,7 @@
       filesystem implementations.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,6 +73,13 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Fuse Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="doxygen"/> (to build the API documentation)
+    </para>
+
     <para condition="html" role="usernotes">
       User Notes: <ulink url="&blfs-wiki;/fuse"/>
     </para>
@@ -87,7 +94,7 @@
     </para>
 
 <screen><literal>File systems  ---&gt;
-  [*] FUSE (Filesystem in Userspace) support</literal></screen>
+  &lt;*/M&gt; FUSE (Filesystem in Userspace) support [CONFIG_FUSE_FS]</literal></screen>
 
     <indexterm zone="fuse fuse-kernel">
       <primary sortas="d-fuse">fuse</primary>
@@ -137,9 +144,9 @@ mv -v   /usr/lib/libfuse.so.* /lib &amp;&amp;
 ln -sfv ../../lib/$(readlink /usr/lib/libfuse.so) /usr/lib/libfuse.so &amp;&amp;
 rm -rf  /tmp/init.d &amp;&amp;
 
-install -v -m755 -d /usr/share/doc/fuse-&fuse-version; &amp;&amp;
-install -v -m644    doc/{how-fuse-works,kernel.txt} \
-                    /usr/share/doc/fuse-&fuse-version;</userinput></screen>
+install -v -dm755 /usr/share/doc/fuse-&fuse-version; &amp;&amp;
+install -v -m644  doc/{how-fuse-works,kernel.txt} \
+                  /usr/share/doc/fuse-&fuse-version;</userinput></screen>
 
     <para>
       If you built the API documentation, install it as the
@@ -230,7 +237,7 @@ EOF</userinput></screen>
           libfuse.so and libulockmgr.so
         </seg>
         <seg>
-          /usr/include/fuse
+          /usr/include/fuse and /usr/share/doc/fuse-&fuse-version;
         </seg>
       </seglistitem>
     </segmentedlist>

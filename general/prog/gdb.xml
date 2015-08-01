@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gdb-download-http "http://ftp.gnu.org/gnu/gdb/gdb-&gdb-version;.tar.xz">
+  <!ENTITY gdb-download-http "https://ftp.gnu.org/gnu/gdb/gdb-&gdb-version;.tar.xz">
   <!ENTITY gdb-download-ftp  "ftp://ftp.gnu.org/gnu/gdb/gdb-&gdb-version;.tar.xz">
-  <!ENTITY gdb-md5sum        "bd958fe9019d7c7896f29f6724a764ed">
-  <!ENTITY gdb-size          "17 MB">
-  <!ENTITY gdb-buildsize     "326 MB (405 MB with checks)">
-  <!ENTITY gdb-time          "2.2 SBU (56 SBU with checks)">
+  <!ENTITY gdb-md5sum        "35374c77a70884eb430c97061053a36e">
+  <!ENTITY gdb-size          "18 MB">
+  <!ENTITY gdb-buildsize     "406 MB (additional 105 MB for checks)">
+  <!ENTITY gdb-time          "2.2 SBU (add up to 6.0 SBU for checks)">
 ]>
 
 <sect1 id="gdb" xreflabel="GDB-&gdb-version;">
@@ -38,7 +38,7 @@
       stripped.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,7 +79,8 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="dejagnu"/> (for tests),
-      <xref linkend="guile"/> and
+      <xref linkend="doxygen"/>,
+      <xref linkend="guile"/>, and
       <xref linkend="python2"/>
     </para>
 
@@ -100,13 +101,20 @@
 make</userinput></screen>
 
     <para>
+      Optionally, to build the API documentation using
+      <xref linkend="doxygen"/>, run:
+    </para>
+
+<screen><userinput>make -C gdb/doc doxy</userinput></screen>
+
+    <para>
       To test the results, issue: <command>make -k check</command>. There are
       many problems with the test suite. Depends on installed compilers, there
       are differences if run locally or remotely, a large number of timeouts
       (there is a variable that can be set to increase time for timeout, but
       changing it, apparently the total number of tests is not conserved),
       there are failures associated with system readline 6.x, between others.
-      Unexpected failures are of the order of 2.5%.
+      Unexpected failures are of the order of 0.5%.
     </para>
 
     <para>
@@ -114,6 +122,15 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make -C gdb install</userinput></screen>
+
+    <para>
+      If you have built the API documentation, it is now in gdb/doc/doxy.
+      You can install it (as the <systemitem class="username">root</systemitem>
+      user):
+    </para>
+
+<screen role="root"><userinput>install -d /usr/share/doc/gdb-&gdb-version; &amp;&amp;
+cp -Rv gdb/doc/doxy /usr/share/doc/gdb-&gdb-version;</userinput></screen>
 
   </sect2>
 

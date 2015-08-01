@@ -38,7 +38,7 @@
       <application>GNOME</application> libraries.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,7 +78,7 @@
     <itemizedlist spacing='compact'>
       <listitem>
         <para>Required patch: <ulink
-        url="&patch-root;/epdfview-&epdfview-version;-fixes-1.patch"/></para>
+        url="&patch-root;/epdfview-&epdfview-version;-fixes-2.patch"/></para>
       </listitem>
     </itemizedlist>
 
@@ -86,7 +86,15 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="poppler"/> and <xref linkend="gtk2"/>
+      <xref linkend="gtk2"/> and
+      <xref linkend="poppler"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended (mainly for
+    Desktop Environments)</bridgehead>
+    <para role="Recommended">
+      <xref linkend="desktop-file-utils"/> and
+      <xref linkend="hicolor-icon-theme"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -107,7 +115,7 @@
       commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../epdfview-&epdfview-version;-fixes-1.patch &amp;&amp;
+<screen><userinput>patch -Np1 -i ../epdfview-&epdfview-version;-fixes-2.patch &amp;&amp;
 ./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
@@ -120,6 +128,20 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      For Desktop Environment users, further (optional) instructions are necessary for properly displaying <filename>epdfview.desktop</filename> in the menu. As <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>for size in 24 32 48; do
+  ln -sfv ../../../../epdfview/pixmaps/icon_epdfview-$size.png \
+          /usr/share/icons/hicolor/${size}x${size}/apps
+done &amp;&amp;
+unset size &amp;&amp;
+
+update-desktop-database &amp;&amp;
+gtk-update-icon-cache -qf /usr/share/icons/hicolor</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
@@ -132,11 +154,12 @@ make</userinput></screen>
     </para> -->
 
     <para>
-      <command>patch -Np1 -i ../epdfview-&epdfview-version;-fixes-1.patch</command>
-      The patch does three things: fixes compiling with
+      <command>patch -Np1 -i ../epdfview-&epdfview-version;-fixes-2.patch</command>
+      The patch does four things: fixes compiling with
       <application>glib-2.32</application> or greater, corrects red appearing as
-      blue with recent versions of <application>poppler</application>, and allows
-      the application to compile when <xref linkend="cups"/> has been installed.
+      blue with recent versions of <application>poppler</application>, allows
+      the application to compile when <xref linkend="cups"/> has been installed,
+      and fixes the display of embedded png images.
     </para>
   </sect2>
 

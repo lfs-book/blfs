@@ -10,15 +10,15 @@
            "http://www.abisource.com/downloads/abiword/&AbiWord-version;/source/abiword-&AbiWord-version;.tar.gz">
   <!ENTITY AbiWord-download-ftp  " ">
   <!ENTITY AbiWord-md5sum        "f3f8052e7b4979a43b75775a381e6cb8">
-  <!ENTITY AbiWord-size          "10.6 MB">
+  <!ENTITY AbiWord-size          "11 MB">
 
   <!ENTITY AbiWordDocs-download-http
            "http://www.abisource.com/downloads/abiword/&AbiWord-version;/source/abiword-docs-&AbiWord-version;.tar.gz">
-  <!ENTITY AbiWordDocs-md5sum        "1.5 MB">
-  <!ENTITY AbiWordDocs-size          "c9b78cb5f9c415ed63ce1cf9874fa8a4">
+  <!ENTITY AbiWordDocs-md5sum        "c9b78cb5f9c415ed63ce1cf9874fa8a4">
+  <!ENTITY AbiWordDocs-size          "1.5">
 
-  <!ENTITY AbiWord-buildsize     "405.2 MB">
-  <!ENTITY AbiWord-time          "6.7 SBU">
+  <!ENTITY AbiWord-buildsize     "575 MB (73 MB installed)">
+  <!ENTITY AbiWord-time          "7.7 SBU - additional 0.5 SBU for docs">
 ]>
 
 <sect1 id="abiword" xreflabel="AbiWord-&AbiWord-version;">
@@ -43,7 +43,7 @@
       writing reports, letters and other formatted documents.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -96,11 +96,6 @@
           AbiWord Docs size: &AbiWordDocs-size;
         </para>
       </listitem>
-      <listitem>
-        <para>
-          Required patch: <ulink url="http://www.linuxfromscratch.org/patches/blfs/svn/abiword-&AbiWord-version;-libgcrypt_1_6_0-1.patch"/>
-        </para>
-      </listitem>
     </itemizedlist>
 
     <bridgehead renderas="sect3">AbiWord Dependencies</bridgehead>
@@ -120,15 +115,18 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="http://aiksaurus.sourceforge.net/">Aiksaurus</ulink>,
       <xref linkend="dbus-glib"/>,
       <xref linkend="evolution-data-server"/>,
       <xref linkend="gobject-introspection"/>,
-      <ulink url="http://helm.cs.unibo.it/mml-widget/">GtkMathView</ulink>,
       <xref linkend="libchamplain"/>,
       <xref linkend="libgcrypt"/>,
       <xref linkend="libical"/>,
       <xref linkend="libsoup"/>,
+      <xref linkend="redland"/>,
+      <xref linkend="telepathy-glib"/>,
+      <xref linkend="valgrind"/>,
+      <ulink url="http://aiksaurus.sourceforge.net/">Aiksaurus</ulink>,
+      <ulink url="http://helm.cs.unibo.it/mml-widget/">GtkMathView</ulink>,
       <ulink url="http://sourceforge.net/projects/wvware">libwmf</ulink>,
       <ulink url="http://sourceforge.net/projects/libwpd/">libwpd</ulink>,
       <ulink url="http://sourceforge.net/projects/libwpg/">libwpg</ulink>,
@@ -136,11 +134,8 @@
       <ulink url="http://www.abisource.com/projects/link-grammar/">
       Link Grammar Parser</ulink>,
       <ulink url="&gnome-download-http;/loudmouth">Loudmouth</ulink>,
-      <xref linkend="redland"/>,
-      <xref linkend="telepathy-glib"/>,
-      <ulink url="http://libots.sourceforge.net/">OTS</ulink>
-      <ulink url="http://software.frodo.looijaard.name/psiconv/">Psiconv</ulink>, and
-      <xref linkend="valgrind"/>
+      <ulink url="http://libots.sourceforge.net/">OTS</ulink>, and
+      <ulink url="http://software.frodo.looijaard.name/psiconv/">Psiconv</ulink>
     </para>
 
     <note>
@@ -165,8 +160,7 @@
       commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../abiword-&AbiWord-version;-libgcrypt_1_6_0-1.patch &amp;&amp;
-./configure --prefix=/usr                              &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -179,8 +173,15 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+    <note>
+      <para>
+        In order to install the local help files,
+        a graphics session is recommended.
+      </para>
+    </note>
+
     <para>
-      If you wish to install the local help files, untar and build them first
+      If you wish to install the local help files, untar and build them first:
     </para>
 
 <screen><userinput>tar -xf ../abiword-docs-&AbiWord-version;.tar.gz &amp;&amp;

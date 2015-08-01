@@ -34,7 +34,7 @@
       used by some applications for USB device access.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,8 +90,7 @@
       commands:
     </para>
 
-<screen><userinput>sed -i "s:PROJECT_LOGO:#PROJECT_LOGO:g" -i doc/doxygen.cfg.in &amp;&amp;
-./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -122,26 +121,19 @@ install -v -m644    doc/html/* \
 
   </sect2>
 
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
-    <para>
-      <command>sed -i "s:PROJECT_LOGO:#PROJECT_LOGO:g" ...</command>: This <command>sed</command>
-      fixes building of the documentation.
-    </para>
-
-  </sect2>
-
   <sect2 role="configuration">
     <title>Configuring Libusb</title>
 
     <para id="libusb-kernel">
       To access raw USB devices (those not treated as a disk by the mass-storage
       driver), appropriate support must be available in the kernel.  Check your
-      kernel configuration for Device Drivers &rArr; USB support &rArr; Support
-      for Host-side USB.  Select any USB hardware device drivers you may need
-      on the same page.
+      kernel configuration:
     </para>
+
+<screen><literal>Device Drivers ---&gt;
+  [*] USB support ---&gt;                   [CONFIG_USB_SUPPORT]
+    &lt;*/M&gt; Support for Host-side USB      [CONFIG_USB]
+    (Select any USB hardware device drivers you may need on the same page)</literal></screen>
 
     <indexterm zone="libusb libusb-kernel">
       <primary sortas="d-USB-device-filesystem">Support for Host-side USB</primary>

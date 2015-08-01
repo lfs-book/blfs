@@ -35,7 +35,7 @@
       binary file transfers between devices.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -100,6 +100,12 @@
   <sect2 role="installation">
     <title>Installation of OpenOBEX</title>
 
+    <para><application>OpenOBEX</application> installs a udev rule that
+    requires a group named plugdev.  Create that group as the 
+    <systemitem class="username">root</systemitem> user:</para>
+
+<screen role="root"><userinput>groupadd -g 90 plugdev</userinput></screen>
+
     <para>
       Install <application>OpenOBEX</application> by running the following
       commands:
@@ -111,7 +117,7 @@ cd    build &amp;&amp;
 cmake -DCMAKE_INSTALL_PREFIX=/usr \
       -DCMAKE_INSTALL_LIBDIR=lib  \
       -DCMAKE_BUILD_TYPE=Release  \
-      -Wno-dev .. &amp;&amp;
+      .. &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -122,7 +128,8 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+mv -v /usr/share/doc/openobex{,-&openobex-version;}</userinput></screen>
   </sect2>
 
   <sect2 role="commands">
@@ -131,6 +138,11 @@ make</userinput></screen>
     <para>
       <parameter>-DCMAKE_BUILD_TYPE=Release</parameter>: This switch is used
       to apply higher level of the compiler optimizations.
+    </para>
+
+    <para>
+      <command>mv -v ...</command>: Move the documention to a versioned
+      directory.
     </para>
 
   </sect2>
@@ -151,7 +163,9 @@ make</userinput></screen>
           libopenobex.so
         </seg>
         <seg>
-          /usr/include/openobex
+          /usr/include/openobex,
+          /usr/lib/cmake/OpenObex-&openobex-version;, and
+          /usr/share/doc/openobex-&openobex-version;
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -160,6 +174,18 @@ make</userinput></screen>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="obex-check-device">
+        <term><command>obex-check-device</command></term>
+        <listitem>
+          <para>
+            is a tool that help <application>udev</application> to find connectable OBEX USB devices.
+          </para>
+          <indexterm zone="openobex obex-check-device">
+            <primary sortas="b-obex-check-device">obex-check-device</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
 
       <varlistentry id="libopenobex">
         <term><filename class="libraryfile">libopenobex.so</filename></term>

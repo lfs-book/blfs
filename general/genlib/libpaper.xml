@@ -6,8 +6,8 @@
 
   <!ENTITY libpaper-download-http "http://ftp.debian.org/debian/pool/main/libp/libpaper/libpaper_&libpaper-version;.tar.gz">
   <!ENTITY libpaper-download-ftp "ftp://ftp.debian.org/debian/pool/main/libp/libpaper/libpaper_&libpaper-version;.tar.gz">
-  <!ENTITY libpaper-md5sum        "2d7239e4e7cb295aff54814f0d97992d">
-  <!ENTITY libpaper-size          "361 KB">
+  <!ENTITY libpaper-md5sum        "155d2e589e2f4ef163de8fbbc5d3dd1e">
+  <!ENTITY libpaper-size          "362 KB">
   <!ENTITY libpaper-buildsize     "2.6 MB">
   <!ENTITY libpaper-time          "less than 0.1 SBU">
 ]>
@@ -34,7 +34,7 @@
       actions based on a system or user-specified paper size.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,8 +86,7 @@
 <screen><userinput>./configure --prefix=/usr     \
             --sysconfdir=/etc \
             --disable-static &amp;&amp;
-make
-</userinput></screen>
+make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
 
@@ -96,7 +95,8 @@ make
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-mkdir -v /etc/libpaper.d &amp;&amp;
+mkdir -pv /etc/libpaper.d &amp;&amp;
+
 cat &gt; /usr/bin/run-parts &lt;&lt; "EOF"
 #!/bin/sh
 # run-parts:  Runs all the scripts found in a directory.
@@ -147,6 +147,7 @@ done
 
 exit 0
 EOF
+
 chmod -v 755 /usr/bin/run-parts</userinput></screen>
 
   </sect2>
@@ -157,7 +158,7 @@ chmod -v 755 /usr/bin/run-parts</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 
-    <para><command>mkdir -v /etc/libpaper.d</command>:
+    <para><command>mkdir -pv /etc/libpaper.d</command>:
     <application>libpaper</application> expects that packages will install files
     into this directory.</para>
 

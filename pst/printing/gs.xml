@@ -7,12 +7,12 @@
   <!ENTITY gs-download-http
   "http://downloads.ghostscript.com/public/ghostscript-&gs-version;.tar.bz2">
   <!ENTITY gs-download-ftp  " ">
-  <!ENTITY gs-md5sum        "0ee21d975c67a4883ba66bcc332418f5">
-  <!ENTITY gs-size          "27.5 MB">
+  <!ENTITY gs-md5sum        "21732fd6e39acc283bc623b8842cbfbb">
+  <!ENTITY gs-size          "28 MB">
   <!ENTITY gs-buildsize
-  "140 MB (includes installing libgs.so, add 5 MB if the fonts are installed)">
+  "170 MB (add 5 MB  for fonts and 55 MB for libgs.so)">
   <!ENTITY gs-time
-  "3.1 SBU (includes building and installing libgs.so)">
+  "1 SBU (add 1 SBU for libgs.so)">
 
   <!ENTITY gs-standard-fonts-download
   "&sourceforge-repo;/gs-fonts/ghostscript-fonts-std-8.11.tar.gz">
@@ -47,7 +47,7 @@
     targets. It used to be part of the cups printing stack, but is no longer
     used for that.</para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,7 +78,7 @@
     <itemizedlist spacing="compact">
       <title>Standard Fonts</title>
       <listitem>
-        <para>Download (FTP): <ulink url="&gs-standard-fonts-download;"/></para>
+        <para>Download (HTTP): <ulink url="&gs-standard-fonts-download;"/></para>
       </listitem>
       <listitem>
         <para>Download MD5 sum: &gs-standard-fonts-md5sum;</para>
@@ -115,14 +115,14 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="cairo"/>,
+      <xref linkend="cups"/>,
       <xref linkend="fontconfig"/> (required, if you are installing any
       suggested font),
       <xref linkend="gtk2"/>,
-      <xref linkend="cups"/>,
       <xref linkend="lcms"/> (not used by default, nor if lcms2 is present or found),
       <xref linkend="libidn"/>,
-      <xref linkend="x-window-system"/> and
-      <ulink url="http://packages.debian.org/unstable/source/libpaper">libpaper</ulink>
+      <xref linkend="libpaper"/>, and
+      <xref linkend="x-window-system"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -183,7 +183,8 @@ make</userinput></screen>
     <note>
       <para>
         The shared library depends on <xref linkend="gtk2"/>. It is only used in
-        external programs like <xref linkend="imagemagick"/>.
+        external programs like <xref linkend="asymptote"/> and
+        <xref linkend="imagemagick"/>.
       </para>
     </note>
 
@@ -196,12 +197,10 @@ make</userinput></screen>
 <screen><userinput>make so</userinput></screen>
 
     <para>
-      This package does not come with a test suite. However, you may test the
-      operation of the newly built <command>gs</command> program by issuing the
-      following command (issue from an X Window System terminal):
+      This package does not come with a test suite.  A set of example files
+      may be used for testing, but it is only possible after installation
+      of the package.
     </para>
-
-<screen><userinput>bin/gs -Ilib -IResource/Init -dBATCH examples/tiger.eps</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -231,6 +230,15 @@ ln -v -s ghostscript /usr/include/ps--></userinput></screen>
 
 <screen role="root"><userinput>tar -xvf ../<replaceable>&lt;font-tarball&gt;</replaceable> -C /usr/share/ghostscript --no-same-owner &amp;&amp;
 fc-cache -v /usr/share/ghostscript/fonts/</userinput></screen>
+
+    <para>
+      You can now test the rendering of various postscript  and pdf files from the
+      <filename class="directory">/usr/share/ghostscript/&gs-version;/examples
+      </filename>, for example (you need an X window system display):
+    </para>
+
+<screen><userinput>gs -q -dBATCH /usr/share/ghostscript/&gs-version;/examples/tiger.eps</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">

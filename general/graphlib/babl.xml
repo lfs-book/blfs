@@ -5,13 +5,11 @@
   %general-entities;
 
   <!ENTITY babl-download-http
-  "http://download.gimp.org/pub/babl/0.1/babl-&babl-version;.tar.bz2">
-  <!ENTITY babl-download-ftp " ">
-<!--  <!ENTITY babl-download-ftp
-  "ftp://ftp.gimp.org/pub/babl/0.1/babl-&babl-version;.tar.bz2">-->
-  <!ENTITY babl-md5sum        "9e1542ab5c0b12ea3af076a9a2f02d79">
-  <!ENTITY babl-size          "440 KB">
-  <!ENTITY babl-buildsize     "12 MB">
+           "http://download.gimp.org/pub/babl/0.1/babl-&babl-version;.tar.bz2">
+  <!ENTITY babl-download-ftp  " ">
+  <!ENTITY babl-md5sum        "50c8d12cdf5b3991590fa6cba16218a0">
+  <!ENTITY babl-size          "628 KB">
+  <!ENTITY babl-buildsize     "18 MB">
   <!ENTITY babl-time          "0.2 SBU">
 ]>
 
@@ -37,7 +35,7 @@
       pixel format translation library.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,8 +75,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gobject-introspection"/> and
-      <xref linkend="vala"/>
+      <xref linkend="gobject-introspection"/>,
+      <xref linkend="librsvg"/> and
+      <xref linkend="which"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -105,7 +104,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-install -v -m755 -d /usr/share/gtk-doc/html/babl/graphics &amp;&amp;
+install -v -dm755 /usr/share/gtk-doc/html/babl/graphics &amp;&amp;
 install -v -m644 docs/*.{css,html} /usr/share/gtk-doc/html/babl &amp;&amp;
 install -v -m644 docs/graphics/*.{html,png,svg} /usr/share/gtk-doc/html/babl/graphics</userinput></screen>
   </sect2>
@@ -114,19 +113,14 @@ install -v -m644 docs/graphics/*.{html,png,svg} /usr/share/gtk-doc/html/babl/gra
     <title>Command Explanations</title>
 
     <para>
-      <parameter>install -v -m755 -d
-      /usr/share/gtk-doc/html/babl/graphics</parameter>: This and the subsequent
+      <command>install -v -dm755
+      /usr/share/gtk-doc/html/babl/graphics</command>: This and the subsequent
       commands install the library html documentation under
       <filename class="directory">/usr/share/gtk-doc/html</filename> where other
-      gtk packages put the programmer-oriented documentation.
+      <application>GTK+</application> packages put the programmer-oriented
+      documentation.
     </para>
 
-    <para>
-      <option>--with-vala</option>: Use <command>vapigen</command> so that
-      <application>vala</application> programs can use this application - not
-      enabled by default, may cause breakage when building
-      <application>gegl</application>.
-    </para>
   </sect2>
 
   <sect2 role="content">
@@ -138,9 +132,17 @@ install -v -m644 docs/graphics/*.{html,png,svg} /usr/share/gtk-doc/html/babl/gra
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>None</seg>
-        <seg>libbabl.so and libraries in /usr/lib/babl-0.1</seg>
-        <seg>/usr/include/babl-0.1</seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          libbabl.so
+        </seg>
+        <seg>
+          /usr/include/babl-0.1,
+          /usr/lib/babl-0.1 and
+          /usr/share/gtk-doc/html/babl
+        </seg>
       </seglistitem>
     </segmentedlist>
 
@@ -150,7 +152,7 @@ install -v -m644 docs/graphics/*.{html,png,svg} /usr/share/gtk-doc/html/babl/gra
       <?dbhtml list-presentation="table"?>
 
       <varlistentry id="libbabl">
-        <term><filename class='libraryfile'>libbabl.so</filename></term>
+        <term><filename class="libraryfile">libbabl.so</filename></term>
         <listitem>
           <para>
             contains functions to access BablFishes to convert between formats.
@@ -160,6 +162,9 @@ install -v -m644 docs/graphics/*.{html,png,svg} /usr/share/gtk-doc/html/babl/gra
           </indexterm>
         </listitem>
       </varlistentry>
+
     </variablelist>
+
   </sect2>
+
 </sect1>

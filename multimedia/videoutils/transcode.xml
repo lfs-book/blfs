@@ -37,7 +37,7 @@
       <ulink url="http://www.transcoding.org/"/>.
     </para>
 
-    &lfs76_checked;
+    &lfs77_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -113,12 +113,12 @@
       <xref linkend="libvorbis"/>,
       <xref linkend="libxml2"/>,
       <xref linkend="lzo"/>,
-      <ulink url="http://sourceforge.net/projects/mjpeg/">MJPEG Tools</ulink>,
-      <ulink url="http://www.netlib.org/pvm3/">PVM3</ulink>,
       <xref linkend="sdl"/>,
-      <ulink url="http://linuxtv.org/downloads/v4l-utils/">Video4Linux</ulink>,
-      <xref linkend="x264"/>, and
+      <xref linkend="v4l-utils"/>,
+      <xref linkend="x264"/>, 
       <xref linkend="xvid"/>
+      <ulink url="http://sourceforge.net/projects/mjpeg/">MJPEG Tools</ulink>, and
+      <ulink url="http://www.netlib.org/pvm3/">PVM3</ulink>,
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -163,11 +163,11 @@
 
 <screen><userinput>sed -i 's|doc/transcode|&amp;-$(PACKAGE_VERSION)|' \
        $(find . -name Makefile.in -exec grep -l 'docsdir =' {} \;) &amp;&amp;
+
 sed -i "s:av_close_input_file:avformat_close_input:g" \
        import/probe_ffmpeg.c                                       &amp;&amp;
 
 patch -Np1 -i ../transcode-&transcode-version;-ffmpeg2-1.patch                   &amp;&amp;
-&transcode-version;
 ./configure --prefix=/usr \
             --enable-alsa \
             --enable-libmpeg2 &amp;&amp;
@@ -194,7 +194,7 @@ make</userinput></screen>
 
     <para>
       <command>sed ... import/probe_ffmpeg.c</command>: This sed fixes
-      compilation with <application>ffmpeg</application> 2.4.
+      compilation with <application>FFMpeg</application> 2.4.
     </para>
 
     <para>
