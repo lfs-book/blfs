@@ -118,7 +118,9 @@
         commands:
       </para>
 
-<screen><userinput>./configure $XORG_CONFIG --enable-kms-only &amp;&amp;
+<screen><userinput>sed -i "/#include &lt;errno.h&gt;/a #include &lt;sys/stat.h&gt;" src/uxa/intel_driver.c &amp;&amp;
+sed -i "/#include &lt;errno.h&gt;/a #include &lt;sys/stat.h&gt;" src/sna/sna_driver.c &amp;&amp;
+./configure $XORG_CONFIG --enable-kms-only &amp;&amp;
 make</userinput></screen>
 
       <para>
@@ -165,7 +167,10 @@ EOF</userinput></screen>
 
     <sect3 role="commands">
       <title>Command Explanations</title>
-
+      <para>
+        <parameter>sed -e ...</parameter>: This fixes compilation with
+        systemd-220 and above.
+      </para>
       <para>
         <parameter>--enable-kms-only</parameter>: This switch omits the UMS
         (User Mode Setting) code.
