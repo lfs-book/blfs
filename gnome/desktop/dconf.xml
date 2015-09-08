@@ -4,12 +4,21 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY dconf-download-http "&gnome-download-http;/dconf/0.22/dconf-&dconf-version;.tar.xz">
-  <!ENTITY dconf-download-ftp  "&gnome-download-ftp;/dconf/0.22/dconf-&dconf-version;.tar.xz">
-  <!ENTITY dconf-md5sum        "5459a539ffc483f9c002ddeab626a64e">
-  <!ENTITY dconf-size          "388 KB">
-  <!ENTITY dconf-buildsize     "17 MB">
+<!-- DConf -->
+  <!ENTITY dconf-download-http "&gnome-download-http;/dconf/0.24/dconf-&dconf-version;.tar.xz">
+  <!ENTITY dconf-download-ftp  "&gnome-download-ftp;/dconf/0.24/dconf-&dconf-version;.tar.xz">
+  <!ENTITY dconf-md5sum        "9bd257ba5b718f484fa0f4ab6e81e53b">
+  <!ENTITY dconf-size          "216 KB">
+  <!ENTITY dconf-buildsize     "20 MB">
   <!ENTITY dconf-time          "0.2 SBU">
+
+<!-- DConf-Editor -->
+  <!ENTITY dconf-editor-download-http "&gnome-download-http;/dconf-editor/&gnome-minor16;/dconf-editor-&dconf-editor-version;.tar.xz">
+  <!ENTITY dconf-editor-download-ftp  "&gnome-download-ftp;/dconf-editor/&gnome-minor16;/dconf-editor-&dconf-editor-version;.tar.xz">
+  <!ENTITY dconf-editor-md5sum        "cefbc473bd6773cd3b92f2e5cf793ee8">
+  <!ENTITY dconf-editor-size          "252 KB">
+  <!ENTITY dconf-editor-buildsize     "6.7 MB">
+  <!ENTITY dconf-editor-time          "less than 0.1 SBU">
 ]>
 
 <sect1 id="dconf" xreflabel="DConf-&dconf-version;">
@@ -20,19 +29,29 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>DConf-&dconf-version;</title>
+  <title>DConf-&dconf-version; / DConf-Editor-&dconf-editor-version;</title>
 
   <indexterm zone="dconf">
     <primary sortas="a-DConf">DConf</primary>
   </indexterm>
+
+<!-- DConf -->
 
   <sect2 role="package">
     <title>Introduction to DConf</title>
 
     <para>
       The <application>DConf</application> package contains a low-level
-      configuration system. Its main purpose is to provide a backend to GSettings
-      on platforms that don't already have configuration storage systems.
+      configuration system. Its main purpose is to provide a backend to
+      GSettings on platforms that don't already have configuration storage
+      systems.
+    </para>
+
+    <para>
+      The <application>DConf-Editor</application>, as the name suggests, is a
+      graphical editor for the <application>DConf</application> database.
+      Installation is optional, because <command>gsettings</command> from <xref
+      linkend="glib2"/> provides similar functionality on the commandline.
     </para>
 
     &lfs77_checked;
@@ -71,6 +90,40 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&dconf-editor-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&dconf-editor-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &dconf-editor-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &dconf-editor-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &dconf-editor-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &dconf-editor-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+ 
     <bridgehead renderas="sect3">DConf Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -81,15 +134,13 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="libxslt"/> and
       <xref linkend="vala"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/> and
-      <xref linkend="DocBook"/>,
-      <xref linkend="docbook-xsl"/>, and
-      <xref linkend="libxslt"/> (to build manual pages)
+      <xref linkend="gtk-doc"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -113,7 +164,21 @@ make</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      As the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+    <para>Now, optionally install the editor:</para>
+
+<screen><userinput>tar -xf ../dconf-editor-&dconf-editor-version;.tar.xz &amp;&amp;
+cd dconf-editor-&dconf-editor-version; &amp;&amp;
+
+./configure --prefix=/usr --sysconfdir=/etc &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      As the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
@@ -138,14 +203,14 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          dconf, dconf-editor, and dconf-service
+          dconf and dconf-editor
         </seg>
         <seg>
-          libdconf-dbus-1.so, libdconf.so, and
-          libdconfsettings.so (<application>GIO</application> Module)
+          libdconf-dbus-1.so and libdconf.so
         </seg>
         <seg>
-          /usr/include/{dconf,dconf-dbus-1} and
+          /usr/include/dconf,
+          /usr/include/dconf-dbus-1, and
           /usr/share/gtk-doc/html/dconf
         </seg>
       </seglistitem>
@@ -173,26 +238,11 @@ make</userinput></screen>
         <term><command>dconf-editor</command></term>
         <listitem>
           <para>
-            is a graphical program for editing settings
-            that are stored in the
+            is a graphical program for editing the
             <application>DConf</application> database.
           </para>
           <indexterm zone="dconf dconf-editor">
             <primary sortas="b-dconf-editor">dconf-editor</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="dconf-service">
-        <term><command>dconf-service</command></term>
-        <listitem>
-          <para>
-            is the <application>D-Bus</application> service
-            that writes to the
-            <application>DConf</application> database.
-          </para>
-          <indexterm zone="dconf dconf-service">
-            <primary sortas="b-dconf-service">dconf-service</primary>
           </indexterm>
         </listitem>
       </varlistentry>
