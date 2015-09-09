@@ -6,9 +6,9 @@
 
   <!ENTITY cups-download-http "http://www.cups.org/software/&cups-version;/cups-&cups-version;-source.tar.bz2">
   <!ENTITY cups-download-ftp  " ">
-  <!ENTITY cups-md5sum        "8d98b85edbdab7ab03739c9622f570e8">
+  <!ENTITY cups-md5sum        "c4e57a66298bfsba66bb3d5bedd317a4">
   <!ENTITY cups-size          "8.4 MB">
-  <!ENTITY cups-buildsize     "99 MB">
+  <!ENTITY cups-buildsize     "92 MB">
   <!ENTITY cups-time          "0.8 SBU">
 ]>
 
@@ -218,6 +218,7 @@
 <screen><userinput>sed -i "s:555:755:g;s:444:644:g" Makedefs.in                 &amp;&amp;
 sed -i "/MAN.*.EXT/s:.gz::g" config-scripts/cups-manpages.m4 &amp;&amp;
 sed -i "/LIBGCRYPTCONFIG/d" config-scripts/cups-ssl.m4       &amp;&amp;
+sed -i 's@else /\* HAVE_AVAHI \*/@elif defined (HAVE_AVAHI)@' test/ippserver.c &amp;&amp;
 
 aclocal  -I config-scripts &amp;&amp;
 autoconf -I config-scripts &amp;&amp;
@@ -294,6 +295,10 @@ rm -rf /usr/share/cups/data/testprint</userinput></screen>
       package.
     </para>
 
+    <para>
+      <command>sed -i ... test/ippserver.c</command>: This sed fixes a bug that
+      shows up when <xref linkend="avahi"/> is not present.
+    </para>
     <para>
       <parameter>--with-rcdir=/tmp/cupsinit</parameter>: This switch tells the
       build process to install the shipped bootscript into <filename
