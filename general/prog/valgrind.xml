@@ -6,10 +6,10 @@
 
   <!ENTITY valgrind-download-http "http://valgrind.org/downloads/valgrind-&valgrind-version;.tar.bz2">
   <!ENTITY valgrind-download-ftp  " ">
-  <!ENTITY valgrind-md5sum        "60ddae962bc79e7c95cfc4667245707f">
-  <!ENTITY valgrind-size          "10.5 MB">
-  <!ENTITY valgrind-buildsize     "401 MB and an additional 20 MB for tests">
-  <!ENTITY valgrind-time          "1.1 SBU and an additional 4.7 SBU for tests">
+  <!ENTITY valgrind-md5sum        "4ea62074da73ae82e0162d6550d3f129">
+  <!ENTITY valgrind-size          "11.4 MB">
+  <!ENTITY valgrind-buildsize     "572 MB (with the test suite)">
+  <!ENTITY valgrind-time          "4.3 SBU (with the test suite)">
 ]>
 
 <sect1 id="valgrind" xreflabel="Valgrind-&valgrind-version;">
@@ -100,13 +100,7 @@
     <para>Install <application>Valgrind</application> by running the following
     commands:</para>
 
-<screen><userinput>sed -e 's#|3.\*#&amp;|4.\*#' \
-    -e 's/-mt//g'        \
-    -e 's:2.20:2.22:g'   \
-    -i configure         &amp;&amp;
-
-sed -i "s:/doc/valgrind::g" docs/Makefile.in &amp;&amp;
-
+<screen><userinput>sed -i "s:/doc/valgrind::g" docs/Makefile.in &amp;&amp;
 ./configure --prefix=/usr --datadir=/usr/share/doc/valgrind-&valgrind-version; &amp;&amp;
 make</userinput></screen>
 
@@ -130,13 +124,6 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <command>sed -e ... configure</command>: The first expression fixes an
-      issue that prevents Valgrind from compiling on systems running Linux-4.x,
-      the second expression fixes building with Glibc 2.21, and the third
-      expression fixes the configure script to find recent versions of Boost.
-    </para>
 
     <para>
       <command>sed -i ... docs/Makefile.in </command>: This sed provides for
@@ -170,6 +157,7 @@ make</userinput></screen>
           libcoregrind-&lt;Arch&gt;-linux.a,
           libreplacemalloc_toolpreload-&lt;Arch&gt;-linux.a,
           libvex-&lt;Arch&gt;-linux.a,
+          libvexmultiarch-&lt;Arch&gt;-linux.a,
           vgpreload_core-&lt;Arch&gt;-linux.so,
           vgpreload_drd-&lt;Arch&gt;-linux.so,
           vgpreload_exp-dhat-&lt;Arch&gt;-linux.so,
@@ -177,7 +165,7 @@ make</userinput></screen>
           vgpreload_helgrind-&lt;Arch&gt;-linux.so,
           vgpreload_massif-&lt;Arch&gt;-linux.so, and
           vgpreload_memcheck-&lt;Arch&gt;-linux.so, where
-          &lt;Arch&gt;=x86, amd64
+          &lt;Arch&gt;=x86, amd64. Libraries are in /usr/lib/valgrind.
         </seg>
         <seg>
           /usr/lib/valgrind,

@@ -6,10 +6,10 @@
 
   <!ENTITY gdb-download-http "https://ftp.gnu.org/gnu/gdb/gdb-&gdb-version;.tar.xz">
   <!ENTITY gdb-download-ftp  "ftp://ftp.gnu.org/gnu/gdb/gdb-&gdb-version;.tar.xz">
-  <!ENTITY gdb-md5sum        "35374c77a70884eb430c97061053a36e">
+  <!ENTITY gdb-md5sum        "2a35bac41fa8e10bf04f3a0dd7f7f363">
   <!ENTITY gdb-size          "18 MB">
-  <!ENTITY gdb-buildsize     "406 MB (additional 105 MB for checks)">
-  <!ENTITY gdb-time          "2.2 SBU (add up to 6.0 SBU for checks)">
+  <!ENTITY gdb-buildsize     "580 MB (with the test suite)">
+  <!ENTITY gdb-time          "11.4 SBU (with the test suite)">
 ]>
 
 <sect1 id="gdb" xreflabel="GDB-&gdb-version;">
@@ -80,8 +80,10 @@
     <para role="optional">
       <xref linkend="dejagnu"/> (for tests),
       <xref linkend="doxygen"/>,
-      <xref linkend="guile"/>, and
-      <xref linkend="python2"/>
+      <xref linkend="guile"/>,
+      <xref linkend="python2"/>, and
+      <ulink url="http://sourceware.org/systemtap">SystemTap (optional runtime
+      dependency, also used in a few tests)</ulink>.
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -108,13 +110,23 @@ make</userinput></screen>
 <screen><userinput>make -C gdb/doc doxy</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make -k check</command>. There are
-      many problems with the test suite. Depends on installed compilers, there
-      are differences if run locally or remotely, a large number of timeouts
-      (there is a variable that can be set to increase time for timeout, but
-      changing it, apparently the total number of tests is not conserved),
-      there are failures associated with system readline 6.x, between others.
-      Unexpected failures are of the order of 0.5%.
+      To run the test suite, issue the following commands:
+    </para>
+
+<screen><userinput>pushd gdb/testsuite &amp;&amp;
+make     site.exp &amp;&amp;
+echo "set gdb_test_timeout 120" >> site.exp &amp;&amp;
+runtest TRANSCRIPT=y
+popd</userinput></screen>
+
+    <para>
+      There are many problems with the test suite. Your results will depend on 
+      installed compilers, as well as whether or not you are running it locally
+      or remotely. Although we do extend the timeout above, there are still many
+      tests that will time out. Note that by changing the timeout value, the 
+      number of tests is no longer conserved. There are also failures associated
+      with system readline 6.x among others. Unexpected failures should be about
+      0.5%.
     </para>
 
     <para>
@@ -130,6 +142,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>install -d /usr/share/doc/gdb-&gdb-version; &amp;&amp;
+rm -rf gdb/doc/doxy/xml &amp;&amp;
 cp -Rv gdb/doc/doxy /usr/share/doc/gdb-&gdb-version;</userinput></screen>
 
   </sect2>
