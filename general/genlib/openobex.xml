@@ -35,7 +35,7 @@
       binary file transfers between devices.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -101,7 +101,7 @@
     <title>Installation of OpenOBEX</title>
 
     <para><application>OpenOBEX</application> installs a udev rule that
-    requires a group named plugdev.  Create that group as the 
+    requires a group named plugdev.  Create that group as the
     <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>groupadd -g 90 plugdev</userinput></screen>
@@ -114,9 +114,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr \
-      -DCMAKE_INSTALL_LIBDIR=lib  \
-      -DCMAKE_BUILD_TYPE=Release  \
+cmake -DCMAKE_INSTALL_PREFIX=/usr      \
+      -DCMAKE_INSTALL_LIBDIR=/usr/lib  \
+      -DCMAKE_BUILD_TYPE=Release       \
+      -Wno-dev                         \
       .. &amp;&amp;
 make</userinput></screen>
 
@@ -129,7 +130,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-mv -v /usr/share/doc/openobex{,-&openobex-version;}</userinput></screen>
+mv -fv /usr/share/doc/openobex{,-&openobex-version;}</userinput></screen>
   </sect2>
 
   <sect2 role="commands">
@@ -141,7 +142,12 @@ mv -v /usr/share/doc/openobex{,-&openobex-version;}</userinput></screen>
     </para>
 
     <para>
-      <command>mv -v ...</command>: Move the documention to a versioned
+      <parameter>-Wno-dev</parameter>: This switch is used to suppress warnings
+      that are meant for the author of the CMakeLists.txt files.
+    </para>
+
+    <para>
+      <command>mv -fv ...</command>: Move the documention to a versioned
       directory.
     </para>
 
@@ -164,8 +170,8 @@ mv -v /usr/share/doc/openobex{,-&openobex-version;}</userinput></screen>
         </seg>
         <seg>
           /usr/include/openobex,
-          /usr/lib/cmake/OpenObex-&openobex-version;, and
-          /usr/share/doc/openobex-&openobex-version;
+          /usr/lib/cmake/OpenObex-1.7.1, and
+          /usr/share/doc/openobex-1.7.1
         </seg>
       </seglistitem>
     </segmentedlist>

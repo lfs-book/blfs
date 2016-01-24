@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY glibmm-download-http "&gnome-download-http;/glibmm/2.44/glibmm-&glibmm-version;.tar.xz">
-  <!ENTITY glibmm-download-ftp  "&gnome-download-ftp;/glibmm/2.44/glibmm-&glibmm-version;.tar.xz">
-  <!ENTITY glibmm-md5sum        "32ee4150b436d097fe2506d0b0b13a75">
-  <!ENTITY glibmm-size          "5.8 MB">
-  <!ENTITY glibmm-buildsize     "126 MB (additional 25 MB to run the test suite)">
-  <!ENTITY glibmm-time          "1.1 SBU (additional 0.3 SBU to run the test suite)">
+  <!ENTITY glibmm-download-http "&gnome-download-http;/glibmm/2.46/glibmm-&glibmm-version;.tar.xz">
+  <!ENTITY glibmm-download-ftp  "&gnome-download-ftp;/glibmm/2.46/glibmm-&glibmm-version;.tar.xz">
+  <!ENTITY glibmm-md5sum        "6879e56997aed47816fafe9a7a822a87">
+  <!ENTITY glibmm-size          "6.2 MB">
+  <!ENTITY glibmm-buildsize     "241 MB (with tests)">
+  <!ENTITY glibmm-time          "2.7 SBU (with tests)">
 ]>
 
 <sect1 id="glibmm" xreflabel="GLibmm-&glibmm-version;">
@@ -34,7 +34,7 @@
       for <application>GLib</application>.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -94,6 +94,13 @@
     <title>Installation of GLibmm</title>
 
     <para>
+      First, fix the documents directory name:
+    </para>
+
+<screen><userinput>sed -e '/^libdocdir =/ s/$(book_name)/glibmm-&glibmm-version;/' \
+    -i docs/Makefile.in</userinput></screen>
+
+    <para>
       Install <application>GLibmm</application> by running the following
       commands:
     </para>
@@ -130,12 +137,8 @@ make</userinput></screen>
           libglibmm_generate_extra_defs-2.4.so
         </seg>
         <seg>
-          /usr/include/giomm-2.4,
-          /usr/include/glibmm-2.4,
-          /usr/lib/giomm-2.4,
-          /usr/lib/glibmm-2.4,
-          /usr/share/devhelp/books/glibmm-2.4 and
-          /usr/share/doc/glibmm-2.4
+          /usr/{include,lib}/g{io,lib}mm-2.4 and
+          /usr/share/{devhelp/books/glibmm-2.4,doc/glibmm-&glibmm-version;}
         </seg>
       </seglistitem>
     </segmentedlist>

@@ -6,10 +6,10 @@
 
   <!ENTITY boost-download-http "&sourceforge-repo;/boost/boost_&boost-dl-version;.tar.bz2">
   <!ENTITY boost-download-ftp  " ">
-  <!ENTITY boost-md5sum        "6aa9a5c6a4ca1016edd0ed1178e3cb87">
-  <!ENTITY boost-size          "67 MB">
-  <!ENTITY boost-buildsize     "847 MB">
-  <!ENTITY boost-time          "4.5 SBU (including the Boost.Build regression test)">
+  <!ENTITY boost-md5sum        "65a840e1a0b13a558ff19eeb2c4f0cbe">
+  <!ENTITY boost-size          "74 MB">
+  <!ENTITY boost-buildsize     "899 MB (with Boost.Build's regression test)">
+  <!ENTITY boost-time          "5.5 SBU (with Boost.Build's regression test)">
 ]>
 
 <sect1 id="boost" xreflabel="Boost-&boost-version;">
@@ -77,8 +77,8 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="icu"/>,
-      <xref linkend="python2"/> and
-      <ulink url="http://www.open-mpi.org/">OpenMPI</ulink>
+      <xref linkend="python2"/> or <xref linkend="python3"/>, and
+      <ulink url="https://www.open-mpi.org/">Open MPI</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -90,24 +90,36 @@
     <title>Installation of Boost</title>
 
     <para>
+      If you want Boost to use Python3 instead of Python2, fix a bug with
+      the header files path:
+    </para>
+
+<screen><userinput>sed "/include.*python.*version/s/ ;/m ;/" -i tools/build/src/tools/python.jam</userinput></screen>
+
+    <para>
       Install <application>Boost</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./bootstrap.sh --prefix=/usr &amp;&amp;
+<screen><userinput>sed -e '1 i#ifndef Q_MOC_RUN' \
+    -e '$ a#endif'            \
+    -i boost/type_traits/detail/has_binary_operator.hpp &amp;&amp;
+
+./bootstrap.sh --prefix=/usr &amp;&amp;
 ./b2 stage threading=multi link=shared</userinput></screen>
 
     <para>
       To run the Boost.Build's regression test (<xref linkend="python2"/>
       required), issue <command>pushd tools/build/test; python test_all.py;
-      popd</command>.
+      popd</command>. One test out of 130 fails.
     </para>
 
     <para>
-      To run regression tests for every library, issue <command>pushd status;
-      ../b2; popd</command>. A few tests may fail. They take a long time
-      (more than 120 SBU) and use up to 40 GB of disk space. You can use the
-      <parameter>-jN</parameter> parameter to speed them up.
+      To run every library's regression tests, issue <command>pushd status;
+      ../b2; popd</command>.  A few tests may fail. They take very long (over
+      120/50 SBU, one/four cores) and use a very large disk space (up to
+      40 GB). You can use the <parameter>-jN</parameter> switch to
+      speed them up.
     </para>
 
     <para>
@@ -124,6 +136,12 @@
     <title>Command Explanations</title>
 
     <para>
+      <command>sed ... has_binary_operator.hpp</command>: This command
+      fixes a header to overcome a problem with Qt's moc command.  It
+      is necessary for building some KDE packages.
+    </para>
+
+    <para>
       <parameter>threading=multi</parameter>: This parameter ensures that
       <application>Boost</application> is built with multithreading support.
     </para>
@@ -132,15 +150,20 @@
       <parameter>link=shared</parameter>: This parameter ensures that only
       shared libraries are created, except for libboost_exception and
       libboost_test_exec_monitor which are created as static. Most people
-      will not need the static libraries since most programs using
+      will not need the static libraries. Indeed most programs using
       <application>Boost</application> only use the headers. Omit
       this parameter if you do need static libraries.
     </para>
 
     <para>
-       <option>-jN</option>: This parameter may be added to the
-       <command>b2</command> command lines so it can use up to N
-       processes in parallel.
+       <option>-jN</option>: This switch may be added to the
+       <command>b2</command> command lines, to run up to N processes in
+       parallel.
+    </para>
+
+    <para>
+      <option>--with-python=python3</option>: Add this switch if you want Boost
+      to use Python3 instead of Python2.
     </para>
 
   </sect2>
@@ -158,17 +181,43 @@
           None
         </seg>
         <seg>
-          libboost_atomic.so, libboost_chrono.so, libboost_container.so,
-          libboost_context.so, libboost_coroutine.so, libboost_date_time.so,
-          libboost_exception.a, libboost_filesystem.so, libboost_graph.so,
-          libboost_iostreams.so, libboost_locale.so, libboost_log_setup.so,
-          libboost_log.so, libboost_math_c99.so, libboost_math_c99f.so,
-          libboost_math_c99l.so, libboost_math_tr1.so, libboost_math_tr1f.so,
-          libboost_math_tr1l.so, libboost_prg_exec_monitor.so,
-          libboost_program_options.so, libboost_python.so, libboost_random.so,
-          libboost_regex.so, libboost_serialization.so, libboost_signals.so,
-          libboost_system.so, libboost_test_exec_monitor.a, libboost_thread.so,
-          libboost_timer.so, libboost_unit_test_framework.so, libboost_wave.so,
+          libboost_atomic.so,
+          libboost_chrono.a,
+          libboost_chrono.so,
+          libboost_container.so,
+          libboost_context.so,
+          libboost_coroutine.so,
+          libboost_date_time.so,
+          libboost_exception.a,
+          libboost_filesystem.so,
+          libboost_graph.so,
+          libboost_iostreams.so,
+          libboost_locale.so,
+          libboost_log_setup.so,
+          libboost_log.so,
+          libboost_math_c99.so,
+          libboost_math_c99f.so,
+          libboost_math_c99l.so,
+          libboost_math_tr1.so,
+          libboost_math_tr1f.so,
+          libboost_math_tr1l.so,
+          libboost_prg_exec_monitor.so,
+          libboost_program_options.so,
+          libboost_python.so,
+          libboost_python3.so,
+          libboost_random.so,
+          libboost_regex.so,
+          libboost_serialization.so,
+          libboost_signals.so,
+          libboost_system.a,
+          libboost_system.so,
+          libboost_test_exec_monitor.a,
+          libboost_thread.so,
+          libboost_timer.a,
+          libboost_timer.so,
+          libboost_type_erasure.so,
+          libboost_unit_test_framework.so,
+          libboost_wave.so,
           and libboost_wserialization.so
         </seg>
         <seg>

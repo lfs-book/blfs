@@ -8,8 +8,9 @@
   <!ENTITY libgcrypt-download-ftp  "ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-&libgcrypt-version;.tar.bz2">
   <!ENTITY libgcrypt-md5sum        "4c13c5fa43147866f993d73ee62af176">
   <!ENTITY libgcrypt-size          "2.4 MB">
-  <!ENTITY libgcrypt-buildsize     "38 MB (additional 7 MB for docs)">
-  <!ENTITY libgcrypt-time          "0.7 SBU (additional 0.1 SBU for docs)">
+  <!ENTITY libgcrypt-buildsize     "38 MB (additional 8 MB for docs)">
+  <!ENTITY libgcrypt-time          "0.3 SBU (additional 0.1 SBU for docs and
+                                    0.3 SBU for tests)">
 ]>
 
 <sect1 id="libgcrypt" xreflabel="libgcrypt-&libgcrypt-version;">
@@ -82,7 +83,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="pth"/> and
+      <xref linkend="libcap-pam"/> and
+      <xref linkend="pth"/>,
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
     </para>
 
@@ -127,18 +129,6 @@ install -v -m644    README doc/{README.apichanges,fips*,libgcrypt*} \
                     /usr/share/doc/libgcrypt-&libgcrypt-version;</userinput></screen>
 
     <para>
-      The shared library needs to be moved to
-      <filename class="directory">/lib</filename>, and as a result the
-      <filename class="extension">.so</filename> file in
-      <filename class="directory">/usr/lib</filename> will need to be
-      recreated. Run the following command as the
-      <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen><userinput remap="install">mv -v /usr/lib/libgcrypt.so.* /lib
-ln -sfv ../../lib/$(readlink /usr/lib/libgcrypt.so) /usr/lib/libgcrypt.so</userinput></screen>
-
-    <para>
       If you built the additional documentation, install it by issuing the
       following commands as the <systemitem class="username">root</systemitem>
       user:
@@ -159,6 +149,8 @@ install -v -m644 doc/gcrypt.{pdf,ps,dvi,txt,texi} \
 
     <para>
       <option>--with-capabilities</option>: This option enables libcap2 support.
+      Note that this breaks <ulink
+      url="https://gitlab.com/cryptsetup/cryptsetup">Cryptsetup</ulink>.
     </para>
 
   </sect2>
