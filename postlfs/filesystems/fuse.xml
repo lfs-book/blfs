@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY fuse-download-http "&sourceforge-repo;/fuse/fuse-&fuse-version;.tar.gz">
+  <!ENTITY fuse-download-http "https://github.com/libfuse/libfuse/releases/download/fuse_&fuse-download-version;/fuse-&fuse-version;.tar.gz">
   <!ENTITY fuse-download-ftp  " ">
-  <!ENTITY fuse-md5sum        "ecb712b5ffc6dffd54f4a405c9b372d8">
-  <!ENTITY fuse-size          "564 KB">
-  <!ENTITY fuse-buildsize     "9.9 MB">
+  <!ENTITY fuse-md5sum        "c901b77a1c4584c7ac6c2b67c0713f2b">
+  <!ENTITY fuse-size          "552 KB">
+  <!ENTITY fuse-buildsize     "8.2 MB (9.8 MB with API documentation">
   <!ENTITY fuse-time          "0.1 SBU">
 ]>
 
@@ -122,7 +122,11 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static INIT_D_PATH=/tmp/init.d &amp;&amp;
+<screen><userinput>sed -i 's/2:9:4/2:9:5/' lib/Makefile.in &amp;&amp;
+
+./configure --prefix=/usr \
+            --disable-static \
+            INIT_D_PATH=/tmp/init.d &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -141,7 +145,7 @@ make</userinput></screen>
 <screen role="root"><userinput>make install &amp;&amp;
 
 mv -v   /usr/lib/libfuse.so.* /lib &amp;&amp;
-ln -sfv ../../lib/$(readlink /usr/lib/libfuse.so) /usr/lib/libfuse.so &amp;&amp;
+ln -sfv ../../lib/libfuse.so.&fuse-version; /usr/lib/libfuse.so &amp;&amp;
 rm -rf  /tmp/init.d &amp;&amp;
 
 install -v -dm755 /usr/share/doc/fuse-&fuse-version; &amp;&amp;
@@ -161,6 +165,10 @@ install -v -m644    doc/html/* \
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para><command>sed -i ... lib/Makefile.in</command> This command fixes
+    the libfuse so version.
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
@@ -231,13 +239,17 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          fusermount, mount.fuse, and ulockmgr_server
+          fusermount, 
+          mount.fuse, 
+          and ulockmgr_server
         </seg>
         <seg>
-          libfuse.so and libulockmgr.so
+          libfuse.so 
+          and libulockmgr.so
         </seg>
         <seg>
-          /usr/include/fuse and /usr/share/doc/fuse-&fuse-version;
+          /usr/include/fuse 
+          and /usr/share/doc/fuse-&fuse-version;
         </seg>
       </seglistitem>
     </segmentedlist>
