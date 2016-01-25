@@ -6,10 +6,10 @@
 
   <!ENTITY libdrm-download-http "http://dri.freedesktop.org/libdrm/libdrm-&libdrm-version;.tar.bz2">
   <!ENTITY libdrm-download-ftp  " ">
-  <!ENTITY libdrm-md5sum        "543b2d28359ef33974fa0e772dd61732">
-  <!ENTITY libdrm-size          "628 KB">
-  <!ENTITY libdrm-buildsize     "15 MB (with the test suite)">
-  <!ENTITY libdrm-time          "0.4 SBU (up to an additional 2.0 SBU for the test suite)">
+  <!ENTITY libdrm-md5sum        "c6809c48538d6e5999588832045ff014">
+  <!ENTITY libdrm-size          "680 KB">
+  <!ENTITY libdrm-buildsize     "17 MB (with tests)">
+  <!ENTITY libdrm-time          "0.8 SBU (with tests)">
 ]>
 
 <sect1 id="libdrm" xreflabel="libdrm-&libdrm-version;">
@@ -37,7 +37,7 @@
       similar projects.
     </para>
 
-    &lfs76_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -82,7 +82,6 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="cairo"/> (for the testsuite),
       <xref linkend="DocBook"/>,
       <xref linkend="docbook-xsl"/> and
       <xref linkend="libxslt"/> (to build manual pages), and
@@ -102,13 +101,19 @@
       commands:
     </para>
 
-<screen><userinput>sed -e "/pthread-stubs/d" -i configure.ac &amp;&amp;
-autoreconf -fiv &amp;&amp;
+<screen><userinput>sed -e "/pthread-stubs/d" \
+    -i configure.ac &amp;&amp;
+autoreconf -fiv     &amp;&amp;
+
 ./configure --prefix=/usr --enable-udev &amp;&amp;
+
 make</userinput></screen>
 
     <para>
-      To check the results, issue <command>make check</command>.
+      To check the results, issue <command>make check</command>. Tests may hang
+      for unknown reasons. If nouveau threaded test hangs, you can disable it
+      with
+      <command>sed -i 's/^TESTS/#&amp;/' tests/nouveau/Makefile.in</command>.
     </para>
 
     <para>
@@ -132,6 +137,11 @@ make</userinput></screen>
       <parameter>--enable-udev</parameter>: This parameter enables support for using
       <application>Udev</application> instead of <command>mknod</command>.
     </para>
+<!--
+    <para>
+      <parameter>-\-disable-valgrind</parameter>: This parameter fixes a hard dependency on
+      <application>Valgrind</application>.
+    </para> -->
 
   </sect2>
 
@@ -148,12 +158,11 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          libdrm.so, libdrm_amdgpu.so, libdrm_intel.so, libdrm_nouveau.so,
-          libdrm_radeon.so and libkms.so
+          libdrm_amdgpu.so, libdrm_intel.so, libdrm_nouveau.so,
+          libdrm_radeon.so, libdrm.so, and libkms.so
         </seg>
         <seg>
-          /usr/include/libdrm and
-          /usr/include/libkms
+          /usr/include/lib{drm,kms}
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -163,23 +172,11 @@ make</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="libdrm-lib">
-        <term><filename class="libraryfile">libdrm.so</filename></term>
-        <listitem>
-          <para>
-            contains the Direct Rendering Manager API functions.
-          </para>
-          <indexterm zone="libdrm libdrm-lib">
-            <primary sortas="c-libdrm">libdrm.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
       <varlistentry id="libdrm_amdgpu">
         <term><filename class="libraryfile">libdrm_amdgpu.so</filename></term>
         <listitem>
           <para>
-            contains the AMD specific DRM functions.
+            contains the AMDGPU specific Direct Rendering Manager functions.
           </para>
           <indexterm zone="libdrm libdrm_amdgpu">
             <primary sortas="c-libdrm_amdgpu">libdrm_amdgpu.so</primary>
@@ -209,6 +206,18 @@ make</userinput></screen>
           </para>
           <indexterm zone="libdrm libdrm_nouveau">
             <primary sortas="c-libdrm_nouveau">libdrm_nouveau.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libdrm-lib">
+        <term><filename class="libraryfile">libdrm.so</filename></term>
+        <listitem>
+          <para>
+            contains the Direct Rendering Manager API functions.
+          </para>
+          <indexterm zone="libdrm libdrm-lib">
+            <primary sortas="c-libdrm">libdrm.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
