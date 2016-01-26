@@ -6,15 +6,17 @@
 
   <!ENTITY libpng-download-http "&sourceforge-repo;/libpng/libpng-&libpng-version;.tar.xz">
   <!ENTITY libpng-download-ftp  " ">
-  <!ENTITY libpng-md5sum        "1e6a458429e850fc93c1f3b6dc00a48f">
-  <!ENTITY libpng-size          "920 KB">
-  <!ENTITY libpng-buildsize     "15 MB">
-  <!ENTITY libpng-time          "0.9 SBU (with the test suite)">
+  <!ENTITY libpng-md5sum        "3bacb4728f6694a64ad9052769d6a4ce">
+  <!ENTITY libpng-size          "924 KB">
+  <!ENTITY libpng-buildsize     "16 MB (with tests)">
+  <!ENTITY libpng-time          "0.6 SBU (with tests)">
 
-  <!ENTITY apng-version "1.6.19">
+  <!ENTITY apng-version "&libpng-version;">
 
+  <!--<!ENTITY apng-patch
+           "&sourceforge-repo;/libpng-apng/libpng-&apng-version;-apng.patch.gz">-->
   <!ENTITY apng-patch
-           "&sourceforge-repo;/libpng-apng/libpng-&apng-version;-apng.patch.gz">
+           "&sourceforge-repo;/project/apng/libpng/libpng16/libpng-&apng-version;-apng.patch.gz">
 ]>
 
 <sect1 id="libpng" xreflabel="libpng-&libpng-version;">
@@ -84,7 +86,9 @@
           Optional patch to include animated png functionality in
           <application>libpng</application> (required to use the system
           <application>libpng</application> in
-          <application>Firefox</application>): <ulink url="&apng-patch;"/>
+          <application>Firefox</application>),
+          <application>Seamonkey</application>), and
+          <application>Thunderbird</application>): <ulink url="&apng-patch;"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -101,7 +105,8 @@
       If you want to patch libpng to support apng files, apply the patch:
     </para>
 
-<screen><userinput>gzip -cd ../libpng-&apng-version;-apng.patch.gz | patch -p1</userinput></screen>
+<!--<screen><userinput>gzip -cd ../libpng-&apng-version;-apng.patch.gz | patch -p1</userinput></screen>-->
+<screen><userinput>gzip -cd ../libpng-&apng-version;-apng.patch.gz | patch -p0</userinput></screen>
 
     <para>
       Install <application>libpng</application> by running the following
@@ -143,14 +148,10 @@ cp -v README libpng-manual.txt /usr/share/doc/libpng-&libpng-version;</userinput
 
       <seglistitem>
         <seg>
-          libpng-config (symlink), 
-          libpng16-config, 
-          pngfix, 
-          and png-fix-itxt
+          libpng-config (symlink), libpng16-config, pngfix and png-fix-itxt
         </seg>
         <seg>
-          libpng.so and 
-          libpng16.so
+          libpng.so
         </seg>
         <seg>
           /usr/include/libpng16 and

@@ -30,44 +30,32 @@
     <title>Introduction to OpenJPEG</title>
 
     <para>
-      <application>OpenJPEG</application> is an open-source implementation
-      of the JPEG-2000 standard. OpenJPEG fully respects the JPEG-2000
+      <application>OpenJPEG</application> is an open-source implementation of
+      the JPEG-2000 standard. OpenJPEG fully respects the JPEG-2000
       specifications and can compress/decompress lossless 16-bit images.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
-        <para>
-          Download (HTTP): <ulink url="&openjpeg2-download-http;"/>
-        </para>
+        <para>Download (HTTP): <ulink url="&openjpeg2-download-http;"/></para>
       </listitem>
       <listitem>
-        <para>
-          Download (FTP): <ulink url="&openjpeg2-download-ftp;"/>
-        </para>
+        <para>Download (FTP): <ulink url="&openjpeg2-download-ftp;"/></para>
       </listitem>
       <listitem>
-        <para>
-          Download MD5 sum: &openjpeg2-md5sum;
-        </para>
+        <para>Download MD5 sum: &openjpeg2-md5sum;</para>
       </listitem>
       <listitem>
-        <para>
-          Download size: &openjpeg2-size;
-        </para>
+        <para>Download size: &openjpeg2-size;</para>
       </listitem>
       <listitem>
-        <para>
-          Estimated disk space required: &openjpeg2-buildsize;
-        </para>
+        <para>Estimated disk space required: &openjpeg2-buildsize;</para>
       </listitem>
       <listitem>
-        <para>
-          Estimated build time: &openjpeg2-time;
-        </para>
+        <para>Estimated build time: &openjpeg2-time;</para>
       </listitem>
     </itemizedlist>
 
@@ -80,15 +68,15 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="doxygen"/> (to build the API documentation),
-      <xref linkend="lcms2"/>,
-      <xref linkend="libpng"/> and
-      <xref linkend="libtiff"/>
+    <xref linkend="lcms2"/>,
+    <xref linkend="libpng"/>,
+    <xref linkend="libtiff"/>, and
+    <xref linkend="doxygen"/> (to build the API documentation)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/openjpeg2"/>
-    </para>
+    <ulink url="&blfs-wiki;/openjpeg2"/></para>
+
   </sect2>
 
   <sect2 role="installation">
@@ -99,30 +87,37 @@
       following commands:
     </para>
 
-<screen><userinput>mkdir build &amp;&amp;
-cd    build &amp;&amp;
+<screen><userinput>mkdir -v build &amp;&amp;
+cd       build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr \
-      -DCMAKE_BUILD_TYPE=Release  \
-      .. &amp;&amp;
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr .. &amp;&amp;
 make</userinput></screen>
 
-    <para>
-      This package does not have a working testsuite.
-    </para>
+<!-- Thread discussing the tests, fixing instructions,
+  but obtaining poor results:
+  http://lists.linuxfromscratch.org/pipermail/blfs-dev/2015-April/030035.html
+-->
+    <para>This package does not come with a working test suite.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
 
 pushd ../doc &amp;&amp;
-for man in man/man?/*
-do
-  install -v -Dm644 $man /usr/share/$man
+for man in man/man?/* ; do
+    install -v -D -m 644 $man /usr/share/$man
 done         &amp;&amp;
 popd</userinput></screen>
 
   </sect2>
+<!--
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para><option>-DBUILD_TESTING=ON</option>: This switch enables
+    building the test suite.</para>
+
+  </sect2>-->
 
   <sect2 role="content">
     <title>Contents</title>
@@ -133,16 +128,9 @@ popd</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>
-          opj_compress, opj_decompress and opj_dump
-        </seg>
-        <seg>
-          libopenjp2.so
-        </seg>
-        <seg>
-          /usr/include/openjpeg-2.1 and
-          /usr/lib/openjpeg-2.1
-        </seg>
+        <seg>opj_compress, opj_decompress, and opj_dump</seg>
+        <seg>libopenjp2.so</seg>
+        <seg>/usr/include/openjpeg-2.1 and /usr/lib/openjpeg-2.1</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -154,9 +142,7 @@ popd</userinput></screen>
       <varlistentry id="opj_compress">
         <term><command>opj_compress</command></term>
         <listitem>
-          <para>
-            converts various image formats to the JPEG-2000 format.
-          </para>
+          <para>converts various image formats to the jpeg2000 format.</para>
           <indexterm zone="openjpeg2 opj_compress">
             <primary sortas="b-opj_compress">opj_compress</primary>
           </indexterm>
@@ -166,9 +152,7 @@ popd</userinput></screen>
       <varlistentry id="opj_decompress">
         <term><command>opj_decompress</command></term>
         <listitem>
-          <para>
-            converts JPEG-2000 images to other image types.
-          </para>
+          <para>converts jpeg2000 images to other image types.</para>
           <indexterm zone="openjpeg2 opj_decompress">
             <primary sortas="b-opj_decompress">opj_decompress</primary>
           </indexterm>
@@ -178,9 +162,7 @@ popd</userinput></screen>
       <varlistentry id="opj_dump">
         <term><command>opj_dump</command></term>
         <listitem>
-          <para>
-            reads in a JPEG-2000 image and dumps the contents to stdout.
-          </para>
+          <para>reads in a jpeg2000 image and dumps the contents to stdout.</para>
           <indexterm zone="openjpeg2 opj_dump">
             <primary sortas="b-opj_dump">opj_dump</primary>
           </indexterm>

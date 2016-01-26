@@ -5,16 +5,16 @@
   %general-entities;
 
   <!ENTITY freetype2-download-http "&sourceforge-repo;/freetype/freetype-&freetype2-version;.tar.bz2">
-  <!ENTITY freetype2-download-ftp  " ">
-  <!ENTITY freetype2-md5sum        "35cb8f4d9e5906847901bb39324c2f80">
+  <!ENTITY freetype2-download-ftp  "&gentoo-ftp-repo;/freetype-&freetype2-version;.tar.bz2">
+  <!ENTITY freetype2-md5sum        "86109d0c998787d81ac582bad9adf82e">
   <!ENTITY freetype2-size          "1.7 MB">
-  <!ENTITY freetype2-buildsize     "33 MB">
-  <!ENTITY freetype2-time          "0.2 SBU">
+  <!ENTITY freetype2-buildsize     "34 MB (includes installing additional documentation)">
+  <!ENTITY freetype2-time          "0.2 SBU (includes installing additional documentation)">
 
-  <!ENTITY freetype2-doc-version       "2.6">
+  <!ENTITY freetype2-doc-version   "2.6.2">
   <!ENTITY freetype2-doc-download-http "&sourceforge-repo;/freetype/freetype-doc-&freetype2-doc-version;.tar.bz2">
-  <!ENTITY freetype2-doc-download-ftp  " ">
-  <!ENTITY freetype2-doc-md5sum        "9a6f668a2bef1ac3f65c619af22a17bc">
+  <!ENTITY freetype2-doc-download-ftp  "&gentoo-ftp-repo;/freetype-doc-&freetype2-doc-version;.tar.bz2">
+  <!ENTITY freetype2-doc-md5sum        "22bd94ab15fc4b434e20161b866d7c3e">
   <!ENTITY freetype2-doc-size          "468 KB">
 ]>
 
@@ -50,11 +50,11 @@
           Download (HTTP): <ulink url="&freetype2-download-http;"/>
         </para>
       </listitem>
-      <listitem>
+<!--      <listitem>
         <para>
           Download (FTP): <ulink url="&freetype2-download-ftp;"/>
         </para>
-      </listitem>
+      </listitem> -->
       <listitem>
         <para>
           Download MD5 sum: &freetype2-md5sum;
@@ -85,11 +85,11 @@
           Download (HTTP): <ulink url="&freetype2-doc-download-http;"/>
         </para>
       </listitem>
-      <listitem>
+<!--      <listitem>
         <para>
           Download (FTP): <ulink url="&freetype2-doc-download-ftp;"/>
         </para>
-      </listitem>
+      </listitem> -->
       <listitem>
         <para>
           Download MD5 sum: &freetype2-doc-md5sum;
@@ -103,7 +103,7 @@
     </itemizedlist>
 
     <bridgehead renderas="sect3">FreeType2 Dependencies</bridgehead>
- 
+
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="harfbuzz"/>
@@ -133,12 +133,12 @@
       commands:
     </para>
 
-<screen><userinput>sed -i  -e "/AUX.*.gxvalid/s@^# @@" \
-        -e "/AUX.*.otvalid/s@^# @@" \
-        modules.cfg                        &amp;&amp;
+<screen><userinput>sed -e "/AUX.*.gxvalid/s@^# @@" \
+    -e "/AUX.*.otvalid/s@^# @@" \
+    -i modules.cfg              &amp;&amp;
 
-sed -ri -e 's:.*(#.*SUBPIXEL.*) .*:\1:' \
-        include/freetype/config/ftoption.h          &amp;&amp;
+sed -e 's:.*\(#.*SUBPIXEL.*\) .*:\1:' \
+    -i include/freetype/config/ftoption.h  &amp;&amp;
 
 ./configure --prefix=/usr --disable-static &amp;&amp;
 make</userinput></screen>
@@ -164,7 +164,7 @@ cp -v -R docs/*     /usr/share/doc/freetype-&freetype2-version;</userinput></scr
       <command>sed -e ...</command>: First command enables GX/AAT and OpenType
       table validation and second command enables Subpixel Rendering and
       Subpixel Hinting in order to improve font rendering. Note that Subpixel
-      Rendering may have patent issues. Be sure to read the <literal>'Other
+      Rendering may have patent issues.  Be sure to read the <literal>'Other
       patent issues'</literal> part of
       <ulink url="http://www.freetype.org/patents.html"/>
       before enabling this option.

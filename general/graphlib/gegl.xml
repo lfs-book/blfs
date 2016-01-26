@@ -6,6 +6,7 @@
 
   <!ENTITY gegl-download-http "http://download.gimp.org/pub/gegl/0.2/gegl-&gegl-version;.tar.bz2">
   <!ENTITY gegl-download-ftp " ">
+<!--  <!ENTITY gegl-download-ftp "ftp://ftp.gimp.org/pub/gegl/0.2/gegl-&gegl-version;.tar.bz2">-->
   <!ENTITY gegl-md5sum        "32b00002f1f1e316115c4ed922e1dec8">
   <!ENTITY gegl-size          "7.2 MB">
   <!ENTITY gegl-buildsize     "50 MB">
@@ -34,7 +35,7 @@
       image processing format.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,6 +82,7 @@
     </itemizedlist>
 
     <bridgehead renderas="sect3">gegl Dependencies</bridgehead>
+
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
@@ -141,7 +143,7 @@ LC_ALL=en_US make</userinput></screen>
 
 <screen role="root"><userinput>make install &amp;&amp;
 install -v -m644 docs/*.{css,html} /usr/share/gtk-doc/html/gegl &amp;&amp;
-install -v -dm755 /usr/share/gtk-doc/html/gegl/images &amp;&amp;
+install -d -v -m755 /usr/share/gtk-doc/html/gegl/images &amp;&amp;
 install -v -m644 docs/images/* /usr/share/gtk-doc/html/gegl/images</userinput></screen>
   </sect2>
 
@@ -155,13 +157,19 @@ install -v -m644 docs/images/* /usr/share/gtk-doc/html/gegl/images</userinput></
       <filename>gegl.css</filename>.
     </para>
 
+    <para>
+      <option>--without-vala</option>: Do not create a
+      <application>vala</application> API - use this if
+      <command>vapigen</command> breaks the build.
+    </para>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="../../xincludes/gtk-doc-rebuild.xml"/>
 
     <para>
-      <envar>LC_ALL=en_US</envar>: In some locales with <xref linkend="ruby"/>
+      <envar>LC_ALL=en_US</envar>: In some locales with <xref linkend='ruby'/>
       installed, one build component fails and prevents completion of the
-      procedure. Using this variable avoids the problem.
+      procedure.  Using this variable avoids the problem.
     </para>
 
   </sect2>
@@ -175,15 +183,9 @@ install -v -m644 docs/images/* /usr/share/gtk-doc/html/gegl/images</userinput></
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>
-          gegl
-        </seg>
-        <seg>
-          libgegl-0.2.so
-        </seg>
-        <seg>
-          /usr/include/gegl-0.2
-        </seg>
+        <seg>gegl</seg>
+        <seg>libgegl-0.2.so and libraries in /usr/lib/gegl-0.2</seg>
+        <seg>/usr/include/gegl-0.2</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -205,7 +207,7 @@ install -v -m644 docs/images/* /usr/share/gtk-doc/html/gegl/images</userinput></
       </varlistentry>
 
       <varlistentry id="libgegl-0.2">
-        <term><filename class="libraryfile">libgegl-0.2.so</filename></term>
+        <term><filename class='libraryfile'>libgegl-0.2.so</filename></term>
         <listitem>
           <para>
             provides infrastructure to do demand based cached non destructive
@@ -216,9 +218,6 @@ install -v -m644 docs/images/* /usr/share/gtk-doc/html/gegl/images</userinput></
           </indexterm>
         </listitem>
       </varlistentry>
-
     </variablelist>
-
   </sect2>
-
 </sect1>
