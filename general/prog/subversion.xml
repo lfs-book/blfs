@@ -7,10 +7,10 @@
   <!ENTITY subversion-download-http
            "http://www.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">
   <!ENTITY subversion-download-ftp  " ">
-  <!ENTITY subversion-md5sum        "766a89bbbb388f8eb76166672d3b9e49">
-  <!ENTITY subversion-size          "6.6 MB">
-  <!ENTITY subversion-buildsize     "143 MB  (284 MB with all bindings and API documentation built; additional 968 MB for tests)">
-  <!ENTITY subversion-time          "0.9 SBU (Additional 30 SBU to build documentation, all bindings and to run full test suite.)">
+  <!ENTITY subversion-md5sum        "20ae7b0d4ef07eeaf73eb4e23317b495">
+  <!ENTITY subversion-size          "7.4 MB">
+  <!ENTITY subversion-buildsize     "130 MB (349 MB with all bindings and API documentation built; additional 703 MB for tests)">
+  <!ENTITY subversion-time          "1.1 SBU (2.9 SBU with all bindings and API documentation built; additional 11 SBU for tests)">
 ]>
 
 <sect1 id="subversion" xreflabel="Subversion-&subversion-version;">
@@ -41,7 +41,7 @@
       a repository is covered at <xref linkend="svnserver"/>.
     </para>
 
-    &lfs76_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,7 +87,6 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="openssl"/> and
       <xref linkend="serf"/> (for handling http:// and https:// URLs)
     </para>
 
@@ -198,8 +197,7 @@ make</userinput></screen>
 <screen><userinput>make swig-rb</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make -k check</command>. One test
-      (wc-queries-test) is known to fail with recent versions of SQLite. 
+      To test the results, issue: <command>make check</command>.
     </para>
 
     <para>
@@ -218,9 +216,9 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make -j1 install &amp;&amp;
-install -v -m755 -d /usr/share/doc/subversion-&subversion-version; &amp;&amp;
-cp      -v -R       doc/* \
-                    /usr/share/doc/subversion-&subversion-version;</userinput></screen>
+install -v -dm755 /usr/share/doc/subversion-&subversion-version; &amp;&amp;
+cp      -rv       doc/* \
+                  /usr/share/doc/subversion-&subversion-version;</userinput></screen>
 
     <para>
       If you have built any of the <application>Java</application>,
@@ -338,17 +336,16 @@ cp      -v -R       doc/* \
         </seg>
         <seg>
           /usr/include/subversion-1,
-          /usr/lib/perl5/site_perl/&lfs-perl-version;/auto/SVN (optional),
-          /usr/lib/perl5/site_perl/&lfs-perl-version;/SVN (optional),
-          /usr/lib/python&python2-majorver;/site-packages/libsvn (optional),
-          /usr/lib/python&python2-majorver;/site-packages/svn (optional),
-          /usr/lib/ruby/site_ruby/&lt;x.y&gt;/i686-linux/svn (optional),
-          /usr/lib/ruby/site_ruby/&lt;x.y&gt;/svn (optional),
+          /usr/lib/perl5/site_perl/&lfs-perl-version;/auto/SVN,
+          /usr/lib/perl5/site_perl/&lfs-perl-version;/SVN,
+          /usr/lib/python&python2-majorver;/site-packages/{libsvn,svn},
+          /usr/lib/ruby/site_ruby/&lt;x.y.z&gt;/&lt;arch-linux&gt;-linux/svn,
+          /usr/lib/ruby/site_ruby/&lt;x.y.z&gt;/svn,
+          /usr/lib/svn-javahl, and
+          /usr/share/doc/subversion-&subversion-version;
 <!--      /usr/lib/svn-python/libsvn (optional),
           /usr/lib/svn-python/svn (optional),
 -->
-          /usr/lib/svn-javahl (optional), and
-          /usr/share/doc/subversion-&subversion-version;
         </seg>
       </seglistitem>
     </segmentedlist>
