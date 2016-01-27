@@ -4,16 +4,19 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY xorg-intel-driver-version "2.99.917">
+  <!--  <!ENTITY xorg-intel-driver-version "2.99.917"> -->
+  <!ENTITY xorg-intel-driver-version "0340718">
 
-  <!ENTITY xorg-intel-driver-download-http "&xorg-download-http;/driver/xf86-video-intel-&xorg-intel-driver-version;.tar.bz2">
-  <!ENTITY xorg-intel-driver-download-ftp  "&xorg-download-ftp;/driver/xf86-video-intel-&xorg-intel-driver-version;.tar.bz2">
-  <!ENTITY xorg-intel-driver-md5sum        "fa196a66e52c0c624fe5d350af7a5e7b">
-  <!ENTITY xorg-intel-driver-size          "2.2 MB">
+<!--  <!ENTITY xorg-intel-driver-download-http "&xorg-download-http;/driver/xf86-video-intel-&xorg-intel-driver-version;.tar.bz2">
+  <!ENTITY xorg-intel-driver-download-ftp  "&xorg-download-ftp;/driver/xf86-video-intel-&xorg-intel-driver-version;.tar.bz2"> -->
+  <!ENTITY xorg-intel-driver-download-http "&sources-anduin-http;/xf86-video-intel/xf86-video-intel-&xorg-intel-driver-version;.tar.xz">
+  <!ENTITY xorg-intel-driver-download-ftp  "&sources-anduin-ftp;/xf86-video-intel/xf86-video-intel-&xorg-intel-driver-version;.tar.xz">
+  <!ENTITY xorg-intel-driver-md5sum        "e960269189c7d6619712570db38abe7f">
+  <!ENTITY xorg-intel-driver-size          "14 MB">
 <!-- commented, remeasured for re-enabling uxa as well as sna
   <!ENTITY xorg-intel-driver-buildsize     "70 MB"> -->
-  <!ENTITY xorg-intel-driver-buildsize     "78 MB">
-  <!ENTITY xorg-intel-driver-time          "0.6 SBU">
+  <!ENTITY xorg-intel-driver-buildsize     "86 MB">
+  <!ENTITY xorg-intel-driver-time          "0.7 SBU">
 ]>
 
   <!-- Begin Xorg Intel Driver -->
@@ -118,9 +121,7 @@
         commands:
       </para>
 
-<screen><userinput>sed -i "/#include &lt;errno.h&gt;/a #include &lt;sys/stat.h&gt;" src/uxa/intel_driver.c &amp;&amp;
-sed -i "/#include &lt;errno.h&gt;/a #include &lt;sys/stat.h&gt;" src/sna/sna_driver.c &amp;&amp;
-./configure $XORG_CONFIG --enable-kms-only &amp;&amp;
+<screen><userinput>./configure $XORG_CONFIG --enable-kms-only &amp;&amp;
 make</userinput></screen>
 
       <para>
@@ -145,9 +146,8 @@ make</userinput></screen>
         with gcc-5 and kernel headers from linux-4.0, trying to run this driver
         using SNA will cause a segfault on some, or perhaps all, of the
         supported chips if a 4.0 or newer kernel is used (a 3.19.0 kernel, also
-        built with gcc-5, worked ok). To work around this, as well as enabling
-        support for UXA, it is necessary to force UXA to be used by creating a
-        configuration file.
+        built with gcc-5, worked ok). However, the version of the code in the VCS
+        listed above has been tested successfully with both capabilities.
        </para>
 
       <para>
