@@ -7,9 +7,9 @@
   <!ENTITY valgrind-download-http "http://valgrind.org/downloads/valgrind-&valgrind-version;.tar.bz2">
   <!ENTITY valgrind-download-ftp  " ">
   <!ENTITY valgrind-md5sum        "4ea62074da73ae82e0162d6550d3f129">
-  <!ENTITY valgrind-size          "11.4 MB">
-  <!ENTITY valgrind-buildsize     "572 MB (with the test suite)">
-  <!ENTITY valgrind-time          "4.3 SBU (with the test suite)">
+  <!ENTITY valgrind-size          "10.5 MB">
+  <!ENTITY valgrind-buildsize     "343 MB (additional 228 MB for tests)">
+  <!ENTITY valgrind-time          "1.2 SBU (additional 5.1 SBU for tests)">
 ]>
 
 <sect1 id="valgrind" xreflabel="Valgrind-&valgrind-version;">
@@ -34,7 +34,7 @@
       building dynamic analysis tools. There are Valgrind tools that can
       automatically detect many memory management and threading bugs, and
       profile programs in detail. Valgrind can also be used to build new
-      tools. 
+      tools.
     </para>
 
     &lfs78_checked;
@@ -78,14 +78,14 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="boost"/>,
-      <xref linkend="llvm"/> (with Clang), 
+      <xref linkend="llvm"/> (with Clang),
       <xref linkend="gdb"/> (for tests), and
-      <ulink url="http://www.open-mpi.org/">OpenMPI</ulink>
+      <ulink url="http://www.openmp.org">OpenMP</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional for regenerating the documentation</bridgehead>
     <para role="optional">
-      <xref linkend="libxslt"/> and 
+      <xref linkend="libxslt"/> and
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
     </para>
 
@@ -97,15 +97,20 @@
   <sect2 role="installation">
     <title>Installation of Valgrind</title>
 
-    <para>Install <application>Valgrind</application> by running the following
-    commands:</para>
+    <para>
+      Install <application>Valgrind</application> by running the following
+      commands:
+    </para>
 
-<screen><userinput>sed -i "s:/doc/valgrind::g" docs/Makefile.in &amp;&amp;
-./configure --prefix=/usr --datadir=/usr/share/doc/valgrind-&valgrind-version; &amp;&amp;
+<screen><userinput>sed -i 's|/doc/valgrind||' docs/Makefile.in &amp;&amp;
+
+./configure --prefix=/usr \
+            --datadir=/usr/share/doc/valgrind-&valgrind-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make regtest</command>.
+      To test the results, issue: <command>make regtest</command>. The tests
+      may hang forever if <xref linkend="gdb"/> is not installed.
     </para>
 <!--  Note to maintainer: Recheck when next texlive (2015) is released.
     <para>
@@ -142,22 +147,22 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          callgrind_annotate, 
-          callgrind_control, 
-          cg_annotate, 
-          cg_diff, 
-          cg_merge, 
-          ms_print, 
-          valgrind, 
+          callgrind_annotate,
+          callgrind_control,
+          cg_annotate,
+          cg_diff,
+          cg_merge,
+          ms_print,
+          valgrind,
           valgrind-di-server,
-          valgrind-listener, and 
+          valgrind-listener, and
           vgdb
         </seg>
         <seg>
           libcoregrind-&lt;Arch&gt;-linux.a,
           libreplacemalloc_toolpreload-&lt;Arch&gt;-linux.a,
           libvex-&lt;Arch&gt;-linux.a,
-          libvexmultiarch-&lt;Arch&gt;-linux.a,
+          libvexmultiarch-amd64-linux.a,
           vgpreload_core-&lt;Arch&gt;-linux.so,
           vgpreload_drd-&lt;Arch&gt;-linux.so,
           vgpreload_exp-dhat-&lt;Arch&gt;-linux.so,
@@ -165,11 +170,11 @@ make</userinput></screen>
           vgpreload_helgrind-&lt;Arch&gt;-linux.so,
           vgpreload_massif-&lt;Arch&gt;-linux.so, and
           vgpreload_memcheck-&lt;Arch&gt;-linux.so, where
-          &lt;Arch&gt;=x86, amd64. Libraries are in /usr/lib/valgrind.
+          &lt;Arch&gt; is x86 or amd64
         </seg>
         <seg>
           /usr/lib/valgrind,
-          /usr/include/valgrind, and 
+          /usr/include/valgrind, and
           /usr/share/doc/valgrind-&valgrind-version;
         </seg>
       </seglistitem>
@@ -210,7 +215,7 @@ make</userinput></screen>
         <term><command>callgrind_control</command></term>
         <listitem>
           <para>
-            controls programs being run by the <application>Valgrind</application> 
+            controls programs being run by the <application>Valgrind</application>
             tool Callgrind.
           </para>
           <indexterm zone="valgrind callgrind_control">
@@ -223,7 +228,7 @@ make</userinput></screen>
         <term><command>cg_annotate</command></term>
         <listitem>
           <para>
-            is a post-processing tool for the <application>Valgrind</application> 
+            is a post-processing tool for the <application>Valgrind</application>
             tool Cachegrind.
           </para>
           <indexterm zone="valgrind cg_annotate">
@@ -273,7 +278,7 @@ make</userinput></screen>
         <term><command>valgrind-di-server</command></term>
         <listitem>
           <para>
-            is a server that reads debuginfo from objects stored on a 
+            is a server that reads debuginfo from objects stored on a
             different machine.
           </para>
           <indexterm zone="valgrind valgrind-di-server">

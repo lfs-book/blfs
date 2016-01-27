@@ -6,10 +6,10 @@
 
   <!ENTITY doxygen-download-http "http://ftp.stack.nl/pub/doxygen/doxygen-&doxygen-version;.src.tar.gz">
   <!ENTITY doxygen-download-ftp  "ftp://ftp.stack.nl/pub/doxygen/doxygen-&doxygen-version;.src.tar.gz">
-  <!ENTITY doxygen-md5sum        "79767ccd986f12a0f949015efb5f058f">
-  <!ENTITY doxygen-size          "4.6 MB">
-  <!ENTITY doxygen-buildsize     "174 MB (with all programs, docs, and tests)">
-  <!ENTITY doxygen-time          "2.7 SBU (with all programs, docs, and tests)">
+  <!ENTITY doxygen-md5sum        "f4697a444feaed739cfa2f0644abc19b">
+  <!ENTITY doxygen-size          "4.7 MB">
+  <!ENTITY doxygen-buildsize     "176 MB (with all programs, docs and tests)">
+  <!ENTITY doxygen-time          "2.4 SBU (with all programs, docs and tests)">
 ]>
 
 <sect1 id="doxygen" xreflabel="Doxygen-&doxygen-version;">
@@ -50,7 +50,7 @@
       automatically.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -85,6 +85,14 @@
         </para>
       </listitem>
     </itemizedlist>
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing='compact'>
+      <listitem>
+        <para>Required patch: <ulink
+          url="&patch-root;/doxygen-&doxygen-version;-flex_2_6_0_fix-1.patch"/></para>
+      </listitem>
+    </itemizedlist>-->
 
     <bridgehead renderas="sect3">Doxygen Dependencies</bridgehead>
 
@@ -97,10 +105,11 @@
     <para role="optional">
       <xref linkend="graphviz"/>,
       <xref linkend="gs"/>,
-      <xref linkend="libxml2"/>,
+      <xref linkend="libxml2"/> (required for the tests),
       <xref linkend="llvm"/> (with clang),
       <xref linkend="python2"/> or <xref linkend="python3"/>,
-      <xref linkend="qt4"/> (for doxywizard),
+      <xref linkend="qt4"/> or
+      <xref linkend="qt5"/> (for doxywizard),
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>) and
       <xref linkend="xapian"/> (for doxyindexer)
     </para>
@@ -119,28 +128,27 @@
     </para>
 
 <screen><userinput>mkdir -v build &amp;&amp;
-cd build &amp;&amp;
-cmake -G "Unix Makefiles"      \
-   -DCMAKE_BUILD_TYPE=Release  \
-   -DCMAKE_INSTALL_PREFIX=/usr \
-   .. &amp; &amp;
+cd       build &amp;&amp;
+
+cmake -G "Unix Makefiles"         \
+      -DCMAKE_BUILD_TYPE=Release  \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      .. &amp;&amp;
 
 make</userinput></screen>
 
     <para>
-      To test the results, issue this: <command>make tests</command>.
+      To test the results, issue: <command>make tests</command>.
     </para>
 
     <para>
-       If you wish to generate the package documentation, you must have
-       <xref linkend="python2"/>, <xref linkend="texlive"/> (for HTML
-       documentation), and <xref linkend="gs"/> (for PDF docs) installed, then
-       issue the following commands:
+      If you wish to generate the package documentation, you must have
+      <application>Python</application>, <application>TeX Live</application>
+      (for HTML docs) and <application>Ghostscript</application> (for PDF docs)
+      installed, then issue the following command:
     </para>
 
-<screen><userinput>sed -i 's:man/man1:share/&amp;:' ../doc/CMakeLists.txt &amp;&amp;
-
-cmake -DDOC_INSTALL_DIR=share/doc/doxygen-&doxygen-version; -Dbuild_doc=ON .. &amp;&amp;
+<screen><userinput>cmake -DDOC_INSTALL_DIR=share/doc/doxygen-&doxygen-version; -Dbuild_doc=ON .. &amp;&amp;
 
 make docs</userinput></screen>
 
@@ -149,15 +157,13 @@ make docs</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-install -v -m644 ../doc/*.1 /usr/share/man/man1</userinput></screen>
+install -vm644 ../doc/*.1 /usr/share/man/man1</userinput></screen>
 
     <para>
-
-      If you generated the package documentation, install it by executing the
-      following command as the <systemitem class="username">root</systemitem> user:
-   </para>
-
-<screen role="root"><userinput>make docs install</userinput></screen>
+      If you have generated the package documentation, then the man pages are
+      automatically installed, and you do not need to run the last
+      <command>install ...</command> command.
+    </para>
 
   </sect2>
 
@@ -165,27 +171,27 @@ install -v -m644 ../doc/*.1 /usr/share/man/man1</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i ... CMakeLists.txt</command>: Fixes the directory where
-      the man pages are installed.
-    </para>
-
-    <para>
       <option>-Dbuild_wizard=ON</option>: Use this switch if
       <application>Qt4</application> is installed and you wish to build the GUI
-      frontend.
+      front-end.
     </para>
 
     <para>
       <option>-Dbuild_search=ON</option>: Use this switch if
-      you have installed <xref linkend="xapian"/> and you wish to build the
+      <application>xapian</application> is installed and you wish to build
       external search tools (<command>doxysearch.cgi</command> and
-      <command>doxyindexer</command>).
+      <command>doxyindexer)</command>.
+    </para>
+
+    <para>
+      <option>-Dforce_qt4=ON</option>: Use this switch to build
+      <command>doxywizard</command> with Qt4 even if Qt5 is installed.
     </para>
 
     <para>
       <option>-Duse_libclang=ON</option>: Use this switch if
-      you have installed <application>Clang</application>
-      and you wish to to add support for libclang parsing.
+      <application>llvm</application> with <application>clang</application> are
+      installed, to add support for libclang parsing.
     </para>
 
   </sect2>
@@ -267,7 +273,8 @@ install -v -m644 ../doc/*.1 /usr/share/man/man1</userinput></screen>
           <para>
             generates a search index called <filename>doxysearch.db</filename>
             from one or more search data files produced by
-            <command>doxygen</command>.
+            <command>doxygen</command>. See, e.g. <ulink
+            url="http://www.stack.nl/~dimitri/doxygen/manual/extsearch.html"/>.
           </para>
           <indexterm zone="doxygen doxyindexer">
             <primary sortas="b-doxyindexer">doxyindexer</primary>

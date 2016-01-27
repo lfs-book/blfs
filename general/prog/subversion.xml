@@ -4,13 +4,15 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
+  <!--<!ENTITY subversion-download-http
+  "http://archive.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">-->
   <!ENTITY subversion-download-http
-           "http://www.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">
+  "http://www.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">
   <!ENTITY subversion-download-ftp  " ">
-  <!ENTITY subversion-md5sum        "20ae7b0d4ef07eeaf73eb4e23317b495">
-  <!ENTITY subversion-size          "7.4 MB">
-  <!ENTITY subversion-buildsize     "130 MB (349 MB with all bindings and API documentation built; additional 703 MB for tests)">
-  <!ENTITY subversion-time          "1.1 SBU (2.9 SBU with all bindings and API documentation built; additional 11 SBU for tests)">
+  <!ENTITY subversion-md5sum        "243036eb28b50ce517fc228eb3250add">
+  <!ENTITY subversion-size          "7.6 MB">
+  <!ENTITY subversion-buildsize     "429 MB (with all bindings and API documentation - additional 791 MB with tests)">
+  <!ENTITY subversion-time          "2.9 SBU (with all bindings and API documentation - additional 67 SBU for tests))">
 ]>
 
 <sect1 id="subversion" xreflabel="Subversion-&subversion-version;">
@@ -119,17 +121,27 @@
     <para role="optional">
       One of <xref linkend="openjdk"/>,
       <ulink url="http://www.inet.no/dante/">Dante</ulink> or
-      <ulink url="http://oss.software.ibm.com/developerworks/opensource/jikes/">Jikes</ulink>,
+      <ulink url="http://jikes.sourceforge.net/">Jikes</ulink>,
       and <xref linkend="junit"/> (to test the Java bindings)
     </para>
 
     <para condition="html" role="usernotes">
       User Notes: <ulink url="&blfs-wiki;/subversion"/>
     </para>
+
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of Subversion</title>
+
+      <note>
+        <para>
+          This package may fail during the make phase when using multiple
+          processors.  If this occurs try continuing with
+          <emphasis>make -j1</emphasis> or redo the entire build process with
+          fresh sources using <emphasis>-j1</emphasis>.
+        </para>
+      </note>
 
     <para>
       Install <application>Subversion</application> by running the following
@@ -147,113 +159,83 @@ make</userinput></screen>
     </para>
 
     <para>
-      If you are using multiple jobs to compile packages, then fix a bug in the
-      <filename>Makefile</filename> will prevent the
-      <application>Perl</application> bindings from compiling correctly:
+      If you passed the <option>--enable-javahl</option> parameter to
+      <command>configure</command> and wish to build the Java bindings, issue
+      the following command:
     </para>
-
-<screen><userinput>sed -i 's#Makefile.PL.in$#&amp; libsvn_swig_perl#' Makefile.in</userinput></screen>
+    <para>
+      <screen><command>make javahl</command></screen>
+    </para>
 
     <para>
-      If you want to compile <application>Java</application>,
-      <application>Perl</application>,
-      <application>Python2</application> or
-      <application>Ruby</application>
-      bindings, issue any of the following commands:
+      If you want to compile <application>Perl</application>,
+      <application>Python2</application>, or <application>Ruby</application>
+      bindings, issue any of the following command:
     </para>
-
-    <note>
-      <para>
-        Make sure that you have passed <option>--enable-javahl</option>
-        switch to <command>configure</command> before trying to build
-        the Java bindings.
-      </para>
-    </note>
-
     <para>
-      For <application>Java</application> bindings:
-    </para>
-
-<screen><userinput>make javahl</userinput></screen>
-
-    <para>
-      For <application>Perl</application> bindings:
-    </para>
-
-<screen><userinput>make swig-pl</userinput></screen>
-
-    <para>
-      For <application>Python2</application> bindings:
-    </para>
-
-<screen><userinput>make swig-py \
+      <screen><command>make swig-pl</command> # for <application>Perl</application>
+<command>make swig-py \
      swig_pydir=/usr/lib/python&python2-majorver;/site-packages/libsvn \
-     swig_pydir_extra=/usr/lib/python&python2-majorver;/site-packages/svn</userinput></screen>
-
-    <para>
-      For <application>Ruby</application> bindings:
+     swig_pydir_extra=/usr/lib/python&python2-majorver;/site-packages/svn</command> # for <application>Python</application>
+<command>make swig-rb</command> # for <application>Ruby</application></screen>
     </para>
-
-<screen><userinput>make swig-rb</userinput></screen>
 
     <para>
       To test the results, issue: <command>make check</command>.
     </para>
 
     <para>
+      The Java bindings test, <command>make check-javahl</command>, fails due to
+      errors in the test suite.  <!--To test the results of the Java bindings build,
+      issue <command>make check-javahl</command>. Note you must have the
+      <application>JUnit</application> testing framework installed.-->
+    </para>
+
+    <para>
       To test the results of any of the <application>SWIG</application>
       bindings, you can use any of the following commands:
-      <command>make check-javahl</command>,
       <command>make check-swig-pl</command>,
-      <command> make check-swig-py</command> or
-      <command>make check-swig-rb</command>. Note you must have the
-      <application>JUnit</application> testing framework installed if
-      running the Java bindings tests.
+      <command> make check-swig-py</command>, or
+      <command>make check-swig-rb</command>.
+    </para>
+
+    <para>
+      The Ruby bindings test, <command>make check-swig-rb</command>, fails due
+      to errors in the test suite.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make -j1 install &amp;&amp;
-install -v -dm755 /usr/share/doc/subversion-&subversion-version; &amp;&amp;
-cp      -rv       doc/* \
-                  /usr/share/doc/subversion-&subversion-version;</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+
+install -v -m755 -d /usr/share/doc/subversion-&subversion-version; &amp;&amp;
+cp      -v -R       doc/* \
+                    /usr/share/doc/subversion-&subversion-version;</userinput></screen>
 
     <para>
-      If you have built any of the <application>Java</application>,
-      <application>Perl</application>,
-      <application>Python2</application> or
+      If you built the Java bindings, issue the following command as the
+      <systemitem class="username">root</systemitem> user to install them:
+    </para>
+    <para>
+     <screen> <command>make install-javahl</command></screen>
+    </para>
+
+    <para>
+      If you built the <application>Perl</application>,
+      <application>Python2</application>, or
       <application>Ruby</application> bindings, issue any of the following
       commands as the <systemitem class="username">root</systemitem> user
       to install them:
     </para>
-
     <para>
-      For <application>Java</application> bindings:
+      <screen><command>make install-swig-pl</command>
+<command>make install-swig-py \
+      swig_pydir=/usr/lib/python&python2-majorver;/site-packages/libsvn \
+      swig_pydir_extra=/usr/lib/python&python2-majorver;/site-packages/svn</command>
+<command>make install-swig-rb</command></screen>
     </para>
-
-<screen role="root"><userinput>make install-javahl</userinput></screen>
-
-    <para>
-      For <application>Perl</application> bindings:
-    </para>
-
-<screen role="root"><userinput>make install-swig-pl</userinput></screen>
-
-    <para>
-      For <application>Python2</application> bindings:
-    </para>
-
-<screen role="root"><userinput>make install-swig-py \
-     swig_pydir=/usr/lib/python&python2-majorver;/site-packages/libsvn \
-     swig_pydir_extra=/usr/lib/python&python2-majorver;/site-packages/svn</userinput></screen>
-
-    <para>
-      For <application>Ruby</application> bindings:
-    </para>
-
-<screen role="root"><userinput>make install-swig-rb</userinput></screen>
 
   </sect2>
 
@@ -271,6 +253,11 @@ cp      -rv       doc/* \
       <application>Apache</application>'s configured module dir instead
       of <filename class="directory">/usr/libexec</filename>. It has no effect
       if <application>Apache</application> is not installed.
+    </para>
+
+    <para>
+      <option>---disable-gmock</option>: Do not use the Googlemock testing
+      framework.
     </para>
 
   </sect2>
@@ -324,8 +311,8 @@ cp      -rv       doc/* \
 
       <seglistitem>
         <seg>
-          svn, svnadmin, svndumpfilter, svnlook, svnmucc, svnrdump, svnserve,
-          svnsync, and svnversion
+          svn, svnadmin, svnbench, svndumpfilter, svnfsfs, svnlook, svnmucc,
+          svnrdump, svnserve, svnsync, and svnversion
         </seg>
         <seg>
           libsvn_*-1.so and optionally, a Java library, the mod_dav_svn.so and
@@ -336,16 +323,11 @@ cp      -rv       doc/* \
         </seg>
         <seg>
           /usr/include/subversion-1,
-          /usr/lib/perl5/site_perl/&lfs-perl-version;/auto/SVN,
-          /usr/lib/perl5/site_perl/&lfs-perl-version;/SVN,
-          /usr/lib/python&python2-majorver;/site-packages/{libsvn,svn},
-          /usr/lib/ruby/site_ruby/&lt;x.y.z&gt;/&lt;arch-linux&gt;-linux/svn,
-          /usr/lib/ruby/site_ruby/&lt;x.y.z&gt;/svn,
+          /usr/lib/perl5/site_perl/&lfs-perl-version;/{,auto/}SVN,
+          /usr/lib/python2.7/site-packages/{libsvn,svn},
+          /usr/lib/ruby/site_ruby/&lt;x.y.z&gt;/{,&lt;arch-linux&gt;-linux/}svn,
           /usr/lib/svn-javahl, and
           /usr/share/doc/subversion-&subversion-version;
-<!--      /usr/lib/svn-python/libsvn (optional),
-          /usr/lib/svn-python/svn (optional),
--->
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -381,6 +363,18 @@ cp      -rv       doc/* \
         </listitem>
       </varlistentry>
 
+      <varlistentry id="svnbench">
+        <term><command>svnbench</command></term>
+        <listitem>
+          <para>
+            is a benchmarking tool.
+          </para>
+          <indexterm zone="subversion svnbench">
+            <primary sortas="b-svnbench">svnbench</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="svndumpfilter">
         <term><command>svndumpfilter</command></term>
         <listitem>
@@ -390,6 +384,20 @@ cp      -rv       doc/* \
           </para>
           <indexterm zone="subversion svndumpfilter">
             <primary sortas="b-svndumpfilter">svndumpfilter</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="svnfsfs">
+        <term><command>svnfsfs</command></term>
+        <listitem>
+          <para>
+            is the FSFS (FileSystem atop of the FileSystem -
+            <application>Subversion</application> filesystem implementation)
+            repository manipulation tool.
+          </para>
+          <indexterm zone="subversion svnfsfs">
+            <primary sortas="b-svnfsfs">svnfsfs</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -6,10 +6,10 @@
 
   <!ENTITY gdb-download-http "https://ftp.gnu.org/gnu/gdb/gdb-&gdb-version;.tar.xz">
   <!ENTITY gdb-download-ftp  "ftp://ftp.gnu.org/gnu/gdb/gdb-&gdb-version;.tar.xz">
-  <!ENTITY gdb-md5sum        "2a35bac41fa8e10bf04f3a0dd7f7f363">
+  <!ENTITY gdb-md5sum        "39e654460c9cdd80200a29ac020cfe11">
   <!ENTITY gdb-size          "18 MB">
-  <!ENTITY gdb-buildsize     "580 MB (with the test suite)">
-  <!ENTITY gdb-time          "11.4 SBU (with the test suite)">
+  <!ENTITY gdb-buildsize     "419 MB (additional 349 MB for tests)">
+  <!ENTITY gdb-time          "2.4 SBU (add up to 7.8 SBU for tests)">
 ]>
 
 <sect1 id="gdb" xreflabel="GDB-&gdb-version;">
@@ -81,9 +81,10 @@
       <xref linkend="dejagnu"/> (for tests),
       <xref linkend="doxygen"/>,
       <xref linkend="guile"/>,
-      <xref linkend="python2"/>, and
-      <ulink url="http://sourceware.org/systemtap">SystemTap (optional runtime
-      dependency, also used in a few tests)</ulink>.
+      <xref linkend="python2"/>,
+      <xref linkend="valgrind"/>, and
+      <ulink url="https://sourceware.org/systemtap/">SystemTap</ulink>
+      (run-time dependency, also used in a few tests)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -110,23 +111,30 @@ make</userinput></screen>
 <screen><userinput>make -C gdb/doc doxy</userinput></screen>
 
     <para>
-      To run the test suite, issue the following commands:
+      To test the results, issue:
     </para>
 
 <screen><userinput>pushd gdb/testsuite &amp;&amp;
-make     site.exp &amp;&amp;
-echo "set gdb_test_timeout 120" >> site.exp &amp;&amp;
+make  site.exp      &amp;&amp;
+echo  "set gdb_test_timeout 120" &gt;&gt; site.exp &amp;&amp;
 runtest TRANSCRIPT=y
 popd</userinput></screen>
 
     <para>
-      There are many problems with the test suite. Your results will depend on 
-      installed compilers, as well as whether or not you are running it locally
-      or remotely. Although we do extend the timeout above, there are still many
-      tests that will time out. Note that by changing the timeout value, the 
-      number of tests is no longer conserved. There are also failures associated
-      with system readline 6.x among others. Unexpected failures should be about
-      0.5%.
+      See <emphasis>gdb/testsuite/README</emphasis> and <ulink
+      url="https://sourceware.org/gdb/wiki/TestingGDB">TestingGDB</ulink>.
+      There are many problems with the test suite. First one is that you need
+      to clean some directories, if re-running the tests. For that reason, it
+      is recommended to make a copy of the compiled source code directory,
+      before the tests, in case you need to run the tests again. Results depend
+      on installed compilers, there are differences if run locally or remotely,
+      a large number of timeouts (there is a variable that can be set to
+      increase time for timeout, but changing it, apparently the total number
+      of tests is not conserved), there are failures associated with system
+      readline 6.x, between others. A few tests assume that the header file
+      <filename>&lt;sys/sdt.h&gt;</filename>, part of <ulink
+      url="https://sourceware.org/systemtap/">SystemTap</ulink>, is present.
+      Unexpected failures are less than 0.3%.
     </para>
 
     <para>
@@ -163,8 +171,7 @@ cp -Rv gdb/doc/doxy /usr/share/doc/gdb-&gdb-version;</userinput></screen>
           libinproctrace.so
         </seg>
         <seg>
-          /usr/include/gdb and
-          /usr/share/gdb
+          /usr/{include,share}/gdb and /usr/share/doc/gdb-&gdb-version;
         </seg>
       </seglistitem>
     </segmentedlist>

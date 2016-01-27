@@ -6,10 +6,10 @@
 
   <!ENTITY cmake-download-http "http://www.cmake.org/files/v&cmake-major-version;/cmake-&cmake-version;.tar.gz">
   <!ENTITY cmake-download-ftp  " ">
-  <!ENTITY cmake-md5sum        "cd3034e0a44256a0917e25477217fc8">
-  <!ENTITY cmake-size          "6.4 MB">
-  <!ENTITY cmake-buildsize     "632 MB (with tests)">
-  <!ENTITY cmake-time          "13.2 SBU (with tests)">
+  <!ENTITY cmake-md5sum        "04545d3cc3801fe84223b864c4f7a53c">
+  <!ENTITY cmake-size          "6.5 MB">
+  <!ENTITY cmake-buildsize     "704 MB (with tests and cmake-gui)">
+  <!ENTITY cmake-time          "4 SBU, with parallelism = 4 (with tests and cmake-gui)">
 ]>
 
 <sect1 id="cmake" xreflabel="CMake-&cmake-version;">
@@ -79,15 +79,15 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="curl"/> and
-      <xref linkend="libarchive"/> 
+      <xref linkend="libarchive"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="qt4"/> or <xref linkend="qt5"/> (for the Qt-based GUI),
       <xref linkend="subversion"/> (for testing), and
-       <ulink url="http://pypi.python.org/pypi/Sphinx">Sphinx</ulink>
-       (for building documents)
+      <ulink url="http://pypi.python.org/pypi/Sphinx">Sphinx</ulink>
+      (for building documents)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -97,6 +97,13 @@
 
   <sect2 role="installation">
     <title>Installation of CMake</title>
+
+    <para>
+       If <application>Qt4</application> and <application>Qt5</application> are
+       installed in <filename class="directory">/opt</filename>, use
+       <command>source setqt4</command> or <command>source setqt5</command> to
+       choose which one will be used to build the Qt-based GUI.
+    </para>
 
     <para>
       Install <application>CMake</application> by running the following
@@ -111,7 +118,28 @@
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>bin/ctest</command>.
+      To test the results, issue: <command>bin/ctest
+      -j<replaceable>&lt;N&gt;</replaceable> -O
+      cmake-&cmake-version;-test.log</command>, where
+      <replaceable>&lt;N&gt;</replaceable> is an integer between 1 and the
+      number of system cores. For some systems, it may be necessary to run the
+      tests only for Qt4 using <command>source setq4</command>, then
+      <command>export CXXFLAGS="-std=c++11"</command> before the
+      <command>./bootstrap ...</command>) command.  If used, be sure to
+      <command>unset CXXFLAGS</command> after the tests.  One of the problematic
+      tests relates to the test procedures finding the correct Qt files. Eight
+      of 447 tests are known to fail under some circumstances related to Gtk+2
+      and c++ standards.
+
+     <!-- Please, don't remove this comment, needed if tests start to fail
+      again. If you want to investigate a problem with a given "problem1-test",
+      use <command>bin/ctest -R "problem1-test"</command> and, to omit it, use
+      <command>bin/ctest -E "problem1-test"</command>. These options can be
+      used together: <command>bin/ctest -R "problem1-test" -E
+      "problem2-test"</command>.  Option -N can be used to display all
+      available tests, and you can run <command>bin/ctest</command> for a
+      sub-set of tests by using separated by spaces names or numbers as
+      options. Option -/-help can be used to show all options.-->
     </para>
 
     <para>
@@ -127,10 +155,10 @@ make</userinput></screen>
 
     <para>
       <parameter>--system-libs</parameter>: This switch forces the build system
-      to link against the <application>Zlib</application>,
+      to link against <application>Zlib</application>,
       <application>Bzip2</application>, <application>cURL</application>,
       <application>Expat</application> and <application>libarchive</application>
-      packages already installed on the system.
+      installed on the system.
     </para>
 
     <para>
@@ -145,14 +173,6 @@ make</userinput></screen>
       <application>CMake</application>.
     </para>
 
-    <para>
-      <option>--qt-qmake=/usr/bin/qmake-qt5</option>: Use this switch if
-      you have both <application>Qt4</application> and
-      <application>Qt5</application> installed but wish to build the
-      <application>Qt5</application> based GUI (it defaults to
-      <application>Qt4</application> one).
-    </para>
-
   </sect2>
 
   <sect2 role="content">
@@ -165,11 +185,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          ccmake, 
-          cmake, 
-          cmake-gui (optional), 
-          cpack,
-          and ctest
+          ccmake, cmake, cmake-gui (optional), cpack and ctest
         </seg>
         <seg>
           None

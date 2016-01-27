@@ -6,18 +6,18 @@
 
   <!ENTITY llvm-download-http "http://llvm.org/releases/&llvm-version;/llvm-&llvm-version;.src.tar.xz">
   <!ENTITY llvm-download-ftp  " ">
-  <!ENTITY llvm-md5sum        "b98b9495e5655a672dbcb83e1a180f8e">
+  <!ENTITY llvm-md5sum        "bf8b3a2c79e61212c5409041dfdbd319">
   <!ENTITY llvm-size          "14 MB">
-  <!ENTITY llvm-buildsize     "1.7 GB (with Clang)">
-  <!ENTITY llvm-time          "39 SBU (with Clang and parallelism=2)">
+  <!ENTITY llvm-buildsize     "1.6 GB (with Clang and tests)">
+  <!ENTITY llvm-time          "13 SBU (with Clang, tests and parallelism = 4)">
 
   <!ENTITY clang-download-http "http://llvm.org/releases/&llvm-version;/cfe-&llvm-version;.src.tar.xz">
-  <!ENTITY clang-md5sum        "8f9d27335e7331cf0a4711e952f21f01">
-  <!ENTITY clang-size          "8.8 MB">
+  <!ENTITY clang-md5sum        "0acd026b5529164197563d135a8fd83e">
+  <!ENTITY clang-size          " 8.7 MB">
 
   <!ENTITY rt-version                "&llvm-version;">
   <!ENTITY compiler-rt-download-http "http://llvm.org/releases/&rt-version;/compiler-rt-&rt-version;.src.tar.xz">
-  <!ENTITY compiler-rt-md5sum        "383c10affd513026f08936b5525523f5">
+  <!ENTITY compiler-rt-md5sum        "1c6975daf30bb3b0473b53c3a1a6ff01">
   <!ENTITY compiler-rt-size          "1.2 MB">
 ]>
 
@@ -54,6 +54,15 @@
       C++ front-ends and runtime libraries for the
       <application>LLVM</application>.
     </para>
+
+    <note>
+      <para>
+        This package hits a bug in GCC-4.9.0 or an unpatched GCC-4.9.1.
+        To build this package, GCC needs to be updated if you have one of
+        these versions. See <xref linkend="gcc"/>
+        for <application>gcc</application> installation instructions.
+      </para>
+    </note>
 
     &lfs78_checked;
 
@@ -171,6 +180,14 @@ tar -xf ../compiler-rt-&rt-version;.src.tar.xz -C projects &amp;&amp;
 mv tools/cfe-&llvm-version;.src tools/clang &amp;&amp;
 mv projects/compiler-rt-&rt-version;.src projects/compiler-rt</userinput></screen>
 
+<!-- Only for 3.7.0: hopefully fixed on later versions -->
+    <para>
+      The run-time library needs to be fixed for 32 bit installations:
+    </para>
+
+<screen><userinput>sed -r "/ifeq.*CompilerTargetArch/s#i386#i686#g" \
+    -i projects/compiler-rt/make/platform/clang_linux.mk</userinput></screen>
+
     <para>
       Install <application>LLVM</application> by running the following
       commands:
@@ -179,13 +196,19 @@ mv projects/compiler-rt-&rt-version;.src projects/compiler-rt</userinput></scree
 <screen><userinput>sed -e "s:/docs/llvm:/share/doc/llvm-&llvm-version;:" \
     -i Makefile.config.in &amp;&amp;
 
-CC=gcc CXX=g++                   \
-./configure --prefix=/usr        \
-            --sysconfdir=/etc    \
-            --enable-libffi      \
-            --enable-optimized   \
-            --enable-shared      \
-            --disable-assertions &amp;&amp;
+mkdir -v build &amp;&amp;
+cd       build &amp;&amp;
+
+CC=gcc CXX=g++                          \
+../configure --prefix=/usr              \
+             --datarootdir=/usr/share   \
+             --sysconfdir=/etc          \
+             --enable-libffi            \
+             --enable-optimized         \
+             --enable-shared            \
+             --enable-targets=host,r600 \
+             --disable-assertions       \
+             --docdir=/usr/share/doc/llvm-&llvm-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -193,12 +216,11 @@ make</userinput></screen>
       to generate manual pages, issue the following command:
     </para>
 
-<screen><userinput>make -C docs -f Makefile.sphinx man</userinput></screen>
+<screen><userinput>make -C ../docs -f Makefile.sphinx man</userinput></screen>
 
     <para>
       To test the results, issue: <command>make -k check-all</command>.
-      There is a number of unexpected failures that can safely be
-      ignored.
+      Some tests may fail for unknown reasons.
     </para>
 
     <para>
@@ -210,7 +232,7 @@ make</userinput></screen>
 for file in /usr/lib/lib{clang,LLVM,LTO}*.a
 do
   test -f $file &amp;&amp; chmod -v 644 $file
-done &amp;&amp;
+done
 unset file</userinput></screen>
 
     <para>
@@ -225,13 +247,15 @@ unset file</userinput></screen>
 
 for prog in scan-build scan-view
 do
-  cp -rfv tools/clang/tools/$prog /usr/lib/clang-analyzer/
+  cp -rfv ../tools/clang/tools/$prog /usr/lib/clang-analyzer/ &amp;&amp;
   ln -sfv ../lib/clang-analyzer/$prog/$prog /usr/bin/
-done &amp;&amp;
+done
+unset prog &amp;&amp;
 
-ln -sfv /usr/bin/clang /usr/lib/clang-analyzer/scan-build/ &amp;&amp;
-mv -v /usr/lib/clang-analyzer/scan-build/scan-build.1 /usr/share/man/man1/ &amp;&amp;
-unset prog</userinput></screen>
+ln -sfv /usr/bin/clang \
+        /usr/lib/clang-analyzer/scan-build/ &amp;&amp;
+mv -v   /usr/lib/clang-analyzer/scan-build/scan-build.1 \
+        /usr/share/man/man1/</userinput></screen>
 
     <para>
       If you have built manual pages, install them by running the
@@ -239,7 +263,7 @@ unset prog</userinput></screen>
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>install -v -m644 docs/_build/man/* /usr/share/man/man1/</userinput></screen>
+<screen role="root"><userinput>install -v -m644 ../docs/_build/man/* /usr/share/man/man1/</userinput></screen>
 
   </sect2>
 
@@ -247,7 +271,7 @@ unset prog</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -e ... Makefile.config.in</command>: This sed fixes the
+      <command>sed -e ... Makefile.config.in</command>: This sed fixes
       location of the installed documentation.
     </para>
 
@@ -267,14 +291,22 @@ unset prog</userinput></screen>
     <para>
       <parameter>--enable-shared</parameter>: This switch enables
       building of the <application>LLVM</application> shared
-      library which contains all of the static libraries linked into a
-      single library.
+      library which contains all of the static libraries linked into
+      a single library.
     </para>
 
     <para>
-      <parameter>--disable-assertions</parameter>: This switch disables some
-      additional compile checks which are not neccessary on a production
-      system.
+      <parameter>--enable-targets=host,r600</parameter>: This switch enables
+      building for the same target as the host, and also for the r600 AMD GPU
+      used by the Mesa r600 and radeonsi drivers. Default is all. You can use
+      a comma separated list. Valid targets are: host, x86, x86_64, sparc,
+      powerpc, arm64, arm, aarch64, mips, hexagon, xcore, msp430, nvptx,
+      systemz, r600, amdgpu (equivalent to r600), bpf, wasm, and cpp.
+    </para>
+
+    <para>
+      <parameter>--disable-assertions</parameter>: Disable some compile checks,
+      not necessary on a production system.
     </para>
 
   </sect2>
@@ -292,24 +324,22 @@ unset prog</userinput></screen>
           bugpoint, c-index-test, clang, clang++ (symlink), count, FileCheck,
           clang-check, clang-format, clang-tblgen, llc, lli, lli-child-target,
           llvm-ar, llvm-as, llvm-bcanalyzer, llvm-config, llvm-cov,
-          llvm-cxxdump, llvm-diff, llvm-dis, llvm-dsymutil, llvm-dwarfdump, 
-          llvm-extract, llvm-link, llvm-mc, llvm-mcmarkup, llvm-nm, 
-          llvm-objdump, llvm-profdata, llvm-pdbdump, 
-          llvm-ranlib (symlink), llvm-readobj, llvm-rtdyld, llvm-size,
-          llvm-stress, llvm-symbolizer, llvm-tblgen, macho-dump, not, obj2yaml,
-          opt, scan-build (symlink), scan-view (symlink), verify-uselistorder, 
-          and yaml2obj
+          llvm-cxxdump, llvm-diff, llvm-dis, llvm-dsymutil, llvm-dwarfdump,
+          llvm-extract, llvm-link, llvm-mc, llvm-mcmarkup, llvm-nm,
+          llvm-objdump, llvm-pdbdump, llvm-profdata, llvm-ranlib (symlink),
+          llvm-readobj, llvm-rtdyld, llvm-size, llvm-stress, llvm-symbolizer,
+          llvm-tblgen, macho-dump, not, obj2yaml, opt, scan-build (symlink),
+          scan-view (symlink), verify-uselistorder, and yaml2obj
         </seg>
         <seg>
           BugpointPasses.so, libclang.so, libLLVM-&llvm-version;.so,
-          libLLVM-3.7.so,  libLTO.so,<!-- libprofile_rt.so,--> 
-          LLVMHello.so and numerous static libraries in /usr/lib
+          libLTO.so,<!-- libprofile_rt.so,--> LLVMHello.so and numerous
+          static libraries in /usr/lib
         </seg>
         <seg>
           /usr/include/{clang,clang-c,llvm,llvm-c},
-          /usr/lib/{clang,clang-analyzer},
-          /usr/share/doc/llvm-&llvm-version;, and
-          /usr/share/llvm
+          /usr/lib/{clang,clang-analyzer}, and
+          /usr/share/{doc/llvm-&llvm-version;,llvm}
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -429,6 +459,18 @@ unset prog</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="llvm-cxxdump">
+        <term><command>llvm-cxxdump</command></term>
+        <listitem>
+          <para>
+            is used for C++ ABI Data Dumper.
+          </para>
+          <indexterm zone="llvm llvm-cxxdump">
+            <primary sortas="b-llvm-cxxdump">llvm-cxxdump</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="llvm-diff">
         <term><command>llvm-diff</command></term>
         <listitem>
@@ -458,7 +500,7 @@ unset prog</userinput></screen>
         <term><command>llvm-dsymutil</command></term>
         <listitem>
           <para>
-            is a tool used to manipulate archived DWARF debug symbol files,
+            tool used to manipulate archived DWARF debug symbol files,
             compatible with the Darwin command <command>dsymutil</command>.
           </para>
           <indexterm zone="llvm llvm-dsymutil">
@@ -501,6 +543,18 @@ unset prog</userinput></screen>
           </para>
           <indexterm zone="llvm llvm-nm">
             <primary sortas="b-llvm-nm">llvm-nm</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="llvm-pdbdump">
+        <term><command>llvm-pdbdump</command></term>
+        <listitem>
+          <para>
+            is used as PDB Dumper.
+          </para>
+          <indexterm zone="llvm llvm-pdbdump">
+            <primary sortas="b-llvm-pdbdump">llvm-pdbdump</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -8,10 +8,10 @@
 
   <!ENTITY git-download-http "&git-root;/git-&git-version;.tar.xz">
   <!ENTITY git-download-ftp  "ftp://ftp.kernel.org/pub/software/scm/git/git-&git-version;.tar.xz">
-  <!ENTITY git-md5sum        "847787cd0616d38b0e429ea85f558c31">
-  <!ENTITY git-size          "3.6 MB">
-  <!ENTITY git-buildsize     "300 MB">
-  <!ENTITY git-time          "0.7 SBU">
+  <!ENTITY git-md5sum        "0214e04f7041f835c5c38f2b78eccced">
+  <!ENTITY git-size          "3.7 MB">
+  <!ENTITY git-buildsize     "349 MB (add 28 MB for building documentation)">
+  <!ENTITY git-time          "0.7 SBU (add 12 SBU for tests and 2.4 SBU for building documentation)">
 ]>
 
 <sect1 id="git" xreflabel="git-&git-version;">
@@ -32,6 +32,7 @@
     <title>Introduction to Git</title>
 
     <para>
+
       <application>Git</application> is a free and open source, distributed
       version control system designed to handle everything from small to very
       large projects with speed and efficiency. Every
@@ -41,11 +42,13 @@
       easy to do. <application>Git</application> is used for version control of
       files, much like tools such as <xref linkend="mercurial"/>,
       <application>Bazaar</application>, <xref linkend="subversion"/>,
-      <xref linkend="cvs"/>, <application>Perforce</application>, and
+      <ulink url="http://www.nongnu.org/cvs/">CVS</ulink>,
+      <application>Perforce</application>, and
       <application>Team Foundation Server</application>.
+
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,16 +90,16 @@
         <para>
           <ulink url="&git-root;/git-manpages-&git-version;.tar.xz">
           &git-root;/git-manpages-&git-version;.tar.xz</ulink>
-          (Not needed if you have installed asciidoc and xmlto and
-          wish to build them).
+          (if you prefer the original, not needed if you've installed asciidoc
+          and xmlto and prefer to build them).
         </para>
       </listitem>
       <listitem>
         <para>
           <ulink url="&git-root;/git-htmldocs-&git-version;.tar.xz">
           &git-root;/git-htmldocs-&git-version;.tar.xz</ulink>
-          and other docs (Not needed if you have installed asciidoc
-          and wish to build them).
+          and other docs (if you prefer the original, not needed if you've
+          installed asciidoc and prefer to build them).
         </para>
       </listitem>
     </itemizedlist>
@@ -123,7 +126,7 @@
     <bridgehead renderas="sect4">Optional (to create the man pages and html docs)</bridgehead>
     <para>
       <xref linkend="xmlto"/> and
-      <ulink url="http://www.methods.co.nz/asciidoc/">AsciiDoc</ulink> or 
+      <ulink url="http://www.methods.co.nz/asciidoc/">AsciiDoc</ulink> or
       <ulink url="http://asciidoctor.org/">AsciiDoctor</ulink>
     </para>
 
@@ -144,25 +147,30 @@
 make</userinput></screen>
 
     <para>
-      If you have installed <application>AsciiDoc</application>,
-      you can build a html version of the man pages and other
-      docs by running the following command:
+      You can build the man pages and/or html docs, or
+      use downloaded ones. If you choose to build them, use next two following
+      instructions.
+    </para>
+
+    <para>
+      If you have installed <ulink
+      url="http://www.methods.co.nz/asciidoc/">AsciiDoc</ulink> you can
+      create the html version of the man pages and other docs:
     </para>
 
 <screen><userinput>make html</userinput></screen>
 
     <para>
-      If you have installed <application>AsciiDoc</application>
-      and <application>xmlto</application>, you can build the
-      man pages by running the following command:
+      If you have installed <ulink
+      url="http://www.methods.co.nz/asciidoc/">AsciiDoc</ulink> and
+      <xref linkend="xmlto"/> you can create the man pages:
     </para>
 
 <screen><userinput>make man</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>.
-      The test suite takes a long time to complete and the
-      results have no meaning to an end user.
+      The test suite can be run in parallel mode. To run the test suite, issue:
+      <command>make test</command>.
     </para>
 
     <para>
@@ -172,60 +180,63 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+<!-- ==== Method 1 for docs ====== -->
+    <bridgehead renderas="sect3">If you created the man pages and/or html docs</bridgehead>
+
     <para>
-      If the manual pages were built, install them by running the
-      following command as the <systemitem
-      class="username">root</systemitem> user:
+      Install the man pages as
+      <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>make install-man</userinput></screen>
 
     <para>
-      Or, if you have downloaded the optional manual pages tarball, you
-      can install the manual pages by running the following commands
-      as the <systemitem class="username">root</systemitem> user:
+      Install the html docs as
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make htmldir=/usr/share/doc/git-&git-version; install-html</userinput></screen>
+
+<!-- ==== Method 2 for docs ====== -->
+    <bridgehead renderas="sect3">If you downloaded the man pages and/or html docs</bridgehead>
+
+    <para>
+      If you downloaded the man pages untar them as the
+      <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>tar -xf ../git-manpages-&git-version;.tar.xz \
     -C /usr/share/man --no-same-owner --no-overwrite-dir</userinput></screen>
 
     <para>
-      If the html docs were built, install them by running the
-      following command as the <systemitem
-      class="username">root</systemitem> user:
+      If you downloaded the html docs untar them as the
+      <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make htmldir=/usr/share/doc/git-&git-version; install-html</userinput></screen>
-
-    <para>
-      Or, if you have downloaded the optional html docs tarball, you
-      can install the html docs by running the following commands
-      as the <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>mkdir -pv   /usr/share/doc/git-&git-version;                                    &amp;&amp;
+<screen role="root"><userinput>mkdir -vp   /usr/share/doc/git-&git-version; &amp;&amp;
 tar   -xf   ../git-htmldocs-&git-version;.tar.xz \
       -C    /usr/share/doc/git-&git-version; --no-same-owner --no-overwrite-dir &amp;&amp;
 
-find        /usr/share/doc/git-&git-version; -type d -exec chmod 755 {} \;      &amp;&amp;
+find        /usr/share/doc/git-&git-version; -type d -exec chmod 755 {} \; &amp;&amp;
 find        /usr/share/doc/git-&git-version; -type f -exec chmod 644 {} \;</userinput></screen>
 
+<!-- ==== Reorganize docs ====== -->
+    <bridgehead renderas="sect3">Reorganize man pages and/or html docs (both methods)</bridgehead>
+
     <para>
-      If the html documentation was installed, ensure that the files
-      were installed in proper locations by running the following
-      commands as the <systemitem class="username">root</systemitem>
-      user:
+      For both methods, reorganize the files, as
+      <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>mkdir -v /usr/share/doc/git-&git-version;/man-pages/{html,text}          &amp;&amp;
+<screen role="root"><userinput>mkdir -vp /usr/share/doc/git-&git-version;/man-pages/{html,text}         &amp;&amp;
 mv        /usr/share/doc/git-&git-version;/{git*.txt,man-pages/text}     &amp;&amp;
 mv        /usr/share/doc/git-&git-version;/{git*.,index.,man-pages/}html &amp;&amp;
 
-mkdir -v /usr/share/doc/git-&git-version;/technical/{html,text}          &amp;&amp;
+mkdir -vp /usr/share/doc/git-&git-version;/technical/{html,text}         &amp;&amp;
 mv        /usr/share/doc/git-&git-version;/technical/{*.txt,text}        &amp;&amp;
 mv        /usr/share/doc/git-&git-version;/technical/{*.,}html           &amp;&amp;
 
-mkdir -v /usr/share/doc/git-&git-version;/howto/{html,text}              &amp;&amp;
+mkdir -vp /usr/share/doc/git-&git-version;/howto/{html,text}             &amp;&amp;
 mv        /usr/share/doc/git-&git-version;/howto/{*.txt,text}            &amp;&amp;
 mv        /usr/share/doc/git-&git-version;/howto/{*.,}html</userinput></screen>
 
@@ -270,7 +281,7 @@ mv        /usr/share/doc/git-&git-version;/howto/{*.,}html</userinput></screen>
     </para>
 
     <para>
-      <command>find ... chmod ...</command>: These commands correct the 
+      <command>find ... chmod ...</command>: These commands correct the
       permissions in the shipped documentation tar file.
     </para>
 
@@ -315,14 +326,9 @@ mv        /usr/share/doc/git-&git-version;/howto/{*.,}html</userinput></screen>
           None
         </seg>
         <seg>
-          /usr/libexec/git-core,
-          /usr/share/doc/git-&git-version;,
-          /usr/share/git-core,
-          /usr/share/git-gui,
-          /usr/share/gitk,
-          /usr/share/gitweb,
-          /usr/lib/perl5/site_perl/&lt;5.x.y&gt;/Git and
-          /usr/lib/perl5/site_perl/&lfs-perl-version;/auto/Git
+          /usr/lib/perl5/site_perl/&lt;5.x.y&gt;{,&lt;arch&gt;-linux/auto}/Git,
+          /usr/libexec/git-core and
+          /usr/share/{doc/git-&git-version;,git-core,git-gui,gitk,gitweb}
         </seg>
       </seglistitem>
     </segmentedlist>

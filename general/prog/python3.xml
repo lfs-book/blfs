@@ -7,15 +7,13 @@
   <!ENTITY python3-download-http
            "https://www.python.org/ftp/python/&python3-version;/Python-&python3-version;.tar.xz">
   <!ENTITY python3-download-ftp  " ">
-  <!ENTITY python3-md5sum        "d149d2812f10cbe04c042232e7964171">
-  <!ENTITY python3-size          "14 MB">
-  <!ENTITY python3-buildsize     "358 MB (additional 38 MB for the docs and 29 MB for the tests)">
-  <!ENTITY python3-time          "1.4 SBU (additional 1.8 SBU for the tests)">
+  <!ENTITY python3-md5sum        "e9ea6f2623fffcdd871b7b19113fde80">
+  <!ENTITY python3-size          "15 MB">
+  <!ENTITY python3-buildsize     "360 MB (with docs; additional 23 MB for the tests)">
+  <!ENTITY python3-time          "1.1 SBU (additional 1.9 SBU for the tests)">
 
   <!ENTITY python3htmldoc-download-http
-           "https://docs.python.org/3/archives/python-&python3-version;-docs-html.tar.bz2">
-<!--   <!ENTITY python3htmldoc-md5sum        "fd4595908e51268639c40b5ad1d1ccc2">
-  <!ENTITY python3htmldoc-size          "5.2 MB"> -->
+           "https://docs.python.org/&python3-majorver;/archives/python-&python3-version;-docs-html.tar.bz2">
 ]>
 
 <sect1 id="python3" xreflabel="Python-&python3-version;">
@@ -86,16 +84,6 @@
           Download (HTTP): <ulink url="&python3htmldoc-download-http;"/>
         </para>
       </listitem>
-<!--      <listitem>
-        <para>
-          Download MD5 sum: &python3htmldoc-md5sum;
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Download size: &python3htmldoc-size;
-        </para>
-      </listitem> -->
     </itemizedlist>
 
     <bridgehead renderas="sect3">Python 3 Dependencies</bridgehead>
@@ -133,7 +121,8 @@
       commands:
     </para>
 
-<screen><userinput>CXX="/usr/bin/g++" ./configure --prefix=/usr       \
+<screen><userinput>CXX="/usr/bin/g++"              \
+./configure --prefix=/usr       \
             --enable-shared     \
             --with-system-expat \
             --with-system-ffi   \
@@ -168,15 +157,15 @@ tar --strip-components=1 \
     <para>
       The test suite must be run separately from the build, either before or
       after the package is built and installed. Do not run
-      <command>make install</command> after running the test suite. To build
+      <command>make install</command>, after running the test suite. To build
       and install the package, you need to start with a fresh or clean source
       tree. For the test, you also need a clean source code, so either start by
       removing the source code directory and starting over, by uncompressing
       the source tarball or by running <command>make clean</command>. Then
       configure again, adding <quote>--with-pydebug</quote> to the
       <command>configure</command> switches above, run <command>make</command>,
-      then <command>make test</command>. Remember that some tests fail if they
-      are not run from an X terminal.
+      then <command>make test</command>. Remember that tests must be executed
+      using an X terminal. One test fails for unknown reasons.
     </para>
 
   </sect2>
@@ -185,8 +174,13 @@ tar --strip-components=1 \
     <title>Command Explanations</title>
 
     <para>
+      <command> CXX="/usr/bin/g++" ./configure ...</command>: Avoid an annoying
+      message during configuration.
+    </para>
+
+    <para>
       <option>--with-system-expat</option>: This switch enables linking against
-      system version of <application>Expat</application>. 
+      system version of <application>Expat</application>.
     </para>
 
     <para>
@@ -196,16 +190,16 @@ tar --strip-components=1 \
     </para>
 
     <para>
-      <parameter>--without-ensurepip</parameter>: This switch disables building
-      <command>pip</command> and setuptools modules. Newer versions can be
-      installed independently.
-    </para>
-
-    <para>
       <parameter>--with-dbmliborder=bdb:gdbm:ndbm</parameter>: Use this switch
       if you want to build <application>Python</application> DBM Module
       against <application>Berkeley DB</application> instead of
       <application>GDBM</application>.
+    </para>
+
+    <para>
+      <parameter>--without-ensurepip</parameter>: This switch disables building
+      <command>pip</command> and <command>setuptools</command>
+      packaging programs.
     </para>
 
     <para>
@@ -220,11 +214,17 @@ tar --strip-components=1 \
 
     <para>
       In order for <command>python3</command> to find the installed
-      documentation, you must add the following environment variable to
-      individual user's or the system's profile:
+      documentation, create the following version independent symlink:
     </para>
 
-<screen role="root"><userinput>export PYTHONDOCS=/usr/share/doc/python-&python3-version;/html</userinput></screen>
+<screen role="root"><userinput>ln -svfn python-&python3-version; /usr/share/doc/python-3</userinput></screen>
+
+    <para>
+      and add the following environment variable to the individual user's or
+      system's profile:
+    </para>
+
+<screen role="root"><userinput>export PYTHONDOCS=/usr/share/doc/python-3/html</userinput></screen>
 
   </sect2>
 
@@ -252,14 +252,13 @@ tar --strip-components=1 \
           python&python3-majorver;m-config,
 
           pyvenv (symlink),
-          pyvenv&python3-majorver;,
+          pyvenv-&python3-majorver;,
 
           idle3 (symlink), and
           idle&python3-majorver;
         </seg>
         <seg>
-          libpython&python3-majorver;m.so,
-          and libpython3.so
+          libpython&python3-majorver;m.so and libpython3.so
         </seg>
         <seg>
           /usr/include/python&python3-majorver;m,

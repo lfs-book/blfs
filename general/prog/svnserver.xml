@@ -81,6 +81,31 @@ useradd -c "SVN Owner" -d /home/svn -m -g svn -s /bin/false -u 56 svn</userinput
 <screen role="root"><userinput>groupadd -g 57 svntest &amp;&amp;
 usermod -G svntest -a svn</userinput></screen>
 
+      <para>Additionally you should set <command>umask 002</command> while
+      working with a repository so that all new files will be writable by
+      owner and group. This is made mandatory by creating a wrapper script for
+      <command>svn</command> and <command>svnserve</command>:</para>
+
+<screen role="root"><userinput>mv /usr/bin/svn /usr/bin/svn.orig &amp;&amp;
+mv /usr/bin/svnserve /usr/bin/svnserve.orig &amp;&amp;
+cat &gt;&gt; /usr/bin/svn &lt;&lt; "EOF"
+<literal>#!/bin/sh
+umask 002
+/usr/bin/svn.orig "$@"</literal>
+EOF
+cat &gt;&gt; /usr/bin/svnserve &lt;&lt; "EOF"
+<literal>#!/bin/sh
+umask 002
+/usr/bin/svnserve.orig "$@"</literal>
+EOF
+chmod 0755 /usr/bin/svn{,serve}</userinput></screen>
+
+      <note>
+        <para>If you use <application>Apache</application> for working with
+        the repository over HTTP, even for anonymous access, you should wrap
+        <command>/usr/sbin/httpd</command> in a similar script.</para>
+      </note>
+
     </sect3>
 
     <sect3>

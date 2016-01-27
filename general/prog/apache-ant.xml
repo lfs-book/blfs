@@ -6,9 +6,9 @@
 
   <!ENTITY apache-ant-download-http "https://archive.apache.org/dist/ant/source/apache-ant-&apache-ant-version;-src.tar.bz2">
   <!ENTITY apache-ant-download-ftp  " ">
-  <!ENTITY apache-ant-md5sum        "1eddcf051c8a7010c46ca940c63d478d">
+  <!ENTITY apache-ant-md5sum        "a2d6094af9d1b59b49378b61b2874a22">
   <!ENTITY apache-ant-size          "3.6 MB">
-  <!ENTITY apache-ant-buildsize     "183 MB">
+  <!ENTITY apache-ant-buildsize     "113 MB">
   <!ENTITY apache-ant-time          "0.3 SBU">
 ]>
 
@@ -39,7 +39,7 @@
     a target tree that executes various tasks. Each task is run by an object
     that implements a particular task interface.</para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -107,7 +107,7 @@
       requirements of various packages installed using
       <application>Apache Ant</application>. Review the table at
       <ulink url="http://ant.apache.org/manual/install.html#librarydependencies"/>
-      for any prerequisite libraries you may need. Place any needed libraries 
+      for any prerequisite libraries you may need. Place any needed libraries
       in <filename>lib/optional</filename>.</para>
     </note>
 
@@ -134,7 +134,7 @@ cp -v ../junit-&junit-version;.jar \
     <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>./build.sh -Ddist.dir=/opt/ant-&apache-ant-version; dist &amp;&amp;
-ln -sfvn ant-&apache-ant-version; /opt/ant</userinput></screen>
+ln -v -sfn ant-&apache-ant-version; /opt/ant</userinput></screen>
 
     <note><para>Make sure the JAVA_HOME environment variable is set for the
     <systemitem class="username">root</systemitem> user.</para></note>
@@ -146,14 +146,14 @@ ln -sfvn ant-&apache-ant-version; /opt/ant</userinput></screen>
 
     <para><command>cp -v ... lib/optional</command>:
     This command copies the JUnit and hamcrest jar files into the directory where
-    Apache Ant will look for it.</para>
+    Apache Ant will look for them.</para>
 
     <para><command>./build.sh -Ddist.dir=/opt/ant-&apache-ant-version;
     dist</command>: This command does everything. It builds, tests, then
     installs the package into
     <filename class='directory'>/opt/ant-&apache-ant-version;</filename>.</para>
 
-    <para><command>ln -sfvn ant-&apache-ant-version; /opt/ant</command>: This
+    <para><command>ln -v -sfn ant-&apache-ant-version; /opt/ant</command>: This
     command is optional, and creates a convenience symlink.</para>
 
   </sect2>
@@ -191,12 +191,14 @@ ln -sfvn ant-&apache-ant-version; /opt/ant</userinput></screen>
       class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>cat &gt;&gt; /etc/profile.d/extrapaths.sh &lt;&lt; EOF
-<literal># Begin Apache-ant addition
+<literal>
+# Begin Apache-ant addition
 
 pathappend /opt/ant/bin
 export ANT_HOME=/opt/ant
 
-# End Apache-ant addition</literal>
+# End Apache-ant addition
+</literal>
 EOF</userinput></screen>
 
       <para>The above instrutions assume you have configured your system as

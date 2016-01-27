@@ -5,11 +5,12 @@
   %general-entities;
 
   <!ENTITY php-download-http "http://www.php.net/distributions/php-&php-version;.tar.xz">
-  <!ENTITY php-download-ftp  "ftp://ftp.isu.edu.tw/pub/Unix/Web/PHP/distributions/php-&php-version;.tar.xz">
-  <!ENTITY php-md5sum        "f2cc602602eb2b121779f2c4b8bacaba">
-  <!ENTITY php-size          "12 MB">
-  <!ENTITY php-buildsize     "394 MB (with tests)">
-  <!ENTITY php-time          "5.6 SBU (with tests)">
+  <!--<!ENTITY php-download-ftp  "ftp://ftp.isu.edu.tw/pub/Unix/Web/PHP/distributions/php-&php-version;.tar.xz">-->
+  <!ENTITY php-download-ftp  " ">
+  <!ENTITY php-md5sum        "ce5964672e4ec0b66ff088a6bafde8c7">
+  <!ENTITY php-size          "11 MB">
+  <!ENTITY php-buildsize     "564 MB (with the tests). Documentation adds 106 MB">
+  <!ENTITY php-time          "6.3 SBU (with the tests)">
 ]>
 
 <sect1 id="php" xreflabel="PHP-&php-version;">
@@ -95,15 +96,15 @@
       <xref linkend="aspell"/>,
       <xref linkend="enchant"/>,
       <xref linkend="libxslt"/>,
+      an <xref linkend="server-mail"/> (that provides a
+      <command>sendmail</command> command),
       <xref linkend="pcre"/>,
       <xref linkend="pth"/>,
-      an <xref linkend="server-mail"/> (that provides a
-      <command>sendmail</command> command)
       <ulink url="http://dmalloc.com/">Dmalloc</ulink>,
       <ulink url="http://www.net-snmp.org/">Net-SNMP</ulink>,
       <ulink url="http://www.ossp.org/pkg/lib/mm/">OSSP mm</ulink>,
-      <ulink url="http://re2c.org/">re2c</ulink>,
-      <ulink url="http://xmlrpc-epi.sourceforge.net/main.php?t=php_about">XMLRPC-EPI</ulink>, and
+      <ulink url="http://re2c.org/">re2c</ulink>, and
+      <ulink url="http://xmlrpc-epi.sourceforge.net/main.php?t=php_about">XMLRPC-EPI</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional Graphics Utilities and Libraries</bridgehead>
@@ -139,7 +140,7 @@
       <xref linkend="postgresql"/>,
       <xref linkend="sqlite"/>,
       <xref linkend="unixodbc"/>,
-      <ulink url="http://www.softwareag.com/">Abadas</ulink>,
+      <ulink url="http://www.softwareag.com/">Adabas</ulink>,
       <ulink url="http://www.birdstep.com/">Birdstep</ulink>,
       <ulink url="http://cr.yp.to/cdb.html">cdb</ulink>,
       <ulink url="http://www.dbmaker.com/">DBMaker</ulink>,
@@ -159,9 +160,9 @@
 
     <bridgehead renderas="sect4">Optional Security/Encryption Utilities and Libraries</bridgehead>
     <para role="optional">
+      <xref linkend="openssl"/>,
       <xref linkend="cyrus-sasl"/>,
       <xref linkend="mitkrb"/>,
-      <xref linkend="openssl"/>,
       <ulink url="http://mcrypt.sourceforge.net/">libmcrypt</ulink>, and
       <ulink url="http://mhash.sourceforge.net/">mhash</ulink>
     </para>
@@ -250,13 +251,13 @@ make</userinput></screen>
 install -v -m644 php.ini-production /etc/php.ini     &amp;&amp;
 mv -v /etc/php-fpm.conf{.default,}                   &amp;&amp;
 
-install -v -dm755 /usr/share/doc/php-&php-version; &amp;&amp;
-install -v -m644  CODING_STANDARDS EXTENSIONS INSTALL NEWS README* UPGRADING* php.gif \
-                  /usr/share/doc/php-&php-version; &amp;&amp;
-ln -sfv           /usr/lib/php/doc/Archive_Tar/docs/Archive_Tar.txt \
-                  /usr/share/doc/php-&php-version; &amp;&amp;
-ln -sfv           /usr/lib/php/doc/Structures_Graph/docs \
-                  /usr/share/doc/php-&php-version;</userinput></screen>
+install -v -m755 -d /usr/share/doc/php-&php-version; &amp;&amp;
+install -v -m644    CODING_STANDARDS EXTENSIONS INSTALL NEWS README* UPGRADING* php.gif \
+                    /usr/share/doc/php-&php-version; &amp;&amp;
+ln -v -sfn          /usr/lib/php/doc/Archive_Tar/docs/Archive_Tar.txt \
+                    /usr/share/doc/php-&php-version; &amp;&amp;
+ln -v -sfn          /usr/lib/php/doc/Structures_Graph/docs \
+                    /usr/share/doc/php-&php-version;</userinput></screen>
 
     <para>
       The pre-built HTML documentation is packaged in two forms: a tarball
@@ -363,11 +364,6 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
       </para>
 
       <para>
-        <option>--with-mysql</option>: This option
-        includes <application>MariaDB/MySQL</application> support.
-      </para>
-
-      <para>
         <option>--disable-libxml</option>: This option
         allows building PHP without <application>libxml2</application>
         installed.
@@ -382,6 +378,21 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
         <parameter>--with-fpm-...</parameter> switches.
       </para>
 
+      <para>
+        <option>--with-mysqli=/usr/bin/mysql_config</option>: This option
+        includes MySQLi support.
+      </para>
+
+      <para>
+        <option>--with-mysql-sock=/run/mysqld/mysqld.sock</option>: Location of
+        the MySQL unix socket pointer.
+      </para>
+
+      <para>
+        <option>--with-pdo-mysql=/usr</option>: This option includes PDO: MySQL
+        support.
+      </para>
+
   </sect2>
 
   <sect2 role="configuration">
@@ -392,8 +403,9 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
 
       <para>
         <filename>/etc/php.ini</filename>,
-        <filename>/etc/pear.conf</filename>, and
-        <filename>/etc/php-fpm.conf</filename>
+        <filename>/etc/pear.conf</filename>,
+        <filename>/etc/php-fpm.conf</filename>, and
+        <filename>/etc/php-fpm.d/www.conf</filename>
       </para>
 
       <indexterm zone="php php-config">
@@ -405,6 +417,11 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
       </indexterm>
 
       <indexterm zone="php php-config">
+        <primary sortas="e-etc-php-fpm.d-www.conf">
+        /etc/php-fpm.d/www.conf</primary>
+      </indexterm>
+
+      <indexterm zone="php php-config">
         <primary sortas="e-etc-php-fpm.conf">/etc/php-fpm.conf</primary>
       </indexterm>
 
@@ -412,6 +429,16 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
 
     <sect3>
       <title>Configuration Information</title>
+
+      <para>
+       Without the file <filename>/etc/php-fpm.d/www.conf</filename>,
+       the process manager does not start. However, it is the file
+       <filename>/etc/php-fpm.d/www.conf.default</filename>, that is
+       installed. To solve this, issue as the
+       <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>cp -v /etc/php-fpm.d/www.conf.default /etc/php-fpm.d/www.conf</userinput></screen>
 
       <para>
         The file used as the default <filename>/etc/php.ini</filename>
@@ -446,9 +473,9 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>sed -e '/proxy_module/s/^#//'      \
-    -e '/proxy_fcgi_module/s/^#//' \
-    -i  /etc/httpd/httpd.conf</userinput></screen>
+<screen role="root"><userinput>sed -i -e '/proxy_module/s/^#//'      \
+       -e '/proxy_fcgi_module/s/^#//' \
+       /etc/httpd/httpd.conf</userinput></screen>
 
       <para>
         Those modules accept various <command>ProxyPass</command>
@@ -456,8 +483,9 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
         <systemitem class="username">root</systemitem> user):
       </para>
 
-<screen role="root"><userinput>echo 'ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/srv/www/$1' &gt;&gt; \
-     /etc/httpd/httpd.conf</userinput></screen>
+<screen role="root"><userinput>echo \
+'ProxyPassMatch ^/(.*\.php)$ fcgi://127.0.0.1:9000/srv/www/$1' >> \
+/etc/httpd/httpd.conf</userinput></screen>
 
       <para>
         Additionally, it may be useful to add an entry for
@@ -506,10 +534,11 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>pear, peardev, pecl, phar (symlink), phar.phar,
-        php, php-cgi, php-config, php-fpm, and phpize</seg>
-        <seg>None</seg>
-        <seg>/usr/include/php, /usr/lib/php, /usr/share/php and
+        <seg>pear, peardev, pecl, phar (symlink), phar.phar, php,
+        php-cgi, php-config, php-fpm, phpdbg, and phpize</seg>
+        <seg>dba.{so,a} and opcache.{so,a} at
+       /usr/lib/php/extensions/no-debug-non-zts-20151012</seg>
+        <seg>/etc/php-fpm.d, /usr/{include,lib,share}/php and
         /usr/share/doc/php-&php-version;</seg>
       </seglistitem>
     </segmentedlist>
@@ -553,6 +582,18 @@ gunzip -v /usr/share/doc/php-&php-version;/php_manual_en.html.gz</userinput></sc
           </para>
           <indexterm zone="php php-fpm">
             <primary sortas="b-php-fpm">php-fpm</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="phpdbg">
+        <term><command>phpdbg</command></term>
+        <listitem>
+          <para>
+            is the interactive PHP debugger.
+          </para>
+          <indexterm zone="php phpdbg">
+            <primary sortas="b-phpdbg">phpdbg</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -7,15 +7,13 @@
   <!ENTITY python2-download-http
      "https://www.python.org/ftp/python/&python2-version;/Python-&python2-version;.tar.xz">
   <!ENTITY python2-download-ftp  " ">
-  <!ENTITY python2-md5sum        "c685ef0b8e9f27b5e3db5db12b268ac6">
+  <!ENTITY python2-md5sum        "1dbcc848b4cd8399a8199d000f9f823c">
   <!ENTITY python2-size          "12 MB">
-  <!ENTITY python2-buildsize     "227 MB (additional 18 MB for the tests)">
-  <!ENTITY python2-time          "0.8 SBU (additional 5.5 SBU for tests)">
+  <!ENTITY python2-buildsize     "229 MB (additional 18 MB for the tests)">
+  <!ENTITY python2-time          "0.8 SBU (additional 5.6 SBU for tests)">
 
   <!ENTITY python2htmldoc-download-http
      "https://docs.python.org/2.7/archives/python-&python2-version;-docs-html.tar.bz2">
-  <!ENTITY python2htmldoc-md5sum        "5f07d5079327be83f450ecc459ffe249">
-  <!ENTITY python2htmldoc-size          "4.4 MB">
 ]>
 
 <sect1 id="python2" xreflabel="Python-&python2-version;">
@@ -79,21 +77,13 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+
     <itemizedlist spacing="compact">
       <title>Optional HTML Documentation</title>
       <listitem>
         <para>
           Download (HTTP): <ulink url="&python2htmldoc-download-http;"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Download MD5 sum: &python2htmldoc-md5sum;
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Download size: &python2htmldoc-size;
         </para>
       </listitem>
     </itemizedlist>
@@ -113,7 +103,6 @@
 
     <bridgehead renderas="sect4">Optional (For Additional Modules)</bridgehead>
     <para role="optional">
-      <xref linkend="db"/>,
       <xref linkend="openssl"/>,
       <xref linkend="sqlite"/> and
       <xref linkend="tk"/>
@@ -121,11 +110,11 @@
 
     <note>
       <para>
-	<!-- new for ff31.  Any reasonable version of openssl will do,
-	even old maintained versions, so do not xref openssl here -->
+      <!-- new for ff31.  Any reasonable version of openssl will do,
+      even old maintained versions, so do not xref openssl here -->
         If you are building <xref linkend="thunderbird"/> or
-        <xref linkend="firefox"/><!-- or <xref linkend="xulrunner"/> -->,
-        you must install <application>OpenSSL</application> before you build
+        <xref linkend="firefox"/>
+        you must install <application>openssl</application> before you build
         <application>Python 2</application>.
       </para>
     </note>
@@ -151,7 +140,8 @@
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>.
+      To test the results, issue: <command>make -k test</command>.
+      One test fails for unknown reasons.
     </para>
 
     <para>
@@ -164,18 +154,23 @@ chmod -v 755 /usr/lib/libpython&python2-majorver;.so.1.0</userinput></screen>
     <para>
       Since <application>Python 2</application> is in maintenance mode, and
       <application>Python 3</application> is recommended by upstream for
-      development, you probably don't need to install the documentation.
+      development, you probably do not need to install the documentation.
       However, if you still want to install documentation for both
-      <application>Python</application> versions, make sure you set PYTHONDOCS
-      variable to the version you want to use each time you need to consult
+      <application>Python</application> versions, be sure to define the
+      <envar>PYTHONDOCS</envar>
+      variable for the version you want to use, each time you need to consult
       the documentation. If you have downloaded the preformatted documentation
       from <ulink url="http://docs.python.org/download.html"/>, install it
       as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>install -v -dm755 /usr/share/doc/python-&python2-version; &amp;&amp;
-tar --strip-components=1 -C /usr/share/doc/python-&python2-version; \
-    --no-same-owner -xvf ../python-&python2-version;-docs-html.tar.bz2      &amp;&amp;
+
+tar --strip-components=1                     \
+    --no-same-owner                          \
+    --directory /usr/share/doc/python-&python2-version; \
+    -xvf ../python-&python2-version;-docs-html.tar.bz2 &amp;&amp;
+
 find /usr/share/doc/python-&python2-version; -type d -exec chmod 0755 {} \; &amp;&amp;
 find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</userinput></screen>
   </sect2>
@@ -185,7 +180,7 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
 
     <para>
       <option>--with-system-expat</option>: This switch enables linking against
-      system version of <application>Expat</application>. 
+      system version of <application>Expat</application>.
     </para>
 
     <para>
@@ -245,9 +240,9 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
           libpython&python2-majorver;.so
         </seg>
         <seg>
-          /usr/include/python&python2-majorver;,
-          /usr/lib/python&python2-majorver;, and
-          /usr/share/doc/python-&python2-version;</seg>
+          /usr/{include,lib}/python&python2-majorver; and
+          /usr/share/doc/python-&python2-version;
+        </seg>
       </seglistitem>
     </segmentedlist>
 
