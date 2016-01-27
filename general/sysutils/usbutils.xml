@@ -95,9 +95,9 @@
       running the following commands:
     </para>
 
-<screen><userinput>sed -i '/^usbids/ s:usb.ids:misc/&amp;:' lsusb.py &amp;&amp;
+<screen><userinput>sed -i '/^usbids/ s:usb.ids:hwdata/&amp;:' lsusb.py &amp;&amp;
 
-./configure --prefix=/usr --datadir=/usr/share/misc &amp;&amp;
+./configure --prefix=/usr --datadir=/usr/share/hwdata &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -109,6 +109,15 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      To install the <filename>usb.ids</filename> data file, using
+      <xref linkend="wget"/>, run, as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -dm755 /usr/share/hwdata/ &amp;&amp;
+wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</userinput></screen>
 
     <para>
       The script <command>lsusb.py</command> displays information in a more
@@ -134,15 +143,17 @@ make</userinput></screen>
 
     <para>
       The <filename>usb.ids</filename> data file is constantly being updated.
-      To get a current version of this file, using <xref linkend="wget"/>, run,
-      as the <systemitem class="username">root</systemitem> user:</para>
+      To get a current version of this file, using <xref linkend="wget"/>,
+      periodically run again, as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
 
-<screen role="root"><userinput>wget http://www.linux-usb.org/usb.ids -O /usr/share/misc/usb.ids</userinput></screen>
+<screen role="root"><userinput>wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</userinput></screen>
 
     <para>
       You may wish to add an entry to
       <systemitem class="username">root</systemitem>'s (or any other user who has
-      write privilege to <filename class="directory">/usr/share/misc</filename>)
+      write privilege to <filename class="directory">/usr/share/hwdata</filename>)
       crontab to automatically update the <filename>usb.ids</filename> file
       periodically.
     </para>

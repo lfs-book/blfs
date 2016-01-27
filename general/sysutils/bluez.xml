@@ -6,10 +6,10 @@
 
   <!ENTITY bluez-download-http "http://www.kernel.org/pub/linux/bluetooth/bluez-&bluez-version;.tar.xz">
   <!ENTITY bluez-download-ftp  "ftp://ftp.kernel.org/pub/linux/bluetooth/bluez-&bluez-version;.tar.xz">
-  <!ENTITY bluez-md5sum        "9981441d7a61e2ad849b01106fa73445">
+  <!ENTITY bluez-md5sum        "33177e5743e24b2b3738f72be64e3ffb">
   <!ENTITY bluez-size          "1.6 MB">
-  <!ENTITY bluez-buildsize     "85 MB (with tests)">
-  <!ENTITY bluez-time          "0.9 SBU (with tests)">
+  <!ENTITY bluez-buildsize     "87 MB (with tests)">
+  <!ENTITY bluez-time          "0.7 SBU (with tests)">
 ]>
 
 <sect1 id="bluez" xreflabel="BlueZ-&bluez-version;">
@@ -74,7 +74,8 @@
       <itemizedlist spacing="compact">
         <listitem>
           <para>
-             Required patch:
+            Optional patch (required to work properly with gnome-bluetooth
+            and/or kde bluedevil):
             <ulink url="&patch-root;/bluez-&bluez-version;-obexd_without_systemd-1.patch"/>
           </para>
         </listitem>
@@ -125,12 +126,18 @@
     <title>Installation of BlueZ</title>
 
     <para>
+      If you are going to use <application>BlueZ</application> with
+      gnome-bluetooth and/or kde bluedevil, apply the following patch:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../bluez-&bluez-version;-obexd_without_systemd-1.patch</userinput></screen>
+
+    <para>
       Install <application>BlueZ</application> by running the following
       commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../bluez-&bluez-version;-obexd_without_systemd-1.patch &amp;&amp;
-./configure --prefix=/usr        \
+<screen><userinput>./configure --prefix=/usr        \
             --sysconfdir=/etc    \
             --localstatedir=/var \
             --enable-library     &amp;&amp;
@@ -144,7 +151,8 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+ln -svf ../libexec/bluetooth/bluetoothd /usr/sbin</userinput></screen>
 
     <para>
       Install the main configuration file as the
@@ -164,6 +172,7 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
 
   </sect2>
 
+
   <sect2 role="commands">
     <title>Command Explanations</title>
 
@@ -171,6 +180,11 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
       <parameter>--enable-library</parameter>: This switch enables building of the
       <application>BlueZ</application> 4 compatibility library which is required by
       some applications.
+    </para>
+
+    <para>
+      <command>ln -svf ../libexec/bluetooth/bluetoothd /usr/sbin</command>:
+      This command makes access to the bluetooth daemon more convenient.
     </para>
 
   </sect2>
@@ -260,17 +274,15 @@ EOF</screen>
 
       <seglistitem>
         <seg>
-          bccmd, bluemoon, bluetoothctl, bluetoothd, btmon, ciptool,
-          hciattach, hciconfig, hcidump, hcitool, hex2hcd, l2ping,
-          l2test, mpris-proxy, obexd, rctest, rfcomm, and sdptool
+          bccmd, bluemoon, bluetoothctl, bluetoothd (symlink), btmon, ciptool,
+          hciattach, hciconfig, hcidump, hcitool, hex2hcd, l2ping, l2test,
+          mpris-proxy, rctest, rfcomm, and sdptool
         </seg>
         <seg>
           libbluetooth.so
         </seg>
         <seg>
-          /etc/bluetooth,
-          /usr/include/bluetooth,
-          /usr/libexec/bluetooth, and
+          /etc/bluetooth, /usr/{include,libexec}/bluetooth, and
           /usr/share/doc/bluez-&bluez-version;
         </seg>
       </seglistitem>
@@ -421,8 +433,8 @@ EOF</screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
-<!--      <varlistentry id="hid2hci">
+<!--
+      <varlistentry id="hid2hci">
         <term><command>hid2hci</command></term>
         <listitem>
           <para>
@@ -433,7 +445,7 @@ EOF</screen>
             <primary sortas="b-hid2hci">hid2hci</primary>
           </indexterm>
         </listitem>
-      </varlistentry> -->
+      </varlistentry>-->
 
       <varlistentry id="l2ping">
         <term><command>l2ping</command></term>
@@ -459,7 +471,7 @@ EOF</screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
      <varlistentry id="obexd">
         <term><command>obexd</command></term>
         <listitem>
@@ -470,7 +482,7 @@ EOF</screen>
             <primary sortas="b-obexd">obexd</primary>
           </indexterm>
         </listitem>
-      </varlistentry>
+      </varlistentry>-->
 
       <varlistentry id="rctest">
         <term><command>rctest</command></term>
