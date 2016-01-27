@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-<!ENTITY lsof-download-http " ">
-<!ENTITY lsof-download-ftp  "ftp://sunsite.ualberta.ca/pub/Mirror/lsof/lsof_&lsof-version;.tar.bz2">
+<!ENTITY lsof-download-http  " ">
+<!ENTITY lsof-download-ftp "ftp://sunsite.ualberta.ca/pub/Mirror/lsof/lsof_&lsof-version;.tar.bz2">
 <!ENTITY lsof-md5sum        "1b9cd34f3fb86856a125abbf2be3a386">
 <!ENTITY lsof-size          "768 KB">
-<!ENTITY lsof-buildsize     "9.6 MB">
+<!ENTITY lsof-buildsize     "9.5 MB">
 <!ENTITY lsof-time          "less than 0.1 SBU">
 ]>
 
@@ -56,6 +56,13 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">lsof Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="libtirpc"/>
+    </para>
+
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/lsof"/></para>
 
@@ -72,13 +79,13 @@
 <screen><userinput>tar -xf lsof_&lsof-version;_src.tar  &amp;&amp;
 cd lsof_&lsof-version;_src           &amp;&amp;
 ./Configure -n linux       &amp;&amp;
-make</userinput></screen>
+make CFGL="-L./lib -ltirpc"</userinput></screen>
 
     <para>This package does not come with a working test suite.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>install -v -m755 -o root -g root lsof /usr/bin &amp;&amp;
+<screen role="root"><userinput>install -v -m0755 -o root -g root lsof /usr/bin &amp;&amp;
 install -v lsof.8 /usr/share/man/man8</userinput></screen>
 
   </sect2>
@@ -88,7 +95,12 @@ install -v lsof.8 /usr/share/man/man8</userinput></screen>
 
     <para>
       <command>./Configure -n linux</command>: Avoid AFS, customization, and
-      inventory checks, and use target-dialect Linux. 
+      inventory checks, and use the linux dialect.
+    </para>
+
+    <para>
+      <command>make CFGL="-L./lib -ltirpc"</command>: Add the libtirpc
+      libraries location to the <command>make</command> command.
     </para>
 
   </sect2>
@@ -97,7 +109,7 @@ install -v lsof.8 /usr/share/man/man8</userinput></screen>
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Program</segtitle>
       <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
@@ -113,11 +125,11 @@ install -v lsof.8 /usr/share/man/man8</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="lsof-prog">
+      <varlistentry id="lsof-app">
         <term><command>lsof</command></term>
         <listitem>
           <para>lists open files for running processes.</para>
-          <indexterm zone="lsof lsof-prog">
+          <indexterm zone="lsof lsof-app">
             <primary sortas="b-lsof">lsof</primary>
           </indexterm>
         </listitem>

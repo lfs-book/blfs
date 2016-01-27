@@ -4,7 +4,8 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY graphviz-download-http "http://graphviz.org/pub/graphviz/stable/SOURCES/graphviz-&graphviz-version;.tar.gz">
+  <!--<!ENTITY graphviz-download-http "http://graphviz.org/pub/graphviz/stable/SOURCES/graphviz-&graphviz-version;.tar.gz">-->
+  <!ENTITY graphviz-download-http "http://pkgs.fedoraproject.org/repo/pkgs/graphviz/graphviz-&graphviz-version;.tar.gz/&graphviz-md5sum;/graphviz-&graphviz-version;.tar.gz">
   <!ENTITY graphviz-download-ftp  " ">
   <!ENTITY graphviz-md5sum        "5b6a829b2ac94efcd5fa3c223ed6d3ae">
   <!ENTITY graphviz-size          "25 MB">
@@ -38,7 +39,7 @@
       tools, libraries, and language bindings.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -129,23 +130,21 @@
     <title>Installation of Graphviz</title>
 
     <para>
-      If you want to build the <application>Ruby</application> bindings,
-      fix <command>configure</command> so it can find the latest versions
-      of <application>Ruby</application> by running the following command:
-    </para>
-
-<screen><userinput>sed -i "s:ruby-1.9:ruby-2.2:g" configure</userinput></screen>
-
-    <para>
       Install <application>Graphviz</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
+<screen><userinput>sed -e "s:ruby-1.9:ruby-2.2:g" \
+    -i configure                  &amp;&amp;
+sed -e 's/ e_/ gs_error_/' \
+    -i plugin/gs/gvloadimage_gs.c &amp;&amp;
+
+./configure --prefix=/usr         &amp;&amp;
 make</userinput></screen>
 
     <para>
-      This package does not come with a test suite that provides meaningful results.
+      This package does not come with a test suite that provides
+      meaningful results.
     </para>
 
     <para>
@@ -162,8 +161,27 @@ make</userinput></screen>
       user:
     </para>
 
-<screen role="root"><userinput>ln -sfv /usr/share/graphviz/doc \
-        /usr/share/doc/graphviz-&graphviz-version;</userinput></screen>
+<screen role="root"><userinput>ln -v -s /usr/share/graphviz/doc \
+         /usr/share/doc/graphviz-&graphviz-version;</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <command>sed -e "s:ruby-1.9:ruby-2.2:g" -i configure</command>:
+      Use this command, if ruby-2.2.0 is installed and you wish
+      <application>Graphviz</application> built with support for it.
+    </para>
+
+    <para>
+      <command>sed -e 's/ e_/ gs_error_/' ...</command>: Use this
+      command, if ghostscript-9.18 or later is installed and you wish
+      <application>Graphviz</application> built with support for it, or
+      else the build fails because some identifiers have been renamed in
+      ghostscript-9.18's headers.
+    </para>
 
   </sect2>
 
@@ -229,7 +247,7 @@ make</userinput></screen>
         <seg>
           /usr/include/graphviz,
           /usr/lib/graphviz,
-          /usr/lib/tcl8.6/graphviz, 
+          /usr/lib/tcl8.6/graphviz,
           /usr/share/doc/graphviz-&graphviz-version;, and
           /usr/share/graphviz
         </seg>
