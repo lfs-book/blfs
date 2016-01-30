@@ -7,10 +7,10 @@
   <!ENTITY ntp-download-http "https://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-&ntp-version;.tar.gz">
 <!--  <!ENTITY ntp-download-ftp  "&gentoo-ftp-repo;/ntp-&ntp-version;.tar.gz">-->
   <!ENTITY ntp-download-ftp  " ">
-  <!ENTITY ntp-md5sum        "fa37049383316322d060ec9061ac23a9">
-  <!ENTITY ntp-size          "6.6 MB">
-  <!ENTITY ntp-buildsize     "70 MB">
-  <!ENTITY ntp-time          "0.5 SBU">
+  <!ENTITY ntp-md5sum        "60049f51e9c8305afe30eb22b711c5c6">
+  <!ENTITY ntp-size          "6.9 MB">
+  <!ENTITY ntp-buildsize     "104 MB (with tests)">
+  <!ENTITY ntp-time          "less than 1 SBU (with tests)">
 ]>
 
 <sect1 id="ntp" xreflabel="ntp-&ntp-version;">
@@ -35,7 +35,7 @@
     a network. This package is the official reference implementation of the
     NTP protocol.</para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,12 +69,13 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="libcap-pam"/>,
       <xref linkend="libevent"/>,
       <xref linkend="openssl"/>,
       <ulink url="http://www.thrysoee.dk/editline/">libedit</ulink>, and
-      <ulink url="https://www.gnu.org/software/autogen/">AutoGen</ulink>
+      <ulink url="https://www.gnu.org/software/autogen/">libopts from
+      AutoGen</ulink>
     </para>
-
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/ntp"/></para>
@@ -106,14 +107,12 @@ useradd -c "Network Time Protocol" -d /var/lib/ntp -u 87 \
             --docdir=/usr/share/doc/ntp-&ntp-version; &amp;&amp;
 make</userinput></screen>
 
-<!--    <para>To test the results, issue: <command>make check</command>.</para>
--->
-    <para>This package does not have a working testsuite.</para>
+    <para>To test the results, issue: <command>make check</command>.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-install -v -dm755 -o ntp -g ntp /var/lib/ntp</userinput></screen>
+install -v -o ntp -g ntp -d /var/lib/ntp</userinput></screen>
 
   </sect2>
 
@@ -159,7 +158,7 @@ install -v -dm755 -o ntp -g ntp /var/lib/ntp</userinput></screen>
       <command>ntpd</command> process ID. Third, it defines the location
       for the leap-second definition file
       <filename>/etc/ntp.leapseconds</filename>, that the
-      <command>update-leap</command> script checks and updates when
+      <command>update-leap</command> script checks and updates, when
       necessary. This script can be run as a cron job and the
       <application>ntp</application> developers recommend a frequency of
       about three weeks for the updates. Since the documentation included
@@ -190,10 +189,10 @@ leapfile  /etc/ntp.leapseconds</literal>
 EOF</userinput></screen>
 
       <para>
-        For security reasons, you may wish to extend the configuration
-        file according to <ulink
-        url="https://www.eecis.udel.edu/~mills/ntp/html/accopt.html#restrict"/>.
-     </para>
+        You may wish to add a <quote>Security session</quote>. For
+        explanations, see
+        <ulink url="https://www.eecis.udel.edu/~mills/ntp/html/accopt.html#restrict"/>.
+      </para>
 
 <screen role="root"><userinput>cat &gt;&gt; /etc/ntp.conf &lt;&lt; "EOF"
 <literal># Security session

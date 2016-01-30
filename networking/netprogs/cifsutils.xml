@@ -4,7 +4,7 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY cifsutils-download-http "https://download.samba.org/pub/linux-cifs/cifs-utils/cifs-utils-&cifsutils-version;.tar.bz2">
+  <!ENTITY cifsutils-download-http "https://ftp.samba.org/pub/linux-cifs/cifs-utils/cifs-utils-&cifsutils-version;.tar.bz2">
   <!ENTITY cifsutils-download-ftp  " ">
   <!ENTITY cifsutils-md5sum        "b7d75b67fd3987952896d27256c7293d">
   <!ENTITY cifsutils-size          "384 KB">
@@ -32,7 +32,7 @@
     <para>The <application>cifs-utils</application> provides a means for
     mounting SMB/CIFS shares on a Linux system.</para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -65,7 +65,8 @@
       <xref linkend="mitkrb"/>,
       <xref linkend="talloc"/>,
       <xref linkend="samba"/>, and
-      <ulink url="http://people.redhat.com/sgrubb/libcap-ng/">libcap-ng</ulink>
+      <ulink url="http://people.redhat.com/sgrubb/libcap-ng/">libcap-ng</ulink> or
+      <xref linkend="libcap-pam"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -88,8 +89,8 @@
     <indexterm zone="cifsutils cifsutils-kernel">
       <primary sortas="d-cifsutils">cifs-utils</primary>
     </indexterm>
-                                                                                                                                       
-  </sect2>                                                                                                                             
+
+  </sect2>
 
   <sect2 role="installation">
     <title>Installation of cifs-utils</title>
@@ -111,13 +112,15 @@ make</userinput></screen>
   <sect2 role="commands">
       <title>Command Explanations</title>
 
-          <para>
-            <parameter>--disable-pam</parameter>: This switch disables
-            PAM support. Replace it with
-            <option>--with-pamdir=/lib/security</option>,
+          <para><parameter>--disable-pam</parameter>: Do not buuild PAM support.
+            Remove it and use <option>--with-pamdir</option> (see below),
             if <xref linkend="linux-pam"/> is installed and you wish
             to build the PAM module.
           </para>
+
+          <para><option>--with-pamdir=/lib/security</option>: Install the PAM
+            module in
+            <filename class="directory">/lib/security</filename>.</para>
 
   </sect2>
 

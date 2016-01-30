@@ -8,7 +8,7 @@
   <!ENTITY rpcbind-download-ftp  " ">
   <!ENTITY rpcbind-md5sum        "c8875246b2688a1adfbd6ad43480278d">
   <!ENTITY rpcbind-size          "120 KB">
-  <!ENTITY rpcbind-buildsize     "2.0 MB">
+  <!ENTITY rpcbind-buildsize     "2 MB">
   <!ENTITY rpcbind-time          "less than 0.1 SBU">
 ]>
 
@@ -29,44 +29,40 @@
   <sect2 role="package">
     <title>Introduction to rpcbind</title>
 
-    <para>
-      The <application>rpcbind</application> program is a replacement for
-      <application>portmap</application>.  It is required for import or
-      export of Network File System (NFS) shared directories.
-    </para>
+    <para>The <application>rpcbind</application> program is a replacement for
+    <application>portmap</application>.  It is required for import or export
+    of Network File System (NFS) shared directories. </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
-        <para>
-          Download (HTTP): <ulink url="&rpcbind-download-http;"/>
-        </para>
+        <para>Download (HTTP): <ulink url="&rpcbind-download-http;"/></para>
       </listitem>
       <listitem>
-        <para>
-          Download (FTP): <ulink url="&rpcbind-download-ftp;"/>
-        </para>
+        <para>Download (FTP): <ulink url="&rpcbind-download-ftp;"/></para>
       </listitem>
       <listitem>
-        <para>
-          Download MD5 sum: &rpcbind-md5sum;
-        </para>
+        <para>Download MD5 sum: &rpcbind-md5sum;</para>
       </listitem>
       <listitem>
-        <para>
-          Download size: &rpcbind-size;
-        </para>
+        <para>Download size: &rpcbind-size;</para>
       </listitem>
       <listitem>
-        <para>
-          Estimated disk space required: &rpcbind-buildsize;
-        </para>
+        <para>Estimated disk space required: &rpcbind-buildsize;</para>
       </listitem>
       <listitem>
+        <para>Estimated build time: &rpcbind-time;</para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
         <para>
-          Estimated build time: &rpcbind-time;
+          Required patch:
+          <ulink url="&patch-root;/rpcbind-&rpcbind-version;-tirpc_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -79,8 +75,7 @@
     </para>
 
     <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/rpcbind"/>
-    </para>
+      <ulink url="&blfs-wiki;/rpcbind"/></para>
   </sect2>
 
   <sect2 role="installation">
@@ -98,36 +93,26 @@ useradd -c "RPC Bind Daemon Owner" -d /dev/null -g rpc \
         -s /bin/false -u 28 rpc</userinput></screen>
 
     <!-- Packages should adapt to standards, not the other way around -->
-    <para>
-      In order to get <application>rpcbind</application> to work
-      properly, first fix the package to use correct service name:
-    </para>
+    <para>In order to get <application>rpcbind</application> to work
+      properly, first fix the package to use correct service name:</para>
 
-<screen><userinput>sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c &amp;&amp;
-sed -i "/error = getaddrinfo/s:rpcbind:sunrpc:" src/rpcinfo.c</userinput></screen>
+<screen><userinput>sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c &amp;&amp;</userinput></screen>
 
-    <para>
-      Install <application>rpcbind</application> by running the following
-      commands:
-    </para>
+    <para>Install <application>rpcbind</application> by running the following
+    commands:</para>
 
-<screen><userinput>./configure --prefix=/usr       \
+<screen><userinput>patch -Np1 -i ../rpcbind-&rpcbind-version;-tirpc_fix-1.patch &amp;&amp;
+./configure --prefix=/usr       \
             --bindir=/sbin      \
-            --with-rpcuser=rpc  \
-            --enable-warmstarts \
-            --with-statedir=/var/lib/rpcbind &amp;&amp;
+            --with-rpcuser=rpc  &amp;&amp;
 make</userinput></screen>
 
-    <para>
-      This package does not come with a test suite.
-    </para>
+    <para>This package does not come with a test suite.</para>
 
-    <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
-    </para>
+    <para>Now, as the <systemitem class="username">root</systemitem>
+    user:</para>
 
-<screen role="root"><userinput>make install &amp;&amp;
-install -v -dm755 -o rpc -g rpc /var/lib/rpcbind</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -139,23 +124,6 @@ install -v -dm755 -o rpc -g rpc /var/lib/rpcbind</userinput></screen>
       is used so the <command>rpcbind</command> daemon will
       run as an unprivileged user instead of
       <systemitem class="username">root</systemitem> user.
-    </para>
-
-    <para>
-      <parameter>--enable-warmstarts</parameter>: This switch
-      is used to enable <command>rpcbind</command> to write
-      the current list of registered services to a file when
-      it shuts down so it can resume operation with the
-      registrations found in the file when it is started again.
-    </para>
-
-    <para>
-      <parameter>--with-statedir=/var/lib/rpcbind</parameter>:
-      This switch is used to instruct <command>rpcbind</command>
-      to write current list of registered services to a
-      permanent location of <filename
-      class="directory">/var/lib/rpcbind</filename> instead of
-      <filename class="directory">/tmp</filename>.
     </para>
 
   </sect2>
@@ -195,20 +163,14 @@ install -v -dm755 -o rpc -g rpc /var/lib/rpcbind</userinput></screen>
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Program</segtitle>
       <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>
-          rpcbind and rpcinfo
-        </seg>
-        <seg>
-          None
-        </seg>
-        <seg>
-          None
-        </seg>
+        <seg>rpcbind and rpcinfo</seg>
+        <seg>None</seg>
+        <seg>None</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -220,11 +182,9 @@ install -v -dm755 -o rpc -g rpc /var/lib/rpcbind</userinput></screen>
       <varlistentry id="rpcbind-prog">
         <term><command>rpcbind</command></term>
         <listitem>
-          <para>
-            is a server that converts RPC program numbers into universal
-            addresses. It must be running on the host to be able to make
-            RPC calls on a server on that machine.
-          </para>
+          <para>is a server that converts RPC program numbers into universal
+          addresses.  It must be running on the host to be able to make RPC
+          calls on a server on that machine.  </para>
           <indexterm zone="rpcbind rpcbind-prog">
             <primary sortas="b-rpcbind">rpcbind</primary>
           </indexterm>
@@ -234,10 +194,8 @@ install -v -dm755 -o rpc -g rpc /var/lib/rpcbind</userinput></screen>
       <varlistentry id="rpcinfo">
         <term><command>rpcinfo</command></term>
         <listitem>
-          <para>
-            makes an RPC call to an RPC server and reports data according
-            to the requested options.
-          </para>
+          <para>makes an RPC call to an RPC server and reports data according
+          to the requested options.  </para>
           <indexterm zone="rpcbind rpcinfo">
             <primary sortas="b-rpcinfo">rpcinfo</primary>
           </indexterm>

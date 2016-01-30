@@ -6,10 +6,10 @@
 
   <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "8f6452eca69f8b38f97bb8d8a738180a">
-  <!ENTITY samba-size          "19 MB">
-  <!ENTITY samba-buildsize     "506 MB (additional 399 MB for the quicktest, reputedly up to 500 MB additional for all tests)">
-  <!ENTITY samba-time          "10.6 SBU (additional 6.9 SBU for the quicktest, reputedly up to 110 SBU to run all tests)">
+  <!ENTITY samba-md5sum        "48df803c6c6c475a714cae82a2dc219e">
+  <!ENTITY samba-size          "20 MB">
+  <!ENTITY samba-buildsize     "500 MB (additional 407 MB for the quicktest, reputedly up to 500 MB additional for all tests)">
+  <!ENTITY samba-time          "2.2 SBU, using parallelism=4 (additional 23.5 SBU for the quicktest, reputedly up to 110 SBU to run all tests)">
 ]>
 
 <sect1 id="samba" xreflabel="Samba-&samba-version;">
@@ -36,7 +36,7 @@
     Active Directory domain and a NetBIOS (rfc1001/1002) nameserver (which
     among other things provides LAN browsing support).</para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -59,16 +59,6 @@
         <para>Estimated build time: &samba-time;</para>
       </listitem>
     </itemizedlist>
-<!--
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/samba-&samba-version;-gnutls34-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist> -->
 
     <bridgehead renderas="sect3">Samba Dependencies</bridgehead>
 
@@ -89,10 +79,13 @@
       <xref linkend="cups"/>,
       <xref linkend="gnutls"/>,
       <xref linkend="libarchive"/>,
+      <xref linkend="libcap-pam"/>,
       <xref linkend="libgpg-error"/>,
       <xref linkend="linux-pam"/>,
-      <xref linkend="mitkrb"/>,
+      <xref linkend="mitkrb"/> (currently, problems, despite successful build),
       <xref linkend="popt"/>,
+      <xref linkend="python3"/>,
+      <xref linkend="talloc"/>,
       <xref linkend="valgrind"/> (optionally used by the test suite),
       <xref linkend="xfsprogs"/>,
       <ulink url="https://ctdb.samba.org/">ctdb</ulink>,
@@ -141,7 +134,7 @@ make</userinput></screen>
     may be the cause of errors, so that over 1/3 of the tests might fail. For
     this reason, the switch <option>--with-selftest-prefix=/tmp/quick</option>
     (or another path with small number of characters) can be used with
-    configure. Even so, the 
+    configure. Even so, the
     <quote><replaceable>samba3.raw.eas</replaceable></quote> test may fail,
     apparently for the same reason. If one quicktest fails, it can be disabled.
     For example, <quote><replaceable>samba3.raw.eas</replaceable></quote> may
@@ -149,31 +142,34 @@ make</userinput></screen>
 
 <screen><userinput>sed -i "/samba3.blackbox.failure.failure/i \^samba3.raw.eas" selftest/knownfail</userinput></screen>
 
-    <para>To test the results, as the <systemitem
-    class="username">root</systemitem> user, issue: <command>make
-    quicktest</command>.  There are other targets (test, subunit-test)
-    available, but take a very long time (over 100 SBU).</para>
+    <para>To test the results, as the
+    <systemitem class="username">root</systemitem> user, issue:
+    <command>make quicktest 2>&amp;1 | tee quicktest.log</command>.  Summary of
+    the test results and some other information may be obtained with
+    <command>grep -A5 testsuites quicktest.log</command>.  There are other
+    targets (test, subunit-test) available, but take a very long time
+    (over 100 SBU).</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
 
-mv -v /usr/lib/libnss_win{s,bind}.so* /lib                       &amp;&amp;
-ln -sfv ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so &amp;&amp;
-ln -sfv ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so    &amp;&amp;
+mv -v /usr/lib/libnss_win{s,bind}.so*   /lib                       &amp;&amp;
+ln -v -sf ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so &amp;&amp;
+ln -v -sf ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so    &amp;&amp;
 
-install -v -m644  examples/smb.conf.default /etc/samba &amp;&amp;
+install -v -m644    examples/smb.conf.default /etc/samba &amp;&amp;
 
-install -v -dm755 /etc/openldap/schema                 &amp;&amp;
+mkdir -pv /etc/openldap/schema                        &amp;&amp;
 
-install -v -m644  examples/LDAP/README                 \
-                  /etc/openldap/schema/README.LDAP     &amp;&amp;
-                    
-install -v -m644  examples/LDAP/samba*                 \
-                  /etc/openldap/schema                 &amp;&amp;
-                    
-install -v -m755  examples/LDAP/{get*,ol*}             \
-                  /etc/openldap/schema                 </userinput></screen>
+install -v -m644    examples/LDAP/README              \
+                    /etc/openldap/schema/README.LDAP  &amp;&amp;
+
+install -v -m644    examples/LDAP/samba*              \
+                    /etc/openldap/schema              &amp;&amp;
+
+install -v -m755    examples/LDAP/{get*,ol*} \
+                    /etc/openldap/schema</userinput></screen>
 
   </sect2>
 
@@ -194,8 +190,8 @@ install -v -m755  examples/LDAP/{get*,ol*}             \
     The nss libraries are installed in /usr/lib by default. Move them to
     /lib.</para>
 
-    <para><command>ln -sfv ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so</command>
-    and <command>ln -sfv ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so</command>:
+    <para><command>ln -v -sf ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so</command>
+    and <command>ln -v -sf ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so</command>:
     These symlinks are required when applicates build against these libraries.</para>
 
     <para><command>install -v -m644 examples/LDAP/* /etc/openldap/schema</command>:
@@ -234,7 +230,7 @@ install -v -m755  examples/LDAP/{get*,ol*}             \
       following command as the <systemitem class="username">root</systemitem>
       user:</para>
 
-<screen role="root"><userinput>ln -sfv /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
+<screen role="root"><userinput>ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
 
     </sect3>
 
@@ -483,16 +479,16 @@ systemctl start smbd.socket</userinput></screen>
       <seglistitem>
 
         <seg>
-          cifsdd, dbwrap_tool, eventlogadm, gentest, ldbadd, ldbdel, ldbedit,
-          ldbmodify, ldbrename, ldbsearch, locktest, masktest, ndrdump, net,
-          nmbd, nmblookup, ntdbbackup, ntdbdump, ntdbrestore, ntdbtool,
-          ntlm_auth, oLschema2ldif, pdbedit, pidl, profiles, regdiff, regpatch,
-          regshell, regtree, rpcclient, samba, samba_dnsupdate, samba_kcc,
-          samba-regedit, samba_spnupdate, samba-tool, samba_upgradedns,
-          sharesec, smbcacls, smbclient, smbcontrol, smbcquotas, smbd, smbget,
-          smbpasswd, smbspool, smbstatus, smbtar, smbta-util, smbtorture,
-          smbtree, tdbbackup, tdbdump, tdbrestore, tdbtool, testparm, wbinfo,
-          and winbindd
+          cifsdd, dbwrap_tool, eventlogadm, gentest, ldbadd, ldbdel,
+          ldbedit, ldbmodify, ldbrename, ldbsearch, locktest, masktest,
+          ndrdump, net, nmbd, nmblookup, ntlm_auth, oLschema2ldif,
+          pdbedit, pidl, profiles, regdiff, regpatch, regshell, regtree,
+          rpcclient, samba, samba_dnsupdate, samba_kcc, samba-regedit,
+          samba_spnupdate, samba-tool, samba_upgradedns, sharesec,
+          smbcacls, smbclient, smbcontrol, smbcquotas, smbd, smbget,
+          smbpasswd, smbspool, smbstatus, smbtar, smbta-util,
+          smbtorture, smbtree, tdbbackup, tdbdump, tdbrestore, tdbtool,
+          testparm, wbinfo, and winbindd
         </seg>
 
         <seg>
@@ -503,17 +499,17 @@ systemctl start smbd.socket</userinput></screen>
           libsamba-credentials.so, libsamba-hostconfig.so, libsamba-passdb.so,
           libsamba-policy.so, libsamba-util.so, libsamdb.so,
           libsmbclient-raw.so, libsmbclient.so, libsmbconf.so, libsmbldap.so,
-          libtevent-util.so, libtorture.so, libwbclient.so, mit_samba.so,
-          winbind_krb5_locator.so, pam_winbind.so, and pam_smbpass.so (PAM
-          modules)
+          libtevent-util.so, libtorture.so, libwbclient.so, <!--mit_samba.so,
+          --> and winbind_krb5_locator.so; the pam_winbind.so and pam_smbpass.so
+          PAM libraries; and assorted character set, filesystem and support
+          modules under /usr/lib/{python&python2-majorver;,samba}
         </seg>
-        
+
         <seg>
           /etc/samba, /run/samba, /usr/include/samba-4.0,
           /usr/lib/perl5/vendor_perl/5.x.y/Parse/Pidl/{Samba{3,4},Wireshark},
           /usr/lib/python&python2-majorver;/site-packages/samba,
-          /usr/lib/samba, /usr/share/doc/samba-&samba-version;,
-          /usr/share/samba, and /var/{cache,lib,lock,log,run}/samba
+          /usr/{lib,share}/samba, and /var/{cache,lib,lock,log,run}/samba
         </seg>
 
       </seglistitem>
@@ -695,51 +691,6 @@ systemctl start smbd.socket</userinput></screen>
           them to IP addresses.</para>
           <indexterm zone="samba nmblookup">
             <primary sortas="b-nmblookup">nmblookup</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="ntdbbackup">
-        <term><command>ntdbbackup</command></term>
-        <listitem>
-          <para>is a tool for backing up and for validating the integrity of
-           <application>Samba</application> <filename>.ntdb</filename> files.</para>
-          <indexterm zone="samba ntdbbackup">
-            <primary sortas="b-ntdbbackup">ntdbbackup</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="ntdbdump">
-        <term><command>ntdbdump</command></term>
-        <listitem>
-          <para>is a tool for printing the contents of 
-           <application>Samba</application> <filename>.ntdb</filename> files.</para>
-          <indexterm zone="samba ntdbdump">
-            <primary sortas="b-ntdbdump">ntdbdump</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="ntdbrestore">
-        <term><command>ntdbrestore</command></term>
-        <listitem>
-          <para>is a tool for creating a <application>Samba</application>
-            <filename>.ntdb</filename> file out of a ntdbdump
-            output.</para>
-          <indexterm zone="samba ntdbrestore">
-            <primary sortas="b-ntdbrestore">ntdbrestore</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="ntdbtool">
-        <term><command>ntdbtool</command></term>
-        <listitem>
-          <para>is used to manipulate the contents of <application>Samba</application> 
-            <filename>.ntdb</filename> files.</para>
-          <indexterm zone="samba ntdbtool">
-            <primary sortas="b-ntdbtool">ntdbtool</primary>
           </indexterm>
         </listitem>
       </varlistentry>
