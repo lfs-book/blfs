@@ -8,10 +8,10 @@
            "&gnome-download-http;/NetworkManager/1.0/NetworkManager-&NetworkManager-version;.tar.xz">
   <!ENTITY NetworkManager-download-ftp
            "&gnome-download-ftp;/NetworkManager/1.0/NetworkManager-&NetworkManager-version;.tar.xz">
-  <!ENTITY NetworkManager-md5sum        "00f5f9ec09725a9f9b99366853c6f730">
-  <!ENTITY NetworkManager-size          "3.2 MB">
-  <!ENTITY NetworkManager-buildsize     "357 MB">
-  <!ENTITY NetworkManager-time          "2.6 SBU">
+  <!ENTITY NetworkManager-md5sum        "a8f54460a4708efd840358f32d0968fd">
+  <!ENTITY NetworkManager-size          "3.4 MB">
+  <!ENTITY NetworkManager-buildsize     "358 MB (with tests)">
+  <!ENTITY NetworkManager-time          "2.5 SBU (with tests)">
 ]>
 
 <sect1 id="NetworkManager" xreflabel="NetworkManager-&NetworkManager-version;">
@@ -20,7 +20,7 @@
   <sect1info>
     <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
-  </sect1info> 
+  </sect1info>
 
   <title>NetworkManager-&NetworkManager-version;</title>
 
@@ -39,7 +39,7 @@
       detected and re-joined automatically the next time it's available.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <note>
       <para>
@@ -90,12 +90,13 @@
       <xref linkend="dbus-glib"/>,
       <xref linkend="libgudev"/>,
       <xref linkend="libndp"/>,
-      <xref linkend="libnl"/> and
+      <xref linkend="libnl"/>, and
       <xref linkend="nss"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+<!--      <xref linkend="consolekit"/>, -->
       <xref linkend="dhcpcd"/> or
       <xref linkend="dhcp"/> (client only),
       <xref linkend="gobject-introspection"/>,
@@ -103,8 +104,10 @@
       <xref linkend="libsoup"/>,
       <xref linkend="newt"/> (for <command>nmtui</command>),
       <xref linkend="polkit"/>,
-      <xref linkend="systemd"/> and
-      <xref linkend="vala"/>
+      <xref linkend="systemd"/>,
+      <xref linkend="upower"/>,
+      <xref linkend="vala"/>, and
+      <xref linkend="wpa_supplicant"/> (built with D-Bus support),
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -115,7 +118,6 @@
       <xref linkend="pygobject3"/>,
       <xref linkend="qt4"/>,
       <xref linkend="valgrind"/>,
-      <xref linkend="wpa_supplicant"/> (built with D-Bus support),
       <ulink url="http://libteam.org/">libteam</ulink>,
       <ulink url="https://www.samba.org/ftp/ppp/">PPP</ulink> and
       <ulink url="https://www.roaringpenguin.com/products/pppoe">RP-PPPoE</ulink>
@@ -129,11 +131,16 @@
   <sect2 role="installation">
     <title>Installation of NetworkManager</title>
 
+    <para>
+      Install <application>NetworkManager</application> by running the
+      following commands:
+    </para>
+
 <screen><userinput>./configure --prefix=/usr                   \
             --sysconfdir=/etc               \
             --localstatedir=/var            \
-            --disable-ppp                   \
             --with-nmtui                    \
+            --disable-ppp                   \
             --with-session-tracking=systemd \
             --with-systemdsystemunitdir=/lib/systemd/system \
             --docdir=/usr/share/doc/NetworkManager-&NetworkManager-version;    &amp;&amp;
@@ -156,16 +163,16 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>--disable-ppp</parameter>: This switch disables
-      <application>PPP</application> support in
-      <application>NetworkManager</application> because
-      <application>PPP</application> isn't part of BLFS.
-    </para>
-
-    <para>
       <parameter>--with-nmtui</parameter>: This switch enables building
       of the <command>nmtui</command> program. Remove it if you have
       not installed <xref linkend="newt"/>.
+    </para>
+
+    <para>
+      <parameter>--disable-ppp</parameter>: This switch disables
+      <application>PPP</application> support in
+      <application>NetworkManager</application>. Remove it if you have
+      installed <application>PPP</application>.
     </para>
 
     <para>
@@ -186,7 +193,7 @@ make</userinput></screen>
     </para>
 
     <para>
-      <option>--without-iptables</option>: Use this switch if you don't have 
+      <option>--without-iptables</option>: Use this switch if you don't have
       <application>Iptables</application> installed.
     </para>
 
@@ -212,11 +219,11 @@ make</userinput></screen>
 
       <para>
         For <application>NetworkManager</application> to work, at least a
-        basic configuration file must be present. Such file is not
-        installed with <command>make install</command>. Run the following
+        minimal configuration file must be present. Such file is not
+        installed with <command>make install</command>. Issue the following
         command as the
         <systemitem class="username">root</systemitem> user to create a
-        basic <filename>NetworkManager.conf</filename> file:
+        minimal <filename>NetworkManager.conf</filename> file:
       </para>
 
 <screen role="root"><userinput>cat &gt;&gt; /etc/NetworkManager/NetworkManager.conf &lt;&lt; "EOF"
@@ -225,7 +232,7 @@ plugins=keyfile</literal>
 EOF</userinput></screen>
 
       <para>
-         You can add <option>dns=none</option> to suppress changes to
+        You can add <option>dns=none</option> to suppress changes to
          <filename>/etc/resolv.conf</filename>. See
          <command>man 5 NetworkManager.conf</command>
          for any additional options.
@@ -273,21 +280,21 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          NetworkManager, nmcli, nm-online, nmtui, nmtui-connect,
-          nmtui-edit, and nmtui-hostname
+          NetworkManager, nmcli, nm-online, and, hardlinked to each other:
+          nmtui, nmtui-connect, nmtui-edit, and nmtui-hostname
         </seg>
         <seg>
-          libnm.so, libnm-glib.so, libnm-glib-vpn.so, and libnm-util.so
+          libnm-glib.so, libnm-glib-vpn.so, libnm.so, libnm-util.so, and
+          modules under /usr/lib/NetworkManager
         </seg>
         <seg>
           /etc/NetworkManager,
           /usr/include/{libnm,libnm-glib,NetworkManager},
           /usr/lib/NetworkManager,
           /usr/share/doc/NetworkManager-&NetworkManager-version;,
-          /usr/share/gtk-doc/html/{libnm,libnm-glib,libnm-util},
-          /usr/share/gtk-doc/html/NetworkManager,
-          /var/lib/NetworkManager, and
-          /var/run/NetworkManager
+          /usr/share/gtk-doc/html/{libnm,libnm-glib,libnm-util,NetworkManager},
+          and
+          /var/{lib,run}/NetworkManager
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -327,7 +334,7 @@ EOF</userinput></screen>
         <term><command>nmtui</command></term>
         <listitem>
           <para>
-            is an interactive ncurses based interface for
+            interactive ncurses based interface for
             <application>nmcli</application>.
           </para>
           <indexterm zone="NetworkManager nmtui">
@@ -340,8 +347,7 @@ EOF</userinput></screen>
         <term><command>nmtui-connect</command></term>
         <listitem>
           <para>
-            is an interactive ncurses based interface connection
-            activate/deactivate.
+            interactive ncurses based interface connection activate/deactivate.
           </para>
           <indexterm zone="NetworkManager nmtui-connect">
             <primary sortas="b-nmtui-connect">nmtui-connect</primary>
@@ -353,8 +359,7 @@ EOF</userinput></screen>
         <term><command>nmtui-edit</command></term>
         <listitem>
           <para>
-            is an interactive ncurses based interface connection
-            editor.
+            interactive ncurses based interface connection editor.
           </para>
           <indexterm zone="NetworkManager nmtui-edit">
             <primary sortas="b-nmtui-edit">nmtui-edit</primary>
@@ -366,8 +371,7 @@ EOF</userinput></screen>
         <term><command>nmtui-hostname</command></term>
         <listitem>
           <para>
-            is an interactive ncurses based interface hostname
-            editor.
+            interactive ncurses based interface hostname editor.
           </para>
           <indexterm zone="NetworkManager nmtui-hostname">
             <primary sortas="b-nmtui-hostname">nmtui-hostname</primary>

@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY wicd-download-http "http://launchpad.net/wicd/&wicd-major-version;/&wicd-version;/+download/wicd-&wicd-version;.tar.gz">
+  <!ENTITY wicd-download-http "https://launchpad.net/wicd/&wicd-major-version;/&wicd-version;/+download/wicd-&wicd-version;.tar.gz">
   <!ENTITY wicd-download-ftp  " ">
-  <!ENTITY wicd-md5sum        "162ca2e6f4ab903bb7ab2bc0adb7d1aa">
-  <!ENTITY wicd-size          "532 KB">
-  <!ENTITY wicd-buildsize     "4.1 MB">
+  <!ENTITY wicd-md5sum        "aaa2e9f5320849e0b5d053099a6f0007">
+  <!ENTITY wicd-size          "536 KB">
+  <!ENTITY wicd-buildsize     "4.2 MB">
   <!ENTITY wicd-time          "less than 0.1 SBU">
 ]>
 
@@ -34,17 +34,18 @@
     connecting to wireless and wired networks. Wicd includes support for WPA
     authentication and DHCP configuration. It provides Curses- and GTK-based
     graphical frontends for user-friendly control. An excellent KDE-based
-    frontend is also available <ulink
-    url="http://projects.kde.org/projects/extragear/network/wicd-kde">here</ulink>.
+    frontend is also available
+    <ulink url="http://projects.kde.org/projects/extragear/network/wicd-kde">
+    http://projects.kde.org/projects/extragear/network/wicd-kde</ulink>.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <note>
       <para>
-        Make sure that you disable the <command>systemd-networkd</command> service
-        or configure it not to manage the interfaces you want to manage with
-        <application>Wicd</application>.
+        Make sure that you disable the <command>systemd-networkd</command>
+        service or configure it not to manage the interfaces you want to manage
+        with <application>Wicd</application>.
       </para>
     </note>
 
@@ -72,22 +73,13 @@
 
     <bridgehead renderas="sect3">Wicd Dependencies</bridgehead>
 
-    <note><para>Wicd uses <command>ifconfig</command> to activate network
-    connections. <command>ifconfig</command> is provided by both the Inetutils
-    and Net-tools packages. The Inetutils package is part of LFS, but the
-    <command>ifconfig</command> command is not installed by the LFS instructions.
-    If you choose to install the Inetutils version of <option>ifconfig</option>,
-    you need to reinstall the package and configure it without the
-    <option>--disable-ifconfig</option> switch.
-    </para></note>
-
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
     <xref linkend="python2"/>,
     <xref linkend="dbus-python"/>,
     <xref linkend="wireless_tools"/>, and
-    <xref linkend="net-tools"/> (Wicd needs <command>ifconfig</command> and
-    <command>mii-tool</command> from this package)
+    <xref linkend="net-tools"/>
+    (Wicd needs <command>mii-tool</command> from this package)
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -100,8 +92,10 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
     <xref linkend="pm-utils"/> (for suspend/resume integration),
-    <ulink url="http://excess.org/urwid/">Urwid</ulink> (for the Curses-based frontend), and
-    <ulink url="http://babel.edgewall.org/">Babel</ulink> (for internationalization)
+    <ulink url="http://urwid.org/">Urwid</ulink>
+    (for the Curses-based frontend), and
+    <ulink url="http://babel.edgewall.org/">Babel</ulink>
+    (for internationalization)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -116,7 +110,7 @@
     commands:</para>
 
 <screen><userinput>sed -e "/detection failed/ a\                self.init=\'init\/default\/wicd\'" \
-    -i setup.py &amp;&amp;
+    -i.orig setup.py &amp;&amp;
 rm po/*.po      &amp;&amp;
 python setup.py configure --no-install-kde     \
                           --no-install-acpi    \
@@ -126,9 +120,10 @@ python setup.py configure --no-install-kde     \
 
     <para>This package does not come with a test suite.</para>
 
-    <para>Now, as the <systemitem class="username">root</systemitem> user, install the package:</para>
+    <para>Now, as the <systemitem class="username">root</systemitem> user,
+    install the package:</para>
 
-<screen role="root"><userinput>LANG=C python setup.py install</userinput></screen>
+<screen role="root"><userinput>python setup.py install</userinput></screen>
 
   </sect2>
 
@@ -181,19 +176,26 @@ python setup.py configure --no-install-kde     \
     </sect3>
 
     <sect3 id="wicd-init">
-      <title>Systemd Units</title>
+      <title>Configuration Information</title>
 
-      <para>
-        To start the <command>wicd</command> daemon at boot, enable
-        the previously installed systemd unit by running the following command
-        as the <systemitem class="username">root</systemitem> user:
-      </para>
+      <para>To automatically start Wicd at boot time, you need to first install
+      the Wicd bootscript,
+      <filename>/etc/rc.d/init.d/wicd</filename>,
+      included in the <xref linkend="bootscripts"/> package
+      (as user <systemitem class="username">root</systemitem>):</para>
 
       <indexterm zone="wicd wicd-init">
-        <primary sortas="f-wicd">wicd</primary>
+        <primary sortas="f-wicd">wicd (bootscript)</primary>
       </indexterm>
 
-      <screen role="root"><userinput>systemctl enable wicd</userinput></screen>
+      <screen role='root'><userinput>make install-wicd</userinput></screen>
+
+      <para>Since Wicd will now handle all configuration of network devices,
+      the network bootscript installed by LFS should be disabled. This can be
+      achieved by either removing any <filename>S*network</filename> and
+      <filename>K*network</filename> symlinks in the <filename>/etc/rc*.d</filename>
+      directories or by setting <literal>ONBOOT=no</literal> in any
+      <filename>/etc/sysconfig/ifconfig.*</filename> files.</para>
 
       <para>No manual configuration of Wicd is needed if you use the graphical
       frontends. If you are only going to use Wicd from command-line, you can configure
@@ -220,10 +222,10 @@ python setup.py configure --no-install-kde     \
 
       <seglistitem>
         <seg>wicd, wicd-cli, wicd-client, wicd-curses, and wicd-gtk</seg>
-        <seg>none</seg>
-        <seg>/etc/wicd, /usr/lib/python&python2-majorver;/site-packages/wicd,
-        /usr/share/doc/wicd-&wicd-version;, /usr/share/pixmaps/wicd,
-        /usr/share/wicd, /var/lib/wicd, /var/log/wicd, and /var/run/wicd</seg>
+        <seg>None</seg>
+        <seg>/{etc,usr/share,var/lib,var/log,var/run}/wicd,
+        /usr/lib/python2.7/site-packages/wicd and
+        /usr/share/doc/wicd-&wicd-version;</seg>
       </seglistitem>
     </segmentedlist>
 
