@@ -6,10 +6,9 @@
 
   <!ENTITY dhcpcd-download-http "http://roy.marples.name/downloads/dhcpcd/dhcpcd-&dhcpcd-version;.tar.xz">
   <!ENTITY dhcpcd-download-ftp  "ftp://roy.marples.name/pub/dhcpcd/dhcpcd-&dhcpcd-version;.tar.xz">
-  <!--<!ENTITY dhcpcd-download-ftp  "ftp://ftp.osuosl.org/pub/gentoo/distfiles/dhcpcd-&dhcpcd-version;.tar.bz2">-->
-  <!ENTITY dhcpcd-md5sum        "8357d023c4687d27bc6ea7964236b2a6">
+  <!ENTITY dhcpcd-md5sum        "a7b83c57f47b62f48373905d3b4f7978">
   <!ENTITY dhcpcd-size          "176 KB">
-  <!ENTITY dhcpcd-buildsize     "3.4 MB">
+  <!ENTITY dhcpcd-buildsize     "2.6 MB">
   <!ENTITY dhcpcd-time          "less than 0.1 SBU">
 ]>
 
@@ -87,7 +86,7 @@
     commands:</para>
 
 <screen><userinput>./configure --libexecdir=/lib/dhcpcd \
-            --dbdir=/var/tmp         &amp;&amp;
+            --dbdir=/var/lib/dhcpcd  &amp;&amp;
 make</userinput></screen>
 
     <para>This package does not come with a test suite.</para>
@@ -119,8 +118,8 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
     </para>
 
     <para>
-      <parameter>--dbdir=/var/tmp</parameter>: The default
-      <filename class="directory">/var/lib</filename> is not FHS-compliant
+      <parameter>--dbdir=/var/lib/dhcpcd</parameter>: The default
+      <filename class="directory">/var/db</filename> is not FHS-compliant
     </para>
 
     <para>
@@ -171,22 +170,20 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
       </para>
 
       <note>
-        <para id="dhcpcd-config3">
-          The default behavior of <command>dhcpcd</command> sets the
-          hostname and mtu settings. It also overwrites
-          <filename>/etc/resolv.conf</filename> and
-          <filename>/etc/ntp.conf</filename>.
+        <para id="dhcpcd-config3">The default behavior of
+        <command>dhcpcd</command> sets the hostname and mtu settings.  It also
+        overwrites <filename>/etc/resolv.conf</filename> and
+        <filename>/etc/ntp.conf</filename>.
 
-          These modifications to system files and settings on system
-          configuration files are done by hooks which are stored in
-          <filename class="directory">/lib/dhcpcd/dhcpcd-hooks</filename>.
+        These modifications to system files and settings on system
+        configuration files are done by hooks which are stored in <filename
+        class="directory">/lib/dhcpcd/dhcpcd-hooks</filename>.
 
-          Setup <command>dhcpcd</command> by removing or adding hooks from/to
-          that directory.  The execution of hooks can be disabled by using the
-          <option>--nohook</option> (<option>-C</option>) command line option or
-          by the <option>nohook</option> option in the
-          <filename>/etc/dhcpcd.conf</filename> file.
-        </para>
+        Setup <command>dhcpcd</command> by removing or adding hooks from/to
+        that directory.  The execution of hooks can be disabled by using the
+        <option>--nohook</option> (<option>-C</option>) command line option or
+        by the <option>nohook</option> option in the
+        <filename>/etc/dhcpcd.conf</filename> file.</para>
       </note>
 
       <indexterm zone="dhcpcd dhcpcd-config3">
@@ -222,14 +219,14 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Libraries</segtitle>
-      <segtitle>Installed Directories</segtitle>
+      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Directory</segtitle>
 
       <seglistitem>
         <seg>dhcpcd</seg>
-        <seg>None</seg>
-        <seg>/lib/dhcpcd</seg>
+        <seg>/lib/dhcpcd/dev/udev.so</seg>
+        <seg>/{,var/}lib/dhcpcd and /usr/share/dhcpcd</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -245,6 +242,20 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
           in RFC2131.</para>
           <indexterm zone="dhcpcd dhcpcd-prog">
             <primary sortas="b-dhcpcd">dhcpcd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="dhcpcd-udev">
+        <term><filename class="libraryfile">udev.so</filename></term>
+        <listitem>
+          <para>
+            add udev support for interface arrival and departure; this is
+            because udev likes to rename the interface, which it can't do if
+            dhcpcd grabs it first.
+          </para>
+          <indexterm zone="dhcpcd dhcpcd-udev">
+            <primary sortas="c-dhcpcd-udev">udev.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

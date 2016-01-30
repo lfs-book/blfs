@@ -5,10 +5,10 @@
   %general-entities;
 
   <!ENTITY openssl-download-http
-           "https://www.openssl.org/source/openssl-&openssl-version;.tar.gz">
+           "https://openssl.org/source/openssl-&openssl-version;.tar.gz">
   <!ENTITY openssl-download-ftp
-           "ftp://ftp.openssl.org/source/openssl-&openssl-version;.tar.gz">
-  <!ENTITY openssl-md5sum        "5262bfa25b60ed9de9f28d5d52d77fc5">
+           "ftp://openssl.org/source/openssl-&openssl-version;.tar.gz">
+  <!ENTITY openssl-md5sum        "b3bf73f507172be9292ea2a8c28b659d">
   <!ENTITY openssl-size          "5.1 MB">
   <!ENTITY openssl-buildsize     "68 MB (with tests)">
   <!ENTITY openssl-time          "1.4 SBU (with tests)">
@@ -74,8 +74,8 @@
         </para>
       </listitem>
     </itemizedlist>
-
-<!--    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
@@ -83,8 +83,8 @@
           <ulink url="&patch-root;/openssl-&openssl-version;-fix_parallel_build-1.patch"/>
         </para>
       </listitem>
-    </itemizedlist> -->
-
+    </itemizedlist>
+-->
     <bridgehead renderas="sect3">OpenSSL Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -107,6 +107,10 @@
 <!-- libdir=lib so it doesn't write over /usr/lib64 symlink on 64 bit system.
      Might break packaging. -->
 
+<!-- Parallel build for version 1.0.2d at -j8 works for me without the patch.
+     But it only reduces build time from 1.0 to 0.7 SBU - Bruce
+
+<screen><userinput>patch -Np1 -i ../openssl-&openssl-version;-fix_parallel_build-1.patch &amp;&amp;-->
 <screen><userinput>./config --prefix=/usr         \
          --openssldir=/etc/ssl \
          --libdir=lib          \
@@ -131,8 +135,8 @@ make</userinput></screen>
 <!-- dev note: make INSTALL_PREFIX=<DESTDIR> MANDIR=/usr/share/man MANSUFFIX=ssl install -->
 
 <screen role="root"><userinput>make MANDIR=/usr/share/man MANSUFFIX=ssl install &amp;&amp;
-install -v -dm755 /usr/share/doc/openssl-&openssl-version;  &amp;&amp;
-cp -rfv doc/*     /usr/share/doc/openssl-&openssl-version;</userinput></screen>
+install -dv -m755 /usr/share/doc/openssl-&openssl-version;  &amp;&amp;
+cp -vfr doc/*     /usr/share/doc/openssl-&openssl-version;</userinput></screen>
 
   </sect2>
 

@@ -4,10 +4,13 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-<!--  <!ENTITY stunnel-download-http "https://www.stunnel.org/downloads/stunnel-&stunnel-version;.tar.gz"> -->
+<!--  <!ENTITY stunnel-download-http "https://www.stunnel.org/downloads/stunnel-&stunnel-version;.tar.gz">-->
   <!ENTITY stunnel-download-http " ">
-  <!ENTITY stunnel-download-ftp  "ftp://ftp.stunnel.org/archive/5.x/stunnel-&stunnel-version;.tar.gz">
-  <!ENTITY stunnel-md5sum        "bf4c13ea9705156abd04f1d766093ea">
+  <!-- Following ftp also has older releases -->
+  <!ENTITY stunnel-download-ftp  "ftp://ftp.stunnel.org/stunnel/archive/5.x/stunnel-&stunnel-version;.tar.gz">
+  <!-- Following ftp only has later release -->
+<!--  <!ENTITY stunnel-download-ftp  "ftp://ftp.stunnel.org/stunnel/stunnel-&stunnel-version;.tar.gz"> -->
+  <!ENTITY stunnel-md5sum        "ENTITY">
   <!ENTITY stunnel-size          "624 KB">
   <!ENTITY stunnel-buildsize     "7.9 MB">
   <!ENTITY stunnel-time          "0.1 SBU">
@@ -40,7 +43,7 @@
     used to tunnel PPP over network sockets without changes to the server
     package source code.</para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -115,30 +118,15 @@ useradd -c "stunnel Daemon" -d /var/lib/stunnel \
 -----END DH PARAMETERS-----</literal></screen>
     </note>
 
-    <para>
-      Fix the bundled systemd unit so it does not use a deprecated dependency:
-    </para>
-
-<screen><userinput>sed -i /syslog.target/d tools/stunnel.service.in</userinput></screen>
-
-<!--
-    <para>
-      On some systems, <command>configure</command> may fail if using
-      <application>Binutils</application> 2.25. Fix the issue by
-      running the following command:
-    </para>
-
-<screen><userinput>sed -i '/LDFLAGS.*static_flag/ s/^/#/' configure</userinput></screen> -->
-
     <para>Install <application>stunnel</application> by running the following
     commands:</para>
-    
-    <note>
-      <para>For some systems with <application>Binutils</application>
-      versions prior to 2.25, <command>configure</command> may fail. If
-      necessary, fix it with: </para>
 
-<screen><userinput>sed -i '/LDFLAGS.*static_flag/ s/^ /#/' configure</userinput></screen>
+    <note>
+      <para>For some systems with <application>binutils</application>
+      versions prior to 2.25, <command>configure</command> may fail.  If
+      necessary, fix it either with:</para>
+
+<screen><userinput>sed -i '/LDFLAGS.*static_flag/ s/^/#/' configure</userinput></screen>
 
       <para>or, if <xref linkend="llvm"/> with Clang is installed, you can
       replace <command>./configure ...</command> with <command>CC=clang
@@ -293,16 +281,15 @@ connect = <replaceable>&lt;hostname:portnumber&gt;</replaceable></literal></scre
 
       <seglistitem>
         <seg>
-          stunnel 
-          and stunnel3
+          stunnel and stunnel3
         </seg>
         <seg>
           libstunnel.so
         </seg>
-        <seg>/etc/stunnel,
-           /usr/lib/stunnel,
-           /usr/share/doc/stunnel-&stunnel-version;, and
-           /var/lib/stunnel</seg>
+        <seg>
+          /{etc,usr/lib,var/lib}/stunnel and
+          /usr/share/doc/stunnel-&stunnel-version;
+        </seg>
       </seglistitem>
     </segmentedlist>
 
