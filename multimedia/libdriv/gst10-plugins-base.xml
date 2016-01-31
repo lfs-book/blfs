@@ -7,10 +7,10 @@
   <!ENTITY gst10-plugins-base-download-http
            "&gstreamer-dl;/gst-plugins-base/gst-plugins-base-&gst10-plugins-base-version;.tar.xz">
   <!ENTITY gst10-plugins-base-download-ftp  " ">
-  <!ENTITY gst10-plugins-base-md5sum        "3e223f1d2716e1861ba84287ea02b164">
-  <!ENTITY gst10-plugins-base-size          "2.7 MB">
-  <!ENTITY gst10-plugins-base-buildsize     "142 MB (with test suite)">
-  <!ENTITY gst10-plugins-base-time          "1.4 SBU (additional 0.9 SBU to run the test suite)">
+  <!ENTITY gst10-plugins-base-md5sum        "3ddde0ad598ef69f58d6a2e87f8b460f">
+  <!ENTITY gst10-plugins-base-size          "2.8 MB">
+  <!ENTITY gst10-plugins-base-buildsize     "143 MB  (with tests)">
+  <!ENTITY gst10-plugins-base-time          "2.1 SBU (with tests)">
 ]>
 
 <sect1 id="gst10-plugins-base" xreflabel="gst-plugins-base-&gst10-plugins-base-version;">
@@ -31,7 +31,7 @@
     <title>Introduction to GStreamer Base Plug-ins</title>
 
     <para>
-      The <application>GStreamer Base Plug-ins</application> package is a well-groomed and
+      The <application>GStreamer Base Plug-ins</application> is a well-groomed and
       well-maintained collection of <application>GStreamer</application> plug-ins
       and elements, spanning the range of possible types of elements one would want
       to write for <application>GStreamer</application>. You will need at least one
@@ -40,8 +40,6 @@
     </para>
 
     &lfs78_checked;
-
-    &gst-compat;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -109,7 +107,7 @@
       <xref linkend="qt4"/>,
       <xref linkend="valgrind"/>,
       <ulink url="http://sourceforge.net/projects/libvisual/">libvisual</ulink>,
-      <ulink url="http://gstreamer.freedesktop.org/src/orc">ORC</ulink>, and
+      <ulink url="http://gstreamer.freedesktop.org/src/orc/">Orc</ulink>, and
       <ulink url="http://wiki.xiph.org/Tremor">Tremor</ulink>
     </para>
 
@@ -121,6 +119,10 @@
   <sect2 role="installation">
     <title>Installation of GStreamer Base Plug-ins</title>
 
+    <note><para>If you need a plugin for a given dependency, that dependency
+      needs to be installed before this application.
+    </para></note>
+
     <para>
       Install <application>GStreamer Base Plug-ins</application> by running the
       following commands:
@@ -128,12 +130,22 @@
 
 <screen><userinput>./configure --prefix=/usr \
             --with-package-name="GStreamer Base Plugins &gst10-plugins-base-version; BLFS" \
-            --with-package-origin="http://www.linuxfromscratch.org/blfs/view/&blfs-version;/" &amp;&amp;
+            --with-package-origin="http://www.linuxfromscratch.org/blfs/view/svn/" &amp;&amp;
 make</userinput></screen>
 
     <para>
       To test the results, issue: <command>make check</command>.
     </para>
+
+    <note>
+      <para>
+        When installing, the Makefile does some additional
+        linking.  If you do not have Xorg in /usr, the LIBRARY_PATH
+        variable needs to be defined for the root user.  If
+        using sudo to assume root, use the -E option to pass
+        your current environment variables for the install process.
+      </para>
+    </note>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -152,23 +164,14 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          gst-device-monitor-1.0, 
-          gst-discoverer-1.0, 
-          and gst-play-1.0
+          gst-device-monitor-1.0, gst-discoverer-1.0 and gst-play-1.0
         </seg>
         <seg>
-          libgstallocators-1.0.so, 
-          libgstapp-1.0.so, 
-          libgstaudio-1.0.so,
-          libgstfft-1.0.so, 
-          libgstpbutils-1.0.so, 
-          libgstriff-1.0.so,
-          libgstrtp-1.0.so, 
-          libgstrtsp-1.0.so, 
-          libgstsdp-1.0.so,
-          libgsttag-1.0.so, 
-          libgstvideo-1.0.so, 
-          and several plugins under /usr/lib/gstreamer-1.0
+          libgstallocators-1.0.so, libgstapp-1.0.so, libgstaudio-1.0.so,
+          libgstfft-1.0.so, libgstpbutils-1.0.so, libgstriff-1.0.so,
+          libgstrtp-1.0.so, libgstrtsp-1.0.so, libgstsdp-1.0.so,
+          libgsttag-1.0.so, libgstvideo-1.0.so and several plugins under
+          /usr/lib/gstreamer-1.0
         </seg>
         <seg>
           /usr/include/gstreamer-1.0/gst/{allocators,app,audio,fft,pbutils},

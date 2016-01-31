@@ -7,10 +7,10 @@
   <!ENTITY pulseaudio-download-http
            "http://freedesktop.org/software/pulseaudio/releases/pulseaudio-&pulseaudio-version;.tar.xz">
   <!ENTITY pulseaudio-download-ftp  " ">
-  <!ENTITY pulseaudio-md5sum        "09668b660ffb32f2639cfd6fdc9d3b37">
-  <!ENTITY pulseaudio-size          "1.4 MB">
-  <!ENTITY pulseaudio-buildsize     "113 MB (with tests)">
-  <!ENTITY pulseaudio-time          "2.5 SBU (with tests)">
+  <!ENTITY pulseaudio-md5sum        "8678442ba0bb4b4c33ac6f62542962df">
+  <!ENTITY pulseaudio-size          "1.5 MB">
+  <!ENTITY pulseaudio-buildsize     "110 MB (with tests)">
+  <!ENTITY pulseaudio-time          "2.2 SBU (with tests)">
 ]>
 
 <sect1 id="pulseaudio" xreflabel="PulseAudio-&pulseaudio-version;">
@@ -33,10 +33,10 @@
     <para>
       <application>PulseAudio</application> is a sound system for POSIX OSes,
       meaning that it is a proxy for sound applications. It allows you to do
-      advanced operations on your sound data as it passes between your application
-      and your hardware. Things like transferring the audio to a different machine,
-      changing the sample format or channel count and mixing several sounds into
-      one are easily achieved using a sound server.
+      advanced operations on your sound data as it passes between your
+      application and your hardware. Things like transferring the audio to a
+      different machine, changing the sample format or channel count and mixing
+      several sounds into one are easily achieved using a sound server.
     </para>
 
     &lfs78_checked;
@@ -88,6 +88,7 @@
       <xref linkend="alsa-lib"/>,
       <xref linkend="dbus"/>,
       <xref linkend="glib2"/>,
+      <xref linkend="libcap-pam"/>,
       <xref linkend="openssl"/>,
       <xref linkend="speex"/> and
       <xref linkend="xorg7-lib"/>
@@ -98,21 +99,21 @@
       <xref linkend="avahi"/>,
       <xref linkend="bluez"/> (runtime),
       <xref linkend="check"/>,
+<!--      <xref linkend="consolekit"/> (runtime), -->
       <xref linkend="GConf"/>,
       <xref linkend="gtk3"/>,
-      <xref linkend="libsamplerate"/> (deprecated),
+      <xref linkend="libsamplerate"/>,
       <xref linkend="sbc"/> (Bluetooth support),
       <xref linkend="valgrind"/>,
       <ulink url="http://www.fftw.org/">FFTW</ulink>,
       <ulink url="http://www.jackaudio.org/">JACK</ulink>,
       <ulink url="http://0pointer.de/lennart/projects/libasyncns/">libasyncns</ulink>,
       <ulink url="http://www.lirc.org/">LIRC</ulink>,
-      <ulink url="https://www.kernel.org/pub/linux/network/ofono/">oFono</ulink>,
-      <ulink url="http://code.entropywave.com/projects/orc/">ORC</ulink>,
+      <ulink url="http://gstreamer.freedesktop.org/src/orc/">ORC</ulink>,
       <ulink url="http://tdb.samba.org/">TDB</ulink>,
       <ulink url="http://freedesktop.org/software/pulseaudio/webrtc-audio-processing/">
       WebRTC AudioProcessing</ulink> and
-      <ulink url="http://www.xen.org/">XEN</ulink>
+      <ulink url="http://www.xenproject.org/">XEN</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -123,18 +124,22 @@
   <sect2 role="installation">
     <title>Installation of PulseAudio</title>
 
+    <note><para>The build procedure emits a lot of invalid warnings.
+    If desired, remove them with:</para>
+
+<screen><userinput>sed -i "/seems to be moved/s/^/#/" build-aux/ltmain.sh</userinput></screen>
+    </note>
+
     <para>
       Install <application>PulseAudio</application> by running the following
       commands:
     </para>
 
-<screen><userinput>find . -name "Makefile.in" | xargs sed -i "s|(libdir)/@PACKAGE@|(libdir)/pulse|" &amp;&amp;
-./configure --prefix=/usr         \
-            --sysconfdir=/etc     \
-            --localstatedir=/var  \
-            --disable-bluez4      \
-            --disable-rpath       \
-            --with-module-dir=/usr/lib/pulse/modules &amp;&amp;
+<screen><userinput>./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
+            --localstatedir=/var \
+            --disable-bluez4     \
+            --disable-rpath      &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -155,7 +160,7 @@ make</userinput></screen>
       users and groups:
     </para>
 
-<screen role="root"><userinput>rm -fv /etc/dbus-1/system.d/pulseaudio-system.conf</userinput></screen>
+<screen role="root"><userinput>rm /etc/dbus-1/system.d/pulseaudio-system.conf</userinput></screen>
 
   </sect2>
 
@@ -163,16 +168,8 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>find . -name Makefile.in ...</command>: This sed changes
-      the build system to install <application>PulseAudio</application>
-      private libraries into
-      <filename class="directory">/usr/lib/pulse</filename> instead of
-      <filename class="directory">/usr/lib/pulseaudio</filename>.
-    </para>
-
-    <para>
       <parameter>--disable-bluez4</parameter>: This switch disables
-      support for <application>BlueZ</application> version 4 in favor
+      support for <application>BlueZ</application> version 4 in favour
       of <application>BlueZ</application> version 5 since the latter
       also installs compatibility library for the earlier version.
     </para>
@@ -183,14 +180,62 @@ make</userinput></screen>
       programs and libraries.
     </para>
 
-    <para>
-      <parameter>--with-module-dir=/usr/lib/pulse/modules</parameter>:
-      This parameter ensures that <application>PulseAudio</application>
-      modules are installed in <filename class="directory">/usr/lib/pulse/modules
-      </filename> instead of <filename class="directory">
-      /usr/lib/pulse-&pulseaudio-major-version;/modules</filename>.
-    </para>
+  </sect2>
 
+  <sect2 role="configuration">
+    <title>Configuring PulseAudio</title>
+
+    <sect3 id="pulseaudio-config">
+      <title>Config Files</title>
+      <para>
+        There are system wide configuration files:
+        <filename>/etc/pulse/daemon.conf</filename>,
+        <filename>/etc/pulse/client.conf</filename>,
+        <filename>/etc/pulse/default.pa</filename>, and user configuration
+        files with the same names in
+        <filename class="directory">~/.config/pulse</filename>. User
+        configuration files take precedence over system wide ones.
+      </para>
+
+      <indexterm zone="pulseaudio pulseaudio-config">
+        <primary sortas="e-AA.config-pulse">~/.config/pulse</primary>
+      </indexterm>
+
+      <indexterm zone="pulseaudio pulseaudio-config">
+        <primary
+        sortas="e-etc-pulse-daemon.conf">/etc/pulse/daemon.conf</primary>
+      </indexterm>
+
+      <indexterm zone="pulseaudio pulseaudio-config">
+        <primary
+        sortas="e-etc-pulse-client.conf">/etc/pulse/client.conf</primary>
+      </indexterm>
+
+      <indexterm zone="pulseaudio pulseaudio-config">
+        <primary
+        sortas="e-etc-pulse-default.pa">/etc/pulse/default.pa</primary>
+      </indexterm>
+    </sect3>
+
+    <sect3><title>Configuration Information</title>
+
+      <para>
+        The default configuration files allow setting up a working installation.
+        However, a reference to Console-Kit needs to be removed if it is
+        not installed. For example, issue the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>sed -i '/load-module module-console-kit/s/^/#/' /etc/pulse/default.pa</userinput></screen>
+
+      <para>
+        You may also have to configure the audio system. You can start
+        <application>pulseaudio</application> in command line mode using
+        <command>pulseaudio -C</command> and then list various
+        information and change settings. See
+        <command>man pulse-cli-syntax</command>.
+      </para>
+    </sect3>
   </sect2>
 
   <sect2 role="content">
@@ -203,20 +248,24 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          esdcompat, pacat, pacmd, pactl, padsp, pamon, paplay,
-          parec, parecord, pasuspender, pax11publish, pulseaudio,
-          qpaeq and start-pulseaudio-x11
+          esdcompat, pacat, pacmd, pactl, padsp, pamon (symlink to pacat),
+          paplay (symlink to pacat), parec (symlink to pacat),
+          parecord (symlink to pacat), pasuspender,
+          pax11publish, pulseaudio, and
+          <!-- it looks like the equalizer needs FFTW: qpaeq, -->
+          start-pulseaudio-x11
         </seg>
         <seg>
-          libpulsecore-&pulseaudio-major-version;.so, libpulse-mainloop-glib.so,
-          libpulse-simple.so and libpulse.so
+          libpulse-mainloop-glib.so,
+          libpulse-simple.so and
+          libpulse.so
         </seg>
         <seg>
           /etc/pulse,
           /usr/include/pulse,
           /usr/lib/cmake/PulseAudio,
-          /usr/lib/pulse,
-          /usr/libexec/pulse and
+          /usr/lib/{pulseaudio,pulse-&pulseaudio-major-version;},
+          /usr/libexec/pulse, and
           /usr/share/pulseaudio
         </seg>
       </seglistitem>
@@ -243,7 +292,7 @@ make</userinput></screen>
         <term><command>pacat</command></term>
         <listitem>
           <para>
-            Plays back or records raw or encoded audio streams on a
+            plays back or records raw or encoded audio streams on a
             <application>PulseAudio</application> sound server.
           </para>
           <indexterm zone="pulseaudio pacat">
@@ -379,6 +428,7 @@ make</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- only installed if FFTW is present
       <varlistentry id="qpaeq">
         <term><command>qpaeq</command></term>
         <listitem>
@@ -391,12 +441,26 @@ make</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
+<!-- Not found in PA 7.0
+      <varlistentry id="start-pulseaudio-kde">
+        <term><command>start-pulseaudio-kde</command></term>
+        <listitem>
+          <para>
+            Starts <application>PulseAudio</application> and loads
+            module-device-manager to use KDE routing policies.
+          </para>
+          <indexterm zone="pulseaudio start-pulseaudio-kde">
+            <primary sortas="b-start-pulseaudio-kde">start-pulseaudio-kde</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+-->
       <varlistentry id="start-pulseaudio-x11">
         <term><command>start-pulseaudio-x11</command></term>
         <listitem>
           <para>
-            Starts <application>PulseAudio</application> and registers it to
+            starts <application>PulseAudio</application> and registers it to
             the X11 session manager.
           </para>
           <indexterm zone="pulseaudio start-pulseaudio-x11">
