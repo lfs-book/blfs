@@ -6,10 +6,10 @@
 
   <!ENTITY openldap-download-http " ">
   <!ENTITY openldap-download-ftp  "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/openldap-&openldap-version;.tgz">
-  <!ENTITY openldap-md5sum        "47c8e2f283647a6105b8b0325257e922">
+  <!ENTITY openldap-md5sum        "49ca65e27891fcf977d78c10f073c705">
   <!ENTITY openldap-size          "5.4 MB">
-  <!ENTITY openldap-buildsize     "53 MB (client), 103 MB (server, additional 5 MB for the tests)">
-  <!ENTITY openldap-time          "0.6 SBU (client), 1.1 SBU (server, additional 3.4 SBU for the tests)">
+  <!ENTITY openldap-buildsize     "53 MB (client), 103 MB (server)">
+  <!ENTITY openldap-time          "0.7 SBU (client), 1.3 SBU (server)">
 ]>
 
 <sect1 id="openldap" xreflabel="OpenLDAP-&openldap-version;">
@@ -34,7 +34,7 @@
       source implementation of the Lightweight Directory Access Protocol.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,14 +90,14 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="db"/> (not recommended by the
-      developers due to license incompatiblities),
       <xref linkend="icu"/>,
-      <xref linkend="mariadb"/> or
-      <xref linkend="postgresql"/>,
       <xref linkend="pth"/>,
-      <xref linkend="unixodbc"/> and
-      <ulink url="http://www.openslp.org/">OpenSLP</ulink>
+      <xref linkend="unixodbc"/>,
+        <xref linkend="mariadb"/> or
+        <xref linkend="postgresql"/> or
+        <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <ulink url="http://www.openslp.org/">OpenSLP</ulink>, and
+      <xref linkend="db"/> (not recommended by the developers)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -137,16 +137,15 @@ make</userinput></screen>
     </note>
 
     <warning>
-      <para>
-        If upgrading from a previos installation that used Berkeley DB as
-        the backend, you will need to dump the database(s) using the
-        <command>slapcat</command> utility, relocate all files in
-        <filename class="directory">/var/lib/openldap</filename>, change all
-        instances of <option>bdb</option> to <option>mdb</option> in
-        <filename>/etc/openldap/slapd.conf</filename> and any files in
-        <filename class="directory">/etc/openldap/slapd.d</filename>, and import
-        using the <command>slapadd</command> utility after the installation is
-        completed.
+      <para>If upgrading from a previos installation that used Berkeley DB as
+      the backend, you will need to dump the database(s) using the
+      <command>slapcat</command> utility, relocate all files in
+      <filename class="directory">/var/lib/openldap</filename>, change all
+      instances of <option>bdb</option> to <option>mdb</option> in
+      <filename>/etc/openldap/slapd.conf</filename> and any files in
+      <filename class="directory">/etc/openldap/slapd.d</filename>, and import
+      using the <command>slapadd</command> utility after the installation is
+      completed.
       </para>
     </warning>
 
@@ -158,8 +157,9 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>groupadd -g 83 ldap &amp;&amp;
-useradd -c "OpenLDAP Daemon Owner" -d /var/lib/openldap -u 83 \
-        -g ldap -s /bin/false ldap</userinput></screen>
+useradd  -c "OpenLDAP Daemon Owner" \
+         -d /var/lib/openldap -u 83 \
+         -g ldap -s /bin/false ldap</userinput></screen>
 
     <para>
       Install <application>OpenLDAP</application> by
@@ -175,22 +175,29 @@ autoconf &amp;&amp;
             --libexecdir=/usr/lib \
             --disable-static      \
             --disable-debug       \
+            --with-tls=openssl    \
+            --with-cyrus-sasl     \
             --enable-dynamic      \
             --enable-crypt        \
             --enable-spasswd      \
+            --enable-slapd        \
             --enable-modules      \
-            --enable-rlookups     \
             --enable-backends=mod \
-            --enable-overlays=mod \
+            --disable-ndb         \
+            --disable-sql         \
+            --disable-shell       \
             --disable-bdb         \
             --disable-hdb         \
-            --disable-ndb         \
-            --disable-sql &amp;&amp;
+            --enable-overlays=mod &amp;&amp;
+
 make depend &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make -k test</command>.
+      The tests appear to be fragile.  Errors may cause the tests to abort
+      prior to finishing, apparently due to timing issues.  The tests
+      take about 65 minutes and are processor independent.
+      To test the results, issue: <command>make test</command>.
     </para>
 
     <para>
@@ -201,20 +208,12 @@ make</userinput></screen>
 
 install -v -dm700 -o ldap -g ldap /var/lib/openldap     &amp;&amp;
 install -v -dm700 -o ldap -g ldap /etc/openldap/slapd.d &amp;&amp;
-chmod -v 640       /etc/openldap/slapd.{conf,ldif}      &amp;&amp;
-chown -v root:ldap /etc/openldap/slapd.{conf,ldif}      &amp;&amp;
+chmod   -v    640     /etc/openldap/slapd.{conf,ldif}   &amp;&amp;
+chown   -v  root:ldap /etc/openldap/slapd.{conf,ldif}   &amp;&amp;
 
-install -v -dm755              /usr/share/doc/openldap-&openldap-version; &amp;&amp;
-cp -vfr doc/{drafts,rfc,guide} /usr/share/doc/openldap-&openldap-version;</userinput></screen>
-
-    <para>
-      Having slapd configuration files and ldap databases in /var/lib/openldap
-      readable by anyone is a SECURITY ISSUE, especially since a file stores
-      admin password in PLAIN TEXT. That's why mode 640 and root:ldap ownership
-      were used. Owner is root, so only root can modify the file, and group is
-      ldap, so that the group which owns slapd daemon could read but not modify
-      the file in case of a security breach. 
-    </para>
+install -v -dm755 /usr/share/doc/openldap-&openldap-version; &amp;&amp;
+cp      -vfr      doc/{drafts,rfc,guide} \
+                  /usr/share/doc/openldap-&openldap-version;</userinput></screen>
 
   </sect2>
 
@@ -266,14 +265,6 @@ cp -vfr doc/{drafts,rfc,guide} /usr/share/doc/openldap-&openldap-version;</useri
     </para>
 
     <para>
-      <parameter>--disable-bdb --disable-hdb</parameter>: These
-      switches disable
-      <application>Berkeley DB</application> backend due to
-      license incompatiblities with latest version of
-      <application>Berkeley DB</application>.
-    </para>
-
-    <para>
       <parameter>--disable-ndb</parameter>: This switch disables
       <application>MySQL</application> NDB Cluster backend
       which causes configure to fail if
@@ -307,6 +298,17 @@ cp -vfr doc/{drafts,rfc,guide} /usr/share/doc/openldap-&openldap-version;</useri
         command to enable other options or dependency packages.
       </para>
     </note>
+
+    <para>
+      <command>install ...</command>, <command>chown ...</command>,
+      and <command>chmod ...</command>:
+      Having slapd configuration files and ldap databases in /var/lib/openldap
+      readable by anyone is a SECURITY ISSUE, especially since a file stores the
+      admin password in PLAIN TEXT. That's why mode 640 and root:ldap ownership
+      were used. The owner is root, so only root can modify the file, and group is
+      ldap, so that the group which owns slapd daemon could read but not modify
+      the file in case of a security breach.
+    </para>
 
   </sect2>
 
@@ -370,7 +372,7 @@ cp -vfr doc/{drafts,rfc,guide} /usr/share/doc/openldap-&openldap-version;</useri
           <para>
             The <ulink url="http://www.openldap.org/doc/admin24/"> OpenLDAP 2.4
             Administrator's Guide</ulink> (also installed locally in
-            <filename class="directory">
+            <filename class='directory'>
             /usr/share/doc/openldap-&openldap-version;/guide/admin</filename>).
           </para>
         </listitem>
@@ -487,9 +489,8 @@ result: 0 Success
         </seg>
         <seg>
           /etc/openldap,
-          /usr/lib/openldap,
-          /usr/share/doc/openldap-&openldap-version;, and
-          /var/lib/openldap
+          /{usr,var}/lib/openldap, and
+          /usr/share/doc/openldap-&openldap-version;
         </seg>
       </seglistitem>
     </segmentedlist>

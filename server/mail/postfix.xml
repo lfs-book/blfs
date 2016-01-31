@@ -7,9 +7,9 @@
   <!ENTITY postfix-download-http " ">
   <!ENTITY postfix-download-ftp
            "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-&postfix-version;.tar.gz">
-  <!ENTITY postfix-md5sum        "d1dc2c23011c222129db3d91aa4f312a">
+  <!ENTITY postfix-md5sum        "61caffae689c11d09b4c972a394ae3b1">
   <!ENTITY postfix-size          "4.1 MB">
-  <!ENTITY postfix-buildsize     "198 MB">
+  <!ENTITY postfix-buildsize     "194 MB">
   <!ENTITY postfix-time          "0.4 SBU">
 ]>
 
@@ -33,12 +33,12 @@
     <para>
       The <application>Postfix</application> package contains a Mail Transport
       Agent (MTA). This is useful for sending email to other users of your host
-      machine. It can also be configured to be a central mail server for your
+      machine.  It can also be configured to be a central mail server for your
       domain, a mail relay agent or simply a mail delivery agent to your local
       Internet Service Provider.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,18 +79,18 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="db"/>,
-      <xref linkend="cyrus-sasl"/> and
+      <xref linkend="cyrus-sasl"/>, and
       <xref linkend="openssl"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="icu"/> (for Email Address Internationalization (SMTPUTF8) support),
-      <xref linkend="mariadb"/>,
+      <xref linkend="icu"/> for Email Address Internationalization (SMTPUTF8) support,
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openldap"/>,
       <xref linkend="pcre"/>,
       <xref linkend="postgresql"/>,
-      <xref linkend="sqlite"/> and
+      <xref linkend="sqlite"/>, and
       <ulink url="http://cr.yp.to/cdb.html">CDB</ulink> or
       <ulink url="http://www.corpit.ru/mjt/tinycdb.html">TinyCDB</ulink>
     </para>
@@ -133,17 +133,11 @@ chown -v postfix:postfix /var/mail</userinput></screen>
       <para>
         The README files are formatted to be read with a pager like
         <application>Less</application> or <application>More</application>.
-        If you want to read them in a text editor, make them legible with a sed:
+        If you want to use a text editor, make them legible with the
+        following sed:
       </para>
 
 <screen><userinput>sed -i 's/.\x08//g' README_FILES/*</userinput></screen>
-
-      <para>
-        If you are running a Linux-4.x kernel, apply the following sed to
-        allow the <command>makedefs</command> script to recognize it:
-      </para>
-
-<screen><userinput>sed -i 's/Linux.3\*/Linux.[34]\*/' makedefs</userinput></screen>
 
       <para>
         The <application>Postfix</application> source tree does not contain a
@@ -309,8 +303,8 @@ make</userinput></screen>
     </para>
 
     <para>
-      <option>CCARGS="-DNO_EAI ..."</option>: This will turn off SMTPUTF8
-      support, for example if the rest of your email address infrastructure
+      <option>CCARGS="-DNO_EAI ..."</option>: this will turn off SMTPUTF8
+      support, for example  if the rest of your email address infrastructure
       cannot handle UTF-8 email addresses and message header values.
     </para>
 
@@ -436,19 +430,17 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          mailq, newaliases, postalias, postcat, postconf, postdrop, postfix,
-          postkick, postlock, postlog, postmap, postmulti, postqueue, postsuper,
-          and sendmail
+          mailq (symlink), newaliases (symlink), postalias, postcat, postconf,
+          postdrop, postfix, postkick, postlock, postlog, postmap, postmulti,
+          postqueue, postsuper, and sendmail
         </seg>
         <seg>
           None
         </seg>
         <seg>
-          /etc/postfix,
-          /usr/lib/postfix,
-          /usr/share/doc/postfix-&postfix-version;,
-          /var/lib/postfix, and
-          /var/spool/postfix
+          /{etc,usr/lib}/postfix,
+          /usr/share/doc/postfix-&postfix-version; and
+          /var/{lib,spool}/postfix
         </seg>
       </seglistitem>
     </segmentedlist>

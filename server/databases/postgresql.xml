@@ -6,10 +6,10 @@
 
   <!ENTITY postgresql-download-http "http://ftp.postgresql.org/pub/source/v&postgresql-version;/postgresql-&postgresql-version;.tar.bz2">
   <!ENTITY postgresql-download-ftp  "ftp://ftp.postgresql.org/pub/source/v&postgresql-version;/postgresql-&postgresql-version;.tar.bz2">
-  <!ENTITY postgresql-md5sum        "1fe952c44ed26d7e6a335cf991a9c1c6">
-  <!ENTITY postgresql-size          "17 MB">
-  <!ENTITY postgresql-buildsize     "194 MB">
-  <!ENTITY postgresql-time          "1.3 SBU">
+  <!ENTITY postgresql-md5sum        "e58fffe9359e311ead94490a06b7147c">
+  <!ENTITY postgresql-size          "18 MB">
+  <!ENTITY postgresql-buildsize     "233 MB (with tests)">
+  <!ENTITY postgresql-time          "1.6 SBU (with tests)">
 ]>
 
 <sect1 id="postgresql" xreflabel="PostgreSQL-&postgresql-version;">
@@ -33,7 +33,7 @@
     object-relational database management system (ORDBMS), derived
     from the Berkeley Postgres database management system.</para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -106,6 +106,16 @@ make</userinput></screen>
     <command>make -C contrib/<replaceable>&lt;SUBDIR-NAME&gt;</replaceable></command> for each subdirectory.
     </para>
 
+    <para>Tests must be run as unprivileged user, because they need to
+    start a temporary server, and this is prevented as root user. For
+    the same reason, you need to stop all PostgreSQL servers if any is
+    running. If a previous version of PostgreSQL is installed, it may be
+    necessary to use <emphasis>--disable-rpath</emphasis> with
+    <emphasis>configure</emphasis> to avoid failures, but <command>it is
+    not recommended</command> to install the binaries created using this
+    switch. To test the results, issue: <command>make
+    check</command>.</para>
+
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install      &amp;&amp;
@@ -116,18 +126,10 @@ make install-docs</userinput></screen>
 
 <screen role="nodump/"><userinput>make -C contrib/<replaceable>&lt;SUBDIR-NAME&gt;</replaceable> install</userinput></screen>
 
-    <warning>
-      <para>This package contains a known security hole that allows other
-      users on the same machine to gain access to an operating system account
-      while it is doing "make check": CVE-2014-0067. Tests must be run after
-      install, with postgresql server down, as unprivileged user.</para>
-    </warning>
-
-    <para>To test the results, issue: <command>make check</command>.</para>
-
-    <para><emphasis>If you only intend to use <application>PostgreSQL</application>
-    as a client to connect to a server on another machine, your installation is
-    complete and you should not run the remaining commands.</emphasis></para>
+    <para><emphasis>If you only intend to use
+    <application>PostgreSQL</application> as a client to connect to a server on
+    another machine, your installation is complete and you should not run the
+    remaining commands.</emphasis></para>
 
     <!-- 'Upgrading' seems to only ever exist in the docs for *previous* version -->
  <!-- Obsolete: only if upgrading for versions prior to 9   <note>
@@ -276,23 +278,23 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
       <seglistitem>
         <seg>
           clusterdb, createdb, createlang, createuser, dropdb, droplang,
-          dropuser, ecpg, initdb, pg_basebackup, pg_config, pg_controldata,
-          pg_ctl, pg_dump, pg_dumpall, pg_isready, pg_receivexlog,
-          pg_recvlogical, pg_resetxlog, pg_restore, pltcl_delmod,
-          pltcl_listmod, pltcl_loadmod, postgres, postmaster (deprecated),
-          psql, reindexdb, vacuumdb, and optionally (in contrib/) oid2name,
-          pg_archivecleanup, pgbench, pg_standby, pg_test_fsync,
-          pg_test_timing, pg_upgrade, pg_xlogdump, vacuumlo, and many others
+          dropuser, ecpg, initdb, pg_archivecleanup, pg_basebackup, pg_config,
+          pg_controldata, pg_ctl, pg_dump, pg_dumpall, pg_isready,
+          pg_receivexlog, pg_recvlogical, pg_resetxlog, pg_restore, pg_rewind,
+          pg_test_fsync, pg_test_timing, pg_upgrade, pg_xlogdump, pgbench,
+          pltcl_delmod, pltcl_listmod, pltcl_loadmod, postgres, postmaster
+          (deprecated), psql, reindexdb, vacuumdb, and optionally (in contrib/)
+          oid2name, pg_standby, vacuumlo, and many others
         </seg>
         <seg>
           libecpg.{so,a}, libecpg_compat.{so,a}, libpgcommon.a, libpgport.a,
-          libpgtypes.{so,a}, and libpq.{so,a}
+          libpgtypes.{so,a}, libpq.{so,a}, various charset modules, and
+          optionally programming language modules under /usr/lib/postgresql
         </seg>
         <seg>
           /usr/include/{libpq,postgresql},
           /usr/lib/postgresql,
-          /usr/share/doc/postgresql-&postgresql-version;,
-          /usr/share/postgresql, and
+          /usr/share/{doc/postgresql-&postgresql-version;,postgresql}, and
           /srv/pgsql
         </seg>
       </seglistitem>
@@ -537,6 +539,17 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
           <command>pg_dump</command>.</para>
           <indexterm zone="postgresql pg_restore">
             <primary sortas="b-pg_restore">pg_restore</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pg_rewind">
+        <term><command>pg_rewind</command></term>
+        <listitem>
+          <para>synchronizes a PostgreSQL data directory with another data
+          directory that was forked from the first one.</para>
+          <indexterm zone="postgresql pg_rewind">
+            <primary sortas="b-pg_rewind">pg_rewind</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -6,10 +6,10 @@
 
   <!ENTITY unbound-download-http "http://www.unbound.net/downloads/unbound-&unbound-version;.tar.gz">
   <!ENTITY unbound-download-ftp  " ">
-  <!ENTITY unbound-md5sum        "f85853baad15adc7ce8acefe6cda4cf8">
-  <!ENTITY unbound-size          "4.6 MB">
-  <!ENTITY unbound-buildsize     "90 MB (with HTML documentation)">
-  <!ENTITY unbound-time          "0.5 SBU (Add 0.2 SBU for tests)">
+  <!ENTITY unbound-md5sum        "a1253cbbb339dbca03404dcc58365d71">
+  <!ENTITY unbound-size          "4.7 MB">
+  <!ENTITY unbound-buildsize     "47 MB (with tests)">
+  <!ENTITY unbound-time          "0.7 SBU (with tests)">
 ]>
 
 <sect1 id="unbound" xreflabel="Unbound-&unbound-version;">
@@ -37,7 +37,7 @@
       library API as an integral part of the architecture.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,10 +86,14 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="libevent"/>,
+      <xref linkend="nettle"/>,
       <xref linkend="python2"/>,
       <xref linkend="swig"/> (for Python bindings),
-      <xref linkend="doxygen"/> (for html documentation), and
-      <ulink url="http://dnstap.info/">dnstap</ulink>
+      <xref linkend="doxygen"/> (for html documentation),
+      <!--<ulink url="http://sourceforge.net/projects/expat/">expat</ulink>, installed by LFS. -->
+      <ulink url="http://dnstap.info/">dnstap</ulink>, and
+      <ulink url="https://pypi.python.org/pypi/Sphinx">Sphinx</ulink> (for
+      Python bindings documentation)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -122,7 +126,7 @@ useradd -c "Unbound DNS resolver" -d /var/lib/unbound -u 88 \
 make</userinput></screen>
 
     <para>
-      If you have <xref linkend="doxygen"/> package installed and want to build 
+      If you have <xref linkend="doxygen"/> package installed and want to build
       html documentation, run the following command:
     </para>
 
@@ -154,12 +158,12 @@ install -v -m644 doc/html/* /usr/share/doc/unbound-&unbound-version;</userinput>
       href="../../xincludes/static-libraries.xml"/>
 
     <para>
-      <option>--with-libevent</option>: This switch enables libevent support
+      <option>--with-libevent</option>: This option enables libevent support
       allowing use of large outgoing port ranges.
     </para>
 
     <para>
-      <option>--with-pyunbound</option>: This switch enables building of the Python
+      <option>--with-pyunbound</option>: This option enables building of the Python
       bindings.
     </para>
 
@@ -210,10 +214,12 @@ install -v -m644 doc/html/* /usr/share/doc/unbound-&unbound-version;</userinput>
       </para>
 
       <para>
-        When <application>Unbound</application> is installed, some packages
-        may fail to build if <filename>/etc/unbound/root.key</filename> is
-        not present. It can be created by running the following command as
-        the <systemitem class="username">root</systemitem> user:
+        When <application>Unbound</application> is installed, some package
+        builds fail if the file <filename>/etc/unbound/root.key</filename> is
+        not found. This file is created by running the boot script (install
+        instructions below).  Alternatively, it can be created by running the
+        following command as the <systemitem class="username">root</systemitem>
+        user:
       </para>
 
 <screen role="root"><userinput>unbound-anchor</userinput></screen>
@@ -254,7 +260,7 @@ install -v -m644 doc/html/* /usr/share/doc/unbound-&unbound-version;</userinput>
           unbound-control-setup, and unbound-host
         </seg>
         <seg>
-          libunbound.so and
+          libunbound.so and (optional)
           /usr/lib/python&python2-majorver;/site-packages/_unbound.so
         </seg>
         <seg>

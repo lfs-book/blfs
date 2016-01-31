@@ -7,10 +7,10 @@
   <!ENTITY dovecot-download-http
   "http://www.dovecot.org/releases/&dovecot-major;.&dovecot-minor;/dovecot-&dovecot-version;.tar.gz">
   <!ENTITY dovecot-download-ftp  " ">
-  <!ENTITY dovecot-md5sum        "1e42eb3b69544c447ad882d7858f3630">
-  <!ENTITY dovecot-size          "4.9 MB">
-  <!ENTITY dovecot-buildsize     "257 MB (additional 14 MB for the tests)">
-  <!ENTITY dovecot-time          "1.3 SBU (additional 0.4 SBU for the tests)">
+  <!ENTITY dovecot-md5sum        "28c39ab78a20f00701c26960d9190cf0">
+  <!ENTITY dovecot-size          "4.8 MB">
+  <!ENTITY dovecot-buildsize     "286 MB (with tests)">
+  <!ENTITY dovecot-time          "2.1 SBU (with tests)">
 ]>
 
 <sect1 id="dovecot" xreflabel="Dovecot-&dovecot-version;">
@@ -38,7 +38,7 @@
       easily extensible with plugins.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,6 +73,15 @@
         </para>
       </listitem>
     </itemizedlist>
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing='compact'>
+      <listitem>
+        <para>Required patch: <ulink
+        url="&patch-root;/dovecot-&dovecot-version;-CVE_2015_3420-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>-->
 
     <bridgehead renderas="sect3">Dovecot Dependencies</bridgehead>
 
@@ -80,8 +89,10 @@
     <para role="optional">
       <xref linkend="clucene"/>,
       <xref linkend="icu"/>,
+      <xref linkend="libcap-pam"/>,
       <xref linkend="linux-pam"/>,
-      <xref linkend="mariadb"/>,
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="mitkrb"/> (for GSSAPI support),
       <xref linkend="openldap"/>,
       <xref linkend="openssl"/>,
       <xref linkend="postgresql"/>,
@@ -172,6 +183,11 @@ make</userinput></screen>
     <para>
       <option>--with-lucene</option>: This switch enables
       <application>CLucene</application> full text search support.
+    </para>
+
+    <para>
+      <option>--with-krb5</option>: This switch enables
+      GSSAPI authentication support.
     </para>
 
   </sect2>
@@ -272,16 +288,15 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          doveadm, doveconf, dovecot, dsync, and various internal programs
+          doveadm, doveconf, dovecot, dsync (symbolic link), and various
+          internal programs
         </seg>
         <seg>
           various internal plugins
         </seg>
         <seg>
           /etc/dovecot,
-          /usr/include/dovecot,
-          /usr/lib/dovecot,
-          /usr/libexec/dovecot, and
+          /usr/{include,lib,libexec,share}/dovecot and
           /usr/share/doc/dovecot-&dovecot-version;
         </seg>
       </seglistitem>

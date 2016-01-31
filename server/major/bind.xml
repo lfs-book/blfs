@@ -6,10 +6,10 @@
 
   <!ENTITY bind-download-http " ">
   <!ENTITY bind-download-ftp  "ftp://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.gz">
-  <!ENTITY bind-md5sum        "8b1f5064837756c938eadc1537dec5c7">
-  <!ENTITY bind-size          "8.1 MB">
-  <!ENTITY bind-buildsize     "137 MB (additional 44 MB to run the test suite)">
-  <!ENTITY bind-time          "0.9 SBU (additional 20+ minutes, processor independent, to run the complete test suite)">
+  <!ENTITY bind-md5sum        "bcf7e772b616f7259420a3edc5df350a">
+  <!ENTITY bind-size          "8.2 MB">
+  <!ENTITY bind-buildsize     "137 MB (additional 93 MB for the test suite)">
+  <!ENTITY bind-time          "1 SBU (additional 24+ minutes, processor independent, to run the complete test suite)">
 ]>
 
 <sect1 id="bind" xreflabel="BIND-&bind-version;">
@@ -33,7 +33,7 @@
     and client utilities. If you are only interested in the utilities, refer
     to the <xref linkend="bind-utils"/>.</para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,17 +70,18 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="libcap-pam"/>,
       <xref linkend="libxml2"/>,
       <xref linkend="mitkrb"/>,
       <xref linkend="openssl"/>, and
-      <ulink url="https://github.com/cjheath/geoip">GeoIP</ulink>
+      <ulink url='https://github.com/cjheath/geoip'>geoip</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional database backends</bridgehead>
     <para role="optional">
       <xref linkend="db"/>,
+      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openldap"/>,
-      <xref linkend="mariadb"/>,
       <xref linkend="postgresql"/>, and
       <xref linkend="unixodbc"/>
     </para>
@@ -135,19 +136,10 @@ make</userinput></screen>
 
 <screen role="root"><userinput>bin/tests/system/ifconfig.sh up</userinput></screen>
 
-<!--   <para>As an unprivileged user, remove some tests that fail:</para>
-
-<screen><userinput>
-sed -e 's/ecdsa //'   \
-    -e 's/masterformat //' \
-    -e 's/reclimit //' \
-    -e 's/tsiggss //' \
-    -i bin/tests/system/conf.sh</userinput></screen>
-
-    <para>Now run the test suite as an unprivileged user:</para>-->
-    <para>The test suite may indicate some failures depending on installed
-    optional dependencies and what configuration options are used.
-    To run the tests, as an unprivileged user, issue:</para>
+    <para>The test suite may indicate some skipped tests depending on
+    what configuration options are used. Some tests are marked <quote>UNTESTED
+    </quote> if <xref linkend="perl-net-dns"/> is not installed.
+    To run the tests, as an unprivileged user, execute:</para>
 
 <screen><userinput>make -k check</userinput></screen>
 
@@ -160,21 +152,17 @@ sed -e 's/ecdsa //'   \
     class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-chmod -v 755 /usr/lib/lib{bind9,dns,isc{,cc,cfg},lwres}.so &amp;&amp;
+chmod -v 0755 /usr/lib/lib{bind9,dns,isc{,cc,cfg},lwres}.so &amp;&amp;
 
-install -v -dm755 /usr/share/doc/bind-&bind-version;/{arm,misc} &amp;&amp;
-install -v -m644  doc/arm/*.html \
-                  /usr/share/doc/bind-&bind-version;/arm &amp;&amp;
-install -v -m644 \
-    doc/misc/{dnssec,ipv6,migrat*,options,rfc-compliance,roadmap,sdb} \
-    /usr/share/doc/bind-&bind-version;/misc</userinput></screen>
+install -v -m755 -d /usr/share/doc/bind-&bind-version;/{arm,misc} &amp;&amp;
+install -v -m644    doc/arm/*.html \
+                    /usr/share/doc/bind-&bind-version;/arm &amp;&amp;
+install -v -m644    doc/misc/{dnssec,ipv6,migrat*,options,rfc-compliance,roadmap,sdb} \
+                    /usr/share/doc/bind-&bind-version;/misc</userinput></screen>
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-<!--
-    <para><command>sed ... bin/tests/system/conf.sh</command>: This command
-    removes tests that fail (some for unknown reasons).</para>-->
 
     <para><parameter>--sysconfdir=/etc</parameter>: This parameter forces
     <application>BIND</application> to look for configuration
@@ -188,8 +176,12 @@ install -v -m644 \
     building of dynamic libraries and links the installed binaries to these
     libraries.</para>
 
-    <para><parameter>--with-randomdev=/dev/urandom</parameter>: This parameter 
+    <para><parameter>--with-randomdev=/dev/urandom</parameter>: This parameter
     specifes a non-blocking random device for use with digital signatures.</para>
+
+    <para><option>--enable-fetchlimit</option>: Use this option if you want
+    to be able to limit the the rate of recursive client queries. This may be
+    useful on servers which receive a large number of queries.</para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
@@ -260,14 +252,14 @@ install -d -m770 -o named -g named /srv/named</userinput></screen>
       <application>BIND</application>:</para>
 
 <screen role="root"><userinput>cd /srv/named &amp;&amp;
-mkdir -pv dev etc/namedb/{slave,pz} usr/lib/engines var/run/named &amp;&amp;
+mkdir -p dev etc/namedb/{slave,pz} usr/lib/engines var/run/named &amp;&amp;
 mknod /srv/named/dev/null c 1 3 &amp;&amp;
 mknod /srv/named/dev/urandom c 1 9 &amp;&amp;
-chmod -v 666 /srv/named/dev/{null,urandom} &amp;&amp;
-cp -Lv /etc/localtime etc &amp;&amp;
+chmod 666 /srv/named/dev/{null,urandom} &amp;&amp;
+cp /etc/localtime etc &amp;&amp;
 touch /srv/named/managed-keys.bind &amp;&amp;
-cp -v /usr/lib/engines/libgost.so usr/lib/engines &amp;&amp;
-[ $(uname -m) = x86_64 ] &amp;&amp; ln -sfv lib usr/lib64</userinput></screen>
+cp /usr/lib/engines/libgost.so usr/lib/engines &amp;&amp;
+[ $(uname -m) = x86_64 ] &amp;&amp; ln -sv lib usr/lib64</userinput></screen>
 
       <para>The <filename>rndc.conf</filename> file contains information for
       controlling <command>named</command> operations with the
@@ -386,12 +378,15 @@ L.ROOT-SERVERS.NET.     6D  IN      A       199.7.83.42
 M.ROOT-SERVERS.NET.     6D  IN      A       202.12.27.33</literal>
 EOF</userinput></screen>
 
-      <para>The <filename>root.hints</filename> file is a list of root
-      name servers. This file must be updated periodically with the
+      <para>The <filename>root.hints</filename> file is a list of root name
+      servers. This file must be updated periodically with the
       <command>dig</command> utility. A current copy of root.hints can be
       obtained from <ulink url="ftp://rs.internic.net/domain/named.root" />.
-      Consult the <ulink url="http://www.bind9.net/Bv9ARM.html">BIND 9
-      Administrator Reference Manual</ulink> for details.</para>
+      For details, consult the "BIND 9 Administrator Reference Manual", included
+      in every source archive of BIND 9 distributed by ISC, in HTML and PDF
+      formats, also available at
+      <ulink url="ftp://ftp.isc.org/isc/bind9/cur/&bind-minor-version;/doc/arm/Bv9ARM.html">
+      BIND 9 Administrator Reference Manual</ulink>.</para>
 
       <para>Create or modify <filename>resolv.conf</filename> to use the new
       name server with the following commands:</para>
@@ -479,8 +474,8 @@ dig www.&lfs-domainname;</userinput></screen>
         named-checkzone, named-compilezone (symlink), named-journalprint,
         named-rrchecker, nsec3hash, nslookup, nsupdate, rndc, rndc-confgen,
         and tsig-keygen (symlink)</seg>
-      
-        <seg>libbind9.so, libdns.so, libirs.so, libisc.so, libisccc.so, 
+
+        <seg>libbind9.so, libdns.so, libirs.so, libisc.so, libisccc.so,
         libisccfg.so, and liblwres.so</seg>
 
         <seg>/usr/include/{bind9,dns,dst,irs,isc,isccc,isccfg,lwres,pk11,pkcs11},
@@ -533,7 +528,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>delv</command></term>
         <listitem>
           <para>
-            is a new debugging tool that is a successor to 
+            is a new debugging tool that is a successor to
             <command>dig</command>.
           </para>
           <indexterm zone="bind delv">
@@ -568,7 +563,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-coverage</command></term>
         <listitem>
           <para>
-            verifies that the DNSSEC keys for a given zone or a set of zones 
+            verifies that the DNSSEC keys for a given zone or a set of zones
             have timing metadata set properly to ensure no future lapses
             in DNSSEC coverage.
           </para>
@@ -577,7 +572,7 @@ dig www.&lfs-domainname;</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
- 
+
       <varlistentry id="dnssec-dsfromkey">
         <term><command>dnssec-dsfromkey</command></term>
         <listitem>
@@ -594,7 +589,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-importkey</command></term>
         <listitem>
           <para>
-             reads a public DNSKEY record and generates a pair of 
+             reads a public DNSKEY record and generates a pair of
              .key/.private files.
           </para>
           <indexterm zone="bind dnssec-importkey">
@@ -607,7 +602,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-keyfromlabel</command></term>
         <listitem>
           <para>
-            gets keys with the given label from a crypto hardware and builds 
+            gets keys with the given label from a crypto hardware and builds
             key files for DNSSEC.
           </para>
           <indexterm zone="bind dnssec-keyfromlabel">
@@ -664,8 +659,8 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-verify</command></term>
         <listitem>
           <para>
-            verifies that a zone is fully signed for each algorithm found 
-            in the DNSKEY RRset for the zone, and that the NSEC / NSEC3 
+            verifies that a zone is fully signed for each algorithm found
+            in the DNSKEY RRset for the zone, and that the NSEC / NSEC3
             chains are complete.
           </para>
           <indexterm zone="bind dnssec-verify">
@@ -765,7 +760,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>named-compilezone</command></term>
         <listitem>
           <para>
-            is similar to <command>named-checkzone</command>, but it always 
+            is similar to <command>named-checkzone</command>, but it always
             dumps the zone contents to a specified file in a specified format.
           </para>
           <indexterm zone="bind named-compilezone">
@@ -790,7 +785,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>named-rrchecker</command></term>
         <listitem>
           <para>
-            read a individual DNS resource record from standard input and 
+            read a individual DNS resource record from standard input and
             checks if it is syntactically correct.
           </para>
           <indexterm zone="bind named-rrchecker">
@@ -855,7 +850,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>tsig-keygen</command></term>
         <listitem>
           <para>
-            is a symlink to <command>ddns-confgen</command>. 
+            is a symlink to <command>ddns-confgen</command>.
           </para>
           <indexterm zone="bind tsig-keygen">
             <primary sortas="b-tsig-keygen">tsig-keygen</primary>

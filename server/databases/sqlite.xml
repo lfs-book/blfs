@@ -4,19 +4,19 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY sqlite-dl-version    "3090200">
-  <!ENTITY sqlite-doc-version   "3090200">
+  <!ENTITY sqlite-dl-version    "3100200">
+  <!ENTITY sqlite-doc-version   "3100200">
 
-  <!ENTITY sqlite-download-http "https://www.sqlite.org/2015/sqlite-autoconf-&sqlite-dl-version;.tar.gz">
+  <!ENTITY sqlite-download-http "http://sqlite.org/2016/sqlite-autoconf-&sqlite-dl-version;.tar.gz">
   <!ENTITY sqlite-download-ftp  " ">
-  <!ENTITY sqlite-md5sum        "bc4eb5b3fc5efcb6e059794306cac1ca">
-  <!ENTITY sqlite-size          "2.2 MB">
-  <!ENTITY sqlite-buildsize     "73 MB (with Documentation)">
-  <!ENTITY sqlite-time          "0.5 SBU">
+  <!ENTITY sqlite-md5sum        "adaa31593bb5605ec6d6f34f81b43008">
+  <!ENTITY sqlite-size          "2.3 MB">
+  <!ENTITY sqlite-buildsize     "73 MB (with Optional Documentation)">
+  <!ENTITY sqlite-time          "0.3 SBU">
 
-  <!ENTITY sqlite-docs-download "https://www.sqlite.org/2015/sqlite-doc-&sqlite-doc-version;.zip">
-  <!ENTITY sqlite-docs-md5sum   "edc091d50cb97880ebebd9d961e37c17">
-  <!ENTITY sqlite-docs-size     "5.1 MB">
+  <!ENTITY sqlite-docs-download "http://sqlite.org/2016/sqlite-doc-&sqlite-doc-version;.zip">
+  <!ENTITY sqlite-docs-md5sum   "08f301085279c2e4451f7dd568342943">
+  <!ENTITY sqlite-docs-size     "5.2 MB">
 ]>
 
 <sect1 id="sqlite" xreflabel="SQLite-&sqlite-version;">
@@ -102,6 +102,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <ulink url="http://www.thrysoee.dk/editline/">libedit</ulink> and
       <xref linkend="unzip"/> (required to unzip the documentation)
     </para>
 
@@ -135,8 +136,9 @@
             CFLAGS="-g -O2 -DSQLITE_ENABLE_FTS3=1 \
             -DSQLITE_ENABLE_COLUMN_METADATA=1     \
             -DSQLITE_ENABLE_UNLOCK_NOTIFY=1       \
-            -DSQLITE_SECURE_DELETE=1" &amp;&amp;
-make</userinput></screen>
+            -DSQLITE_SECURE_DELETE=1              \
+            -DSQLITE_ENABLE_DBSTAT_VTAB=1" &amp;&amp;
+make -j1</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -167,9 +169,11 @@ cp -v -R sqlite-doc-&sqlite-doc-version;/* /usr/share/doc/sqlite-&sqlite-version
     <para>
       <parameter>CFLAGS="-g -O2 -DSQLITE_ENABLE_FTS3=1
       -DSQLITE_ENABLE_COLUMN_METADATA=1 -DSQLITE_SECURE_DELETE
-      -DSQLITE_ENABLE_UNLOCK_NOTIFY=1"</parameter>: Applications such as
-      <application>Firefox</application> require secure delete and enable unlock
-      notify to be turned on. The only way to do this is to include them in the
+      -DSQLITE_ENABLE_UNLOCK_NOTIFY=1 -DSQLITE_ENABLE_DBSTAT_VTAB=1"</parameter>:
+      Applications such as <application>Firefox</application> require secure
+      delete and enable unlock notify to be turned on.  Since
+      <application>firefox-41</application> the dbstat virtual table is also
+      required. The only way to do this is to include them in the
       CFLAGS. By default, these are set to <literal>"-g -O2"</literal> so we
       specify that to preserve those settings. You may, of course, wish to omit
       the <literal>'-g'</literal> if you do not wish to create debugging

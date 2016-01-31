@@ -7,9 +7,9 @@
   <!ENTITY apache-download-http
            "https://archive.apache.org/dist/httpd/httpd-&apache-version;.tar.bz2">
   <!ENTITY apache-download-ftp  " ">
-  <!ENTITY apache-md5sum        "2b19cd338fd526dd5a63c57b1e9bfee2">
+  <!ENTITY apache-md5sum        "3690b3cc991b7dfd22aea9e1264a11b9">
   <!ENTITY apache-size          "4.9 MB">
-  <!ENTITY apache-buildsize     "73 MB">
+  <!ENTITY apache-buildsize     "109 MB">
   <!ENTITY apache-time          "0.6 SBU">
 ]>
 
@@ -36,7 +36,7 @@
       web serving operations.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -104,7 +104,7 @@
       <xref linkend="Links"/> or
       <ulink url="http://elinks.or.cz/">ELinks</ulink>,
       <xref linkend="openldap"/> (<xref linkend="apr-util"/> needs to be
-      compiled with LDAP suport),
+      installed with ldap suport),
       <xref linkend="rsync"/>,
       <ulink url="http://www.distcache.org/">Distcache</ulink>, and
       <xref linkend="lua"/>
@@ -133,8 +133,10 @@ useradd -c "Apache Server" -d /srv/www -g apache \
       following commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../httpd-&apache-version;-blfs_layout-1.patch &amp;&amp;
-sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in &amp;&amp;
+<screen><userinput>patch -Np1 -i ../httpd-&apache-version;-blfs_layout-1.patch           &amp;&amp;
+
+sed '/dir.*CFG_PREFIX/s@^@#@'     -i support/apxs.in        &amp;&amp;
+
 ./configure --enable-authnz-fcgi                            \
             --enable-layout=BLFS                            \
             --enable-mods-shared="all cgi"                  \
@@ -155,14 +157,15 @@ make</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the <systemitem class="username">root</systemitem> user
+      (notice that DESTDIR does not work properly as unpriviledged user):
     </para>
 
 <screen role="root"><userinput>make install                                 &amp;&amp;
 
 mv -v /usr/sbin/suexec /usr/lib/httpd/suexec &amp;&amp;
-chgrp -v apache        /usr/lib/httpd/suexec &amp;&amp;
-chmod -v 4754          /usr/lib/httpd/suexec &amp;&amp;
+chgrp apache           /usr/lib/httpd/suexec &amp;&amp;
+chmod 4754             /usr/lib/httpd/suexec &amp;&amp;
 
 chown -v -R apache:apache /srv/www</userinput></screen>
 
@@ -298,7 +301,7 @@ chown -v -R apache:apache /srv/www</userinput></screen>
           httxt2dbm,    logresolve,      rotatelogs, and suexec
         </seg>
         <seg>
-          None
+          Several libraries under /usr/lib/httpd/modules/
         </seg>
         <seg>
           /etc/httpd,
