@@ -4,14 +4,14 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY xorg-wacom-driver-version "0.27.0">
+  <!ENTITY xorg-wacom-driver-version "0.31.0">
 
   <!ENTITY xorg-wacom-driver-download-http "&sourceforge-repo;/linuxwacom/xf86-input-wacom-&xorg-wacom-driver-version;.tar.bz2">
   <!ENTITY xorg-wacom-driver-download-ftp  " ">
-  <!ENTITY xorg-wacom-driver-md5sum        "f75b374c47969fb9b21d9c2134396400">
-  <!ENTITY xorg-wacom-driver-size          "570 KB">
-  <!ENTITY xorg-wacom-driver-buildsize     "6.5 MB (additional 2.3 MB for the tests)">
-  <!ENTITY xorg-wacom-driver-time          "0.1 SBU">
+  <!ENTITY xorg-wacom-driver-md5sum        "e6a2e87b73e2744f839c410d41e6cf8d">
+  <!ENTITY xorg-wacom-driver-size          "580 KB">
+  <!ENTITY xorg-wacom-driver-buildsize     "10.6 MB (with the test suite)">
+  <!ENTITY xorg-wacom-driver-time          "0.1 SBU (with the test suite)">
 ]>
 
   <!-- Begin Xorg Wacom Driver -->
@@ -34,7 +34,7 @@
         devices without problems.
       </para>
 
-      &lfs76_built;
+      &lfs77_built;
 
       <bridgehead renderas="sect4">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -92,14 +92,17 @@
       <title>Kernel Configuration</title>
 
       <para>
-        To use a Wacom tablet, enable the following options in your kernel
-        configuration and recompile:
+        To use a Wacom tablet with USB interface, enable the following
+        options in your kernel configuration and recompile. Note that
+        other configuration options could be required for tablet with a
+        serial or bluetooth interface:
       </para>
 
 <screen><literal>Device Drivers  ---&gt;
-  Input device support  ---&gt;
-    [*] Tablets  ---&gt;
-      Wacom Intuos/Graphire tablet support (USB): Y or M</literal></screen>
+  HID support  ---&gt;
+    &lt;*/M&gt; HID bus support                                      [CONFIG_HID]
+            Special HID drivers ---&gt;
+              &lt;*/M&gt; Wacom Intuos/Graphire tablet support (USB) [CONFIG_HID_WACOM]</literal></screen>
 
       <indexterm zone="xorg-wacom-driver xorg-wacom-driver-kernel">
         <primary sortas="d-xorg-wacom-driver">xorg-wacom-driver</primary>
