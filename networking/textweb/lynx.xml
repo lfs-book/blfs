@@ -7,7 +7,7 @@
 <!--  <!ENTITY lynx-download-http "http://lynx.isc.org/lynx&lynx-version;/lynx&lynx-version;.tar.bz2">
   <!ENTITY lynx-download-ftp " ">-->
   <!ENTITY lynx-download-http "http://lynx.isc.org/current/lynx&lynx-version;.tar.bz2">
-  <!ENTITY lynx-download-ftp  "ftp://lynx.isc.org/current/lynx&lynx-version;.tar.bz2">
+  <!ENTITY lynx-download-ftp  "ftp://lynx.isc.org/lynx/tarballs/lynx&lynx-version;.tar.bz2">
   <!ENTITY lynx-md5sum        "b231c2aa34dfe7ca25681ef4e55ee7e8">
   <!ENTITY lynx-size          "2.5 MB">
   <!ENTITY lynx-buildsize     "31 MB">
@@ -33,13 +33,13 @@
 
     <para><application>Lynx</application> is a text based web browser.</para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
-      <listitem>
+      <!--<listitem>
         <para>Download (HTTP): <ulink url="&lynx-download-http;"/></para>
-      </listitem>
+      </listitem>-->
       <listitem>
         <para>Download (FTP): <ulink url="&lynx-download-ftp;"/></para>
       </listitem>
@@ -143,12 +143,12 @@ chgrp -v -R root /usr/share/doc/lynx-&lynx-version;/lynx_doc</userinput></screen
 
     <para><option>--with-ssl</option>: This enables support for
     linking SSL into <application>Lynx</application>.</para>
-    
+
     <!-- Fixed at version 2.8.8
     <note><para>Due to an error in the <command>configure</command>
     process, building with <application>openssl</application> also requires
     running the following before running <command>make</command>.
-    
+
     <screen><userinput>echo "#define USE_OPENSSL_INCL 1" >> lynx_cfg.h</userinput></screen>
     </para></note>
     -->
@@ -200,7 +200,8 @@ chgrp -v -R root /usr/share/doc/lynx-&lynx-version;/lynx_doc</userinput></screen
       this by default. As the <systemitem class="username">root</systemitem>
       user, change this setting:</para>
 
-<screen role="root"><userinput>sed -i 's/#\(LOCALE_CHARSET\):FALSE/\1:TRUE/' /etc/lynx/lynx.cfg</userinput></screen>
+<screen role="root"><userinput>sed -e '/#LOCALE/     a LOCALE_CHARSET:TRUE'     \
+    -i /etc/lynx/lynx.cfg</userinput></screen>
 
       <para>The built-in editor in <application>Lynx</application>
       <xref linkend="locale-wrong-multibyte-characters"/>. This issue manifests
@@ -211,7 +212,8 @@ chgrp -v -R root /usr/share/doc/lynx-&lynx-version;/lynx_doc</userinput></screen
       use an external editor (bound to the <quote>Ctrl+X e</quote> key
       combination by default). Still as the
       <systemitem class="username">root</systemitem> user:</para>
-<screen role="root"><userinput>sed -i 's/#\(DEFAULT_EDITOR\):/\1:vi/' /etc/lynx/lynx.cfg</userinput></screen>
+<screen role="root"><userinput>sed -e '/#DEFAULT_ED/ a DEFAULT_EDITOR:vi'       \
+    -i /etc/lynx/lynx.cfg</userinput></screen>
 
       <para><application>Lynx</application> handles the following values of
       the DEFAULT_EDITOR option specially by adding cursor-positioning
@@ -226,7 +228,8 @@ chgrp -v -R root /usr/share/doc/lynx-&lynx-version;/lynx_doc</userinput></screen
       between sessions. Again as the
       <systemitem class="username">root</systemitem> user, change this
       setting:</para>
-<screen role="root"><userinput>sed -i 's/#\(PERSISTENT_COOKIES\):FALSE/\1:TRUE/' /etc/lynx/lynx.cfg</userinput></screen>
+<screen role="root"><userinput>sed -e '/#PERSIST/    a PERSISTENT_COOKIES:TRUE' \
+    -i /etc/lynx/lynx.cfg</userinput></screen>
 
       <para>Many other system-wide settings such as proxies can also be set
       in the <filename>/etc/lynx/lynx.cfg</filename> file.</para>
