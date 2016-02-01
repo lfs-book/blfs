@@ -4,12 +4,13 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY ffmpeg-download-http "http://ffmpeg.org/releases/ffmpeg-&ffmpeg-version;.tar.bz2">
+  <!ENTITY ffmpeg-download-http "http://ffmpeg.org/releases/ffmpeg-&ffmpeg-version;.tar.xz">
   <!ENTITY ffmpeg-download-ftp  " ">
-  <!ENTITY ffmpeg-md5sum        "f159c6d7eed8546b23e1a17325cbf1f8">
-  <!ENTITY ffmpeg-size          "7.8 MB">
-  <!ENTITY ffmpeg-buildsize     "135 MB (additional 1.0 GB to build and install Doxygen, PDF and Postscript documentation)">
-  <!ENTITY ffmpeg-time          "3.7 SBU">
+  <!ENTITY ffmpeg-md5sum        "b34164bd181f4f81c21da3dd131d919d">
+  <!ENTITY ffmpeg-size          "6.9 MB">
+  <!ENTITY ffmpeg-buildsize     "156 MB (additional 2450 MB for the FATE suite)">
+  <!ENTITY ffmpeg-time          "1.2 SBU, with -j4 (additional 3.1 SBU, with THREADS=4,
+    to run the FATE suite, after sample files are downloaded)">
 ]>
 
 <sect1 id="ffmpeg" xreflabel="FFmpeg-&ffmpeg-version;">
@@ -41,7 +42,7 @@
       source and any Open Sound System audio source.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,22 +82,23 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="libass"/>,
       <xref linkend="fdk-aac"/>,
       <xref linkend="freetype2"/>,
       <xref linkend="lame"/>,
-      <xref linkend="libass"/>,
       <xref linkend="libtheora"/>,
       <xref linkend="libvorbis"/>,
       <xref linkend="libvpx"/>,
       <xref linkend="opus"/>,
-      <xref linkend="x264"/>, and
+      <xref linkend="x264"/>,
+      <xref linkend="x265"/>, and
       <xref linkend="yasm"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended for desktop use</bridgehead>
     <para>
       <xref linkend="alsa-lib"/>,
-      <xref linkend="libva"/> (with the corresponding driver package),
+      <xref linkend="libva"/>,
       <xref linkend="libvdpau"/> (with the corresponding driver package), and
       <xref linkend="sdl"/>
     </para>
@@ -104,24 +106,25 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="faac"/>,
-      <xref linkend="fribidi"/>,
       <xref linkend="fontconfig"/>,
+      <xref linkend="frei0r"/>,
       <xref linkend="libcdio"/> (to identify and play CDs),
       <xref linkend="libwebp"/>,
+      <xref linkend="opencv"/>,
       <xref linkend="openjpeg"/>,
       <xref linkend="openssl"/> or
       <xref linkend="gnutls"/>,
       <xref linkend="pulseaudio"/>,
-      <xref linkend="samba"/>,
       <xref linkend="speex"/>,
-      <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>) for PDF and PS documentation,
+      <xref linkend="texlive"/>
+         (or <xref linkend="tl-installer"/>) for PDF and PS documentation,
       <xref linkend="v4l-utils"/>,
       <xref linkend="xvid"/>,
       <xref linkend="x-window-system"/>,
       <ulink url="http://www.speech.cs.cmu.edu/flite/">Flite</ulink>,
-      <ulink url="https://files.dyne.org/frei0r/snapshots/">frei0r</ulink>,
       <ulink url="http://www.quut.com/gsm/">GSM</ulink>,
-      <ulink url="http://www.ladspa.org/">LADSPA</ulink>,
+      <ulink url="http://xhevc.com/en/hevc/decoder/download.jsp">HEVC/H.265</ulink>,
+      <!--<ulink url="http://www.ladspa.org/">LADSPA</ulink>,-->
       <ulink url="http://tipok.org.ua/node/17">libaacplus</ulink>,
       <ulink url="http://www.videolan.org/developers/libbluray.html">libbluray</ulink>,
       <ulink url="http://caca.zoy.org/">libcaca</ulink>,
@@ -134,16 +137,15 @@
       <ulink url="https://github.com/Distrotech/libnut">libnut</ulink> (Git checkout),
       <ulink url="http://rtmpdump.mplayerhq.hu/">librtmp</ulink>,
       <ulink url="http://www.libssh.org/">libssh</ulink>,
-      <ulink url="http://xavs.sourceforge.net/">libxavs</ulink> (SVN checkout),
+      <!--<ulink url="http://xavs.sourceforge.net/">libxavs</ulink> (SVN checkout),-->
       <ulink url="http://kcat.strangesoft.net/openal-releases/">OpenAL</ulink>,
       <ulink url="http://sourceforge.net/projects/opencore-amr">OpenCore AMR</ulink>,
-      <ulink url="http://opencv.org/">OpenCV</ulink>,
-      <ulink url="http://diracvideo.org/">Schroedinger</ulink>,
-      <ulink url="http://www.nongnu.org/texi2html">texi2html</ulink> (to build HTML documentation),
+      <!--<ulink url="http://diracvideo.org/">Schroedinger</ulink>,-->
+      <ulink url="http://sourceforge.net/projects/schrodinger/">Schroedinger</ulink>,
       <ulink url="http://www.twolame.org/">TwoLAME</ulink>,
-      <ulink url="http://sourceforge.net/projects/opencore-amr/files/vo-aacenc">vo-aaenc</ulink>,
-      <ulink url="http://sourceforge.net/projects/opencore-amr/files/vo-amrwbenc">vo-amrwbenc</ulink>,
-      <ulink url="https://bitbucket.org/multicoreware/x265/">x265</ulink>, and
+      <ulink url="http://sourceforge.net/projects/opencore-amr/files/vo-aacenc/">vo-aaenc</ulink>,
+      <ulink url="http://sourceforge.net/projects/opencore-amr/files/vo-amrwbenc/">vo-amrwbenc</ulink>, and
+      <!--<ulink url="http://www.videolan.org/developers/x265.html">x265 (H.265/MPEG-H HEVC)</ulink>, and-->
       <ulink url="http://zapping.sourceforge.net/ZVBI/">ZVBI</ulink>
     </para>
 
@@ -161,6 +163,7 @@
     </para>
 
 <screen><userinput>sed -i 's/-lflite"/-lflite -lasound"/' configure &amp;&amp;
+
 ./configure --prefix=/usr        \
             --enable-gpl         \
             --enable-version3    \
@@ -177,33 +180,45 @@
             --enable-libvorbis   \
             --enable-libvpx      \
             --enable-libx264     \
+            --enable-libx265     \
             --enable-x11grab     \
             --docdir=/usr/share/doc/ffmpeg-&ffmpeg-version; &amp;&amp;
+
 make &amp;&amp;
+
 gcc tools/qt-faststart.c -o tools/qt-faststart</userinput></screen>
 
     <para>
-      If you have <xref linkend="texlive"/> installed and want to build
-      PDF and Postscript documentation, issue the following commands:
+      HTML documentation was built in the previous step. If  you have
+      <xref linkend="texlive"/> installed and wish to build PDF and
+      Postscript versions of the documentation, issue the following commands:
     </para>
 
-<screen><userinput>pushd doc &amp;&amp;
-for DOCNAME in $(basename -s .html *.html)
+<screen><userinput>sed -i '$s/$/\n\n@bye/' doc/{git-howto,nut,fate}.texi             &amp;&amp;
+sed -i '/machine:i386/ s/\\/@backslashchar{}/g' doc/platform.texi &amp;&amp;
+
+pushd doc &amp;&amp;
+for DOCNAME in `basename -s .html *.html`
 do
     texi2pdf -b $DOCNAME.texi &amp;&amp;
     texi2dvi -b $DOCNAME.texi &amp;&amp;
-    dvips -o    $DOCNAME.ps $DOCNAME.dvi
+
+    dvips    -o $DOCNAME.ps   \
+                $DOCNAME.dvi
 done &amp;&amp;
 popd &amp;&amp;
 unset DOCNAME</userinput></screen>
 
     <para>
-      If you have <xref linkend="doxygen"/> installed and want to build
-      the API documentation, issue: <command>doxygen doc/Doxyfile</command>.
+      If you have <xref linkend="doxygen"/> installed and wish to create the API
+      documentation (takes about 350 MB of space), issue the command
+      <command>doxygen doc/Doxyfile</command>.
     </para>
 
     <para>
-      To test the results, issue <command>make RUNNING_FATE= check</command>.
+      The fate-suite tests include comparisons with installed files, and should
+      not be run before the package is installed. Therefore, if you desire to
+      run them, instructions are given further below.
     </para>
 
     <para>
@@ -211,26 +226,73 @@ unset DOCNAME</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-install -v -m755 tools/qt-faststart /usr/bin &amp;&amp;
-install -v -m644 doc/*.txt /usr/share/doc/ffmpeg-&ffmpeg-version;</userinput></screen>
+
+install -v -m755    tools/qt-faststart /usr/bin &amp;&amp;
+install -v -m644    doc/*.txt \
+                    /usr/share/doc/ffmpeg-&ffmpeg-version;</userinput></screen>
 
     <para>
-      If the PDF and Postscript documentation was built, run the following
-      commands as the <systemitem class="username">root</systemitem> user
-      to install it:
+      If PDF and Postscript documentations were built, issue the following
+      commands, as the <systemitem class="username">root</systemitem> user, to
+      install them:
     </para>
 
-<screen role="root"><userinput>install -v -m644 doc/*.pdf /usr/share/doc/ffmpeg-&ffmpeg-version; &amp;&amp;
-install -v -m644 doc/*.ps  /usr/share/doc/ffmpeg-&ffmpeg-version;</userinput></screen>
+<screen role="root"><userinput>install -v -m644 doc/*.pdf \
+                 /usr/share/doc/ffmpeg-&ffmpeg-version; &amp;&amp;
+install -v -m644 doc/*.ps  \
+                 /usr/share/doc/ffmpeg-&ffmpeg-version;</userinput></screen>
 
     <para>
-      If you used <command>doxygen</command> to build the API documentation,
-      you can install it by running the following commands
+      If you used <command>doxygen</command> to create the API documentation,
+      install it (another 300 MB of space) by issuing the following commands
       as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>install -v -dm755 /usr/share/doc/ffmpeg-&ffmpeg-version;/api &amp;&amp;
-cp -rv doc/doxy/html/* /usr/share/doc/ffmpeg-&ffmpeg-version;/api</userinput></screen>
+<screen role="root"><userinput>install -v -m755 -d /usr/share/doc/ffmpeg-&ffmpeg-version;/api                     &amp;&amp;
+cp -vr doc/doxy/html/* /usr/share/doc/ffmpeg-&ffmpeg-version;/api                  &amp;&amp;
+find /usr/share/doc/ffmpeg-&ffmpeg-version;/api -type f -exec chmod -c 0644 \{} \; &amp;&amp;
+find /usr/share/doc/ffmpeg-&ffmpeg-version;/api -type d -exec chmod -c 0755 \{} \;</userinput></screen>
+
+    <para>
+      To properly test the installation you must have <xref linkend="rsync"/>
+      installed and follow the instructions for the <ulink
+      url="http://www.ffmpeg.org/fate.html"> FFmpeg Automated Testing
+      Environment</ulink> (FATE). First, about 958 MB of sample files used to
+      run FATE are downloaded with the command:
+    </para>
+
+<screen><userinput>make fate-rsync SAMPLES=fate-suite/</userinput></screen>
+
+    <para>
+      The <filename class="directory">fate-suite</filename> directory is
+      created and the files are downloaded there. That command actually runs an
+      rsync command, to obtain the sample files.  You may want to compress and
+      keep this directory for testing again, in another system, or when a new
+      version of ffmpeg is launched. Then, you unpack the sample files in the
+      source directory, and run, again, the <command>make fate-rsync
+      ...</command> command above, to sync with the repository. Now, the
+      download size and time are drastically reduced.  Estimated values in
+      "Package Information" do not include the download SBU. Some samples may
+      have been removed, in the new version, so, in order to be sure local and
+      server fate samples are identical, when you use previously saved samples,
+      run the following command:
+    </para>
+
+<screen><userinput><command>rsync -vrltLW  --delete --timeout=60 --contimeout=60 \
+      rsync://fate-suite.ffmpeg.org/fate-suite/ fate-suite/</command></userinput></screen>
+
+    <para>
+      Next, FATE is executed, with the commands (you obtain a number of tests
+      larger than 2500):
+    </para>
+
+<screen><userinput>make fate THREADS=<replaceable>N</replaceable> SAMPLES=fate-suite/ | tee ../fate.log &amp;&amp;
+grep ^TEST ../fate.log | wc -l</userinput></screen>
+
+    <para>
+      where <replaceable>N</replaceable> is an integer,
+      <replaceable>N</replaceable> &le; number of threads in the system.
+    </para>
 
   </sect2>
 
@@ -242,6 +304,16 @@ cp -rv doc/doxy/html/* /usr/share/doc/ffmpeg-&ffmpeg-version;/api</userinput></s
       <application>ALSA</application> library to the
       <application>Flite</application> <envar>LDFLAGS</envar> variable and
       enables the discovery of <application>Flite</application>.
+    </para>
+
+    <para>
+      <command>sed -i ... texi</command>: Fix some .texi files for
+      documentation builds.
+    </para>
+
+    <para>
+      <command>find ... ;</command>: Fix permissions of documentation files
+      and directories.
     </para>
 
     <para>
@@ -313,6 +385,12 @@ cp -rv doc/doxy/html/* /usr/share/doc/ffmpeg-&ffmpeg-version;/api</userinput></s
     </para>
 
     <para>
+      <parameter>--enable-libx265</parameter>: Enables high-quality
+      H.265/HEVC encoding via <filename
+      class="libraryfile">libx265</filename>.
+    </para>
+
+    <para>
       <parameter>--enable-x11grab</parameter>: Enables X11 grabbing.
     </para>
 
@@ -381,18 +459,17 @@ cp -rv doc/doxy/html/* /usr/share/doc/ffmpeg-&ffmpeg-version;/api</userinput></s
 
       <seglistitem>
         <seg>
-          ffmpeg, ffplay, ffprobe, ffserver and
-          qt-faststart
+          ffmpeg, ffplay, ffprobe, ffserver, and qt-faststart
         </seg>
         <seg>
           libavcodec.so, libavdevice.so, libavfilter.so,
           libavformat.so, libavutil.so, libpostproc.so,
-          libswresample and libswscale.so
+          libswresample, and libswscale.so
         </seg>
         <seg>
-          /usr/include/{libavcodec,libavdevice,libavfilter,libavformat},
-          /usr/include/{libavutil,libpostproc,libswresample,libswscale},
-          /usr/share/doc/ffmpeg-&ffmpeg-version; and
+          /usr/include/lib{avcodec,avdevice,avfilter,avformat},
+          /usr/include/lib{avutil,postproc,swresample,swscale},
+          /usr/share/doc/ffmpeg-&ffmpeg-version;, and
           /usr/share/ffmpeg
         </seg>
       </seglistitem>
