@@ -6,10 +6,10 @@
 
   <!ENTITY gnutls-download-http " ">
   <!ENTITY gnutls-download-ftp  "ftp://ftp.gnutls.org/gcrypt/gnutls/v3.4/gnutls-&gnutls-version;.tar.xz">
-  <!ENTITY gnutls-md5sum        "a26e6dd8d5ad92016e3f068795b89624">
+  <!ENTITY gnutls-md5sum        "1b3b6d55d0e2b6d01a54f53129f1da9b">
   <!ENTITY gnutls-size          "6.4 MB">
-  <!ENTITY gnutls-buildsize     "128 MB (144 MB with tests)">
-  <!ENTITY gnutls-time          "0.8 SBU (4.3 SBU with tests)">
+  <!ENTITY gnutls-buildsize     "129 MB (144 MB, with tests)">
+  <!ENTITY gnutls-time          "0.8 SBU (3.8 SBU, with tests)">
 ]>
 
 <sect1 id="gnutls" xreflabel="GnuTLS-&gnutls-version;">
@@ -110,9 +110,10 @@
       <xref linkend="guile"/>,
       <xref linkend="libidn"/>,
       <xref linkend="texlive"/> or <xref linkend="tl-installer"/>,
-      <xref linkend="unbound"/> (to build the DANE library), 
+      <xref linkend="unbound"/> (to build the DANE library),
       <xref linkend="valgrind"/> (used during the test suite),
-      <ulink url="http://ftp.gnu.org/gnu/autogen/">Autogen</ulink>, and
+      <ulink url="http://ftp.gnu.org/gnu/autogen/">autogen</ulink>,
+      <ulink url="http://ftp.debian.org/debian/pool/main/d/datefudge/">datefudge</ulink> (used during the test suite), and
       <ulink url="http://sourceforge.net/projects/trousers/files/trousers/">Trousers</ulink> (Trusted Platform Module support)
     </para>
 
@@ -136,14 +137,15 @@
     </para>
 
 <screen><userinput>./configure --prefix=/usr \
-               --with-default-trust-store-file=/etc/ssl/ca-bundle.crt &amp;&amp;
+            --with-default-trust-store-file=/etc/ssl/ca-bundle.crt &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
-      If a prior version of <application>GnuTLS</application> has been installed, some
+      To test the results, issue: <command>make check</command>.  If a prior
+      version of <application>GnuTLS</application> has been installed, some
       tests may fail. If <filename>/usr/lib/libgnutls.so</filename> is removed,
-      all tests sould pass. The installation procedure restores <filename>libgnutls.so</filename>.
+      all tests should pass and the install procedure restores
+      <filename>libgnutls.so</filename>.
     </para>
 
     <para>
@@ -169,22 +171,22 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <para>
+      <parameter>--with-default-trust-store-file=/etc/ssl/ca-bundle.crt</parameter>:
+      This switch tells <command>configure</command> where to find the
+      CA Certificates.
+    </para>
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
 
     <para>
-      <option>--with-default-trust-store-file=/etc/ssl/ca-bundle.crt</option>:
-      This switch tells the configure script where to find the 
-      <xref linkend="cacerts"/>.
+      <option>--enable-openssl-compatibility</option>:
+      Use this switch if you wish to build the OpenSSL compatibility library.
     </para>
 
     <para>
-      <option>--enable-openssl-compatibility</option>: Use this switch if you
-      want to build the OpenSSL compatibility library.
-    </para>
-
-    <para>
-      <option>--without-p11-kit</option>: Use this switch if you have not
+      <option>--without-p11-kit</option>: use this switch if you have not
       installed <application>p11-kit</application>.
     </para>
 
@@ -200,27 +202,15 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          certtool, 
-          crywrap, 
-          danetool, 
-          gnutls-cli, 
-          gnutls-cli-debug,
-          gnutls-serv, 
-          ocsptool, 
-          p11tool, 
-          psktool, 
-          and srptool
+          certtool, crywrap, danetool, gnutls-cli, gnutls-cli-debug,
+          gnutls-serv, ocsptool, p11tool, psktool, and srptool
         </seg>
         <seg>
-          libgnutls.so, 
-          libgnutls-dane.so, 
-          libgnutlsxx.so, and
-          guile-gnutls-v-2.so (<application>Guile</application> Module)
+          libgnutls.so, libgnutls-dane.so, libgnutlsxx.so, and
+          /usr/lib/guile/2.0/guile-gnutls-v-2.so
         </seg>
         <seg>
-          /usr/include/gnutls,
-          /usr/share/gtk-doc/html/gnutls, and
-          /usr/share/guile/site/gnutls
+          /usr/{include,share/gtk-doc/html,share/guile/site}/gnutls
         </seg>
       </seglistitem>
     </segmentedlist>
