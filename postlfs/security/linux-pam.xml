@@ -6,12 +6,12 @@
 
   <!ENTITY linux-pam-download-http "http://linux-pam.org/library/Linux-PAM-&linux-pam-version;.tar.bz2">
   <!ENTITY linux-pam-download-ftp  " ">
-  <!ENTITY linux-pam-md5sum        "9dc53067556d2dd567808fd509529dd6">
-  <!ENTITY linux-pam-size          "1.2 MB">
-  <!ENTITY linux-pam-buildsize     "32 MB">
-  <!ENTITY linux-pam-time          "0.4 SBU">
+  <!ENTITY linux-pam-md5sum        "9dc53067556d2dd567808fd509519dd6">
+  <!ENTITY linux-pam-size          "1.3 MB">
+  <!ENTITY linux-pam-buildsize     "33 MB (with tests)">
+  <!ENTITY linux-pam-time          "0.3 SBU (with tests)">
 
-  <!ENTITY linux-pam-docs-download "http://linux-pam.org/documentation/Linux-PAM-&linux-pam-version;-docs.tar.bz2">
+  <!ENTITY linux-pam-docs-download "http://linux-pam.org/documentation/Linux-PAM-&linux-pam-docs-version;-docs.tar.bz2">
   <!ENTITY linux-pam-docs-md5sum   "558378b8be9b8b5c987326f4529f2130">
   <!ENTITY linux-pam-docs-size     "480 KB">
   <!ENTITY debian-pam-docs         "http://debian.securedservers.com/kernel/pub/linux/libs/pam">
@@ -129,7 +129,7 @@
       the following command.
     </para>
 
-<screen><userinput>tar -xf ../Linux-PAM-&linux-pam-version;-docs.tar.bz2 --strip-components=1</userinput></screen>
+<screen><userinput>tar -xf ../Linux-PAM-&linux-pam-docs-version;-docs.tar.bz2 --strip-components=1</userinput></screen>
 
     <para>
       Install <application>Linux PAM</application> by
@@ -164,7 +164,7 @@ make</userinput></screen>
          overwrites the configuration files in
          <filename class="directory">/etc/security</filename> as well as
          <filename>/etc/environment</filename>. In case you
-         have modified those files, be sure to back them up.
+         have modified those files, be sure to backup them.
       </para>
     </caution>
 
@@ -174,19 +174,20 @@ make</userinput></screen>
       user:
     </para>
 
-<screen role="root"><userinput>install -v -dm755 /etc/pam.d &amp;&amp;
+<screen role="root"><userinput>install -v -m755 -d /etc/pam.d &amp;&amp;
 
 cat &gt; /etc/pam.d/other &lt;&lt; "EOF"
-<literal>auth     required       pam_deny.so
+auth     required       pam_deny.so
 account  required       pam_deny.so
 password required       pam_deny.so
-session  required       pam_deny.so</literal>
+session  required       pam_deny.so
 EOF</userinput></screen>
 
     <para>
       Now run the tests by issuing <command>make check</command>.
       Ensure there are no errors produced by the tests before continuing the
-      installation.
+      installation. Note that the checks are quite long.  It may be useful to
+      redirect the output to a log file in order to inspect it thoroughly.
     </para>
 
     <para>
@@ -195,7 +196,7 @@ EOF</userinput></screen>
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>rm -rfv /etc/pam.d</userinput></screen>
+<screen role="root"><userinput>rm -fv /etc/pam.d/*</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem>
@@ -272,9 +273,7 @@ password        required        pam_unix.so     nullok
 
       <para>Now set up some generic files.  As root:</para>
 
-<screen role="root"><userinput>install -v -dm755 /etc/pam.d
-
-cat &gt; /etc/pam.d/system-account &lt;&lt; "EOF"
+<screen role="root"><userinput>cat &gt; /etc/pam.d/system-account &lt;&lt; "EOF"
 <literal># Begin /etc/pam.d/system-account
 
 account   required    pam_unix.so
@@ -298,8 +297,8 @@ session   required    pam_unix.so
 # End /etc/pam.d/system-session</literal>
 EOF</userinput></screen>
 
-    <para>The remaining generic file depends on whether <xref linkend="cracklib"/>
-    is installed. If it is installed, issue:</para>
+    <para>The remaining generic file depends on wheather <xref linkend="cracklib"/>
+    is installed.  If it is installed, use:</para>
 
 <screen role="root"><userinput>cat &gt; /etc/pam.d/system-password &lt;&lt; "EOF"
 <literal># Begin /etc/pam.d/system-password
@@ -328,7 +327,7 @@ EOF</userinput></screen>
         </note>
 
    <para>If <xref linkend="cracklib"/> is <emphasis>NOT</emphasis> installed,
-   issue:</para>
+   use:</para>
 
 <screen role="root"><userinput>cat &gt; /etc/pam.d/system-password &lt;&lt; "EOF"
 <literal># Begin /etc/pam.d/system-password
@@ -341,8 +340,8 @@ password  required    pam_unix.so       sha512 shadow try_first_pass
 EOF</userinput></screen>
 
       <para>Now add a restrictive <filename>/etc/pam.d/other</filename>
-      configuration file. With this file, PAM aware services can't be
-      used unless a configuration file specifically for that service is
+      configuration file.  With this file, programs that are PAM aware will not
+      run unless a configuration file specifically for that application is
       created.</para>
 
 <screen role="root"><userinput>cat &gt; /etc/pam.d/other &lt;&lt; "EOF"
