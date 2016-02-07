@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY geocode-glib-download-http
-           "&gnome-download-http;/geocode-glib/&gnome-minor16;/geocode-glib-&geocode-glib-version;.tar.xz">
+           "&gnome-download-http;/geocode-glib/&gnome-minor18;/geocode-glib-&geocode-glib-version;.tar.xz">
   <!ENTITY geocode-glib-download-ftp
-           "&gnome-download-ftp;/geocode-glib/&gnome-minor16;/geocode-glib-&geocode-glib-version;.tar.xz">
-  <!ENTITY geocode-glib-md5sum        "c309e8e9168b90c5b7df060d45ea135b">
-  <!ENTITY geocode-glib-size          "348 KB">
-  <!ENTITY geocode-glib-buildsize     "20 MB">
-  <!ENTITY geocode-glib-time          "0.1 SBU">
+           "&gnome-download-ftp;/geocode-glib/&gnome-minor18;/geocode-glib-&geocode-glib-version;.tar.xz">
+  <!ENTITY geocode-glib-md5sum        "1d294d59bfc05027ccb9ff6708b63491">
+  <!ENTITY geocode-glib-size          "360 KB">
+  <!ENTITY geocode-glib-buildsize     "5.8 MB">
+  <!ENTITY geocode-glib-time          "0.2 SBU">
 ]>
 
 <sect1 id="geocode-glib" xreflabel="geocode-glib-&geocode-glib-version;">
@@ -38,7 +38,7 @@
       reverse geocoding (finding an address from coordinates).
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,6 +74,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/geocode-glib-&geocode-glib-version;-fix_icon_installation-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Geocode GLib Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -101,6 +111,12 @@
     <title>Installation of Geocode GLib</title>
 
     <para>
+      First, apply a patch to fix the Makefile to not complain about nonexistent icons.
+    </para>
+
+<screen><userinput>patch -Np1 -i ../geocode-glib-&geocode-glib-version;-fix_icon_installation-1.patch</userinput></screen>
+
+    <para>
       Install <application>Geocode GLib</application> by running the following
       commands:
     </para>
@@ -108,9 +124,15 @@
 <screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
+<!--
     <para>
       To test the results, issue: <command>make -k check</command>. Note that
       at least one test is known to fail for unknown reasons.
+    </para> -->
+<!-- The test suite is broken as of 3.18.1, one test fails and crashes the entire build -->
+
+    <para>
+      This package does not come with a working test suite.
     </para>
 
     <para>
@@ -134,7 +156,7 @@ make</userinput></screen>
 
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
-      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Library</segtitle>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
