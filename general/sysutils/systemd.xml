@@ -4,8 +4,8 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY systemd-download-http       "http://www.freedesktop.org/software/systemd/">
-  <!ENTITY systemd-patch-download-http "http://www.linuxfromscratch.org/patches/downloads/systemd/">
+  <!ENTITY systemd-download-http       "http://anduin.linuxfromscratch.org/sources/other/systemd/systemd-&lfs-systemd-version;.tar.xz">
+  <!ENTITY systemd-patch-download-http "http://www.linuxfromscratch.org/patches/downloads/systemd/systemd-&lfs-systemd-version;-compat-1.patch">
 ]>
 
 <sect1 id="systemd" xreflabel="Systemd">
@@ -16,7 +16,7 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>Systemd</title>
+  <title>Systemd-&lfs-systemd-version;</title>
 
   <indexterm zone="systemd">
     <primary sortas="a-systemd">systemd</primary>
@@ -55,7 +55,7 @@
 
     <para>
       This package is known to build and work properly using an
-      LFS-7.8 systemd platform using systemd-224 source.
+      LFS-&lfs-version; platform using systemd-228 source.
     </para>
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
@@ -67,7 +67,7 @@
         <para>Systemd Patch Download (HTTP): <ulink url="&systemd-patch-download-http;"/></para>
       </listitem>
     </itemizedlist>
-
+<!--
     <para>
       Make sure you download the "compat" patch whose version matches
       the <application>systemd</application> version you are building.
@@ -76,16 +76,16 @@
     <note>
       <para>
         If you are unsure which version needs to be downloaded, issue
-        <command>systemctl --version</command> in order to find out.
+        <command>systemctl - -version</command> in order to find out.
         Some of the commands below might need the version information.
         Issue the following command to store the
         <application>systemd</application> version number into an
         environment variable:
       </para>
 
-<screen><userinput>export SYSTEMD_VERSION=$(systemctl --version | head -n1 | awk '{print $2}')</userinput></screen>
+<screen><userinput>export SYSTEMD_VERSION=$(systemctl - -version | head -n1 | awk '{print $2}')</userinput></screen>
     </note>
-
+-->
     <bridgehead renderas="sect3">systemd Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -158,12 +158,13 @@
       First, apply the required patch:
     </para>
 
-<screen><userinput>patch -Np1 -i ../systemd-${SYSTEMD_VERSION}-compat-1.patch</userinput></screen>
-
+<screen><userinput>patch -Np1 -i ../systemd-&lfs-systemd-version;-compat-1.patch &amp;&amp;
+autoreconf -fi</userinput></screen>
+<!--
     <para>
       Additionally, apply any patch that is also applied in LFS.
     </para>
-
+-->
     <para>
       Disable two tests that always fail:
     </para>
@@ -188,7 +189,7 @@
             --disable-ldconfig     \
             --disable-sysusers     \
             --without-python       \
-            --docdir=/usr/share/doc/systemd-${SYSTEMD_VERSION} &amp;&amp;
+            --docdir=/usr/share/doc/systemd-&lfs-systemd-version; &amp;&amp;
 make</userinput></screen>
 
     <note>
