@@ -6,10 +6,10 @@
 
   <!ENTITY webkitgtk-download-http "http://webkitgtk.org/releases/webkitgtk-&webkitgtk-version;.tar.xz">
   <!ENTITY webkitgtk-download-ftp  " ">
-  <!ENTITY webkitgtk-md5sum        "df79991848a5096d3a75289ebce547ae">
+  <!ENTITY webkitgtk-md5sum        "84832b9d8329413b4f1d87df5f7e8efe">
   <!ENTITY webkitgtk-size          "10 MB">
-  <!ENTITY webkitgtk-buildsize     "963 MB (100 MB installed)">
-  <!ENTITY webkitgtk-time          "97 SBU">
+  <!ENTITY webkitgtk-buildsize     "910 MB (100 MB installed)">
+  <!ENTITY webkitgtk-time          "157 SBU (with -j1. We recommend building with parallel jobs).">
 ]>
 
 <sect1 id="webkitgtk" xreflabel="WebKitGTK+-&webkitgtk-version;">
@@ -94,13 +94,18 @@
       <xref linkend="enchant"/>,
       <xref linkend="geoclue2"/> or
       <xref linkend="geoclue"/>,
-      <xref linkend="gobject-introspection"/> and
-      <xref linkend="gtk2"/>
+      <xref linkend="gobject-introspection"/>,
+      <xref linkend="gtk2"/>, and
+      <xref linkend="hicolor-icon-theme"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/> and
+      <xref linkend="gtk-doc"/>.
+      <xref linkend="harfbuzz"/>,
+      <xref linkend="libnotify"/>,
+      <xref linkend="llvm"/>,
+      <ulink url="http://sourceforge.net/projects/hunspell/files/Hyphen/">Hyphen</ulink>, and
       <ulink url="http://xsltml.sourceforge.net/">MathML</ulink>
     </para>
 
@@ -133,6 +138,8 @@ cmake -DCMAKE_BUILD_TYPE=Release  \
       -DCMAKE_SKIP_RPATH=ON       \
       -DPORT=GTK                  \
       -DLIB_INSTALL_DIR=/usr/lib  \
+      -DUSE_LIBHYPHEN=OFF         \
+      -DENABLE_MINIBROWSER=ON     \
       -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 
@@ -145,7 +152,12 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+install -vdm755 /usr/share/gtk-doc/html/webkit{2,dom}gtk-4.0 &amp;&amp;
+install -vm644 ../Documentation/webkitgtk2-4.0/html/*  \
+               /usr/share/gtk-doc/html/webkit2gtk-4.0        &amp;&amp;
+install -vm644 ../Documentation/webkitdomgtk-4.0/html/* \
+               /usr/share/gtk-doc/html/webkitdomgtk-4.0</userinput></screen>
 
   </sect2>
 
@@ -200,7 +212,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          jsc
+          jsc and MiniBrowser
         </seg>
         <seg>
           libjavascriptcoregtk-4.0.so and
@@ -230,6 +242,18 @@ make</userinput></screen>
           </para>
           <indexterm zone="webkitgtk jsc">
             <primary sortas="b-jsc">jsc</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="MiniBrowser">
+        <term><command>MiniBrowser</command></term>
+        <listitem>
+          <para>
+            is a very simple graphical browser, useful for testing.
+          </para>
+          <indexterm zone="webkitgtk MiniBrowser">
+            <primary sortas="b-MiniBrowser">MiniBrowser</primary>
           </indexterm>
         </listitem>
       </varlistentry>
