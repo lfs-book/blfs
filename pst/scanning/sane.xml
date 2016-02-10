@@ -4,15 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!-- <!ENTITY sane-be-download-http "http://alioth.debian.org/frs/?group_id=30186"> -->
-  <!ENTITY sane-be-download-http "http://fossies.org/linux/misc//sane-backends-&sane-version;.tar.gz">
+  <!ENTITY sane-be-download-http "http://fossies.org/linux/misc/sane-backends-&sane-version;.tar.gz">
   <!ENTITY sane-be-download-ftp  " ">
-  <!--<!ENTITY sane-be-download-ftp  "ftp://ftp2.sane-project.org/pub/sane/sane-backends-&sane-version;.tar.gz">-->
-  <!--<!ENTITY sane-be-download-ftp  "&gentoo-ftp-repo;/sane-backends-&sane-version;.tar.gz">-->
-  <!ENTITY sane-be-md5sum        "1ca68e536cd7c1852322822f5f6ac3a4">
-  <!ENTITY sane-be-size          "5.6 MB">
-  <!ENTITY sane-be-buildsize     "97 MB">
-  <!ENTITY sane-be-time          "1.0 SBU">
+  <!ENTITY sane-be-md5sum        "f9ed5405b3c12f07c6ca51ee60225fe7">
+  <!ENTITY sane-be-size          "5.7 MB">
+  <!ENTITY sane-be-buildsize     "129 MB (additional 34 MB for tests)">
+  <!ENTITY sane-be-time          "1.0 SBU (additional 0.1 SBU for tests)">
 
   <!ENTITY sane-fe-download-http "http://alioth.debian.org/frs/download.php/file/1140/sane-frontends-&sane-fe-version;.tar.gz">
   <!ENTITY sane-fe-download-ftp  "ftp://ftp2.sane-project.org/pub/sane/sane-frontends-&sane-fe-version;.tar.gz">
@@ -50,29 +47,7 @@
     ends. The back ends are drivers for the supported scanners and cameras. The
     front ends are user interfaces to access the backends.</para>
 
-    &lfs77_checked;
-
-    <!-- The upstream web site has the md5sums for the tarballs:
-         http://www.sane-project.org/sane-md5sums.txt.
-         But they do not provide the tarballs, so, the following paragraph
-         seems not applicable, starting with sane-backends-1.0.24.tar.gz.
-
-         This note is not applicable. First, there is no issue downloading the
-         ftp://ftp2.sane-project.org/pub/sane/sane-backends-1.0.23.tar.gz
-         tarball with wget. Next, the combined tarball exists on the SANE FTP
-         site, but the MD5sum is wrong. We can simply point the download to
-         the SANE FTP site and create our own MD5sum (as we do on many packages).
-
-    <note><para>The upstream web site uses a self signed security
-    certificate.  If using <command>wget</command>, the option -no-check-certificate
-    needs to be added.</para>
-
-    <para>The md5sum of the backend file does not match unless the three parts
-    of the divided tarball on the upstream server,
-    sane-backends-1.0.23.tar.gz.[1-3], are combined.  A combined tarball with
-    the correct md5sum is located at <ulink
-    url="http://anduin.linuxfromscratch.org/sources/other/sane-backends-1.0.23.tar.gz">http://anduin.linuxfromscratch.org/sources/other/sane-backends-1.0.23.tar.gz</ulink>.</para></note>
-    -->
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Back Ends Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -181,13 +156,6 @@
     <sect3>
       <title>Installation of SANE Back Ends</title>
 
-      <note>
-        <para>
-          You may safely disregard any messages printed on the screen when you
-          unpack the tarball.
-        </para>
-      </note>
-
       <para>The <application>SANE</application> daemon should run with its own
       group.  Create this group by issuing the following commands as the
       <systemitem class="username">root</systemitem> user:</para>
@@ -213,8 +181,8 @@
       </note>
 
       <para>
-        Fix linking with the systemd library when using <application>systemd</application>
-        210 and later:
+        Fix linking with the systemd library when using
+        <application>systemd</application> 210 and later:
       </para>
 
 <screen><userinput>sed -i "s:systemd-daemon:systemd:g" configure configure.in</userinput></screen>
@@ -224,41 +192,37 @@
       <application>SANE</application>-backends by running the following
       commands:</para>
 
-            <!-- Not sure why this was there as it works if TeX is installed
-                 and it doesn't try to use it if TeX is not installed
-                 -disable-latex &amp;&amp; -->
-
-<screen><userinput>./configure --prefix=/usr                                    \
-            --sysconfdir=/etc                                \
-            --localstatedir=/var                             \
-            --with-docdir=/usr/share/doc/sane-backend-&sane-version; \
-            --with-group=scanner                             &amp;&amp;
-make                                                         &amp;&amp;
-exit</userinput></screen>
+<screen><userinput>./configure --prefix=/usr        \
+            --sysconfdir=/etc    \
+            --localstatedir=/var \
+            --with-group=scanner \
+            --with-docdir=/usr/share/doc/sane-backend-&sane-version; &amp;&amp;
+make</userinput></screen>
 
       <para>If you want to test the results, some files need to be fixed:</para>
 
-<screen><userinput>sed -i -e 's/Jul 31 07:52:48/Oct  7 08:58:33/'      \
-       -e 's/1.0.24git/1.0.24/'                     \
-       testsuite/tools/data/db.ref                  \
-       testsuite/tools/data/html-mfgs.ref           \
-       testsuite/tools/data/usermap.ref             \
-       testsuite/tools/data/html-backends-split.ref \
-       testsuite/tools/data/udev+acl.ref            \
+<screen><userinput>sed -i -e 's/Jul 31 07:52:48 2013/Oct 19 13:25:20 2015/'  \
+       -e 's/1.0.24git/1.0.25/'                           \
+       testsuite/tools/data/db.ref                        \
+       testsuite/tools/data/html-mfgs.ref                 \
+       testsuite/tools/data/usermap.ref                   \
+       testsuite/tools/data/html-backends-split.ref       \
+       testsuite/tools/data/udev+acl.ref                  \
        testsuite/tools/data/udev.ref</userinput></screen>
 
       <para>To test the results, issue: <command>make check</command>.</para>
 
-      <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
+      <para>Now, as the <systemitem class="username">root</systemitem>
+      user:</para>
 
-<screen role="root"><userinput>make install                                        &amp;&amp;
-install -v -m644 tools/udev/libsane.rules           \
-                 /etc/udev/rules.d/65-scanner.rules &amp;&amp;
-chgrp -v scanner /var/lock/sane</userinput></screen>
+<screen role="root"><userinput>make install                                         &amp;&amp;
+install -m 644 -v tools/udev/libsane.rules           \
+                  /etc/udev/rules.d/65-scanner.rules &amp;&amp;
+chgrp -v scanner  /var/lock/sane</userinput></screen>
 
       <para>With the scanner on, run <command>scanimage -L</command> and the
-      name and location of the device should appear. You need to configure
-      the device drivers in order to run this test.</para>
+      name and location of the device should appear. Of course, you need the
+      device drivers configured, in order to run this test.</para>
 
     </sect3>
 
@@ -282,7 +246,8 @@ make</userinput></screen>
 
       <para>This package does not come with a test suite.</para>
 
-      <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
+      <para>Now, as the <systemitem class="username">root</systemitem>
+      user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
 install -v -m644 doc/sane.png xscanimage-icon-48x48-2.png \
@@ -293,7 +258,7 @@ install -v -m644 doc/sane.png xscanimage-icon-48x48-2.png \
       <command>xscanimage</command> as a scanning plugin, issue the following
       command as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>ln -sfv ../../../../bin/xscanimage /usr/lib/gimp/2.0/plug-ins</userinput></screen>
+<screen role="root"><userinput>ln -v -s ../../../../bin/xscanimage /usr/lib/gimp/2.0/plug-ins</userinput></screen>
 
       <note>
         <para>
@@ -355,8 +320,9 @@ install -v -m644 doc/sane.png xscanimage-icon-48x48-2.png \
         class="groupname">scanner</systemitem> group.</para>
 
         <para>If you want to access a network scanner, include two lines in
-        <filename>net.conf</filename>, as <systemitem class="username">root</systemitem> user
-        (make sure to replace &lt;server_ip&gt; by the actual value, below):</para>
+        <filename>net.conf</filename>, as
+        <systemitem class="username">root</systemitem> user (make sure to
+        replace &lt;server_ip&gt; by the actual value, below):</para>
 
 <screen role="root"><userinput>cat &gt;&gt; /etc/sane.d/net.conf &lt;&lt; "EOF"
 connect_timeout = 60
@@ -394,7 +360,7 @@ Type=Application
 Categories=Application;Graphics
 EOF
 
-ln -sfv ../sane/xscanimage-icon-48x48-2.png /usr/share/pixmaps/xscanimage.png</userinput></screen>
+ln -svf ../sane/xscanimage-icon-48x48-2.png /usr/share/pixmaps/xscanimage.png</userinput></screen>
 
       </sect4>
 
@@ -447,7 +413,7 @@ ln -sfv ../sane/xscanimage-icon-48x48-2.png /usr/share/pixmaps/xscanimage.png</u
         <seg>gamma4scanimage, sane-config, saned, sane-find-scanner,
         and scanimage</seg>
         <seg>libsane.so and numerous scanner backend modules</seg>
-        <seg>/etc/sane.d, /usr/include/sane, /usr/lib/sane, /usr/share/sane,
+        <seg>/etc/sane.d, /usr/{include,lib,share}/sane,
         and /usr/share/doc/sane-&sane-version;</seg>
       </seglistitem>
     </segmentedlist>

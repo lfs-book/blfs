@@ -35,7 +35,7 @@
       technical drawing. Labels and equations can be typeset with LaTeX.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -71,23 +71,21 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Asymptote Dependencies</bridgehead>
-
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="gs"/> and
+      <xref linkend="gs"/>,
       <xref linkend="texlive"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="freeglut"/> (for 3D drawing) and
+      <xref linkend="freeglut"/> (for 3D drawing),
       <xref linkend="gc"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="http://www.fftw.org/">FFTW</ulink> and
+      <ulink url="http://www.fftw.org/">FFTW</ulink>,
       <xref linkend="gsl"/>
     </para>
 
@@ -112,20 +110,27 @@
     <title>Installation of asymptote</title>
 
     <para>
+      If you have installed version 2 of libgsl, fix a build failure:
+    </para>
+
+<screen><userinput>sed -i -e '/ellint_D/s/3/2/' \
+       -e '/ellint_D/s/.SYM(n)//' gsl.cc</userinput></screen>
+
+    <para>
       Install <application>asymptote</application> by running the following
       commands:
     </para>
 
 <screen><userinput>export TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') &amp;&amp;
-
-./configure --prefix=/opt/texlive/&texlive-year;                          \
-            --bindir=/opt/texlive/&texlive-year;/bin/$TEXARCH             \
-            --datarootdir=/opt/texlive/&texlive-year;                     \
-            --libdir=/opt/texlive/&texlive-year;/texmf-dist               \
-            --mandir=/opt/texlive/&texlive-year;/texmf-dist/doc/man       \
-            --enable-gc=system                                  \
-            --with-latex=/opt/texlive/&texlive-year;/texmf-dist/tex/latex \
-            --with-context=/opt/texlive/&texlive-year;/texmf-dist/tex/context/third &amp;&amp;
+./configure --prefix=/opt/texlive/&texlive-year; \
+ --bindir=/opt/texlive/&texlive-year;/bin/$TEXARCH \
+ --datarootdir=/opt/texlive/&texlive-year;/texmf-dist \
+ --infodir=/opt/texlive/&texlive-year;/texmf-dist/doc/info \
+ --libdir=/opt/texlive/&texlive-year;/texmf-dist \
+ --mandir=/opt/texlive/&texlive-year;/texmf-dist/doc/man \
+ --enable-gc=system \
+ --with-latex=/opt/texlive/&texlive-year;/texmf-dist/tex/latex \
+ --with-context=/opt/texlive/&texlive-year;/texmf-dist/tex/context/third &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -145,6 +150,20 @@ make</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
      href="../../xincludes/tex-prefix.xml"/>
+
+    <para>
+      Exceptionally, asymptote will create an <filename
+      class="directory">asymptote/</filename> subdirectory for
+      <filename>asymptote.info</filename> even though the
+      <filename>asy-faq.info</filename> file will be in the main
+      <application>texlive</application>
+      <filename class="directory">info/</filename> directory. Both files
+      <emphasis>will</emphasis> be found by <command>info</command>.
+    </para>
+
+    <para><parameter>sed ...</parameter>: change the reference to
+    <literal>gsl_sf_ellint_D</literal> to use addGSLDOUBLE2Func and to therefore
+    omit the last parameter, for gsl major version 2.</para>
 
     <para><parameter>--libdir=/opt/texlive/&texlive-year;/texmf-dist;</parameter>:
     This parameter ensures that the <filename class="directory">asymptote</filename>
@@ -177,7 +196,8 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          /opt/texlive/&texlive-year;/asymptote, /opt/texlive/&texlive-year;/doc/asymptote,
+          /opt/texlive/&texlive-year;texmf-dist/asymptote,
+          /opt/texlive/&texlive-year;/doc/asymptote,
           /opt/texlive/&texlive-year;/info/asymptote
         </seg>
       </seglistitem>

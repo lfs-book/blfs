@@ -6,10 +6,10 @@
 
   <!ENTITY gutenprint-download-http "&sourceforge-repo;/gimp-print/gutenprint-&gutenprint-version;.tar.bz2">
   <!ENTITY gutenprint-download-ftp  " ">
-  <!ENTITY gutenprint-md5sum        "9ff027103bafac419c37e19da75163ae">
-  <!ENTITY gutenprint-size          "6.0 MB">
-  <!ENTITY gutenprint-buildsize     "73 MB">
-  <!ENTITY gutenprint-time          "0.5 SBU">
+  <!ENTITY gutenprint-md5sum        "fa6083535b7235fe531cd57e7345a81f">
+  <!ENTITY gutenprint-size          "6.3 MB">
+  <!ENTITY gutenprint-buildsize     "81 MB (without tests)">
+  <!ENTITY gutenprint-time          "0.4 SBU (without tests)">
 ]>
 
 <sect1 id="gutenprint" xreflabel="Gutenprint-&gutenprint-version;">
@@ -33,13 +33,13 @@
     <application>Gimp-Print</application>) package contains high
     quality drivers for many brands and models of printers for use with
     <xref linkend="gs"/>, <xref linkend="cups"/>,
-    <ulink url="http://www.linuxprinting.org/foomatic.html">Foomatic</ulink>,
+    <ulink url="http://www.linuxfoundation.org/collaborate/workgroups/openprinting/database/foomatic">Foomatic</ulink>,
     and the
     <application>GIMP-2.0</application>. See a list of supported printers at
     <ulink url="http://gutenprint.sourceforge.net/p_Supported_Printers.php"/>.
     </para>
 
-    &lfs77_built;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,19 +68,24 @@
     <!-- recommend cups since we describe how to use it, and the gimp
     so that we can use gutenprint's driver to print photos there -->
     <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended"><xref linkend="cups"/> and
-    <xref linkend="gimp"/></para>
+    <para role="recommended">
+      <xref linkend="cups"/> and
+      <xref linkend="gimp"/>
+    </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-    <ulink url="http://www.linuxprinting.org/foomatic.html">Foomatic</ulink>,
-    <xref linkend="ijs"/></para>
+      <xref linkend="ijs"/> and
+      <ulink url="http://www.linuxfoundation.org/collaborate/workgroups/openprinting/database/foomatic">Foomatic</ulink>
+    </para>
 
     <bridgehead renderas="sect4">Optional (to Regenerate Documentation)</bridgehead>
-    <para role="optional"><xref linkend="imagemagick"/>,
-    <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
-    <xref linkend="doxygen"/> and
-    <xref linkend="docbook-utils"/></para>
+    <para role="optional">
+      <xref linkend="imagemagick"/>,
+      <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>),
+      <xref linkend="doxygen"/>, and
+      <xref linkend="docbook-utils"/>
+    </para>
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/gutenprint"/></para>
@@ -118,25 +123,27 @@
 
 <screen><userinput>sed -i 's|$(PACKAGE)/doc|doc/$(PACKAGE)-$(VERSION)|' \
        {,doc/,doc/developer/}Makefile.in &amp;&amp;
+
 ./configure --prefix=/usr --disable-static &amp;&amp;
+
 make</userinput></screen>
 
     <!-- this is supposed to discourage you from running the tests if you upgrade
     the package - I suppose you could sed the tests/Makefile to only run 'curve',
     and perhaps 'run-testdither', it's 'run-weavetest' which takes most of the time -->
-    <para>To test the results, issue: <command>make check</command>. When last
-    tested (version 5.2.7, LFS-7.1, on a uniprocessor box which is admittedly short of
-    memory) this took more than 800 SBUs (more than two days for that box) and used an
-    extra 678 MB of disk space.</para>
+    <para>To test the results, issue: <command>make check</command>.  The tests 
+    take a very long time and use a lot of disk space but reports vary substantially.
+    When last tested (version 5.2.11, BLFS-7.8, using -j2 needed 154 SBU and 8.6 GB
+    to complete the tests.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-install -v -dm755 /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprint{,ui2} &amp;&amp;
-install -v -m644  doc/gutenprint/html/* \
-                  /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprint &amp;&amp;
-install -v -m644  doc/gutenprintui2/html/* \
-                  /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprintui2</userinput></screen>
+install -v -m755 -d /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprint{,ui2} &amp;&amp;
+install -v -m644    doc/gutenprint/html/* \
+                    /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprint &amp;&amp;
+install -v -m644    doc/gutenprintui2/html/* \
+                    /usr/share/doc/gutenprint-&gutenprint-version;/api/gutenprintui2</userinput></screen>
 
   </sect2>
 
@@ -195,18 +202,20 @@ install -v -m644  doc/gutenprintui2/html/* \
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>cups-calibrate, cups-genppd.5.2, cups-genppdupdate, escputil,
-        ijsgutenprint.5.2 (if compiled using ijs), and
-        testpattern</seg>
-        <seg>libgutenprint.so, libgutenprintui2.so
-        and optionally, various
-        <application>CUPS</application> filters and backend
-        drivers under /usr/lib/gutenprint/5.2/modules/</seg>
-        <seg>/usr/include/gutenprint,
-        /usr/include/gutenprintui2,
-        /usr/lib/gutenprint,
-        /usr/share/doc/gutenprint-&gutenprint-version; and
-        /usr/share/gutenprint</seg>
+        <seg>
+          cups-calibrate, cups-genppd.5.2, cups-genppdupdate, escputil,
+          ijsgutenprint.5.2 (if compiled using ijs), and testpattern
+        </seg>
+        <seg>
+          libgutenprint.so, libgutenprintui2.so and optionally, various
+          <application>CUPS</application> filters and backend drivers under
+          /usr/lib/gutenprint/5.2/modules/
+        </seg>
+        <seg>
+          /usr/{include,lib,share}/gutenprint,
+          /usr/include/gutenprintui2 and
+          /usr/share/doc/gutenprint-&gutenprint-version;
+        </seg>
       </seglistitem>
     </segmentedlist>
 
@@ -277,14 +286,14 @@ install -v -m644  doc/gutenprintui2/html/* \
         <term><command>testpattern</command></term>
         <listitem>
           <para>
-            is a test programm to learn how to use libgutenprint. 
+            is a test programm to learn how to use libgutenprint.
           </para>
           <indexterm zone="gutenprint testpattern">
             <primary sortas="b-testpattern">testpattern</primary>
           </indexterm>
         </listitem>
       </varlistentry>
- 
+
    </variablelist>
 
   </sect2>
