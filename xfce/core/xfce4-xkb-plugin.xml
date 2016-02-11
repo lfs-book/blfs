@@ -44,7 +44,7 @@
       applications and windows.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -102,7 +102,13 @@
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-debug &amp;&amp;
+<screen><userinput>sed -e 's|xfce4/panel-plugins|xfce4/panel/plugins|' \
+    -i panel-plugin/{Makefile.in,xkb-plugin.desktop.in.in} &amp;&amp;
+
+./configure --prefix=/usr         \
+            --libexecdir=/usr/lib \
+            --disable-debug       &amp;&amp;
+
 make</userinput></screen>
 
     <para>
@@ -119,6 +125,13 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>sed -e ... xkb-plugin.desktop.in.in}</command> and
+      <parameter>--libexecdir=/usr/lib</parameter>: The sed and the
+      switch are necessary to place the xkb-plugin in the default
+      Xfce4 panel plugins directory.
+    </para>
 
     <para>
       <parameter>--disable-debug</parameter>: This switch disables debugging
