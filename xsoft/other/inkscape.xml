@@ -3,7 +3,6 @@
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
-
   <!-- inkscape.org appears to point to launchpad, sf is out of date -->
   <!ENTITY inkscape-download-http "https://launchpad.net/inkscape/0.91.x/0.91/+download/inkscape-&inkscape-version;.tar.bz2">
   <!ENTITY inkscape-download-ftp  " ">
@@ -36,7 +35,7 @@
       changing SVG images.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,8 +75,9 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Optional patch (for full test coverage):
+          Optional patch:
           <ulink url="&patch-root;/inkscape-&inkscape-version;-testfiles-1.patch"/>
+          for full test coverage.
         </para>
       </listitem>
     </itemizedlist>
@@ -91,8 +91,8 @@
       <xref linkend="gsl"/>,
       <xref linkend="gtkmm2"/>
       (or <xref linkend="gtkmm3"/> and
-      <ulink url="http://ftp.gnome.org/pub/gnome/sources/gdl/">GDL</ulink>
-      for the experimental GTK+3 build),
+      <ulink url="http://ftp.gnome.org/pub/gnome/sources/gdl/">gnome docking library</ulink>
+      for the experimental gtk+-3 build),
       <xref linkend="libxslt"/> and
       <xref linkend="popt"/>
     </para>
@@ -110,21 +110,27 @@
       <xref linkend="doxygen"/>,
       <xref linkend="imagemagick"/>,
       <xref linkend="poppler"/>,
+
+      <!-- these document foundation links work from firefox's address bar, or
+      from google (pages telling you how to get it from git), but when I link
+      them here I get "There is currently no text in this page...". Ken or
+      developer: wiki.documentfoundation.org pages don't like trailing / -->
+
       <ulink url="https://wiki.documentfoundation.org/DLP/Libraries/libcdr">libcdr</ulink>,
       <ulink url="https://wiki.documentfoundation.org/DLP/Libraries/libvisio">libvisio</ulink>,
       <ulink url="https://github.com/LibreOffice/libcdr">libcdr</ulink>,
       <ulink url="https://github.com/LibreOffice/libvisio">libvisio</ulink>,
       <ulink url="http://libwpg.sourceforge.net/">libwpg</ulink>,
-      <ulink url="&sourceforge-repo;/NumPy/">NumPy</ulink>
+      <ulink url="https://sourceforge.net/projects/NumPy/files/">NumPy</ulink>
       (for the testsuite and at runtime for some extensions) and
-      <ulink url="https://pypi.python.org/pypi/lxml">python-lxml</ulink>
+      <ulink url="http://cheeseshop.python.org/pypi/lxml/">python-lxml</ulink>
       (for the testsuite, and at runtime for some of the extensions)
     </para>
 
     <bridgehead renderas="sect4">Optional Runtime Dependencies
     (for some of the Inkscape extensions)</bridgehead>
     <para role="optional">
-      <ulink url="http://search.cpan.org/dist/XML-XQL/">XML::XQL</ulink>
+      <ulink url="http://search.cpan.org/~tjmather/XML-XQL-0.68/lib/XML/XQL.pm">XML::XQL</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -135,6 +141,14 @@
   <sect2 role="installation">
     <title>Installation of Inkscape</title>
 
+<!--
+    <para>If <application>Xorg</application> is installed in a prefix other
+    than <filename class='directory'>/usr</filename>, the build will fail. Fix
+    this by issuing the following command:</para>
+
+<screen><userinput>export LIBRARY_PATH=$XORG_PREFIX/lib</userinput></screen>
+-->
+
     <para>
       Install <application>Inkscape</application> by running the following
       commands:
@@ -142,7 +156,7 @@
 
 <screen><userinput>patch -Np1 -i ../inkscape-&inkscape-version;-testfiles-1.patch &amp;&amp;
 
-./configure --prefix=/usr &amp;&amp;
+CXXFLAGS="-g -O2 -std=c++11" ./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -156,6 +170,26 @@ make</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/update-icons-and-desktop.xml"/>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <command>CXXFLAGS="-g -O2 -std=c++11" ./configure...</command>: Inkscape
+      has not yet been ported to the 2011 ISO C++ standard, one of its
+      dependencies is compiled with this standard.
+      <command>-std=c++11</command> has
+      to be used as an option to <command>g++</command>. We pass it into
+      <envar>CXXFLAGS</envar> together with the default options.
+    </para>
+
+    <para>
+      <command>sed -ri ... configure</command>:
+      This <command>sed</command> fixes building problems starting
+      with gc-7.4.2.
+    </para>
 
   </sect2>
 

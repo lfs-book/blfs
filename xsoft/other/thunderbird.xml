@@ -4,14 +4,13 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY thunderbird-download-http 
-           "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.bz2">
-  <!ENTITY thunderbird-download-ftp
-           "&mozilla-ftp;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.bz2">
-  <!ENTITY thunderbird-md5sum            "0a740cdeee86d3ab49c635c6070c4b06">
-  <!ENTITY thunderbird-size              "194 MB">
-  <!ENTITY thunderbird-buildsize         "3.9 GB (73 MB installed)">
-  <!ENTITY thunderbird-time              "50 SBU">
+  <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.bz2">
+<!--  <!ENTITY thunderbird-download-ftp "&mozilla-ftp;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.bz2">-->
+  <!ENTITY thunderbird-download-ftp " ">
+  <!ENTITY thunderbird-md5sum            "44919e93fdd3d8e9ba99e62d1d7e1fd7">
+  <!ENTITY thunderbird-size              "195 MB">
+  <!ENTITY thunderbird-buildsize         "3.8 GB (72 MB installed)">
+  <!ENTITY thunderbird-time              "9 SBU (with -j4, estimated 30 SBU with -j1)">
 ]>
 
 <sect1 id="thunderbird" xreflabel="Thunderbird-&thunderbird-version;">
@@ -37,7 +36,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,6 +71,16 @@
         </para>
       </listitem>
     </itemizedlist>
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch, if building with gcc-5:
+          <ulink url="&patch-root;/thunderbird-&thunderbird-version;-gcc5-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>-->
 
     <bridgehead renderas="sect3">Thunderbird Dependencies</bridgehead>
 
@@ -79,9 +88,9 @@
     <para role="required">
       <xref linkend="alsa-lib"/>,
       <xref linkend="gtk2"/>,
-      <xref linkend="unzip"/>,
-      <xref linkend="yasm"/> and
-      <xref linkend="zip"/>
+      <xref linkend="zip"/>,
+      <xref linkend="unzip"/>, and
+      <xref linkend="yasm"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -89,30 +98,34 @@
       <xref linkend="libevent"/>,
       <xref linkend="libvpx"/>,
       <xref linkend="nspr"/>,
-      <xref linkend="nss"/> and
+      <xref linkend="nss"/>, and
       <xref linkend="sqlite"/>
     </para>
 
     <note>
       <para>
-        If you don't install recommended dependencies, then internal copies of
-        those packages will be used. They might be tested to work, but they can
-        be out of date or contain security holes.
+        If you don't install recommended dependencies,
+        then internal copies of those packages will
+        be used. They might be tested to work, but
+        they can be out of date or contain security
+        holes.
       </para>
     </note>
 
     <note>
       <para>
-        You must have installed <application>OpenSSL</application> before
+        With <application>Thunderbird-31.0</application> and later versions,
+        you must have installed <application>Openssl</application> before
         <application>Python 2</application>, or the build system will quickly
         fail with output including "ImportError: cannot import name
         HTTPSHandler". If you are in any doubt about this (e.g. upgrading from
-        an older version of SeaMonkey), check if
+        an older version of Thunderbird), check if
         <filename>/usr/lib/python&python2-majorver;/lib-dynload/_ssl.so</filename>
-        exists. If it does not, reinstall <xref linkend="python2"/> (after
-        installing <xref linkend="openssl"/>. The latest version of any
-        <emphasis>currently maintained</emphasis> version of OpenSSL should be
-        satisfactory if already installed.
+        exists.  If it does not, reinstall <xref linkend="python2"/> (after
+        installing <xref linkend="openssl"/>  - the latest version of any
+        <emphasis>currently maintained</emphasis> version of Openssl should be
+        satisfactory if already installed - if that package has not already
+        been installed).
       </para>
     </note>
 
@@ -122,18 +135,15 @@
       <xref linkend="cyrus-sasl"/>,
       <xref linkend="dbus-glib"/>,
       <xref linkend="doxygen"/>,
-      <xref linkend="gst-plugins-base"/> (with
-      <xref linkend="gst-plugins-good"/> and
-      <xref linkend="gst-ffmpeg"/> at runtime), or
+      <xref linkend="GConf"/>,
       <xref linkend="gst10-plugins-base"/> (with
       <xref linkend="gst10-plugins-good"/> and
       <xref linkend="gst10-libav"/> at runtime),
-      <xref linkend="libnotify"/>,
       <xref linkend="openjdk"/>,
       <xref linkend="pulseaudio"/>,
       <xref linkend="startup-notification"/>,
       <xref linkend="wget"/>,
-      <xref linkend="wireless_tools"/> and
+      <xref linkend="wireless_tools"/>, and
       <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>
     </para>
 
@@ -168,25 +178,26 @@ ac_add_options --disable-dbus
 # If you have installed wireless-tools comment out this line:
 ac_add_options --disable-necko-wifi
 
-# If you have installed libnotify comment out this line:
-ac_add_options --disable-libnotify
-
-# Comment out following option if you have PulseAudio installed
-ac_add_options --disable-pulseaudio
-
-# GStreamer is necessary for H.264 video playback in HTML5 Video Player.
-# To enable it, make sure you also set "media.gstreamer.enabled" to
-# "true" in about:config.
-
-# If you have GStreamer 0.10.x installed, comment out this line:
+# GStreamer is necessary for H.264 video playback in HTML5 Video Player;
+# to be enabled, also remember to set "media.gstreamer.enabled" to "true"
+# in about:config. If you have GStreamer 1.x.y, comment out this line and
+# uncomment the following one:
 ac_add_options --disable-gstreamer
-# or uncomment this line if you have GStreamer 1.x.y installed:
 #ac_add_options --enable-gstreamer=1.0
 
 # Uncomment these lines if you have installed optional dependencies:
 #ac_add_options --enable-system-hunspell
 #ac_add_options --enable-startup-notification
 
+# Comment out following option if you have PulseAudio installed
+ac_add_options --disable-pulseaudio
+
+# Comment out following option if you have gconf installed
+ac_add_options --disable-gconf
+<!-- Uncommenting does not work
+# If you have not installed Yasm then uncomment this line:
+#ac_add_options - -disable-webm
+-->
 # If you want to compile the Mozilla Calendar, uncomment this line:
 #ac_add_options --enable-calendar
 
@@ -218,7 +229,9 @@ ac_add_options --enable-official-branding
 ac_add_options --enable-safe-browsing
 ac_add_options --enable-url-classifier
 
-ac_add_options --enable-system-cairo
+# Use internal cairo due to reports of unstable execution with
+# system cairo
+#ac_add_options --enable-system-cairo
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
 
@@ -230,16 +243,17 @@ ac_add_options --with-system-png
 ac_add_options --with-system-zlib</literal>
 EOF</userinput></screen>
 
-    <para>
-      First, fix building with system freetype-2.6 or later:
-    </para>
-
-<screen><userinput>sed -i '/^ftglyph.h/ i ftfntfmt.h' mozilla/config/system-headers</userinput></screen>
-
+<!-- might be necessary
+test $(uname -m) = "i686" && sed -i 's/enable-optimize/disable-optimize/' mozconfig || true &&-->
     <para>
       Compile <application>Thunderbird</application> by issuing the following
       commands:
     </para>
+
+    <note><para>
+      If you are compiling <application>Thunderbird</application> in chroot,
+      prepend <envar>SHELL=/bin/sh</envar> to the <!--first -->make command below.
+    </para></note>
 
 <screen><userinput>make -f client.mk</userinput></screen>
 
@@ -253,25 +267,31 @@ EOF</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make -f client.mk install INSTALL_SDK= &amp;&amp;
-chown -R root:root /usr/lib/thunderbird-&thunderbird-version;</userinput></screen>
+chown -R 0:0 /usr/lib/thunderbird-&thunderbird-version;</userinput></screen>
 
+<!-- thunderbuild directory does not exist anymore. Leaving as comment,
+in case an editor figures out how to install the development environment.
     <para>
-      While still as the <systemitem class="username">root</systemitem> user,
-      install the icon files which will be used in the desktop file below:
+      The above instruction just installs the parts you need to run
+      <application>Thunderbird</application>. Alternatively, if you want to
+      install the full <application>Thunderbird</application> development
+      environment, run the following command as the
+      <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>for s in 16 22 24 32 48 256
-do
-install -v -Dm644 /usr/lib/thunderbird-&thunderbird-version;/chrome/icons/default/default${s}.png \
-                  /usr/share/icons/hicolor/${s}x${s}/apps/thunderbird.png
-done &amp;&amp;
-gtk-update-icon-cache -qf /usr/share/icons/hicolor &amp;&amp;
-unset s</userinput></screen>
-
+<screen role="root"><userinput>make -C thunderbuild install</userinput></screen>
+-->
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+<!-- might be necessary
+    <para>
+      <command>test $(uname -m) = "i686" &amp;&amp; sed ...</command>: On this
+      version of thunderbird, an old bug has reappeared in 32-bit builds.  With
+      optimization, the install fails with a Python error.  This command will
+      fix i686 builds and preserve the optimization on x86_64.
+    </para>-->
 
     <para>
       <command>make -f client.mk</command>: Mozilla products are packaged to
@@ -286,62 +306,67 @@ unset s</userinput></screen>
   <sect2 role="configuration">
     <title>Configuring Thunderbird</title>
 
-    <para>
-      If your Window or Desktop Manager does not allow you to configure a
-      default browser, you can add a configuration parameter to
-      <application>Thunderbird</application> so that a browser will start when
-      when you click on an Internet/intranet/local URL. The procedure to check
-      or modify any of the configuration parameters is quite simple and the
-      instructions here can be used to view or modify any of the parameters.
-    </para>
+    <sect3><title>Configuration Information</title>
 
-    <para>
-      First, open the configuration dialog by opening the <quote>Edit</quote>
-      drop-down menu. Choose <quote>Preferences</quote> and then click on the
-      <quote>Advanced</quote> icon on the top menu bar. Choose the
-      <quote>General</quote> tab and click on the <quote>Config Editor</quote>
-      button. This will display a list of the configuration preferences and
-      information related to each one. You can use the <quote>Filter:</quote>
-      bar to enter search criteria and narrow down the listed items. Changing
-      a preference can be done using two methods. One, if the preference has a
-      boolean value (True/False), simply double-click on the preference to
-      toggle the value and two, for other preferences simply right-click on
-      the desired line, choose <quote>Modify</quote> from the menu and change
-      the value. Creating new preference items is accomplished in the same
-      way, except choose <quote>New</quote> from the menu and provide the
-      desired data into the fields when prompted.
-    </para>
-
-    <para>
-      The configuration preference item you need to check so that
-      <application>Thunderbird</application> uses a specified browser is the
-      <parameter>network.protocol-handler.app.http</parameter> which should be
-      set to the path of the desired browser, e.g.
-      <option>/usr/bin/firefox</option>.
-    </para>
-
-    <tip>
       <para>
-        There is a multitude of configuration parameters you can tweak to
-        customize <application>Thunderbird</application>. A very extensive,
-        but not so up-to-date list of these parameters can be found at
-        <ulink url="http://preferential.mozdev.org/preferences.html"/>.
+        If your Window or Desktop Manager does not allow you to configure a
+        default browser, you can add a configuration parameter to
+        <application>Thunderbird</application> so that a browser will start when
+        when you click on an Internet/intranet/local URL. The procedure to check
+        or modify any of the configuration parameters is quite simple and the
+        instructions here can be used to view or modify any of the parameters.
       </para>
-    </tip>
+
+      <para>
+        First, open the configuration dialog by opening the <quote>Edit</quote>
+        drop-down menu. Choose <quote>Preferences</quote> and then click on the
+        <quote>Advanced</quote> icon on the top menu bar. Choose the
+        <quote>General</quote> tab and click on the <quote>Config Editor</quote>
+        button. This will display a list of the configuration preferences and
+        information related to each one. You can use the <quote>Filter:</quote>
+        bar to enter search criteria and narrow down the listed items. Changing
+        a preference can be done using two methods. One, if the preference has a
+        boolean value (True/False), simply double-click on the preference to
+        toggle the value and two, for other preferences simply right-click on
+        the desired line, choose <quote>Modify</quote> from the menu and change
+        the value. Creating new preference items is accomplished in the same
+        way, except choose <quote>New</quote> from the menu and provide the
+        desired data into the fields when prompted.
+      </para>
+
+      <para>
+        The configuration preference item you need to check so that
+        <application>Thunderbird</application> uses a specified browser is the
+        <parameter>network.protocol-handler.app.http</parameter> which should be
+        set to the path of the desired browser, e.g.
+        <option>/usr/bin/firefox</option>.
+      </para>
+
+      <tip>
+        <para>
+          There is a multitude of configuration parameters you can tweak to
+          customize <application>Thunderbird</application>. A very extensive,
+          but not so up-to-date list of these parameters can be found at
+          <ulink url="http://preferential.mozdev.org/preferences.html"/>.
+        </para>
+      </tip>
 
     <para>
+
       If you use a desktop environment such as <application>GNOME</application>
-      or <application>KDE</application>, you may want to create a desktop file
-      in order to be able to launch <application>Thunderbird</application> from the
-      desktop menus. If you didn't enable
-      <application>Startup Notification</application> support in your mozconfig
-      then change the StartupNotify line to false. Run the following commands
-      as the <systemitem class="username">root</systemitem> user:
+      or <application>KDE</application>, a desktop file
+      <filename>thunderbird.desktop</filename> may be created, in order to
+      include a <quote><application>Thunderbird</application></quote> entry in
+      the menu. If you didn't enable
+      <application>startup-notification</application> in your mozconfig, then
+      change the StartupNotify line to false. Run the following commands as the
+      <systemitem class="username">root</systemitem> user:
+
     </para>
 
-<screen role="root"><userinput>mkdir -pv /usr/share/applications &amp;&amp;
+<screen role="root"><userinput>mkdir -pv /usr/share/{applications,pixmaps} &amp;&amp;
 
-cat &gt; /usr/share/applications/thunderbird.desktop &lt;&lt; "EOF"
+cat &gt; /usr/share/applications/thunderbird.desktop &lt;&lt; "EOF" &amp;&amp;
 <literal>[Desktop Entry]
 Encoding=UTF-8
 Name=Thunderbird Mail
@@ -354,17 +379,20 @@ Icon=thunderbird
 Categories=Application;Network;Email;
 MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;x-scheme-handler/mailto;
 StartupNotify=true</literal>
-EOF</userinput></screen>
+EOF
 
+ln -sfv /usr/lib/thunderbird-&thunderbird-version;/chrome/icons/default/default256.png \
+        /usr/share/pixmaps/thunderbird.png</userinput></screen>
+    </sect3>
   </sect2>
 
   <sect2 role="content">
     <title>Contents</title>
 
     <segmentedlist>
-      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Program</segtitle>
       <segtitle>Installed Libraries</segtitle>
-      <segtitle>Installed Directories</segtitle>
+      <segtitle>Installed Directory</segtitle>
 
       <seglistitem>
         <seg>

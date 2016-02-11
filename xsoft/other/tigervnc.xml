@@ -6,14 +6,14 @@
 
   <!ENTITY tigervnc-download-http "&sources-anduin-http;/tigervnc/tigervnc-&tigervnc-version;.tar.gz">
   <!ENTITY tigervnc-download-ftp  " ">
-  <!ENTITY tigervnc-md5sum        "2177ee42fa1a3902b6feeaa7747f1c2a">
+  <!ENTITY tigervnc-md5sum        "78b736445781d86c48e942465a391ccc">
   <!ENTITY tigervnc-size          "1.3 MB">
-  <!ENTITY tigervnc-buildsize     "160 MB">
+  <!ENTITY tigervnc-buildsize     "171 MB">
   <!ENTITY tigervnc-time          "1.6 SBU">
-  <!ENTITY tigervnc-xorg-version  "1.17.1">
+  <!ENTITY tigervnc-xorg-version  "1.18.0">
 ]>
 
-<sect1 id="tigervnc" xreflabel="Tigervnc-&tigervnc-version;">
+<sect1 id="tigervnc" xreflabel="tigervnc-&tigervnc-version;">
   <?dbhtml filename="tigervnc.html"?>
 
   <sect1info>
@@ -24,52 +24,39 @@
   <title>Tigervnc-&tigervnc-version;</title>
 
   <indexterm zone="tigervnc">
-    <primary sortas="a-Tigervnc">Tigervnc</primary>
+    <primary sortas="a-tigervnc">tigervnc</primary>
   </indexterm>
 
   <sect2 role="package">
     <title>Introduction to Tigervnc</title>
 
-    <para>
-      <application>Tigervnc</application> is an advanced VNC (Virtual 
-      Network Computing) implementation. It allows creation of an Xorg
-      Server not tied to a physical console and also provides a client
-      for  viewing of the remote graphical desktop.
+    <para><application>Tigervnc</application> is an advanced VNC (Virtual
+    Network Computing) implementation.  It allows creation of an Xorg server
+    not tied to a physical console and also provides a client for
+    viewing of the remote graphical desktop.
     </para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
-        <para>
-          Download (HTTP): <ulink url="&tigervnc-download-http;"/>
-        </para>
+        <para>Download (HTTP): <ulink url="&tigervnc-download-http;"/></para>
       </listitem>
       <listitem>
-        <para>
-          Download (FTP): <ulink url="&tigervnc-download-ftp;"/>
-        </para>
+        <para>Download (FTP): <ulink url="&tigervnc-download-ftp;"/></para>
       </listitem>
       <listitem>
-        <para>
-          Download MD5 sum: &tigervnc-md5sum;
-        </para>
+        <para>Download MD5 sum: &tigervnc-md5sum;</para>
       </listitem>
       <listitem>
-        <para>
-          Download size: &tigervnc-size;
-        </para>
+        <para>Download size: &tigervnc-size;</para>
       </listitem>
       <listitem>
-        <para>
-          Estimated disk space required: &tigervnc-buildsize;
-        </para>
+        <para>Estimated disk space required: &tigervnc-buildsize;</para>
       </listitem>
       <listitem>
-        <para>
-          Estimated build time: &tigervnc-time;
-        </para>
+        <para>Estimated build time: &tigervnc-time;</para>
       </listitem>
     </itemizedlist>
 
@@ -77,8 +64,14 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required package:
+          Required file:
           <ulink url="&xorg-download-http;/xserver/xorg-server-&tigervnc-xorg-version;.tar.bz2"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/tigervnc-&tigervnc-version;-xorg118-1.patch"/>
         </para>
       </listitem>
       <listitem>
@@ -87,27 +80,11 @@
           <ulink url="&patch-root;/tigervnc-&tigervnc-version;-gethomedir-1.patch"/>
         </para>
       </listitem>
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/tigervnc-&tigervnc-version;-getmaster-1.patch"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/tigervnc-&tigervnc-version;-xorg117-1.patch"/>
-        </para>
-      </listitem>
     </itemizedlist>
 
-    <note>
-      <para>
-        The version of <application>Xorg Server</application> is a few versions
-        out of date, but is required for the customizations needed for this 
-        package.
-      </para>
-    </note>
+    <note><para>The version of <application>Xorg</application> may eventually be
+    a few versions out of date, but is required for the customizations needed
+    for this package.</para></note>
 
     <bridgehead renderas="sect3">Tigervnc Dependencies</bridgehead>
 
@@ -129,64 +106,66 @@
     </para>
 
     <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/tigervnc"/>
-    </para>
+    <ulink url="&blfs-wiki;/tigervnc"/></para>
+
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of Tigervnc</title>
 
-    <para>
-      Install <application>Tigervnc</application> by running the following
-      commands:
-    </para>
+    <para>Install <application>tigervnc</application> by running the following
+    commands:</para>
 
-<screen><userinput>tar -xf ../xorg-server-&tigervnc-xorg-version;.tar.bz2 -C unix/xserver --strip-components=1 &amp;&amp;
+<screen><userinput>patch -Np1 -i ../tigervnc-&tigervnc-version;-xorg118-1.patch    &amp;&amp;
+patch -Np1 -i ../tigervnc-&tigervnc-version;-gethomedir-1.patch &amp;&amp;<!--
+sed -i 's/iconic/nowin/' unix/vncserver            &amp;&amp;-->
 
-patch -Np1 -i ../tigervnc-&tigervnc-version;-gethomedir-1.patch &amp;&amp;
-patch -Np1 -i ../tigervnc-&tigervnc-version;-getmaster-1.patch  &amp;&amp;
-patch -Np1 -i ../tigervnc-&tigervnc-version;-xorg117-1.patch    &amp;&amp;
-sed -i 's/iconic/nowin/' unix/vncserver            &amp;&amp;
+mkdir -vp build &amp;&amp;
+cd        build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr &amp;&amp;
+# Build viewer
+cmake -G "Unix Makefiles"         \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_BUILD_TYPE=Release  \
+      -Wno-dev .. &amp;&amp;
 make &amp;&amp;
 
-pushd unix/xserver                  &amp;&amp;
-  patch -Np1 -i ../xserver116.patch &amp;&amp;
-  autoreconf -fi                    &amp;&amp;
+# Build server
+cp -vR ../unix/xserver unix/ &amp;&amp;
+tar -xf ../xorg-server-&tigervnc-xorg-version;.tar.bz2 -C unix/xserver --strip-components=1         &amp;&amp;
+
+pushd unix/xserver &amp;&amp;
+  patch -Np1 -i ../../../unix/xserver117.patch &amp;&amp;
+  autoreconf -fi   &amp;&amp;
 
   ./configure $XORG_CONFIG \
-      --disable-xwayland    --enable-dri3        --disable-dmx         \
-      --disable-static      --disable-xinerama   --disable-dri         \
+      --disable-xwayland    --disable-dri        --disable-dmx         \
       --disable-xorg        --disable-xnest      --disable-xvfb        \
       --disable-xwin        --disable-xephyr     --disable-kdrive      \
       --disable-devel-docs  --disable-config-hal --disable-config-udev \
       --disable-unit-tests  --disable-selective-werror                 \
+      --disable-static      --enable-dri3                              \
       --without-dtrace      --enable-dri2        --enable-glx          \
-      --enable-glx-tls      --with-pic  &amp;&amp;
-  make    &amp;&amp;
+      --with-pic &amp;&amp;
+  make TIGERVNC_SRCDIR=`pwd`/../../../ &amp;&amp;
 popd</userinput></screen>
 
-    <para>
-      This package does not come with a test suite.
-    </para>
+    <para>This package does not come with a test suite.</para>
 
-    <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
-    </para>
+    <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>make install &amp;&amp;
+<screen role="root"><userinput>#Install viewer
+make install &amp;&amp;
 
-cd unix/xserver/hw/vnc &amp;&amp;
-make install           &amp;&amp;
+#Install server
+pushd unix/xserver/hw/vnc &amp;&amp;
+  make install &amp;&amp;
+popd &amp;&amp;
 
 [ -e /usr/bin/Xvnc ] || ln -svf $XORG_PREFIX/bin/Xvnc /usr/bin/Xvnc</userinput></screen>
 
-    <para>
-      Finally, create a desktop menu entry by runing the following
-      command as the <systemitem class="username">root</systemitem>
-      user:
-    </para>
+    <para>Finally, create a menu entry.  As the
+      <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>cat &gt; /usr/share/applications/vncviewer.desktop &lt;&lt; "EOF"
 <literal>[Desktop Entry]
@@ -198,52 +177,45 @@ Icon=tigervnc
 Terminal=false
 StartupNotify=false
 Categories=Network;RemoteAccess;</literal>
-EOF</userinput></screen>
+EOF
+
+install -vm644 ../media/icons/tigervnc_24.png /usr/share/pixmaps &amp;&amp;
+ln -sfv tigervnc_24.png /usr/share/pixmaps/tigervnc.png</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para>
-      <command>tar .. xorg-server...</command>: This command extracts the
-      standard Xorg packages into the tree in a location needed for modification.
-    </para>
+    <para><command>patch ...</command>: This set of patches modifies the standard
+    Xorg server so that the Xvnc command can be built.</para>
 
-    <para>
-      <command>patch ...</command>: This set of patches modifies the standard
-      Xorg server so that the Xvnc command can be built.
-    </para>
+    <para><command>tar -xf .. xorg-server...</command>: This command extracts the
+    standard Xorg packages into the tree in a location needed for modification.</para>
 
-    <para>
-      <option>--disable ...</option>: Most options that are usually needed for
-      the standard Xorg server are not needed fror the Xvnc instance being built.
-    </para>
+    <para><option>--disable ...</option>: Most options that are usually needed for
+    the standard Xorg server are not needed fror the Xvnc instance being built.</para>
 
-    <para>
-      <command>[ -e /usr/bin/Xvnc ] || ln ... Xvnc</command>: If the Xvnc server
-      is not installed in the <filename class='directory'>/usr/bin</filename> 
-      directory, then create a link so the <command>vncserver</command> script 
-      can find it.
-    </para>
+    <para><command>[ -e /usr/bin/Xvnc ] || ln ... Xvnc</command>: If the Xvnc server
+    is not installed in the <filename class='directory'>/usr/bin</filename>
+    directory, then create a link so the <command>vncserver</command> script
+    can find it.</para>
 
   </sect2>
 
   <sect2 role="configuration">
     <title>Configuring Tigervnc</title>
 
-   <para>
-     The user specific configuration files of vncserver resides  in the
-     <filename class='directory'>.vnc</filename> directory in the user's
-     home directory. The <filename>xstartup</filename> file in that
-     directory is a script specifying what commands to be run  when a
-     VNC desktop is started.  If no  <filename>xstartup</filename> file
-     exists, <command>vncserver</command> will try to start an xterm in
-     a TWM session. An example <filename>xstartup</filename> would be:
-   </para>
+   <para>The user specific configuration files of vncserver resides
+   in the <filename class='directory'>.vnc</filename> directory in the user's
+   home directory.  The <filename>xstartup</filename> file in that
+   directory is a script specifying what commands to be run
+   when a VNC desktop is started.  If no  <filename>xstartup</filename> file
+   exists, <command>vncserver</command> will try to start an xterm in a twm
+   session.  An example <filename>xstartup</filename> would be:</para>
 
 <screen>#!/bin/sh
- 
+
 [ -x /etc/vnc/xstartup ] &amp;&amp; exec /etc/vnc/xstartup
 [ -r $HOME/.Xresources ] &amp;&amp; xrdb $HOME/.Xresources
 startlxde &amp;</screen>
@@ -259,16 +231,15 @@ startlxde &amp;</screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>
-          Xvnc, vncconfig, vncpasswd, vncserver,
-          vncviewer, and x0vncserver
-        </seg>
-        <seg>
-          libvnc.so
-        </seg>
-        <seg>
-          None
-        </seg>
+        <seg>Xvnc,
+             vncconfig,
+             vncpasswd,
+             vncserver,
+             vncviewer, and
+             x0vncserver</seg>
+
+        <seg>libvnc.so</seg>
+        <seg>/usr/share/doc/tigervnc-&tigervnc-version;</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -280,11 +251,9 @@ startlxde &amp;</screen>
       <varlistentry id="xvnc">
         <term><command>Xvnc</command></term>
         <listitem>
-          <para>
-            is a X VNC (Virtual Network Computing) server. It is
-            based on a standard X server, but it has a "virtual"
-            screen rather than a physical one.
-          </para>
+          <para> is a X VNC (Virtual Network Computing) server.
+          It is based on a standard X server, but it has a
+          "virtual" screen rather than a physical one.</para>
           <indexterm zone="tigervnc xvnc">
             <primary sortas="b-xvnc">Xvnc</primary>
           </indexterm>
@@ -294,9 +263,7 @@ startlxde &amp;</screen>
       <varlistentry id="vncconfig">
         <term><command>vncconfig</command></term>
         <listitem>
-          <para>
-            is a program to configure and control a VNC server.
-          </para>
+          <para>is a program to configure and control a VNC server.</para>
           <indexterm zone="tigervnc vncconfig">
             <primary sortas="b-vncconfig">vncconfig</primary>
           </indexterm>
@@ -318,9 +285,7 @@ startlxde &amp;</screen>
       <varlistentry id="vncserver">
         <term><command>vncserver</command></term>
         <listitem>
-          <para>
-            is a Perl script used to start or stop a VNC server.
-          </para>
+          <para>is a perl script used to start or stop a VNC server.</para>
           <indexterm zone="tigervnc vncserver">
             <primary sortas="b-vncserver">vncserver</primary>
           </indexterm>
@@ -330,9 +295,7 @@ startlxde &amp;</screen>
       <varlistentry id="vncviewer">
         <term><command>vncviewer</command></term>
         <listitem>
-          <para>
-            is a client used to access VNC desktops.
-          </para>
+          <para>is a client used to access VNC desktops.</para>
           <indexterm zone="tigervnc vncviewer">
             <primary sortas="b-vncviewer">vncviewer</primary>
           </indexterm>
@@ -342,11 +305,8 @@ startlxde &amp;</screen>
       <varlistentry id="x0vncserver">
         <term><command>x0vncserver</command></term>
         <listitem>
-          <para>
-            is a program to make an X display onm a physical
-            terminal accessible via TigerVNC or compatible
-            viewers.
-          </para>
+          <para>is a program to make an X display on a physical
+          terminal accessible via TigerVNC or compatible viewers.</para>
           <indexterm zone="tigervnc x0vncserver">
             <primary sortas="b-x0vncserver">x0vncserver</primary>
           </indexterm>
