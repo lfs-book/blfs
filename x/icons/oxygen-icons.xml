@@ -4,15 +4,15 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY oxygen-icons-download-http "&kde-download-http;applications/&kde-apps-version;/src/oxygen-icons-&kde-apps-version;.tar.xz">
+  <!ENTITY oxygen-icons-download-http "&kde-download-http;applications/&oxygen-icons-version;/src/oxygen-icons-&oxygen-icons-version;.tar.xz">
   <!ENTITY oxygen-icons-download-ftp  " ">
-  <!ENTITY oxygen-icons-md5sum        "fc76dd9756c84b28b3c1001baf242fe2">
+  <!ENTITY oxygen-icons-md5sum        "4f24f975fb90d8daab833fc719ce39a3">
   <!ENTITY oxygen-icons-size          "219 MB">
-  <!ENTITY oxygen-icons-buildsize     "473 MB">
+  <!ENTITY oxygen-icons-buildsize     "474 MB">
   <!ENTITY oxygen-icons-time          "less than 0.1 SBU">
 ]>
 
-<sect1 id="oxygen-icons" xreflabel="Oxygen-Icons-&kde-version;">
+<sect1 id="oxygen-icons" xreflabel="oxygen-icons-&oxygen-icons-version;">
   <?dbhtml filename="oxygen-icons.html"?>
 
   <sect1info>
@@ -20,19 +20,19 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>Oxygen-Icons-&kde-version;</title>
+  <title>oxygen-icons-&oxygen-icons-version;</title>
 
   <indexterm zone="oxygen-icons">
-    <primary sortas="a-Oxygen-Icons">Oxygen-Icons</primary>
+    <primary sortas="a-oxygen-icons">oxygen-icons</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to Oxygen-Icons</title>
+    <title>Introduction to oxygen-icons</title>
 
-    <para>The Oxygen theme is a photo-realistic icon style, with a
+    <para>The oxygen theme is a photo-realistic icon style, with a
     high standard of graphics quality.</para>
 
-    &lfs77_checked;
+    &lfs78_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -56,11 +56,11 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Oxygen-Icons Dependencies</bridgehead>
+    <bridgehead renderas="sect3">oxygen-icons Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="cmake"/>
+    <xref linkend="cmake"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -69,15 +69,17 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of Oxygen-Icons</title>
+    <title>Installation of oxygen-icons</title>
 
-    <para>Install <application>Oxygen-Icons</application> by running
+    <para>Install <application>oxygen-icons</application> by running
     the following commands:</para>
 
-<screen><userinput>mkdir build &amp;&amp;
+<screen><userinput>sed -i "s/x256/&amp; scalable/" CMakeLists.txt &amp;&amp;
+
+mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; -Wno-dev ..</userinput></screen>
+cmake -DCMAKE_INSTALL_PREFIX=/usr -Wno-dev ..</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -86,6 +88,16 @@ cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; -Wno-dev ..</userinput></screen>
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <command>sed ...</command>: This command ensures that the scalable
+      versions of the icons are also installed.
+    </para>
 
   </sect2>
 
@@ -100,7 +112,7 @@ cmake -DCMAKE_INSTALL_PREFIX=&kde-dir; -Wno-dev ..</userinput></screen>
       <seglistitem>
         <seg>none</seg>
         <seg>none</seg>
-        <seg>&kde-dir;/share/icons/oxygen</seg>
+        <seg>/usr/share/icons/oxygen</seg>
       </seglistitem>
     </segmentedlist>
 
