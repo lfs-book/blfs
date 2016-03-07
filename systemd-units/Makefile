@@ -157,6 +157,7 @@ install-samba: create-dirs
 	install -m ${CONFMODE} blfs/default/samba ${DEFAULTSDIR}/
 	install -m ${CONFMODE} blfs/tmpfiles/samba.conf ${TMPFILESDIR}/
 	install -m ${CONFMODE} blfs/units/nmbd.service ${UNITSDIR}/
+	install -m ${CONFMODE} blfs/units/samba.service ${UNITSDIR}/
 	install -m ${CONFMODE} blfs/units/smbd.service ${UNITSDIR}/
 	install -m ${CONFMODE} blfs/units/smbdat.service ${UNITSDIR}/smbd@.service
 	install -m ${CONFMODE} blfs/units/smbd.socket ${UNITSDIR}/
