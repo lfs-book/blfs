@@ -137,15 +137,7 @@
       following commands:
     </para>
 
-<screen><userinput>sed -e '/smgradio/ {
-    a \  \/* Radionomy Hot40Music shoutcast stream *\/
-    a \  g_object_set (src, "location",
-    a \      "http://streaming.radionomy.com:80/Hot40Music", NULL);
-  }'  \
-    -e '/Virgin/,/smgradio/d' \
-    -i tests/check/elements/souphttpsrc.c &amp;&amp;
-
-./configure --prefix=/usr \
+<screen><userinput>./configure --prefix=/usr \
             --with-package-name="GStreamer Good Plugins &gst10-plugins-good-version; BLFS" \
             --with-package-origin="http://www.linuxfromscratch.org/blfs/view/svn/"  &amp;&amp;
 make</userinput></screen>
@@ -159,19 +151,6 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
-  </sect2>
-
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
-    <para><command>sed -e '/smgradio/ ...
-                       -i tests/check/elements/souphttpsrc.c</command>: Fixes
-    failing ICY test. Previous provider has streaming disabled outside UK.<!--
-    To be removed at release 1.6.3.
-    tests: souphttpsrc test_icy_stream:0: Assertion 'caps != NULL' failed
-    https://bugzilla.gnome.org/show_bug.cgi?id=758114
-    https://bug758114.bugzilla-attachments.gnome.org/attachment.cgi?id=316570-->
-    </para>
 
   </sect2>
 
