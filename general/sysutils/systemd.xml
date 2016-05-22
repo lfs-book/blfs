@@ -26,37 +26,15 @@
     <title>Introduction to systemd</title>
 
     <para>
-      Even though <application>systemd</application> was built in
-      LFS, there are some features provided by the package that
-      some BLFS packages need, but their dependencies didn't fit
-      into LFS.
+      Even though <application>systemd</application> was installed while
+      building LFS, there are many features provided by the package that
+      were not included in the initial installation due to unmet dependencies.
+      The <application>systemd</application> package needs to be
+      rebuilt to provide a working <command>systemd-logind</command> service,
+      among many others.
     </para>
-
-    <para>
-      The main reason why <application>systemd</application>
-      needs to be rebuilt is that some packages expect
-      working <command>systemd-logind</command> service
-      which requires a PAM module from the
-      <application>systemd</application> source that
-      couldn't be built in LFS.
-    </para>
-<!--
-    <para>
-      Unlike other packages in BLFS, there is no set version of
-      <application>systemd</application> in this page's title and
-      no set version specified for download. Version updates to
-      <application>systemd</application> make it possible that the
-      user's system may have a <application>systemd</application>
-      version different from the one in the current LFS book.
-      Therefore, users should use the version of
-      <application>systemd</application> that is currently
-      installed on their system.
-    </para>
--->
-    <para>
-      This package is known to build and work properly using an
-      LFS-&lfs-version; platform using systemd-&lfs-systemd-version; source.
-    </para>
+    
+    &lfs79_checked;&gcc6_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -67,25 +45,7 @@
         <para>Systemd Patch Download (HTTP): <ulink url="&systemd-patch-download-http;"/></para>
       </listitem>
     </itemizedlist>
-<!--
-    <para>
-      Make sure you download the "compat" patch whose version matches
-      the <application>systemd</application> version you are building.
-    </para>
 
-    <note>
-      <para>
-        If you are unsure which version needs to be downloaded, issue
-        <command>systemctl - -version</command> in order to find out.
-        Some of the commands below might need the version information.
-        Issue the following command to store the
-        <application>systemd</application> version number into an
-        environment variable:
-      </para>
-
-<screen><userinput>export SYSTEMD_VERSION=$(systemctl - -version | head -n1 | awk '{print $2}')</userinput></screen>
-    </note>
--->
     <bridgehead renderas="sect3">systemd Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -160,11 +120,7 @@
 
 <screen><userinput>patch -Np1 -i ../systemd-&lfs-systemd-version;-compat-1.patch &amp;&amp;
 autoreconf -fi</userinput></screen>
-<!--
-    <para>
-      Additionally, apply any patch that is also applied in LFS.
-    </para>
--->
+
     <para>
       Disable two tests that always fail:
     </para>
@@ -240,15 +196,6 @@ make</userinput></screen>
 
 <screen role="root"><userinput>rm -rfv /usr/lib/rpm</userinput></screen>
 
-<!--
-    <para>
-      Remove a reference to a non-existent group by running the following
-      command as the <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>sed -i "s:0775 root lock:0755 root root:g" /usr/lib/tmpfiles.d/legacy.conf</userinput></screen>
--->
-
   </sect2>
 
   <sect2 role="configuration">
@@ -262,7 +209,7 @@ make</userinput></screen>
      class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>cat &gt;&gt; /etc/pam.d/system-session &lt;&lt; "EOF" &amp;&amp;
+<screen role="root"><userinput>cat &gt;&gt; /etc/pam.d/system-session &lt;&lt; "EOF"
 <literal># Begin Systemd addition
     
 session   required    pam_loginuid.so
@@ -288,9 +235,13 @@ password required pam_deny.so
 EOF</userinput></screen>
 
     <para>
-      At this point it would be a nice idea to reboot to
-      test if the reinstallation was successful.
+      At this point, you should reload the systemd daemon, and reenter
+      multi-user mode with the following commands as the
+      <systemitem class="username">root</systemitem> user:
     </para>
+
+<screen role="root"><userinput>systemctl daemon-reload
+systemctl start multi-user.target</userinput></screen>
 
   </sect2>
 
