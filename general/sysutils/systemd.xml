@@ -4,10 +4,16 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY systemd-download-http       "http://anduin.linuxfromscratch.org/sources/other/systemd/systemd-&lfs-systemd-version;.tar.xz">
+  <!ENTITY systemd-download-http "http://anduin.linuxfromscratch.org/sources/other/systemd/systemd-&systemd-version;.tar.xz">
+  <!ENTITY systemd-download-ftp  " ">
+  <!ENTITY systemd-md5sum        "7fd9c7b1296104ccc0b8aee4be3d3c23">
+  <!ENTITY systemd-size          "3,748 KB">
+  <!ENTITY systemd-buildsize     "1.0 GB">
+  <!ENTITY systemd-time          "4.9 SBU">
+
 ]>
 
-<sect1 id="systemd" xreflabel="Systemd-&lfs-systemd-version;">
+<sect1 id="systemd" xreflabel="Systemd-&systemd-version;" revision="systemd">
   <?dbhtml filename="systemd.html"?>
 
   <sect1info>
@@ -15,7 +21,7 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>Systemd-&lfs-systemd-version;</title>
+  <title>Systemd-&systemd-version;</title>
 
   <indexterm zone="systemd">
     <primary sortas="a-systemd">systemd</primary>
@@ -25,12 +31,13 @@
     <title>Introduction to systemd</title>
 
     <para>
-      Even though <application>systemd</application> was installed while
+      While <application>systemd</application> was installed when
       building LFS, there are many features provided by the package that
-      were not included in the initial installation due to unmet dependencies.
+      were not included in the initial installation becasue
+      <application>Linux-PAM</application> was not yet installed.
       The <application>systemd</application> package needs to be
       rebuilt to provide a working <command>systemd-logind</command> service,
-      among many others.
+      which provides many additonal features for dependent packages.
     </para>
     
     &lfs79_checked;&gcc6_checked;
@@ -38,7 +45,22 @@
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
-        <para>Systemd Download (HTTP): <ulink url="&systemd-download-http;"/></para>
+        <para>Download (HTTP): <ulink url="&systemd-download-http;"/></para>
+      </listitem>
+      <listitem>
+        <para>Download (FTP): <ulink url="&systemd-download-ftp;"/></para>
+      </listitem>
+      <listitem>
+        <para>Download MD5 sum: &systemd-md5sum;</para>
+      </listitem>
+      <listitem>
+        <para>Download size: &systemd-size;</para>
+      </listitem>
+      <listitem>
+        <para>Estimated disk space required: &systemd-buildsize;</para>
+      </listitem>
+      <listitem>
+        <para>Estimated build time: &systemd-time;</para>
       </listitem>
     </itemizedlist>
 
@@ -83,7 +105,8 @@
     <note>
       <para>
         In order to build the <application>systemd</application>
-        <application>Python</application> module, lxml package
+        <application>Python</application> module, the
+        <application>lxml</application> package
         needs to be installed for the corresponding
         <application>Python</application> version (2 or 3).
         Note that <command>configure</command> defaults to
@@ -142,7 +165,7 @@
             --disable-sysusers       \
             --without-python         \
             --with-default-dnssec=no \
-            --docdir=/usr/share/doc/systemd-&lfs-systemd-version; &amp;&amp;
+            --docdir=/usr/share/doc/systemd-&systemd-version; &amp;&amp;
 make</userinput></screen>
 
     <note>
@@ -159,14 +182,14 @@ make</userinput></screen>
 
     <warning>
       <para>
-        Installing the package will override all files installed by
+        Installing the package will overwrite all files installed by
         <application>systemd</application> in LFS. It is critical that
         nothing uses either <application>systemd</application> or
-        <application>Udev</application> libraries or programs during
-        the installation phrase. Best way to achieve that is to do the
-        installation in the rescue mode. To switch to the rescue mode,
-        issue the following command as the
-        <systemitem class="username">root</systemitem> user from a TTY:
+        <application>Udev</application> libraries during the installation.
+        The best way to ensure that these libraries are not being used is to
+        run the installation in rescue mode. To switch to rescue mode,
+        run the following command as the
+        <systemitem class="username">root</systemitem> user (from a TTY):
       </para>
 
 <screen role="root"><userinput>systemctl start rescue.target</userinput></screen>
@@ -201,9 +224,8 @@ make</userinput></screen>
     <para>
       The <filename>/etc/pam.d/system-sesion</filename> file needs to
       be modified and a new file needs to be created in order for
-      <command>systemd-logind</command> to work correctly. To accomplish
-      that, run the following commands as the <systemitem
-     class="username">root</systemitem> user:
+      <command>systemd-logind</command> to work correctly. Run the following
+      commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>cat &gt;&gt; /etc/pam.d/system-session &lt;&lt; "EOF"
@@ -233,16 +255,16 @@ EOF</userinput></screen>
 
     <para>
       At this point, you should reload the systemd daemon, and reenter
-      multi-user mode with the following commands as the
-      <systemitem class="username">root</systemitem> user:
+      multi-user mode with the following commands (as the
+      <systemitem class="username">root</systemitem> user):
     </para>
 
 <screen role="root"><userinput>systemctl daemon-reload
 systemctl start multi-user.target</userinput></screen>
 
-    <warning><para>If upgrading from a previous version of systemd and you
-    use an initrd, the system will hang during boot if you do not generate a
-    new initrd with systemd-root-device.target included.</para></warning>
+    <warning><para>If upgrading from a previous version of systemd and an
+    initrd is used for system boot, you should generate a new initrd before
+    rebooting the system.</para></warning>
 
   </sect2>
 
@@ -256,7 +278,7 @@ systemctl start multi-user.target</userinput></screen>
       </para>
 
       <para>
-        Below are listed newly installed libraries and directories
+        Listed below are the newly installed libraries and directories
         along with short descriptions.
       </para>
 
