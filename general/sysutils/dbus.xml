@@ -119,10 +119,10 @@ make</userinput></screen>
         Installing the package will override all files installed by
         <application>D-Bus</application> in LFS. It is critical that
         nothing uses <application>D-Bus</application> libraries or
-        programs during the installation phrase. Best way to achieve
-        that is to do the installation in the rescue mode. To switch
-        to the rescue mode, issue the following command as the
-        <systemitem class="username">root</systemitem> user from a TTY:
+        programs during the installation. The best way to ensure that these
+        libraries are not being used is to run the installation in rescue mode.
+        To switch to rescue mode, run the following command as the
+        <systemitem class="username">root</systemitem> user (from a TTY):
       </para>
 
 <screen role="root"><userinput>systemctl start rescue.target</userinput></screen>
@@ -155,6 +155,16 @@ ln -sfv ../../lib/$(readlink /usr/lib/libdbus-1.so) /usr/lib/libdbus-1.so</useri
 
 <screen role="root"><userinput>chown -v root:messagebus /usr/libexec/dbus-daemon-launch-helper &amp;&amp;
 chmod -v      4750       /usr/libexec/dbus-daemon-launch-helper</userinput></screen>
+
+
+    <para>
+      At this point, you should reload the systemd daemon, and reenter
+      multi-user mode with the following commands (as the
+      <systemitem class="username">root</systemitem> user):
+    </para>
+
+<screen role="root"><userinput>systemctl daemon-reload
+systemctl start multi-user.target</userinput></screen>
 
     <para>
       The <application>D-Bus</application> tests cannot be run until after
