@@ -116,6 +116,7 @@
       <xref linkend="gtk-doc"/>,
       <xref linkend="ModemManager"/>,
       <xref linkend="pygobject3"/>,
+      <xref linkend="qt5"/> (for examples),
       <xref linkend="valgrind"/>,
       <ulink url="http://libteam.org/">libteam</ulink>,
       <ulink url="https://www.samba.org/ftp/ppp/">PPP</ulink> and
@@ -135,7 +136,15 @@
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr                   \
+    <para>If <xref linkend="qt5"/> is installed and the Qt based
+    examples are desired, fix the configure script:</para>
+
+<screen><userinput>sed -e '/Qt[CDN]/s/Qt/Qt5/g'    \
+   -e 's/moc_location/host_bins/' \
+   -i configure</userinput></screen>
+
+<screen><userinput>CXXFLAGS="-O2 -fPIC"     \
+./configure --prefix=/usr                   \
             --sysconfdir=/etc               \
             --localstatedir=/var            \
             --with-nmtui                    \
@@ -160,6 +169,11 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <envar>CXXFLAGS="-O2 -fPIC"</envar>: These compiler options are
+      necessary to build the Qt5 based examples.
+    </para>
 
     <para>
       <parameter>--with-nmtui</parameter>: This switch enables building
