@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gcr-download-http "&gnome-download-http;/gcr/&gnome-minor18;/gcr-&gcr-version;.tar.xz">
-  <!ENTITY gcr-download-ftp  "&gnome-download-ftp;/gcr/&gnome-minor18;/gcr-&gcr-version;.tar.xz">
-  <!ENTITY gcr-md5sum        "b959bac99e17c9bb0990a15c9be11aed">
-  <!ENTITY gcr-size          "1.2 MB">
-  <!ENTITY gcr-buildsize     "81 MB">
+  <!ENTITY gcr-download-http "&gnome-download-http;/gcr/&gnome-minor20;/gcr-&gcr-version;.tar.xz">
+  <!ENTITY gcr-download-ftp  "&gnome-download-ftp;/gcr/&gnome-minor20;/gcr-&gcr-version;.tar.xz">
+  <!ENTITY gcr-md5sum        "4314bf89eac293dd0a9d806593ff1b35">
+  <!ENTITY gcr-size          "1.3 MB">
+  <!ENTITY gcr-buildsize     "85 MB (with tests)">
   <!ENTITY gcr-time          "0.9 SBU (with tests)">
 ]>
 
@@ -36,7 +36,7 @@
       <application>GNOME</application> Desktop.
     </para>
 
-    &lfs78_checked;
+    &lfs79_checked;&gcc6_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -110,7 +110,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc &amp;&amp;
+<screen><userinput>sed -i -r 's:("/desktop):"/org/gnome\1:' schema/*.xml &amp;&amp;
+
+./configure --prefix=/usr --sysconfdir=/etc &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -130,6 +132,9 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+    
+    <para><command>sed -i ... schema/*.xml</command>: This command
+    fixes a deprecated entry in the schema template.</para>    
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
