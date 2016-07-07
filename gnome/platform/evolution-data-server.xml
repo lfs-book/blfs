@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY evolution-data-server-download-http
-           "&gnome-download-http;/evolution-data-server/&gnome-minor18;/evolution-data-server-&evolution-data-server-version;.tar.xz">
+           "&gnome-download-http;/evolution-data-server/&gnome-minor20;/evolution-data-server-&evolution-data-server-version;.tar.xz">
   <!ENTITY evolution-data-server-download-ftp
-           "&gnome-download-ftp;/evolution-data-server/&gnome-minor18;/evolution-data-server-&evolution-data-server-version;.tar.xz">
-  <!ENTITY evolution-data-server-md5sum        "829751ac0b8a0fe6c8eec2acb446169d">
-  <!ENTITY evolution-data-server-size          "5.1 MB">
-  <!ENTITY evolution-data-server-buildsize     "226 MB">
-  <!ENTITY evolution-data-server-time          "4.0 SBU">
+           "&gnome-download-ftp;/evolution-data-server/&gnome-minor20;/evolution-data-server-&evolution-data-server-version;.tar.xz">
+  <!ENTITY evolution-data-server-md5sum        "4693c5e2ad56ea60bc25e541aba44cec">
+  <!ENTITY evolution-data-server-size          "4.8 MB">
+  <!ENTITY evolution-data-server-buildsize     "241 MB">
+  <!ENTITY evolution-data-server-time          "3.3 SBU">
 ]>
 
 <sect1 id="evolution-data-server"
@@ -40,7 +40,7 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       other packages as well.
     </para>
 
-    &lfs78_checked;
+    &lfs79_checked;&gcc6_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -85,8 +85,9 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       <xref linkend="libical"/>,
       <xref linkend="libsecret"/>,
       <xref linkend="libsoup"/>,
-      <xref linkend="nss"/>, and
-      <xref linkend="python2"/>.
+      <xref linkend="nss"/>,
+      <xref linkend="python2"/>, and
+      <xref linkend="sqlite"/>.
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -106,7 +107,8 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       <xref linkend="mitkrb"/>,
       a <xref linkend="server-mail"/> (that provides a <command>sendmail</command> command),
       <xref linkend="openldap"/>
-      <ulink url="https://gitlab.com/groups/accounts-sso">Accounts-SSO</ulink>, and
+      <ulink url="https://gitlab.com/groups/accounts-sso">Accounts-SSO</ulink>,
+      <ulink url="http://code.google.com/p/google-authenticator/">Google Authenticator</ulink>, and
       <ulink url="https://code.google.com/p/libphonenumber/">libphonenumber</ulink>
     </para>
 
@@ -123,8 +125,9 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --disable-uoa \
+<screen><userinput>./configure --prefix=/usr         \
+            --disable-uoa         \
+            --disable-google-auth \
             --enable-vala-bindings &amp;&amp;
 make</userinput></screen>
 
@@ -144,6 +147,13 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
+      <parameter>--disable-google-auth</parameter>: This switch is used
+      to disable the Google Authentication functionality within
+      <application>Evolution Data Server</application>. Omit if you have
+      installed <application>Google Authenticator</application>.
+    </para>
+
+    <para>
       <parameter>--disable-uoa</parameter>: This switch is used
       to disable <application>Ubuntu Online Accounts</application>
       support in <application>Evolution Data Server</application>.
@@ -152,7 +162,7 @@ make</userinput></screen>
 
     <para>
       <parameter>--enable-vala-bindings</parameter>: This switch
-      enables building of the Vala bindings. Remove if you don't
+      enables building the Vala bindings. Remove if you don't
       have <xref linkend="vala"/> installed.
     </para>
 
@@ -202,6 +212,7 @@ make</userinput></screen>
         <seg>
           /usr/include/evolution-data-server,
           /usr/lib/evolution-data-server,
+          /usr/share/evolution-data-server,
           /usr/share/gtk-doc/html/{camel,libebackend,libebook},
           /usr/share/gtk-doc/html/{libecal,libedata-book,libedata-cal},
           /usr/share/gtk-doc/html/{libedataserver,libedataserverui} and
