@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY vte-download-http "&gnome-download-http;/vte/0.42/vte-&vte-version;.tar.xz">
-  <!ENTITY vte-download-ftp  "&gnome-download-ftp;/vte/0.42/vte-&vte-version;.tar.xz">
-  <!ENTITY vte-md5sum        "92f5f49f87a9157e298bba5be8ecf7a5">
-  <!ENTITY vte-size          "908 KB">
-  <!ENTITY vte-buildsize     "21 MB (with tests)">
+  <!ENTITY vte-download-http "&gnome-download-http;/vte/0.44/vte-&vte-version;.tar.xz">
+  <!ENTITY vte-download-ftp  "&gnome-download-ftp;/vte/0.44/vte-&vte-version;.tar.xz">
+  <!ENTITY vte-md5sum        "eca8f8a9d9f9bb8e9d592d0acfeec015">
+  <!ENTITY vte-size          "952 KB">
+  <!ENTITY vte-buildsize     "25 MB (with tests)">
   <!ENTITY vte-time          "0.4 SBU (with tests)">
 ]>
 
@@ -34,7 +34,7 @@
       file implementation for terminal emulators.
     </para>
 
-    &lfs78_checked;
+    &lfs79_checked;&gcc6_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,8 +86,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="http://glade.gnome.org/">Glade</ulink> and
-      <xref linkend="gtk-doc"/>
+      <xref linkend="gnutls"/>,
+      <xref linkend="gtk-doc"/>, and
+      <ulink url="http://glade.gnome.org/">Glade</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -103,8 +104,12 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr     \
+<screen><userinput>sed -i '/Werror/d' configure.ac &amp;&amp;
+autoreconf &amp;&amp;
+
+./configure --prefix=/usr     \
             --sysconfdir=/etc \
+            --enable-introspection \
             --disable-static  &amp;&amp;
 make</userinput></screen>
 
@@ -122,6 +127,18 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>sed ... configure.ac</command>: This command removes -Werror
+      options that prevent the build from completing.
+    </para>
+
+    <para>
+      <option>--enable-introspection</option>: This switch enables the
+      <application>Gobject Introspection</application> bindings. Remove
+      if you don't have <xref linkend="gobject-introspection"/>
+      installed.
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
