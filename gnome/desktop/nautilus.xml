@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY nautilus-download-http 
-           "&gnome-download-http;/nautilus/&gnome-minor18;/nautilus-&nautilus-version;.tar.xz">
+           "&gnome-download-http;/nautilus/&gnome-minor20;/nautilus-&nautilus-version;.tar.xz">
   <!ENTITY nautilus-download-ftp  
-           "&gnome-download-ftp;/nautilus/&gnome-minor18;/nautilus-&nautilus-version;.tar.xz">
-  <!ENTITY nautilus-md5sum        "0f578bda5655c0ce204befafca5803d7">
-  <!ENTITY nautilus-size          "3.2 MB">
-  <!ENTITY nautilus-buildsize     "114 MB">
-  <!ENTITY nautilus-time          "0.9 SBU">
+           "&gnome-download-ftp;/nautilus/&gnome-minor20;/nautilus-&nautilus-version;.tar.xz">
+  <!ENTITY nautilus-md5sum        "d25ef6e36701fc2646673bdc8f8adad2">
+  <!ENTITY nautilus-size          "3.3 MB">
+  <!ENTITY nautilus-buildsize     "120 MB">
+  <!ENTITY nautilus-time          "0.8 SBU">
 ]>
 
 <sect1 id="nautilus" xreflabel="Nautilus-&nautilus-version;">
@@ -36,7 +36,7 @@
       <application>GNOME</application> file manager.
     </para>
 
-    &lfs78_checked;
+    &lfs79_checked;&gcc6_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -116,11 +116,12 @@
 <screen><userinput>./configure --prefix=/usr        \
             --sysconfdir=/etc    \
             --disable-tracker    \
+            --disable-selinux    \
             --disable-packagekit &amp;&amp;
 make</userinput></screen>
 
     <para>
-      This package does not have a working testsuite.
+      This package does not come with a test suite.
     </para>
 
     <para>
@@ -135,13 +136,18 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
+      <parameter>--disable-selinux</parameter>: This switch disables
+      the use of selinux which isn't supported by BLFS.
+    </para>
+
+    <para>
       <parameter>--disable-packagekit</parameter>: This switch disables
-      use of PackageKit which isn't suitable for BLFS.
+      the use of PackageKit which isn't suitable for BLFS.
     </para>
 
     <para>
       <parameter>--disable-tracker</parameter>: This switch disables
-      use of <application>Tracker</application>. Remove it if you have
+      the use of <application>Tracker</application>. Remove it if you have
       installed <application>Tracker</application>.
     </para>
 
@@ -171,8 +177,7 @@ make</userinput></screen>
       <seglistitem>
         <seg>
           nautilus,
-          nautilus-autorun-software, and
-          nautilus-convert-metadata (library executable)
+          nautilus-autorun-software
         </seg>
         <seg>
           libnautilus-extension.so
