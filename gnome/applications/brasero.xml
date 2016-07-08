@@ -8,10 +8,10 @@
            "&gnome-download-http;/brasero/&gnome-minor12;/brasero-&brasero-version;.tar.xz">
   <!ENTITY brasero-download-ftp
            "&gnome-download-ftp;/brasero/&gnome-minor12;/brasero-&brasero-version;.tar.xz">
-  <!ENTITY brasero-md5sum        "3a12a2b954b265c751ef29669d589908">
+  <!ENTITY brasero-md5sum        "216691249053448a9f2b4ee5e118ce72">
   <!ENTITY brasero-size          "3.5 MB">
-  <!ENTITY brasero-buildsize     "105 MB">
-  <!ENTITY brasero-time          "0.9 SBU">
+  <!ENTITY brasero-buildsize     "108 MB">
+  <!ENTITY brasero-time          "1.5 SBU">
 ]>
 
 <sect1 id="brasero" xreflabel="Brasero-&brasero-version;">
@@ -38,7 +38,7 @@
       features that enable users to create  their discs easily and quickly.
     </para>
 
-    &lfs77_checked;
+    &lfs79_checked;&gcc6_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -107,10 +107,10 @@
 
     <bridgehead renderas="sect4">Optional (Runtime)</bridgehead>
     <para role="optional">
-      <xref linkend="cdrdao"/>, one of
-      <ulink url="http://www.cdrkit.org/">cdrkit</ulink> or
-      <ulink url="http://cdrecord.berlios.de/private/cdrecord.html">cdrtools</ulink> (conflict),
-      <xref linkend="libdvdcss"/>, and
+      <xref linkend="cdrdao"/>,
+      <xref linkend="libdvdcss"/>, one of
+      <ulink url="http://pkgs.fedoraproject.org/repo/pkgs/cdrkit">cdrkit</ulink> or
+      <ulink url="http://sourceforge.net/projects/cdrtools/files/alpha/">cdrtools</ulink> (conflict), and
       <ulink url="http://ftp.gnu.org/gnu/vcdimager/">VCDImager</ulink>
     </para>
 
@@ -127,7 +127,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                \
+            --enable-compile-warnings=no \
+            --enable-cxx-warnings=no &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -144,6 +146,11 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <parameter>--enable-*-warnings=no</parameter>: These switches
+      fix a build issue with GCC 6.x.
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
