@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY evolution-download-http "&gnome-download-http;/evolution/&gnome-minor12;/evolution-&evolution-version;.tar.xz">
-  <!ENTITY evolution-download-ftp  "&gnome-download-ftp;/evolution/&gnome-minor12;/evolution-&evolution-version;.tar.xz">
-  <!ENTITY evolution-md5sum        "22ceaebe4add813e15253a76939af7f0">
-  <!ENTITY evolution-size          "11 MB">
-  <!ENTITY evolution-buildsize     "530 MB">
-  <!ENTITY evolution-time          "5.9 SBU">
+  <!ENTITY evolution-download-http "&gnome-download-http;/evolution/&gnome-minor20;/evolution-&evolution-version;.tar.xz">
+  <!ENTITY evolution-download-ftp  "&gnome-download-ftp;/evolution/&gnome-minor20;/evolution-&evolution-version;.tar.xz">
+  <!ENTITY evolution-md5sum        "219e25e945ffec9d7125e2f679990342">
+  <!ENTITY evolution-size          "12 MB">
+  <!ENTITY evolution-buildsize     "592 MB">
+  <!ENTITY evolution-time          "18 SBU">
 ]>
 
 <sect1 id="evolution" xreflabel="Evolution-&evolution-version;">
@@ -35,7 +35,7 @@
       <application>GNOME</application> environment.
     </para>
 
-    &lfs77_checked;
+    &lfs79_checked;&gcc6_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,11 +87,13 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="bogofilter"/>,
+      <xref linkend="enchant"/>,
       <xref linkend="gnome-desktop"/>,
       <xref linkend="highlight"/>,
       <xref linkend="libcanberra"/>,
-      <xref linkend="libgweather"/>, and
-      <xref linkend="libnotify"/>
+      <xref linkend="libgweather"/>,
+      <xref linkend="libnotify"/>, and
+      <xref linkend="seahorse"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -101,11 +103,13 @@
       <xref linkend="geocode-glib"/>, and
       <xref linkend="libchamplain"/> (Contact Maps plugin),
       <xref linkend="gtk-doc"/>,
-      <ulink url="http://trac.bjourne.webfactional.com/">GtkImageView</ulink>,
+      <xref linkend="openldap"/>,
+      <ulink url="https://wiki.gnome.org/Projects/GTK%2B/GtkImageView/">GtkImageView</ulink>,
       <ulink url="http://gtkspell.sourceforge.net/">GtkSpell3</ulink>,
+      <ulink url="https://github.com/GNOME/gnome-autoar/">gnome-autoar</ulink>,
+      <ulink url="&gnome-download-http;/libcryptui/">libcryptui</ulink>,
       <ulink url="http://www.five-ten-sg.com/libpst/">libpst</ulink>,
-      <ulink url="http://sourceforge.net/projects/ytnef/">libytnef</ulink>,
-      <xref linkend="openldap"/>, and
+      <ulink url="https://github.com/Yeraze/ytnef">libytnef</ulink>, and
       <ulink url="https://spamassassin.apache.org/">SpamAssassin</ulink>
     </para>
 
@@ -122,10 +126,13 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr         \
+<screen><userinput>sed -i "/seems to be moved/s/^/#/" ltmain.sh &amp;&amp;
+./configure --prefix=/usr         \
             --sysconfdir=/etc     \
             --disable-gtkspell    \
             --disable-pst-import  \
+            --disable-autoar      \
+            --disable-libcryptui  \
             --disable-spamassassin &amp;&amp;
 make</userinput></screen>
 
@@ -143,6 +150,23 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>sed -i ... ltmain.sh</command>: This command prevents the build
+      procedure from outputting a lot of invalid warnings.
+    </para>
+
+    <para>
+      <parameter>--disable-autoar</parameter>: This switch disables
+      automatic archiving support. Omit if you have 
+      <application>gnome-autoar</application> installed and wish to use it.
+    </para>
+
+    <para>
+      <parameter>--disable-libcryptui</parameter>: This switch disables
+      the usage of libcryptui because it is not part of BLFS. Omit
+      this switch if you have it installed and wish to use it.
+    </para>
 
     <para>
       <parameter>--disable-gtkspell</parameter>: This switch is used to
@@ -192,10 +216,26 @@ make</userinput></screen>
           evolution
         </seg>
         <seg>
-          None
+          libeabutil.so,
+          libecontacteditor.so,
+          libecontactlisteditor.so,
+          libemail-engine.so,
+          libessmime.so,
+          libevolution-addressbook-importers.so,
+          libevolution-calendar-importers.so,
+          libevolution-calendar.so,
+          libevolution-mail-composer.so,
+          libevolution-mail-formatter.so,
+          libevolution-mail-importers.so,
+          libevolution-mail.so,
+          libevolution-shell.so,
+          libevolution-smime.so,
+          libgnomecanvas.so,
+          and several modules and plugins in 
+          /usr/lib/evolution/{modules,plugins}
         </seg>
         <seg>
-          /usr/include/evolution-&gnome-minor12;,
+          /usr/include/evolution,
           /usr/lib/evolution,
           /usr/libexec/evolution,
           /usr/share/evolution,
