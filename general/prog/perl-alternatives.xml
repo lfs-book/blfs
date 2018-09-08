@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!-- it seems at least one entity is needed -->
+  <!ENTITY perl-alternatives-dummy      "42">
+]>
+  <!-- Begin perl alternatives -->
+  <sect2 id="perl-alternatives" xreflabel="Building and installing perl modules">
+
+    <title>Building and installing perl modules</title>
+
+    <indexterm zone="perl-alternatives">
+      <primary sortas="a-installing-perl-modules">Installing perl modules</primary>
+    </indexterm>
+
+    <sect3 role="package">
+      <title>The various ways of building and Installing perl modules</title>
+
+    <para>
+      Most modules use a standard install, but some use a different method. Each
+      module links to the appropriate method.  You can also make an automated
+      install, using CPAN to download any modular dependencies - details at the
+      end.
+    </para>
+
+    </sect3>
+
+    <sect3 role="installation" id="new-perl-standard-install"
+    xreflabel="standard build and installation instructions">
+      <title>Standard Installation of Perl Modules</title>
+
+      <para>Install <application>Perl</application> modules by running the
+      following commands:</para>
+
+      <para>For <xref linkend="perl-data-uniqid"/>, first apply the required
+      patch with:</para>
+
+<screen><userinput>patch -Np1 -i ../Data-Uniqid-&Data-Uniqid-version;-disable_failing_test-1.patch</userinput></screen>
+
+      <para>Then, or for all other modules using the standard installation, proceed
+      with:</para>
+
+<screen><userinput>perl Makefile.PL &amp;&amp;
+make &amp;&amp;
+make test</userinput></screen>
+
+      <note>
+        <para>If the module is described as using the <emphasis>unsafe</emphasis>
+        variant of the Standard Installation, (the use of the current
+        directory in <literal>@INC</literal> was removed for security reasons
+        in <literal>perl-5.26.0</literal>)
+        you should change the perl invocation to:</para>
+
+<screen><userinput>PERL_USE_UNSAFE_INC=1 &amp;&amp;</userinput></screen>
+
+        <para>If, however, you are using the Auto Installation described below,
+        that environment variable will be set whenever the <command>cpan</command>
+        shell <command>install</command> is used.</para>
+      </note>
+
+      <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+      <note>
+        <para>When reinstalling a <application>Perl</application> module,
+        sometimes older versions of the module being reinstalled are in other
+        directories specified in <parameter>@INC</parameter>.  To delete all
+        other versions of the module being reinstalled (not simply older ones)
+        set the <varname>UNINST</varname> variable:</para>
+
+<screen><userinput>make install UNINST=1</userinput></screen>
+      </note>
+
+    </sect3>
+
+    <sect3 role="installation" id="new-perl-build-install"
+    xreflabel="instructions for packages using Build.PL">
+      <title>Installation of Perl Modules which use Build.PL</title>
+
+      <para>Install <application>Perl</application> modules which use
+      Build.PL by running the following commands:</para>
+
+<screen><userinput>perl Build.PL &amp;&amp;
+./Build &amp;&amp;
+./Build test</userinput></screen>
+
+      <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
+
+<screen role="root"><userinput>./Build install</userinput></screen>
+
+    </sect3>
+
+    <sect3 role="installation" id="new-perl-auto-install"
+    xreflabel="alternate auto installation instructions">
+      <title>(Alternate) Auto Installation of Perl Modules.</title>
+
+      <para>There is an alternate way of installing the modules using the
+      <command>cpan</command> shell <command>install</command> command. The
+      command automatically downloads the source from the CPAN archive, extracts
+      it, runs the compilation, testing and installation commands mentioned
+      above, and removes the build source tree. You may still need to install
+      dependent library packages before running the automated installation
+      method.</para>
+
+      <para>The first time you run <command>cpan</command>, you'll be prompted
+      to enter some information regarding download locations and methods. This
+      information is retained in files located in
+      <filename class='directory'>~/.cpan</filename>. Start the
+      <command>cpan</command> shell by issuing '<command>cpan</command>' as the
+      <systemitem class="username">root</systemitem> user. Any module may now be
+      installed from the
+      <emphasis role='underlined'><prompt>cpan&gt;&nbsp;</prompt></emphasis>
+      prompt with the command:</para>
+
+<screen role="root"><userinput>install <replaceable>&lt;Module::Name&gt;</replaceable></userinput></screen>
+
+      <para>For additional commands and help, issue '<command>help</command>'
+      from the
+      <emphasis role='underlined'><prompt>cpan&gt;&nbsp;</prompt></emphasis>
+      prompt.</para>
+
+      <para>Alternatively, for scripted or non-interactive installations, use the
+      following syntax as the
+      <systemitem class="username">root</systemitem> user to install one or more
+      modules:</para>
+
+<screen role="root"><userinput>cpan -i <replaceable>&lt;Module1::Name&gt; &lt;Module2::Name&gt;</replaceable></userinput></screen>
+
+      <para>Review the <filename>cpan.1</filename> man page for additional
+      parameters you can pass to <command>cpan</command> on the command
+      line.</para>
+
+    </sect3>
+
+  </sect2>
