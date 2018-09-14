@@ -16,112 +16,69 @@
       <primary sortas="a-cpan-install-of-perl-modules">CPAN automated install of perl modules</primary>
     </indexterm>
 
-<!--
-    <sect3 role="installation" id="new-perl-standard-install"
-    xreflabel="standard build and installation instructions">
-      <title>Standard Installation of Perl Modules</title>
-
-      <para>Install <application>Perl</application> modules by running the
-      following commands:</para>
-
-      <para>For <xref linkend="perl-data-uniqid"/>, first apply the required
-      patch with:</para>
-
-<screen><userinput>patch -Np1 -i ../Data-Uniqid-&Data-Uniqid-version;-disable_failing_test-1.patch</userinput></screen>
-
-      <para>Then, or for all other modules using the standard installation, proceed
-      with:</para>
-
-<screen><userinput>perl Makefile.PL &amp;&amp;
-make &amp;&amp;
-make test</userinput></screen>
-
-      <note>
-        <para>If the module is described as using the <emphasis>unsafe</emphasis>
-        variant of the Standard Installation, (the use of the current
-        directory in <literal>@INC</literal> was removed for security reasons
-        in <literal>perl-5.26.0</literal>)
-        you should change the perl invocation to:</para>
-
-<screen><userinput>PERL_USE_UNSAFE_INC=1 &amp;&amp;</userinput></screen>
-
-        <para>If, however, you are using the Auto Installation described below,
-        that environment variable will be set whenever the <command>cpan</command>
-        shell <command>install</command> is used.</para>
-      </note>
-
-      <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
-
-<screen role="root"><userinput>make install</userinput></screen>
-
-      <note>
-        <para>When reinstalling a <application>Perl</application> module,
-        sometimes older versions of the module being reinstalled are in other
-        directories specified in <parameter>@INC</parameter>.  To delete all
-        other versions of the module being reinstalled (not simply older ones)
-        set the <varname>UNINST</varname> variable:</para>
-
-<screen><userinput>make install UNINST=1</userinput></screen>
-      </note>
-
-    </sect3>
-
-    <sect3 role="installation" id="new-perl-build-install"
-    xreflabel="instructions for packages using Build.PL">
-      <title>Installation of Perl Modules which use Build.PL</title>
-
-      <para>Install <application>Perl</application> modules which use
-      Build.PL by running the following commands:</para>
-
-<screen><userinput>perl Build.PL &amp;&amp;
-./Build &amp;&amp;
-./Build test</userinput></screen>
-
-      <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
-
-<screen role="root"><userinput>./Build install</userinput></screen>
-
-    </sect3> -->
-
     <sect3 role="installation" id="new-perl-auto-install"
     xreflabel="automatic installation of perl modules">
       <title> Automatic Installation of Perl Modules.</title>
 
-      <para>There is an alternate way of installing the modules using the
-      <command>cpan</command> shell <command>install</command> command. The
-      command automatically downloads the source from the CPAN archive, extracts
-      it, runs the compilation, testing and installation commands mentioned
-      above, and removes the build source tree. You may still need to install
-      dependent library packages before running the automated installation
-      method.</para>
+      <para>
+        There is an alternate way of installing the modules using the
+        <command>cpan</command> shell <command>install</command> command. The
+        command automatically downloads the latest source from the CPAN archive,
+        extracts it, then runs the compilation, testing and installation
+        commands mentioned above.
+      </para>
 
-      <para>The first time you run <command>cpan</command>, you'll be prompted
-      to enter some information regarding download locations and methods. This
-      information is retained in files located in
-      <filename class='directory'>~/.cpan</filename>. Start the
-      <command>cpan</command> shell by issuing '<command>cpan</command>' as the
-      <systemitem class="username">root</systemitem> user. Any module may now be
-      installed from the
-      <emphasis role='underlined'><prompt>cpan&gt;&nbsp;</prompt></emphasis>
-      prompt with the command:</para>
+      <para>
+        You still need to install any non-perl dependencies before running
+        the automated installation method.  You may wish to clean out the
+        <filename class="directory">build/</filename> directory after
+        installing, to free up the space. If any post-install actions such
+        as creating a symlink are mentioned, you should also do those.
+      </para>
+
+      <para>
+        The first time you run <command>cpan</command>, you'll be prompted
+        to enter some information regarding download locations and methods. This
+        information is retained in files located in
+        <filename class='directory'>~/.cpan</filename>.
+      </para>
+
+      <para>
+        In particular, you may wish to configure it so that <xref linkend="sudo"/>
+        is used for the installs, allowing you to build and test as a regular user.
+        The following examples have not used that approach.
+      </para>
+
+      <para>
+        Start the
+        <command>cpan</command> shell by issuing '<command>cpan</command>' as the
+        <systemitem class="username">root</systemitem> user. Any module may now be
+        installed from the
+        <emphasis role='underlined'><prompt>cpan&gt;&nbsp;</prompt></emphasis>
+        prompt with the command:
+      </para>
 
 <screen role="root"><userinput>install <replaceable>&lt;Module::Name&gt;</replaceable></userinput></screen>
 
-      <para>For additional commands and help, issue '<command>help</command>'
-      from the
-      <emphasis role='underlined'><prompt>cpan&gt;&nbsp;</prompt></emphasis>
-      prompt.</para>
+      <para>
+        For additional commands and help, issue '<command>help</command>'
+        from the
+        <emphasis role='underlined'><prompt>cpan&gt;&nbsp;</prompt></emphasis>
+        prompt.
+      </para>
 
-      <para>Alternatively, for scripted or non-interactive installations, use the
-      following syntax as the
-      <systemitem class="username">root</systemitem> user to install one or more
-      modules:</para>
+      <para>
+        Alternatively, for scripted or non-interactive installations, use the
+        following syntax as the <systemitem class="username">root</systemitem>
+        user to install one or more modules:
+      </para>
 
 <screen role="root"><userinput>cpan -i <replaceable>&lt;Module1::Name&gt; &lt;Module2::Name&gt;</replaceable></userinput></screen>
 
-      <para>Review the <filename>cpan.1</filename> man page for additional
-      parameters you can pass to <command>cpan</command> on the command
-      line.</para>
+      <para>
+        Review the <filename>cpan.1</filename> man page for additional
+        parameters you can pass to <command>cpan</command> on the command line.
+      </para>
 
     </sect3>
 
