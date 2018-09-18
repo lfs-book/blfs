@@ -35,7 +35,7 @@
     <para>Building a complete rescue device is a challenging task.  In many
     ways, it is equivalent to building an entire LFS system.
     In addition, it would be a repetition of information already available.
-    For these reasons, the procedures for a rescue device image are not
+    For these reasons, the procedures for creating a rescue device image are not
     presented here.</para>
 
   </sect2>
@@ -64,8 +64,9 @@
     <ulink url='http://www.&lfs-domainname;/livecd/'/>.  This LiveCD, is no
     longer capable of building an entire LFS/BLFS system, but is still a
     good rescue CD-ROM.  If you download the
-    ISO image, use <xref linkend="xorriso"/> to copy the image to a
-    CD-ROM.</para>
+<!--    ISO image, use <xref linkend="xorriso"/> to copy the image to a-->
+    ISO image, use <ulink url="&blfs-book;multimedia/libisoburn.html">xorriso</ulink> 
+    to copy the image to a CD-ROM.</para>
 
     <para>The instructions for using GRUB2 to make a custom rescue CD-ROM are
     also available in <ulink
@@ -77,13 +78,20 @@
   <sect2>
     <title>Creating a Bootable USB Drive</title>
 
-    <para>A USB Pen drive, sometimes called a Thumb drive, is recognized by Linux as
+    <para>A USB pen drive, sometimes called a thumb drive, is recognized by Linux as
     a SCSI device.  Using one of these devices as a rescue device has the advantage
     that it is usually large enough to hold more than a minimal boot image.  You
     can save critical data to the drive as well as use it to diagnose and recover
     a damaged system.  Booting such a drive requires BIOS support, but building the
     system consists of formatting the drive, adding <application>GRUB</application>
     as well as the Linux kernel and supporting files.</para>
+
+    <para>Creating a bootable USB drive from a downloaded iso file is
+    relatively simple. For example, if the iso file is some-rescue.iso and when
+    inserting a usb drive into the system the drive is recognized as /dev/sdg,
+    the file can be copied to the drive (as the root user) with:</para>
+
+<screen><userinput>dd of=/dev/sdg bs=8M status=progress oflag=direct if=some-rescue.iso</userinput></screen>
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url='&blfs-wiki;/CreatingaCustomBootDevice'/></para>

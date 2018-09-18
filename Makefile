@@ -32,7 +32,7 @@ ifneq ($(REV), sysv)
 endif
 
 ifeq ($(REV), sysv)
-  BASEDIR         ?= $(HOME)/public_html/blfs-book
+  BASEDIR         ?= $(HOME)/public_html/basic-blfs-book
   NOCHUNKS_OUTPUT ?= blfs-book.html
   DUMPDIR         ?= ~/blfs-commands
   BLFSHTML        ?= blfs-html.xml
