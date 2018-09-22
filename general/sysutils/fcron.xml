@@ -13,7 +13,7 @@
   <!ENTITY fcron-time "0.1 SBU">
 ]>
 
-<sect1 id="fcron" xreflabel="Fcron-&fcron-version;">
+<sect1 id="fcron" xreflabel="fcron-&fcron-version;">
   <?dbhtml filename="fcron.html"?>
 
   <sect1info>
@@ -57,27 +57,18 @@
         <para>Estimated build time: &fcron-time;</para>
       </listitem>
     </itemizedlist>
-<!--
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/fcron-&fcron-version;-sendmail_upstream-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
--->
+
     <bridgehead renderas="sect3">Fcron Dependencies</bridgehead>
-<!--
+
     <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional">An <xref linkend="server-mail"/>,
-    <ulink url="../postlfs/editors.html">text editor</ulink> (default is
-    <command>vi</command> from the <xref linkend="vim"/> package),
-    <xref linkend="linux-pam"/>, and
-    <xref linkend="docbook-utils"/>
+    <para role="optional">
+      A mail server such as <xref linkend="postfix"/>,
+      A text editor
+        (default is <command>vi</command> from the vim package),
+      <ulink url="&blfs-book;/postlfs/linux-pam.html">linux-pam</ulink>, and
+      <ulink url="&blfs-book;/postlfs/pst/docbook-utils.html">docbook-utils</ulink>
     </para>
--->
+
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/fcron"/></para>
 
@@ -86,19 +77,20 @@
   <sect2 role="installation">
     <title>Installation of Fcron</title>
 
-    <para id="fcron-syslog" revision="sysv"><application>Fcron</application>
+    <para id="fcron-syslog"> For System V versions of LFS, 
+    <application>fcron</application>
     uses the cron facility of <command>syslog</command> to log all messages.
     Since LFS does not set up this facility in
     <filename>/etc/syslog.conf</filename>, it needs to be done prior to
-    installing <application>Fcron</application>. This command will append the
+    installing <application>fcron</application>. This command will append the
     necessary line to the current <filename>/etc/syslog.conf</filename>
     (perform as the <systemitem class='username'>root</systemitem> user):</para>
 
-    <indexterm zone="fcron fcron-syslog" revision="sysv">
+    <indexterm zone="fcron fcron-syslog">
       <primary sortas="e-etc-syslog.conf">/etc/syslog.conf</primary>
     </indexterm>
 
-<screen role="root" revision="sysv"><userinput>cat &gt;&gt; /etc/syslog.conf &lt;&lt; "EOF"
+<screen role="root"><userinput>cat &gt;&gt; /etc/syslog.conf &lt;&lt; "EOF"
 <literal># Begin fcron addition to /etc/syslog.conf
 
 cron.* -/var/log/cron.log
@@ -106,14 +98,14 @@ cron.* -/var/log/cron.log
 # End fcron addition</literal>
 EOF</userinput></screen>
 
-    <para revision="sysv">The configuration file has been modified, so reloading
+    <para>The configuration file has been modified, so reloading
     the <command>sysklogd</command> daemon will activate the changes (again as
     the <systemitem class='username'>root</systemitem> user).</para>
 
-<screen role="root" revision="sysv"><userinput>/etc/rc.d/init.d/sysklogd reload</userinput></screen>
+<screen role="root"><userinput>/etc/rc.d/init.d/sysklogd reload</userinput></screen>
 
     <para>For security reasons, an unprivileged user and group for
-    <application>Fcron</application> should be created (perform as the
+    <application>fcron</application> should be created (perform as the
     <systemitem class='username'>root</systemitem> user):</para>
 
 <screen role="root"><userinput>groupadd -g 22 fcron &amp;&amp;
@@ -122,7 +114,9 @@ useradd -d /dev/null -c "Fcron User" -g fcron -s /bin/false -u 22 fcron</userinp
     <para>Install <application>Fcron</application> by running the following
     commands:</para>
 
-<screen revision="sysv"><userinput>./configure --prefix=/usr          \
+    <para>For System V based systems:</para>
+
+<screen><userinput>./configure --prefix=/usr          \
             --sysconfdir=/etc      \
             --localstatedir=/var   \
             --without-sendmail     \
@@ -130,7 +124,9 @@ useradd -d /dev/null -c "Fcron User" -g fcron -s /bin/false -u 22 fcron</userinp
             --with-systemdsystemunitdir=no &amp;&amp;
 make</userinput></screen>
 
-<screen revision="systemd"><userinput>./configure --prefix=/usr          \
+    <para>For systemd based systems:</para>
+
+<screen><userinput>./configure --prefix=/usr          \
             --sysconfdir=/etc      \
             --localstatedir=/var   \
             --without-sendmail     \
@@ -149,13 +145,11 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-<!--
-    <para><command>autoconf</command>: This command is required to rebuild
-    <filename>configure</filename> using the fixed input file.</para>-->
 
     <para><parameter>--without-sendmail</parameter>: By default,
-    <application>Fcron</application> will attempt to use the
-    <command>sendmail</command> command from an <!--<xref linkend="server-mail"/>-->
+    <application>fcron</application> will attempt to use the
+    <command>sendmail</command> command from a mail server sucj as the 
+    <xref linkend="postfix"/>
     package to email you the results of the <command>fcron</command> script.
     This switch is used to disable default email notification. Omit the switch
     to enable the default. Alternatively, you can use the
@@ -165,17 +159,21 @@ make</userinput></screen>
     <para><parameter>--with-boot-install=no</parameter>: This prevents
     installation of the bootscript included with the package.</para>
 
-    <para revision="sysv"><parameter>--with-systemdsystemunitdir=no</parameter>:
+    <para><parameter>--with-systemdsystemunitdir=no</parameter>:
     This prevents building the <application>systemd</application> units, which
     are not needed for a <application>SYS V</application> system.</para>
 
     <para><option>--with-editor=<replaceable>&lt;/path/to/editor&gt;</replaceable></option>:
     This switch allows you to set the default text editor.</para>
 
-    <para><option>--with-dsssl-dir=<replaceable>&lt;/path/to/dsssl-stylesheets&gt;</replaceable></option>:
-    May be used if you have <!--<xref linkend="docbook-utils"/>--> installed.
+    <para>
+      <option>--with-dsssl-dir=<replaceable>&lt;/path/to/dsssl-stylesheets&gt;</replaceable></option>:
+    May be used if you have 
+    <ulink url="&blfs-book;/postlfs/pst/docbook-utils.html">docbook-utils</ulink>
+    installed.
     Currently, the dsssl stylesheets are located at
-    <filename class="directory">/usr/share/sgml/docbook/dsssl-stylesheets-1.79</filename>.</para>
+    <filename class="directory">/usr/share/sgml/docbook/dsssl-stylesheets-1.79</filename>.
+    </para>
 
   </sect2>
 
@@ -233,23 +231,22 @@ make</userinput></screen>
     </sect3>
 
     <sect3  id="fcron-init">
-      <title><phrase revision="sysv">Boot Script</phrase>
-             <phrase revision="systemd">Systemd Unit</phrase></title>
+      <title>Boot Script or Systemd Unit</title>
 
-      <para revision="sysv">Install the
+      <para>For System V bases systems, install the
       <filename>/etc/rc.d/init.d/fcron</filename> init script from the
       <xref linkend="bootscripts"/> package.</para>
 
-      <para revision="systemd">Enable <application>fcron</application> to start
+<screen role="root"><userinput>make install-fcron</userinput></screen>
+
+      <para>For systemd based systems, enable <application>fcron</application> to start
       at boot using the previously installed systemd unit.</para>
 
       <indexterm zone="fcron fcron-init">
         <primary sortas="f-fcron">fcron</primary>
       </indexterm>
 
-<screen role="root" revision="sysv"><userinput>make install-fcron</userinput></screen>
-
-<screen role="root" revision="systemd"><userinput>systemctl enable fcron</userinput></screen>
+<screen role="root"><userinput>systemctl enable fcron</userinput></screen>
 
     </sect3>
 

@@ -126,30 +126,20 @@ wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</userinput></
     </para>
 
   </sect2>
-<!-- No longer needed
-  <sect2 role="commands">
-    <title>Command Explanations</title>
 
-    <para>
-      <command>sed ... lsusb.py</command>: Instructs lsusb.py where to search
-      <filename>usb.ids</filename>.
-    </para>
-
-  </sect2>
--->
   <sect2 role="configuration">
     <title>Configuring USB Utils</title>
 
-    <para revision="sysv">
+    <para>
       The <filename>usb.ids</filename> data file is constantly being updated.
-      To get a current version of this file, using <xref linkend="wget"/>,
-      periodically run again, as the
+      For System V based systems, get a current version of this file, using 
+      <xref linkend="wget"/>, periodically run, as the
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root" revision="sysv"><userinput>wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</userinput></screen>
+<screen role="root"><userinput>wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</userinput></screen>
 
-    <para revision="sysv">
+    <para>
       You may wish to add an entry to
       <systemitem class="username">root</systemitem>'s (or any other user who has
       write privilege to <filename class="directory">/usr/share/hwdata</filename>)
@@ -157,14 +147,14 @@ wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</userinput></
       periodically.
     </para>
 
-    <para revision="systemd">
-      You should update the <filename>/usr/share/hwdata/usb.ids</filename> file
-      periodically. Execute the following commands, as the
+    <para>
+      For systemd based systems, 
+      execute the following commands, as the
       <systemitem class="username">root</systemitem> user, to create a systemd
       timer to update it weekly on Sundays at 3:00 A.M. (local time):
     </para>
 
-<screen role="root" revision="systemd"><userinput>cat &gt; /lib/systemd/system/update-usbids.service &lt;&lt; "EOF" &amp;&amp;
+<screen role="root"><userinput>cat &gt; /lib/systemd/system/update-usbids.service &lt;&lt; "EOF" &amp;&amp;
 <literal>[Unit]
 Description=Update usb.ids file
 Documentation=man:lusub(8)

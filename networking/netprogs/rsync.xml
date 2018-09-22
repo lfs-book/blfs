@@ -88,10 +88,12 @@ useradd -c "rsyncd Daemon" -d /home/rsync -g rsyncd \
 
 <screen><userinput>./configure --prefix=/usr --without-included-zlib &amp;&amp;
 make</userinput></screen>
-<!--
-    <para>If you have <xref linkend="doxygen"/> installed and wish to
+
+    <para>If you have 
+    <ulink url="&blfs-book;general/doxygen.html">doxygen</ulink> 
+    installed and wish to
     build HTML API documentation, issue <command>doxygen</command>.</para>
--->
+
     <para>To test the results, issue: <command>make check</command>.</para>
 
     <para>Now, as the <systemitem class="username">root</systemitem> user:</para>
@@ -164,35 +166,33 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3 id="rsync-init">
-      <title><phrase revision="sysv">Boot Script</phrase>
-             <phrase revision="systemd">Systemd Unit</phrase></title>
+      <title>Boot Script or Systemd Unit</title>
 
       <para>Note that you only want to start the
       <application>rsync</application> server if you want to provide an
       <application>rsync</application> archive on your local machine.
-      You don't need this <phrase revision="sysv">script</phrase>
-      <phrase revision="systemd">unit</phrase> to run the
+      You don't need this script or unit to run the
       <application>rsync</application> client.</para>
 
       <para>Install the
-      <phrase revision="sysv"><filename>/etc/rc.d/init.d/rsyncd</filename> init
-      script</phrase>
-      <phrase revision="systemd"><filename>rsyncd.service</filename>
-      unit</phrase> included in the
-      <xref linkend="bootscripts" revision="sysv"/>
-      <xref linkend="systemd-units" revision="systemd"/> package.</para>
+      <filename>/etc/rc.d/init.d/rsyncd</filename> init script (for
+      System V bades systems) or the <filename>rsyncd.service</filename>
+      unit (for systemd based systems) included in the
+      <xref linkend="bootscripts"/>
+      <xref linkend="systemd-units"/> packages respectively.</para>
 
 <screen role="root"><userinput>make install-rsyncd</userinput></screen>
 
-      <note revision="systemd">
-        <para>This package comes with two types of units: A service file and a
+      <note>
+        <para>For systemd use, this package comes with two types of units: 
+        A service file and a
         socket file. The service file will start rsync daemon once at boot
         and it will keep running until the system shuts down. The socket file
-        will make systemd listen on rsync port (Default 873, needs to be
+        will make systemd listen on the rsync port (Default 873, needs to be
         edited for anything else) and will start rsync daemon when something
         tries to connect to that port and stop the daemon when the connection
         is terminated. This is called socket activation and is analogous to
-        using <application>{,x}inetd</application> on a SysVinit based 
+        using <application>{,x}inetd</application> on a System V based 
         system.</para>
 
 

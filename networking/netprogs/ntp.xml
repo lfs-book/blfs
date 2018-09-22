@@ -77,8 +77,8 @@
 -->
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-<!--      <xref linkend="libcap-pam"/>,
-      <xref linkend="libevent"/>, -->
+      <ulink url="&blfs-book;postlfs/libcap.html">libcap with PAM</ulink>,
+      <ulink url="&blfs-book;basicnet/libevent.html">libevent</ulink>, 
       <ulink url="http://www.thrysoee.dk/editline/">libedit</ulink>, and
       <ulink url="https://www.gnu.org/software/autogen/">libopts from AutoGen</ulink>
     </para>
@@ -241,18 +241,18 @@ EOF</userinput></screen>
       and update the time each time <command>ntpd</command> is scheduled.</para>
 
       <para>If you choose Option one, then install the
-      <phrase revision="sysv"><filename>/etc/rc.d/init.d/ntp</filename>
-      init script</phrase>
-      <phrase revision="systemd"><filename>ntpd.service</filename> unit</phrase>
+      <filename>/etc/rc.d/init.d/ntp</filename>
+      init script (System V based systems) or the 
+      <filename>ntpd.service</filename> unit (systemd based systems)
       included in the
-      <xref linkend="bootscripts" revision="sysv"/>
-      <xref linkend="systemd-units" revision="systemd"/> package.</para>
+      <xref linkend="bootscripts"/> or 
+      <xref linkend="systemd-units"/> packages respectively.</para>
 
-      <indexterm zone="ntp ntp-init" revision="sysv">
+      <indexterm zone="ntp ntp-init">
         <primary sortas="f-ntp">ntp</primary>
       </indexterm>
 
-      <indexterm zone="ntp ntp-init" revision="systemd">
+      <indexterm zone="ntp ntp-init">
         <primary sortas="f-ntpd">ntpd.service</primary>
       </indexterm>
 
@@ -264,15 +264,14 @@ EOF</userinput></screen>
 
 <screen><literal>ntpd -q</literal></screen>
 
-      <para revision="sysv">Execute the following command if you would like to
+      <para>For System V systems, execute the following command if you would like to
       set the hardware clock to the current system time at shutdown and
       reboot:</para>
 
-<screen role="root" revision="sysv"><userinput>ln -v -sf ../init.d/setclock /etc/rc.d/rc0.d/K46setclock &amp;&amp;
+<screen role="root"><userinput>ln -v -sf ../init.d/setclock /etc/rc.d/rc0.d/K46setclock &amp;&amp;
 ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
 
-      <para revision="sysv">The other way around is already set up by
-      LFS.</para>
+      <para>The other way around is already set up by LFS.</para>
 
     </sect3>
 
