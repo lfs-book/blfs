@@ -48,6 +48,7 @@
 
       <bridgehead renderas="sect5">Required</bridgehead>
       <para role="required">
+        <xref linkend="make-ca"/>
         <xref linkend="perl-net-ssleay"/>
       </para>
 
@@ -56,8 +57,36 @@
     <sect3 role="installation">
       <title>Installation of IO::Socket::SSL</title>
 
-      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-                  href="../../../xincludes/perl-standard-install.xml"/>
+      <note>
+        <para>
+          The tests hang if you are using openssl-1.1.1.
+        </para>
+      </note>
+
+      <para>
+        This module uses a variant of the standard build and installation
+        instructions:
+
+<screen><userinput>yes | perl Makefile.PL &amp;&amp;
+make             &amp;&amp;
+make test</userinput></screen>
+
+        Now, as the <systemitem class="username">root</systemitem> user:
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+      </para>
+
+    </sect3>
+
+    <sect3 role="commands">
+      <title>Command Explanations</title>
+
+      <para>
+        <command>yes</command>: Perl will ask if you wish to run external
+        tests, which will 'fail soft' if htere are network problems. The
+        default is 'n', this allows you to script the build.
+      </para>
 
     </sect3>
 
