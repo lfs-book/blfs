@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY lvm2-download-http "https://sourceware.org/ftp/lvm2/releases/LVM2.&lvm2-version;.tgz">
-  <!ENTITY lvm2-download-ftp  "ftp://sourceware.org/pub/lvm2/releases/LVM2.&lvm2-version;.tgz">
-  <!ENTITY lvm2-md5sum        "ee6cfbc5a0c5696ffae79dac04ee7a2b">
+  <!ENTITY lvm2-download-http "https://sourceware.org/pub/lvm2/LVM2.&lvm2-version;.tgz">
+  <!ENTITY lvm2-download-ftp  "ftp://sourceware.org/pub/lvm2/LVM2.&lvm2-version;.tgz">
+  <!ENTITY lvm2-md5sum        "f63cc5feaadd3000138e73f7143ed370">
   <!ENTITY lvm2-size          "2.3 MB">
-  <!ENTITY lvm2-buildsize     "33 MB (add 60 MB for tests, however transient files can grow up to around 500 MB)">
-  <!ENTITY lvm2-time          "0.2 SBU (using parallelism=4; add 21 SBU for tests)">
+  <!ENTITY lvm2-buildsize     "33 MB (add at least 239 MB for tests in the /tmp directory; additionally transient files can grow up to around 500 MB)">
+  <!ENTITY lvm2-time          "0.2 SBU (using parallelism=4; add 12 SBU for tests)">
 ]>
 
 <sect1 id="lvm2" xreflabel="LVM2-&lvm2-version;">
@@ -74,6 +74,11 @@
     </itemizedlist>
 
     <bridgehead renderas="sect3">LVM2 Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend='libaio'/>,
+     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
@@ -145,7 +150,6 @@ Kernel hacking ---&gt;
 PATH=$PATH:/sbin:/usr/sbin      &amp;&amp;
 ./configure --prefix=/usr       \
             --exec-prefix=      \
-            --enable-applib     \
             --enable-cmdlib     \
             --enable-pkgconfig  \
             --enable-udev_sync  &amp;&amp;
@@ -158,7 +162,6 @@ PATH=$PATH:/sbin:/usr/sbin      &amp;&amp;
 ./configure --prefix=/usr       \
             --exec-prefix=      \
             --with-confdir=/etc \
-            --enable-applib     \
             --enable-cmdlib     \
             --enable-pkgconfig  \
             --enable-udev_sync  &amp;&amp;
@@ -246,11 +249,6 @@ make -C libdm install</userinput></screen>
     </para>
 
     <para>
-      <parameter>--enable-applib</parameter>: This switch enables
-      building of the shared application library.
-    </para>
-
-    <para>
       <parameter>--enable-cmdlib</parameter>: This switch enables
       building of the shared command library. It is required
       when building the event daemon.
@@ -272,13 +270,6 @@ make -C libdm install</userinput></screen>
       event daemon.
     </para>
 
-    <para>
-      <option>--enable-lvmetad</option>: This switch enables
-      building of the <application>LVM</application> metadata daemon,
-      which avoids scanning all the filesystems when an lvm command is
-      run.
-    </para>
-
   </sect2>
 
   <sect2 role="content">
@@ -292,7 +283,7 @@ make -C libdm install</userinput></screen>
       <seglistitem>
         <seg>
           blkdeactivate, dmeventd (optional), dmsetup, fsadm, lvm, lvmconf,
-          lvmdump, and lvmetad (optional). There are also
+          and lvmdump. There are also
           numerous symbolic links to lvm that implement specific
           functionalities
         </seg>
@@ -400,18 +391,6 @@ make -C libdm install</userinput></screen>
           </para>
           <indexterm zone="lvm2 lvmdump">
             <primary sortas="b-lvmdump">lvmdump</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="lvmetad">
-        <term><command>lvmetad</command></term>
-        <listitem>
-          <para>
-            (optional) is the LVM metadata daemon.
-          </para>
-          <indexterm zone="lvm2 lvmetad">
-            <primary sortas="b-lvmetad">lvmetad</primary>
           </indexterm>
         </listitem>
       </varlistentry>
