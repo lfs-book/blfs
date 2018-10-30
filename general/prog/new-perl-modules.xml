@@ -22,6 +22,23 @@
   <sect2 role="package">
     <title>Introduction to Perl Modules</title>
 
+ <!-- note for editors:
+      When testing the dependencies for a new/updated module, it is possible
+      to build the dependencies in a directory, then do DESTDIR installs.
+      For packages using Module::Build, supply \-\-destdir= (lower case!)
+      AFTER the command.  Repeat as necessary.  At any one time, ALL deps for
+      the module being tested need to be in the same DESTDIR - it may be
+      convenient to copy the contents, e.g.
+ cp -av MODULEA/usr/lib/perl5/site_perl/5.xx.y/* BATCH1/usr/lib/perl5/site_perl/5.xx.y/
+
+      And then to use these deps (plus what is already installed),
+      export PERL5LIB=/ab/path/to/BATCH1/usr/lib/perl5/site_perl/5.xx.y
+
+      Please be aware that not all non-core prerequisite deps are necessarily
+      needed.  If 'use Foo::Bar' appears in one of the main files in lib/ or blib/
+      it is assumed to be needed.  But if it only gets used in tests (t/) then
+      please try without it to see if the tests can still pass. -->
+
     <para>
       The <application>Perl</application> module packages (also referred to as
       Distributions, because each can contain multiple modules) add useful
@@ -122,6 +139,11 @@
       <listitem>
         <para>
           <xref linkend="new-perl-datetime-calendar-julian"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <xref linkend="new-perl-datetime-format-builder"/>
         </para>
       </listitem>
       <listitem>
@@ -328,6 +350,9 @@
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="perl-modules/perl-datetime-calendar-julian.xml"/>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+    href="perl-modules/perl-datetime-format-builder.xml"/>
 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
     href="perl-modules/perl-encode-eucjpascii.xml"/>
