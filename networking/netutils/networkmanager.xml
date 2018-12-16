@@ -104,6 +104,7 @@
       <xref linkend="nss"/>,
       <xref linkend="polkit"/>,
       <xref linkend="pygobject3"/>,
+      <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
       <phrase revision="systemd"><xref linkend="systemd"/>,</phrase>
       <xref linkend="upower"/>,
       <xref linkend="vala"/>, and
@@ -169,7 +170,7 @@ meson --prefix /usr              \
       -Dlibnm_glib=true          \
       -Dselinux=false            \
       -Dudev_dir=/lib/udev       \
-      -Dsession_tracking=no      \
+      -Dsession_tracking=elogind \
       -Dsystemdsystemunitdir=no  \
       -Dsystemd_journal=false    \
       -Dqt=false                 \
@@ -230,10 +231,15 @@ mv -v /usr/share/doc/NetworkManager{,-&NetworkManager-version;}</userinput></scr
     </para>
 
     <para revision="sysv">
-      <parameter>-Dsession_tracking=no</parameter>,
-      <parameter>-Dsystemdsystemunitdir=no</parameter>, and
+      <parameter>-Dsystemdsystemunitdir=no</parameter> and
       <parameter>-Dsystemd_journal=false</parameter>: systemd is not
       used for sysv init systems.
+    </para>
+
+    <para revision="sysv">
+      <parameter>-Dsession_tracking=elogind</parameter>: This switch
+      is used to set <command>elogind</command> as the default
+      program for session tracking.
     </para>
 
     <para revision="systemd">

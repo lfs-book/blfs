@@ -83,6 +83,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact" revision="sysv">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/dbus-&dbus-version;-elogind-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">D-Bus Dependencies</bridgehead>
 
     <bridgehead renderas="sect4" revision="systemd">Required</bridgehead>
@@ -93,6 +103,8 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="xorg7-lib"/> (for <command>dbus-launch</command> program)
+      <phrase revision="sysv">and <xref linkend="elogind"/> (first build
+      without, and then again after elogind is installed)</phrase>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -129,6 +141,12 @@
 useradd -c "D-Bus Message Daemon User" -d /var/run/dbus \
         -u 18 -g messagebus -s /bin/false messagebus</userinput></screen>
 
+    <para revision="sysv">
+      Apply a patch to fix detection of <application>elogind</application>:
+    </para>
+
+<screen revision="sysv"><userinput>patch -Np1 -i ../dbus-&dbus-version;-elogind-1.patch</userinput></screen>
+
     <para>
       Install <application>D-Bus</application> by running the following
       commands (you may wish to review the output from <command>./configure
@@ -136,19 +154,7 @@ useradd -c "D-Bus Message Daemon User" -d /var/run/dbus \
       <command>configure</command> command shown below):
     </para>
 
-<screen revision="sysv"><userinput>./configure --prefix=/usr                        \
-            --sysconfdir=/etc                    \
-            --localstatedir=/var                 \
-            --disable-doxygen-docs               \
-            --disable-xml-docs                   \
-            --disable-static                     \
-            --docdir=/usr/share/doc/dbus-&dbus-version; \
-            --with-console-auth-dir=/run/console \
-            --with-system-pid-file=/run/dbus/pid \
-            --with-system-socket=/run/dbus/system_bus_socket &amp;&amp;
-make</userinput></screen>
-
-<screen revision="systemd"><userinput>./configure --prefix=/usr                        \
+<screen><userinput>./configure --prefix=/usr                        \
             --sysconfdir=/etc                    \
             --localstatedir=/var                 \
             --enable-user-session                \
@@ -186,7 +192,7 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
-    <para revision="systemd">
+    <para>
       The shared library needs to be moved to
       <filename class="directory">/lib</filename>, and as a result the
       <filename class="extension">.so</filename> file in
@@ -195,7 +201,7 @@ make</userinput></screen>
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen revision="systemd" role="root"><userinput>mv -v /usr/lib/libdbus-1.so.* /lib &amp;&amp;
+<screen role="root"><userinput>mv -v /usr/lib/libdbus-1.so.* /lib &amp;&amp;
 ln -sfv ../../lib/$(readlink /usr/lib/libdbus-1.so) /usr/lib/libdbus-1.so</userinput></screen>
 
     <para>
@@ -283,19 +289,11 @@ make check</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 
-    <para revision="sysv">
-      <parameter>--disable-systemd</parameter>: This switch disables systemd
-      support in <application>D-Bus</application>.
-    </para>
-
-    <para revision="sysv">
-      <parameter>--without-systemdsystemunitdir</parameter>: This switch
-      prevents installation of systemd unit files.
-    </para>
-
-    <para revision="systemd">
+    <para>
       <parameter>--enable-user-session</parameter>: This parameter enables
-      per-user DBus sessions with <application>systemd</application>.
+      per-user DBus sessions with
+      <phrase revision="sysv"><application>elogind</application>.</phrase>
+      <phrase revision="systemd"><application>systemd</application>.</phrase>
     </para>
 
     <para>
