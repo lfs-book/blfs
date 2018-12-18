@@ -69,6 +69,17 @@
         </para>
       </listitem>
     </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch:
+          <ulink url="&patch-root;/xorg-server-&xorg-server-version;-elogind-2.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
 <!-- Prime support is now automatically added in DRI3, and this patch
      may break things on some setups.
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
@@ -130,17 +141,18 @@
 
 <screen><userinput>patch -Np1 -i ../xorg-server-&xorg-server-version;-add_prime_support-1.patch</userinput></screen>-->
 
+    <para revision="sysv">
+      Apply a patch to add <application>elogind</application> support:
+    </para>
+
+<screen revision="sysv"><userinput>patch -Np1 -i ../xorg-server-&xorg-server-version;-elogind-2.patch &amp;&amp;
+autoreconf -fi</userinput></screen>
+
     <para>
       Install the server by running the following commands:
     </para>
 
-<screen revision="sysv"><userinput>./configure $XORG_CONFIG          \
-            --enable-glamor       \
-            --enable-suid-wrapper \
-            --with-xkb-output=/var/lib/xkb &amp;&amp;
-make</userinput></screen>
-
-<screen revision="systemd"><userinput>./configure $XORG_CONFIG          \
+<screen><userinput>./configure $XORG_CONFIG          \
             --enable-glamor       \
             --with-xkb-output=/var/lib/xkb &amp;&amp;
 make</userinput></screen>
