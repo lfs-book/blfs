@@ -75,15 +75,15 @@
       </listitem>
     </itemizedlist>
 
-<!--<bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
+    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact" revision="sysv">
       <listitem>
         <para>
-          Required patch if using glibc-2.27:
-          <ulink url="&patch-root;/pulseaudio-&pulseaudio-version;-glibc_2.27_fix-1.patch"/>
+          Required patch:
+          <ulink url="&patch-root;/pulseaudio-&pulseaudio-version;-elogind-1.patch"/>
         </para>
       </listitem>
-    </itemizedlist>-->
+    </itemizedlist>
 
     <bridgehead renderas="sect3">PulseAudio Dependencies</bridgehead>
 
@@ -96,6 +96,7 @@
     <para role="recommended">
       <xref linkend="alsa-lib"/>,
       <xref linkend="dbus"/>,
+      <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
       <xref linkend="glib2"/>,
       <xref linkend="libcap-pam"/>,
       <xref linkend="speex"/> and
@@ -106,8 +107,6 @@
     <para role="optional">
       <xref linkend="avahi"/>,
       <xref linkend="bluez"/>,
-      <phrase revision="sysv">
-        <xref role="runtime" linkend="consolekit"/> (runtime),</phrase>
       <xref linkend="fftw"/>,
       <xref linkend="GConf"/>,
       <xref linkend="gtk3"/>,
@@ -132,6 +131,13 @@
 
   <sect2 role="installation">
     <title>Installation of PulseAudio</title>
+
+    <para revision="sysv">
+      If building with elogind, apply a patch to enable it:
+    </para>
+
+<screen revision="sysv"><userinput>patch -Np1 -i ../pulseaudio-&pulseaudio-version;-elogind-1.patch &amp;&amp;
+AUTOPOINT='intltoolize --automake --copy' autoreconf -fiv</userinput></screen>
 
     <para>
       Install <application>PulseAudio</application> by running the following
