@@ -148,6 +148,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact" revision="sysv">
+      <listitem>
+        <para>
+          Optional patch:
+          <ulink url="&patch-root;/xtrans-&xtrans-version;-elogind-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Xorg Libraries Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -248,7 +258,43 @@ md5sum -c ../lib-&xorg-version;.md5</userinput></screen>
     <para>Install all of the packages by running the following
     commands:</para>
 
-<screen><userinput>for package in $(grep -v '^#' ../lib-&xorg-version;.md5 | awk '{print $2}')
+<screen revision="sysv"><userinput>for package in $(grep -v '^#' ../lib-&xorg-version;.md5 | awk '{print $2}')
+do
+  packagedir=${package%.tar.bz2}
+  tar -xf $package
+  pushd $packagedir
+  case $packagedir in
+    libICE* )
+      ./configure $XORG_CONFIG ICE_LIBS=-lpthread
+    ;;
+
+    libXfont2-[0-9]* )
+      ./configure $XORG_CONFIG --disable-devel-docs
+    ;;
+
+    libXt-[0-9]* )
+      ./configure $XORG_CONFIG \
+                  --with-appdefaultdir=/etc/X11/app-defaults
+    ;;
+
+    xtrans*)
+      patch -Np1 -i ../xtrans-&xtrans-version;-elogind-1.patch
+      ./configure $XORG_CONFIG
+    ;;
+
+    * )
+      ./configure $XORG_CONFIG
+    ;;
+  esac
+  make
+  #make check 2>&amp;1 | tee ../$packagedir-make_check.log
+  as_root make install
+  popd
+  rm -rf $packagedir
+  as_root /sbin/ldconfig
+done</userinput></screen>
+
+<screen revision="systemd"><userinput>for package in $(grep -v '^#' ../lib-&xorg-version;.md5 | awk '{print $2}')
 do
   packagedir=${package%.tar.bz2}
   tar -xf $package
