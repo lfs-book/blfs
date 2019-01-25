@@ -189,11 +189,23 @@
     <para>
       If you are going to install into the
       <filename class="directory">/opt</filename> directory, remove
-      conflicting entries. As the <systemitem class="username">root</systemitem> 
+      conflicting entries and recreate the required entries. 
+      As the <systemitem class="username">root</systemitem> 
       user:
     </para>
 
-<screen><userinput>rm -rf /opt/rustc /opt/rustc-&rust-version;</userinput></screen>
+<screen role="root"><userinput>rm -rf /opt/rustc /opt/rustc-&rust-version; &amp;&amp;
+mkdir /opt/rustc-&rust-version;             &amp;&amp;
+ln -sv rustc-&rust-version; /opt/rustc</userinput></screen>
+
+    <note>
+      <para>
+        If multiple versions of <application>Rust</application> are installed
+        in <filename class="directory">/opt</filename>, changing to another
+        version only requires changing the <filename> /opt/rustc</filename>
+        symbolic link.
+      </para>
+    </note>
 
     <para>
       Create a suitable <filename>config.toml</filename> file which will
@@ -224,7 +236,10 @@ docs = false
 extended = true
 
 [install]
-prefix = "/usr"
+# Adjust the prefix for the desired destination
+#prefix = "/usr"
+prefix = "/opt/rustc-&rust-version;"
+
 # docdir is used even if the full awesome docs are not installed
 docdir = "share/doc/rustc-&rust-version;"
 
@@ -311,39 +326,12 @@ DESTDIR=${PWD}/install ./x.py install &amp;&amp;
 unset LIBSSH2_SYS_USE_PKG_CONFIG</userinput></screen>
 
     <para>
-      If installing in the <filename class="directory">/opt</filename> 
-      directory, adjust the locations in the DESTDIR directory:
-    </para>
-
-<screen><command>mkdir -p         install/opt/rustc-&rust-version; &amp;&amp;
-mv install/usr/* install/opt/rustc-&rust-version; &amp;&amp;
-rmdir install/usr</command></screen>
-
-    <para>
       Now, as the <systemitem class="username">root</systemitem> user
       install the files from the DESTDIR:
     </para>
 
 <screen role="root"><userinput>chown -R root:root install &amp;&amp;
 cp -a install/* /</userinput></screen>
-
-    <para>
-      Finally, if the application is installed in the <filename
-      class="directory">/opt</filename> directory, create a symbolic link to
-      access the current version:
-    </para>
-
-<screen role="root"><userinput>ln -sfnv rustc-&rust-version; /opt/rustc</userinput></screen>
-
-    <note>
-      <para>
-        If multiple versions of <application>Rust</application> are installed
-        in <filename class="directory">/opt</filename>, changing to another
-        version only requires changing the <filename> /opt/rustc</filename>
-        symbolic link.
-      </para>
-    </note>
-
 
   </sect2>
 
@@ -441,7 +429,7 @@ cp -a install/* /</userinput></screen>
       <para>
         If you installed <application>rustc</application> in
         <filename class="directory">/opt</filename>, you need to update the
-        following configuration files so that <application>ruxtc</application> is
+        following configuration files so that <application>rustc</application> is
         correctly found by other packages and system processes.
       </para>
 
