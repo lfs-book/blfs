@@ -71,6 +71,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/usbutils-&usbutils-version;-lsusb_bugfixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">USB Utils Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -81,11 +91,12 @@
       usb.ids file automatically. -->
     </para>
 
+<!-- lsusb.py has been proted to Python 3, and it is the only Python user
     <bridgehead renderas="sect4">Required Runtime</bridgehead>
     <para role="required">
       <xref role="runtime" linkend="python2"/>
     </para>
-
+-->
     <para condition="html" role="usernotes">User Notes:
       <ulink url="&blfs-wiki;/usbutils"/>
     </para>
@@ -99,7 +110,8 @@
       running the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --datadir=/usr/share/hwdata &amp;&amp;
+<screen><userinput>patch -Np1 -i ../usbutils-&usbutils-version;-lsusb_bugfixes-1.patch &amp;&amp;
+./configure --prefix=/usr --datadir=/usr/share/hwdata &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -162,8 +174,7 @@ wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</userinput></
       at 2:30 A.M. (local time):</phrase>
     </para>
 
-<screen role="root" revision="sysv"><userinput>cat &gt; /etc/cron.weekly/update-
-usbids.sh &lt;&lt; "EOF" &amp;&amp;
+<screen role="root" revision="sysv"><userinput>cat &gt; /etc/cron.weekly/update-usbids.sh &lt;&lt; "EOF" &amp;&amp;
 <literal>#!/bin/bash
 /usr/bin/wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</literal>
 EOF

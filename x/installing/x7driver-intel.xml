@@ -101,10 +101,8 @@
       <title>Kernel Configuration</title>
 
     <para>
-      Enable the following options in the kernel configuration. Only one of
-      the lines <quote>Intel I810</quote> or <quote>Intel 8xx/9xx...</quote>
-      needs to be selected. If you select the latter, <quote>Enable
-      modesetting...</quote> is needed too. Recompile the kernel if necessary:
+      Enable the following options in the kernel configuration. 
+      Recompile the kernel if necessary:
     </para>
 
 <screen><literal>Device Drivers  ---&gt;
@@ -119,6 +117,12 @@
 
     <sect3 role="installation">
       <title>Installation of Xorg Intel Driver</title>
+
+      <para>
+        If you are building on i686, apply a sed to fix a type mismatch.
+      </para>
+
+<screen><userinput remap="pre">sed -i "s/#define force_inline inline __attribute__((always_inline))/#define force_inline inline/" src/sna/compiler.h</userinput></screen>
 
       <para>
         Install <application>Xorg Intel Driver</application> by running the following

@@ -6,10 +6,15 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.gz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "6790c24fe5e8fb5a5f7efbfbcc6fea65">
-  <!ENTITY rust-size          "101 MB">
-  <!ENTITY rust-buildsize     "6.5 GB (679 MB installed) including 270MB of ~/.cargo files for the user building this (add 1.4GB if running the tests)">
-  <!ENTITY rust-time          "27 SBU (add 13 SBU for tests, both with 4 processors)">
+  <!ENTITY rust-md5sum        "366f049777e00d0d6f15d25895485efb">
+  <!ENTITY rust-size          "152 MB">
+  <!-- Gentle Reminder: buildsize is how much the user requires for the real
+       install, i.e. the source with its DESTDIR *plus* the DESTDIR.  You
+       can 'mkdir /tmp/RUST ; cp -a install/* /tmp/RUST' and then run 'du -sch'
+       to measure it. -->
+
+  <!ENTITY rust-buildsize     "6.2 GB (475 MB installed) including 295MB of ~/.cargo files for the user building this. Add 1.5GB if installing the documentation (an extra 314MB is installed), and 2.0GB if running the tests">
+  <!ENTITY rust-time          "34 SBU (add 3 SBU if installing the documentation and 15 SBU for tests, both with 4 processors)">
 ]>
 
 <sect1 id="rust" xreflabel="rustc-&rust-version;">
@@ -35,12 +40,60 @@
     </para>
 
     <para>
+      This package is updated on a six-weekly release cycle. Because it is
+      such a large and slow package to build, and is at the moment only required
+      by five packages in this book, the BLFS editors take the view that it
+      should only be updated when that is necessary (either to fix problems,
+      or to allow a new version of <application>firefox</application> to build).
+    </para>
+
+    <para>
       As with many  other programming languages, rustc (the rust compiler)
       needs a binary from which to bootstrap. It will download a stage0 binary
       and many cargo crates (these are actually .tar.gz source archives) at
       the start of the build, so you cannot compile it without an internet
       connection.
     </para>
+
+    <para>
+      These crates will then remain in various forms (cache, directories of
+      extracted source), in <filename class="directory">~/.cargo</filename> for
+      ever more. It is common for large <application>rust</application> packages
+      to use multiple versions of some crates. If you purge the files before
+      updating this package, very few crates will need to be updated by the
+      packages in this book which use it (and they will be downloaded as
+      required). But if you retain an older version as a fallback option and
+      then use it (when <emphasis>not</emphasis> building in
+      <filename class="directory">/usr</filename>), it is likely that it will
+      then have to re-download some crates. For a full download (i.e. starting
+      with an empty or missing <filename class="directory">~/.cargo</filename>)
+      downloading the external cargo files for this version only takes a minute
+      or so on a fast network.
+    </para>
+
+    <note>
+      <para>
+        Although BLFS usually installs in <filename
+        class="directory">/usr</filename>, when you later upgrade to a newer
+        version of <application>rust</application> the old libraries in <filename
+        class="directory">/usr/lib/rustlib</filename> will remain, with various
+        hashes in their names, but will not be usable and will waste space. The
+        editors recommend placing the files in the <filename
+        class="directory">/opt</filename> directory.  In particular, if you
+        have reason to rebuild with a modified configuration (e.g. using the
+        shipped LLVM after building with shared LLVM, but perhaps also the
+        reverse situation) it it possible for the install to leave a broken
+        <command>cargo</command> program. In such a situation, either remove
+        the existing installation first, or use a different prefix such as
+        /opt/rustc-&rust-version;-build2.
+      </para>
+
+      <para>
+        If you prefer, you can of course change the prefix to <filename
+        class="directory">/usr</filename> and omit the
+        <command>ldconfig</command> and the actions to add rustc to the PATH.
+      </para>
+    </note>
 
     <para>
       The current <application>rustbuild</application> build-system will use
@@ -56,17 +109,16 @@
     <note>
       <para>
         Rustc defaults to building for ALL supported architectures, using a
-        shipped copy of LLVM. In BLFS the build is only for the X86 architecture.
-        Rustc still claims to require Python2, but that is only really necessary
-        when building some other architectures with the shipped LLVM. If you
-        intend to develop rust crates, this build may not be good enough for your
-        purposes.
+        shipped copy of LLVM. In BLFS the build is only for the X86
+        architecture. Rustc still claims to require Python 2, but that is only
+        really necessary when building some other architectures with the
+        shipped LLVM.
+        If you intend to develop rust crates, this build may not be good
+        enough for your purposes.
       </para>
       <para>
-        Repeated builds of this package on the same machine show a wide range
-        of build times. Some of this might be due to variations in downloading
-        the required cargo files if they are not already present, but this does
-        not seem to adequately explain the variations.
+        Unlike with previous versions, the build times of this version when
+       repeated on the same machine seem reasonably consistent.
       </para>
       <para>
         Unusually, a DESTDIR-style method is being used to install this package.
@@ -118,20 +170,23 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="curl"/>,
-      <xref linkend="cmake"/>,
+      <xref linkend="cmake"/>, and
       <xref linkend="libssh2"/>
-<!--  <xref linkend="python2"/> -->
     </para>
 
+<!-- comment out while using shipped LLVM
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <package>clang</package> from <xref linkend="llvm"/>
       (built with -DLLVM_LINK_LLVM_DYLIB=ON)
-    </para>
+    </para>-->
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gdb"/> (recommended if running the testsuite)
+      <xref linkend="gdb"/> (used by the testsuite if it is present) and
+      <xref linkend="python2"/> (if gdb is present, it must have been built
+      with Python 2 support to prevent some tests failing. Furthermore, another
+      test fails if Python 2 is not present)
     </para>
 
     <para condition="html" role="usernotes">
@@ -142,34 +197,61 @@
   <sect2 role="installation">
     <title>Installation of Rust</title>
 
+    <para>
+      To install into the
+      <filename class="directory">/opt</filename> directory, remove the symlink
+      and create a new directory (i.e. with a different name if trying a
+      modified build).
+      As the <systemitem class="username">root</systemitem> 
+      user:
+    </para>
+
+<screen role="root"><userinput>mkdir /opt/rustc-&rust-version;             &amp;&amp;
+ln -svfin rustc-&rust-version; /opt/rustc</userinput></screen>
+
     <note>
       <para>
-        This package is updated on a six-weekly release cycle. Because it is
-        such a large and slow package to build, and is at the moment only required
-        by three packages in this book, the BLFS editors take the view that it
-        should only be updated when that is necessary.
+        If multiple versions of <application>Rust</application> are installed
+        in <filename class="directory">/opt</filename>, changing to another
+        version only requires changing the <filename> /opt/rustc</filename>
+        symbolic link and then running <command>ldconfig</command>.
       </para>
     </note>
 
     <para>
-      First create a suitable <filename>config.toml</filename> file
-      which will configure the build :
+      Create a suitable <filename>config.toml</filename> file which will
+      configure the build. Unlike with previous releases, where even quite old
+      system versions of <application>LLVM</application>worked well, this
+      version ships with a development version and using the current <xref
+      linkend="llvm"/> release is known to result in breakage in some
+      circumstances.
     </para>
 
 <screen><userinput>cat &lt;&lt; EOF &gt; config.toml
 # see config.toml.example for more possible options
 [llvm]
-targets = "X86"
 
-# When using system llvm prefer shared libraries
-link-shared = true
+# use ninja
+ninja = true
+
+targets = "X86"
+# When compiling LLVM, the experimental targets (WebAssembly
+# and RISCV) are built by default - omit them
+experimental-targets = ""
 
 [build]
+# omit HTML docs to save time and space (comment this to build them)
+docs = false
+
 # install cargo as well as rust
 extended = true
 
 [install]
-prefix = "/usr"
+# Adjust the prefix for the desired destination
+#prefix = "/usr"
+prefix = "/opt/rustc-&rust-version;"
+
+# docdir is used even if the full awesome docs are not installed
 docdir = "share/doc/rustc-&rust-version;"
 
 [rust]
@@ -180,11 +262,8 @@ rpath = false
 # so disable codegen tests
 codegen-tests = false
 
-[target.x86_64-unknown-linux-gnu]
-# delete this *section* if you are not using system llvm.
-# NB the output of llvm-config (i.e. help options) may be
-# dumped to the screen when config.toml is parsed.
-llvm-config = "/usr/bin/llvm-config"
+# get a trace if there is an Internal Compiler Exception
+backtrace-on-ice = true
 
 EOF</userinput></screen>
 
@@ -194,57 +273,52 @@ EOF</userinput></screen>
     </para>
 
 <screen><userinput>export RUSTFLAGS="$RUSTFLAGS -C link-args=-lffi" &amp;&amp;
-python3 ./x.py build</userinput></screen>
+python3 ./x.py build --exclude src/tools/miri</userinput></screen>
 
-    <para>
-      The build will report it failed to compile <filename>miri</filename>
-      because of multiple potential crates for `log`, but that should be followed
-      by a message that the build completed successfully.
-    </para>
-
-    <caution>
+    <note>
       <para>
-        On AMD Ryzen processors (family 17h), the non-optimized version of libstd
-        which is compiled at the start of the tests contains two opcodes which are
-        not implemented on this CPU family. These will be logged in the
+        The testsuite will generate some messages in the
         <phrase revision="sysv">system log</phrase>
         <phrase revision="systemd">systemd journal</phrase>
-        and will be followed a few minutes later by segmentation faults. Despite
-        that, the tests continue to run, apparently normally. But the system may
-        reboot before the tests have completed. The normal optimized libraries
-        run without this problem.
+        for traps on invalid opcodes, and for segmentation faults.
+        In themselves these are nothing to worry about, just a way for the
+        test to be terminated. But if the output from the testsuite reports tests
+        which FAIL with segmentation faults (signal 11) then there may be a
+        problem.
       </para>
-      <para>
-        A mitigation is to install gdb
-        <!-- systemd apparently handles this with systemd-coredump -->
-        <phrase revision="sysv">and to run the tests with 'ulimit -C disabled'</phrase>
-        but this does not always prevent the system rebooting.
-      </para>
-    </caution>
+    </note>
 
     <para>
-      To run the tests issue
-      <command>python3 ./x.py test --verbose --no-fail-fast | tee rustc-testlog</command>:
-      as with the build, that will use all available CPUs.  This runs many suites
-      of tests (in an apparently random order), several will fail in BLFS:
-      compile-fail/issue-37131.rs require a thumbv6m-none-eabi compiler but the
-      BLFS build does not cater for
-      that, ui/issue-49851/compiler-builtins-error.rs and ui/issue-50993.rs (both
-      run twice) require a thumbv7em-none-eabihf compiler, and seven tests in
-      debuginfo-gdb will fail because gdb-8.1 changed the output format.  If
-      <application>gdb</application> has not been installed, most of the gdb tests
-      will fail.
+      To run the tests issue <command>python3 ./x.py test --verbose
+      --no-fail-fast | tee rustc-testlog</command>: as with the build, that
+      will use all available CPUs.
     </para>
 
     <para>
-      If you wish to look at the numbers for the results, you can find the total
-      number of tests which were considered by running:
+      The instructions above do not build ARM compilers, so the testsuite
+      <emphasis>will</emphasis> fail and the tests will be reported to end in
+      error, with a backtrace of the last failing test. On a good run, 3 tests
+      which need Thumb (ARM) compilers will fail, all in <filename
+      class="directory">ui/issues</filename> for issues 37131, 49851 and 50993.
+      Occasionally a fourth test,
+      <filename>run-make-fulldeps/sysroot-crates-are-unstable</filename>
+      fails. If gdb has been installed, in some circumstances three tests in
+      <filename class="directory">debuginfo</filename> also fail. As with all
+      large testsuites, other tests might
+      fail on some machines - if the number of failures is in the single digits,
+      check the log for 'FAILED' and review lines above that. Any mention of
+      SIGSEGV or signal 11 in a failing test is a cause for concern.
+    </para>
+
+    <para>
+      Therefore, you should determine the number of tests, failures, etc. The
+      total number of tests which were considered is found by running:
     </para>
 
 <screen><command>grep 'running .* tests' rustc-testlog | awk '{ sum += $2 } END { print sum }'</command></screen>
 
     <para>
-      That should report 17101 tests. Similarly, the total tests which failed can
+      That should report 15795 tests. Similarly, the total tests which failed can
       be found by running:
     </para>
 
@@ -253,7 +327,7 @@ python3 ./x.py build</userinput></screen>
     <para>
       And similarly for the tests which passed use $4, for those which were ignored
       (i.e. skipped) use $8 (and $10 for 'measured', $12 for 'filtered out' but both
-      are probably zero). The breakdown does not match the overall total.
+      are probably zero). The breakdown does not quite match the overall total.
     </para>
 
     <para>
@@ -276,6 +350,13 @@ cp -a install/* /</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>ln -svfn rustc-&rust-version; /opt/rustc</command>: if this is
+      not the first use of the <filename class="directory">/opt/rustc</filename>
+      symlink, overwrite it by forcing, and use the '-n' flag to avoid getting
+      confusing results from e.g. <command>ls -l</command>.
+    </para>
 
     <para>
       <command>targets = "X86"</command>: this avoids building all the available
@@ -302,6 +383,7 @@ cp -a install/* /</userinput></screen>
       even if they have been deleted from there after the install.
     </para>
 
+    <!-- comment while using shipped LLVM
     <para>
       <command>[target.x86_64-unknown-linux-gnu]</command>: the syntax of
       <filename>config.toml</filename> requires an <literal>llvm-config</literal>
@@ -310,13 +392,20 @@ cp -a install/* /</userinput></screen>
       on 32-bit x86. This whole section may be omitted if you wish to build
       against the shipped llvm, or do not have clang, but the resulting build will
       be larger and take longer.
-    </para>
+    </para>-->
 
     <para>
       <command>export RUSTFLAGS="$RUSTFLAGS -C link-args=-lffi"</command>:
       This adds a link to libffi to any RUSTFLAGS you may already be passing
       to the build. On some systems, linking fails to include libffi unless
       this is used. The reason why this is needed is not clear.
+    </para>
+
+    <para>
+      <command>--exclude src/tools/miri</command>: For a long time, the miri
+      crate (an interpreter for the Midlevel Intermediate Representation)
+      has failed to build on releases. It is optional, but the failure
+      messages can persuade people that the whole build failed.
     </para>
 
     <para>
@@ -337,8 +426,8 @@ cp -a install/* /</userinput></screen>
     </para>
 
     <para>
-      <command>DESTDIR=${PWD}/install ./x.py install</command>: This effects a
-      DESTDIR-style install in the source tree,creating an <filename
+      <command>DESTDIR=${PWD}/install python3 ./x.py install</command>: This
+      effects a DESTDIR-style install in the source tree,creating an <filename
       class="directory">install</filename> directory. Note that DESTDIR installs
       need an absolute path, passing 'install' will not work.
     </para>
@@ -350,6 +439,61 @@ cp -a install/* /</userinput></screen>
     </para>
 
   </sect2>
+
+  <sect2 role="configuration">
+    <title>Configuring Rust</title>
+
+    <sect3 id="rustc-config">
+      <title>Configuration Information</title>
+
+      <para>
+        If you installed <application>rustc</application> in
+        <filename class="directory">/opt</filename>, you need to update the
+        following configuration files so that <application>rustc</application> is
+        correctly found by other packages and system processes.
+      </para>
+
+      <para>
+        As the <systemitem class="username">root</systemitem> user, update
+        the <filename>/etc/ld.so.conf</filename> file and the dynamic linker's
+        run-time cache file:
+      </para>
+
+<screen role="root"><userinput>cat &gt;&gt; /etc/ld.so.conf &lt;&lt; EOF
+<literal># Begin rustc addition
+
+/opt/rustc/lib
+
+# End rustc addition</literal>
+EOF
+
+ldconfig</userinput></screen>
+
+      <indexterm zone="rustc rustc-config">
+        <primary sortas="e-etc-ld.so.conf">/etc/ld.so.conf</primary>
+      </indexterm>
+
+      <para>
+        As the <systemitem class="username">root</systemitem> user, create
+        the <filename>/etc/profile.d/rustc.sh</filename> file:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/profile.d/rustc.sh &lt;&lt; "EOF"
+<literal># Begin /etc/profile.d/rustc.sh
+
+pathprepend /opt/rustc/bin           PATH
+
+# End /etc/profile.d/rustc.sh</literal>
+EOF</userinput></screen>
+
+      <para>Immediately after installation, update the current PATH 
+      for your current shell as a normal user:</para>
+
+<screen><userinput>source /etc/profile.d/rustc.sh</userinput></screen>
+
+    </sect3>
+  </sect2>
+
 
   <sect2 role="content">
     <title>Contents</title>

@@ -6,10 +6,10 @@
 
   <!ENTITY mercurial-download-http "https://www.mercurial-scm.org/release/mercurial-&mercurial-version;.tar.gz">
   <!ENTITY mercurial-download-ftp  " ">
-  <!ENTITY mercurial-md5sum        "2da7ead4517ddb65f997bc27c6483686">
-  <!ENTITY mercurial-size          "6.6 MB">
-  <!ENTITY mercurial-buildsize     "68 MB (add 625 MB for tests)">
-  <!ENTITY mercurial-time          "0.4 SBU (add 9.3 SBU for tests using -j4)">
+  <!ENTITY mercurial-md5sum        "ec804d7f8cb611639894f6211943db6e">
+  <!ENTITY mercurial-size          "6.7 MB">
+  <!ENTITY mercurial-buildsize     "70 MB (add 663 MB for tests)">
+  <!ENTITY mercurial-time          "0.4 SBU (add 9.9 SBU for tests using -j4)">
 ]>
 
 <sect1 id="mercurial" xreflabel="Mercurial-&mercurial-version;">
@@ -99,7 +99,9 @@
     <para>To build the documentation (requires <xref linkend="docutils"/>), 
     issue:</para>
 
-<screen><userinput>make doc</userinput></screen>
+<screen><userinput>sed -i '/runrst/s/N)/N)3/' doc/Makefile &amp;&amp;
+2to3-3.7 -w doc/hgmanpage.py            &amp;&amp;
+make doc</userinput></screen>
 
 <!-- All tests pass (or are skipped) at version 3.8.2
     <para>Running the test suite is optional. Tests which fail may be disabled,
@@ -172,6 +174,22 @@ EOF</userinput></screen>
 
   </sect2>
 
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+      <para>
+        <command>sed -i '/runrst/s/N)/N)3/' doc/Makefile</command>: force use
+        of <application>Python 3</application> for commands using docutils,
+        allowing to use the docutils <application>Python 3</application> module.
+      </para>
+
+      <para>
+        <command>2to3-3.7 -w doc/hgmanpage.py</command>: Since <application>
+        Python 3</application> is used with docutils, one file needs to be
+        converted in order to be compatible.
+      </para>
+
+  </sect2>
   <sect2 role="configuration">
     <title>Configuring Mercurial</title>
 
