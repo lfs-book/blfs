@@ -6,9 +6,9 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "d1ff5fac4a1c6d406724b4447821b5d5">
+  <!ENTITY thunderbird-md5sum        "d0f7a7d878febe2f776d9b79e2dd5552">
   <!ENTITY thunderbird-size          "272 MB">
-  <!ENTITY thunderbird-buildsize     "8.0 GB (141 MB installed)">
+  <!ENTITY thunderbird-buildsize     "6.6 GB (133 MB installed)">
   <!ENTITY thunderbird-time          "31 SBU (with -j4, 75 SBU with -j1)">
   <!-- Verified the time at -j1 on another system for posterity's sake. -->
 ]>
@@ -91,7 +91,8 @@
     <para role="recommended">
       <xref linkend="icu"/>,
       <xref linkend="libevent"/>,
-      <xref linkend="libvpx"/>,
+<!-- Fails to build with version 1.8.0
+      <xref linkend="libvpx"/>,-->
       <xref linkend="nspr"/>,
       <xref linkend="nss"/>, and
       <xref linkend="sqlite"/>
@@ -134,7 +135,6 @@
       <!--<xref linkend="gst10-plugins-base"/> (with
       <xref linkend="gst10-plugins-good"/> and
       <xref linkend="gst10-libav"/> at runtime),-->
-      <xref linkend="llvm"/>,
       <!-- <xref linkend="openjdk"/>, not in build log -->
       <xref linkend="pulseaudio"/>,
       <xref linkend="startup-notification"/>,
@@ -198,11 +198,13 @@ ac_add_options --disable-gconf
 # recommended dependencies:
 ac_add_options --enable-system-sqlite
 ac_add_options --with-system-libevent
-ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-icu
-<!-- These do not seem to be needed any more
+<!--Not with libvpx-1.8.0 or later
+ac_add_options - -with-system-libvpx
+====
+These do not seem to be needed any more
 # Set CFLAGS and CXXFLAGS to prevent segfaults due to aggressive
 # optimizations in GCC-6:
 export CFLAGS+=" -fno-delete-null-pointer-checks -fno-lifetime-dse -fno-schedule-insns2"
