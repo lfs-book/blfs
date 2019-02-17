@@ -71,6 +71,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact" revision="sysv">
+      <listitem>
+        <para>
+          Recommended patch:
+          <ulink url="&patch-root;/gdm-&gdm-version;-elogind-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">GDM Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -117,6 +127,13 @@
 useradd -c "GDM Daemon Owner" -d /var/lib/gdm -u 21 \
         -g gdm -s /bin/false gdm &amp;&amp;
 passwd -ql gdm</userinput></screen>
+
+    <para revision="sysv">
+      Apply a patch to use <xref linkend="elogind"/> session tracking:
+    </para>
+
+<screen revision="sysv"><userinput>patch -Np1 -i ../gdm-&gdm-version;-elogind-1.patch &amp;&amp;
+autoreconf -fi</userinput></screen>
 
     <para>
       Install <application>GDM</application> by running the following
@@ -215,9 +232,18 @@ install -v -m644 data/gdm.service /lib/systemd/system/gdm.service</userinput></s
     </sect3>
 
     <sect3 id="gdm-init">
-      <title>Systemd Units</title>
+      <title><phrase revision="sysv">Boot Script</phrase>
+             <phrase revision="systemd">Systemd Unit</phrase></title>
 
-      <para>
+      <para revision="sysv">
+        To start the <command>gdm</command> automatically when the system
+        is booted, install the <filename>/etc/rc.d/init.d/httpd</filename>
+        init script included in the <xref linkend="bootscripts"/> package and
+        set the default runlevel to 5 (graphical login) as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+      <para revision="systemd">
         To start the <command>gdm</command> daemon at boot, enable
         the previously installed systemd unit by running the following command
         as the <systemitem class="username">root</systemitem> user:
@@ -227,7 +253,10 @@ install -v -m644 data/gdm.service /lib/systemd/system/gdm.service</userinput></s
         <primary sortas="f-gdm">gdm</primary>
       </indexterm>
 
-<screen role="root"><userinput>systemctl enable gdm</userinput></screen>
+<screen role="root" revision="sysv"><userinput>make install-gdm &amp;&amp;
+sed /initdefault/s/3/5/ -i /etc/inittab</userinput></screen>
+
+<screen role="root" revision="systemd"><userinput>systemctl enable gdm</userinput></screen>
 
     </sect3>
 
