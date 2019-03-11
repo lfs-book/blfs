@@ -80,12 +80,6 @@
           <ulink url="&patch-root;/polkit-&polkit-version;-security_patch-3.patch"/>
         </para>
       </listitem>
-      <listitem revision="sysv">
-        <para>
-          Reecommended patch:
-          <ulink url="&patch-root;/polkit-&polkit-version;-elogind-1.patch"/>
-        </para>
-      </listitem>
     </itemizedlist>
 
     <bridgehead renderas="sect3">Polkit Dependencies</bridgehead>
@@ -185,13 +179,6 @@ useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
 
 <screen><userinput>patch -Np1 -i ../polkit-&polkit-version;-security_patch-3.patch</userinput></screen>
 
-    <para revision="sysv">
-      Apply a patch to fix issues with elogind:
-    </para>
-
-<screen revision="sysv"><userinput>patch -Np1 -i ../polkit-0.115-elogind-1.patch &amp;&amp;
-autoreconf -fi</userinput></screen>
-
     <para>
       Install <application>Polkit</application> by running the following
       commands:
@@ -200,7 +187,9 @@ autoreconf -fi</userinput></screen>
 <screen><userinput>./configure --prefix=/usr                    \
             --sysconfdir=/etc                \
             --localstatedir=/var             \
-            --disable-static                 &amp;&amp;
+	    --disable-static                 \
+	    --enable-libelogind              \
+	    --disable-libystemd-login        &amp;&amp;
 make</userinput></screen>
 
     <para>

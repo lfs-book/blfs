@@ -70,16 +70,6 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact" revision="sysv">
-      <listitem>
-        <para>
-          Recommended patch:
-          <ulink url="&patch-root;/xorg-server-&xorg-server-version;-elogind-2.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
 <!-- Prime support is now automatically added in DRI3, and this patch
      may break things on some setups.
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
@@ -141,13 +131,6 @@
 
 <screen><userinput>patch -Np1 -i ../xorg-server-&xorg-server-version;-add_prime_support-1.patch</userinput></screen>-->
 
-    <para revision="sysv">
-      Apply a patch to add <application>elogind</application> support:
-    </para>
-
-<screen revision="sysv"><userinput>patch -Np1 -i ../xorg-server-&xorg-server-version;-elogind-3.patch &amp;&amp;
-autoreconf -fi</userinput></screen>
-
     <para>
       Install the server by running the following commands:
     </para>
@@ -185,23 +168,18 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
       intel driver.
     </para>
 
-    <para revision="sysv">
-      <parameter>--enable-install-setuid</parameter>: If not using
-      <xref linkend="elogind"/>, the Xorg binary must run
-      as the root user. This switch ensures that the binary is installed
-      setuid when <command>make</command> is run by an unprivileged user.
-    </para>
-
     <para>
       <parameter>--enable-suid-wrapper</parameter>: Build suid-root wrapper for
       legacy driver support on rootless xserver systems.
     </para>
 
-    <para revision="systemd">
+    <para>
       <option>--disable-systemd-logind --enable-install-setuid</option>:
-      These switches disable systemd-logind integration and restore the setuid
-      bit to the Xorg executable, allowing Xorg Server to work
-      without having the systemd PAM module installed and set up.
+      These switches disable <phrase revision="system">systemd-logind<phrase>
+      <phrase revision="sysv">elogind</phrase> integration and restore the
+      setuid bit to the Xorg executable, allowing Xorg Server to work
+      without having the <phrase revision="systemd">systemd</phrase>
+      <phrase revision="elogind">elogind</phrase> PAM module configured.
     </para>
 
     <para>
