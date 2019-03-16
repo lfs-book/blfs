@@ -71,16 +71,6 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact" revision="sysv">
-      <listitem revision="sysv">
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/ModemManager-&ModemManager-version;-elogind-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">ModemManager Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -111,24 +101,18 @@
   <sect2 role="installation">
     <title>Installation of ModemManager</title>
 
-    <para revision="sysv">
-      Apply a patch to correct elogind detection:
-    </para>
-
-<screen revision="sysv"><userinput>patch -Np1 -i ../ModemManager-&ModemManager-version;-elogind-1.patch &amp;&amp;
-autoreconf -fi</userinput></screen>
-
     <para>
       Install <application>ModemManager</application> by running the following
       commands:
     </para>
 
-<screen revision="sysv"><userinput>./configure --prefix=/usr             \
-            --sysconfdir=/etc         \
-            --localstatedir=/var      \
-            --disable-static          \
-            --enable-more-warnings=no \
-            --with-elogind-suspend-resume=yes &amp;&amp;
+<screen revision="sysv"><userinput>./configure --prefix=/usr                 \
+            --sysconfdir=/etc             \
+            --localstatedir=/var          \
+            --disable-static              \
+	    --enable-more-warnings=no     \
+	    --with-systemd-journal=no     \
+            --with-systemd-suspend-resume &amp;&amp;
 make</userinput></screen>
 
 <screen revision="systemd"><userinput>./configure --prefix=/usr                 \
@@ -156,21 +140,18 @@ make</userinput></screen>
 
     <title>Command Explanations</title>
 
-    <para revision="sysv">
-      <parameter>--with-elogind-suspend-resume=yes</parameter>: This switch
-      forces <application>ModmeManager</application> to use the
-      <application>elogind</application> power management facilities.
-    </para>
-
-    <para revision="systemd">
+    <para>
       <parameter>--with-systemd-suspend-resume</parameter>: This
       switch forces <application>ModemManager</application> to use the
-      <application>systemd</application> power management facilities.
+      <phrase revision="sysv"><application>elogind</application></phrase>
+      <phrase revision="systemd"><application>systemd</application></phrase>
+      power management facilities.
     </para>
 
-    <para revision="systemd">
+    <para>
       <parameter>--with-systemd-journal</parameter>: This switch forces
-      <application>ModemManager</application> to use the systemd journal for
+      <application>ModemManager</application>
+      <phrase revision="sysv">not</phrase> to use the systemd journal for
       logging.
     </para>
 
