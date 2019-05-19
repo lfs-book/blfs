@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY NetworkManager-download-http
-           "&gnome-download-http;/NetworkManager/1.14/NetworkManager-&NetworkManager-version;.tar.xz">
+           "&gnome-download-http;/NetworkManager/1.18/NetworkManager-&NetworkManager-version;.tar.xz">
   <!ENTITY NetworkManager-download-ftp
-           "&gnome-download-ftp;/NetworkManager/1.14/NetworkManager-&NetworkManager-version;.tar.xz">
-  <!ENTITY NetworkManager-md5sum        "6881d04fe72e09a98bd9bfb26813544b">
-  <!ENTITY NetworkManager-size          "4.2 MB">
-  <!ENTITY NetworkManager-buildsize     "662 MB (with tests)">
-  <!ENTITY NetworkManager-time          "1.0 SBU (with tests)">
+           "&gnome-download-ftp;/NetworkManager/1.18/NetworkManager-&NetworkManager-version;.tar.xz">
+  <!ENTITY NetworkManager-md5sum        "5d4dd0d5ac86f0b616880e44420b8eb5">
+  <!ENTITY NetworkManager-size          "4.6 MB">
+  <!ENTITY NetworkManager-buildsize     "777 MB (with tests)">
+  <!ENTITY NetworkManager-time          "0.9 SBU (with tests)">
 ]>
 
 <sect1 id="NetworkManager" xreflabel="NetworkManager-&NetworkManager-version;">
@@ -99,6 +99,7 @@
       <xref linkend="dhcp"/> (client only),
       <xref linkend="gobject-introspection"/>,
       <xref linkend="iptables"/>,
+      <xref linkend="jansson"/>,
       <xref linkend="newt"/> (for <command>nmtui</command>),
       <xref linkend="nss"/>,
       <xref linkend="polkit"/>,
@@ -116,7 +117,6 @@
       <xref linkend="dbus-python"/> (for the test suite),
       <xref linkend="gnutls"/> (used if <xref linkend="nss"/> is not found),
       <xref linkend="gtk-doc"/>,
-      <xref linkend="jansson"/>,
       <xref linkend="libpsl"/>,
       <xref linkend="qt5"/> (for examples),
       <xref linkend="ModemManager"/>,
@@ -163,7 +163,7 @@
     </para>
 
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
-cd build    &amp;&amp;
+cd    build &amp;&amp;
 
 CXXFLAGS+="-O2 -fPIC"            \
 meson --prefix /usr              \
@@ -187,7 +187,7 @@ meson --prefix /usr              \
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
-cd build    &amp;&amp;
+cd    build    &amp;&amp;
 
 CXXFLAGS+="-O2 -fPIC"            \
 meson --prefix /usr              \
@@ -253,6 +253,12 @@ mv -v /usr/share/doc/NetworkManager{,-&NetworkManager-version;}</userinput></scr
       <parameter>-Dlibpsl=false</parameter>, and
       <parameter>-Dovs=false</parameter>: These switches disable building with the
       respective libraries. Remove if you have the needed libraries installed.
+    </para>
+
+    <para>
+      <parameter>-Dlibpsl=false</parameter>: This switch is required if
+      <application>libpsl</application> is not installed. Omit this switch if
+      you have built <application>libpsl</application>.
     </para>
 
     <para>

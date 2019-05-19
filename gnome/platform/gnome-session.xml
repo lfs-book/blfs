@@ -5,10 +5,10 @@
   %general-entities;
 
   <!ENTITY gnome-session-download-http
-           "&gnome-download-http;/gnome-session/&gnome-minor-30;/gnome-session-&gnome-session-version;.tar.xz">
+           "&gnome-download-http;/gnome-session/&gnome-minor-32;/gnome-session-&gnome-session-version;.tar.xz">
   <!ENTITY gnome-session-download-ftp
-           "&gnome-download-ftp;/gnome-session/&gnome-minor-30;/gnome-session-&gnome-session-version;.tar.xz">
-  <!ENTITY gnome-session-md5sum        "45c33dfaad7d40c008f8131aff2e0391">
+           "&gnome-download-ftp;/gnome-session/&gnome-minor-32;/gnome-session-&gnome-session-version;.tar.xz">
+  <!ENTITY gnome-session-md5sum        "86e0c1aa81c8b61b2077deae2ae279b8">
   <!ENTITY gnome-session-size          "476 KB">
   <!ENTITY gnome-session-buildsize     "15 MB">
   <!ENTITY gnome-session-time          "0.2 SBU">
@@ -72,16 +72,6 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact" revision="sysv">
-      <listitem>
-        <para>
-          Recommended patch:
-          <ulink url="&patch-root;/gnome-session-&gnome-session-version;-elogind-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">GNOME Session Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -123,12 +113,6 @@
 
 <screen><userinput>sed 's@/bin/sh@/bin/sh -l@' -i gnome-session/gnome-session.in</userinput></screen>
 
-    <para revision="sysv">
-      Apply a patch to use <xref linkend="elogind"/> session tracking:
-    </para>
-
-<screen revision="sysv"><userinput>patch -Np1 -i ../gnome-session-&gnome-session-version;-elogind-1.patch</userinput></screen>
-
     <para>
       Install <application>GNOME Session</application> by
       running the following commands:
@@ -138,8 +122,6 @@
 cd    build &amp;&amp;
 
 meson --prefix=/usr           \
-      -Delogind=true          \
-      -Dsystemd=false         \
       -Dsystemd_journal=false \
       .. &amp;&amp;
 ninja</userinput></screen>

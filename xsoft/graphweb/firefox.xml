@@ -6,15 +6,15 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;/source/firefox-&firefox-version;.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "e4ddf50ea701995287461c2170ceca9b">
-  <!ENTITY firefox-size          "267 MB">
+  <!ENTITY firefox-md5sum        "a3d00fb4e950558135f08a5155745d4e">
+  <!ENTITY firefox-size          "269 MB">
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "9.4 GB (149 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "11.8 GB (156 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
-  <!ENTITY firefox-time          "26 SBU (with parallelism=4) without tests">
+  <!ENTITY firefox-time          "25 SBU (with parallelism=4) without tests">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
@@ -229,7 +229,7 @@ ac_add_options --disable-necko-wifi
 
 # Uncomment the following line if you wish to use Google's geolocaton API
 # (needed for use with saved maps with Google Maps)
-#ac_add_options --with-google-api-keyfile=$PWD/google-key
+#ac_add_options --with-google-location-service-api-keyfile=$PWD/google-key
 
 # Uncomment this line if you have installed startup-notification:
 #ac_add_options --enable-startup-notification
@@ -258,6 +258,13 @@ ac_add_options --with-system-icu
 
 # The gold linker is no-longer the default
 ac_add_options --enable-linker=gold
+
+# The shipped libdavid (av1 decoder) is not built by default,
+# at least on linux, but if nasm is not present libxul tries to
+# link to one of libdavid's objects and fails.  It is thought
+# libdavid will be enabled in firefox-67, at which point nasm
+# might be required.
+ac_add_options --disable-av1
 
 # You cannot distribute the binary if you do this
 ac_add_options --enable-official-branding
@@ -297,6 +304,14 @@ ac_add_options --with-system-bz2
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
+
+# The following option unsets Telemetry Reporting. With the Addons Fiasco,
+# Mozilla was found to be collecting user's data, including saved passwords and
+# web form data, without users consent. Mozilla was also found shipping updates
+# to systems without the user's knowledge or permission.
+# As a result of this, use the following command to permanently disable
+# telemetry reporting in Firefox.
+unset MOZ_TELEMETRY_REPORTING
 
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir</literal>
 EOF</userinput></screen>

@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gdm-download-http "&gnome-download-http;/gdm/&gnome-minor-30;/gdm-&gdm-version;.tar.xz">
-  <!ENTITY gdm-download-ftp  "&gnome-download-ftp;/gdm/&gnome-minor-30;/gdm-&gdm-version;.tar.xz">
-  <!ENTITY gdm-md5sum        "b60868258eab8c01badcc9c680234e8e">
+  <!ENTITY gdm-download-http "&gnome-download-http;/gdm/&gnome-minor-32;/gdm-&gdm-version;.tar.xz">
+  <!ENTITY gdm-download-ftp  "&gnome-download-ftp;/gdm/&gnome-minor-32;/gdm-&gdm-version;.tar.xz">
+  <!ENTITY gdm-md5sum        "6aea9c398b2c0edb494c932d5865e877">
   <!ENTITY gdm-size          "1.2 MB">
-  <!ENTITY gdm-buildsize     "44 MB">
-  <!ENTITY gdm-time          "0.4 SBU">
+  <!ENTITY gdm-buildsize     "43 MB">
+  <!ENTITY gdm-time          "0.3 SBU">
 ]>
 
 <sect1 id="gdm" xreflabel="GDM-&gdm-version;">
@@ -81,16 +81,6 @@
       </listitem>
     </itemizedlist>
     -->
-    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact" revision="sysv">
-      <listitem>
-        <para>
-          Recommended patch:
-          <ulink url="&patch-root;/gdm-&gdm-version;-elogind-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">GDM Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -133,19 +123,24 @@ useradd -c "GDM Daemon Owner" -d /var/lib/gdm -u 21 \
         -g gdm -s /bin/false gdm &amp;&amp;
 passwd -ql gdm</userinput></screen>
 
-    <para revision="sysv">
-      Apply a patch to use <xref linkend="elogind"/> session tracking:
-    </para>
-
-<screen revision="sysv"><userinput>patch -Np1 -i ../gdm-&gdm-version;-elogind-1.patch &amp;&amp;
-autoreconf -fi</userinput></screen>
-
     <para>
       Install <application>GDM</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr         \
+<screen revision="sysv"><userinput>sed 's@systemd@elogind@' -i data/pam-lfs/gdm-launch-environment.pam &amp;&amp;
+
+./configure --prefix=/usr         \
+            --sysconfdir=/etc     \
+            --localstatedir=/var  \
+            --without-plymouth    \
+            --disable-static      \
+	    --enable-gdm-xsession \
+            --with-systemdsystemunitdir=no \
+            --with-pam-mod-dir=/lib/security &amp;&amp;
+make</userinput></screen>
+
+<screen revision="systemd"><userinput>./configure --prefix=/usr         \
             --sysconfdir=/etc     \
             --localstatedir=/var  \
             --without-plymouth    \
@@ -162,7 +157,9 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
+<screen role="root" revision="sysv"><userinput>make install</userinput></screen>
+
+<screen role="root" revision="systemd"><userinput>make install &amp;&amp;
 install -v -m644 data/gdm.service /lib/systemd/system/gdm.service</userinput></screen>    
 
   </sect2>
@@ -236,7 +233,7 @@ install -v -m644 data/gdm.service /lib/systemd/system/gdm.service</userinput></s
 
       <para revision="sysv">
         To start the <command>gdm</command> automatically when the system
-        is booted, install the <filename>/etc/rc.d/init.d/httpd</filename>
+        is booted, install the <filename>/etc/rc.d/init.d/gdm</filename>
         init script included in the <xref linkend="bootscripts"/> package and
         set the default runlevel to 5 (graphical login) as the
         <systemitem class="username">root</systemitem> user:

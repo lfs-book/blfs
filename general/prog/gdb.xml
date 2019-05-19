@@ -6,10 +6,10 @@
 
   <!ENTITY gdb-download-http "&gnu-http;/gdb/gdb-&gdb-version;.tar.xz">
   <!ENTITY gdb-download-ftp  "&gnu-ftp;/gdb/gdb-&gdb-version;.tar.xz">
-  <!ENTITY gdb-md5sum        "f8b2562e830a4098dd5b5ea9e9296c70">
-  <!ENTITY gdb-size          "19 MB">
-  <!ENTITY gdb-buildsize     "599 MB (add 55 MB for tests, add 723 MB for docs)">
-  <!ENTITY gdb-time          "1.8 SBU (Using parallelism=4; add 66 SBU for tests, add 0.6 SBU for docs)">
+  <!ENTITY gdb-md5sum        "bbd95b2f9b34621ad7a19a3965476314">
+  <!ENTITY gdb-size          "20 MB">
+  <!ENTITY gdb-buildsize     "630 MB (add 57 MB for tests, add 750 MB for docs)">
+  <!ENTITY gdb-time          "2.0 SBU (Using parallelism=4; add 66 SBU for tests, add 0.6 SBU for docs)">
 ]>
 
 <sect1 id="gdb" xreflabel="GDB-&gdb-version;">
@@ -76,6 +76,13 @@
 
     <bridgehead renderas="sect3">GDB Dependencies</bridgehead>
 
+    <bridgehead renderas="sect4">Recommended Runtime Dependency</bridgehead>
+    <para role="recommended">
+      <xref linkend="six"/> (Python 3 module, required at run-time to
+      use GDB scripts from various LFS/BLFS packages with Python 3
+      installed in LFS)
+    </para>
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="dejagnu"/> (required for tests),
@@ -102,7 +109,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --with-system-readline &amp;&amp;
+<screen><userinput>./configure --prefix=/usr \
+            --with-system-readline \
+            --with-python=/usr/bin/python3 &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -132,7 +141,7 @@ popd</userinput></screen>
       <listitem>
         <para>
           Clean directories are needed if re-running the tests.  For that
-          reason, it is recommended to make a copy of the compiled source code
+          reason, make a copy of the compiled source code
           directory before the tests in case you need to run the tests again. 
         </para>
       </listitem>
@@ -142,17 +151,6 @@ popd</userinput></screen>
           Results depend on installed compilers.
         </para>
       </listitem>
-        
-<!-- They worked fine for me. [renodr] 7.11.1 -->
-
-<!--
-      <listitem>
-        <para>
-          If run remotely over an ssh connection, the tests will hang 
-          and require a hard (power cycle) reset of the system.
-        </para>
-      </listitem>
--->
         
       <listitem>
         <para>
@@ -175,6 +173,14 @@ popd</userinput></screen>
           <filename>&lt;sys/sdt.h&gt;</filename>, part of <ulink
           url="https://sourceware.org/systemtap/">SystemTap</ulink>, is
           present.
+        </para>
+      </listitem>
+
+      <listitem>
+        <para>
+          If the test suite is run on a Skylake-based Intel CPU or newer,
+          many tests will fail due to the removal of the deprecated/problematic
+          libmpx library in GCC.
         </para>
       </listitem>
         
@@ -211,6 +217,13 @@ cp -Rv gdb/doc/doxy /usr/share/doc/gdb-&gdb-version;</userinput></screen>
       <parameter>--with-system-readline</parameter>: This switch forces
       <application>GDB</application> to use the copy of
       <application>Readline</application> installed in LFS.
+    </para>
+
+    <para>
+      <parameter>--with-python=/usr/bin/python3</parameter>: This switch
+      forces <application>GDB</application> to use Python 3 installed
+      in LFS.  Remove this switch if you have installed
+      <xref linkend="python2"/> and want to use it instead of Python 3.
     </para>
 
   </sect2>

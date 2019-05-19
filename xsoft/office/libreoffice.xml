@@ -7,31 +7,31 @@
   <!ENTITY libreoffice-dl "http://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "fb2408407984e465cc33c3d8f977e883">
+  <!ENTITY libreoffice-core-md5sum        "7c3c6f9b4b1e7907a69cd69c7bbc8d14">
   <!ENTITY libreoffice-core-size          "204 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "3c6350a3f31840340b1eb7e39e3b4fdc">
+  <!ENTITY libreoffice-dict-md5sum        "4f7be74303e7a788d2edc0d8253a5ad6">
   <!ENTITY libreoffice-dict-size          "43 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "5081a3a5a314338534a43c51824f725b">
-  <!ENTITY libreoffice-help-size          "16 MB">
+  <!ENTITY libreoffice-help-md5sum        "bb0bb8fbd50174f198ef4119e332a26f">
+  <!ENTITY libreoffice-help-size          "13 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum        "756a979411f8d4be6d339692e98e3619">
+  <!ENTITY libreoffice-translations-md5sum        "8b5e13f4336772180597ce1df760b74a">
   <!ENTITY libreoffice-translations-size          "136 MB">
 
   <!-- full size still accurate for 6.0.2, reconfiguring and rebuilding
    the built source after initial DESTDIR install doesn't take a vast time -->
 
-  <!ENTITY libreoffice-buildsize  "6.2 GB (767 MB installed). Installing the whole set of languages was previously reported to require up to 26 GB (2.9 GB installed)">
+  <!ENTITY libreoffice-buildsize  "6.3 GB (765 MB installed). Installing the whole set of languages was previously reported to require up to 26 GB (2.9 GB installed)">
 
   <!-- for 6.1.2.1 I allowed 2 SBU for downloads, my total was 
        64.76 SBU with fast downloads 
        for 6.1.4.2 I just used the total time - bdubbs
   -->
-  <!ENTITY libreoffice-time "63 SBU with parallelism=4 including typical download time">
+  <!ENTITY libreoffice-time "65 SBU with parallelism=4 including typical download time">
 
 ]>
 
@@ -188,7 +188,9 @@ For libreoffice 6.2.0.4, almost blfs 8.4: no patch needed, only a sed below
       <xref linkend="curl"/>,
       <xref linkend="dbus-glib"/>,
       <xref linkend="libjpeg"/>,
+      <xref linkend="glm"/>,
       <xref linkend="glu"/>,
+      <xref linkend="gpgme"/>,
       <xref linkend="graphite2"/>,
       <xref linkend="gst10-plugins-base"/>,
       <xref linkend="gtk3"/> and
@@ -239,7 +241,6 @@ For libreoffice 6.2.0.4, almost blfs 8.4: no patch needed, only a sed below
       <ulink url="https://projects.coin-or.org/CoinMP/">CoinMP</ulink>,
       <ulink url="http://sourceforge.net/projects/cppunit/">Cppunit</ulink>,
       <ulink url="http://www.firebirdsql.org/">Firebird</ulink>,
-      <ulink url="http://downloads.sourceforge.net/glew/">glew (OpenGL Extension Wrangler Library)</ulink>,
       <ulink url="https://github.com/behdad/glyphy">glyphy</ulink>,
       <ulink url="http://ftp.gnome.org/pub/gnome/sources/gnome-vfs/">Gnome VFS</ulink>,
 
@@ -266,7 +267,6 @@ For libreoffice 6.2.0.4, almost blfs 8.4: no patch needed, only a sed below
       <ulink url="http://lpsolve.sourceforge.net/">lp_solve</ulink>,
       <ulink url="https://gitlab.com/mdds/mdds">mdds</ulink>,
       <ulink url="http://sourceforge.net/projects/hunspell/files/MyThes/">MyThes</ulink>,
-      <ulink url="http://sourceforge.net/projects/ogl-math/">ogl-math - OpenGL Mathematics (GLM)</ulink>,
       <ulink url="https://github.com/KhronosGroup/OpenCOLLADA/">OpenCOLLADA</ulink>,
       <ulink url="https://gitlab.com/orcus/orcus">Orcus</ulink>,
       <phrase revision="sysv"><ulink url="http://telepathy.freedesktop.org/releases/telepathy-glib/">telepathy-glib</ulink></phrase>
@@ -297,7 +297,7 @@ For libreoffice 6.2.0.4, almost blfs 8.4: no patch needed, only a sed below
       </para>
     </important>
 
-<screen><userinput>tar -xf libreoffice-&libreoffice-dlversion;.tar.xz --no-overwrite-dir &amp;&amp;
+<screen role="nodump"><userinput>tar -xf libreoffice-&libreoffice-dlversion;.tar.xz --no-overwrite-dir &amp;&amp;
 cd libreoffice-&libreoffice-dlversion;</userinput></screen>
 
 <!-- keep a commented instruction if no patches are currently required
@@ -308,12 +308,6 @@ cd libreoffice-&libreoffice-dlversion;</userinput></screen>
 
 <screen><userinput>patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-consolidated_fixes-1.patch</userinput></screen>
 -->
-    <para>
-      Fix a type mismatch introduced by recent versions of <xref
-      linkend="boost"/>:
-    </para>
-
-<screen><userinput>sed -i 's/loaded;/bool{loaded};/' sfx2/source/appl/shutdownicon.cxx</userinput></screen>
 
     <para>
       Create symlinks to tarballs from the source directory so they won't
@@ -386,12 +380,15 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
              --with-system-clucene       \
              --with-system-curl          \
              --with-system-expat         \
+             --with-system-glm           \
+             --with-system-gpgmepp       \
              --with-system-graphite      \
              --with-system-harfbuzz      \
              --with-system-icu           \
              --with-system-jpeg          \
              --with-system-lcms2         \
              --with-system-libatomic_ops \
+             --with-system-libgpgmepp    \
              --with-system-libpng        \
              --with-system-libxml        \
              --with-system-neon          \

@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY gnome-shell-download-http
-           "&gnome-download-http;/gnome-shell/&gnome-minor-30;/gnome-shell-&gnome-shell-version;.tar.xz">
+           "&gnome-download-http;/gnome-shell/&gnome-minor-32;/gnome-shell-&gnome-shell-version;.tar.xz">
   <!ENTITY gnome-shell-download-ftp
-           "&gnome-download-ftp;/gnome-shell/&gnome-minor-30;/gnome-shell-&gnome-shell-version;.tar.xz">
-  <!ENTITY gnome-shell-md5sum        "3aef5c837c85f6e5318b845fc844b1fe">
+           "&gnome-download-ftp;/gnome-shell/&gnome-minor-32;/gnome-shell-&gnome-shell-version;.tar.xz">
+  <!ENTITY gnome-shell-md5sum        "059529c91a3d84e6542f662be47a657f">
   <!ENTITY gnome-shell-size          "1.4 MB">
-  <!ENTITY gnome-shell-buildsize     "53 MB">
-  <!ENTITY gnome-shell-time          "0.4 SBU">
+  <!ENTITY gnome-shell-buildsize     "63 MB">
+  <!ENTITY gnome-shell-time          "0.3 SBU">
 ]>
 
 <sect1 id="gnome-shell" xreflabel="gnome-shell-&gnome-shell-version;">
@@ -72,29 +72,19 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/gnome-shell-&gnome-shell-version;-security_fix-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">GNOME Shell Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="caribou"/>,
       <xref linkend="evolution-data-server"/>,
       <xref linkend="gjs"/>,
       <xref linkend="gnome-control-center"/>,
       <xref linkend="libcroco"/>,
       <xref linkend="mutter"/>,
-      <xref linkend="sassc"/>,<phrase revision="sysv"> and</phrase>
-      <xref linkend="startup-notification"/><phrase revision="systemd">, and
-      <xref linkend="systemd"/></phrase>
+      <xref linkend="sassc"/>,
+      <xref linkend="startup-notification"/>, and
+      <phrase revision="sysv"><xref linkend="elogind"/></phrase>
+      <phrase revision="systemd"><xref linkend="systemd"/></phrase>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -133,19 +123,7 @@
       following commands:
     </para>
 
-<screen revision="sysv"><userinput>patch -Np1 -i ../gnome-shell-&gnome-shell-version;-security_fix-1.patch &amp;&amp;
-
-mkdir build &amp;&amp;
-cd    build &amp;&amp;
-
-meson --prefix=/usr    \
-      -Dsystemd=false  \
-      -Dsystemdunitdir=no .. &amp;&amp;
-ninja</userinput></screen>
-
-<screen revision="systemd"><userinput>patch -Np1 -i ../gnome-shell-&gnome-shell-version;-security_fix-1.patch &amp;&amp;
-
-mkdir build &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson --prefix=/usr .. &amp;&amp;
@@ -178,8 +156,9 @@ ninja</userinput></screen>
           gnome-shell, gnome-shell-extension-prefs, gnome-shell-extension-tool,
           and gnome-shell-perf-tool
         </seg>
-       <seg>
-          libgnome-shell-browser-plugin.so (Browser Plugin)
+        <seg>
+          <!-- libgnome-shell-browser-plugin.so (Browser Plugin) -->
+          None
         </seg>
         <seg>
           /usr/lib/gnome-shell,

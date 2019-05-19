@@ -152,7 +152,14 @@ make</userinput></screen>
       user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
+<screen role="root" revision="sysv"><userinput>make install &amp;&amp;
+mkdir -pv /etc/X11/xorg.conf.d &amp;&amp;
+cat &gt;&gt; /etc/sysconfig/createfiles &lt;&lt; "EOF"
+<literal>/tmp/.ICE-unix dir 1777 root root
+/tmp/.X11-unix dir 1777 root root</literal>
+EOF</userinput></screen>
+
+<screen role="root" revision="systemd"><userinput>make install &amp;&amp;
 mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
 
   </sect2>
@@ -180,6 +187,14 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
       setuid bit to the Xorg executable, allowing Xorg Server to work
       without having the <phrase revision="systemd">systemd</phrase>
       <phrase revision="elogind">elogind</phrase> PAM module configured.
+    </para>
+
+    <para revision="sysv">
+      <command>cat &gt;&gt; /etc/sysconfig/createfiles...</command>: This
+      command creates the <filename class="directory">/tmp/.ICE-unix</filename>
+      and <filename class="directory">/tmp/.X11-unix</filename> directories at
+      startup, and ensures that the permissions and ownership are correct as
+      required by the server.
     </para>
 
     <para>
