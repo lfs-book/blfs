@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY qtbase-download-http "&qt5-url;/qtbase-everywhere-src-&qt5-version;.tar.xz">
+  <!ENTITY qtbase-download-ftp  " ">
+  <!ENTITY qtbase-md5sum        "0eb522ff6c2194f9690cbdcd5b33e803">
+  <!ENTITY qtbase-size          "48 MB">
+  <!ENTITY qtbase-buildsize     "4.4 GB (145 MB installed)">
+  <!ENTITY qtbase-time          "64 SBU (Using parallelism=4)">
+]>
+
+<sect1 id="qtbase" xreflabel="qtbase-&qt5-version;">
+  <?dbhtml filename="qtbase.html"?>
+
+  <sect1info>
+    <othername>$LastChangedBy$</othername>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>Qt-&qt5-version; Base</title>
+
+  <indexterm zone="qtbase">
+    <primary sortas="a-qtbase">qtbase</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Qt Library</title>
+
+    <para>
+      <application>Qt5</application> is a cross-platform application framework
+      that is widely used for developing application software with a graphical
+      user interface (GUI) (in which cases <application>Qt5</application> is
+      classified as a widget toolkit), and also used for developing non-GUI
+      programs such as command-line tools and consoles for servers. One of the
+      major users of <application>Qt</application> is <application>KDE
+      Frameworks 5 (KF5)</application>.
+    </para>
+
+    <para>
+      <application>Qt5</application> is made of several modules, which are not
+      all necessary for a given application. It has its own building tool
+      (<command>qmake</command>), and provides a complete development
+      environment. The instructions on this page allow to set up that
+      environment and to build basic modules.
+    </para>
+
+    &lfs10_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&qtbase-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&qtbase-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &qtbase-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &qtbase-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &qtbase-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &qtbase-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Qt5 Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend='xorg7-lib'/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+
+    <para role="recommended">
+      <xref linkend="cups"/>,
+      <xref linkend="glib2"/>,
+      <xref linkend="harfbuzz"/>,
+      <xref linkend="icu"/>,
+<!-- not sure      <xref linkend="jasper"/>, -->
+      <xref linkend="libjpeg"/>,
+<!-- not sure      <xref linkend="libmng"/>, -->
+      <xref linkend="libpng"/>,
+<!-- not sure      <xref linkend="libtiff"/>, -->
+<!-- seems not tested here      <xref linkend="libwebp"/>, -->
+      <xref linkend="libxkbcommon"/>,
+      <xref linkend="mesa"/>,
+      <xref linkend="mitkrb"/>,
+      <xref linkend="mtdev"/>,
+      <xref linkend="pcre2"/>,
+      <xref linkend="sqlite"/>,
+<!-- not sure      <xref linkend="wayland"/> (<application>Mesa</application>
+      must be built with <application>Wayland</application> EGL
+      backend), -->
+<!-- not sure      <xref linkend="xcb-util-image"/>,
+      <xref linkend="xcb-util-keysyms"/>,
+      <xref linkend="xcb-util-renderutil"/>, --> and
+      <xref linkend="xcb-util-wm"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="db"/>,
+      <xref linkend="gtk3"/>,
+      <xref linkend="ibus"/>,
+      <xref linkend="libinput"/>,
+      <xref linkend="mariadb"/>
+        or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="postgresql"/>,
+      <xref linkend="unixodbc"/>,
+      <ulink url="http://www.firebirdsql.org/">Firebird</ulink>, 
+      <ulink url="http://www.freetds.org/">FreeTDS</ulink>,
+      <ulink url="https://github.com/mity/md4c/">libmd4c</ulink>,
+      <ulink url="https://openal.org/">OpenAL</ulink>,
+      <ulink url="https://www.khronos.org/openvg/">openvg</ulink>,
+      <ulink url="http:///www.tslib.org/">tslib</ulink>, and
+      <ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>
+    </para>
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/qtbase"/>
+    </para>
+  </sect2>
+
+  <sect2 role="qt5-prefix">
+    <title>Setting the installation prefix</title>
+
+    <bridgehead renderas="sect3">Installing in /opt/qt5</bridgehead>
+
+    <para>
+      The BLFS editors recommend installing <application>Qt5</application> in a
+      directory other than <filename class="directory">/usr</filename>, ie
+      <filename class="directory">/opt/qt5</filename>.  To do this,  set the
+      following environment variable:
+    </para>
+
+<screen><userinput>export QT5PREFIX=/opt/qt5</userinput></screen>
+
+    <tip>
+      <para>
+        Sometimes, the installation paths are hardcoded into installed files.
+        This is the reason why <filename class="directory">/opt/qt5</filename>
+        is used as installation prefix instead of <filename
+        class="directory">/opt/qt-&qt5-version;</filename>. To create a
+        versioned <application>Qt5</application> directory after the 
+        installation is complete, you may rename the directory and create a
+        symlink:
+      </para>
+
+<screen role="root"><userinput>mkdir /opt/qt-&qt5-version;
+ln -sfnv qt-&qt5-version; /opt/qt5</userinput></screen>
+
+      <para>
+        Later on, you may want to install other versions of
+        <application>Qt5</application>. To do that, just remove the symlink
+        and use <filename class="directory">/opt/qt5</filename> as the
+        prefix again. Which version of <application>Qt5</application> you
+        use depends only on where the symlink points.
+      </para>
+    </tip>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of qtbase</title>
+
+    <warning>
+      <para>
+        If <application>Qt5</application> is being reinstalled into the
+        same directory as an existing instance, run the commands done by
+        <systemitem class="username">root</systemitem>, such as
+        <command>make install</command>, from a console or non-Qt5 based
+        window manager. It overwrites <application>Qt5</application>
+        libraries that should not be in use during the install process.
+      </para>
+    </warning>
+
+    <caution>
+      <para>
+        If you did not install some of the recommended dependencies, examine
+        <command>./configure --help</command> output to check how to disable
+        them or use internal versions bundled in the source tarball.
+      </para>
+    </caution>
+
+   <note>
+      <para>
+        The BLFS editors do not recommend installing <application>Qt5</application>
+        into the /usr hierarchy because it becomes difficult to find
+        components and to update to a new version.  If you do want to install
+        <application>Qt5</application> in /usr, the directories need to
+        be specified explicitly.  In this case, set QT5PREFIX=/usr and add
+        the following to the configure arguments below:
+      </para>
+
+<screen role="nodump"><userinput>            -archdatadir    /usr/lib/qt5                \
+            -bindir         /usr/bin                    \
+            -plugindir      /usr/lib/qt5/plugins        \
+            -importdir      /usr/lib/qt5/imports        \
+            -headerdir      /usr/include/qt5            \
+            -datadir        /usr/share/qt5              \
+            -docdir         /usr/share/doc/qt5          \
+            -translationdir /usr/share/qt5/translations \
+            -examplesdir    /usr/share/doc/qt5/examples</userinput></screen>
+    </note>
+
+    <para>
+      Install <application>qtbase</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>./configure -prefix $QT5PREFIX                        \
+            -sysconfdir /etc/xdg                      \
+            -confirm-license                          \
+            -opensource                               \
+            -dbus-linked                              \
+            -openssl-linked                           \
+            -system-sqlite                            \
+            -nomake examples                          \
+            -no-rpath                                 &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+    <!-- EDITORS NOTE: If you are updating this package, use INSTALL_ROOT=
+         instead of DESTDIR= -->
+
+    <para>
+      Remove references to the build directory from installed library
+      dependency (prl) files by running the following
+      commands as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>find $QT5DIR/ -name \*.prl \
+   -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;</userinput></screen>
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>-confirm-license</parameter>: Accept license
+      without prompting user during configuration.
+    </para>
+
+    <para>
+      <parameter>-opensource</parameter>: Install the opensource
+      version of <application>Qt</application>.
+    </para>
+
+    <para>
+      <parameter>-nomake examples</parameter>: This switch
+      disables building of the example programs included
+      in the source tarball. Remove it if you want to build
+      them.
+    </para>
+
+    <para>
+      <parameter>-system-sqlite</parameter>: This switch enables use
+      of the system version of <application>SQLite</application>.
+    </para>
+
+   <para>
+      <parameter>-system-sqlite</parameter>: This switch enables use
+      of the system version of <application>SQLite</application>.
+    </para>
+
+    <para>
+      <parameter>-dbus-linked -openssl-linked</parameter>: These
+      switches enable explicit linking of the
+      <application>D-Bus</application> and
+      <application>OpenSSL</application> libraries into
+      <application>Qt5</application> libraries instead of
+      <command>dlopen()</command>-ing them.
+    </para>
+
+  </sect2>
+
+  <sect2 role="configuration">
+    <title>Configuring qtbase</title>
+
+    <sect3 id="qtbase-config">
+      <title>Configuration Information</title>
+
+      <para>
+        If you installed <application>qtbase</application> in
+        <filename class="directory">/usr</filename>, create an
+        environment variable needed by certain packages.
+        As the <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="nodump"><userinput>cat &gt; /etc/profile.d/qtbase.sh &lt;&lt; "EOF"
+<literal># Begin /etc/profile.d/qtbase.sh
+
+QT5DIR=/usr
+export QT5DIR
+
+# End /etc/profile.d/qtbase.sh</literal>
+EOF</userinput></screen>
+
+      <para>
+        If <xref linkend="sudo"/> is installed, QT5DIR should be available to
+        the super user as well. Execute the following commands as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/sudoers.d/qt &lt;&lt; "EOF"
+<literal>Defaults env_keep += QT5DIR</literal>
+EOF</userinput></screen>
+
+      <para>
+        If you installed <application>qtbase</application> in a location other
+        than <filename class="directory">/usr</filename>, you need to update the
+        following configuration files so that <application>qtbase</application>
+        is correctly found by other packages and system processes.
+      </para>
+
+      <para>
+        As the <systemitem class="username">root</systemitem> user, update
+        the <filename>/etc/ld.so.conf</filename> file and the dynamic linker's
+        run-time cache file:
+      </para>
+
+<screen role="root"><userinput>cat &gt;&gt; /etc/ld.so.conf &lt;&lt; EOF
+<literal># Begin Qt addition
+
+/opt/qt5/lib
+
+# End Qt addition</literal>
+EOF
+
+ldconfig</userinput></screen>
+
+      <indexterm zone="qtbase qtbase-config">
+        <primary sortas="e-etc-ld.so.conf">/etc/ld.so.conf</primary>
+      </indexterm>
+
+      <para>
+        As the <systemitem class="username">root</systemitem> user, create
+        the <filename>/etc/profile.d/qtbase.sh</filename> file:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/profile.d/qtbase.sh &lt;&lt; "EOF"
+<literal># Begin /etc/profile.d/qtbase.sh
+
+QT5DIR=/opt/qt5
+
+pathappend $QT5DIR/bin           PATH
+pathappend $QT5DIR/lib/pkgconfig PKG_CONFIG_PATH
+
+export QT5DIR
+
+# End /etc/profile.d/qtbase.sh</literal>
+EOF</userinput></screen>
+
+    </sect3>
+
+  </sect2>
+
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          qtwebengine_convert_dict and 
+          QtWebEngineProcess (in $QT5DIR/libexec)
+        </seg>
+        <seg>
+          libQt5Pdf.so,
+          libQt5PdfWidgets.so,
+          libQt5WebEngineCore.so, 
+          libQt5WebEngine.so, and 
+          libQt5WebEngineWidgets.so
+        </seg>
+        <seg>
+          $QT5DIR/include/QtPdf,
+          $QT5DIR/include/QtPdfWidgets,
+          $QT5DIR/include/QtWebEngine,
+          $QT5DIR/include/QtWebEngineCore,
+          $QT5DIR/include/QtWebEngineWidgets,
+          $QT5DIR/qml/QtWebEngine, and
+          $QT5DIR/translations/qtwebengine_locales
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+<!--    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+    </variablelist>-->
+  </sect2>
+</sect1>
