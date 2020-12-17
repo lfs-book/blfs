@@ -8,8 +8,8 @@
   <!ENTITY qtbase-download-ftp  " ">
   <!ENTITY qtbase-md5sum        "0eb522ff6c2194f9690cbdcd5b33e803">
   <!ENTITY qtbase-size          "48 MB">
-  <!ENTITY qtbase-buildsize     "4.4 GB (145 MB installed)">
-  <!ENTITY qtbase-time          "64 SBU (Using parallelism=4)">
+  <!ENTITY qtbase-buildsize     "2.4 GB (96 MB installed)">
+  <!ENTITY qtbase-time          "4.7 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="qtbase" xreflabel="qtbase-&qt5-version;">
@@ -253,8 +253,23 @@ make</userinput></screen>
       commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>find $QT5DIR/ -name \*.prl \
+<screen role="root"><userinput>find $QT5PREFIX/ -name \*.prl \
    -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;</userinput></screen>
+
+<!-- dubious, looks like VLC can cope with non suffixed programs.
+     Furthermore, qmlcachegen is needed by VLC, and not installed
+     by qtbase. Means this should be done after qttools install. -->
+    <para>
+      Some packages such as <xref linkend='vlc'/> look for certain
+      executables with a -qt5 suffix.  Run the following command as the
+      <systemitem class="username">root</systemitem> user
+      to create the necessary symlinks:
+    </para>
+
+<screen role="root"><userinput>for file in moc qmake rcc uic; do
+  ln -sfrvn $QT5PREFIX/bin/$file /usr/bin/$file-qt5
+done</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
@@ -311,13 +326,13 @@ make</userinput></screen>
         As the <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="nodump"><userinput>cat &gt; /etc/profile.d/qtbase.sh &lt;&lt; "EOF"
-<literal># Begin /etc/profile.d/qtbase.sh
+<screen role="nodump"><userinput>cat &gt; /etc/profile.d/qt5.sh &lt;&lt; "EOF"
+<literal># Begin /etc/profile.d/qt5.sh
 
 QT5DIR=/usr
 export QT5DIR
 
-# End /etc/profile.d/qtbase.sh</literal>
+# End /etc/profile.d/qt5.sh</literal>
 EOF</userinput></screen>
 
       <para>
@@ -359,11 +374,11 @@ ldconfig</userinput></screen>
 
       <para>
         As the <systemitem class="username">root</systemitem> user, create
-        the <filename>/etc/profile.d/qtbase.sh</filename> file:
+        the <filename>/etc/profile.d/qt5.sh</filename> file:
       </para>
 
-<screen role="root"><userinput>cat &gt; /etc/profile.d/qtbase.sh &lt;&lt; "EOF"
-<literal># Begin /etc/profile.d/qtbase.sh
+<screen role="root"><userinput>cat &gt; /etc/profile.d/qt5.sh &lt;&lt; "EOF"
+<literal># Begin /etc/profile.d/qt5.sh
 
 QT5DIR=/opt/qt5
 
@@ -372,7 +387,7 @@ pathappend $QT5DIR/lib/pkgconfig PKG_CONFIG_PATH
 
 export QT5DIR
 
-# End /etc/profile.d/qtbase.sh</literal>
+# End /etc/profile.d/qt5.sh</literal>
 EOF</userinput></screen>
 
     </sect3>
@@ -390,33 +405,199 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          qtwebengine_convert_dict and 
-          QtWebEngineProcess (in $QT5DIR/libexec)
+          fixqt4headers.pl,
+          moc,
+          qdbuscpp2xml,
+          qdbusxml2cpp,
+          qlalr,
+          qmake,
+          qvkgen,
+          rcc,
+          syncqt.pl,
+          tracegen, and
+          uic
         </seg>
         <seg>
-          libQt5Pdf.so,
-          libQt5PdfWidgets.so,
-          libQt5WebEngineCore.so, 
-          libQt5WebEngine.so, and 
-          libQt5WebEngineWidgets.so
+          libQt5AccessibilitySupport.a,
+          libQt5Bootstrap.a,
+          libQt5Concurrent.so,
+          libQt5Core.so,
+          libQt5DBus.so,
+          libQt5DeviceDiscoverySupport.a,
+          libQt5EdidSupport.a,
+          libQt5EglFSDeviceIntegration.so,
+          libQt5EglFsKmsSupport.so,
+          libQt5EglSupport.a,
+          libQt5EventDispatcherSupport.a,
+          libQt5FbSupport.a,
+          libQt5FontDatabaseSupport.a,
+          libQt5GlxSupport.a,
+          libQt5Gui.so,
+          libQt5InputSupport.a,
+          libQt5KmsSupport.a,
+          libQt5Network.so,
+          libQt5OpenGLExtensions.a,
+          libQt5OpenGL.so,
+          libQt5PlatformCompositorSupport.a,
+          libQt5PrintSupport.so,
+          libQt5ServiceSupport.a,
+          libQt5Sql.so,
+          libQt5Test.so,
+          libQt5themeSupport.a,
+          libQt5Widgets.so,
+          libQt5XcbQpa.so,
+          libQt5XkbCommonSupport.a, and
+          libQt5Xml.so
         </seg>
         <seg>
-          $QT5DIR/include/QtPdf,
-          $QT5DIR/include/QtPdfWidgets,
-          $QT5DIR/include/QtWebEngine,
-          $QT5DIR/include/QtWebEngineCore,
-          $QT5DIR/include/QtWebEngineWidgets,
-          $QT5DIR/qml/QtWebEngine, and
-          $QT5DIR/translations/qtwebengine_locales
+          /opt/qt5 and /opt/qt-&qt5-version;, or, if installing
+          in /usr: /usr/include/qt5, /usr/lib/qt5, /usr/share/{,doc}/qt5
         </seg>
       </seglistitem>
     </segmentedlist>
 
-<!--    <variablelist>
+    <variablelist>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-    </variablelist>-->
+     <varlistentry id="fixqt4headers.pl">
+        <term><command>fixqt4headers.pl</command></term>
+        <listitem>
+          <para>
+            is a script to replace all Qt 4 style includes with Qt 5 includes.
+          </para>
+          <indexterm zone="qtbase fixqt4headers.pl">
+            <primary sortas="b-fixqt4headers.pl">fixqt4headers.pl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="moc-qt5">
+        <term><command>moc</command></term>
+        <listitem>
+          <para>
+            generates Qt meta object support code.
+          </para>
+          <indexterm zone="qtbase moc-qt5">
+            <primary sortas="b-moc-qt5">moc</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="qdbuscpp2xml-qt5">
+        <term><command>qdbuscpp2xml</command></term>
+        <listitem>
+          <para>
+            takes a C++ source file and generates a D-Bus XML definition
+            of the interface.
+          </para>
+          <indexterm zone="qtbase qdbuscpp2xml-qt5">
+            <primary sortas="b-qdbuscpp2xml-qt5">qdbuscpp2xml</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="qdbusxml2cpp-qt5">
+        <term><command>qdbusxml2cpp</command></term>
+        <listitem>
+          <para>
+            is a tool that can be used to parse interface descriptions
+            and produce static code representing those interfaces,
+          </para>
+          <indexterm zone="qtbase qdbusxml2cpp-qt5">
+            <primary sortas="b-qdbusxml2cpp-qt5">qdbusxml2cpp</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="qlalr-qt5">
+        <term><command>qlalr</command></term>
+        <listitem>
+          <para>
+            is a tool used to generate code from grammar specifications.
+          </para>
+          <indexterm zone="qtbase qlalr-qt5">
+            <primary sortas="b-qlalr-qt5">qlalr</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="qmake-qt5">
+        <term><command>qmake</command></term>
+        <listitem>
+          <para>
+            uses information stored in project files to
+            determine what should go in the makefiles it
+            generates.
+          </para>
+          <indexterm zone="qtbase qmake-qt5">
+            <primary sortas="b-qmake-qt5">qmake</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="qvkgen">
+        <term><command>qvkgen</command></term>
+        <listitem>
+          <para>
+            converts Vulkan specfiles to C++ headers and code.
+          </para>
+          <indexterm zone="qtbase qvkgen">
+            <primary sortas="b-qvkgen">qvkgen</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="rcc-qt5">
+        <term><command>rcc</command></term>
+        <listitem>
+          <para>
+            is a resource compiler used in conjunction with designer.
+          </para>
+          <indexterm zone="qtbase rcc-qt5">
+            <primary sortas="b-rcc-qt5">rcc</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+     <varlistentry id="syncqt.pl-qt5">
+        <term><command>syncqt.pl</command></term>
+        <listitem>
+          <para>
+            is a script to create the forwarding headers in the include
+            directories. It is an internal development tool.
+          </para>
+          <indexterm zone="qtbase syncqt.pl-qt5">
+            <primary sortas="b-syncqt.pl-qt5">syncqt.pl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracegen">
+        <term><command>tracegen</command></term>
+        <listitem>
+          <para>
+            is a trace generator for LTTng or ETW.
+          </para>
+          <indexterm zone="qtbase tracegen">
+            <primary sortas="b-tracegen">tracegen</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="uic-qt5">
+        <term><command>uic</command></term>
+        <listitem>
+          <para>
+            is a Qt user interface compiler.
+          </para>
+          <indexterm zone="qtbase uic-qt5">
+            <primary sortas="b-uic-qt5">uic</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
   </sect2>
 </sect1>
