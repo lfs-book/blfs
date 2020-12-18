@@ -21,62 +21,85 @@
     <date>$Date$</date>
   </sect1info>
 
-  <title>Qt-&qt5-version;</title>
+  <title>Qt-&qt5-version; Modules</title>
 
   <indexterm zone="qt5">
-    <primary sortas="a-Qt">Qt</primary>
+    <primary sortas="a-Qt">Qt Modules</primary>
   </indexterm>
 
-  <sect2 role="package">
-    <title>Introduction to Qt5</title>
+  <para>
+    After the <xref linkend="qtbase"/> has been installed, various modules
+    can be added to provide more functionalities. They are divided in several
+    groups, each of which depend on the precedent:
+  </para>
 
-    <para>
-      <application>Qt5</application> is a cross-platform application framework
-      that is widely used for developing application software with a graphical
-      user interface (GUI) (in which cases <application>Qt5</application> is
-      classified as a widget toolkit), and also used for developing non-GUI
-      programs such as command-line tools and consoles for servers. One of the
-      major users of <application>Qt</application> is <application>KDE
-      Frameworks 5 (KF5)</application>.
-    </para>
+  <itemizedlist spacing="compact">
+    <listitem>
+      <para>
+        <xref linkend="qt-basic"/> are used in almost all
+        <application>Qt5</application> based applications, and
+        must be built first.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        The <xref linkend="qt-kde"/> are needed for
+        <xref linkend="kf5-frameworks"/> and <xref linkend="plasma5-build"/>.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        The huge <xref linkend="stwebengine"/> integrates
+        <application>chromium</application>'s web capabilities into
+        <application>Qt5</application>
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        <xref linkend="qt-miscellaneous"/> are not needed for building
+        packages in the book, but can be built for a complete installation
+        of <application>Qt5</application>
+      </para>
+    </listitem>
+  </itemizedlist>
 
-    &lfs10_checked;
+  &lfs10_checked;
 
-    <bridgehead renderas="sect3">Package Information</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Download (HTTP): <ulink url="&qt5-download-http;"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Download (FTP): <ulink url="&qt5-download-ftp;"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Download MD5 sum: &qt5-md5sum;
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Download size: &qt5-size;
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Estimated disk space required: &qt5-buildsize;
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Estimated build time: &qt5-time;
-        </para>
-      </listitem>
-    </itemizedlist>
+  <bridgehead renderas="sect3">Package Information</bridgehead>
+  <itemizedlist spacing="compact">
+    <listitem>
+      <para>
+        Download (HTTP): <ulink url="&qt5-download-http;"/>
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        Download (FTP): <ulink url="&qt5-download-ftp;"/>
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        Download MD5 sum: &qt5-md5sum;
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        Download size: &qt5-size;
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        Estimated disk space required: &qt5-buildsize;
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+        Estimated build time: &qt5-time;
+      </para>
+    </listitem>
+  </itemizedlist>
 
-    <bridgehead renderas="sect3">Qt5 Dependencies</bridgehead>
+  <bridgehead renderas="sect3">Qt5 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
@@ -146,49 +169,39 @@
     </para>
   </sect2>
 
-  <sect2 role="qt5-prefix">
-    <title>Setting the installation prefix</title>
-
-    <bridgehead renderas="sect3">Installing in /opt/qt5</bridgehead>
+  <sect2>
+    <title>Creating the module list and utility functions</title>
 
     <para>
-      The BLFS editors recommend installing <application>Qt5</application> in a
-      directory other than <filename class="directory">/usr</filename>, ie
-      <filename class="directory">/opt/qt5</filename>.  To do this,  set the
-      following environment variable:
+      Create the list of modules in the proper order as follows:
     </para>
 
-<screen><userinput>export QT5PREFIX=/opt/qt5</userinput></screen>
+<screen><userinput>cat &gt; qt5-submodules-&qt5-version;.md5 &lt;&lt; "EOF"
+<literal># Begin basic group
+739403634e1326a3d52902a835015a4b  qttools-everywhere-src-5.15.2.tar.xz
+c0f5c1c2cc1b66e56ce4ef13a2b7093a  qtsvg-everywhere-src-5.15.2.tar.xz
+92cf72015788bb4dcab14494f2835b32  qtx11extras-everywhere-src-5.15.2.tar.xz
+26577fbbe0d011b7034bca3c64bc38ae  qtwayland-everywhere-src-5.15.2.tar.xz
+# End basic group
+# Begin KDE group
+# TODO
+# End KDE group
+# Begin qtwebengine
+c88cbe3158feb20c4feb3d54262feb23  qtwebengine-everywhere-src-5.15.2.tar.xz
+# End qtwebengine
+# Begin optional group
+# TODO
+# End optional group</literal>
+EOF</userinput></screen>
 
-    <tip>
-      <para>
-        Sometimes, the installation paths are hardcoded into installed files.
-        This is the reason why <filename class="directory">/opt/qt5</filename>
-        is used as installation prefix instead of <filename
-        class="directory">/opt/qt-&qt5-version;</filename>. To create a
-        versioned <application>Qt5</application> directory after the 
-        installation is complete, you may rename the directory and create a symlink:
-      </para>
+    <para>
+      Next create two utility functions, one for module building, the other
+      for switching to user <systemitem class="username">root</systemitem>:
+    </para>
 
-<screen role="root"><userinput>mkdir /opt/qt-&qt5-version;
-ln -sfnv qt-&qt5-version; /opt/qt5</userinput></screen>
-
-      <para>
-        Later on, you may want to install other versions of
-        <application>Qt5</application>. To do that, just remove the symlink
-        and use <filename class="directory">/opt/qt5</filename> as the
-        prefix again. Which version of <application>Qt5</application> you
-        use depends only on where the symlink points.
-      </para>
-    </tip>
-
-    <note>
-      <para>
-        If <xref linkend="qca"/> has been installed and you are 
-        reinstalling or updating this package, then  
-        <application>qca</application> will need to be reinstalled.
-      </para>
-    </note>
+<screen><userinput>module_build() {
+# MD5_ENTRY contains the md5sum entry from the .md5 file for this module
+md5sum -c - <<< $MD5_ENTRY
 
   </sect2>
 
