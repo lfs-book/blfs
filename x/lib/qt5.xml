@@ -194,21 +194,70 @@ c88cbe3158feb20c4feb3d54262feb23  qtwebengine-everywhere-src-5.15.2.tar.xz
 EOF</userinput></screen>
 
     <para>
-      Next create two utility functions, one for module building, the other
-      for switching to user <systemitem class="username">root</systemitem>:
+      Next create two utility functions, one for switching to user
+      <systemitem class="username">root</systemitem>, the other for
+      module building:
     </para>
 
-<screen><userinput>module_build() {
-# MD5_ENTRY contains the md5sum entry from the .md5 file for this module
-md5sum -c - &lt;&lt;&lt; $MD5_ENTRY
-}</userinput></screen>
+<screen><userinput>as_root() {
+  if   [ "$EUID" = 0 ];      then $*
+  elif [ -x /usr/bin/sudo ]; then sudo $*
+  else                            su -c \\"$*\\"
+  fi
+}
+
+export -f as_root
+
+module_build() {
+  # MD5_ENTRY contains the md5sum entry from the .md5 file for this module
+  echo $MD5_ENTRY | read md5 tarball
+
+  # download
+  wget &qt5-dwonload-http;$tarball
+  md5sum -c - &lt;&lt;&lt; "$MD5_ENTRY" || exit 1
+
+  packagedir=${tarball%.tar*} 
+
+  tar -xf $file
+  pushd $packagedir
+    # OPTIONS contains the qmake options
+    if[ -n "$OPTIONS" ]; then
+      qmake -- $OPTIONS
+    else
+      qmake
+    fi
+    make
+    as_root make install
+  popd
+
+  rm -rf $packagedir
+  as_root /sbin/ldconfig
+}
+
+export -f module_build</userinput></screen>
   </sect2>
 
   <sect2 id="qt-basic">
-    <title>Installation of Basic Modules</title>
+    <title>Basic Qt5 Modules</title>
+
+    <para role="required">
+      The modules in this group only depend on <xref linkend="qtbase"/>
+      and a properly set <envar>QTDIR</envar> environment variable.
+    </para>
+
     <para>
       Install the basic modules with the following instructions:
     </para>
+
+<screen><userinput>( # start a subshell
+set -e # exit the subshell in case of error
+
+unset OPTIONS
+sed -n "/Begin basic/,/End basic/p" | while read MD5_ENTRY; do
+  if [ -z "${MD5_ENTRY%\#*}" ]; then continue; fi
+  module_build
+done
+)
   </sect2>
 
   <sect2 id="qt-kde">
