@@ -201,7 +201,7 @@ EOF</userinput></screen>
 
 <screen><userinput>as_root() {
   if   [ "$EUID" = 0 ];      then $*
-  elif [ -x /usr/bin/sudo ]; then sudo $*
+  elif [ -x /usr/bin/sudo ]; then sudo -E $*
   else                            su -c \\"$*\\"
   fi
 }
@@ -228,6 +228,7 @@ module_build() {
     fi
     make
     as_root make install
+    if type -p post_install; then as_root post_install; fi
   popd
 
   rm -rf $packagedir
@@ -254,8 +255,87 @@ set -e # exit the subshell in case of error
 
 unset OPTIONS
 sed -n "/Begin basic/,/End basic/p" | while read MD5_ENTRY; do
-  if [ -z "${MD5_ENTRY%\#*}" ]; then continue; fi
+  if [ -z "${MD5_ENTRY%\#*}" ]; then continue; fi
+  case "$MD5_ENTRY" in
+    *qttools*)
+      post_install(){
+        QT5BINDIR=$QTDIR/bin
+
+        install -v -dm755 /usr/share/pixmaps/
+
+        install -v -Dm644 src/assistant/assistant/images/assistant-128.png \
+                  /usr/share/pixmaps/assistant-qt5.png
+
+        install -v -Dm644 src/designer/src/designer/images/designer.png \
+                  /usr/share/pixmaps/designer-qt5.png
+
+        install -v -Dm644 src/linguist/linguist/images/icons/linguist-128-32.png \
+                  /usr/share/pixmaps/linguist-qt5.png
+
+        install -v -Dm644 qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png \
+                  /usr/share/pixmaps/qdbusviewer-qt5.png
+
+        install -dm755 /usr/share/applications
+
+        cat &gt; /usr/share/applications/assistant-qt5.desktop &lt;&lt; EOF
+[Desktop Entry]
+Name=Qt5 Assistant
+Comment=Shows Qt5 documentation and examples
+Exec=$QT5BINDIR/assistant
+Icon=assistant-qt5.png
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Documentation;
+EOF
+
+        cat &gt; /usr/share/applications/designer-qt5.desktop &lt;&lt; EOF
+[Desktop Entry]
+Name=Qt5 Designer
+GenericName=Interface Designer
+Comment=Design GUIs for Qt5 applications
+Exec=$QT5BINDIR/designer
+Icon=designer-qt5.png
+MimeType=application/x-designer;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+        EOF
+
+        cat &gt; /usr/share/applications/linguist-qt5.desktop &lt;&lt; EOF
+[Desktop Entry]
+Name=Qt5 Linguist
+Comment=Add translations to Qt5 applications
+Exec=$QT5BINDIR/linguist
+Icon=linguist-qt5.png
+MimeType=text/vnd.trolltech.linguist;application/x-linguist;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+EOF
+
+        cat &gt; /usr/share/applications/qdbusviewer-qt5.desktop &lt;&lt; EOF
+[Desktop Entry]
+Name=Qt5 QDbusViewer
+GenericName=D-Bus Debugger
+Comment=Debug D-Bus applications
+Exec=$QT5BINDIR/qdbusviewer
+Icon=qdbusviewer-qt5.png
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Debugger;
+EOF
+      }
+      export -f post_install ;;
+
+    *) unset -f post_install ;;
+  esac
+
   module_build
+
 done
 )</userinput></screen>
   </sect2>
