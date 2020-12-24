@@ -235,6 +235,11 @@ module_build() {
     rm -rf $packagedir
   }
   as_root /sbin/ldconfig
+
+  #   Remove references to the build directory from installed library
+  #   dependency (prl) files:
+  find $QT5DIR/ -name \*.prl \
+     -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
 }
 
 export -f module_build</userinput></screen>
@@ -245,7 +250,7 @@ export -f module_build</userinput></screen>
 
     <para role="required">
       The modules in this group only depend on <xref linkend="qtbase"/>
-      and a properly set <envar>QTDIR</envar> environment variable.
+      and a properly set <envar>QT5DIR</envar> environment variable.
     </para>
 
     <para>
@@ -262,7 +267,7 @@ sed -n "/Begin basic/,/End basic/p" qt5-submodules-&qt5-version;.md5 | \
   case "$MD5_ENTRY" in
     *qttools*)
       post_install(){
-        QT5BINDIR=$QTDIR/bin
+        QT5BINDIR=$QT5DIR/bin
 
         as_root sh &lt;&lt; ROOT_EOF
         install -v -dm755 /usr/share/pixmaps/
@@ -342,6 +347,12 @@ ROOT_EOF
   module_build
 
 done
+#     Some packages such as vlc look for certain
+#     executables with a -qt5 suffix:
+for file in lconvert lrelease lupdate; do
+  as_root ln -sfrvn $QT5DIR/bin/$file /usr/bin/$file-qt5
+done
+
 )</userinput></screen>
 
     <sect3 role="content">
@@ -385,19 +396,19 @@ done
             libQt5X11Extras.so
           </seg>
           <seg>
-            $QTDIR/phrasebooks,
-            $QTDIR/include/{QtUiTools,QtHelp,QtDesigner,QtX11Extras,QtSvg},
-            $QTDIR/include/{QtWaylandCompositor,QtWaylandClient},
-            $QTDIR/include/{QtDesignerComponents,QtUiPlugin},
-            $QTDIR/lib/cmake/{Qt5AttributionsScannerTools,Qt5Help,Qt5Designer},
-            $QTDIR/lib/cmake/{Qt5X11Extras,Qt5Svg,Qt5UiTools,Qt5DocTools},
-            $QTDIR/lib/cmake/{Qt5WaylandCompositor,Qt5WaylandClient},
-            $QTDIR/lib/cmake/{Qt5DesignerComponents,Qt5UiPlugin},
-            $QTDIR/lib/cmake/Qt5LinguistTools,
-            $QTDIR/plugins/wayland-graphics-integration-client,
-            $QTDIR/plugins/wayland-graphics-integration-server,
-            $QTDIR/plugins/wayland-decoration-client, and
-            $QTDIR/plugins/iconengines
+            $QT5DIR/phrasebooks,
+            $QT5DIR/include/{QtUiTools,QtHelp,QtDesigner,QtX11Extras,QtSvg},
+            $QT5DIR/include/{QtWaylandCompositor,QtWaylandClient},
+            $QT5DIR/include/{QtDesignerComponents,QtUiPlugin},
+            $QT5DIR/lib/cmake/{Qt5AttributionsScannerTools,Qt5Help,Qt5Designer},
+            $QT5DIR/lib/cmake/{Qt5X11Extras,Qt5Svg,Qt5UiTools,Qt5DocTools},
+            $QT5DIR/lib/cmake/{Qt5WaylandCompositor,Qt5WaylandClient},
+            $QT5DIR/lib/cmake/{Qt5DesignerComponents,Qt5UiPlugin},
+            $QT5DIR/lib/cmake/Qt5LinguistTools,
+            $QT5DIR/plugins/wayland-graphics-integration-client,
+            $QT5DIR/plugins/wayland-graphics-integration-server,
+            $QT5DIR/plugins/wayland-decoration-client, and
+            $QT5DIR/plugins/iconengines
           </seg>
         </seglistitem>
       </segmentedlist>
