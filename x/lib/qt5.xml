@@ -8,9 +8,9 @@
   <!ENTITY qt5-download-http "&qt5-url;/">
   <!ENTITY qt5-download-ftp  " ">
   <!ENTITY qt5-md5sum        "See below">
-  <!ENTITY qt5-size          "59 MB">
-  <!ENTITY qt5-buildsize     "14 GB (255 MB installed)">
-  <!ENTITY qt5-time          "22 SBU (using parallelism=4)">
+  <!ENTITY qt5-size          "11 MB for basic modules, 59 MB for qtwebengine,">
+  <!ENTITY qt5-buildsize     "930 MB (23 MB installed) for basic modules">
+  <!ENTITY qt5-time          "Using parallelism=4: 3.4 SBU for basic modules">
 ]>
 
 <sect1 id="qt5" xreflabel="Qt-&qt5-version;">
@@ -30,7 +30,7 @@
   <para>
     After the <xref linkend="qtbase"/> has been installed, various modules
     can be added to provide more functionalities. They are divided in several
-    groups, each of which depend on the precedent:
+    groups, each of which depends on the precedent:
   </para>
 
   <itemizedlist spacing="compact">
@@ -43,13 +43,13 @@
     </listitem>
     <listitem>
       <para>
-        The <xref linkend="qt-kde"/> are needed for
+        <xref linkend="qt-kde"/> are needed for
         <xref linkend="kf5-frameworks"/> and <xref linkend="plasma5-build"/>.
       </para>
     </listitem>
     <listitem>
       <para>
-        The huge <xref linkend="qtwebengine"/> integrates
+        <xref linkend="qtwebengine"/> is a huge module that integrates
         <application>chromium</application>'s web capabilities into
         <application>Qt5</application>
       </para>
@@ -210,35 +210,37 @@ export -f as_root
 
 module_build() {
   # MD5_ENTRY contains the md5sum entry from the .md5 file for this module
-  echo $MD5_ENTRY | read md5 tarball
+  echo $MD5_ENTRY | {
+    read md5 tarball
 
-  # download
-  wget &qt5-download-http;$tarball
-  md5sum -c - &lt;&lt;&lt; "$MD5_ENTRY" || exit 1
+    # download
+    wget &qt5-download-http;$tarball
+    md5sum -c - &lt;&lt;&lt; "$MD5_ENTRY" || exit 1
 
-  packagedir=${tarball%.tar*} 
+    packagedir=${tarball%.tar*} 
 
-  tar -xf $file
-  pushd $packagedir
+    tar -xf $tarball
+    pushd $packagedir
     # OPTIONS contains the qmake options
-    if[ -n "$OPTIONS" ]; then
-      qmake -- $OPTIONS
-    else
-      qmake
-    fi
-    make
-    as_root make install
-    if type -p post_install; then as_root post_install; fi
-  popd
+      if [ -n "$OPTIONS" ]; then
+        qmake -- $OPTIONS
+      else
+        qmake
+      fi
+      make
+      as_root make install
+      if type -p post_install; then post_install; fi
+    popd
 
-  rm -rf $packagedir
+    rm -rf $packagedir
+  }
   as_root /sbin/ldconfig
 }
 
 export -f module_build</userinput></screen>
   </sect2>
 
-  <sect2 id="qt-basic">
+  <sect2 id="qt-basic" xreflabel="Basic Qt5 Modules">
     <title>Basic Qt5 Modules</title>
 
     <para role="required">
@@ -254,13 +256,15 @@ export -f module_build</userinput></screen>
 set -e # exit the subshell in case of error
 
 unset OPTIONS
-sed -n "/Begin basic/,/End basic/p" | while read MD5_ENTRY; do
+sed -n "/Begin basic/,/End basic/p" qt5-submodules-&qt5-version;.md5 | \
+                while read MD5_ENTRY; do
   if [ -z "${MD5_ENTRY%\#*}" ]; then continue; fi
   case "$MD5_ENTRY" in
     *qttools*)
       post_install(){
         QT5BINDIR=$QTDIR/bin
 
+        as_root sh &lt;&lt; ROOT_EOF
         install -v -dm755 /usr/share/pixmaps/
 
         install -v -Dm644 src/assistant/assistant/images/assistant-128.png \
@@ -272,7 +276,7 @@ sed -n "/Begin basic/,/End basic/p" | while read MD5_ENTRY; do
         install -v -Dm644 src/linguist/linguist/images/icons/linguist-128-32.png \
                   /usr/share/pixmaps/linguist-qt5.png
 
-        install -v -Dm644 qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png \
+        install -v -Dm644 src/qdbus/qdbusviewer/images/qdbusviewer-128.png \
                   /usr/share/pixmaps/qdbusviewer-qt5.png
 
         install -dm755 /usr/share/applications
@@ -301,7 +305,7 @@ Terminal=false
 Encoding=UTF-8
 Type=Application
 Categories=Qt;Development;
-        EOF
+EOF
 
         cat &gt; /usr/share/applications/linguist-qt5.desktop &lt;&lt; EOF
 [Desktop Entry]
@@ -328,6 +332,7 @@ Encoding=UTF-8
 Type=Application
 Categories=Qt;Development;Debugger;
 EOF
+ROOT_EOF
       }
       export -f post_install ;;
 
@@ -338,24 +343,297 @@ EOF
 
 done
 )</userinput></screen>
+
+    <sect3 role="content">
+      <title>Contents of basic modules</title>
+
+      <segmentedlist>
+        <segtitle>Installed Programs</segtitle>
+        <segtitle>Installed Libraries</segtitle>
+        <segtitle>Installed Directories</segtitle>
+
+        <seglistitem>
+          <seg>
+            assistant,
+            designer,
+            lconvert,
+            linguist,
+            lprodump,
+            lrelease,
+            lrelease-pro,
+            lupdate,
+            lupdate-pro,
+            pixeltool,
+            qcollectiongenerator,
+            qdbus,
+            qdbusviewer,
+            qdoc,
+            qhelpgenerator,
+            qtattributionsscanner,
+            qtdiag,
+            qtpaths,
+            qtplugininfo, and
+            qtwaylandscanner
+          </seg>
+          <seg>
+            libQt5DesignerComponents.so,
+            libQt5Designer.so,
+            libQt5Help.so,
+            libQt5Svg.so,
+            libQt5WaylandClient.so,
+            libQt5WaylandCompositor.so, and
+            libQt5X11Extras.so
+          </seg>
+          <seg>
+            $QTDIR/phrasebooks,
+            $QTDIR/include/{QtUiTools,QtHelp,QtDesigner,QtX11Extras,QtSvg},
+            $QTDIR/include/{QtWaylandCompositor,QtWaylandClient},
+            $QTDIR/include/{QtDesignerComponents,QtUiPlugin},
+            $QTDIR/lib/cmake/{Qt5AttributionsScannerTools,Qt5Help,Qt5Designer},
+            $QTDIR/lib/cmake/{Qt5X11Extras,Qt5Svg,Qt5UiTools,Qt5DocTools},
+            $QTDIR/lib/cmake/{Qt5WaylandCompositor,Qt5WaylandClient},
+            $QTDIR/lib/cmake/{Qt5DesignerComponents,Qt5UiPlugin},
+            $QTDIR/lib/cmake/Qt5LinguistTools,
+            $QTDIR/plugins/wayland-graphics-integration-client,
+            $QTDIR/plugins/wayland-graphics-integration-server,
+            $QTDIR/plugins/wayland-decoration-client, and
+            $QTDIR/plugins/iconengines
+          </seg>
+        </seglistitem>
+      </segmentedlist>
+
+      <variablelist>
+        <bridgehead renderas="sect4">Short Descriptions</bridgehead>
+        <?dbfo list-presentation="list"?>
+        <?dbhtml list-presentation="table"?>
+
+        <varlistentry id="lconvert-qt5">
+          <term><command>lconvert</command></term>
+          <listitem>
+            <para>
+              is part of Qt5's Linguist tool chain. It can be used as a
+              standalone tool to convert and filter translation data files.
+            </para>
+            <indexterm zone="qt5 lconvert-qt5">
+              <primary sortas="b-lconvert-qt5">lconvert</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="linguist-qt5">
+          <term><command>linguist</command></term>
+          <listitem>
+            <para>
+              provides support for translating applications into
+              local languages.
+            </para>
+            <indexterm zone="qt5 linguist-qt5">
+              <primary sortas="b-linguist-qt5">linguist</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="lrelease-qt5">
+          <term><command>lrelease</command></term>
+          <listitem>
+            <para>
+              is a simple command line tool. It reads XML-based translation
+              file in TS format and produces message files used by the
+              application.
+            </para>
+            <indexterm zone="qt5 lrelease-qt5">
+              <primary sortas="b-lrelease-qt5">lrelease</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="lrelease-pro">
+          <term><command>lrelease-pro</command></term>
+          <listitem>
+            <para>
+              extracts project information from qmake projects and passes
+              it to lrelease.
+            </para>
+            <indexterm zone="qt5 lrelease-pro">
+              <primary sortas="b-lrelease-pro">lrelease-pro</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="lupdate-qt5">
+          <term><command>lupdate</command></term>
+          <listitem>
+            <para>
+              finds the translatable
+              strings in the specified source, header and Qt Designer
+              interface files, and stores the extracted messages in
+              translation files to be processed by lrelease.
+            </para>
+            <indexterm zone="qt5 lupdate-qt5">
+              <primary sortas="b-lupdate-qt5">lupdate</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="lupdate-pro">
+          <term><command>lupdate-pro</command></term>
+          <listitem>
+            <para>
+              reads a Qt project file, an passes the collected information
+              to lupdate.
+            </para>
+            <indexterm zone="qt5 lupdate-pro">
+              <primary sortas="b-lupdate-pro">lupdate-pro</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="pixeltool-qt5">
+          <term><command>pixeltool</command></term>
+          <listitem>
+            <para>
+              is a desktop magnifier and as you move your mouse around
+              the screen it will show the magnified contents in its window.
+            </para>
+            <indexterm zone="qt5 pixeltool-qt5">
+              <primary sortas="b-pixeltool-qt5">pixeltool</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="qcollectiongenerator-qt5">
+          <term><command>qcollectiongenerator</command></term>
+          <listitem>
+            <para>
+              processes and converts Qt help files.
+            </para>
+            <indexterm zone="qt5 qcollectiongenerator-qt5">
+              <primary sortas="b-qcollectiongenerator-qt5">qcollectiongenerator-qt5</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="qdbus-qt5">
+          <term><command>qdbus</command></term>
+          <listitem>
+            <para>
+              lists available services, object paths,  methods, signals, and
+              properties of objects on a bus.
+            </para>
+            <indexterm zone="qt5 qdbus-qt5">
+              <primary sortas="b-qdbus-qt5">qdbus</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="qdbusviewer-qt5">
+          <term><command>qdbusviewer</command></term>
+          <listitem>
+            <para>
+              is a graphical D-Bus browser.
+            </para>
+            <indexterm zone="qt5 qdbusviewer-qt5">
+              <primary sortas="b-qdbusviewer-qt5">qdbusviewer</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="qdoc-qt5">
+          <term><command>qdoc</command></term>
+          <listitem>
+            <para>
+              is a tool used by <application>Qt</application> Developers to
+              generate documentation for software projects.
+            </para>
+            <indexterm zone="qt5 qdoc-qt5">
+              <primary sortas="b-qdoc-qt5">qdoc</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="qhelpgenerator-qt5">
+          <term><command>qhelpgenerator</command></term>
+          <listitem>
+            <para>
+              is a tool used to generate a <application>Qt</application>
+              compressed help file.
+            </para>
+            <indexterm zone="qt5 qhelpgenerator-qt5">
+              <primary sortas="b-qhelpgenerator-qt5">qhelpgenerator</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="qtattributionsscanner-qt5">
+          <term><command>qtattributionsscanner</command></term>
+          <listitem>
+            <para>
+              processes qt_attribution.json files in Qt sources.
+            </para>
+            <indexterm zone="qt5 qtattributionsscanner-qt5">
+              <primary sortas="b-qtattributionsscanner-qt5">qtattributionsscanner</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="qtdiag-qt5">
+          <term><command>qtdiag</command></term>
+          <listitem>
+            <para>
+              is a tool for reporting diagnostic information about Qt and its
+              environment.
+            </para>
+            <indexterm zone="qt5 qtdiag-qt5">
+              <primary sortas="b-qtdiag-qt5">qtdiag</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="qtpaths-qt5">
+          <term><command>qtpaths</command></term>
+          <listitem>
+            <para>
+              is a tool to query Qt path information.
+            </para>
+            <indexterm zone="qt5 qtpaths-qt5">
+              <primary sortas="b-qtpaths-qt5">qtpaths</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="qtplugininfo">
+          <term><command>qtplugininfo</command></term>
+          <listitem>
+            <para>
+              dumps meta-data about Qt plugins in JSON format.
+            </para>
+            <indexterm zone="qt5 qtplugininfo">
+              <primary sortas="b-qtplugininfo">qtplugininfo</primary>
+            </indexterm>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </sect3>
   </sect2>
 
-  <sect2 id="qt-kde">
-    <title>Installation of Modules Needed for KDE</title>
+  <sect2 id="qt-kde" xreflabel="Modules Needed for KDE">
+    <title>Modules Needed for KDE</title>
     <para>
       Install the modules needed for KDE with the following instructions:
     </para>
   </sect2>
 
-  <sect2 id="qtwebengine">
-    <title>Installation of QTWebEngine</title>
+  <sect2 id="qtwebengine" xreflabel="QtWebEngine">
+    <title>QTWebEngine</title>
     <para>
       Install QtWebEngine with the following instructions:
     </para>
   </sect2>
 
-  <sect2 id="qt-miscellaneous">
-    <title>Installation of Other Modules</title>
+  <sect2 id="qt-miscellaneous" xreflabel="Other Modules">
+    <title>Other Modules</title>
     <para>
       Install the remaining modules with the following instructions:
     </para>
@@ -761,7 +1039,7 @@ EOF</userinput></screen>
         </seg>
       </seglistitem>
     </segmentedlist>
-
+<!--
     <variablelist>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
@@ -1224,7 +1502,7 @@ EOF</userinput></screen>
       </varlistentry>
 
     </variablelist>
-
+-->
   </sect2>
 
 </sect1>
