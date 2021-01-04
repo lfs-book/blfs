@@ -9,8 +9,8 @@
   <!ENTITY harfbuzz-download-ftp  " ">
   <!ENTITY harfbuzz-md5sum        "6d8393e6fb84edfb15997d1c5ba35b1b">
   <!ENTITY harfbuzz-size          "9.1 MB">
-  <!ENTITY harfbuzz-buildsize     "240 MB (add 6 MB for tests)">
-  <!ENTITY harfbuzz-time          "0.4 SBU (Using parallelism=4; add 0.2 SBU for tests)">
+  <!ENTITY harfbuzz-buildsize     "229 MB (add 6 MB for tests)">
+  <!ENTITY harfbuzz-time          "0.3 SBU (Using parallelism=4; add 0.2 SBU for tests)">
 ]>
 
 <sect1 id="harfbuzz" xreflabel="HarfBuzz-&harfbuzz-version;">
@@ -75,6 +75,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="git"/>,
       <xref linkend="glib2"/> (required for Pango),
       <xref role="first" linkend="graphite2"/> (required for building
         <xref role="nodep" linkend="texlive"/> or 
@@ -122,7 +123,7 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dgraphite=enabled &amp;&amp;
+meson --prefix=/usr -Dgraphite=enabled -Dbenchmark=disabled &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -151,6 +152,13 @@ ninja</userinput></screen>
       <application>Graphite2</application> support, which is required for
       building <xref linkend="texlive"/> or <xref linkend="libreoffice"/>
       with system harfbuzz.
+    </para>
+
+    <para>
+      <parameter>-Dbenchmark=disabled</parameter>: This switch disables
+      downloading and building the <application>google-benchmark</application>
+      subproject, which requires <xref linkend="git"/>, and is of no
+      use for non developpers.
     </para>
 
     <para>
