@@ -6,17 +6,17 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  "ftp://ftp.freedesktop.org/pub/mesa/mesa-&mesa-version;.tar.xz">
-  <!ENTITY mesa-md5sum        "b378394df26fc6b4d58888f9f1ef1bdb">
-  <!ENTITY mesa-size          "14 MB">
-  <!ENTITY mesa-buildsize     "481 MB (with docs), add 317 MB for tests">
-  <!ENTITY mesa-time          "2.5 SBU (with parallelism=4 and docs). Add 0.5 SBU for tests">
+  <!ENTITY mesa-md5sum        "f81336168864b1f890edfa5db8587f2b">
+  <!ENTITY mesa-size          "15 MB">
+  <!ENTITY mesa-buildsize     "799 MB (with docs, add 376 MB if running the tests)">
+                              <!-- using NINJAJOBS=6 -->
+  <!ENTITY mesa-time          "5.1 SBU (on a 4-core machine with docs)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
   <?dbhtml filename="mesa.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -41,7 +41,7 @@
       </para>
     </note>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -110,7 +110,7 @@
       <xref linkend="llvm"/> (required for Gallium3D, nouveau, r300, and radeonsi
       drivers and for swrast, the software rasterizer which is sometimes referred
       to as llvmpipe. See <ulink role="nodep"
-      url="http://www.mesa3d.org/systems.html"/> for more information), and
+      url="https://docs.mesa3d.org/systems.html"/> for more information), and
       <xref linkend="wayland-protocols"/> (required for 
         <xref role="nodep" linkend='plasma5-build'/>,
         <!-- <xref role="nodep" linkend='lxqt'/>, -->
@@ -129,9 +129,10 @@
       the patch above),
       <ulink url="http://omxil.sourceforge.net/">Bellagio OpenMAX Integration
       Layer</ulink> (for mobile platforms), 
-      <ulink url="http://www.nongnu.org/libunwind/">libunwind</ulink>, and
+      <ulink url="http://www.nongnu.org/libunwind/">libunwind</ulink>,
       <ulink url="https://github.com/tizonia/tizonia-openmax-il/wiki/Tizonia-OpenMAX-IL/">
-      libtizonia</ulink>
+      libtizonia</ulink>,  and
+      <ulink url="https://www.vulkan.org/">libvulkan</ulink> (for the zink driver)
     </para>
 
     <note>
@@ -185,11 +186,12 @@
 
     <para>
       Now, select the drivers you wish to install. For the X86 architecture, the
-      available gallium drivers are auto, <emphasis>or alternatively a choice
-      from</emphasis> i915, nouveau, r300, r600, radeonsi, svga, swrast, and
-      virgl. The latter is recommended if you intend to run the system under
-      <xref linkend="qemu"/>. If you wish to build all available gallium drivers,
-      use 'auto'.
+      available gallium drivers are auto (<emphasis>in 21.2.1 this does not select
+      crocus </emphasis>), <emphasis>or alternatively a choice from</emphasis>
+      crocus, i915, iris, nouveau, r300, r600, radeonsi, svga, swrast, and virgl. The
+      latter is recommended if you intend to run the system under
+      <xref linkend="qemu"/>.<!-- If you wish to build all available gallium drivers,
+      use 'auto'. FIXME : does not build crocus in 21.2.1 -->
     </para>
 
     <para>
@@ -209,7 +211,10 @@
     <para>
       Modify the commands below for your desired drivers.  The drivers listed
       below will cover most modern video cards and virtual machines.  For help in
-      selecting drivers see <ulink url='http://www.mesa3d.org/systems.html'/>.
+      selecting drivers see <ulink url="https://docs.mesa3d.org/systems.html"/>.
+      <!-- these two don't seem to be mentioned in that mesa link -->
+      For intel drivers, specify crocus for i965 gen 4 through to haswell, iris
+      for broadwell and later.
     </para>
 
     <note>
@@ -219,7 +224,7 @@
       </para>
     </note>
 
-<screen><userinput>GALLIUM_DRV="i915,iris,nouveau,r600,radeonsi,svga,swrast,virgl"
+<screen><userinput>GALLIUM_DRV="crocus,i915,iris,nouveau,r600,radeonsi,svga,swrast,virgl"
 DRI_DRIVERS="i965,nouveau"</userinput></screen>
 
     <para>
@@ -231,14 +236,13 @@ DRI_DRIVERS="i965,nouveau"</userinput></screen>
 cd    build &amp;&amp;
 
 meson --prefix=$XORG_PREFIX          \
-      -Dbuildtype=release            \
+      --buildtype=release            \
       -Ddri-drivers=$DRI_DRIVERS     \
       -Dgallium-drivers=$GALLIUM_DRV \
       -Dgallium-nine=false           \
       -Dglx=dri                      \
-      -Dosmesa=gallium               \
-      -Dvalgrind=false               \
-      -Dlibunwind=false              \
+      -Dvalgrind=disabled            \
+      -Dlibunwind=disabled           \
       ..                             &amp;&amp;
 
 unset GALLIUM_DRV DRI_DRIVERS &amp;&amp;
@@ -248,7 +252,8 @@ ninja</userinput></screen>
     <para>
       If you built the tests (see 'Command Explanations'), to run them issue:
       <command>ninja test</command>. 
-      Two tests in the llvmpipe suite are known to fail.
+      All 33 subtests tests in the mesa:compiler+glsl / glsl compiler warnings
+      suite are known to fail.
     </para>
 
     <para>
@@ -272,7 +277,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-Dbuildtype=release</parameter>: This switch ensures a
+      <parameter>--buildtype=release</parameter>: This switch ensures a
       fully-optimized build, and disables debug assertions which will
       severely slow down the libraries in certain use-cases. Without this
       switch, build sizes can span into the 2GB range.
@@ -293,12 +298,13 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
       support for (MS Windows) games designed for DX9. Set it to true if
       this support is desired.
     </para>
-
+<!--
     <para>
-      <parameter>-Dosmesa=gallium</parameter>: This switch enables building
+      <parameter>-Dosmesa=true</parameter>: This switch enables building
       the <filename class="libraryfile">libOSMesa</filename> library and
       provides Gallium3D support in it. It requires the swrast gallium driver.
     </para>
+-->
 <!--
     <para>
       <parameter>-Dplatforms="..."</parameter>: This parameter
@@ -307,13 +313,13 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
     </para>
 -->
     <para>
-      <parameter>-Dvalgrind=false</parameter>: This parameter disables
+      <parameter>-Dvalgrind=disabled</parameter>: This parameter disables
       the usage of Valgrind during the build process. Remove this parameter
       if you have Valgrind installed, and wish to check for memory leaks.
     </para>
 
     <para>
-      <parameter>-Dlibunwind=false</parameter>: This parameter disables
+      <parameter>-Dlibunwind=disabled</parameter>: This parameter disables
       the usage of libunwind.
     </para>
 
@@ -336,7 +342,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
 -->
     <para>
       <option>-Dbuild-tests=true</option>: This option will cause the test code
-      to be enabled.
+      to be enabled. To run the tests, issue: <command>ninja test</command>.
     </para>
 
   </sect2>
@@ -372,9 +378,11 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           libxatracker.so,
         </seg>
         <seg>
-          <!-- Begin DRI drivers : this is the full set from auto -->
+          <!-- Begini gallium DRI drivers : this is the full set -->
           d3dadapter9.so (optional), <!-- For Windows games. This is DirectX's
                                           Direct3D -->
+          crocus_dri.so,
+          i830_dri.so,
           i915_dri.so,
           i965_dri.so,
           iris_dri.so,
@@ -386,7 +394,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           r300_dri.so (optional),
           r600_dri.so,
           r600_drv_video.so,
-          radeon_dri.so,
+          radeon_dri.so (optional),
           radeonsi_dri.so,
           radeonsi_drv_video.so,
           swrast_dri.so,
@@ -399,6 +407,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           libvdpau_r600.so, and
           libvdpau_radeonsi.so
           <!-- End VDPAU drivers -->
+          (Many of these drivers are hard-linked).
         </seg>
         <seg>
           $XORG_PREFIX/{include/{EGL,GL,GLES,GLES2,GLES3,KHR,vulkan},lib/{dri,vdpau}},
@@ -423,7 +432,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
         <listitem>
           <para>
             is a GL demo useful for troubleshooting graphics
-            problems.
+            problems
           </para>
           <indexterm zone="mesa glxgears">
             <primary sortas="b-glxgears">glxgears</primary>
@@ -436,7 +445,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
         <listitem>
           <para>
             is a diagnostic program that displays information about the
-            graphics hardware and installed GL libraries.
+            graphics hardware and installed GL libraries
           </para>
           <indexterm zone="mesa glxinfo">
             <primary sortas="b-glxinfo">glxinfo</primary>
@@ -449,7 +458,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
         <listitem>
           <para>
             provides a native platform graphics interface as
-            defined by the EGL-1.4 specification.
+            defined by the EGL-1.4 specification
           </para>
           <indexterm zone="mesa libEGL">
             <primary sortas="c-libGL">libEGL.so</primary>
@@ -462,7 +471,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
         <listitem>
           <para>
             is the <application>Mesa</application> Graphics Buffer
-            Manager library.
+            Manager library
           </para>
           <indexterm zone="mesa libgbm">
             <primary sortas="c-libgbm">libgbm.so</primary>
@@ -474,7 +483,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
         <term><filename class="libraryfile">libGLESv1_CM.so</filename></term>
         <listitem>
           <para>
-            is the <application>Mesa</application> OpenGL ES 1.1 library.
+            is the <application>Mesa</application> OpenGL ES 1.1 library
           </para>
           <indexterm zone="mesa libGLESv1_CM">
             <primary sortas="c-libGLESv1_CM">libGLESv1_CM.so</primary>
@@ -486,7 +495,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
         <term><filename class="libraryfile">libGLES2.so</filename></term>
         <listitem>
           <para>
-            is the <application>Mesa</application> OpenGL ES 2.0 library.
+            is the <application>Mesa</application> OpenGL ES 2.0 library
           </para>
           <indexterm zone="mesa libGLES2">
             <primary sortas="c-libGLES2">libGLES2.so</primary>
@@ -498,7 +507,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
         <term><filename class="libraryfile">libGL.so</filename></term>
         <listitem>
           <para>
-            is the main <application>Mesa</application> OpenGL library.
+            is the main <application>Mesa</application> OpenGL library
           </para>
           <indexterm zone="mesa libGL">
             <primary sortas="c-libGL">libGL.so</primary>
@@ -510,7 +519,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
         <term><filename class="libraryfile">libOSMesa.so</filename></term>
         <listitem>
           <para>
-            is the <application>Mesa</application> Off-screen Rendering library.
+            is the <application>Mesa</application> Off-screen Rendering library
           </para>
           <indexterm zone="mesa libOSMesa">
             <primary sortas="c-libOSMesa">libOSMesa.so</primary>

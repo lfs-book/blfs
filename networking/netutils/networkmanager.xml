@@ -8,17 +8,16 @@
 "&gnome-download-http;/NetworkManager/&NetworkManager-minor;/NetworkManager-&NetworkManager-version;.tar.xz">
   <!ENTITY NetworkManager-download-ftp
 "&gnome-download-ftp;/NetworkManager/&NetworkManager-minor;/NetworkManager-&NetworkManager-version;.tar.xz">
-  <!ENTITY NetworkManager-md5sum        "3c4a70764ec3418a796b2c3f2a1f83e0">
-  <!ENTITY NetworkManager-size          "5.0 MB">
-  <!ENTITY NetworkManager-buildsize     "900 MB (with tests)">
-  <!ENTITY NetworkManager-time          "0.9 SBU (with tests, using parallelism=4)">
+  <!ENTITY NetworkManager-md5sum        "009372a92b916412d3fecb1d3b216346">
+  <!ENTITY NetworkManager-size          "5.1 MB">
+  <!ENTITY NetworkManager-buildsize     "285 MB (with tests)">
+  <!ENTITY NetworkManager-time          "0.8 SBU (with tests, using parallelism=4)">
 ]>
 
 <sect1 id="NetworkManager" xreflabel="NetworkManager-&NetworkManager-version;">
   <?dbhtml filename="networkmanager.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -40,7 +39,7 @@
       available.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <note revision="systemd">
       <para>
@@ -176,11 +175,13 @@
 sed -e 's/Qt/&amp;5/'                  \
     -i meson.build</userinput></screen>
 
+<!--
     <para>
       Fix a missing meson.build file for initrd hooks (not used in BLFS):
     </para>
 
-<screen><userinput>sed '/initrd/d' -i src/meson.build</userinput></screen>
+<screen><userinput>sed '/initrd/d' -i src/core/meson.build</userinput></screen>
+-->
 
     <para>
       Fix the python scripts so that they use <application>Python
@@ -198,14 +199,14 @@ sed -e 's/Qt/&amp;5/'                  \
 cd    build &amp;&amp;
 
 CXXFLAGS+="-O2 -fPIC"            \
-meson --prefix /usr              \
+meson --prefix=/usr              \
+      --buildtype=release        \
       -Dlibaudit=no              \
       -Dlibpsl=false             \
       -Dnmtui=true               \
       -Dovs=false                \
       -Dppp=false                \
       -Dselinux=false            \
-      -Dudev_dir=/lib/udev       \
       -Dsession_tracking=elogind \
       -Dmodem_manager=false      \
       -Dsystemdsystemunitdir=no  \
@@ -218,7 +219,8 @@ ninja</userinput></screen>
 cd    build    &amp;&amp;
 
 CXXFLAGS+="-O2 -fPIC"            \
-meson --prefix /usr              \
+meson --prefix=/usr              \
+      --buildtype=release        \
       -Dlibaudit=no              \
       -Dlibpsl=false             \
       -Dnmtui=true               \
@@ -226,10 +228,8 @@ meson --prefix /usr              \
       -Dppp=false                \
       -Dselinux=false            \
       -Dqt=false                 \
-      -Dudev_dir=/lib/udev       \
       -Dsession_tracking=systemd \
       -Dmodem_manager=false      \
-      -Dsystemdsystemunitdir=/lib/systemd/system \
       .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -237,13 +237,14 @@ ninja</userinput></screen>
       An already active graphical session
       with a bus address is necessary to run the tests. To test the results,
       as the root user, <!-- needs the "ip" command -->
-      issue: <command>ninja test</command>. Six tests,
+      issue: <command>ninja test</command>. Five tests,
+      <filename>platform/test-tc-linux</filename>,
+      <!--<filename>platform/test-core</filename>,-->
       <filename>test-l3cfg</filename>,
       <filename>devices/test-acd</filename>,
-      <filename>platform/test-tc-linux</filename>,
-      <filename>platform/test-route-linux</filename>,
-      <filename>platform/test-link-linux</filename>, and
-      <filename>platform/test-cleanup-linux</filename>, are known to fail.
+      <filename>platform/test-route-linux</filename>, and
+      <filename>platform/test-link-linux</filename>,
+      <!--<filename>platform/test-cleanup-linux</filename>,--> are known to fail.
     </para>
 
     <para>
@@ -262,6 +263,9 @@ mv -v /usr/share/doc/NetworkManager{,-&NetworkManager-version;}</userinput></scr
       <envar>CXXFLAGS="-O2 -fPIC"</envar>: These compiler options are 
       necessary to build the Qt5 based examples.
     </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
       <option>-Ddocs=true</option>: Use this switch to enable building
@@ -545,7 +549,7 @@ EOF</userinput></screen>
           <para>
             is a command-line tool for controlling
             <application>NetworkManager</application>
-            and getting its status.
+            and getting its status
           </para>
           <indexterm zone="NetworkManager nmcli">
             <primary sortas="b-nmcli">nmcli</primary>
@@ -557,7 +561,7 @@ EOF</userinput></screen>
         <term><command>nm-online</command></term>
         <listitem>
           <para>
-            is an utility to determine whether you are online.
+            is an utility to determine whether you are online
           </para>
           <indexterm zone="NetworkManager nm-online">
             <primary sortas="b-nm-online">nm-online</primary>
@@ -570,7 +574,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is an interactive ncurses-based user interface for
-            <application>nmcli</application>.
+            <application>nmcli</application>
           </para>
           <indexterm zone="NetworkManager nmtui">
             <primary sortas="b-nmtui">nmtui</primary>
@@ -583,7 +587,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is an interactive ncurses-based user interface to
-            activate/deactivate connections.
+            activate/deactivate connections
           </para>
           <indexterm zone="NetworkManager nmtui-connect">
             <primary sortas="b-nmtui-connect">nmtui-connect</primary>
@@ -595,7 +599,7 @@ EOF</userinput></screen>
         <term><command>nmtui-edit</command></term>
         <listitem>
           <para>
-            is an interactive ncurses-based user interface to edit connections.
+            is an interactive ncurses-based user interface to edit connections
           </para>
           <indexterm zone="NetworkManager nmtui-edit">
             <primary sortas="b-nmtui-edit">nmtui-edit</primary>
@@ -607,7 +611,7 @@ EOF</userinput></screen>
         <term><command>nmtui-hostname</command></term>
         <listitem>
           <para>
-            is an interactive ncurses-based user interface to edit the hostname.
+            is an interactive ncurses-based user interface to edit the hostname
           </para>
           <indexterm zone="NetworkManager nmtui-hostname">
             <primary sortas="b-nmtui-hostname">nmtui-hostname</primary>
@@ -619,7 +623,7 @@ EOF</userinput></screen>
         <term><command>NetworkManager</command></term>
         <listitem>
           <para>
-            is the network management daemon.
+            is the network management daemon
           </para>
           <indexterm zone="NetworkManager NetworkManager-prog">
             <primary sortas="b-NetworkManager">NetworkManager</primary>
@@ -631,7 +635,7 @@ EOF</userinput></screen>
         <term><filename class="libraryfile">libnm.so</filename></term>
         <listitem>
           <para>
-            contains functions used by <application>NetworkManager</application>.
+            contains functions used by <application>NetworkManager</application>
           </para>
           <indexterm zone="NetworkManager libnm">
             <primary sortas="c-libnm">libnm.so</primary>

@@ -1,8 +1,6 @@
 # Makefile for BLFS Book generation.
 # By Tushar Teredesai <tushar@linuxfromscratch.org>
 # 2004-01-31
-# $LastChangedBy$
-# $Date$
 
 # Adjust these to suit your installation
 RENDERTMP   ?= $(HOME)/tmp
@@ -51,11 +49,57 @@ endif
 
 blfs: html wget-list
 
+help:
+	@echo ""
+	@echo "make <parameters> <targets>"
+	@echo ""
+	@echo "Parameters:"
+	@echo "  REV=<rev>            Build variation of book"
+	@echo "                       Valid values for REV are:"
+	@echo "                       * sysv    - Build book for SysV"
+	@echo "                       * systemd - Build book for systemd"
+	@echo "                       Defaults to 'sysv'"
+	@echo ""
+	@echo "  BASEDIR=<dir>        Put the output in directory <dir>."
+	@echo "                       Defaults to"
+	@echo "                       'HOME/public_html/blfs-book' if REV=sysv (or unset)"
+	@echo "                       or to"
+	@echo "                       'HOME/public_html/blfs-book-systemd' if REV=systemd"
+	@echo ""
+	@echo "  V=<val>              If <val> is a non-empty value, all"
+	@echo "                       steps to produce the output is shown."
+	@echo "                       Default is unset."
+	@echo ""
+	@echo "Targets:"
+	@echo "  help                 Show this help text."
+	@echo ""
+	@echo "  blfs                 Builds targets 'html' and 'wget-list'."
+	@echo ""
+	@echo "  html                 Builds the HTML pages of the book."
+	@echo ""
+	@echo "  wget-list            Produces a list of all packages to download."
+	@echo "                       Output is BASEDIR/wget-list"
+	@echo ""
+	@echo "  nochunks             Builds the book as a one-pager. The output"
+	@echo "                       is a large single HTML page containing the"
+	@echo "                       whole book."
+	@echo ""
+	@echo "                       Parameter NOCHUNKS_OUTPUT=<filename> controls"
+	@echo "                       the name of the HTML file."
+	@echo ""
+	@echo "  validate             Runs validation checks on the XML files."
+	@echo ""
+	@echo "  test-links           Runs validation checks on URLs in the book."
+	@echo "                       Produces a file named BASEDIR/bad_urls containing"
+	@echo "                       URLS which are invalid and a BASEDIR/good_urls"
+	@echo "                       containing all valid URLs."
+	@echo ""
+
 all: blfs nochunks
 world: all blfs-patch-list dump-commands test-links
 
 html: $(BASEDIR)/index.html
-$(BASEDIR)/index.html: $(RENDERTMP)/$(BLFSHTML)
+$(BASEDIR)/index.html: $(RENDERTMP)/$(BLFSHTML) version
 	@echo "Generating chunked XHTML files..."
 	$(Q)xsltproc --nonet                                    \
                 --stringparam chunk.quietly $(CHUNK_QUIET) \
@@ -70,6 +114,7 @@ $(BASEDIR)/index.html: $(RENDERTMP)/$(BLFSHTML)
    fi;
 
 	$(Q)cp stylesheets/lfs-xsl/*.css $(BASEDIR)/stylesheets
+	$(Q)sed -i 's|../stylesheet|stylesheet|' $(BASEDIR)/index.html
 
 	$(Q)if [ ! -e $(BASEDIR)/images ]; then \
       mkdir -p $(BASEDIR)/images;          \
@@ -84,11 +129,11 @@ $(BASEDIR)/index.html: $(RENDERTMP)/$(BLFSHTML)
       tidy -config tidy.conf $$filename;                          \
       true;                                                       \
       bash obfuscate.sh $$filename;                               \
-      sed -i -e "s@text/html@application/xhtml+xml@g" $$filename; \
+      sed -i -e "1,20s@text/html@application/xhtml+xml@g" $$filename; \
    done;
 
 nochunks: $(BASEDIR)/$(NOCHUNKS_OUTPUT)
-$(BASEDIR)/$(NOCHUNKS_OUTPUT): $(RENDERTMP)/$(BLFSHTML)
+$(BASEDIR)/$(NOCHUNKS_OUTPUT): $(RENDERTMP)/$(BLFSHTML) version
 	@echo "Generating non-chunked XHTML file..."
 	$(Q)xsltproc --nonet                                \
                 --stringparam rootid "$(ROOT_ID)"      \
@@ -99,7 +144,7 @@ $(BASEDIR)/$(NOCHUNKS_OUTPUT): $(RENDERTMP)/$(BLFSHTML)
 	@echo "Running Tidy and obfuscate.sh on non-chunked XHTML..."
 	$(Q)tidy -config tidy.conf $(BASEDIR)/$(NOCHUNKS_OUTPUT) || true
 	$(Q)bash obfuscate.sh $(BASEDIR)/$(NOCHUNKS_OUTPUT)
-	$(Q)sed -i -e "s@text/html@application/xhtml+xml@g" $(BASEDIR)/$(NOCHUNKS_OUTPUT)
+	$(Q)sed -i -e "1,20s@text/html@application/xhtml+xml@g" $(BASEDIR)/$(NOCHUNKS_OUTPUT)
 
 tmpdir: $(RENDERTMP)
 $(RENDERTMP):
@@ -111,7 +156,7 @@ clean:
 	$(Q)rm -f $(RENDERTMP)/blfs*
 
 validate: $(RENDERTMP)/$(BLFSFULL)
-$(RENDERTMP)/$(BLFSFULL): general.ent packages.ent $(ALLXML) $(ALLXSL)
+$(RENDERTMP)/$(BLFSFULL): general.ent packages.ent $(ALLXML) $(ALLXSL) version
 	$(Q)[ -d $(RENDERTMP) ] || mkdir -p $(RENDERTMP)
 
 	@echo "Adjusting for revision $(REV)..."
@@ -130,7 +175,7 @@ $(RENDERTMP)/$(BLFSFULL): general.ent packages.ent $(ALLXML) $(ALLXSL)
                $(RENDERTMP)/$(BLFSHTML2)
 
 profile-html: $(RENDERTMP)/$(BLFSHTML)
-$(RENDERTMP)/$(BLFSHTML): $(RENDERTMP)/$(BLFSFULL)
+$(RENDERTMP)/$(BLFSHTML): $(RENDERTMP)/$(BLFSFULL) version
 	@echo "Generating profiled XML for XHTML..."
 	$(Q)xsltproc --nonet                              \
                 --stringparam profile.condition html \
@@ -143,7 +188,7 @@ blfs-patch-list: blfs-patches.sh
 	$(Q)awk '{if ($$1 == "copy") {sub(/.*\//, "", $$2); print $$2}}' \
 	  blfs-patches.sh > blfs-patch-list
 
-blfs-patches.sh: $(RENDERTMP)/$(BLFSFULL)
+blfs-patches.sh: $(RENDERTMP)/$(BLFSFULL) version
 	@echo "Generating blfs patch script..."
 	$(Q)xsltproc --nonet                     \
                 --output blfs-patches.sh    \
@@ -151,7 +196,7 @@ blfs-patches.sh: $(RENDERTMP)/$(BLFSFULL)
                 $(RENDERTMP)/$(BLFSFULL)
 
 wget-list: $(BASEDIR)/wget-list
-$(BASEDIR)/wget-list: $(RENDERTMP)/$(BLFSFULL)
+$(BASEDIR)/wget-list: $(RENDERTMP)/$(BLFSFULL) version
 	@echo "Generating wget list for $(REV) at $(BASEDIR)/wget-list ..."
 	$(Q)mkdir -p $(BASEDIR)
 	$(Q)xsltproc --nonet                       \
@@ -160,7 +205,7 @@ $(BASEDIR)/wget-list: $(RENDERTMP)/$(BLFSFULL)
                 $(RENDERTMP)/$(BLFSFULL)
 
 test-links: $(BASEDIR)/test-links
-$(BASEDIR)/test-links: $(RENDERTMP)/$(BLFSFULL)
+$(BASEDIR)/test-links: $(RENDERTMP)/$(BLFSFULL) version
 	@echo "Generating test-links file..."
 	$(Q)mkdir -p $(BASEDIR)
 	$(Q)xsltproc --nonet                        \
@@ -212,7 +257,7 @@ systemd-units:
    fi
 
 dump-commands: $(DUMPDIR)
-$(DUMPDIR): $(RENDERTMP)/$(BLFSFULL)
+$(DUMPDIR): $(RENDERTMP)/$(BLFSFULL) version
 	@echo "Dumping book commands..."
 	$(Q)xsltproc --output $(DUMPDIR)/          \
                 stylesheets/dump-commands.xsl \
@@ -221,6 +266,7 @@ $(DUMPDIR): $(RENDERTMP)/$(BLFSFULL)
 
 .PHONY: blfs all world html nochunks tmpdir clean  \
    validate profile-html blfs-patch-list wget-list test-links \
-   dump-commands  bootscripts systemd-units
+   dump-commands  bootscripts systemd-units version
 
-
+version:
+	$(Q)./git-version.sh

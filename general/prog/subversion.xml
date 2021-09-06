@@ -6,7 +6,7 @@
 
   <!ENTITY subversion-download-http "https://archive.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">
   <!ENTITY subversion-download-ftp  " ">
-  <!ENTITY subversion-md5sum        "8f6c50632355ae08445c2ed63ba9689e">
+  <!ENTITY subversion-md5sum        "2eccc2c7451397e01a13682600af9563">
   <!ENTITY subversion-size          "8.1 MB">
   <!-- for 1.12.0                    1.12.2         1.13.0
        make javahl: 0.5 SBU  28 MB; not avail 
@@ -15,15 +15,14 @@
        swig-rb:     0.4      22 MB; 0.4      21 MB; 0.3     21 MB
        docs:        2 secs   26 MB; 2 sec    27 MB; 2 sec   26 MB
        tests       46 min  1104 MB  46:52  1103 MB  47 min   -->
-  <!ENTITY subversion-buildsize     "176 MB (add 93 MB for bindings, 26 MB for docs, 1.1 GB for tests)">
-  <!ENTITY subversion-time          "0.5 SBU (Using parallelism=4; add 1.4 SBU for bindings, 29 SBU for tests)">
+  <!ENTITY subversion-buildsize     "208 MB (add 228 MB for bindings, 52 MB for docs, 1.3 GB for tests)">
+  <!ENTITY subversion-time          "0.5 SBU (Using parallelism=4; add 1.9 SBU for bindings, 35 SBU for tests)">
 ]>
 
 <sect1 id="subversion" xreflabel="Subversion-&subversion-version;">
   <?dbhtml filename="subversion.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -47,7 +46,7 @@
       a repository is covered at <xref linkend="svnserver"/>.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -126,6 +125,7 @@
 -->
       <xref linkend="cyrus-sasl"/>,
       <xref linkend="dbus"/>,
+      <xref linkend="doxygen"/> (for generating HTML documentation),
       <xref linkend="gnome-keyring"/>,
       <xref linkend="libsecret"/>,
 <!--      <xref linkend="kdelibs"/> (for <ulink url="http://utils.kde.org/projects/kwalletmanager/">KWallet</ulink> support), -->
@@ -178,6 +178,12 @@
 <screen><userinput remap="pre">sed -i 's/classic/nofastunpack/' build.conf</userinput></screen>
 -->
     <para>
+      First, adapt some Python scripts to use python3:
+    </para>
+
+<screen><userinput remap="pre">grep -rl '^#!.*python$' | xargs sed -i '1s/python/&amp;3/'</userinput></screen>
+
+    <para>
       Install <application>Subversion</application> by running the following
       commands:
     </para>
@@ -225,8 +231,10 @@ make</userinput></screen>
     </para>
 
     <para>
-      To test the results, issue: <command>make check</command>.  The upgrade_tests.py
-      test is known to fail.
+      To test the results, issue: <command>make check</command>. Four tests in
+      the <filename>commit_tests.py</filename>, 
+      <filename>prop_tests.py</filename>, and
+      <filename>update_tests.py</filename> suites are known to fail.
     </para>
 
     <para>
@@ -303,7 +311,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
 
     <para>
       <parameter>--with-lz4=internal, --with-utf8proc=internal</parameter>:
-      Remove them if you have installed the optional dependencies.
+      Remove these switches if you have installed the optional dependencies.
     </para>
 
     <para>
@@ -405,7 +413,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <listitem>
           <para>
             is a command-line client program used to access
-            <application>Subversion</application> repositories.
+            <application>Subversion</application> repositories
           </para>
           <indexterm zone="subversion svn">
             <primary sortas="b-svn">svn</primary>
@@ -418,7 +426,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <listitem>
           <para>
             is a tool for creating, tweaking or repairing a
-            <application>Subversion</application> repository.
+            <application>Subversion</application> repository
           </para>
           <indexterm zone="subversion svnadmin">
             <primary sortas="b-svnadmin">svnadmin</primary>
@@ -430,7 +438,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <term><command>svnbench</command></term>
         <listitem>
           <para>
-            is a benchmarking tool.
+            is a benchmarking tool
           </para>
           <indexterm zone="subversion svnbench">
             <primary sortas="b-svnbench">svnbench</primary>
@@ -443,7 +451,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <listitem>
           <para>
             is a program for filtering <application>Subversion</application>
-            repository dumpfile format streams.
+            repository dumpfile format streams
           </para>
           <indexterm zone="subversion svndumpfilter">
             <primary sortas="b-svndumpfilter">svndumpfilter</primary>
@@ -457,7 +465,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
           <para>
             is the FSFS (FileSystem atop of the FileSystem -
             <application>Subversion</application> filesystem implementation)
-            repository manipulation tool.
+            repository manipulation tool
           </para>
           <indexterm zone="subversion svnfsfs">
             <primary sortas="b-svnfsfs">svnfsfs</primary>
@@ -470,7 +478,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <listitem>
           <para>
             is a tool for inspecting a <application>Subversion</application>
-            repository.
+            repository
           </para>
           <indexterm zone="subversion svnlook">
             <primary sortas="b-svnlook">svnlook</primary>
@@ -482,7 +490,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <term><command>svnmucc</command></term>
         <listitem>
           <para>
-            is a Multiple URL Command Client for <application>Subversion</application>.
+            is a Multiple URL Command Client for <application>Subversion</application>
           </para>
           <indexterm zone="subversion svnmucc">
             <primary sortas="b-svnmucc">svnmucc</primary>
@@ -495,7 +503,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <listitem>
           <para>
             is a tool for dumping or loading a remote
-            <application>Subversion</application> repository.
+            <application>Subversion</application> repository
           </para>
           <indexterm zone="subversion svnrdump">
             <primary sortas="b-svnrdump">svnrdump</primary>
@@ -508,7 +516,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <listitem>
           <para>
             is a custom standalone server program, able to run as a daemon
-            process or invoked by SSH.
+            process or invoked by SSH
           </para>
           <indexterm zone="subversion svnserve">
            <primary sortas="b-svnserve">svnserve</primary>
@@ -521,7 +529,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <listitem>
           <para>
             is a <application>Subversion</application> repository
-            synchronisation tool.
+            synchronisation tool
           </para>
           <indexterm zone="subversion svnsync">
            <primary sortas="b-svnsync">svnsync</primary>
@@ -534,7 +542,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <listitem>
           <para>
             is used to report the version number and state of a working
-            <application>Subversion</application> repository copy.
+            <application>Subversion</application> repository copy
           </para>
           <indexterm zone="subversion svnversion">
             <primary sortas="b-svnversion">svnversion</primary>
@@ -547,7 +555,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
         <listitem>
           <para>
             are the support libraries used by the
-            <application>Subversion</application> programs.
+            <application>Subversion</application> programs
           </para>
           <indexterm zone="subversion libsvn_star-1">
             <primary sortas="c-libsvn_star-1">libsvn_*-1.so</primary>
@@ -562,7 +570,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
             is a plug-in module for the <application>Apache</application> HTTP
             server, used to authenticate users to a
             <application>Subversion</application> repository over the Internet
-            or an intranet.
+            or an intranet
           </para>
           <indexterm zone="subversion mod_authz_svn">
             <primary sortas="c-mod_authz_svn">mod_authz_svn.so</primary>
@@ -576,7 +584,7 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
           <para>
             is a plug-in module for the <application>Apache</application> HTTP
             server, used to make a <application>Subversion</application>
-            repository available to others over the Internet or an intranet.
+            repository available to others over the Internet or an intranet
           </para>
           <indexterm zone="subversion mod_dav_svn">
             <primary sortas="c-mod_authz_svn">mod_dav_svn.so</primary>

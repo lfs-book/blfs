@@ -16,7 +16,6 @@
   <?dbhtml filename="cheese.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -34,7 +33,7 @@
       photos and videos with fun graphical effects.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,17 +68,17 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch:
-		  <ulink url="&patch-root;/cheese-&cheese-version;-gst_debug_disabled-1.patch"/>
+		  <ulink url="&patch-root;/cheese-&cheese-version;-upstream_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
--->
+
     <bridgehead renderas="sect3">Cheese Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -146,6 +145,12 @@
 <screen><userinput>sed -i "s/&amp;version;/&cheese-version;/" docs/reference/cheese{,-docs}.xml</userinput></screen>
 
     <para>
+      Next, fix some build issues due to removed Vala functions:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../cheese-&cheese-version;-upstream_fixes-1.patch</userinput></screen>
+
+    <para>
       Install <application>Cheese</application> by running the following
       commands:
     </para>
@@ -153,7 +158,7 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dgtk_doc=false .. &amp;&amp;
+meson --prefix=/usr --buildtype=release -Dgtk_doc=false .. &amp;&amp;
 ninja</userinput></screen>
 
      <para>
@@ -171,11 +176,15 @@ ninja</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <para>
       <parameter>-Dgtk_doc=false</parameter>: This switch prevents the build
       system from generating and installing the API documentation. Omit this
       switch if you have <xref linkend="gtk-doc" role="nodep"/> installed
-      and wish to generate and install the API documentation.
+      and wish to generate and install the API documentation. Building the
+      documentation is broken due to an incompatibility with gtk-doc.
     </para>
   </sect2>
 
@@ -209,7 +218,7 @@ ninja</userinput></screen>
         <term><command>cheese</command></term>
         <listitem>
           <para>
-            is a webcam tool with graphical effects.
+            is a webcam tool with graphical effects
           </para>
           <indexterm zone="cheese cheese-prog">
             <primary sortas="b-cheese">cheese</primary>
@@ -221,7 +230,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libcheese.so</filename></term>
         <listitem>
           <para>
-            contains the <application>Cheese</application> API functions.
+            contains the <application>Cheese</application> API functions
           </para>
           <indexterm zone="cheese libcheese">
             <primary sortas="c-libcheese">libcheese.so</primary>
@@ -234,7 +243,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             contains the <application>Cheese</application>
-            <application>GTK+</application> widgets.
+            <application>GTK+</application> widgets
           </para>
           <indexterm zone="cheese libcheese-gtk">
             <primary sortas="c-libcheese-gtk">libcheese-gtk.so</primary>

@@ -16,7 +16,6 @@
   <?dbhtml filename="smartmontools.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       built into most modern ATA and SCSI disks. 
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -104,7 +103,6 @@ make</userinput></screen>
 
 <screen revision="systemd"><userinput>./configure --prefix=/usr           \
             --sysconfdir=/etc       \
-            --with-initscriptdir=no \
             --docdir=/usr/share/doc/smartmontools-&smartmontools-version; &amp;&amp;
 make</userinput></screen>
 
@@ -117,6 +115,21 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands" revision="sysv">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>--with-initscriptdir=no</parameter>: This switch suppresses
+      the default initialization script.  See below for the BLFS script.
+    </para>
+
+    <para>
+      <parameter>--with-libsystemd=no</parameter>: This switch disables support
+      for the sd-notify notification system provided by systemd.
+    </para>
 
   </sect2>
 
@@ -145,33 +158,34 @@ make</userinput></screen>
 
     </sect3>
 
-    <sect3  id="smartmontoools-init" revision="sysv">
-      <title>Boot Script</title>
+    <sect3  id="smartmontoools-init">
+       <title><phrase revision="sysv">Boot Script</phrase>
+              <phrase revision="systemd">Systemd Unit</phrase></title>
 
-      <para>
+      <para revision="sysv">
         If you want the <application>smartd</application> daemon to
         start automatically when the system is booted, install the
         <filename>/etc/rc.d/init.d/smartd</filename> init script included
         in the <xref linkend="bootscripts"/> package.
       </para>
 
+
+      <para revision="systemd">
+        If you want the <application>smartd</application> daemon to
+        start automatically when the system is booted, enable the
+        systemd unit provided by the package by executing the
+        following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
       <indexterm zone="smartmontools smartmontoools-init">
         <primary sortas="f-smartd">smartd</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-smartd</userinput></screen>
+<screen role="root" revision="sysv"><userinput>make install-smartd</userinput></screen>
 
+<screen role="root" revision="systemd"><userinput>systemctl enable smartd</userinput></screen>
     </sect3>
-
-  </sect2>
-
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
-    <para>
-      <parameter>--with-initscriptdir=no</parameter>: This switch suppresses
-      the default initialization script.  See above for the BLFS script.
-    </para>
 
   </sect2>
 
@@ -209,7 +223,7 @@ make</userinput></screen>
         <term><command>smartctl</command></term>
         <listitem>
           <para>
-            is the control and monitor utility for SMART Disks.
+            is the control and monitor utility for SMART Disks
           </para>
           <indexterm zone="smartmontools smartctl">
             <primary sortas="b-smartctl">smartctl</primary>
@@ -221,7 +235,7 @@ make</userinput></screen>
         <term><command>smartd</command></term>
         <listitem>
           <para>
-            is the SMART disk monitoring daemon.
+            is the SMART disk monitoring daemon
           </para>
           <indexterm zone="smartmontools smartd">
             <primary sortas="b-smartd">smartd</primary>
@@ -233,7 +247,7 @@ make</userinput></screen>
         <term><command>update-smart-drivedb</command></term>
         <listitem>
           <para>
-            is the update tool for the smartmontools drive database.
+            is the update tool for the smartmontools drive database
           </para>
           <indexterm zone="smartmontools update-smart-drivedb">
             <primary sortas="b-update-smart-drivedb">update-smart-drivedb</primary>
@@ -243,4 +257,5 @@ make</userinput></screen>
 
     </variablelist>
   </sect2>
+
 </sect1>

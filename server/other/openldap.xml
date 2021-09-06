@@ -6,17 +6,16 @@
 
   <!ENTITY openldap-download-http "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-&openldap-version;.tgz">
   <!ENTITY openldap-download-ftp  "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/openldap-&openldap-version;.tgz">
-  <!ENTITY openldap-md5sum        "82a7dcf7aeaf95fdad16017c0ed9983a">
-  <!ENTITY openldap-size          "5.7 MB">
-  <!ENTITY openldap-buildsize     "54 MB (client), 91 MB (server)">
-  <!ENTITY openldap-time          "0.5 SBU (client), 1.0 SBU (server)">
+  <!ENTITY openldap-md5sum        "e7847d1463ce4cdc8e3fd831d1cd267c">
+  <!ENTITY openldap-size          "6.1 MB">
+  <!ENTITY openldap-buildsize     "52 MB (client), 98 MB (server)">
+  <!ENTITY openldap-time          "0.4 SBU (client), 0.9 SBU (server)">
 ]>
 
 <sect1 id="openldap" xreflabel="OpenLDAP-&openldap-version;">
   <?dbhtml filename="openldap.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -34,7 +33,7 @@
       source implementation of the Lightweight Directory Access Protocol.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -95,7 +94,8 @@
         <xref linkend="mariadb"/> or
         <xref linkend="postgresql"/> or
         <ulink url="http://www.mysql.com/">MySQL</ulink>,
-      <ulink url="http://www.openslp.org/">OpenSLP</ulink>, and
+      <ulink url="http://www.openslp.org/">OpenSLP</ulink>,
+      <ulink url="https://docs.mongodb.com/manual/core/wiredtiger/">WiredTiger</ulink>, and
       <xref linkend="db"/> (for slapd, but deprecated)
     </para>
 
@@ -122,6 +122,7 @@ autoconf &amp;&amp;
             --sysconfdir=/etc \
             --disable-static  \
             --enable-dynamic  \
+            --enable-versioning  \
             --disable-debug   \
             --disable-slapd &amp;&amp;
 
@@ -161,6 +162,7 @@ autoconf &amp;&amp;
             --localstatedir=/var  \
             --libexecdir=/usr/lib \
             --disable-static      \
+            --enable-versioning   \
             --disable-debug       \
             --with-tls=openssl    \
             --with-cyrus-sasl     \
@@ -173,9 +175,7 @@ autoconf &amp;&amp;
             --enable-backends=mod \
             --disable-ndb         \
             --disable-sql         \
-            --disable-shell       \
-            --disable-bdb         \
-            --disable-hdb         \
+            --disable-wt          \
             --enable-overlays=mod &amp;&amp;
 
 make depend &amp;&amp;
@@ -226,6 +226,12 @@ cp      -vfr      doc/{drafts,rfc,guide} \
     </para>
 
     <para>
+      <parameter>--enable-versioning</parameter>: This switch enables 
+      symbol versioning in the <application>OpenLDAP</application> libraries.
+      Without this, some applications might generate a warning about missing symbol versions. 
+    </para>
+
+    <para>
       <parameter>--enable-crypt</parameter>: This switch enables using
       <command>crypt(3)</command> passwords.
     </para>
@@ -266,6 +272,12 @@ cp      -vfr      doc/{drafts,rfc,guide} \
       <parameter>--disable-sql</parameter>: This switch explicitly
       disables the SQL backend.  Omit this switch if a SQL server is
       installed and you are going to use a SQL backend.
+    </para>
+
+    <para>
+      <parameter>--disable-wt</parameter>: This switch explicitly
+      disables the WiredTiger backend.  Omit this switch if WiredTiger is
+      installed and you are going to use a WiredTiger backend.
     </para>
 
     <para>
@@ -406,7 +418,7 @@ cp      -vfr      doc/{drafts,rfc,guide} \
         </listitem>
         <listitem>
           <para>
-            The <ulink url="http://www.openldap.org/doc/admin24/"> OpenLDAP 2.4
+            The <ulink url="http://www.openldap.org/doc/admin25/"> OpenLDAP 2.5
             Administrator's Guide</ulink> (also installed locally in
             <filename class="directory">
             /usr/share/doc/openldap-&openldap-version;/guide/admin</filename>).
@@ -528,13 +540,12 @@ result: 0 Success
       <seglistitem>
         <seg>
           ldapadd, ldapcompare, ldapdelete, ldapexop, ldapmodify, ldapmodrdn,
-          ldappasswd, ldapsearch, ldapurl, ldapwhoami, slapacl, slapadd,
-          slapauth, slapcat, slapd, slapdn, slapindex, slappasswd, slapschema,
-          and slaptest
+          ldappasswd, ldapsearch, ldapurl, ldapvc, ldapwhoami, slapacl, slapadd,
+          slapauth, slapcat, slapd, slapdn, slapindex, slapmodify, slappasswd,
+          slapschema, and slaptest
         </seg>
         <seg>
-          liblber.so, libldap.so, libldap_r.so,
-          and several under /usr/lib/openldap
+          liblber.so, libldap.so, and several under /usr/lib/openldap
         </seg>
         <seg>
           /etc/openldap,
@@ -553,7 +564,7 @@ result: 0 Success
         <term><command>ldapadd</command></term>
         <listitem>
           <para>
-            opens a connection to an LDAP server, binds and adds entries.
+            opens a connection to an LDAP server, binds and adds entries
           </para>
           <indexterm zone="openldap ldapadd">
             <primary sortas="b-ldapadd">ldapadd</primary>
@@ -566,7 +577,7 @@ result: 0 Success
         <listitem>
           <para>
             opens a connection to an LDAP server, binds and performs
-            a compare using specified parameters.
+            a compare using specified parameters
           </para>
           <indexterm zone="openldap ldapcompare">
             <primary sortas="b-ldapcompare">ldapcompare</primary>
@@ -579,7 +590,7 @@ result: 0 Success
         <listitem>
           <para>
             opens a connection to an LDAP server, binds and deletes
-            one or more entries.
+            one or more entries
           </para>
           <indexterm zone="openldap ldapdelete">
             <primary sortas="b-ldapdelete">ldapdelete</primary>
@@ -593,7 +604,7 @@ result: 0 Success
           <para>
             issues the LDAP extended operation specified by
             oid or one of the  special  keywords  whoami,
-            cancel, or refresh.
+            cancel, or refresh
           </para>
           <indexterm zone="openldap ldapexop">
             <primary sortas="b-ldapexop">ldapexop</primary>
@@ -605,7 +616,7 @@ result: 0 Success
         <term><command>ldapmodify</command></term>
         <listitem>
           <para>
-            opens a connection to an LDAP server, binds and modifies entries.
+            opens a connection to an LDAP server, binds and modifies entries
           </para>
           <indexterm zone="openldap ldapmodify">
             <primary sortas="b-ldapmodify">ldapmodify</primary>
@@ -618,7 +629,7 @@ result: 0 Success
         <listitem>
           <para>
             opens a connection to an LDAP server, binds and modifies
-            the RDN of entries.
+            the RDN of entries
           </para>
           <indexterm zone="openldap ldapmodrdn">
             <primary sortas="b-ldapmodrdn">ldapmodrdn</primary>
@@ -630,7 +641,7 @@ result: 0 Success
         <term><command>ldappasswd</command></term>
         <listitem>
           <para>
-            is a tool used to set the password of an LDAP user.
+            is a tool used to set the password of an LDAP user
           </para>
           <indexterm zone="openldap ldappasswd">
             <primary sortas="b-ldappasswd">ldappasswd</primary>
@@ -643,7 +654,7 @@ result: 0 Success
         <listitem>
           <para>
             opens a connection to an LDAP server, binds and performs
-            a search using specified parameters.
+            a search using specified parameters
           </para>
           <indexterm zone="openldap ldapsearch">
             <primary sortas="b-ldapsearch">ldapsearch</primary>
@@ -656,10 +667,22 @@ result: 0 Success
         <listitem>
           <para>
             is a command that allows to either compose or
-            decompose LDAP URIs.
+            decompose LDAP URIs
           </para>
           <indexterm zone="openldap ldapurl">
             <primary sortas="b-ldapurl">ldapurl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ldapvc">
+        <term><command>ldapvc</command></term>
+        <listitem>
+          <para>
+            verifies LDAP credentials
+          </para>
+          <indexterm zone="openldap ldapvc">
+            <primary sortas="b-ldapvc">ldapvc</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -669,7 +692,7 @@ result: 0 Success
         <listitem>
           <para>
             opens a connection to an LDAP server, binds and displays
-            whoami information.
+            whoami information
           </para>
           <indexterm zone="openldap ldapwhoami">
             <primary sortas="b-ldapwhoami">ldapwhoami</primary>
@@ -683,7 +706,7 @@ result: 0 Success
           <para>
             is used to check the behavior of slapd by verifying
             access to directory data according to the access control
-            list directives defined in its configuration.
+            list directives defined in its configuration
           </para>
           <indexterm zone="openldap slapacl">
             <primary sortas="b-slapacl">slapacl</primary>
@@ -696,7 +719,7 @@ result: 0 Success
         <listitem>
           <para>
             is used to add entries specified in LDAP Directory Interchange
-            Format (LDIF) to an LDAP database.
+            Format (LDIF) to an LDAP database
           </para>
           <indexterm zone="openldap slapadd">
             <primary sortas="b-slapadd">slapadd</primary>
@@ -710,7 +733,7 @@ result: 0 Success
           <para>
             is used to check the behavior of the slapd
             in mapping identities for authentication and
-            authorization purposes, as specified in slapd.conf.
+            authorization purposes, as specified in slapd.conf
           </para>
           <indexterm zone="openldap slapauth">
             <primary sortas="b-slapauth">slapauth</primary>
@@ -723,7 +746,7 @@ result: 0 Success
         <listitem>
           <para>
             is used to generate an LDAP LDIF output based upon the
-            contents of a slapd database.
+            contents of a slapd database
           </para>
           <indexterm zone="openldap slapcat">
             <primary sortas="b-slapcat">slapcat</primary>
@@ -735,7 +758,7 @@ result: 0 Success
         <term><command>slapd</command></term>
         <listitem>
           <para>
-            is the standalone LDAP server.
+            is the standalone LDAP server
           </para>
           <indexterm zone="openldap slapd">
             <primary sortas="b-slapd">slapd</primary>
@@ -747,7 +770,7 @@ result: 0 Success
         <term><command>slapdn</command></term>
         <listitem>
           <para>
-            checks a list of string-represented DNs based on schema syntax.
+            checks a list of string-represented DNs based on schema syntax
           </para>
           <indexterm zone="openldap slapdn">
             <primary sortas="b-slapdn">slapdn</primary>
@@ -760,10 +783,22 @@ result: 0 Success
         <listitem>
           <para>
             is used to regenerate slapd indexes based upon the current
-            contents of a database.
+            contents of a database
           </para>
           <indexterm zone="openldap slapindex">
             <primary sortas="b-slapindex">slapindex</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="slapmodify">
+        <term><command>slapmodify</command></term>
+        <listitem>
+          <para>
+            modifies entries in a slapd database
+          </para>
+          <indexterm zone="openldap slapmodify">
+            <primary sortas="b-slapmodify">slapmodify</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -772,7 +807,7 @@ result: 0 Success
         <term><command>slappasswd</command></term>
         <listitem>
           <para>
-            is an <application>OpenLDAP</application> password utility.
+            is an <application>OpenLDAP</application> password utility
           </para>
           <indexterm zone="openldap slappasswd">
             <primary sortas="b-slappasswd">slappasswd</primary>
@@ -785,7 +820,7 @@ result: 0 Success
         <listitem>
           <para>
             is used to check schema compliance of the contents
-            of a slapd database.
+            of a slapd database
           </para>
           <indexterm zone="openldap slapschema">
             <primary sortas="b-slapschema">slapschema</primary>
@@ -797,7 +832,7 @@ result: 0 Success
         <term><command>slaptest</command></term>
         <listitem>
           <para>
-            checks the sanity of the <filename>slapd.conf</filename> file.
+            checks the sanity of the <filename>slapd.conf</filename> file
           </para>
           <indexterm zone="openldap slaptest">
             <primary sortas="b-slaptest">slaptest</primary>
@@ -814,7 +849,7 @@ result: 0 Success
             LDAP protocol elements using the (slightly simplified) Basic
             Encoding Rules defined by LDAP. They are not normally used directly
             by an LDAP application program except in the handling of controls
-            and extended operations.
+            and extended operations
           </para>
           <indexterm zone="openldap liblber">
             <primary sortas="c-liblber">liblber.so</primary>
@@ -827,7 +862,7 @@ result: 0 Success
         <listitem>
           <para>
             supports the LDAP programs and provide functionality for
-            other programs interacting with LDAP.
+            other programs interacting with LDAP
           </para>
           <indexterm zone="openldap libldap">
             <primary sortas="c-libldap">libldap.so</primary>
@@ -835,18 +870,20 @@ result: 0 Success
         </listitem>
       </varlistentry>
 
+      <!--
       <varlistentry id="libldap_r">
         <term><filename class="libraryfile">libldap_r.so</filename></term>
         <listitem>
           <para>
             contains the functions required by the LDAP programs to
-            produce the results from LDAP requests.
+            produce the results from LDAP requests
           </para>
           <indexterm zone="openldap libldap_r">
             <primary sortas="c-libldap_r">libldap_r.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+      -->
 
     </variablelist>
 

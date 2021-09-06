@@ -5,20 +5,19 @@
   %general-entities;
 
   <!ENTITY tracker3-download-http
-           "&gnome-download-http;/tracker/3.0/tracker-&tracker3-version;.tar.xz">
+           "&gnome-download-http;/tracker/3.1/tracker-&tracker3-version;.tar.xz">
   <!ENTITY tracker3-download-ftp
-           "&gnome-download-ftp;/tracker/3.0/tracker-&tracker3-version;.tar.xz">
-  <!ENTITY tracker3-md5sum        "d1cb71cb69aac7a8f98b360aef438d0b">
+           "&gnome-download-ftp;/tracker/3.1/tracker-&tracker3-version;.tar.xz">
+  <!ENTITY tracker3-md5sum        "c2a38ecdfb792b25f6190092b69b15d3">
   <!ENTITY tracker3-size          "1.4 MB">
-  <!ENTITY tracker3-buildsize     "79 MB (with tests)">
-  <!ENTITY tracker3-time          "0.3 SBU (with tests)">
+  <!ENTITY tracker3-buildsize     "82 MB (with tests)">
+  <!ENTITY tracker3-time          "0.8 SBU (with tests)">
 ]>
 
 <sect1 id="tracker3" xreflabel="Tracker-&tracker3-version;">
   <?dbhtml filename="tracker3.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       provider used in the <application>GNOME</application> desktop environment.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,6 +71,7 @@
       </listitem>
     </itemizedlist>
 
+<!-- Not needed with 3.0.3, but keep around just in case
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -81,6 +81,7 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">Tracker Dependencies</bridgehead>
 
@@ -95,10 +96,8 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="gobject-introspection"/>,
-      <xref linkend="icu"/>,
-      <xref linkend="NetworkManager"/>,
-      <xref linkend="sqlite"/>, and
-      <xref linkend="upower"/>
+      <xref linkend="icu"/>, and
+      <xref linkend="sqlite"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -107,7 +106,8 @@
       <xref linkend="gtk-doc"/>,
       <ulink url="https://github.com/scop/bash-completion/">bash-completion</ulink>, and
       <ulink url="https://github.com/snowballstem/snowball/">libstemmer</ulink>
-      <!-- Python2 used to be a dependency until 2.2.1 -->
+      <!--<ulink url="https://pypi.python.org/pypi/tap.py/">tap.py</ulink>
+      (for tests)-->
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -119,12 +119,6 @@
     <title>Installation of Tracker</title>
 
     <para>
-      First, fix an incompatibility between Tracker and SQLite-3.34.0:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../tracker-&tracker3-version;-upstream_fixes-1.patch</userinput></screen>
-
-    <para>
       Install <application>Tracker</application> by running the following
       commands:
     </para>
@@ -132,18 +126,27 @@
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Ddocs=false -Dman=false .. &amp;&amp;
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Ddocs=false        \
+      -Dman=false ..      &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Ddocs=false -Dman=false -Dsystemd_user_services=false .. &amp;&amp;
+meson --prefix=/usr      \
+      --buildtype=release \
+      -Ddocs=false       \
+      -Dman=false        \
+      -Dsystemd_user_services=false .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>ninja test</command>. The tests
-      should be run from a graphical session.
+      should be run from a graphical session. One test,
+      <filename>tracker:functional/portal</filename>, is known to timeout.
+      <!--14 tests will fail if the Python 3 module tap.py is not installed.-->
     </para>
 
     <para>
@@ -157,6 +160,9 @@ ninja</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
       <parameter>-Ddocs=false</parameter>: This switch prevents the
@@ -197,7 +203,9 @@ ninja</userinput></screen>
           libtracker-sparql-3.0.so
         </seg>
         <seg>
-          /usr/{include,lib,libexec}/tracker-3.0, /usr/share/tracker3, and
+          /usr/{include,lib}/tracker-3.0,
+          /usr/libexec/tracker3,
+          /usr/share/tracker3, and
           /usr/share/gtk-doc/html/{libtracker-sparql,ontology}-3
         </seg>
       </seglistitem>
@@ -212,7 +220,7 @@ ninja</userinput></screen>
         <term><command>tracker3</command></term>
         <listitem>
           <para>
-            is a control program for the indexer.
+            is a control program for the indexer
           </para>
           <indexterm zone="tracker3 tracker3-prog">
             <primary sortas="b-tracker3">tracker3</primary>
@@ -224,7 +232,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libtracker-sparql-3.0.so</filename></term>
         <listitem>
           <para>
-            contains resource management and database functions.
+            contains resource management and database functions
           </para>
           <indexterm zone="tracker3 libtracker3-sparql">
             <primary sortas="c-libtracker3-sparql">libtracker-sparql-3.0.so</primary>

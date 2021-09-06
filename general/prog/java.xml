@@ -7,24 +7,25 @@
 <!-- Maintainer: before making the tarball, remove all .debuginfo files from
     the directory: this saves more than 70 MB. -->
   <!ENTITY anduin-download             "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;">
-  <!ENTITY openjdk-download-binary-x86 "&sources-anduin-http;/OpenJDK/OpenJDK-14.0.1/OpenJDK-14.0.1+7-i686-bin.tar.xz">
-  <!ENTITY openjdk-bin-md5sum-x86      "03bea53f017e53d64811c24a794368e0">
-  <!ENTITY openjdk-bin-size-x86        "109 MB">
-  <!ENTITY openjdk-bin-buildsize-x86   "242 MB">
+  <!ENTITY openjdk-download-binary-x86 "&sources-anduin-http;/OpenJDK/OpenJDK-16.0.2/OpenJDK-16.0.2+7-i686-bin.tar.xz">
+  <!ENTITY openjdk-bin-md5sum-x86      "45410ad7ec9045c379f9e736488696c3">
+  <!ENTITY openjdk-bin-size-x86        "152 MB">
+  <!ENTITY openjdk-bin-buildsize-x86   "29 MB">
 
 <!-- Not uploaded to anduin, since this file is now available under GNU GPLv2
      licence.-->
-  <!ENTITY openjdk-download-binary-x64 "https://download.java.net/java/GA/jdk14.0.1/664493ef4a6946b186ff29eb326336a2/&openjdk-build;/GPL/openjdk-&openjdk-version;_linux-x64_bin.tar.gz">
-  <!ENTITY openjdk-bin-md5sum-x64      "8b402feab7c615367b21e289ddda665e">
-  <!ENTITY openjdk-bin-size-x64        "189 MB">
-  <!ENTITY openjdk-bin-buildsize-x64   "320 MB">
+<!-- Reuploaded to anduin due to the complexity of the download URL, per Bruce's
+     request. - Doug -->
+  <!ENTITY openjdk-download-binary-x64 "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;/openjdk-&openjdk-version;_linux-x64_bin.tar.gz">
+  <!ENTITY openjdk-bin-md5sum-x64      "31c344e9097bd034c892b97c5ac45c27">
+  <!ENTITY openjdk-bin-size-x64        "176 MB">
+  <!ENTITY openjdk-bin-buildsize-x64   "303 MB">
 ]>
 
 <sect1 id="java" xreflabel="Java-&openjdk-version;">
   <?dbhtml filename="java.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -40,7 +41,7 @@
     <para>
       Java is different from most of the packages in LFS and BLFS. It
       is a programming language that works with files of byte codes to obtain
-      instructions and executes then in a Java Virtual Machine (JVM). An
+      instructions and executes them in a Java Virtual Machine (JVM). An
       introductory java program looks like:
     </para>
 
@@ -98,7 +99,7 @@
       version.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Binary Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -158,6 +159,15 @@
 
   <sect2 role="installation">
     <title>Installation of the Java BinaryJDK </title>
+
+    <note>
+      <para>
+        The tarball
+        <emphasis>openjdk-&openjdk-version;_linux-x64_bin.tar.gz</emphasis> will
+        untar to the <emphasis>jdk-&openjdk-version;</emphasis> directory.
+      </para>
+    </note>
+
     <para>
       Begin by extracting the appropriate binary tarball for your
       architecture and changing to the extracted directory. Install the binary
@@ -165,9 +175,9 @@
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>install -vdm755 /opt/OpenJDK-&openjdk-version;+&openjdk-build;-bin &amp;&amp;
-mv -v * /opt/OpenJDK-&openjdk-version;+&openjdk-build;-bin         &amp;&amp;
-chown -R root:root /opt/OpenJDK-&openjdk-version;+&openjdk-build;-bin</userinput></screen>
+<screen role="root"><userinput>install -vdm755 /opt/OpenJDK-&openjdk-version;-bin &amp;&amp;
+mv -v * /opt/OpenJDK-&openjdk-version;-bin         &amp;&amp;
+chown -R root:root /opt/OpenJDK-&openjdk-version;-bin</userinput></screen>
 
     <para>
       The binary version is now installed. You may create a symlink to that
@@ -175,7 +185,7 @@ chown -R root:root /opt/OpenJDK-&openjdk-version;+&openjdk-build;-bin</userinput
       user:
     </para>
 
-<screen role="root"><userinput>ln -sfn OpenJDK-&openjdk-version;+&openjdk-build;-bin /opt/jdk</userinput></screen>
+<screen role="root"><userinput>ln -sfn OpenJDK-&openjdk-version;-bin /opt/jdk</userinput></screen>
 
     <para>
       You may now proceed to <xref linkend="ojdk-conf"/>, where the

@@ -9,17 +9,16 @@
   <!ENTITY stunnel-download-ftp  "ftp://ftp.stunnel.org/stunnel/archive/5.x/stunnel-&stunnel-version;.tar.gz">
   <!-- Following ftp only has later release -->
 <!--   "ftp://ftp.stunnel.org/stunnel/stunnel-&stunnel-version;.tar.gz"> -->
-  <!ENTITY stunnel-md5sum        "6bbe921f8d2ab4967dc7ff42f6e5d45a">
+  <!ENTITY stunnel-md5sum        "d68ef1c93a1e44df9455e1185d7b7742">
   <!ENTITY stunnel-size          "964 KB">
-  <!ENTITY stunnel-buildsize     "7.3 MB">
-  <!ENTITY stunnel-time          "less than 0.1 SBU">
+  <!ENTITY stunnel-buildsize     "7.2 MB">
+  <!ENTITY stunnel-time          "0.1 SBU">
 ]>
 
 <sect1 id="stunnel" xreflabel="stunnel-&stunnel-version;">
   <?dbhtml filename="stunnel.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -44,7 +43,7 @@
       server package source code.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -139,6 +138,7 @@ useradd -c "stunnel Daemon" -d /var/lib/stunnel \
       commands:
     </para>
 
+<!-- Not needed, we're 10+ versions ahead of this now
     <note>
       <para>
         For some systems with <application>binutils</application>
@@ -154,6 +154,7 @@ useradd -c "stunnel Daemon" -d /var/lib/stunnel \
         ./configure ...</command> in the first command below.
       </para>
     </note>
+-->
 
 <screen revision="sysv"><userinput>./configure --prefix=/usr        \
             --sysconfdir=/etc    \
@@ -182,7 +183,7 @@ make</userinput></screen>
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root" revision="systemd"><userinput>install -v -m644 tools/stunnel.service /lib/systemd/system</userinput></screen>
+<screen role="root" revision="systemd"><userinput>install -v -m644 tools/stunnel.service /usr/lib/systemd/system</userinput></screen>
 
     <para>
       If you do not already have a signed SSL Certificate and Private Key,
@@ -259,7 +260,7 @@ chown stunnel:stunnel /var/lib/stunnel</userinput></screen>
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>cat &gt;/etc/stunnel/stunnel.conf &lt;&lt; "EOF" 
+<screen role="root"><userinput>cat &gt; /etc/stunnel/stunnel.conf &lt;&lt; "EOF" 
 <literal>; File: /etc/stunnel/stunnel.conf
 
 ; Note: The pid and output locations are relative to the chroot location.
@@ -372,7 +373,7 @@ connect = <replaceable>&lt;hostname:portnumber&gt;</replaceable></literal></scre
           <para>
             is a program designed to work as an SSL
             encryption wrapper between remote clients and local
-            (<command>{x}inetd</command>-startable) or remote servers.
+            (<command>{x}inetd</command>-startable) or remote servers
           </para>
           <indexterm zone="stunnel stunnel-prog">
             <primary sortas="b-stunnel">stunnel</primary>
@@ -386,7 +387,7 @@ connect = <replaceable>&lt;hostname:portnumber&gt;</replaceable></literal></scre
           <para>
             is a <application>Perl</application> wrapper script to use
             <command>stunnel</command> 3.x syntax with
-            <command>stunnel</command> 4.05 or later.
+            <command>stunnel</command> 4.05 or later
           </para>
           <indexterm zone="stunnel stunnel3">
             <primary sortas="b-stunnel3">stunnel3</primary>
@@ -395,11 +396,11 @@ connect = <replaceable>&lt;hostname:portnumber&gt;</replaceable></literal></scre
       </varlistentry>
 
       <varlistentry id="libstunnel">
-        <term><filename class='libraryfile'>libstunnel.so</filename></term>
+        <term><filename class="libraryfile">libstunnel.so</filename></term>
         <listitem>
           <para>
             contains the API functions required by
-            <application>stunnel</application>.
+            <application>stunnel</application>
           </para>
           <indexterm zone="stunnel libstunnel">
             <primary sortas="c-libstunnel">libstunnel.so</primary>

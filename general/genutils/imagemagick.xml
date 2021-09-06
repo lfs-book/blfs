@@ -4,13 +4,15 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY imagemagick-patch-version "27">
+  <!ENTITY imagemagick-patch-version "4">
 
   <!ENTITY imagemagick-download-http "https://www.imagemagick.org/download/releases/ImageMagick-&imagemagick-version;-&imagemagick-patch-version;.tar.xz">
-  <!ENTITY imagemagick-download-ftp  "ftp://ftp.imagemagick.org/pub/ImageMagick/releases/ImageMagick-&imagemagick-version;-&imagemagick-patch-version;.tar.xz">
-  <!ENTITY imagemagick-md5sum        "40470fd58ae85010a53b61de0378f1c3">
-  <!ENTITY imagemagick-size          "9.3 MB">
-  <!ENTITY imagemagick-buildsize     "212 MB (with typical dependencies; add 31 MB for checks)">
+<!-- 2021-01-14 : ftp.imagemagick.org hangs, assume no longer usable
+  <!ENTITY imagemagick-download-ftp  "ftp://ftp.imagemagick.org/pub/ImageMagick/releases/ImageMagick-&imagemagick-version;-&imagemagick-patch-version;.tar.xz"> -->
+  <!ENTITY imagemagick-download-ftp  " ">
+  <!ENTITY imagemagick-md5sum        "d69d22a78d493afdc0c2edd7931f707c">
+  <!ENTITY imagemagick-size          "9.9 MB">
+  <!ENTITY imagemagick-buildsize     "193 MB (with typical dependencies; add 20 MB for checks)">
   <!ENTITY imagemagick-time          "0.9 SBU (with typical dependencies; add 0.6 SBU for checks, both using  parallelism=4)">
 ]>
 
@@ -33,9 +35,15 @@
 
      [bdubbs] Just removed it.  I don't think it adds anything.
 
+     [ken] Comparing 7.0.10-27 to 7.0.10-57 on the same machine: for -27 my
+     timings and space matched the book (well, make check was marginally
+     faster on this machine), but for -57 the compiled source, installed
+     files and extra space for make check were all much smaller.
+
      Also, please look over the output from the configure command for any
      additional dependencies that need to be listed, as ImageMagick is
-     constantly adding additional features and dependencies.
+     constantly adding additional features and dependencies. Or diff the
+     configure script against the previous version.
 
      For those of us who touch this infrequently:
      DPS/dpsXclient is from apple so not relevant to linux builds
@@ -46,7 +54,6 @@
   <?dbhtml filename="imagemagick.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -66,7 +73,7 @@
       Bindings for Perl and C++ are also available.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -104,7 +111,7 @@
         the existing BLFS instructions to install it. Chances are that it will
         work just fine, but this has not been tested by the BLFS team. If the
         package version shown above is not available from the locations shown
-        above, or from the <filename class='directory'>legacy/</filename>
+        above, or from the <filename class="directory">legacy/</filename>
         directory at <literal>ftp.ImageMagick.org/pub/ImageMagick</literal> you
         can download it from the BLFS package server at Oregon State University: 
         <ulink url="ftp://ftp.osuosl.org/pub/blfs/conglomeration/ImageMagick/"/>.
@@ -121,15 +128,16 @@
     <para>
       The optional dependencies listed below should be installed if you need
       support for the specific format or the conversion tool the dependency
-      provides. Many of the dependencies' capabilities and uses are described in
+      provides. <!-- No such section in 7.1.0-4
+                Many of the dependencies' capabilities and uses are described in
       the <quote>MAGICK DELEGATES</quote> section of the
-      <filename>README.txt</filename> file located in the source tree.
+      <filename>README.txt</filename> file located in the source tree. -->
       Additional information about the dependencies can be found in the
       <filename>Install-unix.txt</filename> file located in the source tree as
       well as issuing the <command>./configure --help</command> command. A
       summary of this information, as well as some additional notes can be
       viewed on-line at <ulink
-      url="https://imagemagick.org/script/advanced-unix-installation.php"/>.
+      url="https://imagemagick.org/script/install-source.php"/>.
     </para>
 
     <bridgehead renderas="sect4">Optional System Utilities</bridgehead>
@@ -180,7 +188,10 @@
       <ulink url="https://github.com/FLIF-hub/FLIF/releases">FLIF</ulink>,
       <ulink url="http://www.cl.cam.ac.uk/~mgk25/jbigkit/">JBIG-KIT</ulink>,
       <!--<ulink url="&gnome-download-http;/libgxps/">libgxps</ulink>,-->
-      <ulink url="https://github.com/strukturag/libheif/">libheif</ulink>,
+      <ulink url="https://github.com/strukturag/libheif/">libheif</ulink> with
+      <ulink url="https://github.com/strukturag/libde265/">libde265</ulink>
+      (both needed if converting macOS heic images),
+      <ulink url="https://github.com/libjxl/libjxl/">libjxl</ulink>,
       <ulink url="https://github.com/HOST-Oman/libraqm/">libraqm</ulink>,
       <ulink url="http://liblqr.wikidot.com/en:download-page">Liquid Rescale</ulink>,
       <ulink url="http://www.openexr.com/">OpenEXR</ulink>, and
@@ -247,12 +258,13 @@ make</userinput></screen>
 <screen role="root"><userinput>make DOCUMENTATION_PATH=/usr/share/doc/imagemagick-&imagemagick-version; install</userinput></screen>
 
     <para>
-      To test the installation, issue: <command>make check</command>. A more
+      To test the installation, issue: <command>make check</command>.
+              <!-- seems to have been dropped                         A more
       comprehensive test is the <application>ImageMagick</application>
       validation suite. If <command>make check</command> has not been executed,
       run <command>make tests/validate</command> to compile it.  Issue
       <command>tests/validate 2>&amp;1 | tee validate.log</command> to run the
-      validation suite. <!-- summary is last line of output
+      validation suite.--> <!-- summary is last line of output
        The result summary may be obtained with <command>grep
       "validation suite" validate.log</command>. -->
      <!-- I'm not convinced that Helvetica is required, I don't install the gs
@@ -376,7 +388,7 @@ make</userinput></screen>
       <term><command>animate</command></term>
       <listitem>
         <para>
-          animates a sequence of images.
+          animates a sequence of images
         </para>
         <indexterm zone="imagemagick animate">
           <primary sortas="b-animate">animate</primary>
@@ -388,7 +400,7 @@ make</userinput></screen>
       <term><command>compare</command></term>
       <listitem>
         <para>
-          compares an image to a reconstructed image.
+          compares an image to a reconstructed image
         </para>
         <indexterm zone="imagemagick compare">
           <primary sortas="b-compare">compare</primary>
@@ -400,7 +412,7 @@ make</userinput></screen>
       <term><command>composite</command></term>
       <listitem>
         <para>
-          composites various images into the given base image.
+          composites various images into the given base image
         </para>
         <indexterm zone="imagemagick composite">
           <primary sortas="b-composite">composite</primary>
@@ -412,7 +424,7 @@ make</userinput></screen>
       <term><command>conjure</command></term>
       <listitem>
         <para>
-          processes a MSL script to create an image.
+          processes a MSL script to create an image
         </para>
         <indexterm zone="imagemagick conjure">
           <primary sortas="b-conjure">conjure</primary>
@@ -424,7 +436,7 @@ make</userinput></screen>
       <term><command>convert</command></term>
       <listitem>
         <para>
-          converts image(s) from one format to another.
+          converts image(s) from one format to another
         </para>
         <indexterm zone="imagemagick convert">
           <primary sortas="b-convert">convert</primary>
@@ -436,7 +448,7 @@ make</userinput></screen>
       <term><command>display</command></term>
       <listitem>
         <para>
-          displays an image.
+          displays an image
         </para>
         <indexterm zone="imagemagick display">
           <primary sortas="b-display">display</primary>
@@ -448,7 +460,7 @@ make</userinput></screen>
       <term><command>identify</command></term>
       <listitem>
         <para>
-          describes the format and characteristics of an image file.
+          describes the format and characteristics of an image file
         </para>
         <indexterm zone="imagemagick identify">
           <primary sortas="b-identify">identify</primary>
@@ -460,7 +472,7 @@ make</userinput></screen>
       <term><command>import</command></term>
       <listitem>
         <para>
-          captures an X window.
+          captures an X window
         </para>
         <indexterm zone="imagemagick import">
           <primary sortas="b-import">import</primary>
@@ -474,7 +486,7 @@ make</userinput></screen>
         <para>
           convert between image formats as well as resize an image,
           blur, crop, despeckle, dither, draw on, flip, join, re-sample
-          and much more.
+          and much more
         </para>
         <indexterm zone="imagemagick magick">
           <primary sortas="b-magick">magick</primary>
@@ -487,7 +499,7 @@ make</userinput></screen>
       <listitem>
         <para>
           show information about the installed versions of the
-          <application>ImageMagick</application> libraries.
+          <application>ImageMagick</application> libraries
         </para>
         <indexterm zone="imagemagick magick-config">
           <primary sortas="b-Magick-config">Magick-config</primary>
@@ -499,7 +511,7 @@ make</userinput></screen>
       <term><command>mogrify</command></term>
       <listitem>
         <para>
-          transforms an image.
+          transforms an image
         </para>
         <indexterm zone="imagemagick mogrify">
           <primary sortas="b-mogrify">mogrify</primary>
@@ -511,7 +523,7 @@ make</userinput></screen>
       <term><command>montage</command></term>
       <listitem>
         <para>
-          composites various images into a new image.
+          composites various images into a new image
         </para>
         <indexterm zone="imagemagick montage">
           <primary sortas="b-montage">montage</primary>
@@ -524,7 +536,7 @@ make</userinput></screen>
       <listitem>
         <para>
           streams one or more pixel components of an image or
-          portion of the image to your choice of storage formats.
+          portion of the image to your choice of storage formats
         </para>
         <indexterm zone="imagemagick stream">
           <primary sortas="b-stream">stream</primary>
@@ -533,15 +545,15 @@ make</userinput></screen>
     </varlistentry>
 
     <varlistentry id="perlmagick">
-      <term><filename class='libraryfile'>Image::Magick</filename></term>
+      <term><filename class="libraryfile">Image::Magick</filename></term>
       <listitem>
         <para>
           allows the reading, manipulation and writing of a large number of
           image file formats using the <application>ImageMagick</application>
           library. Run <command>make</command> in the
-          <filename class='directory'>PerlMagick/demo</filename> directory of
+          <filename class="directory">PerlMagick/demo</filename> directory of
           the package source tree after the package is installed to see a nice
-          demo of the module's capabilities.
+          demo of the module's capabilities
         </para>
         <indexterm zone="imagemagick perlmagick">
           <primary sortas="g-Image-Magick">Image::Magick</primary>
@@ -553,7 +565,7 @@ make</userinput></screen>
       <term><filename class="libraryfile">libMagickCore-7.Q16HDRI.so</filename></term>
       <listitem>
         <para>
-          provides the C API for ImageMagick.
+          provides the C API for ImageMagick
         </para>
         <indexterm zone="imagemagick libMagickCore-7.Q16HDRI">
           <primary sortas="c-libMagickCore-7.Q16HDRI">libMagickCore-7.Q16HDRI.so</primary>
@@ -566,7 +578,7 @@ make</userinput></screen>
       <listitem>
         <para>
           is the recommended C API for ImageMagick. Unlike the MagickCore API it
-          uses  only a few opaque types.
+          uses  only a few opaque types
         </para>
         <indexterm zone="imagemagick libMagickWand-7.Q16HDRI">
           <primary sortas="c-libMagickWand-7.Q16HDRI">libMagickWand-7.Q16HDRI.so</primary>
@@ -578,7 +590,7 @@ make</userinput></screen>
       <term><filename class="libraryfile">libMagick++-7.Q16HDRI.so</filename></term>
       <listitem>
         <para>
-          provides the C++ API for ImageMagick.
+          provides the C++ API for ImageMagick
         </para>
         <indexterm zone="imagemagick libMagickpp-7.Q16HDRI">
           <primary sortas="c-libMagick++-7.Q16HDRI">libMagick++-7.Q16HDRI.so</primary>

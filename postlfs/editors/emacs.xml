@@ -7,17 +7,16 @@
   <!ENTITY emacs-download-http "&gnu-http;/emacs/emacs-&emacs-version;.tar.xz">
   <!ENTITY emacs-download-ftp  "&gnu-ftp;/emacs/emacs-&emacs-version;.tar.xz"> 
   <!ENTITY emacs-download-ftp  " "> 
-  <!ENTITY emacs-md5sum        "f1f25356b68ec69caccd41d95988d23d">
-  <!ENTITY emacs-size          "42 MB">
-  <!ENTITY emacs-buildsize     "480 MB">
-  <!ENTITY emacs-time          "0.7 SBU (Using parallelism=4)">
+  <!ENTITY emacs-md5sum        "4c3d9ff35b2ab2fe518dc7eb3951e128">
+  <!ENTITY emacs-size          "43 MB">
+  <!ENTITY emacs-buildsize     "620 MB">
+  <!ENTITY emacs-time          "0.6 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="emacs" xreflabel="Emacs-&emacs-version;">
   <?dbhtml filename="emacs.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -35,7 +34,7 @@
       customizable, self-documenting real-time display editor.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,8 +74,10 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="harfbuzz"/>,
       <xref linkend="giflib"/>,
-      <xref linkend="gnutls"/>, and
+      <xref linkend="gnutls"/>,
+      <xref linkend="jansson"/>, and
       <xref linkend="libtiff"/>
     </para>
 
@@ -84,6 +85,7 @@
     <para role="optional">
       <xref linkend="x-window-system"/>,
       <xref linkend="alsa-lib"/>,
+      <xref linkend="cairo"/>,
       <xref linkend="dbus"/>,
       <xref linkend="GConf"/>,
       <xref linkend="gobject-introspection"/>,
@@ -91,7 +93,7 @@
       <xref linkend="gpm"/>,
       <xref role="nodep" linkend="gtk2"/> or <xref linkend="gtk3"/>,
       <xref linkend="imagemagick"/>,
-      <xref linkend="jansson"/>, <!-- for JSON support -->
+      <xref linkend="lcms2"/>,
       <xref linkend="libjpeg"/>,
       <xref linkend="libpng"/>,
       <xref linkend="librsvg"/>,
@@ -100,10 +102,11 @@
       <xref linkend="valgrind"/>,
       <ulink url="&gnu-http;/intlfonts/">intlfonts</ulink>,
       <ulink url="http://directory.fsf.org/wiki/Libungif">libungif</ulink>,
-      <ulink url="http://www.nongnu.org/m17n/">libotf</ulink> and
+      <ulink url="http://www.nongnu.org/m17n/">libotf</ulink>, and
       <ulink url="http://www.nongnu.org/m17n/">m17n-lib</ulink> - to correctly
       display such complex scripts as Indic and Khmer, and also for scripts
-      that require Arabic shaping support (Arabic and Farsi), and
+      that require Arabic shaping support (Arabic and Farsi),
+      <ulink url="https://mailutils.org/">mailutils</ulink>, and
       <ulink url="&xorg-download-http;/lib/">libXaw3d</ulink>
     </para>
 
@@ -116,14 +119,21 @@
     <title>Installation of Emacs</title>
 
     <para>
+      First, work around a portability bug in glibc 2.34, 
+      which no longer defines SIGSTKSZ.
+    </para>
+
+<screen><userinput>sed -e '/SIGSTKSZ/ s|^.*$|static max_align_t sigsegv_stack[\
+   (64 * 1024 + sizeof (max_align_t) - 1) / sizeof (max_align_t)];|' \
+    -i src/sysdep.c</userinput></screen>
+
+    <para>
       Install <application>Emacs</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --localstatedir=/var &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
-<!-- make bootstrap only necessary for development versions obtained with git
--->
 
     <para>
       This package does not come with a test suite. If make succeeds, you can
@@ -151,11 +161,13 @@ rm -vf /usr/lib/systemd/user/emacs.service</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <!-- With 27.2, it writes scores to ~/.emacs.d/games 
     <para>
-      <parameter>--localstatedir=/var</parameter>: Create game score files
+      <parameter>- -localstatedir=/var</parameter>: Create game score files
       in <filename class='directory'>/var/games/emacs</filename> instead
       of <filename class='directory'>/usr/var/games/emacs</filename>.
     </para>
+    -->
 
     <para>
       <option>--with-imagemagick</option>: Use this if you have installed
@@ -178,6 +190,16 @@ rm -vf /usr/lib/systemd/user/emacs.service</userinput></screen>
       <xref linkend="gnutls"/>.
     </para>
 
+    <para>
+      <option>--without-harfbuzz</option>: Use this if you have not installed
+      <xref linkend="harfbuzz"/>.
+    </para>
+
+    <para>
+      <option>--with-json=no</option>: Use this if you have not installed
+      <xref linkend="jansson"/>.
+    </para>
+
   </sect2>
 
   <sect2 role="content">
@@ -193,13 +215,11 @@ rm -vf /usr/lib/systemd/user/emacs.service</userinput></screen>
              ebrowse,
              emacs (symlink),
              emacs-&emacs-version;,
-             emacsclient,
-             etags, and
-             grep-changelog</seg>
+             emacsclient, and
+             etags</seg>
         <seg>None</seg>
-        <seg>/usr/libexec/emacs,
-             /usr/share/emacs, and
-             /var/games/emacs</seg>
+        <seg>/usr/libexec/emacs and
+             /usr/share/emacs</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -213,7 +233,7 @@ rm -vf /usr/lib/systemd/user/emacs.service</userinput></screen>
         <listitem>
           <para>
             creates cross-reference tagfile database files
-            for source code.
+            for source code
           </para>
           <indexterm zone="emacs ctags">
             <primary sortas="b-ctags">ctags</primary>
@@ -226,7 +246,7 @@ rm -vf /usr/lib/systemd/user/emacs.service</userinput></screen>
         <listitem>
           <para>
             permits browsing of C++ class hierarchies from
-            within <command>emacs</command>.
+            within <command>emacs</command>
           </para>
           <indexterm zone="emacs ebrowse">
             <primary sortas="b-ebrowse">ebrowse</primary>
@@ -238,7 +258,7 @@ rm -vf /usr/lib/systemd/user/emacs.service</userinput></screen>
         <term><command>emacs</command></term>
         <listitem>
           <para>
-            is an editor.
+            is an editor
           </para>
           <indexterm zone="emacs emacs-prog">
             <primary sortas="b-emacs">emacs</primary>
@@ -251,7 +271,7 @@ rm -vf /usr/lib/systemd/user/emacs.service</userinput></screen>
         <listitem>
           <para>
             attaches an <command>emacs</command> session to an already
-            running <command>emacsserver</command> instance.
+            running <command>emacsserver</command> instance
           </para>
           <indexterm zone="emacs emacsclient">
             <primary sortas="b-emacsclient">emacsclient</primary>
@@ -264,7 +284,7 @@ rm -vf /usr/lib/systemd/user/emacs.service</userinput></screen>
         <listitem>
           <para>
             is another program to generate source code
-            cross-reference tagfiles.
+            cross-reference tagfiles
           </para>
           <indexterm zone="emacs etags">
             <primary sortas="b-etags">etags</primary>
@@ -272,18 +292,20 @@ rm -vf /usr/lib/systemd/user/emacs.service</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- Not seen with 27.2
       <varlistentry id="grep-changelog">
         <term><command>grep-changelog</command></term>
         <listitem>
           <para>
             prints entries in Change Logs matching
-            various criteria.
+            various criteria
           </para>
           <indexterm zone="emacs grep-changelog">
             <primary sortas="b-grep-changelog">grep-changelog</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 <!--
       <varlistentry id="rcs-checkin">
         <term><command>rcs-checkin</command></term>

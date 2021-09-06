@@ -5,9 +5,9 @@
   %general-entities;
 
   <!ENTITY shared-mime-info-download-http
-           "https://gitlab.freedesktop.org/xdg/shared-mime-info/uploads/0ee50652091363ab0d17e335e5e74fbe/shared-mime-info-&shared-mime-info-version;.tar.xz">
+           "https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/&shared-mime-info-version;/shared-mime-info-&shared-mime-info-version;.tar.gz">
   <!ENTITY shared-mime-info-download-ftp  " ">
-  <!ENTITY shared-mime-info-md5sum        "410725367f52ddbc06ef9eda883b8f73">
+  <!ENTITY shared-mime-info-md5sum        "8d059fb2d34062a67fd9ca63fab1fb91">
   <!ENTITY shared-mime-info-size          "5.0 MB">
   <!ENTITY shared-mime-info-buildsize     "26 MB">
   <!ENTITY shared-mime-info-time          "less than 0.1 SBU">
@@ -18,7 +18,6 @@ xreflabel="shared-mime-info-&shared-mime-info-version;">
   <?dbhtml filename="shared-mime-info.html" ?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -37,7 +36,7 @@ xreflabel="shared-mime-info-&shared-mime-info-version;">
       supporting applications.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -99,19 +98,11 @@ xreflabel="shared-mime-info-&shared-mime-info-version;">
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dupdate-mimedb=true .. &amp;&amp;
+meson --prefix=/usr --buildtype=release -Dupdate-mimedb=true .. &amp;&amp;
 ninja</userinput></screen>
 
-<!--
     <para>
-      To test the results, issue: <command>make check</command>.
-    </para>
--->
-
-    <!-- The files for the tests are not shipped in the tarball, and needs
-         an external checkout. -->
-    <para>
-      This package does not come with a working test suite.
+      To test the result, issue <command>ninja test</command>.
     </para>
 
     <para>
@@ -124,6 +115,9 @@ ninja</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
       <parameter>-Dupdate-mimedb=true</parameter>: This parameter tells
@@ -163,7 +157,7 @@ ninja</userinput></screen>
         <term><command>update-mime-database</command></term>
         <listitem>
           <para>
-            assists in adding MIME data to the database.
+            assists in adding MIME data to the database
           </para>
           <indexterm zone="shared-mime-info update-mime-database">
             <primary sortas="b-update-mime-database">update-mime-database</primary>

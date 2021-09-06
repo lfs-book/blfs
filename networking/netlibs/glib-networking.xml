@@ -5,12 +5,13 @@
   %general-entities;
 
   <!ENTITY glib-networking-download-http
-    "&gnome-download-http;/glib-networking/2.66/glib-networking-&glib-networking-version;.tar.xz">
-  <!ENTITY glib-networking-download-ftp
-    "&gnome-download-ftp;/glib-networking/2.66/glib-networking-&glib-networking-version;.tar.xz">
-  <!ENTITY glib-networking-md5sum        "4740154ce6dcf7859fbbfd954fa5a226">
-  <!ENTITY glib-networking-size          "192 KB">
-  <!ENTITY glib-networking-buildsize     "5.8 MB (with tests)">
+    "&gnome-download-http;/glib-networking/2.68/glib-networking-&glib-networking-version;.tar.xz">
+  <!ENTITY glib-networking-download-ftp " ">
+<!--  <!ENTITY glib-networking-download-ftp
+    "&gnome-download-ftp;/glib-networking/2.66/glib-networking-&glib-networking-version;.tar.xz"> -->
+  <!ENTITY glib-networking-md5sum        "5c3b020db7d0937f75aac7654c38343f">
+  <!ENTITY glib-networking-size          "236 KB">
+  <!ENTITY glib-networking-buildsize     "5.2 MB (with tests)">
   <!ENTITY glib-networking-time          "less than 0.1 SBU (with tests)">
 ]>
 
@@ -18,7 +19,6 @@
   <?dbhtml filename="glib-networking.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +36,7 @@
       Network related gio modules for <application>GLib</application>.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,13 +86,14 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="glib2"/>,
-      <xref linkend="gnutls"/>, and
-      <xref linkend="gsettings-desktop-schemas"/>
+      <xref linkend="glib2"/> and
+      <xref linkend="gnutls"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="gsettings-desktop-schemas"/> (for the applications
+      using this package to use proxy server settings in GNOME) and
       <xref linkend="make-ca"/>
       <!-- p11-kit option no longer exists, and is pulled in by GnuTLS anyway -->
     </para>
@@ -131,7 +132,7 @@
 cd    build &amp;&amp;
 
 meson --prefix=/usr          \
-      -Dlibproxy=disabled .. &amp;&amp;
+      --buildtype=release    &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -155,21 +156,15 @@ ninja</userinput></screen>
 <screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
-<!--
+
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para>
-      <parameter>- -without-ca-certificates</parameter>: This parameter forces
-      use of PKCS #11 modules for TLS certificate validation instead of a
-      bundle of certificates.
-    </para>
-
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
+      href="../../xincludes/meson-buildtype-release.xml"/>
 
   </sect2>
-  -->
+
   <!-- This isn't needed anymore and breaks applications which use it.
   <sect2 role="configuration">
     <title>Configuring Glib-networking</title>

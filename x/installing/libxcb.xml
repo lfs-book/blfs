@@ -16,7 +16,6 @@
   <?dbhtml filename="libxcb.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       requests and receive responses with both.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -104,7 +103,9 @@
       commands:
     </para>
 
-<screen><userinput>CFLAGS=-Wno-error=format-extra-args ./configure $XORG_CONFIG      \
+<screen><userinput>CFLAGS="${CFLAGS:--O2 -g} -Wno-error=format-extra-args" \
+PYTHON=python3                \
+./configure $XORG_CONFIG      \
             --without-doxygen \
             --docdir='${datadir}'/doc/libxcb-&libxcb-version; &amp;&amp;
 make</userinput></screen>
@@ -125,9 +126,14 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed "s/pthread-stubs//" -i configure</command>: This sed
-      removes a dependency on the libpthread-stubs package which is useless on
-      Linux.
+      <parameter>CFLAGS=...</parameter>: This variable fixes building this
+      package with GCC-10 and later.
+    </para>
+
+    <para>
+      <parameter>PYTHON=python3</parameter>: This variable forces configure to
+      use python3 instead of python2. The configure script for this package
+      will automatically default to python2 if it is present.
     </para>
 
     <para>
@@ -176,7 +182,7 @@ make</userinput></screen>
         <term><filename class="libraryfile">libxcb.so</filename></term>
         <listitem>
           <para>
-            is an interface to the X Window System protocol.
+            is an interface to the X Window System protocol
           </para>
           <indexterm zone="libxcb libxcb-lib">
             <primary sortas="c-libxcb">libxcb.so</primary>

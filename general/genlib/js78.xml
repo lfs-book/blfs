@@ -4,24 +4,29 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
+<!-- for when firefox and js78 use same version
   <!ENTITY ff78-version       "&firefox-version;">
-  <!ENTITY js78-download-http "&mozilla-http;/firefox/releases/&ff78-version;esr/source/firefox-&ff78-version;esr.source.tar.xz">
+  and when they are on different versions - keep this for when
+  we have moved to next firefox-esr (ff-91) and JS  has not moved 
+  <!ENTITY ff78-version       "&JS78-version;"> -->
+
+<!-- <!ENTITY ff78-version       "&firefox-version;">-->
+  <!ENTITY js78-download-http "&mozilla-http;/firefox/releases/&JS78-version;esr/source/firefox-&JS78-version;esr.source.tar.xz">
   <!ENTITY js78-download-ftp  " ">
-  <!ENTITY js78-md5sum        "2df7dcedba6229f243dcf327ad3e7306">
-  <!ENTITY js78-size          "323 MB">
-  <!ENTITY js78-buildsize     "3.0 GB (36 MB installed after removing 35MB static lib)">
-  <!ENTITY js78-time          "2.5 SBU (with parallelism = 4)">
+  <!ENTITY js78-md5sum        "872623fc9f93ea8d3f3290024f0c0925">
+  <!ENTITY js78-size          "319 MB">
+  <!ENTITY js78-buildsize     "3.0 GB (36 MB installed after removing 34MB static lib)">
+  <!ENTITY js78-time          "2.4 SBU (on a 4-core machine with parallelism=4)">
 ]>
 
-<sect1 id="js78" xreflabel="js78-&ff78-version;">
+<sect1 id="js78" xreflabel="js78-&JS78-version;">
   <?dbhtml filename="js78.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
-  <title>JS-&ff78-version;</title>
+  <title>JS-&JS78-version;</title>
 
   <indexterm zone="js78">
     <primary sortas="a-js78">js78</primary>
@@ -34,6 +39,8 @@
       <application>JS</application> is Mozilla's JavaScript engine
       written in C. JS78 is taken from Firefox.
     </para>
+
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -104,22 +111,11 @@
   <sect2 role="installation">
     <title>Installation of JS</title>
 
-    <caution>
-      <para>
-        If you are upgrading JS78 from a previously installed old version,
-        save all work and exit your GNOME Session if you have one running.
-        Replacing the JS78 binary will cause the GNOME Shell to crash and
-        return you to your display manager or TTY. After installing the new
-        version, if GNOME Shell still doesn't work, reinstall
-        <xref linkend="gjs"/>.
-      </para>
-    </caution>
-
     <note>
       <para>
         Unlike most other packages in BLFS, the instructions below require you
-        to untar <filename>firefox-&ff78-version;esr.tar.xz</filename> and
-        change into the <filename>firefox-&ff78-version;</filename> folder.
+        to untar <filename>firefox-&JS78-version;esr.tar.xz</filename> and
+        change into the <filename>firefox-&JS78-version;</filename> folder.
       </para>
 
       <para>
@@ -163,6 +159,11 @@ tar: Exiting with failure status due to previous errors
 
         <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
          href="../../xincludes/mozconfigure.xml"/>
+
+        <para>
+          Compiling the C++ code respects $MAKEFLAGS and defaults to 'j1',
+          the rust code will use all processors.
+        </para>
      </note>
 
 
@@ -180,7 +181,7 @@ CC=gcc CXX=g++ \
 make</userinput></screen>
 
     <para>
-      To run JS test suite, issue:
+      To run the JS test suite, issue:
       <command>make -C js/src check-jstests
       JSTESTS_EXTRA_ARGS="--timeout 300 --wpt=disabled"</command>.
       It's recommended to redirect the output into a log.
@@ -193,12 +194,24 @@ make</userinput></screen>
       setup and locale. -->
       Depending on the machine, either
       ten or fourteen JS tests related to locale and timezone fail,
-      because of an issue in <xref linkend="icu"/>.
+      because of an issue with recent versions of <xref linkend="icu"/>.
+    </para>
+    <para>
       To run the JIT test suite, issue:
       <command>make -C js/src check-jit-test
-      JITTEST_EXTRA_ARGS="--timeout 300"</command>. Again, a few tests
-      may show as unexpected failures.
+      JITTEST_EXTRA_ARGS="--timeout 300"</command>. One test may fail.
     </para>
+
+    <caution>
+      <para>
+        An issue in the installation process causes any running program which
+        links to JS78 shared library (for example, GNOME Shell) to crash if
+        JS78 is upgraded or reinstalled.  To work around this issue, remove
+        the old version of the JS78 shared library before installation:
+      </para>
+
+<screen role="root"><userinput>rm -fv /usr/lib/libmozjs-78.so</userinput></screen>
+    </caution>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -290,7 +303,7 @@ sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js78-config</userinput></screen>
         <listitem>
           <para>
             provides a command line interface to the
-            <application>JavaScript</application> engine.
+            <application>JavaScript</application> engine
           </para>
           <indexterm zone="js78 js78">
             <primary sortas="b-js78">js78</primary>
@@ -302,7 +315,7 @@ sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js78-config</userinput></screen>
         <term><command>js78-config</command></term>
         <listitem>
           <para>
-            is used to find the JS compiler and linker flags.
+            is used to find the JS compiler and linker flags
           </para>
           <indexterm zone="js78 js78-config">
             <primary sortas="b-js78-config">js78-config</primary>
@@ -314,7 +327,7 @@ sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js78-config</userinput></screen>
         <term><filename class="libraryfile">libmozjs-78.so</filename></term>
         <listitem>
           <para>
-            contains the Mozilla JavaScript API functions.
+            contains the Mozilla JavaScript API functions
           </para>
           <indexterm zone="js78 libmozjs-78">
             <primary sortas="c-libmozjs78">libmozjs-78.so</primary>
@@ -323,4 +336,5 @@ sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js78-config</userinput></screen>
       </varlistentry>
     </variablelist>
   </sect2>
+
 </sect1>

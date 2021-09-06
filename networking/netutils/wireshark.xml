@@ -6,17 +6,25 @@
 
   <!ENTITY wireshark-download-http "https://www.wireshark.org/download/src/all-versions/wireshark-&wireshark-version;.tar.xz">
   <!ENTITY wireshark-download-ftp  " ">
-  <!ENTITY wireshark-md5sum        "cf35d1413e7e3b1429ac7f12c823ccd4">
+  <!ENTITY wireshark-md5sum        "13aea3ee0edbc8f875971eccf2d11b20">
   <!ENTITY wireshark-size          "31 MB">
-  <!ENTITY wireshark-buildsize     "606 MB (with all optional dependencies available in the BLFS book)">
-  <!ENTITY wireshark-time          "2.0 SBU (with parallelism=4 and all optional dependencies available in the BLFS book)">
+  <!ENTITY wireshark-buildsize     "607 MB (with all optional dependencies available in the BLFS book)">
+  <!ENTITY wireshark-time          "2.2 SBU (with parallelism=4 and all optional dependencies available in the BLFS book)">
 ]>
+
+<!-- Gentler reminder: many Wireshark releases contain vulnerability fixes,
+ we have not always been aware of these. At https://www.wireshark.org/security/
+ there is a list of advisories and the version in which they were fixed.
+
+ If you click on an advisory, after the bug number in the References:
+ there may be a CVE number, although perhaps those get added some time after
+ the release.  Perhaps as a general rule treat ALL their advisories for crashes
+ etc as worthy of a security fix. -->
 
 <sect1 id="wireshark" xreflabel="Wireshark-&wireshark-version;">
   <?dbhtml filename="wireshark.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -43,7 +51,7 @@
       other popular network analyzers.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -107,6 +115,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="asciidoctor"/>,
       <xref linkend="brotli"/>,
       <xref linkend="c-ares"/>,
       <xref linkend="doxygen"/>,
@@ -120,8 +129,9 @@
       <xref linkend="nghttp2"/>,
       <xref linkend="sbc"/>,
       <xref linkend="speex"/>,
-      <ulink url="https://asciidoctor.org/">Asciidoctor</ulink>,
+      <!--<ulink url="https://asciidoctor.org/">Asciidoctor</ulink>,-->
       <ulink url="https://www.linphone.org/technical-corner/bcg729">BCG729</ulink>,
+      <ulink url="https://github.com/TimothyGu/libilbc">libilbc</ulink>,
       <ulink url="http://www.ibr.cs.tu-bs.de/projects/libsmi/">libsmi</ulink>,
       <ulink url="http://lz4.github.io/lz4/">lz4</ulink>,
       <ulink url="https://www.libssh.org/">libssh</ulink>,
@@ -342,7 +352,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
             reads a saved capture file and returns any or all of several
             statistics about that file. It is able to detect and read any
             capture supported by the <application>Wireshark</application>
-            package.
+            package
           </para>
           <indexterm zone="wireshark capinfos">
             <primary sortas="b-capinfos">capinfos</primary>
@@ -354,7 +364,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         <term><command>captype</command></term>
         <listitem>
           <para>
-            prints the file types of capture files.
+            prints the file types of capture files
           </para>
           <indexterm zone="wireshark captype">
             <primary sortas="b-captype">captype</primary>
@@ -367,7 +377,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         <listitem>
           <para>
             is a network traffic dump tool. It lets you capture packet data
-            from a live network and write the packets to a file.
+            from a live network and write the packets to a file
           </para>
           <indexterm zone="wireshark dumpcap">
             <primary sortas="b-dumpcap">dumpcap</primary>
@@ -383,7 +393,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
             how to read <application>libpcap</application> capture files,
             including those of <command>tcpdump</command>,
             <application>Wireshark</application> and other tools that write
-            captures in that format.
+            captures in that format
           </para>
           <indexterm zone="wireshark editcap">
             <primary sortas="b-editcap">editcap</primary>
@@ -400,9 +410,10 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
             <application>Wireshark</application> <quote>plugin</quote>. It
             relies on two Python programs <command>wireshark_be.py</command>
             and <command>wireshark_gen.py</command>, which are not installed
-            by default. They have to be copied manually from the <filename
-            class="directory">tools</filename> directory to the <filename
-            class="directory">$PYTHONPATH/site-packages/</filename> directory.
+            by default. They have to be copied manually from the
+            <filename class="directory">tools</filename> directory to the
+            <filename class="directory">$PYTHONPATH/site-packages/</filename>
+            directory
           </para>
           <indexterm zone="wireshark idl2wrs">
             <primary sortas="b-idl2wrs">idl2wrs</primary>
@@ -414,7 +425,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         <term><command>mergecap</command></term>
         <listitem>
           <para>
-            combines multiple saved capture files into a single output file.
+            combines multiple saved capture files into a single output file
           </para>
           <indexterm zone="wireshark mergecap">
             <primary sortas="b-mergecap">mergecap</primary>
@@ -426,7 +437,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         <term><command>randpkt</command></term>
         <listitem>
           <para>
-            creates random-packet capture files.
+            creates random-packet capture files
           </para>
           <indexterm zone="wireshark randpkt">
             <primary sortas="b-randpkt">randpkt</primary>
@@ -438,7 +449,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         <term><command>rawshark</command></term>
         <listitem>
           <para>
-            dumps and analyzes raw libpcap data.
+            dumps and analyzes raw libpcap data
           </para>
           <indexterm zone="wireshark rawshark">
             <primary sortas="b-rawshark">rawshark</primary>
@@ -450,7 +461,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         <term><command>reordercap</command></term>
         <listitem>
           <para>
-            reorders timestamps of input file frames into an output file.
+            reorders timestamps of input file frames into an output file
           </para>
           <indexterm zone="wireshark reordercap">
             <primary sortas="b-reordercap">reordercap</primary>
@@ -462,7 +473,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         <term><command>sharkd</command></term>
         <listitem>
           <para>
-            is a daemon that listens on UNIX sockets.
+            is a daemon that listens on UNIX sockets
           </para>
           <indexterm zone="wireshark sharkd">
             <primary sortas="b-sharkd">sharkd</primary>
@@ -475,7 +486,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
         <listitem>
           <para>
             reads in an ASCII hex dump and writes the data described into a
-            <application>libpcap</application>-style capture file.
+            <application>libpcap</application>-style capture file
           </para>
           <indexterm zone="wireshark text2pcap">
             <primary sortas="b-text2pcap">text2pcap</primary>
@@ -489,7 +500,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
           <para>
             is a TTY-mode network protocol analyzer. It lets you capture
             packet data from a live network or read packets from a
-            previously saved capture file.
+            previously saved capture file
           </para>
           <indexterm zone="wireshark tshark">
             <primary sortas="b-tshark">tshark</primary>
@@ -503,7 +514,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
           <para>
             is the Qt GUI network protocol analyzer. It lets you interactively
             browse packet data from a live network or from a previously saved
-            capture file.
+            capture file
           </para>
           <indexterm zone="wireshark wireshark-prog">
             <primary sortas="b-wireshark">wireshark</primary>
@@ -526,11 +537,11 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
       </varlistentry>
 -->
       <varlistentry id="libwireshark">
-        <term><filename class='libraryfile'>libwireshark.so</filename></term>
+        <term><filename class="libraryfile">libwireshark.so</filename></term>
         <listitem>
           <para>
             contains functions used by the <application>Wireshark</application>
-            programs to perform filtering and packet capturing.
+            programs to perform filtering and packet capturing
           </para>
           <indexterm zone="wireshark libwireshark">
             <primary sortas="c-libwireshark">libwireshark.so</primary>
@@ -539,14 +550,14 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
       </varlistentry>
 
       <varlistentry id="libwiretap">
-        <term><filename class='libraryfile'>libwiretap.so</filename></term>
+        <term><filename class="libraryfile">libwiretap.so</filename></term>
         <listitem>
           <para>
             is a library being developed as a future replacement for
-            <filename class='libraryfile'>libpcap</filename>, the current
+            <filename class="libraryfile">libpcap</filename>, the current
             standard Unix library for packet capturing. For more information,
             see the <filename>README</filename> file in the source
-            <filename class='directory'>wiretap</filename> directory.
+            <filename class="directory">wiretap</filename> directory
           </para>
           <indexterm zone="wireshark libwiretap">
             <primary sortas="c-libwiretap">libwiretap.so</primary>

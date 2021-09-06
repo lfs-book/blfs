@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY gnome-desktop-download-http
-           "&gnome-download-http;/gnome-desktop/&gnome-minor-38;/gnome-desktop-&gnome-desktop-version;.tar.xz">
+           "&gnome-download-http;/gnome-desktop/&gnome-40;/gnome-desktop-&gnome-desktop-version;.tar.xz">
   <!ENTITY gnome-desktop-download-ftp
-           "&gnome-download-ftp;/gnome-desktop/&gnome-minor-38;/gnome-desktop-&gnome-desktop-version;.tar.xz">
-  <!ENTITY gnome-desktop-md5sum        "ea19b13b4ce8919f0b806543f0c75cf0">
-  <!ENTITY gnome-desktop-size          "728 KB">
-  <!ENTITY gnome-desktop-buildsize     "20 MB">
+           "&gnome-download-ftp;/gnome-desktop/&gnome-40;/gnome-desktop-&gnome-desktop-version;.tar.xz">
+  <!ENTITY gnome-desktop-md5sum        "d4b0b08b41560a4ef68bae91c3a8b781">
+  <!ENTITY gnome-desktop-size          "708 KB">
+  <!ENTITY gnome-desktop-buildsize     "18 MB">
   <!ENTITY gnome-desktop-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
@@ -18,7 +18,6 @@
   <?dbhtml filename="gnome-desktop.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -37,7 +36,7 @@
       <application>GNOME</application> Desktop.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -111,9 +110,10 @@
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
-cd build &amp;&amp;
+cd    build &amp;&amp;
 
 meson --prefix=/usr                 \
+      --buildtype=release           \
       -Dgnome_distributor="BLFS" .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -144,6 +144,9 @@ ninja</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
       <option>-Dgnome_distributor="Some Name"</option>: Use this
@@ -180,6 +183,7 @@ ninja</userinput></screen>
         </seg>
         <seg>
           /usr/include/gnome-desktop-3.0,
+          /usr/libexec/gnome-desktop-debug,
           /usr/share/gnome,
           /usr/share/gtk-doc/html/gnome-desktop3, and
           /usr/share/help/*/{fdl,gpl,lgpl}
@@ -197,7 +201,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             contains functions shared by several <application>GNOME</application>
-            applications.
+            applications
           </para>
           <indexterm zone="gnome-desktop libgnome-desktop-3">
             <primary sortas="c-libgnome-desktop-3">libgnome-desktop-3.so</primary>

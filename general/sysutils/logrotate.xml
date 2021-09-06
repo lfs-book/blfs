@@ -6,17 +6,16 @@
 
   <!ENTITY logrotate-download-http "https://github.com/logrotate/logrotate/releases/download/&logrotate-version;/logrotate-&logrotate-version;.tar.xz">
   <!ENTITY logrotate-download-ftp  " ">
-  <!ENTITY logrotate-md5sum        "ac2a7151fc8a187201872358a20a2813">
+  <!ENTITY logrotate-md5sum        "07d5aba26c350f9ab5730c25a7277751">
   <!ENTITY logrotate-size          "160 KB">
-  <!ENTITY logrotate-buildsize     "5.6 MB">
-  <!ENTITY logrotate-time          "0.2 SBU (with tests)">
+  <!ENTITY logrotate-buildsize     "39 MB (with tests)">
+  <!ENTITY logrotate-time          "0.1 SBU (with tests)">
 ]>
 
 <sect1 id="logrotate" xreflabel="logrotate-&logrotate-version;">
   <?dbhtml filename="logrotate.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -34,7 +33,7 @@
       rotation, compression, removal, and mailing of log files.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -230,9 +229,9 @@ chmod -v 0644 /etc/logrotate.d/example.log</userinput></screen>
       <command>logrotate -f /etc/logrotate.conf</command> forcing the
       logrotate commands to be run immediately. Combining the previous options
       <option>-df</option>, you can debug the effect of the force command.
-      When debugging, the command is only simulated, not really run, thus,
-      eventual non-existing errors appear, when some intermediate files are
-      expected, because they are not actually created.
+      When debugging, the commands are only simulated and are not actually run.
+      As a result, errors about files not existing will eventually appear because
+      the files are not actually created.
     </para>
 
     <para>
@@ -252,7 +251,7 @@ chmod -v 0644 /etc/logrotate.d/example.log</userinput></screen>
 EOF
 chmod 754 /etc/cron.daily/logrotate.sh</userinput></screen>
 
-<screen role="root" revision="systemd"><userinput>cat &gt; /lib/systemd/system/logrotate.service &lt;&lt; "EOF" &amp;&amp;
+<screen role="root" revision="systemd"><userinput>cat &gt; /usr/lib/systemd/system/logrotate.service &lt;&lt; "EOF" &amp;&amp;
 <literal>[Unit]
 Description=Runs the logrotate command
 Documentation=man:logrotate(8)
@@ -265,7 +264,7 @@ Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/sbin/logrotate /etc/logrotate.conf</literal>
 EOF
-cat &gt; /lib/systemd/system/logrotate.timer &lt;&lt; "EOF" &amp;&amp;
+cat &gt; /usr/lib/systemd/system/logrotate.timer &lt;&lt; "EOF" &amp;&amp;
 <literal>[Unit]
 Description=Runs the logrotate command daily at 3:00 AM
 
@@ -305,7 +304,7 @@ systemctl enable logrotate.timer</userinput></screen>
         <listitem>
           <para>
             performs the log maintenance functions defined in the
-            configuration files.
+            configuration files
           </para>
           <indexterm zone="logrotate logrotate-prog">
             <primary sortas="b-logrotate-prog">logrotate</primary>

@@ -6,9 +6,9 @@
 
   <!ENTITY usbutils-download-http "&kernel-dl;/linux/utils/usb/usbutils/usbutils-&usbutils-version;.tar.xz">
   <!ENTITY usbutils-download-ftp  " ">
-  <!ENTITY usbutils-md5sum        "91b0c9a3382d6f4c382df7a98462de2e">
-  <!ENTITY usbutils-size          "96 KB">
-  <!ENTITY usbutils-buildsize     "4.5 MB">
+  <!ENTITY usbutils-md5sum        "f21aa68ee7870b161921a590be7765e6">
+  <!ENTITY usbutils-size          "162 KB">
+  <!ENTITY usbutils-buildsize     "3.0 MB">
   <!ENTITY usbutils-time          "0.1 SBU">
 ]>
 
@@ -16,7 +16,6 @@
   <?dbhtml filename="usbutils.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -35,7 +34,7 @@
       devices connected to them.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,7 +82,7 @@
 -->
     <bridgehead renderas="sect3">USB Utils Dependencies</bridgehead>
 
-    
+    <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="libusb"/> and
       <xref linkend="wget"/>
@@ -113,7 +112,7 @@
       running the following commands:
     </para>
 
-<screen><userinput>./autogen.sh --prefix=/usr --datadir=/usr/share/hwdata &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --datadir=/usr/share/hwdata &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -182,7 +181,7 @@ wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</userinput></
 EOF
 chmod 754 /etc/cron.weekly/update-usbids.sh</userinput></screen>
 
-<screen role="root" revision="systemd"><userinput>cat &gt; /lib/systemd/system/update-usbids.service &lt;&lt; "EOF" &amp;&amp;
+<screen role="root" revision="systemd"><userinput>cat &gt; /usr/lib/systemd/system/update-usbids.service &lt;&lt; "EOF" &amp;&amp;
 <literal>[Unit]
 Description=Update usb.ids file
 Documentation=man:lsusb(8)
@@ -195,7 +194,7 @@ Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/bin/wget http://www.linux-usb.org/usb.ids -O /usr/share/hwdata/usb.ids</literal>
 EOF
-cat &gt; /lib/systemd/system/update-usbids.timer &lt;&lt; "EOF" &amp;&amp;
+cat &gt; /usr/lib/systemd/system/update-usbids.timer &lt;&lt; "EOF" &amp;&amp;
 <literal>[Unit]
 Description=Update usb.ids file weekly
 
@@ -242,7 +241,7 @@ systemctl enable update-usbids.timer</userinput></screen>
           <para>
             is a utility for displaying information about all USB buses
             in the system and all devices connected to them, but not in human
-            friendly form.
+            friendly form
           </para>
           <indexterm zone="usbutils lsusb">
             <primary sortas="b-lsusb">lsusb</primary>
@@ -255,7 +254,7 @@ systemctl enable update-usbids.timer</userinput></screen>
         <listitem>
           <para>
             displays information about all USB buses in the system and all
-            devices connected to them in reasonable human friendly form.
+            devices connected to them in reasonable human friendly form
           </para>
           <indexterm zone="usbutils lsusb.py">
             <primary sortas="b-lsusb.py">lsusb.py</primary>
@@ -269,7 +268,7 @@ systemctl enable update-usbids.timer</userinput></screen>
           <para>
             is a shell script that displays details of USB buses and devices
             connected to them. It is designed to be used if /proc/bus/usb/devices
-            is not available on your system.
+            is not available on your system
           </para>
           <indexterm zone="usbutils usb-devices">
             <primary sortas="b-usb-devices">usb-devices</primary>
@@ -282,7 +281,7 @@ systemctl enable update-usbids.timer</userinput></screen>
         <listitem>
           <para>
             is used to dump report descriptors and streams from HID
-            (human interface device) interfaces of USB devices.
+            (human interface device) interfaces of USB devices
           </para>
           <indexterm zone="usbutils usbhid-dump">
             <primary sortas="b-usbhid-dump">usbhid-dump</primary>

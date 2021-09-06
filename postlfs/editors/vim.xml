@@ -8,17 +8,16 @@
   <!ENTITY vim-download-http "http://ftp.vim.org/vim/unix/vim-&vim-version;.tar.bz2">-->
   <!ENTITY vim-download-http "&sources-anduin-http;/vim/vim-&vim-version;.tar.gz">
   <!ENTITY vim-download-ftp  " ">
-  <!ENTITY vim-md5sum        "497890e1f563a65c6f7594c0b0f5c0b9">
+  <!ENTITY vim-md5sum        "e0325a4988b1b99b9c2e46fa853c1980">
   <!ENTITY vim-size          "15 MB">
-  <!ENTITY vim-buildsize     "110 MB (add 71 MB for tests)">
-  <!ENTITY vim-time          "0.3 SBU (with parallelism=4; add 1.3 SBU for tests)">
+  <!ENTITY vim-buildsize     "109 MB (add 61 MB for tests)">
+  <!ENTITY vim-time          "0.3 SBU (with parallelism=4; add 2.1 SBU for tests)">
 ]>
 
 <sect1 id="vim" xreflabel="Vim-&vim-version;">
   <?dbhtml filename="vim.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -55,7 +54,7 @@
       </para>
     </note>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -103,10 +102,10 @@
     <para role="optional">
       <xref linkend="gpm"/>,
       <xref linkend="lua"/>,
+<!-- can use python3: don't advertise python2
       <xref linkend="python2"/>,
-      <xref linkend="rsync"/> and
-      <xref linkend="ruby"/><!-- , and
-      <xref linkend="tcl"/> -->
+-->   <xref linkend="rsync"/>, and
+      <xref linkend="ruby"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -144,8 +143,8 @@
 
     <note>
       <para>
-        If you intend to run the tests and have not installed Xorg in /usr, append
-        LDFLAGS='-L$XORG_PROFIX/lib' to the configure line below.
+        If you intend to run the tests and have not installed Xorg in /usr,
+        append LDFLAGS='-L$XORG_PREFIX/lib' to the configure line below.
       </para>
     </note>
 
@@ -255,12 +254,18 @@ vim -c ":helptags /usr/share/doc/vim-&vim-version;" -c ":q"</userinput></screen>
     <para>
       <option>--enable-luainterp</option>,
       <option>--enable-perlinterp</option>,
-      <option>--enable-pythoninterp</option>,
-      <option>--enable-tclinterp</option>,
+      <option>--enable-python3interp=dynamic</option>,
+      <option>--enable-tclinterp --with-tclsh=tclsh</option>,
       <option>--enable-rubyinterp</option>:
-      These options include the Lua, Perl, Python, Tcl, or Ruby interpreters that
-      allow using other application code in <application>vim</application>
-      scripts.
+      These options include the Lua, Perl, Python3, Tcl, or Ruby interpreters
+      that allow using other application code in <application>vim</application>
+      scripts. All the <option>--enable-...</option> options can accept
+      <option>=dynamic</option> to dynamically load the interpreter when
+      needed. This is required for <application>Python 3</application> to
+      prevent segmentation faults. For <application>tcl</application>,
+      it is necessary to indicate the name of the <command>tclsh</command>
+      executable, since <command>configure</command> only searches versioned
+      names with old versions.
     </para>
 
   </sect2>
@@ -370,9 +375,9 @@ EOF</userinput></screen>
 
     <para>
       A list of the reinstalled files, along with their short
-      descriptions can be found in the <ulink
-      url="&lfs-root;/chapter08/vim.html#contents-vim">LFS Vim Installation
-      Instructions</ulink>
+      descriptions can be found in the
+      <ulink url="&lfs-root;/chapter08/vim.html#contents-vim">LFS Vim
+      Installation Instructions</ulink>.
     </para>
 
     <segmentedlist>
@@ -396,7 +401,7 @@ EOF</userinput></screen>
         <term><command>gview</command></term>
         <listitem>
           <para>
-            starts <command>gvim</command> in read-only mode.
+            starts <command>gvim</command> in read-only mode
           </para>
           <indexterm zone="vim gview">
             <primary sortas="b-gview">gview</primary>
@@ -409,7 +414,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is the editor that runs under <application>X</application>
-            and includes a GUI.
+            and includes a GUI
           </para>
           <indexterm zone="vim gvim">
             <primary sortas="b-gvim">gvim</primary>
@@ -422,7 +427,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             edits two or three versions of a file with
-            <command>gvim</command> and shows the differences.
+            <command>gvim</command> and shows the differences
           </para>
           <indexterm zone="vim gvimdiff">
             <primary sortas="b-gvimdiff">gvimdiff</primary>
@@ -435,7 +440,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             teaches the basic keys and commands of
-            <command>gvim</command>.
+            <command>gvim</command>
           </para>
           <indexterm zone="vim gvimtutor">
             <primary sortas="b-gvimtutor">gvimtutor</primary>
@@ -447,7 +452,7 @@ EOF</userinput></screen>
         <term><command>rgview</command></term>
         <listitem>
           <para>
-            is a restricted version of <command>gview</command>.
+            is a restricted version of <command>gview</command>
           </para>
           <indexterm zone="vim rgview">
             <primary sortas="b-rgview">rgview</primary>
@@ -459,7 +464,7 @@ EOF</userinput></screen>
         <term><command>rgvim</command></term>
         <listitem>
           <para>
-            is a restricted version of <command>gvim</command>.
+            is a restricted version of <command>gvim</command>
           </para>
           <indexterm zone="vim gvim">
             <primary sortas="b-gvim">gvim</primary>

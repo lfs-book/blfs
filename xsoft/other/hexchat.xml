@@ -9,7 +9,7 @@
   <!ENTITY hexchat-download-ftp  " ">
   <!ENTITY hexchat-md5sum        "9f04c48f011b646b91d03c5776fce776">
   <!ENTITY hexchat-size          "1.2 MB">
-  <!ENTITY hexchat-buildsize     "31 MB">
+  <!ENTITY hexchat-buildsize     "21 MB">
   <!ENTITY hexchat-time          "0.1 SBU (using parallelism=4)">
 ]>
 
@@ -17,7 +17,6 @@
   <?dbhtml filename="hexchat.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -37,7 +36,7 @@
       also possible.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,18 +72,33 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch:
+          <ulink url="&patch-root;/hexchat-&hexchat-version;-add_libera_chat-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">HexChat Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="glib2"/>
+      <xref linkend="dbus-glib"/>,
+      <xref linkend="glib2"/>, and
+      <xref linkend="libnotify"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gtk2"/>,
-      <xref linkend="libcanberra"/>, and
-      <xref linkend="lua"/>
+      <xref linkend="gtk2"/> and
+      <xref linkend="libcanberra"/>
+      <!--<xref linkend="lua"/> -->
+      <!-- Lua plugin support is currently broken and causes Hexchat to crash
+           upon startup.
+           FIXME: Check upstream in a few days.-->
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -107,6 +121,19 @@
     <title>Installation of HexChat</title>
 
     <para>
+      First, fix the python plugin:
+    </para>
+
+<screen><userinput remap="pre">sed -i "s/(python_opt/&amp; + '-embed'/" plugins/python/meson.build</userinput></screen>
+
+    <para>
+      Next, apply an optional patch to have the "libera.chat" network
+      preconfigured in the client:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../hexchat-&hexchat-version;-add_libera_chat-1.patch</userinput></screen>
+
+    <para>
       Install <application>HexChat</application> by running the following
       commands:
     </para>
@@ -114,7 +141,11 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dwith-libproxy=false -Dwith-lua=lua .. &amp;&amp;
+meson --prefix=/usr         \
+      --buildtype=release   \
+      -Dwith-libproxy=false \
+      -Dwith-lua=false      \
+      ..                    &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -132,9 +163,17 @@ ninja</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <!--
     <para>
       <parameter>-Dwith-lua=lua</parameter>: By default, this package 
       will look for luajit. Use the normal lua instead.
+    </para>
+    -->
+
+    <para>
+      <parameter>-Dwith-lua=false</parameter>: By default, this package will
+      look for luajit. However, the Lua plugin support is currently broken
+      and will cause the application to crash on startup.
     </para>
 
     <para>
@@ -168,7 +207,7 @@ ninja</userinput></screen>
         <term><command>hexchat</command></term>
         <listitem>
           <para>
-            is a graphical Internet Relay Chat (IRC) client.
+            is a graphical Internet Relay Chat (IRC) client
           </para>
           <indexterm zone="hexchat hexchat-prog">
             <primary sortas="b-hexchat">hexchat</primary>

@@ -13,11 +13,11 @@
   <!ENTITY lightdm-time          "0.2 SBU ">
 
 <!-- lightdm-gtk-greeter -->
-  <!ENTITY lightdm-gtk-greeter-download-http "https://launchpad.net/lightdm-gtk-greeter/2.0/&lightdm-gtk-greeter-version;/+download/lightdm-gtk-greeter-&lightdm-gtk-greeter-version;.tar.gz">
+  <!ENTITY lightdm-gtk-greeter-download-http "https://github.com/Xubuntu/lightdm-gtk-greeter/releases/download/lightdm-gtk-greeter-&lightdm-gtk-greeter-version;/lightdm-gtk-greeter-&lightdm-gtk-greeter-version;.tar.gz">
   <!ENTITY lightdm-gtk-greeter-download-ftp  " ">
-  <!ENTITY lightdm-gtk-greeter-md5sum        "36dc961f14cc3b0baef3ddb1c494eb16">
-  <!ENTITY lightdm-gtk-greeter-size          "564 KB">
-  <!ENTITY lightdm-gtk-greeter-buildsize     "5.0 MB">
+  <!ENTITY lightdm-gtk-greeter-md5sum        "373c73c67367df511eb544e09a2da281">
+  <!ENTITY lightdm-gtk-greeter-size          "569.7 KB">
+  <!ENTITY lightdm-gtk-greeter-buildsize     "5.5 MB">
   <!ENTITY lightdm-gtk-greeter-time          "less than 0.1 SBU ">
 ]>
 
@@ -25,7 +25,6 @@
   <?dbhtml filename="lightdm.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -43,7 +42,7 @@
       display manager based upon GTK.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Lightdm Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -233,6 +232,7 @@ cd lightdm-gtk-greeter-&lightdm-gtk-greeter-version; &amp;&amp;
    --disable-libido              \
    --disable-libindicator        \
    --disable-static              \
+   --disable-maintainer-mode     \
    --docdir=/usr/share/doc/lightdm-gtk-greeter-&lightdm-gtk-greeter-version; &amp;&amp;
 
 make</userinput></screen>
@@ -242,6 +242,17 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  <note>
+    <para>
+      If you installed Xorg in /opt, you will need to create a symbolic
+      link so lightdm can find the Xorg server.  As the 
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+    <screen><userinput>ln -sf /opt/xorg/bin/Xorg /usr/bin/X</userinput></screen>
+  </note>
+
 
   </sect2>
 
@@ -260,11 +271,6 @@ make</userinput></screen>
       <xref linkend="itstool"/> is not needed in a normal build,
       <command>configure</command> throws an error if it is not found on the
       system. This parameter prevents the error.
-    </para>
-
-    <para>
-      <parameter>CFLAGS=...</parameter>: those two switches ensures some
-      warnings are not treated as errors.
     </para>
 
     <para>
@@ -417,7 +423,7 @@ sed -i '/initdefault/ s/3/5/' /etc/inittab</userinput></screen>
         <term><command>lightdm</command></term>
         <listitem>
           <para>
-            is a display and login manager.
+            is a display and login manager
           </para>
           <indexterm zone="lightdm lightdm-prog">
             <primary sortas="b-lightdm">lightdm</primary>
@@ -432,7 +438,7 @@ sed -i '/initdefault/ s/3/5/' /etc/inittab</userinput></screen>
             is an auxiliary process that displays the greeter,
             a graphical user interface that performs user
             authentication and initiates the selected window manager
-            or display environment.
+            or display environment
           </para>
           <indexterm zone="lightdm lightdm-gtk-greeter">
             <primary sortas="b-lightdm-gtk-greeter">lightdm-gtk-greeter</primary>

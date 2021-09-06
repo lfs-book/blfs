@@ -4,9 +4,9 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY dhcp-download-http " ">
+  <!ENTITY dhcp-download-http "https://ftp.isc.org/isc/dhcp/&dhcp-version;/dhcp-&dhcp-version;.tar.gz">
   <!ENTITY dhcp-download-ftp  "ftp://ftp.isc.org/isc/dhcp/&dhcp-version;/dhcp-&dhcp-version;.tar.gz">
-  <!ENTITY dhcp-md5sum        "2afdaf8498dc1edaf3012efdd589b3e1">
+  <!ENTITY dhcp-md5sum        "3089a1ebd20a802ec0870ae337d43907">
   <!ENTITY dhcp-size          "9.4 MB">
   <!ENTITY dhcp-buildsize     "115 MB">
   <!ENTITY dhcp-time          "0.4 SBU">
@@ -16,7 +16,6 @@
   <?dbhtml filename="dhcp.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -37,7 +36,7 @@
       network addresses on private networks.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -166,8 +165,8 @@ sed -r '/u.*(local|remote)_port/d'    \
    Running ( export CFLAGS=... ./configure ... ) in a subshell
    preserves CFLAGS if they are set in environment
 -->
-<screen><userinput>( export CFLAGS="$CFLAGS -Wall -fno-strict-aliasing                 \
-        -D_PATH_DHCLIENT_SCRIPT='\"/sbin/dhclient-script\"'         \
+<screen><userinput>( export CFLAGS="${CFLAGS:--g -O2} -Wall -fno-strict-aliasing                 \
+        -D_PATH_DHCLIENT_SCRIPT='\"/usr/sbin/dhclient-script\"'     \
         -D_PATH_DHCPD_CONF='\"/etc/dhcp/dhcpd.conf\"'               \
         -D_PATH_DHCLIENT_CONF='\"/etc/dhcp/dhclient.conf\"'"        &amp;&amp;
 
@@ -192,9 +191,8 @@ make -j1</userinput></screen>
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make -C client install         &amp;&amp;
-mv -v /usr/sbin/dhclient /sbin &amp;&amp;
-install -v -m755 client/scripts/linux /sbin/dhclient-script</userinput></screen>
+<screen role="root"><userinput>make -C client install             &amp;&amp;
+install -v -m755 client/scripts/linux /usr/sbin/dhclient-script</userinput></screen>
 
     <para>
       Skip to <xref linkend="dhclient-config"/> in order to configure the
@@ -220,9 +218,8 @@ install -v -m755 client/scripts/linux /sbin/dhclient-script</userinput></screen>
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install                   &amp;&amp;
-mv -v /usr/sbin/dhclient /sbin &amp;&amp;
-install -v -m755 client/scripts/linux /sbin/dhclient-script</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+install -v -m755 client/scripts/linux /usr/sbin/dhclient-script</userinput></screen>
 
   </sect2>
 
@@ -507,7 +504,7 @@ EOF</userinput></screen>
         <term><command>dhclient</command></term>
         <listitem>
           <para>
-            is the implementation of the DHCP client.
+            is the implementation of the DHCP client
           </para>
           <indexterm zone="dhcp dhclient">
             <primary sortas="b-dhclient">dhclient</primary>
@@ -520,7 +517,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is used by dhclient to (re)configure interfaces. It can make
-            extra changes by invoking custom dhclient-{entry,exit}-hooks.
+            extra changes by invoking custom dhclient-{entry,exit}-hooks
           </para>
           <indexterm zone="dhcp dhclient-script">
             <primary sortas="b-dhclient-script">dhclient-script</primary>
@@ -534,7 +531,7 @@ EOF</userinput></screen>
           <para>
             implements Dynamic Host Configuration Protocol (DHCP) and
             Internet Bootstrap Protocol (BOOTP) requests for network
-            addresses.
+            addresses
           </para>
           <indexterm zone="dhcp dhcpd">
             <primary sortas="b-dhcpd">dhcpd</primary>
@@ -548,7 +545,7 @@ EOF</userinput></screen>
           <para>
             provides a means to accept DHCP and BOOTP requests on a subnet
             without a DHCP server and relay them to a DHCP server on another
-            subnet.
+            subnet
           </para>
           <indexterm zone="dhcp dhcrelay">
             <primary sortas="b-dhcrelay">dhcrelay</primary>
@@ -562,7 +559,7 @@ EOF</userinput></screen>
           <para>
             provides an interactive way to connect to, query and
             possibly change the ISC DHCP Server's state via OMAPI, the
-            Object Management API.
+            Object Management API
           </para>
           <indexterm zone="dhcp omshell">
             <primary sortas="b-omshell">omshell</primary>

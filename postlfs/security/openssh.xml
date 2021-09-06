@@ -5,14 +5,14 @@
   %general-entities;
 
   <!ENTITY openssh-download-http
-           "http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-&openssh-version;.tar.gz">
+           "https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-&openssh-version;.tar.gz">
   <!ENTITY openssh-download-ftp
            " "> <!-- at the moment, unable to connect via ftp: ken
            "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-&openssh-version;.tar.gz"> -->
-  <!ENTITY openssh-md5sum        "8f897870404c088e4aa7d1c1c58b526b">
+  <!ENTITY openssh-md5sum        "f545230799f131aecca04da56e61990a">
   <!ENTITY openssh-size          "1.7 MB">
-  <!ENTITY openssh-buildsize     "48 MB (add 17 MB for tests)">
-  <!ENTITY openssh-time          "0.2 SBU (Using parallelism=4; 
+  <!ENTITY openssh-buildsize     "48 MB (add 18 MB for tests)">
+  <!ENTITY openssh-time          "0.3 SBU (Using parallelism=4; 
                                   running the tests takes 20+ minutes,
                                   irrespective of processor speed)">
 ]>
@@ -21,7 +21,6 @@
   <?dbhtml filename="openssh.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -43,7 +42,7 @@
       <command>rcp</command> respectively.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -144,15 +143,38 @@ useradd  -c 'sshd PrivSep' \
 
 <screen><userinput remap="pre">patch -Np1 -i ../openssh-&openssh-version;-glibc_2.31_fix-1.patch</userinput></screen>
 -->    
+
+<!-- Applied in 8.5p1
+    <para>
+      First, adapt <application>ssh-copy-id</application> to changes
+      in bash-5.1:
+    </para>
+
+<screen><userinput remap="pre">sed -e '/INSTALLKEYS_SH/s/)//' -e '260a\  )' -i contrib/ssh-copy-id</userinput></screen>
+
+    <para>
+      Next, fix an issue on platforms other than x86_64:
+    </para>
+    <screen><userinput remap="pre">if [ "$(uname -m)" != "x86_64" ]; then
+    l1="#ifdef __NR_pselect6_time64"
+    l2="    SC_ALLOW(__NR_pselect6_time64),"
+    l3="#endif"
+    sed -e "/^#ifdef __NR_read$/ i $l1\n$l2\n$l3" \
+        -i sandbox-seccomp-filter.c
+fi</userinput></screen>
+-->
     <para>
       Install <application>OpenSSH</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr                     \
-            --sysconfdir=/etc/ssh             \
-            --with-md5-passwords              \
-            --with-privsep-path=/var/lib/sshd &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                            \
+            --sysconfdir=/etc/ssh                    \
+            --with-md5-passwords                     \
+            --with-privsep-path=/var/lib/sshd        \
+            --with-default-path=/usr/bin             \
+            --with-superuser-path=/usr/sbin:/usr/bin \
+            --with-pid-dir=/run
 make</userinput></screen>
 
     <para>
@@ -212,6 +234,19 @@ install -v -m644    INSTALL LICENCE OVERVIEW README* \
     <para>
       <parameter>--with-md5-passwords</parameter>: This enables the use of MD5
       passwords.
+    </para>
+
+    <para>
+      <parameter>--with-default-path=/usr/bin</parameter> and
+      <parameter>--with-superuser-path=/usr/sbin:/usr/bin</parameter>:
+      These set <envar>PATH</envar> consistent with LFS and BLFS
+      <application>Shadow</application> package.
+    </para>
+
+    <para>
+      <parameter>--with-pid-dir=/run</parameter>: This prevents
+      <application>OpenSSH</application> from refering to deprecated
+      <filename class="directory">/var/run</filename>.
     </para>
 
     <para>
@@ -358,7 +393,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
 
       <seglistitem>
         <seg>
-          scp, sftp, slogin (symlink to ssh), ssh, ssh-add, ssh-agent,
+          scp, sftp, <!--slogin (symlink to ssh),--> ssh, ssh-add, ssh-agent,
           ssh-copy-id, ssh-keygen, ssh-keyscan, and sshd
         </seg>
         <seg>
@@ -382,7 +417,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <listitem>
           <para>
             is a file copy program that acts like <command>rcp</command> except
-            it uses an encrypted protocol.
+            it uses an encrypted protocol
           </para>
           <indexterm zone="openssh scp">
             <primary sortas="b-scp">scp</primary>
@@ -394,32 +429,32 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <term><command>sftp</command></term>
         <listitem>
           <para>
-            is an FTP-like program that works over the SSH1 and SSH2 protocols.
+            is an FTP-like program that works over the SSH1 and SSH2 protocols
           </para>
           <indexterm zone="openssh sftp">
             <primary sortas="b-sftp">sftp</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!-- Not installed anymore as of 8.5p1
       <varlistentry id="slogin">
         <term><command>slogin</command></term>
         <listitem>
           <para>
-            is a symlink to <command>ssh</command>.
+            is a symlink to <command>ssh</command>
           </para>
           <indexterm zone="openssh slogin">
             <primary sortas="b-slogin">slogin</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
       <varlistentry id="ssh">
         <term><command>ssh</command></term>
         <listitem>
           <para>
             is an <command>rlogin</command>/<command>rsh</command>-like client
-            program except it uses an encrypted protocol.
+            program except it uses an encrypted protocol
           </para>
           <indexterm zone="openssh ssh">
             <primary sortas="b-ssh">ssh</primary>
@@ -431,7 +466,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <term><command>sshd</command></term>
         <listitem>
           <para>
-            is a daemon that listens for <command>ssh</command> login requests.
+            is a daemon that listens for <command>ssh</command> login requests
           </para>
           <indexterm zone="openssh sshd">
             <primary sortas="b-sshd">sshd</primary>
@@ -443,7 +478,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <term><command>ssh-add</command></term>
         <listitem>
           <para>
-            is a tool which adds keys to the <command>ssh-agent</command>.
+            is a tool which adds keys to the <command>ssh-agent</command>
           </para>
           <indexterm zone="openssh ssh-add">
             <primary sortas="b-ssh-add">ssh-add</primary>
@@ -455,7 +490,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <term><command>ssh-agent</command></term>
         <listitem>
           <para>
-            is an authentication agent that can store private keys.
+            is an authentication agent that can store private keys
           </para>
           <indexterm zone="openssh ssh-agent">
             <primary sortas="b-ssh-agent">ssh-agent</primary>
@@ -467,7 +502,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <term><command>ssh-copy-id</command></term>
         <listitem>
           <para>
-            is a script that enables logins on remote machine using local keys.
+            is a script that enables logins on remote machines using local keys
           </para>
           <indexterm zone="openssh ssh-copy-id">
             <primary sortas="b-ssh-copy-id">ssh-copy-id</primary>
@@ -479,7 +514,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <term><command>ssh-keygen</command></term>
         <listitem>
           <para>
-            is a key generation tool.
+            is a key generation tool
           </para>
           <indexterm zone="openssh ssh-keygen">
             <primary sortas="b-ssh-keygen">ssh-keygen</primary>
@@ -491,7 +526,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <term><command>ssh-keyscan</command></term>
         <listitem>
           <para>
-            is a utility for gathering public host keys from a number of hosts.
+            is a utility for gathering public host keys from a number of hosts
           </para>
           <indexterm zone="openssh ssh-keyscan">
             <primary sortas="b-ssh-keyscan">ssh-keyscan</primary>
@@ -501,4 +536,5 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
 
     </variablelist>
   </sect2>
+
 </sect1>

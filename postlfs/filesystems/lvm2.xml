@@ -6,20 +6,19 @@
 
   <!ENTITY lvm2-download-http "https://sourceware.org/ftp/lvm2/LVM2.&lvm2-version;.tgz">
   <!ENTITY lvm2-download-ftp  "ftp://sourceware.org/pub/lvm2/LVM2.&lvm2-version;.tgz">
-  <!ENTITY lvm2-md5sum        "ffce8d4e86c74d8d44098a530410e843">
-  <!ENTITY lvm2-size          "2.4 MB">
-  <!ENTITY lvm2-buildsize     "34 MB (add 22 MB for tests; transient files can grow up to around 800 MB in the /tmp directory during tests)">
+  <!ENTITY lvm2-md5sum        "c4be18fcb94c84c26f71ff4235917c28">
+  <!ENTITY lvm2-size          "2.5 MB">
+  <!ENTITY lvm2-buildsize     "37 MB (add 18 MB for tests; transient files can grow up to around 800 MB in the /tmp directory during tests)">
   <!-- My build size was 124 MB with tests, but I'll leave this here. -renodr
-       The files in /tmp are transcient. I monitor /tmp with a loop during
+       The files in /tmp are transient. I monitor /tmp with a loop during
        tests. -pierre, August 2020 -->
-  <!ENTITY lvm2-time          "0.2 SBU (using parallelism=4; add 16 to 45 SBU for tests, depending on disk speed)">
+  <!ENTITY lvm2-time          "0.2 SBU (using parallelism=4; add 9 to 48 SBU for tests, depending on disk speed)">
 ]>
 
 <sect1 id="lvm2" xreflabel="LVM2-&lvm2-version;">
   <?dbhtml filename="lvm2.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -40,7 +39,7 @@
       snapshots.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,9 +89,10 @@
       <xref linkend='valgrind'/>,
       <xref linkend='which'/>,
       <xref linkend='xfsprogs'/> (all five may be used, but are not required,
-        for tests), and
+        for tests),
       <ulink url='https://github.com/jthornber/thin-provisioning-tools'>
-        thin-provisioning-tools</ulink>
+        thin-provisioning-tools</ulink>, and
+        <ulink url="https://github.com/dm-vdo/vdo">vdo</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -122,7 +122,12 @@
     &lt;*/M&gt;   Crypt target support                          [CONFIG_DM_CRYPT]
     &lt;*/M&gt;   Snapshot target                               [CONFIG_DM_SNAPSHOT]
     &lt;*/M&gt;   Thin provisioning target                      [CONFIG_DM_THIN_PROVISIONING]
+    &lt;*/M&gt;   Cache target (EXPERIMENTAL)                   [CONFIG_DM_CACHE]
     &lt;*/M&gt;   Mirror target                                 [CONFIG_DM_MIRROR]
+    &lt;*/M&gt;   Zero target                                   [CONFIG_DM_ZERO]
+    &lt;*/M&gt;   I/O delaying target                           [CONFIG_DM_DELAY]
+  [*] Block devices ---&gt;
+    &lt;*/M&gt;   RAM block device support                      [CONFIG_BLK_DEV_RAM]
 Kernel hacking ---&gt;
   Generic Kernel Debugging Instruments ---&gt;
     [*] Magic SysRq key                                   [CONFIG_MAGIC_SYSRQ]</literal></screen>
@@ -141,16 +146,12 @@ Kernel hacking ---&gt;
       commands:
     </para>
 
-<screen><userinput>SAVEPATH=$PATH                  &amp;&amp;
-PATH=$PATH:/sbin:/usr/sbin      &amp;&amp;
+<screen><userinput>PATH+=:/usr/sbin                \
 ./configure --prefix=/usr       \
-            --exec-prefix=      \
             --enable-cmdlib     \
             --enable-pkgconfig  \
             --enable-udev_sync  &amp;&amp;
-make                            &amp;&amp;
-PATH=$SAVEPATH                  &amp;&amp;
-unset SAVEPATH</userinput></screen>
+make</userinput></screen>
 
     <para>
       The tests use <application>udev</application> for logical volume
@@ -195,15 +196,21 @@ make -C libdm install</userinput></screen>
 
     Results for LVM2.2.03.09:
     ### 338 tests: 212 passed, 41 skipped, 0 timed out, 70 warned, 15 failed
+
+    Results for LVM2.2.03.11:
+    ### 357 tests: 231 passed, 32 skipped, 0 timed out, 77 warned, 17 failed
     -->
 
     <para>
       The tests do not implement the <quote>expected fail</quote> possibility,
-      and a small number of test failures is expected by upstream. More
-      failures may happen because some kernel options are missing. For example,
-      the lack of the <emphasis>dm-delay</emphasis> device mapper target may
-      explain some failures. Some tests are flagged
-      <quote>warned</quote> if
+      and a small number of test failures is expected by upstream. 
+      <!-- 1 -->More failures may happen because some kernel options are missing. 
+      For example, the lack of the <emphasis>dm-delay</emphasis> device 
+      mapper target  explains some failures. 
+      <!-- 2 -->Some tests may fail if there is insufficient free space available 
+      in the partition with the /tmp directory.  At least one test fails if 16 TB 
+      is not available.
+      <!-- 3 -->Some tests are flagged  <quote>warned</quote> if
       <ulink url='https://github.com/jthornber/thin-provisioning-tools'>
       thin-provisioning-tools</ulink> are not installed. A workaround is to
       add the following flags to <command>configure</command>:
@@ -227,8 +234,8 @@ make -C libdm install</userinput></screen>
       are done).
 
       <note><simpara>The checks create device nodes in the /tmp directory.  The
-      tests will fail if /tmp is mounted with the nodev
-      option.</simpara></note>
+      tests will fail if /tmp is mounted with the nodev option.
+      </simpara></note>
     </para>
 
     <para>
@@ -246,8 +253,8 @@ make install_systemd_units</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>PATH=$PATH:/sbin:/usr/sbin</command>: The path
-      must contain <filename class="directory">/sbin</filename> and
+      <command>PATH+=:/usr/sbin</command>: The path
+      must contain
       <filename class='directory'>/usr/sbin</filename> for proper system tool
       detection by the <command>configure</command> script. This instruction
       ensures that PATH is properly set even if you build as an unprivileged user.
@@ -320,7 +327,7 @@ make install_systemd_units</userinput></screen>
         <term><command>blkdeactivate</command></term>
         <listitem>
           <para>
-            is a utility to deactivate block devices.
+            is a utility to deactivate block devices
           </para>
           <indexterm zone="lvm2 blkdeactivate">
             <primary sortas="b-blkdeactivate">blkdeactivate</primary>
@@ -332,7 +339,7 @@ make install_systemd_units</userinput></screen>
         <term><command>dmeventd</command></term>
         <listitem>
           <para>
-            (optional) is the Device Mapper event daemon.
+            (optional) is the Device Mapper event daemon
           </para>
           <indexterm zone="lvm2 dmeventd">
             <primary sortas="b-dmeventd">dmeventd</primary>
@@ -344,7 +351,7 @@ make install_systemd_units</userinput></screen>
         <term><command>dmsetup</command></term>
         <listitem>
           <para>
-            is a low level logical volume management tool.
+            is a low level logical volume management tool
           </para>
           <indexterm zone="lvm2 dmsetup">
             <primary sortas="b-dmsetup">dmsetup</primary>
@@ -356,7 +363,7 @@ make install_systemd_units</userinput></screen>
         <term><command>fsadm</command></term>
         <listitem>
           <para>
-            is a utility used to resize or check filesystem on a device.
+            is a utility used to resize or check filesystem on a device
           </para>
           <indexterm zone="lvm2 fsadm">
             <primary sortas="b-fsadm">fsadm</primary>
@@ -371,7 +378,7 @@ make install_systemd_units</userinput></screen>
             provides the command-line tools for <application>LVM2</application>.
             Commands are implemented via sympolic links to this program to
             manage physical devices (pv*), volume groups (vg*) and logical
-            volumes (lv*).
+            volumes (lv*)
           </para>
           <indexterm zone="lvm2 lvm">
             <primary sortas="b-lvm">lvm</primary>
@@ -399,7 +406,7 @@ make install_systemd_units</userinput></screen>
         <listitem>
           <para>
             is a tool used to dump various information concerning
-            <application>LVM2</application>.
+            <application>LVM2</application>
           </para>
           <indexterm zone="lvm2 lvmdump">
             <primary sortas="b-lvmdump">lvmdump</primary>
@@ -411,7 +418,7 @@ make install_systemd_units</userinput></screen>
         <term><command>vgimportclone</command></term>
         <listitem>
           <para>
-            is used to import a duplicated VG (e.g. hardware snapshot).
+            is used to import a duplicated VG (e.g. hardware snapshot)
           </para>
           <indexterm zone="lvm2 vgimportclone">
             <primary sortas="b-vgimportclone">vgimportclone</primary>
@@ -420,11 +427,11 @@ make install_systemd_units</userinput></screen>
       </varlistentry>
 
       <varlistentry id="libdevmapper">
-        <term><filename class='libraryfile'>libdevmapper.so</filename></term>
+        <term><filename class="libraryfile">libdevmapper.so</filename></term>
         <listitem>
           <para>
             contains the <application>Device Mapper</application> API
-            functions.
+            functions
           </para>
           <indexterm zone="lvm2 libdevmapper">
             <primary sortas="c-libdevmapper">libdevmapper.so</primary>

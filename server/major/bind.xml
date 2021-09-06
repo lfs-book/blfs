@@ -6,17 +6,16 @@
 
   <!ENTITY bind-download-http " ">
   <!ENTITY bind-download-ftp  "ftp://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.xz">
-  <!ENTITY bind-md5sum        "32463c0fe91abaf4894eee09a97f1ce6">
-  <!ENTITY bind-size          "3.1 MB">
-  <!ENTITY bind-buildsize     "124 MB (23 MB installed)">
-  <!ENTITY bind-time          "0.8 SBU (with parallelism=4; add 29+ minutes, somewhat processor independent, to run the complete test suite)">
+  <!ENTITY bind-md5sum        "8025b8f8463b3b9d9c902bab27f185a2">
+  <!ENTITY bind-size          "4.8 MB">
+  <!ENTITY bind-buildsize     "117 MB (20 MB installed)">
+  <!ENTITY bind-time          "0.8 SBU (with parallelism=4; add 30+ minutes, somewhat processor independent, to run the complete test suite)">
 ]>
 
 <sect1 id="bind" xreflabel="BIND-&bind-version;">
   <?dbhtml filename="bind.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -35,7 +34,7 @@
       to the <xref linkend="bind-utils"/>.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,7 +69,17 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/bind-&bind-version;-upstream_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+-->
     <bridgehead renderas="sect3">BIND Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -94,7 +103,8 @@
       <ulink url="https://cmocka.org/">cmocka</ulink>,
       <ulink url="https://github.com/cjheath/geoip">geoip</ulink>,
       <ulink url="https://docs.pytest.org/en/stable/">pytest</ulink>,
-      <ulink url="https://pypi.python.org/pypi/Sphinx">Sphinx</ulink>
+      <ulink url="https://pypi.python.org/pypi/Sphinx">Sphinx</ulink>, and
+      <ulink url="&w3m-url;">w3m</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional database backends</bridgehead>
@@ -133,6 +143,18 @@
     </para>
 
 <screen role="root"><userinput>pip3 install ply</userinput></screen>
+<!--
+    <para>
+      First, fix a few regressions that were reported upstream:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../bind-&bind-version;-upstream_fixes-1.patch</userinput></screen>
+-->
+    <para>
+      Fix a regression identified upstream:
+    </para>
+
+<screen><userinput remap="pre">sed -i 's/MAPAPI=2.0/MAPAPI=3.0/' lib/dns/mapapi</userinput></screen>
 
     <para>
       Install <application>BIND</application> by running the
@@ -168,7 +190,8 @@ make</userinput></screen>
       The test suite may indicate some skipped tests depending on
       what configuration options are used. Some tests are marked
       <quote>UNTESTED</quote> if <xref linkend="perl-net-dns"/> is not
-      installed. To run the tests, as an unprivileged user, execute:
+      installed. <!--One test, <quote>CPU</quote>, is known to fail.-->
+      To run the tests, as an unprivileged user, execute:
     </para>
 
 <screen remap="test"><userinput>make -k check</userinput></screen>
@@ -314,7 +337,7 @@ cp /etc/localtime etc</userinput></screen>
         The <filename>rndc.conf</filename> file contains information for
         controlling <command>named</command> operations with the
         <command>rndc</command> utility. Generate a key for use in the
-        <filename>named.conf</filename> and <filename>rdnc.conf</filename>
+        <filename>named.conf</filename> and <filename>rndc.conf</filename>
         with the <command>rndc-confgen</command> command:
       </para>
 
@@ -542,7 +565,7 @@ dig www.&lfs-domainname;</userinput></screen>
         You can see almost instantaneous results with the named caching
         lookups. Consult the <application>BIND</application> Administrator
         Reference Manual located at 
-        <ulink url="https://kb.isc.org/docs/bind-916-administrative-reference-manual"/>
+        <ulink url="https://bind9.readthedocs.io/en/v9_16/"/>
         for further configuration options.
       </para>
 
@@ -573,7 +596,8 @@ dig www.&lfs-domainname;</userinput></screen>
         libisccfg.so, and libns.so</seg>
 
         <seg>/usr/include/{bind9,dns,dst,irs,isc,isccc,isccfg,ns,pk11,pkcs11},
-        /usr/lib/named, and /srv/named</seg>
+        /usr/lib/named, /usr/lib/python&python3-majorver;/site-packages/isc,
+        and /srv/named</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -586,7 +610,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>arpaname</command></term>
         <listitem>
           <para>
-            translates IP addresses to the corresponding ARPA names.
+            translates IP addresses to the corresponding ARPA names
           </para>
           <indexterm zone="bind arpaname">
             <primary sortas="b-arpaname">arpaname</primary>
@@ -612,7 +636,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>ddns-confgen</command></term>
         <listitem>
           <para>
-            generates a key for use by nsupdate and named.
+            generates a key for use by nsupdate and named
           </para>
           <indexterm zone="bind ddns-confgen">
             <primary sortas="b-ddns-confgen">ddns-confgen</primary>
@@ -625,7 +649,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <listitem>
           <para>
             is a new debugging tool that is a successor to
-            <command>dig</command>.
+            <command>dig</command>
           </para>
           <indexterm zone="bind delv">
             <primary sortas="b-delv">delv</primary>
@@ -637,7 +661,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dig</command></term>
         <listitem>
           <para>
-            interrogates DNS servers.
+            interrogates DNS servers
           </para>
           <indexterm zone="bind dig">
             <primary sortas="b-dig">dig</primary>
@@ -650,7 +674,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <listitem>
           <para>
             changes DS records for a child zone based on
-            CDS/CDNSKEY.
+            CDS/CDNSKEY
           </para>
           <indexterm zone="bind dnssec-cds">
             <primary sortas="b-dnssec-cds">dnssec-cds</primary>
@@ -662,7 +686,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-checkds</command></term>
         <listitem>
           <para>
-            is a DNSSEC delegation consistency checking tool.
+            is a DNSSEC delegation consistency checking tool
           </para>
           <indexterm zone="bind dnssec-checkds">
             <primary sortas="b-dnssec-checkds">dnssec-checkds</primary>
@@ -676,7 +700,7 @@ dig www.&lfs-domainname;</userinput></screen>
           <para>
             verifies that the DNSSEC keys for a given zone or a set of zones
             have timing metadata set properly to ensure no future lapses
-            in DNSSEC coverage.
+            in DNSSEC coverage
           </para>
           <indexterm zone="bind dnssec-coverage">
             <primary sortas="b-dnssec-coverage">dnssec-coverage</primary>
@@ -688,7 +712,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-dsfromkey</command></term>
         <listitem>
           <para>
-            outputs the Delegation Signer (DS) resource record (RR).
+            outputs the Delegation Signer (DS) resource record (RR)
           </para>
           <indexterm zone="bind dnssec-dsfromkey">
             <primary sortas="b-dnssec-dsfromkey">dnssec-dsfromkey</primary>
@@ -701,7 +725,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <listitem>
           <para>
              reads a public DNSKEY record and generates a pair of
-             .key/.private files.
+             .key/.private files
           </para>
           <indexterm zone="bind dnssec-importkey">
             <primary sortas="b-dnssec-importkey">dnssec-importkey</primary>
@@ -713,8 +737,8 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-keyfromlabel</command></term>
         <listitem>
           <para>
-            gets keys with the given label from a crypto hardware and builds
-            key files for DNSSEC.
+            gets keys with the given label from a cryptography hardware device
+            and builds key files for DNSSEC
           </para>
           <indexterm zone="bind dnssec-keyfromlabel">
             <primary sortas="b-dnssec-keyfromlabel">dnssec-keyfromlabel</primary>
@@ -726,7 +750,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-keygen</command></term>
         <listitem>
           <para>
-            is a key generator for secure DNS.
+            is a key generator for secure DNS
           </para>
           <indexterm zone="bind dnssec-keygen">
             <primary sortas="b-dnssec-keygen">dnssec-keygen</primary>
@@ -738,7 +762,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-keymgr</command></term>
         <listitem>
           <para>
-            ensures correct DNSKEY coverage based on a defined policy.
+            ensures correct DNSKEY coverage based on a defined policy
           </para>
           <indexterm zone="bind dnssec-keymgr">
             <primary sortas="b-dnssec-keymgr">dnssec-keymgr</primary>
@@ -750,7 +774,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-revoke</command></term>
         <listitem>
           <para>
-            sets the REVOKED bit on a DNSSEC key.
+            sets the REVOKED bit on a DNSSEC key
           </para>
           <indexterm zone="bind dnssec-revoke">
             <primary sortas="b-dnssec-revoke">dnssec-revoke</primary>
@@ -762,7 +786,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-settime</command></term>
         <listitem>
           <para>
-            sets the key timing metadata for a DNSSEC key.
+            sets the key timing metadata for a DNSSEC key
           </para>
           <indexterm zone="bind dnssec-settime">
             <primary sortas="b-dnssec-settime">dnssec-settime</primary>
@@ -774,7 +798,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>dnssec-signzone</command></term>
         <listitem>
           <para>
-            generates signed versions of zone files.
+            generates signed versions of zone files
           </para>
           <indexterm zone="bind dnssec-signzone">
             <primary sortas="b-dnssec-signzone">dnssec-signzone</primary>
@@ -788,7 +812,7 @@ dig www.&lfs-domainname;</userinput></screen>
           <para>
             verifies that a zone is fully signed for each algorithm found
             in the DNSKEY RRset for the zone, and that the NSEC / NSEC3
-            chains are complete.
+            chains are complete
           </para>
           <indexterm zone="bind dnssec-verify">
             <primary sortas="b-dnssec-verify">dnssec-verify</primary>
@@ -814,7 +838,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>host</command></term>
         <listitem>
           <para>
-            is a utility for DNS lookups.
+            is a utility for DNS lookups
           </para>
           <indexterm zone="bind host">
             <primary sortas="b-host">host</primary>
@@ -864,7 +888,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>mdig</command></term>
         <listitem>
           <para>
-            is a version of dig that allows multiple queries at once.
+            is a version of dig that allows multiple queries at once
           </para>
           <indexterm zone="bind mdig">
             <primary sortas="b-mdig">mdig</primary>
@@ -876,7 +900,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>named</command></term>
         <listitem>
           <para>
-            is the name server daemon.
+            is the name server daemon
           </para>
           <indexterm zone="bind named">
             <primary sortas="b-named">named</primary>
@@ -889,7 +913,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <listitem>
           <para>
             checks the syntax of <filename>named.conf</filename>
-            files.
+            files
           </para>
           <indexterm zone="bind named-checkconf">
             <primary sortas="b-named-checkconf">named-checkconf</primary>
@@ -901,7 +925,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>named-checkzone</command></term>
         <listitem>
           <para>
-            checks zone file validity.
+            checks zone file validity
           </para>
           <indexterm zone="bind named-checkzone">
             <primary sortas="b-named-checkzone">named-checkzone</primary>
@@ -914,7 +938,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <listitem>
           <para>
             is similar to <command>named-checkzone</command>, but it always
-            dumps the zone contents to a specified file in a specified format.
+            dumps the zone contents to a specified file in a specified format
           </para>
           <indexterm zone="bind named-compilezone">
             <primary sortas="b-named-compilezone">named-compilezone</primary>
@@ -926,7 +950,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>named-journalprint</command></term>
         <listitem>
           <para>
-            prints the zone journal in human-readable form.
+            prints the zone journal in human-readable form
           </para>
           <indexterm zone="bind named-journalprint">
             <primary sortas="b-named-journalprint">named-journalprint</primary>
@@ -939,7 +963,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <listitem>
           <para>
             reads an individual DNS resource record from standard input and
-            checks if it is syntactically correct.
+            checks if it is syntactically correct
           </para>
           <indexterm zone="bind named-rrchecker">
             <primary sortas="b-named-rrchecker">named-rrchecker</primary>
@@ -951,7 +975,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>named-nzd2nzf</command></term>
         <listitem>
           <para>
-            converts an NZD database to NZF text format.
+            converts an NZD database to NZF text format
           </para>
           <indexterm zone="bind named-nzd2nzf">
             <primary sortas="b-named-nzd2nzf">named-nzd2nzf</primary>
@@ -963,7 +987,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>nsec3hash</command></term>
         <listitem>
           <para>
-            generates an NSEC3 hash based on a set of NSEC3 parameters.
+            generates an NSEC3 hash based on a set of NSEC3 parameters
           </para>
           <indexterm zone="bind nsec3hash">
             <primary sortas="b-nsec3hash">nsec3hash</primary>
@@ -975,7 +999,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>nslookup</command></term>
         <listitem>
           <para>
-            is a program used to query Internet domain nameservers.
+            is a program used to query Internet domain nameservers
           </para>
           <indexterm zone="bind nslookup">
             <primary sortas="b-nslookup">nslookup</primary>
@@ -987,7 +1011,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>nsupdate</command></term>
         <listitem>
           <para>
-            is used to submit DNS update requests.
+            is used to submit DNS update requests
           </para>
           <indexterm zone="bind nsupdate">
             <primary sortas="b-nsupdate">nsupdate</primary>
@@ -999,7 +1023,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>rndc</command></term>
         <listitem>
           <para>
-            controls the operation of <application>BIND</application>.
+            controls the operation of <application>BIND</application>
           </para>
           <indexterm zone="bind rndc">
             <primary sortas="b-rndc">rndc</primary>
@@ -1011,7 +1035,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>rndc-confgen</command></term>
         <listitem>
           <para>
-            generates <filename>rndc.conf</filename> files.
+            generates <filename>rndc.conf</filename> files
           </para>
           <indexterm zone="bind rndc-confgen">
             <primary sortas="b-rndc-confgen">rndc-confgen</primary>
@@ -1023,7 +1047,7 @@ dig www.&lfs-domainname;</userinput></screen>
         <term><command>tsig-keygen</command></term>
         <listitem>
           <para>
-            is a symlink to <command>ddns-confgen</command>.
+            is a symlink to <command>ddns-confgen</command>
           </para>
           <indexterm zone="bind tsig-keygen">
             <primary sortas="b-tsig-keygen">tsig-keygen</primary>

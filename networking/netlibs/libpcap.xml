@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY libpcap-download-http "http://www.tcpdump.org/release/libpcap-&libpcap-version;.tar.gz">
+  <!ENTITY libpcap-download-http "https://www.tcpdump.org/release/libpcap-&libpcap-version;.tar.gz">
   <!ENTITY libpcap-download-ftp  " ">
-  <!ENTITY libpcap-md5sum        "21af603d9a591c7d96a6457021d84e6c">
-  <!ENTITY libpcap-size          "844 KB">
-  <!ENTITY libpcap-buildsize     "9.3 MB">
+  <!ENTITY libpcap-md5sum        "28e17495004036567c2cc884b51eba45">
+  <!ENTITY libpcap-size          "916 KB">
+  <!ENTITY libpcap-buildsize     "9.7 MB">
   <!ENTITY libpcap-time          "less than 0.1 SBU">
 ]>
 
@@ -16,7 +16,6 @@
   <?dbhtml filename="libpcap.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -34,7 +33,7 @@
       packet capture, used in low-level network monitoring.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,6 +69,7 @@
       </listitem>
     </itemizedlist>
 
+<!-- Not needed with 1.10.0
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -80,6 +80,7 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">libpcap Dependencies</bridgehead>
 
@@ -107,9 +108,7 @@
       following commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../libpcap-&libpcap-version;-enable_bluetooth-1.patch &amp;&amp;
-
-./configure --prefix=/usr &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -130,16 +129,18 @@ make</userinput></screen>
 
   </sect2>
 
+<!--
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
-      <option>--enable-bluetooth=no</option>: Necessary, if the recommended
+      <option>- -enable-bluetooth=no</option>: Necessary, if the recommended
       patch is not applied, because since 1.6.1 this application needs a fix,
       in order to build with <application>bluez-5.21</application>.
     </para>
 
   </sect2>
+-->
 
   <sect2 role="content">
     <title>Contents</title>
@@ -154,7 +155,7 @@ make</userinput></screen>
           pcap-config
         </seg>
         <seg>
-          libpcap.so, libpcap.a (optional)
+          libpcap.so
         </seg>
         <seg>
           /usr/include/pcap
@@ -172,7 +173,7 @@ make</userinput></screen>
       <listitem>
         <para>
           provides configuration information for
-          <application>libpcap</application>.
+          <application>libpcap</application>
         </para>
         <indexterm zone="libpcap pcap-config">
           <primary sortas="c-libpcap">pcap-config</primary>
@@ -184,7 +185,7 @@ make</userinput></screen>
         <term><filename class="libraryfile">libpcap.{a,so}</filename></term>
       <listitem>
         <para>
-          are libraries used for user-level packet capture.
+          are libraries used for user-level packet capture
         </para>
         <indexterm zone="libpcap libpcap-lib">
           <primary sortas="c-libpcap">libpcap.{a,so}</primary>

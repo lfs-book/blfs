@@ -7,10 +7,10 @@
   <!-- Also update the download, md5, size entities in libxml2py2.xml -->
   <!ENTITY libxml2-download-http "http://xmlsoft.org/sources/libxml2-&libxml2-version;.tar.gz">
   <!ENTITY libxml2-download-ftp  "ftp://xmlsoft.org/libxml2/libxml2-&libxml2-version;.tar.gz">
-  <!ENTITY libxml2-md5sum        "10942a1dc23137a8aa07f0639cbfece5">
+  <!ENTITY libxml2-md5sum        "f433a39be087a9f0b197eb2307ad9f75">
   <!ENTITY libxml2-size          "5.4 MB">
-  <!ENTITY libxml2-buildsize     "87 MB (add 15 MB for tests)">
-  <!ENTITY libxml2-time          "0.2 SBU (add 0.3 SBU for tests)">
+  <!ENTITY libxml2-buildsize     "116 MB (with tests)">
+  <!ENTITY libxml2-time          "0.4 SBU (with tests)">
   <!ENTITY testsuite-version     "20130923">
 ]>
 
@@ -18,7 +18,6 @@
   <?dbhtml filename="libxml2.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       and utilities used for parsing XML files.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,50 +75,33 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required patch:
-          <ulink url="&patch-root;/libxml2-&libxml2-version;-security_fixes-1.patch"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
           Optional Testsuite:
-          <ulink url="http://www.w3.org/XML/Test/xmlts&testsuite-version;.tar.gz"/> - This
+          <ulink url="https://www.w3.org/XML/Test/xmlts&testsuite-version;.tar.gz"/> - This
           enables <command>make check</command> to do complete testing.
         </para>
       </listitem>
     </itemizedlist>
 
     <bridgehead renderas="sect3">libxml2 Dependencies</bridgehead>
-
+<!-- do not advertize python2 here, except in the note below
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="python2"/> <!--or <xref linkend="python3"/> (to build and
-      install a <application>Python</application> library module, additionally
-      it is required to run the full suite of tests)-->
-      <!-- As discovered by Bruce, itstool needs this module. -->
+      <xref linkend="python2"/>
+    </para>
+-->
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="icu"/> (see below) and
+      <xref linkend="valgrind"/> (may be used in the tests)
     </para>
 
     <note>
-      <para>
-        Some packages which utilize <application>libxml2</application> (such as
-        <application>GNOME Doc Utils</application>) need the
-        <application>Python3</application> module installed to function properly
-        and some packages will not build properly if the
-        <application>Python3</application> module is not available.
-      </para>
-
       <para>
         The old <application>Python2</application> module can be built after
         <filename class="libraryfile">libxml2.so</filename> has been installed,
         see <xref linkend="libxml2py2"/>.
       </para>
     </note>
-
-    <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional">
-      <xref linkend="icu"/> (see below) and
-      <xref linkend="valgrind"/> (may be used in the tests)
-    </para>
 
     <para condition="html" role="usernotes">
       User Notes: <ulink url="&blfs-wiki;/libxml2"/>
@@ -128,39 +110,6 @@
 
   <sect2 role="installation">
     <title>Installation of libxml2</title>
-
-    <para>
-      Apply a patch to fix various errors:
-    </para>
-
-<screen><userinput remap="pre">patch -p1 -i ../libxml2-&libxml2-version;-security_fixes-1.patch</userinput></screen>
-
-    <para>
-      First fix a problem generating the Python3 module with Python-3.9.0 and later:
-    </para>
-
-<screen><userinput>sed -i '/if Py/{s/Py/(Py/;s/)/))/}' python/{types.c,libxml.c}</userinput></screen>
-
-<!--<para>
-      To ensure that the <application>Python</application> module can be
-      built by <xref linkend="python3"/>, run:
-    </para>
-
-<screen><userinput>sed -i '/_PyVerify_fd/,+1d' python/types.c</userinput></screen>-->
-
-    <para>
-      If you are going to run the tests, disable one test that causes the Python
-      tests to terminate early with an error:
-    </para>
-
-<screen><userinput>sed -i 's/test.test/#&amp;/' python/tests/tstLastError.py</userinput></screen>
-
-    <para>
-      If, and only if, you are using <xref linkend="icu"/>, fix a
-      build breakage caused by that version by running the following command:
-    </para>
-
-<screen><userinput>sed -i 's/ TRUE/ true/' encoding.c</userinput></screen>
 
     <para>
       Install <application>libxml2</application> by running the following
@@ -183,7 +132,7 @@ make</userinput></screen>
       To test the results, issue: <command>make check &gt; check.log</command>.
       A summary of the results can be obtained with <command>grep -E
       '^Total|expected' check.log</command>. If <xref linkend="valgrind"/> is
-      installed and you want to check memory leaks, replace
+      installed and you want to check for memory leaks, replace
       <command>check</command> with <command>check-valgrind</command>.
     </para>
 
@@ -201,6 +150,7 @@ make</userinput></screen>
 <screen role="nodump" revision="systemd"><userinput>systemctl stop httpd.service</userinput></screen>
 
     </note>
+
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
@@ -213,13 +163,7 @@ make</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
-<!--
-    <para>
-      <parameter>sed -i '/_PyVerify_fd/,+1d' python/types.c</parameter>: This
-      fixes the <application>Python3</application> code to build with
-      <application>gcc-7</application>.
-    </para>
--->
+
     <para>
       <parameter>--with-history</parameter>: This switch enables
       <application>Readline</application> support when running
@@ -284,7 +228,7 @@ make</userinput></screen>
           <para>
             determines the compile and linker flags that should be used to
             compile and link programs that use
-            <filename class='libraryfile'>libxml2</filename>.
+            <filename class="libraryfile">libxml2</filename>
           </para>
           <indexterm zone="libxml2 xml2-config">
             <primary sortas="b-xml2-config">xml2-config</primary>
@@ -296,7 +240,7 @@ make</userinput></screen>
         <term><command>xmlcatalog</command></term>
         <listitem>
           <para>
-            is used to monitor and manipulate XML and SGML catalogs.
+            is used to monitor and manipulate XML and SGML catalogs
           </para>
           <indexterm zone="libxml2 xmlcatalog">
             <primary sortas="b-xmlcatalog">xmlcatalog</primary>
@@ -309,7 +253,7 @@ make</userinput></screen>
         <listitem>
           <para>
             parses XML files and outputs reports (based upon options) to detect
-            errors in XML coding.
+            errors in XML coding
           </para>
           <indexterm zone="libxml2 xmllint">
             <primary sortas="b-xmllint">xmllint</primary>
@@ -346,7 +290,7 @@ make</userinput></screen>
         <listitem>
           <para>
             provides functions for programs to parse files that use the XML
-            format.
+            format
           </para>
           <indexterm zone="libxml2 libxml2-lib">
             <primary sortas="c-libxml2">libxml2.so</primary>
@@ -359,7 +303,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the interface for <application>Python3</application>
-            to use <filename class="libraryfile">libxml2.so</filename>.
+            to use <filename class="libraryfile">libxml2.so</filename>
           </para>
           <indexterm zone="libxml2 libxml2mod3">
             <primary sortas="c-libxml2mod">libxml2mod.so</primary>

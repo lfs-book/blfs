@@ -8,9 +8,9 @@
     "&gnome-download-http;/gtksourceview/4.8/gtksourceview-&gtksourceview4-version;.tar.xz">
   <!ENTITY gtksourceview4-download-ftp
     "&gnome-download-ftp;/gtksourceview/4.8/gtksourceview-&gtksourceview4-version;.tar.xz">
-  <!ENTITY gtksourceview4-md5sum        "5d4e599c298251691ca0fb5cb08130f0">
+  <!ENTITY gtksourceview4-md5sum        "d10c624feb48412542f9e3447e75d6bc">
   <!ENTITY gtksourceview4-size          "1.1 MB">
-  <!ENTITY gtksourceview4-buildsize     "80 MB (with tests)">
+  <!ENTITY gtksourceview4-buildsize     "63 MB (with tests)">
   <!ENTITY gtksourceview4-time          "0.1 SBU (with tests; both using parallelism=4)">
 ]>
 
@@ -18,7 +18,6 @@
   <?dbhtml filename="gtksourceview4.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -37,7 +36,7 @@
       text functions to include syntax highlighting.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,6 +72,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/gtksourceview4-&gtksourceview4-version;-buildfix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">GtkSourceView Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -93,7 +102,7 @@
       <xref linkend="gtk-doc"/>,
       <xref linkend="itstool"/>,
       <xref linkend="fop"/> (or
-      <ulink url="http://sourceforge.net/projects/dblatex/">dblatex</ulink>),
+      <ulink url="https://sourceforge.net/projects/dblatex/">dblatex</ulink>),
       and
       <ulink url="http://glade.gnome.org/">Glade</ulink>
     </para>
@@ -107,6 +116,12 @@
     <title>Installation of GtkSourceView</title>
 
     <para>
+      First, apply a patch to prevent a race condition:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../gtksourceview4-&gtksourceview4-version;-buildfix-1.patch</userinput></screen>
+
+    <para>
       Install <application>GtkSourceView</application> by running the
       following commands:
     </para>
@@ -114,7 +129,7 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr .. &amp;&amp;
+meson --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -171,7 +186,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libgtksourceview-4.so</filename></term>
         <listitem>
           <para>
-            contains function extensions for the GtkTextView widget.
+            contains function extensions for the GtkTextView widget
           </para>
           <indexterm zone="gtksourceview4 libgtksourceview-4">
             <primary sortas="c-libgtksourceview-4">libgtksourceview-4.so</primary>

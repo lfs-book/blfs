@@ -9,8 +9,8 @@
   <!ENTITY python2-download-ftp  " ">
   <!ENTITY python2-md5sum        "fd6cc8ec0a78c44036f825e739f36e5a">
   <!ENTITY python2-size          "12.2 MB">
-  <!ENTITY python2-buildsize     "134 MB (add 17 MB for tests)">
-  <!ENTITY python2-time          "0.7 SBU (Using parallelism=4; add 7.1 SBU for tests)">
+  <!ENTITY python2-buildsize     "228 MB (add 17 MB for tests)">
+  <!ENTITY python2-time          "0.5 SBU (Using parallelism=4; add 5.9 SBU for tests)">
 
   <!ENTITY python2htmldoc-download-http
      "https://docs.python.org/ftp/python/doc/&python2-version;/python-&python2-version;-docs-html.tar.bz2">
@@ -20,7 +20,6 @@
   <?dbhtml filename="python2.html" ?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -53,8 +52,7 @@
       </para>
     </note>
 
-
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -93,13 +91,19 @@
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
 
     <itemizedlist spacing="compact">
-      <title>Optional HTML Documentation</title>
       <listitem>
         <para>
-          Download (HTTP): <ulink url="&python2htmldoc-download-http;"/>
+          Required patch:
+          <ulink url="&patch-root;/Python-&python2-version;-security_fixes-1.patch"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Optional HTML Documentation: <ulink url="&python2htmldoc-download-http;"/>
         </para>
       </listitem>
     </itemizedlist>
+
 
     <bridgehead renderas="sect3">Python 2 Dependencies</bridgehead>
 <!--
@@ -116,7 +120,8 @@
 
     <bridgehead renderas="sect4">Optional (For Additional Modules)</bridgehead>
     <para role="optional">
-      <xref linkend="sqlite"/> and
+      <xref linkend="libnsl"/>,
+      <xref linkend="sqlite"/>, and
       <xref linkend="tk"/>
     </para>
 
@@ -153,14 +158,16 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr       \
-            --enable-shared     \
-            --with-system-expat \
-            --with-system-ffi   \
-            --enable-unicode=ucs4 &amp;&amp;
+<screen><userinput>patch -Np1 -i ../Python-&python2-version;-security_fixes-1.patch &amp;&amp;
+./configure --prefix=/usr                              \
+            --enable-shared                            \
+            --with-system-expat                        \
+            --with-system-ffi                          \
+            --enable-unicode=ucs4                     &amp;&amp;
 make</userinput></screen>
 
     <para>
+      If you invoke the tests, they will run through twice.
       To test the results, issue: <command>make -k test</command>.
     </para>
 
@@ -294,7 +301,7 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
             is a wrapper script that opens a <application>Python</application>
             aware GUI editor. For this script to run, you must have installed
             <application>Tk</application> before Python so that the Tkinter
-            Python module is built.
+            Python module is built
           </para>
           <indexterm zone="python2 idle">
             <primary sortas="b-idle">idle</primary>
@@ -306,7 +313,7 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
         <term><command>pydoc</command></term>
         <listitem>
           <para>
-            is the <application>Python</application> documentation tool.
+            is the <application>Python</application> documentation tool
           </para>
           <indexterm zone="python2 pydoc2">
             <primary sortas="b-pydoc2">pydoc</primary>
@@ -319,7 +326,7 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
         <listitem>
           <para>
             is an interpreted, interactive, object-oriented programming
-            language.
+            language
           </para>
           <indexterm zone="python2 python">
             <primary sortas="b-python2">python</primary>
@@ -332,7 +339,7 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
         <listitem>
           <para>
             is a version-specific name for the <command>python</command>
-            program.
+            program
           </para>
           <indexterm zone="python2 python2-ver">
             <primary sortas="b-python&python2-majorver;">python&python2-majorver;</primary>
@@ -344,7 +351,7 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
         <term><command>smtpd.py</command></term>
         <listitem>
           <para>
-            is an SMTP proxy implemented in <application>Python</application>.
+            is an SMTP proxy implemented in <application>Python</application>
           </para>
           <indexterm zone="python2 smtpd.py">
             <primary sortas="b-smtpd.py">smtpd.py</primary>

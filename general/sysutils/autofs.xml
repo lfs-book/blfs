@@ -6,9 +6,9 @@
 
   <!ENTITY autofs-download-http "&kernel-dl;/linux/daemons/autofs/v5/autofs-&autofs-version;.tar.xz">
   <!ENTITY autofs-download-ftp  " ">
-  <!ENTITY autofs-md5sum        "b27ee7a1674ae1779aaf75c5e90b0f1e">
-  <!ENTITY autofs-size          "308 KB">
-  <!ENTITY autofs-buildsize     "8.5 MB">
+  <!ENTITY autofs-md5sum        "6bd1ea8a9e5dc3a7dc95119e3bbaf52c">
+  <!ENTITY autofs-size          "324 KB">
+  <!ENTITY autofs-buildsize     "6.7 MB">
   <!ENTITY autofs-time          "0.1 SBU">
 ]>
 
@@ -16,7 +16,6 @@
   <?dbhtml filename="autofs.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       based on a set of pre-configured maps.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,6 +82,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="nfs-utils"/>,
+      <xref linkend="libnsl"/>,
       <xref linkend="libxml2"/>,
       <xref linkend="mitkrb"/>,
       <xref linkend="openldap"/> (client only), and
@@ -127,23 +127,36 @@
 
     <title>Installation of Autofs</title>
 
+    <para>Some lines of code need to be removed for this package to be
+    consistent with glibc-2.34. We will remove these lines with some sed commands
+    by line numbers showing slightly different methods.</para>
+
+<screen><userinput>sed -e '87d'        \
+    -e '2618,2644d' \
+    -i daemon/automount.c &amp;&amp;
+
+sed -i '1178,1180d' daemon/state.c &amp;&amp;
+sed -i '275,+2 d'   lib/alarm.c</userinput></screen>    
+
+
     <para>
       Install <application>Autofs</application> by running the following
       commands:
     </para>
 
-<screen revision="sysv"><userinput>./configure --prefix=/         \
-            --with-libtirpc    \
-            --without-openldap \
+<screen revision="sysv"><userinput>./configure --prefix=/usr             \
+            --with-mapdir=/etc/autofs \
+            --with-libtirpc           \
+            --without-openldap        \
             --mandir=/usr/share/man &amp;&amp;
 make</userinput></screen>
 
-<screen revision="systemd"><userinput>./configure --prefix=/         \
-            --with-libtirpc    \
-            --with-systemd     \
-            --without-openldap \
+<screen revision="systemd"><userinput>./configure --prefix=/usr             \
+            --with-mapdir=/etc/autofs \
+            --with-libtirpc           \
+            --with-systemd            \
+            --without-openldap        \
             --mandir=/usr/share/man &amp;&amp;
-
 make</userinput></screen>
 
     <para>
@@ -204,9 +217,9 @@ make</userinput></screen>
 
       <para>
         <filename>/etc/sysconfig/autofs.conf</filename>,
-        <filename>/etc/auto.master</filename>,
-        <filename>/etc/auto.misc</filename>, and
-        <filename>/etc/auto.net</filename>
+        <filename>/etc/autofs/auto.master</filename>,
+        <filename>/etc/autofs/auto.misc</filename>, and
+        <filename>/etc/autofs/auto.net</filename>
       </para>
 
       <indexterm zone="autofs autofs-config" >
@@ -214,15 +227,15 @@ make</userinput></screen>
       </indexterm>
 
       <indexterm zone="autofs autofs-config">
-        <primary sortas="e-etc-auto.master">/etc/auto.master</primary>
+        <primary sortas="e-etc-auto.master">/etc/autofs/auto.master</primary>
       </indexterm>
 
       <indexterm zone="autofs autofs-config">
-        <primary sortas="e-etc-auto.misc">/etc/auto.misc</primary>
+        <primary sortas="e-etc-auto.misc">/etc/autofs/auto.misc</primary>
       </indexterm>
 
       <indexterm zone="autofs autofs-config">
-        <primary sortas="e-etc-auto.net">/etc/auto.net</primary>
+        <primary sortas="e-etc-auto.net">/etc/autofs/auto.net</primary>
       </indexterm>
 
     </sect3>
@@ -238,21 +251,21 @@ make</userinput></screen>
         as the <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>mv /etc/auto.master /etc/auto.master.bak &amp;&amp;
-cat &gt; /etc/auto.master &lt;&lt; "EOF"
-<literal># Begin /etc/auto.master
+<screen role="root"><userinput>mv /etc/autofs/auto.master /etc/autofs/auto.master.bak &amp;&amp;
+cat &gt; /etc/autofs/auto.master &lt;&lt; "EOF"
+<literal># Begin /etc/autofs/auto.master
 
-/media/auto  /etc/auto.misc  --ghost
-#/home        /etc/auto.home
+/media/auto  /etc/autofs/auto.misc  --ghost
+#/home        /etc/autofs/auto.home
 
-# End /etc/auto.master</literal>
+# End /etc/autofs/auto.master</literal>
 EOF</userinput></screen>
 
       <para>
         This file creates a new media directory,
         <filename>/media/auto</filename> that will overlay any existing
         directory of the same name.  In this example, the file,
-        <filename>/etc/auto.misc</filename>, has a line:
+        <filename>/etc/autofs/auto.misc</filename>, has a line:
       </para>
 
 <screen>cd   -fstype=iso9660,ro,nosuid,nodev :/dev/cdrom</screen>
@@ -324,7 +337,7 @@ EOF</userinput></screen>
       <para revision="sysv">
         <application>autofs</application> installs its own
         boot script, but it has no capability for logging or visual conformance
-        with other BLFS scripts.
+        with other BLFS scripts. It will be replaced by an enhanced version.
       </para>
 
       <para revision="sysv">
@@ -385,7 +398,7 @@ EOF</userinput></screen>
           mount_ext3.so, mount_ext4.so, mount_generic.so, mount_nfs.so,
           mount_nfs4.so, parse_amd.so, and parse_sun.so
            </seg>
-        <seg>/lib/autofs</seg>
+        <seg>/usr/lib/autofs, /etc/autofs</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -399,7 +412,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is the daemon that performs the mounting when a request is
-            made for the device.
+            made for the device
           </para>
           <indexterm zone="autofs automount">
             <primary sortas="b-automount">automount</primary>

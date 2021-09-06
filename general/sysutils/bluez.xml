@@ -6,17 +6,16 @@
 
   <!ENTITY bluez-download-http "&kernel-dl;/linux/bluetooth/bluez-&bluez-version;.tar.xz">
   <!ENTITY bluez-download-ftp  " ">
-  <!ENTITY bluez-md5sum        "94972b8bc7ade60c72b0ffa6ccff2c0a">
-  <!ENTITY bluez-size          "1.9 MB">
-  <!ENTITY bluez-buildsize     "68 MB (add 78 MB for tests)">
-  <!ENTITY bluez-time          "0.2 SBU (using parallelism=4; add 0.2 SBU for tests)">
+  <!ENTITY bluez-md5sum        "a4c98b6bd2411880cba5930e7f10a1c4">
+  <!ENTITY bluez-size          "2.0 MB">
+  <!ENTITY bluez-buildsize     "64 MB (add 76 MB for tests)">
+  <!ENTITY bluez-time          "0.1 SBU (using parallelism=4; add 0.2 SBU for tests)">
 ]>
 
 <sect1 id="bluez" xreflabel="BlueZ-&bluez-version;">
   <?dbhtml filename="bluez.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -34,7 +33,7 @@
       Bluetooth protocol stack for Linux.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,16 +69,15 @@
       </listitem>
     </itemizedlist>
 
-      <!--bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
-      <itemizedlist spacing="compact" revision="sysv">
-        <listitem>
-          <para>
-             Optional patch (required to work properly with gnome-bluetooth
-             and/or kde bluedevil):
-            <ulink url="&patch-root;/bluez-&bluez-version;-obexd_without_systemd-1.patch"/>
-          </para>
-        </listitem>
-      </itemizedlist-->
+    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact" revision="sysv">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/bluez-&bluez-version;-obexd_without_systemd-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
 
     <bridgehead renderas="sect3">BlueZ Dependencies</bridgehead>
 
@@ -88,6 +86,11 @@
       <xref linkend="dbus"/>,
       <xref linkend="glib2"/>, and
       <xref linkend="libical"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="docutils"/> (to generate man pages)
     </para>
 
     <para condition="html" role="usernotes">
@@ -106,7 +109,12 @@
       and recompile the kernel if necessary:
     </para>
 
-<screen><literal>[*] Networking support ---&gt;                [CONFIG_NET]
+<screen><literal>General Setup ---&gt;
+  [*] Configure standard kernel features (expert users)               [CONFIG_EXPERT]
+    [*] Enable timerfd() system call               [CONFIG_TIMERFD]
+    [*] Enable eventfd() system call               [CONFIG_EVENTFD]
+
+[*] Networking support ---&gt;                [CONFIG_NET]
   &lt;*/M&gt; Bluetooth subsystem support ---&gt;    [CONFIG_BT]
     &lt;*/M&gt; RFCOMM protocol support          [CONFIG_BT_RFCOMM]
     [*]   RFCOMM TTY support               [CONFIG_BT_RFCOMM_TTY]
@@ -117,18 +125,29 @@
         Bluetooth device drivers ---&gt;
           (Select the appropriate drivers for your Bluetooth hardware)
 
-  &lt;*/M&gt; RF switch subsystem support ----   [CONFIG_RFKILL]</literal></screen>
+   &lt;*/M&gt; RF switch subsystem support ----   [CONFIG_RFKILL]
 
+-*- Cryptographic API ---&gt;
+   &lt;*/M*&gt; User-space cryptographic algorithm configuration         [CONFIG_CRYPTO_USER]
+   &lt;*/M*&gt; User-space interface for hash algorithms                 [CONFIG_CRYPTO_USER_API_HASH]
+   &lt;*/M*&gt; User-space interface for symmetric key cipher algorithms [CONFIG_CRYPTO_USER_API_SKCIPHER]
+   &lt;*/M*&gt; MD5 digest algorithm                                     [CONFIG_CRYPTO_MD5]
+   &lt;*/M*&gt; SHA1 digest algorithm                                    [CONFIG_CRYPTO_SHA1]
+
+Security Options ---&gt;
+  &lt;*/M*&gt; Diffie-Hellman operations on retained keys [CONFIG_KEY_DH_OPERATIONS]</literal></screen>
+
+<!--
     <para>
       If you wish to run the testsuite (even if treating this package as a build
       dependency), you will need to enable the following options in the kernel
       configuration and recompile the kernel if necessary:
     </para>
 
-<screen><literal>-*- Cryptographic API ---&gt;                                      [CONFIG_CRYPTO]
+<screen><literal>-*- Cryptographic API - - -&gt;                                      [CONFIG_CRYPTO]
   &lt;*/M&gt; User-space interface for hash algorithms                 [CONFIG_CRYPTO_USER_API_HASH]
   &lt;*/M&gt; User-space interface for symmetric key cipher algorithms [CONFIG_CRYPTO_USER_API_SKCIPHER]</literal></screen>
-
+-->
     <indexterm zone="bluez bluez-kernel">
       <primary sortas="d-bluez">bluez</primary>
     </indexterm>
@@ -136,22 +155,16 @@
 
   <sect2 role="installation">
     <title>Installation of BlueZ</title>
-<!--
-    <para revision="sysv">
-      If you are going to use <application>BlueZ</application> with
-      gnome-bluetooth and/or kde bluedevil, apply the following patch:
+
+    <para>
+      At first, fix an issue building the package with Glibc-2.34 or later:
     </para>
 
+<screen><userinput>sed 's/pause(/bluez_&amp;/' -i profiles/audio/media.c</userinput></screen>
+
+    <para revision="sysv">Now, make some changes needed for SystemV systems:</para>
+
 <screen revision="sysv"><userinput>patch -Np1 -i ../bluez-&bluez-version;-obexd_without_systemd-1.patch</userinput></screen>
--->
-<!--
-    <para>
-      First, adapt BlueZ to changes in the Linux API Headers in Linux 5.2+:
-    </para>
-    
-<screen><userinput remap="pre">sed -i 's/SIOCGSTAMP/0x8906/' tools/rctest.c \
-                              tools/l2test.c</userinput></screen>
--->
 
     <para>
       Install <application>BlueZ</application> by running the following
@@ -162,12 +175,14 @@
             --sysconfdir=/etc     \
             --localstatedir=/var  \
             --enable-library      \
+            --disable-manpages    \
             --disable-systemd     &amp;&amp;
 make</userinput></screen>
 
 <screen revision="systemd"><userinput>./configure --prefix=/usr         \
             --sysconfdir=/etc     \
             --localstatedir=/var  \
+            --disable-manpages    \
             --enable-library      &amp;&amp;
 make</userinput></screen>
 
@@ -205,6 +220,13 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
     <title>Command Explanations</title>
 
     <para>
+      <parameter>--disable-manpages</parameter>: This switch disables generating
+      the manual pages because of the reliance on 'rst2man' in docutils. Remove
+      this switch if you have <xref role="nodep" linkend="docutils"/> installed
+      and wish to generate the manual pages.
+    </para>
+
+    <para>
       <parameter>--enable-library</parameter>: This switch enables building the
       <application>BlueZ</application> 4 compatibility library which is required by
       some applications.
@@ -228,13 +250,21 @@ install -v -m644 doc/*.txt /usr/share/doc/bluez-&bluez-version;</userinput></scr
 
     <sect3 id="bluez-config">
       <title>Configuration Files</title>
-      <para>
+      <para revision="sysv">
         <filename>/etc/bluetooth/main.conf</filename> is installed automatically
         during the install.  Additionally, there are three supplementary
         configuration files.  /etc/sysconfig/bluetooth is installed as a part
         of the boot script below.  In addition, you optionally can install the
         following, as the <systemitem class="username">root</systemitem> user:
       </para>
+
+      <para revision="systemd">
+        <filename>/etc/bluetooth/mail.conf</filename> is installed automatically
+        during the installation. Additionally, there are two supplementary
+        configuration files. In addition, you can optionally install the
+        following files, as the <systemitem class="username">root</systemitem>
+        user:
+     </para>
 
 <screen role="root"><userinput>cat > /etc/bluetooth/rfcomm.conf &lt;&lt; "EOF"</userinput>
 <literal># Start rfcomm.conf
@@ -319,7 +349,7 @@ EOF</screen>
 
       <seglistitem>
         <seg>
-          bccmd, 
+      <!--bccmd, -->
           bluemoon, 
           bluetoothctl, 
           bluetoothd (symlink), 
@@ -347,24 +377,26 @@ EOF</screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
+      <!--
       <varlistentry id="bccmd">
         <term><command>bccmd</command></term>
         <listitem>
           <para>
             is used to issue BlueCore commands to Cambridge Silicon
-            Radio devices.
+            Radio devices
           </para>
           <indexterm zone="bluez bccmd">
             <primary sortas="b-bccmd">bccmd</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+      -->
 
       <varlistentry id="bluemoon">
         <term><command>bluemoon</command></term>
         <listitem>
           <para>
-            is a Bluemoon configuration utility.
+            is a Bluemoon configuration utility
           </para>
           <indexterm zone="bluez bluemoon">
             <primary sortas="b-bluemoon">bluemoon</primary>
@@ -376,7 +408,7 @@ EOF</screen>
         <term><command>bluetoothctl</command></term>
         <listitem>
           <para>
-            is the interactive Bluetooth control program.
+            is the interactive Bluetooth control program
           </para>
           <indexterm zone="bluez bluetoothctl">
             <primary sortas="b-bluetoothctl">bluetoothctl</primary>
@@ -388,7 +420,7 @@ EOF</screen>
         <term><command>bluetoothd</command></term>
         <listitem>
           <para>
-            is the Bluetooth daemon.
+            is the Bluetooth daemon
           </para>
           <indexterm zone="bluez bluetoothd">
             <primary sortas="b-bluetoothd">bluetoothd</primary>
@@ -401,7 +433,7 @@ EOF</screen>
         <listitem>
           <para>
             provides access to the Bluetooth subsystem monitor
-            infrastructure for reading HCI traces.
+            infrastructure for reading HCI traces
           </para>
           <indexterm zone="bluez btmon">
             <primary sortas="b-btmon">btmon</primary>
@@ -415,7 +447,7 @@ EOF</screen>
         <listitem>
           <para>
             is used to convert a file needed by Broadcom devices
-            to hcd (Broadcom bluetooth firmware) format.
+            to hcd (Broadcom bluetooth firmware) format
           </para>
           <indexterm zone="bluez hex2hcd">
             <primary sortas="b-hex2hcd">hex2hcd</primary>
@@ -428,7 +460,7 @@ EOF</screen>
         <listitem>
           <para>
             is used to send a L2CAP echo request to the Bluetooth MAC
-            address given in dotted hex notation.
+            address given in dotted hex notation
           </para>
           <indexterm zone="bluez l2ping">
             <primary sortas="b-l2ping">l2ping</primary>
@@ -440,7 +472,7 @@ EOF</screen>
         <term><command>l2test</command></term>
         <listitem>
           <para>
-            is a L2CAP testing program.
+            is a L2CAP testing program
           </para>
           <indexterm zone="bluez l2test">
             <primary sortas="b-l2test">l2test</primary>
@@ -453,7 +485,7 @@ EOF</screen>
         <listitem>
           <para>
             is used to test RFCOMM communications on the
-            Bluetooth stack.
+            Bluetooth stack
           </para>
           <indexterm zone="bluez rctest">
             <primary sortas="b-rctest">rctest</primary>
@@ -465,7 +497,7 @@ EOF</screen>
         <term><filename class="libraryfile">libbluetooth.so</filename></term>
         <listitem>
           <para>
-            contains the <application>BlueZ</application> 4 API functions.
+            contains the <application>BlueZ</application> 4 API functions
           </para>
           <indexterm zone="bluez libbluetooth">
             <primary sortas="c-libbluetooth">libbluetooth.so</primary>

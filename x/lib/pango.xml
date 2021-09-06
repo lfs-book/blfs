@@ -6,9 +6,9 @@
 
   <!ENTITY pango-download-http "&gnome-download-http;/pango/1.48/pango-&pango-version;.tar.xz">
   <!ENTITY pango-download-ftp  "&gnome-download-ftp;/pango/1.48/pango-&pango-version;.tar.xz">
-  <!ENTITY pango-md5sum        "ee5826242abd661fb5238e19b9e2e1aa">
-  <!ENTITY pango-size          "524 KB">
-  <!ENTITY pango-buildsize     "26 MB (with tests)">
+  <!ENTITY pango-md5sum        "243f05e6b2de17e5129402307e323e14">
+  <!ENTITY pango-size          "1.9 MB">
+  <!ENTITY pango-buildsize     "43 MB (with tests)">
   <!ENTITY pango-time          "0.2 SBU (with tests)">
 ]>
 
@@ -16,7 +16,6 @@
   <?dbhtml filename="pango.html" ?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -37,7 +36,7 @@
       the <application>GTK+</application> widget toolkit.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -94,7 +93,10 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="cantarell-fonts"/> (for tests),
-      <xref linkend="gtk-doc"/>,
+  <!--<xref linkend="gtk-doc"/>,-->
+      <xref linkend="sysprof"/>,
+      <ulink url="https://gitlab.gnome.org/GNOME/gi-docgen">gi-docgen</ulink>
+      (to generate documentation),
       <ulink url="https://ftpmirror.gnu.org/gnu/help2man">help2man</ulink>, and
       <ulink url="https://linux.thai.net/projects/libthai">libthai</ulink>
     </para>
@@ -115,14 +117,17 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr .. &amp;&amp;
+meson --prefix=/usr --buildtype=release --wrap-mode=nofallback .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      To test the results, issue: <command>ninja test</command>. Two tests,
-      <filename>test-layout</filename> and
+      To test the results, issue: <command>ninja test</command>. One test,
+      <filename>test-font</filename>, 
+      <!--<filename>test-layout</filename>, and
       <filename>test-itemize</filename>, are known to fail if 
-      <xref linkend="cantarell-fonts"/> is not installed.
+      <xref linkend="cantarell-fonts"/> are not installed.-->
+      is known to fail.
+      <!-- the problematic tests get skipped now -->
     </para>
 
     <para>
@@ -144,15 +149,23 @@ install -vm 644 ../utils/pango-view.1.in /usr/share/man/man1/pango-view.1</useri
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <!-- gtk-doc replaced by gi-docgen
     <para>
       <option>-Dgtk_doc</option>: Use this switch if gtk-doc is 
       installed and you wish to rebuild and install the API documentation.
-    </para>
+    </para>-->
 
     <para>
       <option>-Dintrospection=false</option>: Use this switch if you do not
       want to use <xref linkend="gobject-introspection"/>.
     </para>
+
+    <!-- gi-docgen can get installed without this, if deps exist -->
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-wrap-nofallback.xml"/>
 
   </sect2>
 
@@ -201,7 +214,7 @@ install -vm 644 ../utils/pango-view.1.in /usr/share/man/man1/pango-view.1</useri
 
       <seglistitem>
         <seg>
-          pango-list and pango-view 
+          pango-list, pango-segmentation, and pango-view 
         </seg>
         <seg>
           libpango-1.0.so, libpangocairo-1.0.so, libpangoft2-1.0.so,
@@ -224,10 +237,22 @@ install -vm 644 ../utils/pango-view.1.in /usr/share/man/man1/pango-view.1</useri
         <listitem>
           <para>
             displays a list of fonts that <application>Pango</application>
-            can use that are currently installed on the system.
+            can use that are currently installed on the system
           </para>
           <indexterm zone="pango pango-list">
             <primary sortas="b-pango-list">pango-list</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pango-segmentation">
+        <term><command>pango-segmentation</command></term>
+        <listitem>
+          <para>
+            shows text segmentation as determined by Pango.
+          </para>
+          <indexterm zone="pango pango-segmentation">
+            <primary sortas="b-pango-segmentation">pango-segmentation</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -237,7 +262,7 @@ install -vm 644 ../utils/pango-view.1.in /usr/share/man/man1/pango-view.1</useri
         <listitem>
           <para>
             renders a given text file through <application>Pango</application>
-            for viewing purposes.
+            for viewing purposes
           </para>
           <indexterm zone="pango pango-view">
             <primary sortas="b-pango-view">pango-view</primary>
@@ -251,7 +276,7 @@ install -vm 644 ../utils/pango-view.1.in /usr/share/man/man1/pango-view.1</useri
           <para>
             contains low level layout rendering routines, a high level driver for
             laying out entire blocks of text, and routines to assist in editing
-            internationalized text.
+            internationalized text
           </para>
           <indexterm zone="pango libpango-1">
             <primary sortas="c-libpango-1">libpango-1.0.so</primary>

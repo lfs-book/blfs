@@ -6,9 +6,9 @@
 
   <!ENTITY fuse3-download-http "https://github.com/libfuse/libfuse/releases/download/fuse-&fuse3-version;/fuse-&fuse3-version;.tar.xz">
   <!ENTITY fuse3-download-ftp  " ">
-  <!ENTITY fuse3-md5sum        "e973012119e98b048307558271b5b296">
-  <!ENTITY fuse3-size          "1.8 MB">
-  <!ENTITY fuse3-buildsize     "135 MB">
+  <!ENTITY fuse3-md5sum        "55b87e9ed691c2fa698e491241985b4a">
+  <!ENTITY fuse3-size          "2.7 MB">
+  <!ENTITY fuse3-buildsize     "150 MB">
   <!ENTITY fuse3-time          "0.1 SBU (add 0.4 SBU for tests)">
 ]>
 
@@ -16,7 +16,6 @@
   <?dbhtml filename="fuse.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -37,7 +36,7 @@
       filesystem implementations.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,7 +76,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="doxygen"/> (to rebuild the API documentation) and
-      <ulink url="https://pypi.org/project/pytest/">pytest</ulink> (for tests)
+      <ulink url="https://pypi.org/project/pytest/">pytest</ulink> (required for tests)
     </para>
 
     <para condition="html" role="usernotes">
@@ -123,7 +122,7 @@
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr .. &amp;&amp;
+meson --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -132,13 +131,9 @@ ninja</userinput></screen>
       it, issue:
     </para> 
 
-<screen remap="doc"><userinput>doxygen doc/Doxyfile</userinput></screen>
-
-<!--
-    <para>
-      This package does not come with a test suite.
-    </para>
--->
+<screen remap="doc"><userinput>pushd .. &amp;&amp;
+  doxygen doc/Doxyfile &amp;&amp;
+popd</userinput></screen>
 
     <para>
       To test the results, run (as the <systemitem
@@ -150,7 +145,7 @@ ninja</userinput></screen>
 
     <para>
       The <ulink url="https://pypi.org/project/pytest/">pytest</ulink>
-       Python module is needed for the tests.
+       Python module is required for the tests.
     </para>
 
     <para>
@@ -159,12 +154,7 @@ ninja</userinput></screen>
 
 <screen role="root"><userinput>ninja install                                             &amp;&amp;
 
-mv -vf   /usr/lib/libfuse3.so.3*     /lib                 &amp;&amp;
-ln -sfvn ../../lib/libfuse3.so.&fuse3-version; /usr/lib/libfuse3.so &amp;&amp;
-
-mv -vf /usr/bin/fusermount3  /bin         &amp;&amp;
-mv -vf /usr/sbin/mount.fuse3 /sbin        &amp;&amp;
-chmod u+s /bin/fusermount3                &amp;&amp;
+chmod u+s /usr/bin/fusermount3                &amp;&amp;
 
 install -v -m755 -d /usr/share/doc/fuse-&fuse3-version;      &amp;&amp;
 install -v -m644    ../doc/{README.NFS,kernel.txt} \
@@ -181,16 +171,9 @@ cp -Rv ../doc/html  /usr/share/doc/fuse-&fuse3-version;</userinput></screen>
       installation of a boot script and udev rule that are not needed.
     </para>
 
-    <para>
-      <command>mv ... libfuse3.so.3*; ln ... libfuse3.so</command>: 
-      These commands install the libraries in the /lib directory.
-    </para>
-<!--
-    <para>
-      <command>unzip ...</command>: This uncompresses the installed man pages
-      to be consistent with the rest of the man pages.
-    </para>
--->
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
   </sect2>
 
   <sect2 role="configuration" id="fuse-configuration">
@@ -237,7 +220,7 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          fusermount3, mount.fuse3
+          fusermount3 and mount.fuse3
         </seg>
         <seg>
           libfuse3.so
@@ -257,7 +240,7 @@ EOF</userinput></screen>
         <term><command>fusermount3</command></term>
         <listitem>
           <para>
-            is a suid root program to mount and unmount Fuse filesystems.
+            is a suid root program to mount and unmount Fuse filesystems
           </para>
           <indexterm zone="fuse3 fusermount3">
             <primary sortas="b-fusermount3">fusermount3</primary>
@@ -270,7 +253,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is the command <command>mount</command> calls to mount a Fuse
-            filesystem.
+            filesystem
           </para>
           <indexterm zone="fuse3 mount.fuse3">
             <primary sortas="b-mount.fuse3">mount.fuse3</primary>
@@ -282,7 +265,7 @@ EOF</userinput></screen>
         <term><filename class="libraryfile">libfuse3.so</filename></term>
         <listitem>
           <para>
-            contains the <application>FUSE</application> API functions.
+            contains the <application>FUSE</application> API functions
           </para>
           <indexterm zone="fuse3 libfuse3">
             <primary sortas="c-libfuse3">libfuse3.so</primary>

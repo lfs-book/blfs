@@ -5,18 +5,18 @@
   %general-entities;
 
 <!-- DConf -->
-  <!ENTITY dconf-download-http "&gnome-download-http;/dconf/0.38/dconf-&dconf-version;.tar.xz">
-  <!ENTITY dconf-download-ftp  "&gnome-download-ftp;/dconf/0.38/dconf-&dconf-version;.tar.xz">
-  <!ENTITY dconf-md5sum        "716cf730995cf133c2c443556a66a50c">
-  <!ENTITY dconf-size          "116 KB">
+  <!ENTITY dconf-download-http "&gnome-download-http;/dconf/0.40/dconf-&dconf-version;.tar.xz">
+  <!ENTITY dconf-download-ftp  "&gnome-download-ftp;/dconf/0.40/dconf-&dconf-version;.tar.xz">
+  <!ENTITY dconf-md5sum        "ac8db20b0d6b996d4bbbeb96463d01f0">
+  <!ENTITY dconf-size          "115 KB">
   <!ENTITY dconf-buildsize     "7.0 MB (with tests)">
   <!ENTITY dconf-time          "0.1 SBU (with tests)">
 
 <!-- DConf-Editor -->
   <!ENTITY dconf-editor-download-http "&gnome-download-http;/dconf-editor/&gnome-minor-38;/dconf-editor-&dconf-editor-version;.tar.xz">
   <!ENTITY dconf-editor-download-ftp  "&gnome-download-ftp;/dconf-editor/&gnome-minor-38;/dconf-editor-&dconf-editor-version;.tar.xz">
-  <!ENTITY dconf-editor-md5sum        "1e03d07187ef2121d75fadd5f53dc1ef">
-  <!ENTITY dconf-editor-size          "580 KB">
+  <!ENTITY dconf-editor-md5sum        "06d64abca0673761cf320145e9977b9c">
+  <!ENTITY dconf-editor-size          "584 KB">
   <!ENTITY dconf-editor-buildsize     "37 MB">
   <!ENTITY dconf-editor-time          "0.2 SBU">
 ]>
@@ -25,7 +25,6 @@
   <?dbhtml filename="dconf.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -54,7 +53,7 @@
       linkend="glib2"/> provides similar functionality on the commandline.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -124,6 +123,17 @@
       </listitem>
     </itemizedlist>
 
+    <!-- Applied in 3.38.3
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch for dconf-editor:
+          <ulink url="&patch-root;/dconf-editor-&dconf-editor-version;-vala_fix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+    -->
+
     <bridgehead renderas="sect3">DConf Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -162,6 +172,12 @@
 sed -i 's/module/&amp; | grep -v mangle_path/' gsettings/abicheck.sh</userinput></screen>
     -->
 
+    <para revision="sysv">
+      First, prevent unnecessary systemd units from being installed:
+    </para>
+
+<screen revision="sysv"><userinput remap="pre">sed -i 's/install_dir: systemd_userunitdir,//' service/meson.build</userinput></screen>
+
     <para>
       Install <application>DConf</application> by running the following
       commands:
@@ -170,7 +186,7 @@ sed -i 's/module/&amp; | grep -v mangle_path/' gsettings/abicheck.sh</userinput>
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dbash_completion=false .. &amp;&amp;
+meson --prefix=/usr --buildtype=release -Dbash_completion=false .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -194,7 +210,7 @@ cd dconf-editor-&dconf-editor-version;                &amp;&amp;
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr .. &amp;&amp;
+meson --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -208,8 +224,11 @@ ninja</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <para>
-      <option>-Denable-gtk-doc</option>: Use this parameter if
+      <option>-Dgtk_doc=true</option>: Use this parameter if
       <application>GTK-Doc</application> is installed and you wish to rebuild
       and install the API documentation.
     </para>
@@ -251,7 +270,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a simple tool for manipulating the
-            <application>DConf</application> database.
+            <application>DConf</application> database
           </para>
           <indexterm zone="dconf dconf-prog">
             <primary sortas="b-dconf">dconf</primary>
@@ -264,7 +283,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a graphical program for editing the
-            <application>DConf</application> database.
+            <application>DConf</application> database
           </para>
           <indexterm zone="dconf dconf-editor">
             <primary sortas="b-dconf-editor">dconf-editor</primary>
@@ -276,7 +295,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libdconf.so</filename></term>
         <listitem>
           <para>
-            contains the <application>DConf</application> client API functions.
+            contains the <application>DConf</application> client API functions
           </para>
           <indexterm zone="dconf libdconf">
             <primary sortas="c-libdconf">libdconf.so</primary>

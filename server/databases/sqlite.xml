@@ -4,28 +4,27 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY sqlite-dl-version    "3340000">
-  <!ENTITY sqlite-doc-version   "3340000">
+  <!ENTITY sqlite-dl-version    "3360000">
+  <!ENTITY sqlite-doc-version   "3360000">
 
 <!-- When updating, do not forget the above entities -->
 
-  <!ENTITY sqlite-download-http "https://sqlite.org/2020/sqlite-autoconf-&sqlite-dl-version;.tar.gz">
+  <!ENTITY sqlite-download-http "https://sqlite.org/2021/sqlite-autoconf-&sqlite-dl-version;.tar.gz">
   <!ENTITY sqlite-download-ftp  " ">
-  <!ENTITY sqlite-md5sum        "7f33c9db7b713957fcb9271fe9049fef">
-  <!ENTITY sqlite-size          "2.8 MB">
-  <!ENTITY sqlite-buildsize     "88 MB">
-  <!ENTITY sqlite-time          "0.3 SBU (Using parallelism=4)">
+  <!ENTITY sqlite-md5sum        "f5752052fc5b8e1b539af86a3671eac7">
+  <!ENTITY sqlite-size          "2.9 MB">
+  <!ENTITY sqlite-buildsize     "140 MB">
+  <!ENTITY sqlite-time          "0.4 SBU (Using parallelism=4)">
 
-  <!ENTITY sqlite-docs-download "https://sqlite.org/2020/sqlite-doc-&sqlite-doc-version;.zip">
-  <!ENTITY sqlite-docs-md5sum   "9da21afe29aa66f98328d4f67cd76db3">
-  <!ENTITY sqlite-docs-size     "9.7 MB">
+  <!ENTITY sqlite-docs-download "https://sqlite.org/2021/sqlite-doc-&sqlite-doc-version;.zip">
+  <!ENTITY sqlite-docs-md5sum   "9abe65c7295fd0a2462f7c61f95400fd">
+  <!ENTITY sqlite-docs-size     "12 MB">
 ]>
 
 <sect1 id="sqlite" xreflabel="SQLite-&sqlite-version;">
   <?dbhtml filename="sqlite.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -44,7 +43,7 @@
       SQL database engine.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -131,14 +130,13 @@
 <screen><userinput>./configure --prefix=/usr     \
             --disable-static  \
             --enable-fts5     \
-            CFLAGS="-g -O2                    \
-            -DSQLITE_ENABLE_FTS3=1            \
-            -DSQLITE_ENABLE_FTS4=1            \
-            -DSQLITE_ENABLE_COLUMN_METADATA=1 \
-            -DSQLITE_ENABLE_UNLOCK_NOTIFY=1   \
-            -DSQLITE_ENABLE_DBSTAT_VTAB=1     \
-            -DSQLITE_SECURE_DELETE=1          \
-            -DSQLITE_ENABLE_FTS3_TOKENIZER=1" &amp;&amp;
+            CPPFLAGS="-DSQLITE_ENABLE_FTS3=1            \
+                      -DSQLITE_ENABLE_FTS4=1            \
+                      -DSQLITE_ENABLE_COLUMN_METADATA=1 \
+                      -DSQLITE_ENABLE_UNLOCK_NOTIFY=1   \
+                      -DSQLITE_ENABLE_DBSTAT_VTAB=1     \
+                      -DSQLITE_SECURE_DELETE=1          \
+                      -DSQLITE_ENABLE_FTS3_TOKENIZER=1" &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -173,8 +171,7 @@ cp -v -R sqlite-doc-&sqlite-doc-version;/* /usr/share/doc/sqlite-&sqlite-version
     </para>
 
     <para>
-      <parameter>CFLAGS="-g -O2
-      -DSQLITE_ENABLE_FTS3=1
+      <parameter>CPPFLAGS="-DSQLITE_ENABLE_FTS3=1
       -DSQLITE_ENABLE_FTS3_TOKENIZER=1
       -DSQLITE_ENABLE_FTS4=1
       -DSQLITE_ENABLE_COLUMN_METADATA=1
@@ -184,11 +181,10 @@ cp -v -R sqlite-doc-&sqlite-doc-version;/* /usr/share/doc/sqlite-&sqlite-version
       <application>SeaMonkey</application> require these options
       to be turned on.
       The only way to do this is to include them in
-      the CFLAGS.
-      By default, these are set to <literal>"-g -O2"</literal> so we
-      specify that to preserve those settings. You may, of course, wish to omit
-      the <literal>'-g'</literal> if you do not wish to create debugging
-      information. For further information on what can be specified see <ulink
+      the <envar>CFLAGS</envar> or <envar>CPPFLAGS</envar>.
+      We use the latter so the default value (or any value set by the user)
+      of <envar>CFLAGS</envar> won't be affected.
+      For further information on what can be specified see <ulink
       url="http://www.sqlite.org/compile.html"/>.
     </para>
 
@@ -224,9 +220,9 @@ cp -v -R sqlite-doc-&sqlite-doc-version;/* /usr/share/doc/sqlite-&sqlite-version
         <term><command>sqlite3</command></term>
         <listitem>
           <para>
-            A terminal-based front-end to the <application>SQLite</application>
+            is a terminal-based front-end to the <application>SQLite</application>
             library that can evaluate queries interactively and display the
-            results.
+            results
           </para>
           <indexterm zone="sqlite sqlite3">
             <primary sortas="b-sqlite3">sqlite3</primary>
@@ -238,7 +234,7 @@ cp -v -R sqlite-doc-&sqlite-doc-version;/* /usr/share/doc/sqlite-&sqlite-version
         <term><filename class="libraryfile">libsqlite3.so</filename></term>
         <listitem>
           <para>
-            contains the <application>SQLite</application> API functions.
+            contains the <application>SQLite</application> API functions
           </para>
           <indexterm zone="sqlite libsqlite3">
             <primary sortas="c-libsqlite3">libsqlite3.so</primary>

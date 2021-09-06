@@ -7,17 +7,16 @@
   <!ENTITY gst10-plugins-base-download-http
            "&gstreamer-dl;/gst-plugins-base/gst-plugins-base-&gst10-plugins-base-version;.tar.xz">
   <!ENTITY gst10-plugins-base-download-ftp  " ">
-  <!ENTITY gst10-plugins-base-md5sum        "aa1cd08a72f65298e5136a9c1620c2d1">
+  <!ENTITY gst10-plugins-base-md5sum        "523336ed6938b8b1004847cbbd5e31cb">
   <!ENTITY gst10-plugins-base-size          "3.0 MB">
-  <!ENTITY gst10-plugins-base-buildsize     "83 MB (with tests)">
-  <!ENTITY gst10-plugins-base-time          "0.8 SBU (Using parallelism=4; with tests)">
+  <!ENTITY gst10-plugins-base-buildsize     "99 MB (with tests)">
+  <!ENTITY gst10-plugins-base-time          "1.0 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="gst10-plugins-base" xreflabel="gst-plugins-base-&gst10-plugins-base-version;">
   <?dbhtml filename="gst10-plugins-base.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -39,7 +38,7 @@
       applications to function properly.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -95,6 +94,7 @@
       <xref linkend="libogg"/>,
       <xref linkend="libtheora"/>,
       <xref linkend="libvorbis"/>,
+      <xref linkend="mesa"/>,
       <xref linkend="wayland-protocols"/>, and
       <xref linkend="xorg7-lib"/>
    </para>
@@ -128,6 +128,14 @@
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gst10-plugins.xml"/>
 
+    <para> <!-- upstream has a different fix for 0.18.5, see
+      https://www.linuxquestions.org/questions/slackware-14/regression-on-current-with-gst-plugins-base-4175694901/-->
+      First fix a build failure caused by a change in
+      <application>meson-0.58.0</application>:
+    </para>
+
+<screen><userinput>sed -i 's|implicit_include_directories : false||' gst-libs/gst/gl/meson.build</userinput></screen>
+
     <para>
       Install <application>GStreamer Base Plug-ins</application> by running the
       following commands:
@@ -137,8 +145,8 @@
 cd    build &amp;&amp;
 
 meson  --prefix=/usr       \
-       -Dbuildtype=release \
-       -Dpackage-origin=http://www.linuxfromscratch.org/blfs/view/svn/ \
+       --buildtype=release \
+       -Dpackage-origin=https://www.linuxfromscratch.org/blfs/view/svn/ \
        -Dpackage-name="GStreamer &gst10-plugins-base-version; BLFS"    \
        --wrap-mode=nodownload &amp;&amp;
 ninja</userinput></screen>
@@ -165,6 +173,17 @@ ninja</userinput></screen>
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-wrap-nodownload.xml"/>
+
   </sect2>
 
   <sect2 role="content">
@@ -217,7 +236,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a tool that can be used to print basic metadata and
-            stream information about a media file.
+            stream information about a media file
           </para>
           <indexterm zone="gst10-plugins-base gst-discoverer-1.0">
             <primary sortas="b-gst-discoverer-1.0">gst-discoverer-1.0</primary>
@@ -230,7 +249,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a command line tool that can be used to test basic
-            playback using the playbin element.
+            playback using the playbin element
           </para>
           <indexterm zone="gst10-plugins-base gst-play-1.0">
             <primary sortas="b-gst-play-1.0">gst-play-1.0</primary>

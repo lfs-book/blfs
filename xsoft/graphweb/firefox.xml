@@ -6,22 +6,21 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "2df7dcedba6229f243dcf327ad3e7306">
-  <!ENTITY firefox-size          "323 MB">
+  <!ENTITY firefox-md5sum        "f81ca2f266ab3dafdd080f269bbb2286">
+  <!ENTITY firefox-size          "366 MB">
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "5.1 GB (185 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "6.7 GB (196 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
-  <!ENTITY firefox-time          "27 SBU (on a 4-core machine) without tests">
+  <!ENTITY firefox-time          "28 SBU (on a typical 4-core machine) without tests">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
   <?dbhtml filename="firefox.html" ?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -39,7 +38,7 @@
       <application>Mozilla</application> codebase.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,17 +74,33 @@
       </listitem>
     </itemizedlist>
 
-<!--<bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/firefox-&firefox-version;esr-rustc1470-1.patch"/>
+          <ulink url="&patch-root;/firefox-&firefox-version;esr-glibc234-1.patch"/>
         </para>
       </listitem>
-    </itemizedlist>-->
+      <listitem>
+        <para>
+          Recommended patch:
+          <ulink url="&patch-root;/firefox-&firefox-version;esr-disable_rust_test-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
 
     <note>
+
+      <!-- temporary note, remove with firefox-legacy -->
+      <para>
+        With the 91 ESR series, firefox no-longer works on ftp: links.
+        If that is important to you, as a temporary measure (on non-glibc-2.34
+        systems) you can continue to use <xref linkend="firefox-legacy"/>
+        while you explore alternative approaches.
+      </para>
+      <!-- end of temporary note -->
+
       <para>
         The directory name is firefox-&firefox-version;
       </para>
@@ -183,7 +198,7 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="curl"/>,
       <xref linkend="doxygen"/>,
       <xref role="runtime" linkend="ffmpeg"/> (runtime, to play mov, mp3 or mp4 files),
-      <!--      <phrase revision="sysv"><ulink url="http://sourceforge.net/projects/liboauth/files/">liboauth</ulink></phrase> -->
+      <!--      <phrase revision="sysv"><ulink url="https://sourceforge.net/projects/liboauth/files/">liboauth</ulink></phrase> -->
       <xref linkend="liboauth"/>,
       <xref linkend="openjdk"/>,
       <xref linkend="valgrind"/>,
@@ -233,6 +248,10 @@ ac_add_options --disable-necko-wifi
 # or uncomment this if you installed alsa-lib instead of PulseAudio
 #ac_add_options --enable-alsa
 
+# Uncomment this line if you are building on an i686 system to fix a build
+# failure due to invalid ASM code.
+#ac_add_options --with-system-libvpx
+
 # Comment out following options if you have not installed
 # recommended dependencies:
 ac_add_options --with-system-libevent
@@ -281,7 +300,6 @@ ac_add_options --enable-optimize
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
 
-# --with-system-bz2 was removed in firefox-78
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
@@ -302,16 +320,19 @@ EOF</userinput></screen>
       commands:
     </para>
 
-     <para>
-       In the esr version of firefox-78, the code to ensure that add-ons
-       are signed by the trusted root has been disabled, presumably for
-       organizations which require their own add-ons. To enable it as an
-       added security measure issue the following command:
-     </para>
+    <para>
+      Apply a patch which allows compilation on systems running glibc-2.34:
+    </para>
 
-<screen><userinput>sed -i -e 's/Disable/Enable/'      \
- -e '/^MOZ_REQUIRE_SIGNING/s/0/1/' \
- build/mozconfig.common</userinput></screen>
+<screen><userinput>patch -Np1 -i ../firefox-&firefox-version;esr-glibc234-1.patch</userinput></screen>
+
+    <para>
+      Now apply a patch which works around unexplained failures on some machines
+      (a message that a python check on libgkrust.a identified 1 networking
+      function, getsockname) in the rust static library.
+    </para>
+
+<screen><userinput>patch -Np1 -i ../firefox-&firefox-version;esr-disable_rust_test-1.patch</userinput></screen>
 
     <para>
       If the geolocation APIs are needed:
@@ -362,11 +383,13 @@ esac</userinput></screen>
 <screen><userinput remap="pre">patch -p1 -i ../firefox-&firefox-version;esr-rustc1470-1.patch</userinput></screen>-->
 
     <para>
-      Now invoke the Python script to compile the package.
+      Now invoke the Python <command>mach</command> script to compile the package.
     </para>
 
 <screen><userinput>export CC=gcc CXX=g++ &amp;&amp;
+export MACH_USE_SYSTEM_PYTHON=1            &amp;&amp;
 export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
+./mach configure                           &amp;&amp;
 ./mach build</userinput></screen>
 
     <para>
@@ -384,16 +407,13 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>./mach install                                                  &amp;&amp;
-
-mkdir -pv  /usr/lib/mozilla/plugins                             &amp;&amp;
-ln    -sfv ../../mozilla/plugins /usr/lib/firefox/browser/</userinput></screen>
+<screen role="root"><userinput>MACH_USE_SYSTEM_PYTHON=1 ./mach install</userinput></screen>
 
     <para>
-      Set environment variables back to their values:
+      Empty the environment variables which were set above:
     </para>
 
-<screen><userinput>unset CC CXX MOZBUILD_STATE_PATH</userinput></screen>
+<screen><userinput>unset CC CXX MACH_USE_SYSTEM_PYTHON MOZBUILD_STATE_PATH</userinput></screen>
 
   </sect2>
 
@@ -431,13 +451,19 @@ ln    -sfv ../../mozilla/plugins /usr/lib/firefox/browser/</userinput></screen>
       That directory is used for a (probably random) telemetry identifier.
       Creating this in the build directory, and deleting that after the
       installation, prevents it being used. If you wish to participate in
-      telemetry, export MOZBUILD_STATE_PATH to point to its default directory.
+      telemetry, export MOZBUILD_STATE_PATH to point to its default directory
+      and remove the entry from the <filename>mozconfig</filename>.
     </para>
 
     <para>
-      <command>./mach build</command>: <application>Firefox</application>
-      now uses this <application>python</application> script to run the
-      build and install.
+      <command>MACH_USE_SYSTEM_PYTHON=1</command>: Use the system python
+      to create a virtual environment for <command>mach</command> without
+      downloading any python wheels.
+    </para>
+
+    <para>
+      <command>./mach configure</command>: This validates the supplied
+      dependencies and the <filename>mozconfig</filename>.
     </para>
 
     <para>
@@ -453,6 +479,7 @@ ln    -sfv ../../mozilla/plugins /usr/lib/firefox/browser/</userinput></screen>
       because you have insufficient memory, using fewer cores can be faster.
     </para>
 
+<!--
     <para>
       <command>mkdir -pv /usr/lib/mozilla/plugins</command>: This ensures
       that <filename class="directory">/usr/lib/mozilla/plugins/</filename>
@@ -467,6 +494,7 @@ ln    -sfv ../../mozilla/plugins /usr/lib/firefox/browser/</userinput></screen>
       class="directory">/usr/lib/mozilla/plugins</filename> by default, but the
       symbolic link is made to keep all the plugins installed in one folder.
     </para>
+-->
 
   </sect2>
 
@@ -484,9 +512,13 @@ ln    -sfv ../../mozilla/plugins /usr/lib/firefox/browser/</userinput></screen>
     </para>
 
 <screen role="root"><userinput>mkdir -pv /usr/share/applications &amp;&amp;
-mkdir -pv /usr/share/pixmaps &amp;&amp;
+mkdir -pv /usr/share/pixmaps      &amp;&amp;
 
-cat &gt; /usr/share/applications/firefox.desktop &lt;&lt; "EOF" &amp;&amp;
+MIMETYPE="text/xml;text/mml;text/html;"                                    &amp;&amp;
+MIMETYPE="$MIMETYPE;application/xhtml+xml;application/vnd.mozilla.xul+xml" &amp;&amp;
+MIMETYPE="$MIMETYPE;x-scheme-handler/http;x-scheme-handler/https;          &amp;&amp;
+
+cat &gt; /usr/share/applications/firefox.desktop &lt;&lt; EOF &amp;&amp;
 <literal>[Desktop Entry]
 Encoding=UTF-8
 Name=Firefox Web Browser
@@ -497,9 +529,11 @@ Terminal=false
 Type=Application
 Icon=firefox
 Categories=GNOME;GTK;Network;WebBrowser;
-MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
+MimeType=$MIMETYPE
 StartupNotify=true</literal>
 EOF
+
+unset MIMETYPE &amp;&amp;
 
 ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
         /usr/share/pixmaps/firefox.png</userinput></screen>
@@ -627,7 +661,7 @@ ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
         <listitem>
           <para>
 	    is a <application>GTK+-3</application> internet browser that uses
-	    the Mozilla Gecko rendering engine.
+	    the Mozilla Gecko rendering engine
           </para>
           <indexterm zone="firefox firefox-prog">
             <primary sortas="b-firefox">firefox</primary>

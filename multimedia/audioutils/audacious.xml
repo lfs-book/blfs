@@ -7,24 +7,23 @@
   <!ENTITY audacious-download-http
            "https://distfiles.audacious-media-player.org/audacious-&audacious-version;.tar.bz2">
   <!ENTITY audacious-download-ftp         " ">
-  <!ENTITY audacious-md5sum               "a2e8420ce841cb18ff380d7ad0185651">
-  <!ENTITY audacious-size                 "564 KB">
-  <!ENTITY audacious-buildsize            "59 MB (with Qt user interface)">
-  <!ENTITY audacious-time                 "0.6 SBU (with Qt user interface)">
+  <!ENTITY audacious-md5sum               "22fbe28b073682d55ee87698f283e195">
+  <!ENTITY audacious-size                 "576 KB">
+  <!ENTITY audacious-buildsize            "72 MB (with Qt user interface)">
+  <!ENTITY audacious-time                 "0.7 SBU (with Qt user interface)">
 
   <!ENTITY audacious-plugins-download
            "https://distfiles.audacious-media-player.org/audacious-plugins-&audacious-plugins-version;.tar.bz2">
-  <!ENTITY audacious-plugins-md5sum       "b545aa271955cfd67630ea13655236a3">
+  <!ENTITY audacious-plugins-md5sum       "740d83757b49b82bc75e256c96b09bfd">
   <!ENTITY audacious-plugins-size         "1.7 MB">
-  <!ENTITY audacious-plugins-buildsize    "129 MB (with Qt user interface)">
-  <!ENTITY audacious-plugins-time         "1.2 SBU (with Qt user interface)">
+  <!ENTITY audacious-plugins-buildsize    "157 MB (with Qt user interface)">
+  <!ENTITY audacious-plugins-time         "1.5 SBU (with Qt user interface)">
 ]>
 
 <sect1 id="audacious" xreflabel="Audacious-&audacious-version;">
   <?dbhtml filename="audacious.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -41,7 +40,7 @@
       <application>Audacious</application> is an audio player.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -129,6 +128,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="libarchive"/> and
       <xref linkend="valgrind"/>
     </para>
 
@@ -152,17 +152,21 @@
       <xref linkend="libvorbis"/>,
       <xref linkend="pulseaudio"/>,
       <xref linkend="sdl"/>,
+      <ulink url="http://ampache-browser.org/">ampache-browser</ulink>,
       <ulink url="http://adplug.github.io/">adplug</ulink>,
-      <ulink url="http://sourceforge.net/projects/bs2b/">The Bauer
+      <ulink url="https://sourceforge.net/projects/bs2b/">The Bauer
         stereophonic-to-binaural DSP (bs2b) library</ulink>,
       <ulink url="https://sourceforge.net/projects/fluidsynth/">FluidSynth</ulink>,
       <ulink url="http://jackaudio.org/">JACK</ulink>
         (requires <xref linkend="libsamplerate"/>),
-      <ulink url="http://sourceforge.net/projects/libcue/">libcue</ulink>,
-      <ulink url="http://sourceforge.net/projects/modplug-xmms/">libmodplug</ulink>,
-      <ulink url="http://sourceforge.net/projects/libmms">libmms</ulink>,
+      <ulink url="https://sourceforge.net/projects/libcue/">libcue</ulink>,
+      <ulink url="https://sourceforge.net/projects/modplug-xmms/">libmodplug</ulink>,
+      <ulink url="https://sourceforge.net/projects/libmms">libmms</ulink>,
+      <ulink url="https://lib.openmpt.org/libopenmpt/">libopenmpt</ulink>,
       <ulink url="http://www.sourceforge.net/projects/sidplay-residfp/">libsidplayfp</ulink>,
-      <ulink url="http://www.lirc.org/">LIRC</ulink>, and
+      <ulink url="http://www.lirc.org/">LIRC</ulink>,
+      <ulink url="https://sndio.org/">sndio</ulink>,
+      <ulink url="https://sourceforge.net/p/soxr/wiki/Home/">SoX</ulink>, and
       <ulink url="http://www.wavpack.com/">WavPack</ulink>
     </para>
 
@@ -231,7 +235,7 @@ make</userinput></screen>
       building in a terminal, but if you script the build process and pipe the
       output from <command>make</command> to a log file then the control
       characters used to color the text can make the logfile unreadable. This
-      option stops it coloring the text.
+      option prevents <command>make</command> from coloring the text.
     </para>
 
     <para>
@@ -302,14 +306,18 @@ sed -e '/^Name/ s/$/ Qt/' \
 
       <seglistitem>
         <seg>
-          audacious and audtool
+          audacious and 
+          audtool
         </seg>
         <seg>
-          libaudcore.so, libaudqt.so, libaudtag.so, and several
-          plugin libraries under /usr/lib/audacious/ sub-directories
+          libaudcore.so, 
+          libaudgui.so, 
+          libaudqt.so, 
+          libaudtag.so, 
+          and several plugin libraries under /usr/lib/audacious/ sub-directories
         </seg>
         <seg>
-          /usr/include/{audacious,libaudcore,libaudqt},
+          /usr/include/{audacious,libaudcore,libaudgui,libaudqt},
           /usr/lib/audacious and
           /usr/share/audacious
         </seg>
@@ -326,7 +334,7 @@ sed -e '/^Name/ s/$/ Qt/' \
         <listitem>
           <para>
             is a Qt port of <application>XMMS</application> based on the
-            <application>Beep Media Player</application>.
+            <application>Beep Media Player</application>
           </para>
           <indexterm zone="audacious audacious-prog">
             <primary sortas="b-audacious">audacious</primary>
@@ -339,7 +347,7 @@ sed -e '/^Name/ s/$/ Qt/' \
         <listitem>
           <para>
             is a small tool to modify the behavior of a running
-            <command>audacious</command> instance.
+            <command>audacious</command> instance
           </para>
           <indexterm zone="audacious audtool">
             <primary sortas="b-audtool">audtool</primary>

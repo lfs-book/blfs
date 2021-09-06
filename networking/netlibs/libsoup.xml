@@ -5,20 +5,19 @@
   %general-entities;
 
   <!ENTITY libsoup-download-http
-           "&gnome-download-http;/libsoup/2.72/libsoup-&libsoup-version;.tar.xz">
+           "&gnome-download-http;/libsoup/2.74/libsoup-&libsoup-version;.tar.xz">
   <!ENTITY libsoup-download-ftp
-           "&gnome-download-ftp;/libsoup/2.72/libsoup-&libsoup-version;.tar.xz">
-  <!ENTITY libsoup-md5sum        "859380b76b51fb55d720daea3c76c945">
+           "&gnome-download-ftp;/libsoup/2.74/libsoup-&libsoup-version;.tar.xz">
+  <!ENTITY libsoup-md5sum        "076f7ceeb73ebae2cc55a4c2877f6926">
   <!ENTITY libsoup-size          "1.4 MB">
-  <!ENTITY libsoup-buildsize     "24 MB (with tests)"> 
-  <!ENTITY libsoup-time          "0.3 SBU (Using parallelism=4; with tests)">
+  <!ENTITY libsoup-buildsize     "15 MB (with tests)"> 
+  <!ENTITY libsoup-time          "0.2 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="libsoup" xreflabel="libsoup-&libsoup-version;">
   <?dbhtml filename="libsoup.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -38,7 +37,7 @@
       it also has an asynchronous API for use in threaded applications.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,7 +72,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -83,7 +82,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">libsoup Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -96,8 +95,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gobject-introspection"/>,
-      <xref linkend="sysprof"/>, and
+      <xref linkend="gobject-introspection"/> and
       <xref linkend="vala"/>
     </para>
 
@@ -106,9 +104,11 @@
       <xref linkend="apache"/> (required to run the test suite),
       <xref linkend="brotli"/>,
       <xref linkend="curl"/> (required to run the test suite),
+      <xref linkend="sysprof"/> (for profiling),
       <xref linkend="mitkrb"/> (required to run the test suite),
       <xref linkend="gtk-doc"/>,
-      <xref linkend="php"/> compiled with XMLRPC-EPI <!-- It seems that XMLRPC is part of PHP 5.4.10 -->
+         <!-- It seems that XMLRPC is part of PHP 5.4.10 -->
+      <xref linkend="php"/> compiled with XMLRPC-EPI 
       support (only used for the XMLRPC regression tests), and
       <xref linkend="samba"/> (ntlm_auth is required to run the test suite)
     </para>
@@ -120,14 +120,14 @@
 
   <sect2 role="installation">
     <title>Installation of libsoup</title>
-
+<!--
     <para>
       First, fix a problem in the testsuite caused by
       <xref role="nodep" linkend="glib-networking"/>:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../libsoup-&libsoup-version;-testsuite_fix-1.patch</userinput></screen>
-
+-->
     <para>
       Install <application>libsoup</application> by running the following
       commands:
@@ -136,7 +136,12 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dvapi=enabled -Dgssapi=disabled .. &amp;&amp;
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Dvapi=enabled      \
+      -Dgssapi=disabled   \
+      -Dsysprof=disabled  \
+      ..                  &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -154,6 +159,9 @@ ninja</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <para>
       <option>-Dvapi=disabled</option>: Use this if you have not installed
       <application>Vala</application>, e.g. because you are not building 
@@ -168,7 +176,13 @@ ninja</userinput></screen>
     <para>
       <parameter>-Dgssapi=disabled</parameter>: libsoup defaults to building with GSSAPI support,
       which requires Kerberos (as does the test suite). If you are building GNOME or
-      have kerberos installed, remove this switch.
+      have kerberos installed, remove this option.
+    </para>
+
+    <para>
+      <parameter>-Dsysprof=disabled</parameter>: libsoup will automatically download
+      a git version of <xref linkend="sysprof"/> if git is available or use the installed
+      version if available.  If you need profiling, remove this option.
     </para>
 
   </sect2>
@@ -206,7 +220,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libsoup-2.4.so</filename></term>
         <listitem>
           <para>
-            provides functions for asynchronous HTTP connections.
+            provides functions for asynchronous HTTP connections
           </para>
           <indexterm zone="libsoup libsoup-2">
             <primary sortas="c-libsoup-2">libsoup-2.4.so</primary>
@@ -218,7 +232,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libsoup-gnome-2.4.so</filename></term>
         <listitem>
           <para>
-            provides <application>GNOME</application> specific features.
+            provides <application>GNOME</application> specific features
           </para>
           <indexterm zone="libsoup libsoup-gnome-2">
             <primary sortas="c-libsoup-gnome-2">libsoup-gnome-2.4.so</primary>

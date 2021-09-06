@@ -6,17 +6,16 @@
 
   <!ENTITY pipewire-download-http "https://github.com/PipeWire/pipewire/archive/&pipewire-version;/pipewire-&pipewire-version;.tar.gz">
   <!ENTITY pipewire-download-ftp  " ">
-  <!ENTITY pipewire-md5sum        "7d9c5ee429c506316533d4a9db9620e4">
-  <!ENTITY pipewire-size          "1.2 MB">
-  <!ENTITY pipewire-buildsize     "119 MB (with tests)">
-  <!ENTITY pipewire-time          "0.3 SBU (Using parallelism=4; with tests)">
+  <!ENTITY pipewire-md5sum        "9a9bc32228fc1c181686e64eb6e6af03">
+  <!ENTITY pipewire-size          "1.6 MB">
+  <!ENTITY pipewire-buildsize     "63 MB (with tests)">
+  <!ENTITY pipewire-time          "0.5 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="pipewire" xreflabel="pipewire-&pipewire-version;">
   <?dbhtml filename="pipewire.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       files between applications.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -93,6 +92,8 @@
       <xref linkend="doxygen"/> and
       <xref linkend="graphviz"/> (for documentation),
       <ulink url="https://jackaudio.org/">JACK</ulink>,
+      <ulink url="https://github.com/EHfive/ldacBT">ldacBT</ulink>,
+      <ulink url="https://libcamera.org/">libcamera</ulink>,
       <ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>, and
       <ulink url="https://sourceforge.net/projects/xmltoman/">xmltoman</ulink>
     </para>
@@ -113,11 +114,7 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr           \
-      -Djack=false            \
-      -Dpipewire-jack=false   \
-      -Dvulkan=false          \
-      ..                      &amp;&amp;
+meson --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -134,7 +131,11 @@ ninja</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <!-- Without these three parameters, Meson fails to run. -->
+    <!-- Not true anymore, commenting out as of 0.3.24
     <para>
       <parameter>-Djack=false</parameter>: This switch prevents building the
       <application>JACK</application> plugin since
@@ -152,6 +153,7 @@ ninja</userinput></screen>
       <application>Vulkan</application> API support into pipewire since
       <application>Vulkan</application> is not in BLFS.
     </para>
+    -->
 
     <para>
       <option>-Ddocs=true</option>: This switch enables the generation of HTML
@@ -182,14 +184,20 @@ ninja</userinput></screen>
           pw-cat,
           pw-cli,
           pw-dot,
+          pw-dump,
+          pw-jack,
+          pw-link,
+          pw-loopback,
           pw-metadata,
           pw-mididump,
           pw-mon,
           pw-profiler,
           <!--pw-pulse,-->
           pw-reserve,
+          pw-top,
           spa-acp-tool,
           spa-inspect,
+          spa-json-dump,
           spa-monitor, 
           spa-resample, and
           pw-midiplay, pw-midirecord, pw-play, and pw-record (symlinks to pw-cat)
@@ -238,7 +246,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a service that allows access to multimedia devices and allows
-            sharing of multimedia files between applications.
+            sharing of multimedia files between applications
           </para>
           <indexterm zone="pipewire pipewire-prog">
             <primary sortas="b-pipewire">pipewire</primary>
@@ -251,7 +259,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a service that allows a desktop environment to know when media
-            files are being played through pipewire.
+            files are being played through pipewire
           </para>
           <indexterm zone="pipewire pipewire-media-session">
             <primary sortas="b-pipewire-media-session">pipewire-media-session</primary>
@@ -264,7 +272,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             starts a Pulseaudio-compatible version of 
-            the pipewire service.
+            the pipewire service
           </para>
           <indexterm zone="pipewire pipewire-pulse">
             <primary sortas="b-pipewire-pulse">pipewire-pulse</primary>
@@ -276,7 +284,7 @@ ninja</userinput></screen>
         <term><command>pw-cat</command></term>
         <listitem>
           <para>
-            allows you to play or record media using a pipewire instance.
+            allows you to play or record media using a pipewire instance
           </para>
           <indexterm zone="pipewire pw-cat">
             <primary sortas="b-pw-cat">pw-cat</primary>
@@ -288,7 +296,7 @@ ninja</userinput></screen>
         <term><command>pw-cli</command></term>
         <listitem>
           <para>
-            allows you to interact with a pipewire instance.
+            allows you to interact with a pipewire instance
           </para>
           <indexterm zone="pipewire pw-cli">
             <primary sortas="b-pw-cli">pw-cli</primary>
@@ -300,10 +308,60 @@ ninja</userinput></screen>
         <term><command>pw-dot</command></term>
         <listitem>
           <para>
-            lists all of the daemons and objects in use by pipewire.
+            lists all of the daemons and objects in use by pipewire
           </para>
           <indexterm zone="pipewire pw-dot">
             <primary sortas="b-pw-dot">pw-dot</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pw-dump">
+        <term><command>pw-dump</command></term>
+        <listitem>
+          <para>
+            dumps debug messages from a local or remote pipewire instance to
+            the console
+          </para>
+          <indexterm zone="pipewire pw-dump">
+            <primary sortas="b-pw-dump">pw-dump</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pw-jack">
+        <term><command>pw-jack</command></term>
+        <listitem>
+          <para>
+            runs JACK applications on a pipewire instance
+          </para>
+          <indexterm zone="pipewire pw-jack">
+            <primary sortas="b-pw-jack">pw-jack</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pw-link">
+        <term><command>pw-link</command></term>
+        <listitem>
+          <para>
+            links pipewire ports together
+          </para>
+          <indexterm zone="pipewire pw-link">
+            <primary sortas="b-pw-link">pw-link</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pw-loopback">
+        <term><command>pw-loopback</command></term>
+        <listitem>
+          <para>
+            initializes a loopback link between two different pipewire ports.
+            This is useful for testing and debugging
+          </para>
+          <indexterm zone="pipewire pw-loopback">
+            <primary sortas="b-pw-loopback">pw-loopback</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -312,7 +370,7 @@ ninja</userinput></screen>
         <term><command>pw-metadata</command></term>
         <listitem>
           <para>
-            inspects, adds, and removes metadata for objects.
+            inspects, adds, and removes metadata for objects
           </para>
           <indexterm zone="pipewire pw-metadata">
             <primary sortas="b-pw-metadata">pw-metadata</primary>
@@ -324,7 +382,7 @@ ninja</userinput></screen>
         <term><command>pw-mididump</command></term>
         <listitem>
           <para>
-            dumps MIDI messages from a file to the screen.
+            dumps MIDI messages from a file to the screen
           </para>
           <indexterm zone="pipewire pw-mididump">
             <primary sortas="b-pw-mididump">pw-mididump</primary>
@@ -336,7 +394,7 @@ ninja</userinput></screen>
         <term><command>pw-mon</command></term>
         <listitem>
           <para>
-            allows you to monitor pipewire instances.
+            allows you to monitor pipewire instances
           </para>
           <indexterm zone="pipewire pw-mon">
             <primary sortas="b-pw-mon">pw-mon</primary>
@@ -348,7 +406,7 @@ ninja</userinput></screen>
         <term><command>pw-profiler</command></term>
         <listitem>
           <para>
-            tracks memory usage and API calls used by pipewire.
+            tracks memory usage and API calls used by pipewire
           </para>
           <indexterm zone="pipewire pw-profiler">
             <primary sortas="b-pw-profiler">pw-profiler</primary>
@@ -374,10 +432,22 @@ ninja</userinput></screen>
         <term><command>pw-reserve</command></term>
         <listitem>
           <para>
-            reserves or monitors a device via D-Bus.
+            reserves or monitors a device via D-Bus
           </para>
           <indexterm zone="pipewire pw-reserve">
             <primary sortas="b-pw-reserve">pw-reserve</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pw-top">
+        <term><command>pw-top</command></term>
+        <listitem>
+          <para>
+            displays real-time performance information from pipewire
+          </para>
+          <indexterm zone="pipewire pw-top">
+            <primary sortas="b-pw-top">pw-top</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -386,7 +456,7 @@ ninja</userinput></screen>
         <term><command>spa-acp-tool</command></term>
         <listitem>
           <para>
-            inspects the card profile of a given sound card.
+            inspects the card profile of a given sound card
           </para>
           <indexterm zone="pipewire spa-acp-tool">
             <primary sortas="b-spa-acp-tool">spa-acp-tool</primary>
@@ -398,10 +468,22 @@ ninja</userinput></screen>
         <term><command>spa-inspect</command></term>
         <listitem>
           <para>
-            allows you to inspect pipewire plugins.
+            allows you to inspect pipewire plugins
           </para>
           <indexterm zone="pipewire spa-inspect">
             <primary sortas="b-spa-inspect">spa-inspect</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="spa-json-dump">
+        <term><command>spa-json-dump</command></term>
+        <listitem>
+          <para>
+            dumps the current pipewire configuration in JSON format.
+          </para>
+          <indexterm zone="pipewire spa-json-dump">
+            <primary sortas="b-spa-json-dump">spa-json-dump</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -410,7 +492,7 @@ ninja</userinput></screen>
         <term><command>spa-monitor</command></term>
         <listitem>
           <para>
-            allows you to monitor pipewire plugins.
+            allows you to monitor pipewire plugins
           </para>
           <indexterm zone="pipewire spa-monitor">
             <primary sortas="b-spa-monitor">spa-monitor</primary>
@@ -422,7 +504,7 @@ ninja</userinput></screen>
         <term><command>spa-resample</command></term>
         <listitem>
           <para>
-            resamples a given file.
+            resamples a given file
           </para>
           <indexterm zone="pipewire spa-resample">
             <primary sortas="b-spa-resample">spa-resample</primary>
@@ -434,7 +516,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libpipewire-0.3.so</filename></term>
         <listitem>
           <para>
-            contains API functions for handling multimedia pipelines.
+            contains API functions for handling multimedia pipelines
           </para>
           <indexterm zone="pipewire libpipewire">
             <primary sortas="c-libpipewire">libpipewire-0.3.so</primary>
@@ -504,4 +586,5 @@ ninja</userinput></screen>
       </varlistentry>-->
     </variablelist>
   </sect2>
+
 </sect1>

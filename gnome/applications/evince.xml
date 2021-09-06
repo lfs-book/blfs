@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY evince-download-http
-     "&gnome-download-http;/evince/&gnome-minor-38;/evince-&evince-version;.tar.xz">
+     "&gnome-download-http;/evince/&gnome-40;/evince-&evince-version;.tar.xz">
   <!ENTITY evince-download-ftp
-     "&gnome-download-ftp;/evince/&gnome-minor-38;/evince-&evince-version;.tar.xz">
-  <!ENTITY evince-md5sum        "29dd770b8255bdf6343f83419c975905">
+     "&gnome-download-ftp;/evince/&gnome-40;/evince-&evince-version;.tar.xz">
+  <!ENTITY evince-md5sum        "bf78a8e8c384bbd2780b7be0ac917e79">
   <!ENTITY evince-size          "2.8 MB">
-  <!ENTITY evince-buildsize     "84 MB">
+  <!ENTITY evince-buildsize     "63 MB">
   <!ENTITY evince-time          "0.4 SBU (Using parallelism=4)">
 ]>
 
@@ -18,7 +18,6 @@
   <?dbhtml filename="evince.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -39,7 +38,7 @@
       on the <application>GNOME</application> Desktop.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,6 +82,7 @@
       <xref linkend="gsettings-desktop-schemas"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="itstool"/>,
+      <xref linkend="libhandy1"/>,
       <xref linkend="libxml2"/>, and
       <xref linkend="openjpeg2"/>
     </para>
@@ -128,8 +128,7 @@
       This has no effect on systems without TeXLive installed.
     </para>
 
-<screen><userinput remap="pre">export CFLAGS="$CFLAGS -I/opt/texlive/&texlive-year;/include" &amp;&amp;
-export CXXFLAGS="$CXXFLAGS -I/opt/texlive/&texlive-year;/include" &amp;&amp;
+<screen><userinput remap="pre">export CPPFLAGS="-I/opt/texlive/&texlive-year;/include" &amp;&amp;
 export LDFLAGS="$LDFLAGS -L/opt/texlive/&texlive-year;/lib"</userinput></screen>
 
     <para>
@@ -140,13 +139,16 @@ export LDFLAGS="$LDFLAGS -L/opt/texlive/&texlive-year;/lib"</userinput></screen>
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dgtk_doc=false -Dsystemduserunitdir=no .. &amp;&amp;
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Dgtk_doc=false     \
+      -Dsystemduserunitdir=no .. &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dgtk_doc=false .. &amp;&amp;
+meson --prefix=/usr --buildtype=release -Dgtk_doc=false .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -166,6 +168,10 @@ ninja</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <!--
     <para>
       <parameter>- -enable-compile-warnings=minimum</parameter>: This
@@ -174,20 +180,17 @@ ninja</userinput></screen>
     </para>
     -->
 
-<!-- When moving to Meson, I installed the whole texlive suite from source.
-     I was able to verify that this is no longer required. I'm assuming it was
-     one of evince-3.36.3 or texlive-2020 that fixed this.
     <para>
-      <parameter>CFLAGS="$CFLAGS ..." CXXFLAGS="$CXXFLAGS ..." LDFLAGS="$LDFLAGS ..."</parameter>: If
+      <parameter>CPPFLAGS="..." LDFLAGS="$LDFLAGS ..."</parameter>: If
       <application>TeXLive</application> has been installed in
-      <filename class="directory">/opt/texlive-&texlive-year;</filename> the
+      <filename class="directory">/opt/texlive/&texlive-year;</filename> the
       configure script will find <filename class='libraryfile'>libkpathsea.so</filename>
       and enable the DVI backend, but without this addition the compile will fail
       because it cannot find the required headers. Adding this to a system where
       <application>TeXLive</application> has not been installed does not break the
       build.
     </para>
--->
+
     <para>
       <parameter>-Dgtk_doc=false</parameter>: This switch disables generating
       the gtk-doc API reference documentation. If you have
@@ -226,6 +229,12 @@ ninja</userinput></screen>
       if <application>libsecret</application> is not installed.
     </para>
 
+    <para>
+      <option>-Dps=enabled</option>: Use this switch if
+      <application>libspectre</application> is installed and you want to
+      view PostScript files with <application>Evince</application>.
+    </para>
+
   </sect2>
 
   <sect2 role="content">
@@ -262,7 +271,7 @@ ninja</userinput></screen>
         <term><command>evince</command></term>
         <listitem>
           <para>
-            is a multiple format document viewer.
+            is a multiple format document viewer
           </para>
           <indexterm zone="evince evince-prog">
             <primary sortas="b-evince">evince</primary>
@@ -274,7 +283,7 @@ ninja</userinput></screen>
         <term><command>evince-previewer</command></term>
         <listitem>
           <para>
-            is an applicaton that implements the printing previewer.
+            is an applicaton that implements the printing previewer
           </para>
           <indexterm zone="evince evince-previewer">
             <primary sortas="b-evince-previewer">evince-previewer</primary>
@@ -287,7 +296,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a simple program used to create thumbnail images of
-            supported documents.
+            supported documents
           </para>
           <indexterm zone="evince evince-thumbnailer">
             <primary sortas="b-evince-thumbnailer">evince-thumbnailer</primary>

@@ -6,9 +6,9 @@
 
   <!ENTITY cifsutils-download-http "https://www.samba.org/ftp/linux-cifs/cifs-utils/cifs-utils-&cifsutils-version;.tar.bz2">
   <!ENTITY cifsutils-download-ftp  " ">
-  <!ENTITY cifsutils-md5sum        "b49b10692bcae7f28669173a472077dd">
-  <!ENTITY cifsutils-size          "404 KB">
-  <!ENTITY cifsutils-buildsize     "4.7 MB">
+  <!ENTITY cifsutils-md5sum        "4348921483c530826950e9503b08b033">
+  <!ENTITY cifsutils-size          "405 KB">
+  <!ENTITY cifsutils-buildsize     "3.3 MB">
   <!ENTITY cifsutils-time          "0.1 SBU">
 ]>
 
@@ -16,7 +16,6 @@
   <?dbhtml filename="cifsutils.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -34,7 +33,7 @@
       mounting SMB/CIFS shares on a Linux system.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,7 +83,7 @@
       <xref linkend="mitkrb"/>,
       <xref linkend="samba"/>, and
       <xref linkend="libcap-pam"/> or
-      <ulink url="http://people.redhat.com/sgrubb/libcap-ng/">
+      <ulink url="https://people.redhat.com/sgrubb/libcap-ng/">
         libcap-ng
       </ulink>
     </para>
@@ -125,14 +124,12 @@
       commands:
     </para>
 
-<screen revision="sysv"><userinput>autoreconf -fiv           &amp;&amp;
-./configure --prefix=/usr \
+<screen revision="sysv"><userinput>./configure --prefix=/usr \
             --disable-pam \
             --disable-systemd &amp;&amp;
 make</userinput></screen>
 
-<screen revision="systemd"><userinput>autoreconf -fiv           &amp;&amp;
-./configure --prefix=/usr \
+<screen revision="systemd"><userinput>./configure --prefix=/usr \
             --disable-pam &amp;&amp;
 make</userinput></screen>
 
@@ -170,8 +167,8 @@ make</userinput></screen>
     </para>
 
     <para>
-      <option>--with-pamdir=/lib/security</option>: Install the PAM
-      module in <filename class="directory">/lib/security</filename>.
+      <option>--with-pamdir=/usr/lib/security</option>: Install the PAM
+      module in <filename class="directory">/usr/lib/security</filename>.
     </para>
 
   </sect2>
@@ -188,7 +185,7 @@ make</userinput></screen>
         <seg> cifs.idmap, cifs.upcall, cifscreds, getcifsacl, 
           mount.cifs, mount.smb3, setcifsacl, smb2-quota, and smbinfo</seg>
         <seg>/usr/lib/cifs-utils/idmapwb.so and optionally
-          PAM module /lib/security/pam_cifscreds.so</seg>
+          PAM module /usr/lib/security/pam_cifscreds.so</seg>
         <seg>/usr/lib/cifs-utils</seg>
       </seglistitem>
     </segmentedlist>
@@ -206,7 +203,7 @@ make</userinput></screen>
             There are a number of activities that the kernel cannot easily do
             itself. This program is a callout program that does these
             things for the kernel and then returns the result. It is not
-            intended to be run from the command-line.
+            intended to be run from the command-line
           </para>
           <indexterm zone="cifsutils cifs.idmap">
             <primary sortas="b-cifs.idmap">cifs.idmap</primary>
@@ -221,7 +218,7 @@ make</userinput></screen>
             is a userspace helper program for the linux CIFS client
             filesystem. It is intended to be run when the kernel calls
             request-key for a particular key type.  It is not intended to be
-            run from the command-line.
+            run from the command-line
           </para>
           <indexterm zone="cifsutils cifs.upcall">
             <primary sortas="b-cifs.upcall">cifs.upcall</primary>
@@ -234,7 +231,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is a tool for managing credentials (username and password)
-            for the purpose of establishing sessions in multiuser mounts.
+            for the purpose of establishing sessions in multiuser mounts
           </para>
           <indexterm zone="cifsutils cifscreds">
             <primary sortas="b-cifscreds">cifscreds</primary>
@@ -247,7 +244,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is a userspace helper  to display an ACL in a security
-            descriptor for Common Internet File System (CIFS).
+            descriptor for Common Internet File System (CIFS)
           </para>
           <indexterm zone="cifsutils getcifsacl">
             <primary sortas="b-getcifsacl">getcifsacl</primary>
@@ -260,7 +257,7 @@ make</userinput></screen>
         <listitem>
           <para>
             mounts a Linux CIFS filesystem. It is usually invoked
-            indirectly by the mount(8) command when using the "-t cifs" option.
+            indirectly by the mount(8) command when using the "-t cifs" option
           </para>
           <indexterm zone="cifsutils mount.cifs">
             <primary sortas="b-mount.cifs">mount.cifs</primary>
@@ -273,7 +270,7 @@ make</userinput></screen>
         <listitem>
           <para>
             mounts a SMB3-based filesystem. It is usually invoked
-            indirectly by the mount(8) command when using the "-t smb3" option.
+            indirectly by the mount(8) command when using the "-t smb3" option
           </para>
           <indexterm zone="cifsutils mount.smb3">
             <primary sortas="b-mount.smb3">mount.smb3</primary>
@@ -286,7 +283,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is intended to alter an ACL of a security descriptor for a file
-            system object.
+            system object
           </para>
           <indexterm zone="cifsutils setcifsacl">
             <primary sortas="b-setcifsacl">setcifsacl</primary>
@@ -298,7 +295,7 @@ make</userinput></screen>
         <term><command>smb3-quota</command></term>
         <listitem>
           <para>
-            displays quota information for a SMB filesystem.
+            displays quota information for a SMB filesystem
           </para>
           <indexterm zone="cifsutils smb2-quota">
             <primary sortas="b-smb2-quota">smb2-quota</primary>
@@ -311,7 +308,7 @@ make</userinput></screen>
         <listitem>
           <para>
             displays SMB-specific file information, such as security
-            descriptors and quotas.
+            descriptors and quotas
           </para>
           <indexterm zone="cifsutils smbinfo">
             <primary sortas="b-smbinfo">smbinfo</primary>

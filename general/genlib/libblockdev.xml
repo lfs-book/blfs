@@ -7,8 +7,8 @@
   <!ENTITY libblockdev-download-http
     "https://github.com/storaged-project/libblockdev/releases/download/&libblockdev-version;-1/libblockdev-&libblockdev-version;.tar.gz">
   <!ENTITY libblockdev-download-ftp " ">
-  <!ENTITY libblockdev-md5sum        "266275451c743852ffe995aeec2e1791">
-  <!ENTITY libblockdev-size          "888 KB">
+  <!ENTITY libblockdev-md5sum        "d022c1ebb9b9a838c1a8c8b2b781b69d">
+  <!ENTITY libblockdev-size          "912 KB">
   <!ENTITY libblockdev-buildsize     "12 MB">
   <!ENTITY libblockdev-time          "0.2 SBU">
 ]>
@@ -17,7 +17,6 @@
   <?dbhtml filename="libblockdev.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -38,7 +37,7 @@
       CLI or the new LVM DBus API).
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,7 +89,7 @@
       <xref linkend="btrfs-progs"/>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="mdadm"/>,
-      <ulink url="http://people.redhat.com/~heinzm/sw/dmraid/">dmraid</ulink>,
+      <ulink url="https://people.redhat.com/~heinzm/sw/dmraid/">dmraid</ulink>,
       <ulink url="http://bcachefs.org/">bcachefs</ulink>, and
       <ulink url="https://github.com/pmem/ndctl">ndctl</ulink>
     </para>
@@ -102,7 +101,15 @@
 
   <sect2 role="installation">
     <title>Installation of libblockdev</title>
+<!--
+    <para>
+      Fix the usage of a glib function deprecated for security:
+    </para>
 
+<screen><userinput>sed 's/g_memdup/&amp;2/' -i             \
+    src/lib/plugin_apis/vdo.{c,api} \
+    src/plugins/vdo.c</userinput></screen>
+-->
     <para>
       Install <application>libblockdev</application> by running
       the following commands:
@@ -180,7 +187,7 @@ make</userinput></screen>
         <term><command>lvm-cache-stats</command></term>
         <listitem>
           <para>
-            prints statistics on caches on LVM Logical Volumes.
+            prints statistics on caches on LVM Logical Volumes
           </para>
           <indexterm zone="libblockdev lvm-cache-stats">
             <primary sortas="b-lvm-cache-stats">lvm-cache-stats</primary>

@@ -4,19 +4,18 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY qemu-download-http "http://download.qemu-project.org/qemu-&qemu-version;.tar.xz">
+  <!ENTITY qemu-download-http "https://download.qemu-project.org/qemu-&qemu-version;.tar.xz">
   <!ENTITY qemu-download-ftp  " ">
-  <!ENTITY qemu-md5sum        "179f86928835da857c237b42f4b2df73">
-  <!ENTITY qemu-size          "102 MB">
-  <!ENTITY qemu-buildsize     "1.7 GB">
-  <!ENTITY qemu-time          "0.9 SBU (using parallelism=4; add 0.3 SBU for tests)">
+  <!ENTITY qemu-md5sum        "47f776c276a24f42108ba512a2aa3013">
+  <!ENTITY qemu-size          "106 MB">
+  <!ENTITY qemu-buildsize     "1.9 GB">
+  <!ENTITY qemu-time          "1.2 SBU (using parallelism=4; add 0.3 SBU for tests)">
 ]>
 
 <sect1 id="qemu" xreflabel="qemu-&qemu-version;">
   <?dbhtml filename="qemu.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -35,7 +34,7 @@
       AMD-V).
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -105,7 +104,13 @@
       <xref linkend="sdl"/>,
       <xref role="nodep" linkend="vte"/> or <xref linkend="vte2"/>, and
 <!-- libcacard has been a standalone project since qemu-2.5.-->
-      <ulink url="https://www.spice-space.org/page/Libcacard">libcacard</ulink>
+      <ulink url="https://gitlab.freedesktop.org/spice/libcacard">libcacard</ulink>
+    </para>
+
+    <bridgehead renderas="sect4">Optional dependencies for installing the documentation</bridgehead>
+    <para role="optional">
+      <ulink url="https://www.sphinx-doc.org/en/master/index.html">sphinx</ulink> with the
+      <ulink url="https://pypi.org/project/sphinx-rtd-theme/">sphinx-rtd-theme</ulink> theme
     </para>
 
     <note>
@@ -222,6 +227,7 @@ cd        build &amp;&amp;
 
 ../configure --prefix=/usr               \
              --sysconfdir=/etc           \
+             --localstatedir=/var        \
              --target-list=$QEMU_ARCH    \
              --audio-drv-list=alsa       \
              --docdir=/usr/share/doc/qemu-&qemu-version; &amp;&amp;
@@ -343,7 +349,7 @@ VDISK_FILENAME=<replaceable>vdisk.img</replaceable>
 qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE</userinput></screen>
 
     <para>
-      The virtual disk size and filename should be ajusted as desired. The
+      The virtual disk size and filename should be adjusted as desired. The
       actual size of the file will be less than specified, but will expand as
       needed, so it is safe to put a high value.
     </para>
@@ -389,7 +395,7 @@ qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE</userinput></screen>
      -boot order=c,once=d,menu=on    \
      -net nic,netdev=net0            \
      -netdev user,id=net0            \
-     -soundhw ac97                   \
+     -device ac97                    \
      -vga std                        \
      -serial mon:stdio               \
      -name "fedora-16"</userinput></screen>
@@ -512,7 +518,7 @@ EOF</userinput></screen>
 
     <bridgehead renderas="sect3">Networking</bridgehead>
     <para>
-      The above solution for networking allows the guest to access the local
+      The below solution for networking allows the guest to access the local
       network through the host (and possibly to access internet through the
       local routers), but the converse is not true. Not even the host can
       access the guest, unless port forwarding is enabled. And in the case
@@ -575,20 +581,22 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
 
       <seglistitem>
         <seg>
-          ivshmem-client,
-          ivshmem-server,
+          elf2dmp,
           qemu (symlink),
+          qemu-edid,
           qemu-ga,
           qemu-img,
           qemu-io,
+          qemu-keymap,
           qemu-nbd,
-          qemu-system-&lt;arch&gt;, and
-          virtfs-proxy-helper
+          qemu-pr-helper,
+          qemu-storage-daemon, and
+          qemu-system-&lt;arch&gt;
         </seg>
         <seg>None</seg>
         <seg>
           /usr/share/qemu and
-          /usr/share/doc/qemu-&qemu-version;
+          /usr/share/doc/qemu-&qemu-version; (optional)
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -598,11 +606,23 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
+      <varlistentry id="elf2dmp">
+        <term><command>elf2dmp</command></term>
+        <listitem>
+          <para>
+            Converts files from elf to dmp format
+          </para>
+          <indexterm zone="qemu elf2dmp">
+            <primary sortas="b-elf2dmp">elf2dmp</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+<!--
       <varlistentry id="ivshmem-client">
         <term><command>ivshmem-client</command></term>
         <listitem>
           <para>
-            is a standalone client for using the ivshmem device.
+            is a standalone client for using the ivshmem device
           </para>
           <indexterm zone="qemu ivshmem-client">
             <primary sortas="b-ivshmem-client">ivshmem-client</primary>
@@ -614,19 +634,19 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
         <term><command>ivshmem-server</command></term>
         <listitem>
           <para>
-            is an example server for the ivshmem device.
+            is an example server for the ivshmem device
           </para>
           <indexterm zone="qemu ivshmem-server">
             <primary sortas="b-ivshmem-server">ivshmem-server</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
       <varlistentry id="qemu-edid">
         <term><command>qemu-edid</command></term>
         <listitem>
           <para>
-            is a test tool for the qemu EDID generator.
+            is a test tool for the qemu EDID generator
           </para>
           <indexterm zone="qemu qemu-edid">
             <primary sortas="b-qemu-edid">qemu-edid</primary>
@@ -640,7 +660,7 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
           <para>
             implements support for QMP (QEMU Monitor Protocol) commands and
             events that terminate and originate respectively within the guest
-            using an agent built as part of QEMU.
+            using an agent built as part of QEMU
           </para>
           <indexterm zone="qemu qemu-ga">
             <primary sortas="b-qemu-ga">qemu-ga</primary>
@@ -652,7 +672,7 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
         <term><command>qemu-img</command></term>
         <listitem>
           <para>
-            provides commands to manage QEMU disk images.
+            provides commands to manage QEMU disk images
           </para>
           <indexterm zone="qemu qemu-img">
             <primary sortas="b-qemu-img">qemu-img</primary>
@@ -665,7 +685,7 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
         <listitem>
           <para>
             is a diagnostic and manipulation program for (virtual) memory
-            media.  It is still at an early stage of development.
+            media. It is still at an early stage of development
           </para>
           <indexterm zone="qemu qemu-io">
             <primary sortas="b-qemu-io">qemu-io</primary>
@@ -673,15 +693,54 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="qemu-keymap">
+        <term><command>qemu-keymap</command></term>
+        <listitem>
+          <para>
+            generates qemu reverse keymaps from xkb keymaps,
+            which can be used with the qemu "-k" command line switch
+          </para>
+          <indexterm zone="qemu qemu-keymap">
+            <primary sortas="b-qemu-keymap">qemu-keymap</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+
       <varlistentry id="qemu-nbd">
         <term><command>qemu-nbd</command></term>
         <listitem>
           <para>
             exports Qemu disk images using the QEMU Disk Network Block
-            Device (NBD) protocol.
+            Device (NBD) protocol
           </para>
           <indexterm zone="qemu qemu-nbd">
             <primary sortas="b-qemu-nbd">qemu-nbd</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="qemu-pr-helper">
+        <term><command>qemu-pr-helper</command></term>
+        <listitem>
+          <para>
+            Implements the persistent reservation helper for QEMU
+          </para>
+          <indexterm zone="qemu qemu-pr-helper">
+            <primary sortas="b-qemu-pr-helper">qemu-pr-helper</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="qemu-storage-daemon">
+        <term><command>qemu-storage-daemon</command></term>
+        <listitem>
+          <para>
+            allows to modify disk images using the QEMU Monitor Protocol (QMP)
+            without running a VM
+          </para>
+          <indexterm zone="qemu qemu-storage-daemon">
+            <primary sortas="b-qemu-storage-daemon">qemu-storage-daemon</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -690,29 +749,29 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
         <term><command>qemu-system-x86_64</command></term>
         <listitem>
           <para>
-            is the QEMU PC System emulator.
+            is the QEMU PC System emulator
           </para>
           <indexterm zone="qemu qemu-system">
             <primary sortas="b-qemu-system">qemu-system-x86_64</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
       <varlistentry id="virtfs-proxy-helper">
         <term><command>virtfs-proxy-helper</command></term>
         <listitem>
           <para>
-            creates a socket pair or a named socket. QEMU and proxy helper
-            communicate using this socket. QEMU proxy fs driver sends
-            filesystem request to proxy helper and receives the response
-            from it.
+            creates a socket pair or a named socket. QEMU and the proxy helper
+            communicate using this socket. The QEMU proxy fs driver sends
+            filesystem requests to the proxy helper and receives the response
+            from it
           </para>
           <indexterm zone="qemu virtfs-proxy-helper">
             <primary sortas="b-virtfs-proxy-helper">virtfs-proxy-helper</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
     </variablelist>
 
   </sect2>

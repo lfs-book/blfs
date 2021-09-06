@@ -7,17 +7,16 @@
   <!ENTITY pulseaudio-download-http
            "https://www.freedesktop.org/software/pulseaudio/releases/pulseaudio-&pulseaudio-version;.tar.xz">
   <!ENTITY pulseaudio-download-ftp  " ">
-  <!ENTITY pulseaudio-md5sum        "84a7776e63dd55c40db8fbd7c7e2e18e">
-  <!ENTITY pulseaudio-size          "1.9 MB">
-  <!ENTITY pulseaudio-buildsize     "76 MB (add 2 MB for tests)">
-  <!ENTITY pulseaudio-time          "0.1 SBU (Using parallelism=4; add 0.2 SBU for tests)">
+  <!ENTITY pulseaudio-md5sum        "bb888e7747b778c1c487c63b582ddf40">
+  <!ENTITY pulseaudio-size          "1.5 MB">
+  <!ENTITY pulseaudio-buildsize     "49 MB (add 1 MB for tests)">
+  <!ENTITY pulseaudio-time          "0.2 SBU (Using parallelism=4; add 0.2 SBU for tests)">
 ]>
 
 <sect1 id="pulseaudio" xreflabel="PulseAudio-&pulseaudio-version;">
   <?dbhtml filename="pulseaudio.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -39,7 +38,7 @@
       several sounds into one are easily achieved using a sound server.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -97,8 +96,8 @@
     <para role="optional">
       <xref linkend="avahi"/>,
       <xref linkend="bluez"/>,
+      <xref linkend="doxygen"/> (for documentation),
       <xref linkend="fftw"/>,
-      <xref linkend="GConf"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="libsamplerate"/>,
       <xref linkend="sbc"/> (Bluetooth support),
@@ -108,10 +107,10 @@
       <ulink url="http://www.lirc.org/">LIRC</ulink>,
       <ulink url="http://gstreamer.freedesktop.org/src/orc/">ORC</ulink>,
       <ulink url="https://sourceforge.net/projects/soxr/">soxr</ulink>,
-      <ulink url="http://tdb.samba.org/">TDB</ulink>,
+      <ulink url="http://tdb.samba.org/">TDB</ulink>, and
       <ulink url="http://freedesktop.org/software/pulseaudio/webrtc-audio-processing/">
-      WebRTC AudioProcessing</ulink> and
-      <ulink url="http://www.xenproject.org/">XEN</ulink>
+      WebRTC AudioProcessing</ulink>
+      <!--<ulink url="http://www.xenproject.org/">XEN</ulink>-->
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -121,7 +120,14 @@
 
   <sect2 role="installation">
     <title>Installation of PulseAudio</title>
+<!--
+    <para>
+      If <xref linkend="doxygen"/> is not installed, workaround a building
+      issue because of the changes in meson-0.57.2:
+    </para>
 
+<screen><userinput>sed '/doxygen/d' -i meson.build</userinput></screen>
+-->
     <para>
       Install <application>PulseAudio</application> by running the following
       commands:
@@ -146,7 +152,11 @@ make</userinput></screen>
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson  --prefix=/usr -Ddatabase=gdbm -Dbluez5=false &amp;&amp;
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Ddatabase=gdbm     \
+      -Ddoxygen=false     \
+      -Dbluez5=disabled   &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -161,9 +171,10 @@ ninja</userinput></screen>
 <screen role="root"><userinput>ninja install</userinput></screen>
 
     <!-- http://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/SystemWide/ -->
-    <para>Running PulseAudio as System-Wide Daemon is possible but not recommended.
-      See <ulink 
-      url="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/SystemWide/"/>.
+    <para>Running PulseAudio as a system-wide daemon is possible but not 
+      recommended. See <ulink 
+      url="https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/SystemWide/"/>
+      for more information.
       While still as the <systemitem class="username">root</systemitem>
       user, remove the <application>D-Bus</application> configuration file
       for the system wide daemon to avoid creating unnecessary system
@@ -176,11 +187,20 @@ ninja</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <para>
       <parameter>-Dbluez5=false</parameter>: This switch prevents
       a runtime error if <xref linkend="dbus"/> and <xref linkend="sbc"/>
       are both installed but <xref linkend="bluez"/> is not installed.
       Remove this if you have installed all three packages.
+    </para>
+
+    <para>
+      <parameter>-Ddoxygen=false</parameter>: This allows the package to
+      compile if <xref linkend="doxygen"/> is not installed. Remove this
+      if you have installed this and wish to build the documentation.
     </para>
 <!--
     <para>
@@ -267,7 +287,7 @@ ninja</userinput></screen>
         pulseaudio</command> and then <command>rm -rf
         ~/.config/pulse/*</command> (and perhaps also
         <command>rm -rf ~/.pulse/*</command> if you have used a very old version
-        of pulse on this machine, then run <command>pulseaudio
+        of pulse on this machine), then run <command>pulseaudio
         --verbose</command> to restart it. If the daemon starts, restart the
         application. See <command>man pulseaudio</command> for more options.
       </para>
@@ -285,10 +305,10 @@ ninja</userinput></screen>
 
       <seglistitem>
         <seg>
-          esdcompat, pacat, pacmd, pactl, padsp, pamon (symlink to pacat),
-          paplay (symlink to pacat), parec (symlink to pacat),
-          parecord (symlink to pacat), qpaeq, pasuspender,
-          pax11publish, pulseaudio, and
+          <!--esdcompat,--> pacat, pacmd, pactl, padsp, 
+          pamon (symlink to pacat), paplay (symlink to pacat), 
+          parec (symlink to pacat), parecord (symlink to pacat), qpaeq, 
+          pasuspender, pax11publish, pulseaudio, and
           <!-- it looks like the equalizer needs FFTW: qpaeq, -->
           start-pulseaudio-x11
         </seg>
@@ -316,6 +336,7 @@ ninja</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
+<!--
       <varlistentry id="esdcompat">
         <term><command>esdcompat</command></term>
         <listitem>
@@ -327,13 +348,14 @@ ninja</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="pacat">
         <term><command>pacat</command></term>
         <listitem>
           <para>
             plays back or records raw or encoded audio streams on a
-            <application>PulseAudio</application> sound server.
+            <application>PulseAudio</application> sound server
           </para>
           <indexterm zone="pulseaudio pacat">
             <primary sortas="b-pacat">pacat</primary>
@@ -346,7 +368,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a tool used to reconfigure a <application>PulseAudio</application>
-            sound server during runtime.
+            sound server during runtime
           </para>
           <indexterm zone="pulseaudio pacmd">
             <primary sortas="b-pacmd">pacmd</primary>
@@ -359,7 +381,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is used to control a running <application>PulseAudio</application>
-            sound server.
+            sound server
           </para>
           <indexterm zone="pulseaudio pactl">
             <primary sortas="b-pactl">pactl</primary>
@@ -371,7 +393,7 @@ ninja</userinput></screen>
         <term><command>padsp</command></term>
         <listitem>
           <para>
-            is the <application>PulseAudio</application> OSS Wrapper.
+            is the <application>PulseAudio</application> OSS Wrapper
           </para>
           <indexterm zone="pulseaudio padsp">
             <primary sortas="b-padsp">padsp</primary>
@@ -383,7 +405,7 @@ ninja</userinput></screen>
         <term><command>pamon</command></term>
         <listitem>
           <para>
-            is a symbolic link to <command>pacat</command>.
+            is a symbolic link to <command>pacat</command>
            </para>
           <indexterm zone="pulseaudio pamon">
             <primary sortas="b-pamon">pamon</primary>
@@ -396,7 +418,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is used to play audio files on a
-            <application>PulseAudio</application> sound server.
+            <application>PulseAudio</application> sound server
           </para>
           <indexterm zone="pulseaudio paplay">
             <primary sortas="b-paplay">paplay</primary>
@@ -408,7 +430,7 @@ ninja</userinput></screen>
         <term><command>parec</command></term>
         <listitem>
           <para>
-            is a symbolic link to <command>pacat</command>.
+            is a symbolic link to <command>pacat</command>
           </para>
           <indexterm zone="pulseaudio parec">
             <primary sortas="b-parec">parec</primary>
@@ -420,7 +442,7 @@ ninja</userinput></screen>
         <term><command>parecord</command></term>
         <listitem>
           <para>
-            is a symbolic link to <command>pacat</command>.
+            is a symbolic link to <command>pacat</command>
           </para>
           <indexterm zone="pulseaudio parecord">
             <primary sortas="b-parecord">parecord</primary>
@@ -435,7 +457,7 @@ ninja</userinput></screen>
             is a tool that can be used to tell a local
             <application>PulseAudio</application> sound server to temporarily
             suspend access to the audio devices, to allow other applications
-            to access them directly.
+            to access them directly
           </para>
           <indexterm zone="pulseaudio pasuspender">
             <primary sortas="b-pasuspender">pasuspender</primary>
@@ -448,10 +470,23 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is the <application>PulseAudio</application>
-            X11 Credential Utility.
+            X11 Credential Utility
           </para>
           <indexterm zone="pulseaudio pax11publish">
             <primary sortas="b-pax11publish">pax11publish</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pa-info">
+        <term><command>pa-info</command></term>
+        <listitem>
+          <para>
+            is a shell script that prints various information relating to the
+            <application>Pulseaudio</application> server currently in use
+          </para>
+          <indexterm zone="pulseaudio pa-info">
+            <primary sortas="b-pa-info">pa-info</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -460,7 +495,7 @@ ninja</userinput></screen>
         <term><command>pulseaudio</command></term>
         <listitem>
           <para>
-            is a networked low-latency sound server for Linux.
+            is a networked low-latency sound server for Linux
           </para>
           <indexterm zone="pulseaudio pulseaudio-prog">
             <primary sortas="b-pulseaudio">pulseaudio</primary>
@@ -475,7 +510,7 @@ ninja</userinput></screen>
           <para>
             is an equalizer interface for
             <application>PulseAudio</application> equalizer sinks 
-            (Requires <xref linkend="fftw"/> at build time).
+            (Requires <xref linkend="fftw"/> at build time)
           </para>
           <indexterm zone="pulseaudio qpaeq">
             <primary sortas="b-qpaeq">qpaeq</primary>
@@ -502,7 +537,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             starts <application>PulseAudio</application> and registers it to
-            the X11 session manager.
+            the X11 session manager
           </para>
           <indexterm zone="pulseaudio start-pulseaudio-x11">
             <primary sortas="b-start-pulseaudio-x11">start-pulseaudio-x11</primary>

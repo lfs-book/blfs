@@ -7,17 +7,16 @@
   <!ENTITY gnutls-download-http "&gnupg-http;/gnutls/v3.7/gnutls-&gnutls-version;.tar.xz">
   <!ENTITY gnutls-download-ftp  "&gnupg-ftp;/gnutls/v3.7/gnutls-&gnutls-version;.tar.xz">
   <!ENTITY gnutls-download-ftp  " ">
-  <!ENTITY gnutls-md5sum        "1123a7bcc2fafd703e5a811bc1beb179">
+  <!ENTITY gnutls-md5sum        "95c32a1af583ecfcb280648874c0fbd9">
   <!ENTITY gnutls-size          "5.8 MB">
-  <!ENTITY gnutls-buildsize     "163 MB (add 112 MB for tests)">
-  <!ENTITY gnutls-time          "0.9 SBU (using parallelism=4; add 7.7 SBU for tests)">
+  <!ENTITY gnutls-buildsize     "139 MB (add 112 MB for tests)">
+  <!ENTITY gnutls-time          "0.9 SBU (add 2.9 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="gnutls" xreflabel="GnuTLS-&gnutls-version;">
   <?dbhtml filename="gnutls.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -54,7 +53,7 @@
       extension and X.509 and OpenPGP certificate handling.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -119,7 +118,7 @@
       <xref linkend="valgrind"/> (used during the test suite),
       <ulink url="&gnu-http;/autogen/">autogen</ulink>,
       <ulink url="https://cmocka.org/">cmocka</ulink> and
-      <ulink url="http://ftp.debian.org/debian/pool/main/d/datefudge/">datefudge</ulink> (used during the test suite if the DANE library is built), and
+      <ulink url="https://ftp.debian.org/debian/pool/main/d/datefudge/">datefudge</ulink> (used during the test suite if the DANE library is built), and
       <ulink url="&sourceforge-dl;/trousers/">Trousers</ulink> (Trusted Platform Module support)
     </para>
 
@@ -145,17 +144,12 @@
 <screen><userinput>./configure --prefix=/usr \
             --docdir=/usr/share/doc/gnutls-&gnutls-version; \
             --disable-guile \
+            --disable-rpath \
             --with-default-trust-store-pkcs11="pkcs11:" &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.  If a prior
-      version of <application>GnuTLS</application> (or the same version but
-      without all of the recommended dependencies) has been installed, some
-      tests may fail. If <filename>/usr/lib/libgnutls.so</filename> and the
-      target of that symlink are moved or renamed so that they cannot be found,
-      all tests should pass and the install procedure will restore
-      <filename>libgnutls.so</filename> and the versioned library it points to.
+      To test the results, issue: <command>make check</command>.
     </para>
 
     <para>
@@ -191,6 +185,13 @@ make</userinput></screen>
     <para>
       <parameter>--disable-guile</parameter>: This switch disables GUILE support,
       since GnuTLS does not support Guile-2.2.x yet.
+    </para>
+
+    <para>
+      <parameter>--disable-rpath</parameter>: This switch prevents building
+      GnuTLS utilities and tests with hardcoded runtime library search path.
+      Hardcoded rpath is unneeded for BLFS, and it causes test failures if
+      an old version of GnuTLS is installed.
     </para>
 
     <para>
@@ -258,7 +259,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is used to generate X.509 certificates, certificate requests,
-            and private keys.
+            and private keys
           </para>
           <indexterm zone="gnutls certtool">
             <primary sortas="b-certtool">certtool</primary>
@@ -271,7 +272,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is a tool used to generate and check DNS resource records
-            for the DANE protocol.
+            for the DANE protocol
           </para>
           <indexterm zone="gnutls danetool">
             <primary sortas="b-danetool">danetool</primary>
@@ -284,7 +285,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is a simple client program to set up a TLS connection to some
-            other computer.
+            other computer
           </para>
           <indexterm zone="gnutls gnutls-cli">
             <primary sortas="b-gnutls-cli">gnutls-cli</primary>
@@ -297,7 +298,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is a simple client program to set up a TLS connection to some
-            other computer and produces very verbose progress results.
+            other computer and produces very verbose progress results
           </para>
           <indexterm zone="gnutls gnutls-cli-debug">
             <primary sortas="b-gnutls-cli-debug">gnutls-cli-debug</primary>
@@ -310,7 +311,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is a simple server program that listens to incoming TLS
-            connections.
+            connections
           </para>
           <indexterm zone="gnutls gnutls-serv">
             <primary sortas="b-gnutls-serv">gnutls-serv</primary>
@@ -323,7 +324,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is a program that can parse and print information about OCSP
-            requests/responses, generate requests and verify responses.
+            requests/responses, generate requests and verify responses
           </para>
           <indexterm zone="gnutls ocsptool">
             <primary sortas="b-ocsptool">ocsptool</primary>
@@ -336,7 +337,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is a program that allows handling data from PKCS #11 smart cards
-            and security modules.
+            and security modules
           </para>
           <indexterm zone="gnutls p11tool">
             <primary sortas="b-p11tool">p11tool</primary>
@@ -348,7 +349,7 @@ make</userinput></screen>
         <term><command>psktool</command></term>
         <listitem>
           <para>
-            is a simple program that generates random keys for use with TLS-PSK.
+            is a simple program that generates random keys for use with TLS-PSK
           </para>
           <indexterm zone="gnutls psktool">
             <primary sortas="b-psktool">psktool</primary>
@@ -361,7 +362,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is a simple program that emulates the programs in the Stanford
-            SRP (Secure Remote Password) libraries using GnuTLS.
+            SRP (Secure Remote Password) libraries using GnuTLS
           </para>
           <indexterm zone="gnutls srptool">
             <primary sortas="b-srptool">srptool</primary>
@@ -373,7 +374,7 @@ make</userinput></screen>
         <term><filename class="libraryfile">libgnutls.so</filename></term>
         <listitem>
           <para>
-            contains the core API functions and X.509 certificate API functions.
+            contains the core API functions and X.509 certificate API functions
           </para>
           <indexterm zone="gnutls libgnutls">
             <primary sortas="c-libgnutls">libgnutls.so</primary>

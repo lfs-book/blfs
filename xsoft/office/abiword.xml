@@ -10,7 +10,7 @@
   <!ENTITY AbiWord-download-http
            "https://www.abisource.com/downloads/abiword/&AbiWord-version;/source/abiword-&AbiWord-version;.tar.gz">
   <!ENTITY AbiWord-download-ftp  " ">
-  <!ENTITY AbiWord-md5sum        "04e31887049a8c72297881bc153b77c4">
+  <!ENTITY AbiWord-md5sum        "a8f218b711450e4ccae43a0522e0e806">
   <!ENTITY AbiWord-size          "11 MB">
 
   <!ENTITY AbiWordDocs-download-http
@@ -18,7 +18,7 @@
   <!ENTITY AbiWordDocs-md5sum        "c92c0e1e2081db20757231a53d80c338">
   <!ENTITY AbiWordDocs-size          "1.5 MB">
 
-  <!ENTITY AbiWord-buildsize     "605 MB, with docs (76 MB installed)">
+  <!ENTITY AbiWord-buildsize     "690 MB, with docs (76 MB installed)">
   <!ENTITY AbiWord-time          "2.4 SBU (Using parallelism=4, with docs)">
 ]>
 
@@ -26,7 +26,6 @@
   <?dbhtml filename="AbiWord.html" ?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -44,7 +43,7 @@
       writing reports, letters and other formatted documents.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -97,7 +96,16 @@
           AbiWord Docs size: &AbiWordDocs-size;
         </para>
       </listitem>
+<!--
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/abiword-&AbiWord-version;-gcc11_fixes-1.patch"/>
+        </para>
+      </listitem>
+-->
     </itemizedlist>
+
 
     <bridgehead renderas="sect3">AbiWord Dependencies</bridgehead>
 
@@ -129,10 +137,10 @@
       <xref linkend="valgrind"/>.
       <ulink url="http://aiksaurus.sourceforge.net/">Aiksaurus</ulink>,
       <ulink url="http://helm.cs.unibo.it/mml-widget/">GtkMathView</ulink>,
-      <ulink url="http://sourceforge.net/projects/wvware">libwmf</ulink>,
-      <ulink url="http://sourceforge.net/projects/libwpd/">libwpd</ulink>,
-      <ulink url="http://sourceforge.net/projects/libwpg/">libwpg</ulink>,
-      <ulink url="http://sourceforge.net/projects/libwps/">libwps</ulink>,
+      <ulink url="https://sourceforge.net/projects/wvware">libwmf</ulink>,
+      <ulink url="https://sourceforge.net/projects/libwpd/">libwpd</ulink>,
+      <ulink url="https://sourceforge.net/projects/libwpg/">libwpg</ulink>,
+      <ulink url="https://sourceforge.net/projects/libwps/">libwps</ulink>,
       <ulink url="http://www.abisource.com/projects/link-grammar/">
       Link Grammar Parser</ulink>,
       <ulink url="&gnome-download-http;/loudmouth">Loudmouth</ulink>,
@@ -156,6 +164,14 @@
 
   <sect2 role="installation">
     <title>Installation of AbiWord</title>
+
+<!--
+    <para>
+      First, fix a build failure when using GCC-11:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../abiword-&AbiWord-version;-gcc11_fixes-1.patch</userinput></screen>
+-->
 
     <para>
       Install <application>AbiWord</application> by running the following
@@ -341,7 +357,7 @@ install -v -m640    /usr/share/abiword-&AbiWord-minor-version;/templates/normal.
           <para>
             is the word processor, a wrapper for the functions in
             libabiword-&AbiWord-minor-version; - it can also be used on the
-            command line, see <command>man 1 abiword</command>.
+            command line, see <command>man 1 abiword</command>
           </para>
           <indexterm zone="abiword abiword-prog">
             <primary sortas="b-abiword">abiword</primary>
@@ -353,7 +369,7 @@ install -v -m640    /usr/share/abiword-&AbiWord-minor-version;/templates/normal.
         <term><filename class="libraryfile">libabiword-&AbiWord-minor-version;.so</filename></term>
         <listitem>
           <para>
-            provides functions to access MS Word documents.
+            provides functions to access MS Word documents
           </para>
           <indexterm zone="abiword libabiword">
             <primary sortas="c-libabiword">libabiword-&AbiWord-minor-version;.so</primary>

@@ -18,7 +18,6 @@
   <?dbhtml filename="apr.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -40,7 +39,7 @@
       platforms.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,6 +82,19 @@
 
   <sect2 role="installation">
     <title>Installation of Apr</title>
+
+    <para>
+      First, fix a security issue:
+    </para>
+<!--
+<screen><userinput>sed '/{306/a \
+\
+    if (xt-&gt;tm_mon &lt; 0 || xt-&gt;tm_mon &gt;= 12) \
+        return APR_EBADDATE;' -i time/unix/time.c</userinput></screen>
+-->
+<screen><userinput>sed -e "/shift/i \
+\    if (xt-&gt;tm_mon &lt; 0 || xt-&gt;tm_mon &gt;= 12) return APR_EBADDATE;" \
+    -i time/unix/time.c</userinput></screen>
 
     <para>
       Install <application>Apr</application> by running the following commands:
@@ -146,7 +158,7 @@ make</userinput></screen>
           <para>
             is a shell script used to retrieve information about the apr
             library in the system. It is typically used to compile and link
-            against the library.
+            against the library
           </para>
           <indexterm zone="apr apr-1-config">
             <primary sortas="b-apr-1-config">apr-1-config</primary>
@@ -158,7 +170,7 @@ make</userinput></screen>
         <term><filename class="libraryfile">libapr-1.so</filename></term>
         <listitem>
           <para>
-            is the Apache Portable Runtime library.
+            is the Apache Portable Runtime library
           </para>
           <indexterm zone="apr libapr-1">
             <primary sortas="c-libapr-1">libapr-1.so</primary>
@@ -168,4 +180,5 @@ make</userinput></screen>
     </variablelist>
 
   </sect2>
+
 </sect1>

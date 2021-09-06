@@ -6,17 +6,16 @@
 
   <!ENTITY glib2-download-http "&gnome-download-http;/glib/&glib2-minor;/glib-&glib2-version;.tar.xz">
   <!ENTITY glib2-download-ftp  "&gnome-download-ftp;/glib/&glib2-minor;/glib-&glib2-version;.tar.xz">
-  <!ENTITY glib2-md5sum        "2df4576b1e4acfd118867eebb41d9956">
-  <!ENTITY glib2-size          "4.6 MB">
-  <!ENTITY glib2-buildsize     "205 MB (add 10 MB for tests)">
-  <!ENTITY glib2-time          "0.5 SBU (add 1.0 SBU for tests; both using parallelism=4)">
+  <!ENTITY glib2-md5sum        "07ba0e946bf6dcad36388675d2f2876f">
+  <!ENTITY glib2-size          "4.8 MB">
+  <!ENTITY glib2-buildsize     "104 MB (add 6 MB for tests)">
+  <!ENTITY glib2-time          "0.6 SBU (add 1.0 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="glib2" xreflabel="GLib-&glib2-version;">
   <?dbhtml filename="glib2.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       event loop, threads, dynamic loading and an object system.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -98,9 +97,10 @@
       <xref linkend="gdb"/> (for bindings),
       <xref linkend="DocBook"/>,
       <xref linkend="docbook-xsl"/>, 
-      <xref linkend="gtk-doc"/> (to build API documentation), and
+      <xref linkend="gtk-doc"/> (to build API documentation),
       <xref linkend="glib-networking"/> (for some tests, but this is a circular
-          dependency)
+      dependency), and
+      <xref linkend="sysprof"/>
     </para>
 
     <bridgehead renderas="sect4">Additional Runtime Dependencies</bridgehead>
@@ -159,7 +159,10 @@
         way so that later packages do not encounter conflicts:
       </para>
 
-<screen><userinput remap="pre">[ -e /usr/include/glib-2.0 ] &amp;&amp; mv -vf /usr/include/glib-2.0{,.old}</userinput></screen>
+<screen role="root"><userinput remap="pre">if [ -e /usr/include/glib-2.0 ]; then
+    rm -rf /usr/include/glib-2.0.old &amp;&amp;
+    mv -vf /usr/include/glib-2.0{,.old}
+fi</userinput></screen>
 
     </warning>
 
@@ -171,10 +174,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr      \
-      -Dman=true         \
-      -Dselinux=disabled \
-      ..                 &amp;&amp;
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Dman=true          \
+      ..                  &amp;&amp;
 ninja</userinput></screen>
 
     <note><para>
@@ -209,7 +212,9 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
 
     <para>
       To test the results, after having installed the package, issue:
-      <command>ninja test</command>.
+      <command>ninja test</command>. One test named
+      <literal>gio / file</literal> is known to fail if the test is ran as
+      the <systemitem class="username">root</systemitem> user.
       <!-- glib issue #1954: -->
       <!-- One test named gdbus-server-auth sometimes fails.-->
       <!-- SysV has the symlink now, so gdatetime no longer fails.-->
@@ -231,21 +236,19 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
       obsolete header file that interferes with some packages:
     </para>
 
-<screen role="root rebuild"><userinput>rm -f /usr/include/glib-2.0/glib/gurifuncs.h</userinput></screen>
+<screen role="nodump"><userinput>rm -f /usr/include/glib-2.0/glib/gurifuncs.h</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <para>
       <parameter>-Dman=true</parameter>: This switch causes the
       build to create and install the package man pages.
-    </para>
-
-    <para>
-      <parameter>-Dselinux=disabled</parameter>: This switch disables
-      support for selinux which is not supported in BLFS.
     </para>
 
     <para>
@@ -301,7 +304,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <listitem>
           <para>
             can be used to start applications and to send
-            messages to already-running instances of other applications.
+            messages to already-running instances of other applications
           </para>
           <indexterm zone="glib2 gapplication">
             <primary sortas="b-gapplication">application</primary>
@@ -313,7 +316,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <listitem>
           <para>
             is a simple tool used for working with
-            <application>D-Bus</application> objects.
+            <application>D-Bus</application> objects
           </para>
           <indexterm zone="glib2 gdbus">
             <primary sortas="b-gdbus">gdbus</primary>
@@ -326,7 +329,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <listitem>
           <para>
             is used to generate code and/or documentation for one or
-            more <application>D-Bus</application> interfaces.
+            more <application>D-Bus</application> interfaces
           </para>
           <indexterm zone="glib2 gdbus-codegen">
             <primary sortas="b-gdbus-codegen">gdbus-codegen</primary>
@@ -339,7 +342,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <listitem>
           <para>
             is a utility that makes many <application>GIO</application>
-            features available from the command line.
+            features available from the command line
           </para>
           <indexterm zone="glib2 gio">
             <primary sortas="b-gio">gio</primary>
@@ -353,7 +356,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
           <para>
             is used to create a <filename>giomodule.cache</filename> file in 
             the listed directories. This file lists the implemented extension 
-            points for each module that has been found.
+            points for each module that has been found
           </para>
           <indexterm zone="glib2 gio-querymodules">
             <primary sortas="b-gio-querymodules">gio-querymodules</primary>
@@ -367,7 +370,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
           <para>
             is used to read the resource description from a file and
             the files that it references to create a binary resource
-            bundle that is suitable for use with the GResource API.
+            bundle that is suitable for use with the GResource API
           </para>
           <indexterm zone="glib2 glib-compile-resources">
             <primary sortas="b-glib-compile-resources">glib-compile-resources</primary>
@@ -381,7 +384,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
           <para>
             is used to compile all the GSettings XML schema files
             in a directory into a binary file with the name 
-            <filename>gschemas.compiled</filename> that can be used by GSettings.
+            <filename>gschemas.compiled</filename> that can be used by GSettings
           </para>
           <indexterm zone="glib2 glib-compile-schemas">
             <primary sortas="b-glib-compile-resources">glib-compile-schemas</primary>
@@ -393,7 +396,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <term><command>glib-genmarshal</command></term>
         <listitem>
           <para>
-            is a C code marshaller generation utility for GLib closures.
+            is a C code marshaller generation utility for GLib closures
           </para>
           <indexterm zone="glib2 glib-genmarshal">
             <primary sortas="b-glib-genmarshal">glib-genmarshal</primary>
@@ -406,7 +409,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <listitem>
           <para>
             is a variant of the <application>gettext</application>
-            internationalization utility.
+            internationalization utility
           </para>
           <indexterm zone="glib2 glib-gettextize">
             <primary sortas="b-glib-gettextize">glib-gettextize</primary>
@@ -418,7 +421,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <term><command>glib-mkenums</command></term>
         <listitem>
           <para>
-            is a C language enum description generation utility.
+            is a C language enum description generation utility
           </para>
           <indexterm zone="glib2 glib-mkenums">
             <primary sortas="b-glib-mkenums">glib-mkenums</primary>
@@ -430,7 +433,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <term><command>gobject-query</command></term>
         <listitem>
           <para>
-            is a small utility that draws a tree of types.
+            is a small utility that draws a tree of types
           </para>
           <indexterm zone="glib2 gobject-query">
             <primary sortas="b-gobject-query">gobject-query</primary>
@@ -442,7 +445,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <term><command>gresource</command></term>
         <listitem>
           <para>
-            offers a simple command line interface to GResource.
+            offers a simple command line interface to GResource
           </para>
           <indexterm zone="glib2 gresource">
             <primary sortas="b-gresource">gresource</primary>
@@ -454,7 +457,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <term><command>gsettings</command></term>
         <listitem>
           <para>
-            offers a simple command line interface to GSettings.
+            offers a simple command line interface to GSettings
           </para>
           <indexterm zone="glib2 gsettings">
             <primary sortas="b-gsettings">gsettings</primary>
@@ -466,7 +469,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <term><command>gtester</command></term>
         <listitem>
           <para>
-            is a test running utility.
+            is a test running utility
           </para>
           <indexterm zone="glib2 gtester">
             <primary sortas="b-gtester">gtester</primary>
@@ -478,7 +481,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
         <term><command>gtester-report</command></term>
         <listitem>
           <para>
-            is a test report formatting utility.
+            is a test report formatting utility
           </para>
           <indexterm zone="glib2 gtester-report">
             <primary sortas="b-gtester-report">gtester-report</primary>
@@ -491,7 +494,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
           <listitem>
           <para>
             contain low-level core libraries for the
-            <application>GIMP</application> Toolkit.
+            <application>GIMP</application> Toolkit
           </para>
           <indexterm zone="glib2 GLib-libraries">
             <primary sortas="c-GLib-libraries">Glib libraries</primary>

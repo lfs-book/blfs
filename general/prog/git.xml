@@ -8,22 +8,22 @@
 
   <!ENTITY git-download-http "&git-root;/git-&git-version;.tar.xz">
   <!ENTITY git-download-ftp  " ">
-  <!ENTITY git-md5sum        "2457ee7e198bb949fecb0af94f7361a3">
-  <!ENTITY git-size          "6.0 MB">
+  <!ENTITY git-md5sum        "0990ff97af1511be0d9f0d3223dd4359">
+
+  <!ENTITY git-size          "6.2 MB">
   <!-- using gcc-8.1 the build and install are much bigger than with gcc-7.3 -->
   <!-- but people keep forgetting that an install not only needs the nett build
        space, it also needs the install space (or DESTDIR) -->
-  <!ENTITY git-buildsize     "365 MB (with downloaded documentation, 135 MB installed)">
+  <!ENTITY git-buildsize     "332 MB (with downloaded documentation, add 16 MB to build documentation)">
   <!-- With 2.23.0, there was a large increase in time for tests. Possibly disk related? -->
   <!-- Confirmed that it is disk related.-->
-  <!ENTITY git-time          "0.3 SBU (with parallelism=4; add 4.1 SBU for tests with parallelism=4)">
+  <!ENTITY git-time          "0.4 SBU (with parallelism=4; add 0.4 SBU for building documentation and 2.1 SBU for tests, both with parallelism=4)">
 ]>
 
 <sect1 id="git" xreflabel="git-&git-version;">
   <?dbhtml filename="git.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -51,7 +51,7 @@
       <application>Team Foundation Server</application>.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -117,23 +117,32 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref role="runtime" linkend="gnupg2"/> (runtime, may be used to sign
+      <application>Git</application> commits or tags, or verify the signatures
+      of them),
+      <xref role="runtime" linkend="openssh"/> (runtime, needed to use
+      <application>Git</application> over ssh),
       <xref linkend="pcre2"/> (<emphasis>or</emphasis> the deprecated <xref
       role="nodep" linkend="pcre"/>), in either case configured with
       <literal>--enable-jit</literal>,
-      <xref linkend="subversion"/> with Perl bindings (for <command>git
-         svn</command>),
+      <xref role="runtime" linkend="subversion"/> with Perl bindings
+         (runtime, for <command>git svn</command>),
       <xref role="runtime" linkend="tk"/>
       (gitk, a simple <application>Git</application>
-      repository viewer, uses <application>Tk</application> at runtime), and
-      <xref linkend="valgrind"/>
+      repository viewer, uses <application>Tk</application> at runtime),
+      <xref linkend="valgrind"/>,
+      <ulink url="https://metacpan.org/pod/Authen::SASL">Authen::SASL</ulink> and
+      <ulink url="https://metacpan.org/pod/MIME::Base64">MIME::Base64</ulink>
+      (both runtime, for <command>git send-email</command>)
     </para>
 
     <bridgehead renderas="sect4">Optional (to create the man pages, html docs
     and other docs)</bridgehead>
     <para role="optional">
       <xref linkend="xmlto"/> and
-      <xref linkend="asciidoc"/> or
-      <ulink url="http://asciidoctor.org/">AsciiDoctor</ulink>, and also
+      <xref linkend="asciidoc"/>
+      <!-- or xref linkend="asciidoctor", doesn't work now because it needs docbook-xsl-ns -->,
+      and also
       <ulink url="http://dblatex.sourceforge.net/">dblatex</ulink>
       (for the PDF version of the user manual), and
       <ulink url="http://docbook2x.sourceforge.net/">docbook2x</ulink> to
@@ -270,7 +279,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
     </para>
 
     <para>
-      <option>--with-python=python3</option>: Use this switch to use
+      <parameter>--with-python=python3</parameter>: Use this switch to use
       <application>Python 3</application>, instead of the EOL'ed
       <application>Python 2</application>. Python is used for the
       <command>git p4</command> interface to Perforce repositories,
@@ -369,7 +378,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
         <term><command>git</command></term>
         <listitem>
           <para>
-            is the stupid content tracker.
+            is the stupid content tracker
           </para>
           <indexterm zone="git git-prog">
             <primary sortas="b-git">git</primary>
@@ -381,7 +390,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
         <term><command>git-cvsserver</command></term>
         <listitem>
           <para>
-            is a CVS server emulator for <application>Git</application>.
+            is a CVS server emulator for <application>Git</application>
           </para>
           <indexterm zone="git git-cvsserver">
             <primary sortas="b-git-cvsserver">git-cvsserver</primary>
@@ -394,7 +403,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
         <listitem>
           <para>
             is a graphical <application>Git</application> repository browser
-            (needs <xref linkend="tk"/>).
+            (needs <xref linkend="tk"/>)
           </para>
           <indexterm zone="git gitk">
             <primary sortas="b-gitk">gitk</primary>
@@ -407,7 +416,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
         <listitem>
           <para>
             is invoked by <command>git send-pack</command> and updates the
-            repository with the information fed from the remote end.
+            repository with the information fed from the remote end
           </para>
           <indexterm zone="git git-receive-pack">
             <primary sortas="b-git-receive-pack">git-receive-pack</primary>
@@ -420,7 +429,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
         <listitem>
           <para>
             is a login shell for SSH accounts to provide restricted Git
-            access.
+            access
           </para>
           <indexterm zone="git git-shell">
             <primary sortas="b-git-shell">git-shell</primary>
@@ -433,7 +442,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
         <listitem>
           <para>
             is invoked by <command>git archive --remote</command> and sends
-            a generated archive to the other end over the git protocol.
+            a generated archive to the other end over the git protocol
           </para>
           <indexterm zone="git git-upload-archive">
             <primary sortas="b-git-upload-archive">git-upload-archive</primary>
@@ -447,7 +456,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
           <para>
             is invoked by <command>git fetch-pack</command>, it discovers
             what objects the other side is missing, and sends them after
-            packing.
+            packing
           </para>
           <indexterm zone="git git-upload-pack">
             <primary sortas="b-git-upload-pack">git-upload-pack</primary>

@@ -5,11 +5,6 @@
 ]>
 
 <!--
-$LastChangedBy$
-$Date$
--->
-
-<!--
   This stylesheet creates a script to copy the patches referenced
   in the BLFS book from the patches repository to the blfs
   download area.  It is very specific to the installation on
@@ -23,7 +18,7 @@ $Date$
 
     <!-- Allow select the dest dir at runtime -->
   <xsl:param name="dest.dir">
-    <xsl:value-of select="concat('/srv/www/', substring-after('&patch-root;', 'http://'))"/>
+    <xsl:value-of select="concat('/srv/www/', substring-after('&patch-root;', 'https://'))"/>
   </xsl:param>
 
   <xsl:template match="/">
@@ -45,7 +40,7 @@ $Date$
       <!-- Ensure correct ownership -->
     <xsl:text>&#x0a;chgrp lfswww *.patch &amp;&amp;&#x0a;</xsl:text>
     <xsl:text>if [ `wc -l copyerrs|sed 's/ *//' |cut -f1 -d' '` -gt 0 ]; then
-  mail -s "Missing BLFS patches" blfs-book@linuxfromscratch.org &lt; copyerrs
+  mail -s "Missing BLFS patches" blfs-book@lists.linuxfromscratch.org &lt; copyerrs
 fi</xsl:text>
     <xsl:text>&#x0a;exit&#x0a;</xsl:text>
   </xsl:template>
@@ -86,6 +81,10 @@ fi</xsl:text>
           <!-- x265 -->
         <xsl:when test="contains($patch.name, 'x265')">
           <xsl:text>/x265</xsl:text>
+        </xsl:when>
+          <!-- node -->
+        <xsl:when test="contains($patch.name, 'node')">
+          <xsl:text>/node</xsl:text>
         </xsl:when>
           <!-- General rule -->
         <xsl:otherwise>

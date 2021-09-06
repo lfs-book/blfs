@@ -6,9 +6,9 @@
 
   <!ENTITY libwacom-download-http "https://github.com/linuxwacom/libwacom/releases/download/libwacom-&libwacom-version;/libwacom-&libwacom-version;.tar.bz2">
   <!ENTITY libwacom-download-ftp  " ">
-  <!ENTITY libwacom-md5sum        "364bd470a35334b1a7fce70a359796d5">
-  <!ENTITY libwacom-size          "504 KB">
-  <!ENTITY libwacom-buildsize     "7.1 MB (with tests)">
+  <!ENTITY libwacom-md5sum        "03a360811b094ab97b3e2c1feb1db599">
+  <!ENTITY libwacom-size          "507 KB">
+  <!ENTITY libwacom-buildsize     "6.2 MB (with tests)">
   <!ENTITY libwacom-time          "less than 0.1 SBU (with tests)">
 ]>
 
@@ -16,7 +16,6 @@
   <?dbhtml filename="libwacom.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -34,7 +33,7 @@
       to identify wacom tablets and their model-specific features.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -115,7 +114,7 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dudev-dir=/lib/udev -Dtests=disabled .. &amp;&amp;
+meson --prefix=/usr --buildtype=release -Dtests=disabled .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -136,10 +135,8 @@ ninja</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para>
-      <parameter>-Dudev-dir=/lib/udev</parameter>: This parameter sets the
-      proper installation directory for udev rules.
-    </para>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
       <parameter>-Dtests=disabled</parameter>: This parameter disables some of
@@ -160,7 +157,10 @@ ninja</userinput></screen>
 
       <seglistitem>
         <seg>
-          libwacom-list-local-devices
+          libwacom-list-devices,
+          libwacom-list-local-devices,
+          libwacom-show-stylus, and
+          libwacom-update-db
         </seg>
         <seg>
           libwacom.so
@@ -177,14 +177,50 @@ ninja</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
+      <varlistentry id="libwacom-list-devices">
+        <term><command>libwacom-list-devices</command></term>
+        <listitem>
+          <para>
+            lists all tablet devices that are supported by libwacom
+          </para>
+          <indexterm zone="libwacom libwacom-list-devices">
+            <primary sortas="b-libwacom-list-devices">libwacom-list-devices</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libwacom-list-local-devices">
         <term><command>libwacom-list-local-devices</command></term>
         <listitem>
           <para>
-            lists tablet devices that are connected to the system.
+            lists tablet devices that are connected to the system
           </para>
           <indexterm zone="libwacom libwacom-list-local-devices">
             <primary sortas="b-libwacom-list-local-devices">libwacom-list-local-devices</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libwacom-show-stylus">
+        <term><command>libwacom-show-stylus</command></term>
+        <listitem>
+          <para>
+            lists tablet stylus IDs
+          </para>
+          <indexterm zone="libwacom libwacom-show-stylus">
+            <primary sortas="b-libwacom-show-stylus">libwacom-show-stylus</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libwacom-update-db">
+        <term><command>libwacom-update-db</command></term>
+        <listitem>
+          <para>
+            updates the system according to the current set of tablet data files
+          </para>
+          <indexterm zone="libwacom libwacom-update-db">
+            <primary sortas="b-libwacom-update-db">libwacom-update-db</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -193,7 +229,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libwacom.so</filename></term>
         <listitem>
           <para>
-            contains functions used for accessing Wacom information.
+            contains functions used for accessing Wacom information
           </para>
           <indexterm zone="libwacom libwacom-lib">
             <primary sortas="c-libwacom">libwacom.so</primary>

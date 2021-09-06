@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY evolution-data-server-download-http
-           "&gnome-download-http;/evolution-data-server/&gnome-minor-38;/evolution-data-server-&evolution-data-server-version;.tar.xz">
+           "&gnome-download-http;/evolution-data-server/&gnome-minor-40;/evolution-data-server-&evolution-data-server-version;.tar.xz">
   <!ENTITY evolution-data-server-download-ftp
-           "&gnome-download-ftp;/evolution-data-server/&gnome-minor-38;/evolution-data-server-&evolution-data-server-version;.tar.xz">
-  <!ENTITY evolution-data-server-md5sum        "392438d91772ea9873f77e2a032f55de">
+           "&gnome-download-ftp;/evolution-data-server/&gnome-minor-40;/evolution-data-server-&evolution-data-server-version;.tar.xz">
+  <!ENTITY evolution-data-server-md5sum        "eb47d38b72b64e863f2c960d37be311e">
   <!ENTITY evolution-data-server-size          "4.4 MB">
-  <!ENTITY evolution-data-server-buildsize     "205 MB (with tests)">
-  <!ENTITY evolution-data-server-time          "2.3 SBU (using parallelism=4, with tests)">
+  <!ENTITY evolution-data-server-buildsize     "215 MB (with tests)">
+  <!ENTITY evolution-data-server-time          "1.2 SBU (using parallelism=4, with tests)">
 ]>
 
 <sect1 id="evolution-data-server"
@@ -19,7 +19,6 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
   <?dbhtml filename="evolution-data-server.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -40,7 +39,7 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       other packages as well.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,7 +74,17 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/evolution-data-server-&evolution-data-server-version;-cmake_fix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+-->
     <bridgehead renderas="sect3">Evolution Data Server Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -112,13 +121,7 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       <xref linkend="mitkrb"/>,
       a <xref linkend="server-mail"/> (that provides a <command>sendmail</command> command),
       <xref linkend="openldap"/>, and
-      <!--<ulink url="https://gitlab.com/groups/accounts-sso">Accounts-SSO</ulink>,
-      <ulink url="https://github.com/google/google-authenticator/">Google Authenticator</ulink>, and-->
       <ulink url="https://github.com/googlei18n/libphonenumber/">libphonenumber</ulink>
-      <!-- For the above commented entries - I can't seem to find references to
-      these in 3.32.0, so they've been commented.-->
-      <!-- Phone Number support via libphonenumber spotted in 3.34.1, check
-           CMakeLists.txt -->
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -134,8 +137,17 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       remove old and incompatible versions of the systemd units:
     </para>
 
-<screen role="root"><userinput remap="pre">rm -v /usr/lib/systemd/user/evolution-*.service</userinput></screen>
+<screen role="root"
+        revision="systemd"><userinput remap="pre">rm -fv /usr/lib/systemd/user/evolution-*.service</userinput></screen>
+<!--
+    <para>
+      <phrase revision="sysv">First,</phrase>
+      <phrase revision="systemd">Then,</phrase> fix an issue with
+      cmake-3.20.1:
+    </para>
 
+<screen><userinput>patch -Np1 -i ../evolution-data-server-&evolution-data-server-version;-cmake_fix-1.patch</userinput></screen>
+-->
     <para>
       Install <application>Evolution Data Server</application> by running
       the following commands:
@@ -173,7 +185,9 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr   \
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>.
+      To test the results, issue: <command>make test</command>. <!--One test,
+      <filename>test-book-client-custom-summary</filename>, is known to
+      fail due to an internal test suite error.-->
     </para>
 
     <para>
@@ -188,7 +202,7 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-DENABLE_GOOGLE=ON</parameter>: This default flag enables
+      <parameter>-DENABLE_GOOGLE=ON</parameter>: This switch enables
       access to google services via <xref linkend="libgdata"/> and also
       enables the Google Authentication option.
     </para>
@@ -264,7 +278,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the <application>Evolution</application> MIME message
-            handling library.
+            handling library
           </para>
           <indexterm zone="evolution-data-server libcamel-1">
             <primary sortas="c-libcamel-1">libcamel-1.2.so</primary>
@@ -277,7 +291,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the utility library for
-            <application>Evolution Data Server</application> Backends.
+            <application>Evolution Data Server</application> Backends
           </para>
           <indexterm zone="evolution-data-server libebackend-1">
             <primary sortas="c-libebackend-1">libebackend-1.2.so</primary>
@@ -290,7 +304,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the client library for <application>Evolution</application>
-            address books.
+            address books
           </para>
           <indexterm zone="evolution-data-server libebook-1">
             <primary sortas="c-libebook-1">libebook-1.2.so</primary>
@@ -303,7 +317,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the client library for <application>Evolution</application>
-            contacts.
+            contacts
           </para>
           <indexterm zone="evolution-data-server libebook-contacts-1">
             <primary sortas="c-libebook-contacts-1">libebook-contacts-1.2.so</primary>
@@ -316,7 +330,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the client library for <application>Evolution</application>
-            calendars.
+            calendars
           </para>
           <indexterm zone="evolution-data-server libecal-1">
             <primary sortas="c-libecal-1">libecal-1.2.so</primary>
@@ -329,7 +343,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the backend library for <application>Evolution</application>
-            address books.
+            address books
           </para>
           <indexterm zone="evolution-data-server libedata-book-1">
             <primary sortas="c-libedata-book-1">libedata-book-1.2.so</primary>
@@ -342,7 +356,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the backend library for <application>Evolution</application>
-            calendars.
+            calendars
           </para>
           <indexterm zone="evolution-data-server libedata-cal-1">
             <primary sortas="c-libedata-cal-1">libedata-cal-1.2.so</primary>
@@ -355,7 +369,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the utility library for
-            <application>Evolution Data Server</application>.
+            <application>Evolution Data Server</application>
           </para>
           <indexterm zone="evolution-data-server libedataserver-1">
             <primary sortas="c-libedataserver-1">libedataserver-1.2.so</primary>
@@ -368,7 +382,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the GUI utility library for
-            <application>Evolution Data Server</application>.
+            <application>Evolution Data Server</application>
           </para>
           <indexterm zone="evolution-data-server libedataserverui-3">
             <primary sortas="c-libedataserverui-3">libedataserverui-3.0.so</primary>
@@ -381,7 +395,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the server test utility library for
-            <application>Evolution Data Server</application>.
+            <application>Evolution Data Server</application>
           </para>
           <indexterm zone="evolution-data-server libetestserverutils-1">
             <primary sortas="c-libetestserverutils-1">libetestserverutils.so</primary>

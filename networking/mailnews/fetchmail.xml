@@ -6,9 +6,9 @@
 
   <!ENTITY fetchmail-download-http "&sourceforge-dl;/fetchmail/fetchmail-&fetchmail-version;.tar.xz">
   <!ENTITY fetchmail-download-ftp  " ">
-  <!ENTITY fetchmail-md5sum        "8c13d8f2045bbcdafc6747082041714d">
+  <!ENTITY fetchmail-md5sum        "091dcd5462f205dbc0597e7ad73d3e15">
   <!ENTITY fetchmail-size          "1.3 MB">
-  <!ENTITY fetchmail-buildsize     "17 MB including tests">
+  <!ENTITY fetchmail-buildsize     "16 MB including tests">
   <!ENTITY fetchmail-time          "0.1 SBU including tests">
 ]>
 
@@ -16,7 +16,6 @@
   <?dbhtml filename="fetchmail.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       then be read by normal mail user agents.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -84,10 +83,8 @@
       <!-- hesiod was at ftp://athena-dist.mit.edu/pub/ATHENA/hesiod/ but that
       is dead. Debian had 3.2.1, git hub has a very old 3.1.
       libintl is part of gettext so enabled by default on LFS -->
-      <xref linkend="mitkrb"/>, and
-      <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/">
-        libgssapi
-      </ulink>
+      <xref linkend="mitkrb"/> and
+      <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/">libgssapi</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional (for running fetchmailconf)</bridgehead>
@@ -121,7 +118,7 @@
 
 <screen><userinput>PYTHON=python3 \
 ./configure --prefix=/usr \
- --enable-fallback=procmail &amp;&amp;
+            --enable-fallback=procmail &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -175,6 +172,15 @@ chown -v fetchmail:nogroup /usr/bin/fetchmail</userinput></screen>
 
     <sect3>
       <title>Configuration Information</title>
+
+      <note>
+        <para>
+          If you are connecting to a mailserver that supports SSL/TLS-wrapped
+          or "implicit" mode on a dedicated port (default 993) you should use
+          <command>fetchmail --ssl</command> or add the option 'ssl' in an
+          rcfile.
+        </para>
+      </note>
 
 <screen><userinput>cat &gt; ~/.fetchmailrc &lt;&lt; "EOF"
 <literal>
@@ -245,7 +251,7 @@ chmod -v 0600 ~/.fetchmailrc</userinput></screen>
           <para>
             when executed as a user, this will source
             <filename>~/.fetchmailrc</filename> and download the appropriate
-            mail.
+            mail
           </para>
           <indexterm zone="fetchmail fetchmail-prog">
             <primary sortas="b-fetchmail">fetchmail</primary>
@@ -262,7 +268,7 @@ chmod -v 0600 ~/.fetchmailrc</userinput></screen>
             a <application>Tk</application> GUI interface. It is written for
             <application>Python</application> and the Tkinter module but is
             labelled with a WARNING that it needs to be updated
-            for fetchmail 6.4's SSL options and other recent new options.
+            for fetchmail 6.4's SSL options and other recent new options
           </para>
           <!-- keep this description commented but fetchmailconf
                has been updated in the last months (June 2020). It can use

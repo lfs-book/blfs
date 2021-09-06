@@ -5,20 +5,19 @@
   %general-entities;
 
   <!ENTITY gnome-settings-daemon-download-http
-           "&gnome-download-http;/gnome-settings-daemon/&gnome-minor-38;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+           "&gnome-download-http;/gnome-settings-daemon/&gnome-40;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
   <!ENTITY gnome-settings-daemon-download-ftp
-           "&gnome-download-ftp;/gnome-settings-daemon/&gnome-minor-38;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
-  <!ENTITY gnome-settings-daemon-md5sum        "ac40a03be99379de432b822c0001904e">
+           "&gnome-download-ftp;/gnome-settings-daemon/&gnome-40;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+  <!ENTITY gnome-settings-daemon-md5sum        "b5cbe98f5d5fe430e402048d5817f875">
   <!ENTITY gnome-settings-daemon-size          "1.4 MB">
-  <!ENTITY gnome-settings-daemon-buildsize     "46 MB">
-  <!ENTITY gnome-settings-daemon-time          "1.1 SBU (Using parallelism=4)">
+  <!ENTITY gnome-settings-daemon-buildsize     "29 MB">
+  <!ENTITY gnome-settings-daemon-time          "0.1 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="gnome-settings-daemon" xreflabel="gnome-settings-daemon-&gnome-settings-daemon-version;">
   <?dbhtml filename="gnome-settings-daemon.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -37,7 +36,7 @@
       and the applications that run under it.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,6 +76,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
+      <xref linkend="alsa-lib"/>,
       <xref linkend="colord"/>,
       <xref linkend="fontconfig"/>,
       <xref linkend="gcr"/>,
@@ -145,7 +145,7 @@
        Next, fix backlight functionality in gnome-control-center:
     </para>
 
-<screen revision="sysv"><userinput>sed -i 's/(backlight->logind_proxy)/(0)/' \
+<screen revision="sysv"><userinput>sed -e 's/(backlight->logind_proxy)/(0)/' \
     -i plugins/power/gsd-backlight.c</userinput></screen>
 
     <para revision="systemd">
@@ -162,13 +162,13 @@
 <screen revision='sysv'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dsystemd=false .. &amp;&amp;
+meson --prefix=/usr --buildtype=release -Dsystemd=false .. &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision='systemd'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr .. &amp;&amp;
+meson --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <!-- [renodr, June 29th, 2019]: for some reason, on elogind, all tests
@@ -193,6 +193,14 @@ ninja</userinput></screen>
 
   </sect2>
 
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
+  </sect2>
+
   <sect2 role="content">
     <title>Contents</title>
 
@@ -209,8 +217,9 @@ ninja</userinput></screen>
           libgsd.so
         </seg>
         <seg>
-          /usr/include/gnome-settings-daemon-3.0,
-          /usr/lib/gnome-settings-daemon-3.0, and
+          /etc/xdg/Xwayland-session.d,
+          /usr/include/gnome-settings-daemon-40,
+          /usr/lib/gnome-settings-daemon-40, and
           /usr/share/gnome-settings-daemon
         </seg>
       </seglistitem>

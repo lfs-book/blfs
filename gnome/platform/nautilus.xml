@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY nautilus-download-http
-           "&gnome-download-http;/nautilus/&gnome-minor-38;/nautilus-&nautilus-version;.tar.xz">
+           "&gnome-download-http;/nautilus/&gnome-40;/nautilus-&nautilus-version;.tar.xz">
   <!ENTITY nautilus-download-ftp
-           "&gnome-download-ftp;/nautilus/&gnome-minor-38;/nautilus-&nautilus-version;.tar.xz">
-  <!ENTITY nautilus-md5sum        "a94c730fe79104859035ae51e0ba0bd7">
+           "&gnome-download-ftp;/nautilus/&gnome-40;/nautilus-&nautilus-version;.tar.xz">
+  <!ENTITY nautilus-md5sum        "62f856359dcb2964b5cb2e02e90ad2dd">
   <!ENTITY nautilus-size          "3.1 MB">
-  <!ENTITY nautilus-buildsize     "154 MB (with tests)">
+  <!ENTITY nautilus-buildsize     "160 MB (with tests)">
   <!ENTITY nautilus-time          "0.3 SBU (with tests, at -j4)">
 ]>
 
@@ -18,7 +18,6 @@
   <?dbhtml filename="nautilus.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       <application>GNOME</application> file manager.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -80,6 +79,7 @@
       <xref linkend="gexiv2"/>,
       <xref linkend="gnome-autoar"/>,
       <xref linkend="gnome-desktop"/>,
+      <xref linkend="libhandy1"/>,
       <xref linkend="libnotify"/>,
       <xref linkend="libseccomp"/>, and
       <xref linkend="tracker3-miners"/>
@@ -90,8 +90,9 @@
       <xref linkend="desktop-file-utils"/>,
       <xref linkend="exempi"/>,
       <xref linkend="gobject-introspection"/>,
-      <xref linkend="gst10-plugins-base"/>, and
-      <xref linkend="libexif"/>
+      <xref linkend="gst10-plugins-base"/>,
+      <xref linkend="libexif"/>, and
+      <xref linkend="libportal"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -122,9 +123,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr      \
-      -Dselinux=false    \
-      -Dpackagekit=false \
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Dselinux=false     \
+      -Dpackagekit=false  \
       .. &amp;&amp;
 
 ninja</userinput></screen>
@@ -148,6 +150,9 @@ ninja</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <para>
       <parameter>-Dselinux=false</parameter>: This switch disables the use
       of selinux which isn't supported by BLFS.
@@ -156,6 +161,11 @@ ninja</userinput></screen>
     <para>
       <parameter>-Dpackagekit=false</parameter>: This switch disables the use
       of PackageKit which isn't suitable for BLFS.
+    </para>
+
+    <para>
+      <option>-Dlibportal=false</option>: Use this switch if you do not
+      have <xref linkend="libportal"/> installed.
     </para>
 
   </sect2>
@@ -192,7 +202,7 @@ ninja</userinput></screen>
         <term><command>nautilus</command></term>
         <listitem>
           <para>
-            is the <application>GNOME</application> file manager.
+            is the <application>GNOME</application> file manager
           </para>
           <indexterm zone="nautilus nautilus-prog">
             <primary sortas="b-nautilus">nautilus</primary>
@@ -204,7 +214,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libnautilus-extension.so</filename></term>
         <listitem>
           <para>
-            supplies the functions needed by the file manager extensions.
+            supplies the functions needed by the file manager extensions
           </para>
           <indexterm zone="nautilus libnautilus-extension">
             <primary sortas="c-libnautilus-extension">libnautilus-extension.so</primary>

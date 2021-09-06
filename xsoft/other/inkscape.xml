@@ -5,17 +5,16 @@
   %general-entities;
   <!ENTITY inkscape-download-http "https://media.inkscape.org/dl/resources/file/inkscape-&inkscape-version;.tar.xz">
   <!ENTITY inkscape-download-ftp  " ">
-  <!ENTITY inkscape-md5sum        "daefc5212b72e49eff41a7681fd5e993">
-  <!ENTITY inkscape-size          "31 MB">
-  <!ENTITY inkscape-buildsize     "723 MB (165 MB installed)">
-  <!ENTITY inkscape-time          "5.8 SBU (with parallelism=4)">
+  <!ENTITY inkscape-md5sum        "45e38e25fb93c7c91c51b84b9e4cf0ee">
+  <!ENTITY inkscape-size          "33 MB">
+  <!ENTITY inkscape-buildsize     "677 MB (169 MB installed)">
+  <!ENTITY inkscape-time          "6.7 SBU (with parallelism=4)">
 ]>
 
 <sect1 id="inkscape" xreflabel="Inkscape-&inkscape-version;">
   <?dbhtml filename="inkscape.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -34,7 +33,7 @@
       changing SVG images.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,18 +68,17 @@
         </para>
       </listitem>
     </itemizedlist>
-
-    <!-- With 1.0.0, there is now a dependency on IM7 instead of IM6.
-         It's explicitly searched for in CMakeLists.txt.
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch: <ulink
-          url="&patch-root;/inkscape-&inkscape-version;-use_versioned_ImageMagick6-1.patch"/>
+          url="&patch-root;/inkscape-&inkscape-version;-glib_2.68-1.patch"/>
         </para>
       </listitem>
-      -->
+    </itemizedlist>
+-->
       <!-- These are not needed right now. Inkscape builds/runs fine with the
            latest poppler as of this update (0.87.0). However, history says
            that almost every poppler version has broke inkscape, and history
@@ -106,7 +104,7 @@
       <para>
         The tarball <emphasis>inkscape-&inkscape-version;.tar.xz</emphasis>
         will extract to
-        <emphasis>inkscape-&inkscape-version;_2020-09-07_3bc2e813f5</emphasis>.
+        <emphasis>inkscape-&inkscape-version;_2021-05-24_c4e8f9ed74</emphasis>.
       </para>
     </note>
 
@@ -198,19 +196,21 @@
 <screen remap="test"><userinput>bash download-gtest.sh</userinput></screen>
     -->
 
+<!--
     <para>
       First, fix build failure with glibc-2.32:
     </para>
 
 <screen><userinput remap="pre">sed -i '/#include &lt;iostream&gt;/a #include &lt;atomic&gt;' src/ui/tool/node.cpp</userinput></screen>
+-->
 
     <para>
       Install <application>Inkscape</application> by running the following
       commands:
     </para>
 
-<screen><userinput>mkdir build &amp;&amp;
-cd    build &amp;&amp;
+<screen><userinput>mkdir build                       &amp;&amp;
+cd    build                       &amp;&amp;
 
 cmake -DCMAKE_INSTALL_PREFIX=/usr \
       -DCMAKE_BUILD_TYPE=Release  \
@@ -291,7 +291,7 @@ make</userinput></screen>
         <term><command>inkscape</command></term>
         <listitem>
           <para>
-            is a SVG (Scalable Vector Graphics) editing program.
+            is a SVG (Scalable Vector Graphics) editing program
           </para>
           <indexterm zone="inkscape inkscape-prog">
             <primary sortas="b-inkscape">inkscape</primary>
@@ -303,7 +303,7 @@ make</userinput></screen>
         <term><command>inkview</command></term>
         <listitem>
           <para>
-            is a simple program for displaying SVG files.
+            is a simple program for displaying SVG files
           </para>
           <indexterm zone="inkscape inkview">
             <primary sortas="b-inkview">inkview</primary>
@@ -315,7 +315,7 @@ make</userinput></screen>
         <term><filename class="libraryfile">libinkscape_base.so</filename></term>
         <listitem>
           <para>
-            provides the routines used by inkscape and inkview.
+            provides the routines used by inkscape and inkview
           </para>
           <indexterm zone="inkscape libinkscape_base">
             <primary sortas="c-libinkscape_base">libinkscape_base.so</primary>

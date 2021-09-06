@@ -6,17 +6,16 @@
 
   <!ENTITY elogind-download-http "https://github.com/elogind/elogind/archive/v&elogind-version;/elogind-&elogind-version;.tar.gz">
   <!ENTITY elogind-download-ftp  " ">
-  <!ENTITY elogind-md5sum        "d9fdee3692990afadcd8c8764e440fa0">
+  <!ENTITY elogind-md5sum        "32ab2201281f14738d9c045f3669c14d">
   <!ENTITY elogind-size          "1.5 MB">
-  <!ENTITY elogind-buildsize     "52 MB (with tests)">
-  <!ENTITY elogind-time          "0.4 SBU">
+  <!ENTITY elogind-buildsize     "41 MB (with tests)">
+  <!ENTITY elogind-time          "0.2 SBU (with parallelism=4)">
 ]>
 
 <sect1 id="elogind" revision="sysv" xreflabel="elogind-&elogind-version;">
   <?dbhtml filename="elogind.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -41,7 +40,7 @@
       <filename class="directory">/run/systemd</filename> layout.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,11 +85,11 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="linux-pam"/> (required for Xorg),
+      <xref linkend="polkit"/> (runtime), 
       <xref linkend="DocBook"/>,
       <xref linkend="docbook-xsl"/>, and
-      <xref linkend="libxslt"/> (to build the man pages),
-      <xref linkend="linux-pam"/>, and
-      <xref linkend="polkit" role="runtime"/> (runtime)
+      <xref linkend="libxslt"/> (all three to build the man pages) 
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -149,20 +148,17 @@ File systems ---&gt;
     <title>Installation of elogind</title>
 
     <para>
-      First, fix a problem starting the package via pam:
-    </para>
-
-<screen><userinput>sed -i '/running/,+1s:^://:' src/login/pam_elogind.c</userinput></screen>
-
-    <para>
       Install <application>elogind</application> by running the following
       commands:
     </para>
 
-<screen><userinput>mkdir build &amp;&amp;
+<screen><userinput>sed -i '/Disable polkit/,+8 d' meson.build &amp;&amp;
+
+mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson --prefix=/usr                        \
+      --buildtype=release                  \
       -Dcgroup-controller=elogind          \
       -Ddbuspolicydir=/etc/dbus-1/system.d \
       -Dman=auto                           \
@@ -187,6 +183,13 @@ ln -sfvn elogind /usr/include/systemd</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>sed ... meson.build</command>: This change allows the
+      package to be built without polkit being installed (it is still a
+      runtime dependency) but able to use polkit after that package is 
+      installed.
+    </para>
 
     <para>
       <parameter>-Dcgroup-controller=elogind</parameter>: This switch ensures
@@ -324,7 +327,7 @@ EOF</userinput></screen>
         <term><command>busctl</command></term>
         <listitem>
           <para>
-            is used to introspect and monitor the D-Bus bus.
+            is used to introspect and monitor the D-Bus bus
           </para>
           <indexterm zone="elogind busctl">
             <primary sortas="b-busctl">busctl</primary>
@@ -337,7 +340,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is used to execute a program with a shutdown, sleep or idle
-            inhibitor lock taken.
+            inhibitor lock taken
           </para>
           <indexterm zone="elogind elogind-inhibit">
             <primary sortas="b-elogind-inhibit">elogind-inhibit</primary>
@@ -350,7 +353,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is used to introspect and control the state of the elogind Login
-            Manager.
+            Manager
           </para>
           <indexterm zone="elogind loginctl">
             <primary sortas="b-loginctl">loginctl</primary>
@@ -362,7 +365,7 @@ EOF</userinput></screen>
         <term><filename class="libraryfile">libelogind.so</filename></term>
         <listitem>
           <para>
-            is the main elogind utility library.
+            is the main elogind utility library
           </para>
           <indexterm zone="elogind libelogind">
             <primary sortas="c-libelogind">libelogind.so</primary>
@@ -373,6 +376,5 @@ EOF</userinput></screen>
     </variablelist>
 
   </sect2>
-  
-</sect1>
 
+</sect1>

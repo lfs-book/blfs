@@ -4,19 +4,18 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY ffmpeg-download-http "http://ffmpeg.org/releases/ffmpeg-&ffmpeg-version;.tar.xz">
+  <!ENTITY ffmpeg-download-http "https://ffmpeg.org/releases/ffmpeg-&ffmpeg-version;.tar.xz">
   <!ENTITY ffmpeg-download-ftp  " ">
-  <!ENTITY ffmpeg-md5sum        "5d1956bb552e91dc3b8287db346d0d58">
-  <!ENTITY ffmpeg-size          "8.9 MB">
-  <!ENTITY ffmpeg-buildsize     "170 MB (add 3.7 GB for the FATE suite/tests, add 1.3 GB for doxygen docs)">
-  <!ENTITY ffmpeg-time          "1.3 SBU (using parallelism=4; add 3.8 SBU (with THREADS=4) to run the FATE suite after sample files are downloaded; add 1.1 SBU for doxygen docs)">
+  <!ENTITY ffmpeg-md5sum        "7b9d5b652d20e8c5405304ad72636d4a">
+  <!ENTITY ffmpeg-size          "9.2 MB">
+  <!ENTITY ffmpeg-buildsize     "176 MB (add 2.4 GB for the FATE suite/tests, add 1.4 GB for documentation)">
+  <!ENTITY ffmpeg-time          "1.3 SBU (using parallelism=4; add 3.6 SBU (with THREADS=4) to run the FATE suite after sample files are downloaded; add 0.7 SBU for doxygen docs)">
 ]>
 
 <sect1 id="ffmpeg" xreflabel="FFmpeg-&ffmpeg-version;">
   <?dbhtml filename="ffmpeg.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -41,7 +40,7 @@
       source and any Open Sound System audio source.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -91,7 +90,7 @@
       <xref linkend="opus"/>,
       <xref linkend="x264"/>,
       <xref linkend="x265"/>, and
-      <xref linkend="yasm"/>
+      <xref linkend="nasm"/> or <xref linkend="yasm"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended for desktop use</bridgehead>
@@ -104,7 +103,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="doxygen"/>,
       <xref linkend="fontconfig"/>,
+      <xref linkend="fribidi"/>,
       <xref linkend="frei0r"/>,
       <xref linkend="libcdio"/> (to identify and play CDs),
       <xref linkend="libdrm"/> (for <quote>kmsgrab</quote> input),
@@ -113,6 +114,7 @@
       <xref linkend="openjpeg2"/>,
       <xref linkend="gnutls"/>,
       <xref linkend="pulseaudio"/>,
+      <xref linkend="samba"/>,
       <xref linkend="speex"/>,
       <xref linkend="texlive"/>
          (or <xref linkend="tl-installer"/>) for PDF and PS documentation,
@@ -127,22 +129,22 @@
       <ulink url="http://www.videolan.org/developers/libbluray.html">libbluray</ulink>,
       <ulink url="http://caca.zoy.org/">libcaca</ulink>,
       <ulink url="https://gitlab.xiph.org/xiph/celt">libcelt</ulink>,
-      <ulink url="http://sourceforge.net/projects/libdc1394">libdc1394</ulink>,
+      <ulink url="https://sourceforge.net/projects/libdc1394">libdc1394</ulink>,
       <ulink url="https://www.videolan.org/developers/libdca.html">libdca</ulink>,
       <ulink url="https://ieee1394.wiki.kernel.org/index.php/Libraries">libiec61883</ulink>,
       <ulink url="https://github.com/dekkers/libilbc">libilbc</ulink>,
-      <ulink url="http://sourceforge.net/projects/modplug-xmms/">libmodplug</ulink>,
+      <ulink url="https://sourceforge.net/projects/modplug-xmms/">libmodplug</ulink>,
       <ulink url="https://github.com/Distrotech/libnut">libnut</ulink> (Git checkout),
       <ulink url="http://rtmpdump.mplayerhq.hu/">librtmp</ulink>,
       <ulink url="http://www.libssh.org/">libssh</ulink>,
       <!--<ulink url="http://xavs.sourceforge.net/">libxavs</ulink> (SVN checkout),-->
-      <ulink url="http://kcat.strangesoft.net/openal-releases/">OpenAL</ulink>,
-      <ulink url="http://sourceforge.net/projects/opencore-amr">OpenCore AMR</ulink>,
+      <ulink url="https://openal.org/">OpenAL</ulink>,
+      <ulink url="https://sourceforge.net/projects/opencore-amr">OpenCore AMR</ulink>,
       <!--<ulink url="http://diracvideo.org/">Schroedinger</ulink>,-->
-      <ulink url="http://sourceforge.net/projects/schrodinger/">Schroedinger</ulink>,
+      <ulink url="https://sourceforge.net/projects/schrodinger/">Schroedinger</ulink>,
       <ulink url="http://www.twolame.org/">TwoLAME</ulink>,
-      <ulink url="http://sourceforge.net/projects/opencore-amr/files/vo-aacenc/">vo-aaenc</ulink>,
-      <ulink url="http://sourceforge.net/projects/opencore-amr/files/vo-amrwbenc/">vo-amrwbenc</ulink>, and
+      <ulink url="https://sourceforge.net/projects/opencore-amr/files/vo-aacenc/">vo-aaenc</ulink>,
+      <ulink url="https://sourceforge.net/projects/opencore-amr/files/vo-amrwbenc/">vo-amrwbenc</ulink>, and
       <!--<ulink url="http://www.videolan.org/developers/x265.html">x265 (H.265/MPEG-H HEVC)</ulink>, and-->
       <ulink url="http://zapping.sourceforge.net/ZVBI/">ZVBI</ulink>
     </para>
@@ -180,6 +182,7 @@
             --enable-libvpx      \
             --enable-libx264     \
             --enable-libx265     \
+            --enable-openssl     \
             --docdir=/usr/share/doc/ffmpeg-&ffmpeg-version; &amp;&amp;
 
 make &amp;&amp;
@@ -306,7 +309,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
     </para>
 
     <para>
-      <command>find ... ;</command>: Fix permissions of documentation files
+      <command>find ... ;</command>: Fixes permissions of documentation files
       and directories.
     </para>
 
@@ -396,8 +399,15 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
     </para>
 
     <para>
-      <option>--enable-openssl</option> or <option>--enable-gnutls</option>:
+      <parameter>--enable-openssl</parameter>:
       Enables HTTPS protocol for network streams.
+    </para>
+
+    <para>
+      <option>--enable-gnutls</option>: Use this option instead of
+      <parameter>--enable-openssl</parameter>, if you want to use
+      <application>GnuTLS</application> instead of
+      <application>OpenSSL</application> for HTTPS protocol.
     </para>
 
     <para>
@@ -432,6 +442,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
 
   </sect2>
 
+<!-- ffserver has been removed
   <sect2 role="configuration">
     <title>Configuring FFmpeg</title>
 
@@ -439,8 +450,8 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
       <title>Config Files</title>
 
       <para>
-        <filename>/etc/ffserver.conf</filename> and
-        <filename>~/.ffmpeg/ffserver-config</filename>
+         <filename>/etc/ffserver.conf</filename>
+         <filename>~/.ffmpeg/ffserver-config</filename>
       </para>
 
       <indexterm zone="ffmpeg ffmpeg-config">
@@ -460,6 +471,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
     </sect3>
 
   </sect2>
+  -->
 
   <sect2 role="content">
     <title>Contents</title>
@@ -471,15 +483,15 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
 
       <seglistitem>
         <seg>
-          ffmpeg, ffplay, ffprobe, ffserver, and qt-faststart
+          ffmpeg, ffplay, ffprobe, <!--ffserver,--> and qt-faststart
         </seg>
         <seg>
           libavcodec.so, libavdevice.so, libavfilter.so,
-          libavformat.so, libavutil.so, libpostproc.so,
+          libavformat.so, libavutil.so, libavresample.so, libpostproc.so,
           libswresample.so, and libswscale.so
         </seg>
         <seg>
-          /usr/include/libav{codec,device,filter,format,util},
+          /usr/include/libav{codec,device,filter,format,resample,util},
           /usr/include/libpostproc,
           /usr/include/libsw{resample,scale},
           /usr/share/doc/ffmpeg-&ffmpeg-version;, and
@@ -498,7 +510,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <listitem>
           <para>
             is a command-line tool to convert video files, network streams and
-            input from a TV card to several video formats.
+            input from a TV card to several video formats
           </para>
           <indexterm zone="ffmpeg ffmpeg-prog">
             <primary sortas="b-ffmpeg">ffmpeg</primary>
@@ -511,7 +523,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <listitem>
           <para>
             is a very simple and portable media player using the
-            <filename>ffmpeg</filename> libraries and the SDL library.
+            <filename>ffmpeg</filename> libraries and the SDL library
           </para>
           <indexterm zone="ffmpeg ffplay">
             <primary sortas="b-ffplay">ffplay</primary>
@@ -524,7 +536,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <listitem>
           <para>
             gathers information from multimedia streams and prints it in a human
-            and machine-readable fashion.
+            and machine-readable fashion
           </para>
           <indexterm zone="ffmpeg ffprobe">
             <primary sortas="b-ffprobe">ffprobe</primary>
@@ -532,24 +544,25 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- Not found in 4.3.2
       <varlistentry id="ffserver">
         <term><command>ffserver</command></term>
         <listitem>
           <para>
             is a streaming server for everything that <command>ffmpeg</command>
-            could use as input (files, streams, TV card input, webcam, etc).
+            could use as input (files, streams, TV card input, webcam, etc)
           </para>
           <indexterm zone="ffmpeg ffserver">
             <primary sortas="b-ffserver">ffserver</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
       <varlistentry id="qt-faststart">
         <term><command>qt-faststart</command></term>
         <listitem>
           <para>
-            moves the index file to the front of quicktime (mov/mp4) videos.
+            moves the index file to the front of quicktime (mov/mp4) videos
           </para>
           <indexterm zone="ffmpeg qt-faststart">
             <primary sortas="b-qt-faststart">qt-faststart</primary>
@@ -562,7 +575,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <listitem>
           <para>
             is a library containing the <application>FFmpeg</application> codecs
-            (both encoding and decoding).
+            (both encoding and decoding)
           </para>
           <indexterm zone="ffmpeg libavcodec">
             <primary sortas="c-libavcodec">libavcodec.so</primary>
@@ -574,7 +587,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <term><filename class="libraryfile">libavdevice.so</filename></term>
         <listitem>
           <para>
-            is the <application>FFmpeg</application> device handling library.
+            is the <application>FFmpeg</application> device handling library
           </para>
           <indexterm zone="ffmpeg libavdevice">
             <primary sortas="c-libavdevice">libavdevice.so</primary>
@@ -587,7 +600,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <listitem>
           <para>
             is a library of filters that can alter video or audio between the
-            decoder and the encoder (or output).
+            decoder and the encoder (or output)
           </para>
           <indexterm zone="ffmpeg libavfilter">
             <primary sortas="c-libavfilter">libavfilter.so</primary>
@@ -601,10 +614,22 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
           <para>
             is a library containing the file formats handling (mux and demux
             code for several formats) used by <command>ffplay</command> as well
-            as allowing the generation of  audio or video streams.
+            as allowing the generation of  audio or video streams
           </para>
           <indexterm zone="ffmpeg libavformat">
             <primary sortas="c-libavformat">libavformat.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libavresample">
+        <term><filename class="libraryfile">libavresample.so</filename></term>
+        <listitem>
+          <para>
+            is a library containing functions for resampling audio and video.
+          </para>
+          <indexterm zone="ffmpeg libavresample">
+            <primary sortas="c-libavresample">libavresample</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -613,7 +638,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <term><filename class="libraryfile">libavutil.so</filename></term>
         <listitem>
           <para>
-            is the <application>FFmpeg</application> utility library.
+            is the <application>FFmpeg</application> utility library
           </para>
           <indexterm zone="ffmpeg libavutil">
             <primary sortas="c-libavutil">libavutil.so</primary>
@@ -625,7 +650,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <term><filename class="libraryfile">libpostproc.so</filename></term>
         <listitem>
           <para>
-            is the <application>FFmpeg</application> post processing library.
+            is the <application>FFmpeg</application> post processing library
           </para>
           <indexterm zone="ffmpeg libpostproc">
             <primary sortas="c-libpostproc">libpostproc.so</primary>
@@ -638,7 +663,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <listitem>
           <para>
             is the <application>FFmpeg</application> audio rescaling library,
-            it contains functions for converting audio sample formats.
+            it contains functions for converting audio sample formats
           </para>
           <indexterm zone="ffmpeg libswresample">
             <primary sortas="c-libswresample">libswresample.so</primary>
@@ -650,7 +675,7 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
         <term><filename class="libraryfile">libswscale.so</filename></term>
         <listitem>
           <para>
-            is the <application>FFmpeg</application> image rescaling library.
+            is the <application>FFmpeg</application> image rescaling library
           </para>
           <indexterm zone="ffmpeg libswscale">
             <primary sortas="c-libswscale">libswscale.so</primary>

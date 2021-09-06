@@ -22,7 +22,6 @@
   <?dbhtml filename="cracklib.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -41,7 +40,7 @@
       passwords to words in chosen word lists.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -120,13 +119,6 @@
       </para>
     </important>
 
-    <bridgehead renderas="sect3">CrackLib Dependencies</bridgehead>
-
-    <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional">
-      <xref linkend="python2"/>
-    </para>
-
     <para condition="html" role="usernotes">User Notes:
       <ulink url="&blfs-wiki;/cracklib"/>
     </para>
@@ -142,18 +134,17 @@
 
 <screen><userinput>sed -i '/skipping/d' util/packer.c &amp;&amp;
 
+PYTHON=python3 CPPFLAGS=-I/usr/include/python&python3-majorver; \
 ./configure --prefix=/usr    \
             --disable-static \
-            --with-default-dict=/lib/cracklib/pw_dict &amp;&amp;
+            --with-default-dict=/usr/lib/cracklib/pw_dict &amp;&amp;
 make</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install                      &amp;&amp;
-mv -v /usr/lib/libcrack.so.* /lib &amp;&amp;
-ln -sfv ../../lib/$(readlink /usr/lib/libcrack.so) /usr/lib/libcrack.so</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
     <para>
       Issue the following commands as the
@@ -171,7 +162,7 @@ ln -sfv ../../lib/$(readlink /usr/lib/libcrack.so) /usr/lib/libcrack.so</userinp
 bunzip2 -v               /usr/share/dict/cracklib-words.bz2    &amp;&amp;
 ln -v -sf cracklib-words /usr/share/dict/words                 &amp;&amp;
 echo $(hostname) >>      /usr/share/dict/cracklib-extra-words  &amp;&amp;
-install -v -m755 -d      /lib/cracklib                         &amp;&amp;
+install -v -m755 -d      /usr/lib/cracklib                     &amp;&amp;
 
 create-cracklib-dict     /usr/share/dict/cracklib-words \
                          /usr/share/dict/cracklib-extra-words</userinput></screen>
@@ -207,6 +198,17 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
     </para>
 
     <para>
+      <envar>PYTHON=python3</envar>: This forces the installation of
+      python bindings for Python 3, even if Python 2 is installed.
+    </para>
+
+    <para>
+      <envar>CPPFLAGS=-I/usr/include/python&python3-majorver;</envar>:
+      This works around an issue caused by incorrect usage of Python 3
+      headers.
+    </para>
+
+    <para>
       <parameter>--with-default-dict=/lib/cracklib/pw_dict</parameter>:
       This parameter forces the installation of the
       <application>CrackLib</application> dictionary to the
@@ -216,6 +218,7 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 
+    <!-- FIXME: No longer needed with merged-/usr configuration
     <para>
       <command>mv -v /usr/lib/libcrack.so.2* /lib</command> and
       <command>ln -v -sf ../../lib/libcrack.so.2.9.0 ...</command>: These two
@@ -227,6 +230,7 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
       <filename class="symlink">/usr/lib/libcrack.so</filename> symlink
       pointing to the relocated file.
     </para>
+    -->
 
     <para>
       <command>install -v -m644 -D ...</command>: This command creates the
@@ -272,8 +276,8 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
         <seg>cracklib-check, cracklib-format, cracklib-packer,
         cracklib-unpacker and create-cracklib-dict</seg>
 
-        <seg>libcrack.so and the _cracklibmodule.so
-          <application>Python</application> module</seg>
+        <seg>libcrack.so and the _cracklib.so
+          (<application>Python</application> module)</seg>
 
         <seg>/lib/cracklib, /usr/share/dict and /usr/share/cracklib</seg>
       </seglistitem>
@@ -288,7 +292,7 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
         <term><command>cracklib-check</command></term>
         <listitem>
           <para>
-            is used to determine if a password is strong.
+            is used to determine if a password is strong
           </para>
           <indexterm zone="cracklib cracklib-check">
             <primary sortas="b-cracklib-check">cracklib-check</primary>
@@ -301,7 +305,7 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
         <listitem>
           <para>
             is used to format text files (lowercases all words,
-            removes control characters and sorts the lists).
+            removes control characters and sorts the lists)
           </para>
           <indexterm zone="cracklib cracklib-format">
             <primary sortas="b-cracklib-format">cracklib-format</primary>
@@ -313,7 +317,7 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
         <term><command>cracklib-packer</command></term>
         <listitem>
           <para>
-            creates a database with words read from standard input.
+            creates a database with words read from standard input
           </para>
           <indexterm zone="cracklib cracklib-packer">
             <primary sortas="b-cracklib-packer">cracklib-packer</primary>
@@ -325,7 +329,7 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
         <term><command>cracklib-unpacker</command></term>
         <listitem>
           <para>
-            displays on standard output the database specified.
+            displays on standard output the database specified
           </para>
           <indexterm zone="cracklib cracklib-packer">
             <primary sortas="b-cracklib-packer">cracklib-packer</primary>
@@ -338,7 +342,7 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
         <listitem>
           <para>
             is used to create the <application>CrackLib</application>
-            dictionary from the given word list(s).
+            dictionary from the given word list(s)
           </para>
           <indexterm zone="cracklib create-cracklib-dict">
             <primary sortas="b-create-cracklib-dict">create-cracklib-dict</primary>
@@ -351,7 +355,7 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
         <listitem>
           <para>
             provides a fast dictionary lookup method for strong
-            password enforcement.
+            password enforcement
           </para>
           <indexterm zone="cracklib libcrack">
             <primary sortas="c-libcrack">libcrack.so</primary>

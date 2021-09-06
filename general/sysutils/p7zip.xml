@@ -4,19 +4,18 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY p7zip-download-http "&sourceforge-dl;/p7zip/p7zip_&p7zip-version;_src_all.tar.bz2">
+  <!ENTITY p7zip-download-http "https://github.com/jinfeihan57/p7zip/archive/v&p7zip-version;/p7zip-&p7zip-version;.tar.gz">
   <!ENTITY p7zip-download-ftp  " ">
-  <!ENTITY p7zip-md5sum        "a0128d661cfe7cc8c121e73519c54fbf">
-  <!ENTITY p7zip-size          "4.0 MB">
-  <!ENTITY p7zip-buildsize     "33 MB">
-  <!ENTITY p7zip-time          "1.3 SBU (with tests)">
+  <!ENTITY p7zip-md5sum        "00acfd6be87848231722d2d53f89e4a5">
+  <!ENTITY p7zip-size          "6.5 MB">
+  <!ENTITY p7zip-buildsize     "55 MB">
+  <!ENTITY p7zip-time          "2.3 SBU (with tests)">
 ]>
 
 <sect1 id="p7zip" xreflabel="p7zip-&p7zip-version;">
   <?dbhtml filename="p7zip.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -32,12 +31,12 @@
     <para>
       <application>p7zip</application> is the Unix command-line port of 7-Zip, a
       file archiver that archives with high compression ratios. It handles 7z,
-      ZIP, GZIP, BZIP2, XZ, TAR, APM, ARJ, CAB, CHM, CPIO, CramFS, DEB, DMG,
-      FAT, HFS, ISO, LZH, LZMA, LZMA2, MBR, MSI, MSLZ, NSIS, NTFS, RAR RPM,
-      SquashFS, UDF, VHD, WIM, XAR and Z formats.
+      ZIP, GZIP, Brotli,  BZIP2, XZ, TAR, APM, ARJ, CAB, CHM, CPIO, CramFS, DEB,
+      DMG, FAT, HFS, ISO, Lizard, LZ5, LZFSE, LZH, LZMA, LZMA2, MBR, MSI, MSLZ,
+      NSIS, NTFS, RAR, RPM, SquashFS, UDF, VHD, WIM, XAR, Z, and Zstd formats.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,6 +72,7 @@
       </listitem>
     </itemizedlist>
 
+<!-- Applied in 17.03
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing='compact'>
       <listitem>
@@ -80,7 +80,7 @@
         url="&patch-root;/p7zip-&p7zip-version;-consolidated_fixes-1.patch"/></para>
       </listitem>
     </itemizedlist>
-
+-->
 
     <bridgehead renderas="sect3">p7zip Dependencies</bridgehead>
 
@@ -98,11 +98,26 @@
   <sect2 role="installation">
     <title>Installation of p7zip</title>
 
+<!-- Applied in 17.03
     <para>
       First, update the package for gcc10 and some security issues:
     </para>
 
 <screen><userinput>patch -Np1 -i ../p7zip-&p7zip-version;-consolidated_fixes-1.patch</userinput></screen>
+-->
+
+    <para>
+      First, prevent <application>p7zip</application> from installing
+      compressed manual pages:
+    </para>
+
+<screen><userinput remap="pre">sed '/^gzip/d' -i install.sh</userinput></screen>
+
+    <para>
+      Next, fix a security vulnerability:
+    </para>
+
+<screen><userinput remap="pre">sed -i '160a if(_buffer == nullptr || _size == _pos) return E_FAIL;' CPP/7zip/Common/StreamObjects.cpp</userinput></screen>
 
     <para>
       Install <application>p7zip</application> by running the following
@@ -163,7 +178,7 @@
         <term><command>7z</command></term>
         <listitem>
           <para>
-            is a file archiver utility.
+            is a file archiver utility
           </para>
           <indexterm zone="p7zip Sevenz">
             <primary sortas="b-7z">7z</primary>
@@ -176,7 +191,7 @@
         <listitem>
           <para>
             is a stand-alone executable handling less archive formats than
-            <command>7z</command>.
+            <command>7z</command>
           </para>
           <indexterm zone="p7zip Sevenza">
             <primary sortas="b-7za">7za</primary>
@@ -189,7 +204,7 @@
         <listitem>
           <para>
             is a minimal version of <command>7za</command> that handles only
-            7z archives.
+            7z archives
           </para>
           <indexterm zone="p7zip Sevenzr">
             <primary sortas="b-7zr">7zr</primary>

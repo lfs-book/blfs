@@ -4,20 +4,19 @@
  <!ENTITY % general-entities SYSTEM "../../general.ent">
  %general-entities;
 
-  <!ENTITY plasma5-download-http "http://download.kde.org/stable/plasma/&plasma5-version;">
+  <!ENTITY plasma5-download-http "https://download.kde.org/stable/plasma/&plasma5-version;">
   <!ENTITY plasma5-download-ftp  " ">
   <!ENTITY plasma5-md5sum        "See Below">
-  <!ENTITY plasma5-size          "118 MB">
-  <!ENTITY plasma5-buildsize     "535 MB (330 MB installed)">
-  <!ENTITY plasma5-time          "14 SBU (using parallelism=4)">
+  <!ENTITY plasma5-size          "140 MB">
+  <!ENTITY plasma5-buildsize     "1.6 GB (355 MB installed)">
+  <!ENTITY plasma5-time          "18 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="plasma5-build" xreflabel="Plasma-&plasma5-version;">
   <?dbhtml filename="plasma-all.html"?>
 
   <sect1info>
-     <othername>$LastChangedBy: bdubbs $</othername>
-     <date>$Date: 2015-09-24 16:44:04 -0500 (Thu, 24 Sep 2015) $</date>
+     <date>$Date$</date>
   </sect1info>
 
   <title>Building Plasma 5</title>
@@ -31,7 +30,7 @@
     5 and QML. They implement the KDE Display Environment (Plasma 5).
   </para>
 
-  &lfs10_checked;
+  &lfs110a_checked;
 
   <para>
     The instructions below build all of the Plasma 5 packages in one
@@ -77,7 +76,7 @@
   <bridgehead renderas="sect4">Required</bridgehead>
   <para role="required">
     <!--<xref linkend="fontforge"/>,-->
-    <xref linkend="GConf"/>,
+    <!-- does not seem to be needed as of 5.22.4 <xref linkend="GConf"/>, -->
     <xref linkend="gtk2"/>,
     <xref linkend="gtk3"/>,
     <xref linkend="kf5-frameworks"/>,
@@ -100,6 +99,7 @@
     <xref linkend="libdbusmenu-qt"/>,
     <xref linkend="libcanberra"/>,
     <xref linkend="libinput"/>,
+    <xref linkend="libpcap"/>,
     <xref linkend="linux-pam"/>,
     <xref linkend="lm_sensors"/>,
     <xref linkend="oxygen-icons5"/>, and
@@ -108,6 +108,7 @@
 
   <bridgehead renderas="sect4">Recommended (runtime)</bridgehead>
   <para role="recommended">
+    <xref role="runtime" linkend="accountsservice"/> and
     <xref role="runtime" linkend="smartmontools"/>
   </para>
 
@@ -115,12 +116,13 @@
   <para role="optional">
     <xref linkend="glu"/>,
     <xref linkend='ibus'/>,
+    <xref linkend='qtwebengine'/>,
     <xref linkend="xorg-synaptics-driver"/>,
     <ulink url="http://distributions.freedesktop.org/wiki/AppStream">appstream-qt</ulink>, 
     <ulink url="https://www.kdevelop.org/">KDevPlatform</ulink>,
     <ulink url="https://gpsd.gitlab.io/gpsd/">libgps</ulink>,
     <ulink url="https://github.com/libhybris/libhybris">libhybris</ulink>,
-    <ulink url="http://sourceforge.net/projects/libraw1394/">libraw1394</ulink>,
+    <ulink url="https://sourceforge.net/projects/libraw1394/">libraw1394</ulink>,
     <ulink url="https://bitbucket.org/godsme/mockcpp">mockcpp</ulink>,
     <ulink url="https://www.freedesktop.org/software/PackageKit/releases/">packagekit-qt</ulink>,
     <ulink url="http://qalculate.github.io/">Qalculate</ulink>,
@@ -128,6 +130,15 @@
     <ulink url="https://github.com/osiam/osiam">SCIM</ulink>, and
     <ulink url="http://www.dest-unreach.org/socat/">socat</ulink> (for pam_kwallet)
   </para>
+
+  <note>
+    <para>
+      Only two plasma packages optionally use <xref linkend="qtwebengine"/>:
+      libksysguard and kdeplasma-addons. If QtWebEngine is installed later, 
+      only those two packages have to be rebuilt. This allows to provide
+      a more complete display in the system monitor application.
+    </para>
+  </note>
 
   <para condition="html" role="usernotes">User Notes:
   <ulink url="&blfs-wiki;/kf5"/></para>
@@ -140,7 +151,7 @@
       <command>wget</command> to fetch them all at once:
     </para>
 
-<screen><userinput>url=http://download.kde.org/stable/plasma/&plasma5-version;/
+<screen><userinput>url=https://download.kde.org/stable/plasma/&plasma5-version;/
 wget -r -nH -nd -A '*.xz' -np $url</userinput>
 <literal>
 The options used here are:
@@ -161,55 +172,59 @@ The options used here are:
     </para>
 
 <screen><userinput>cat &gt; plasma-&plasma5-version;.md5 &lt;&lt; "EOF"
-<literal>af10a41b15cb81f3cc405e31ef9f17ed  kdecoration-5.20.4.tar.xz
-aee69339bac97b8b4c8ba073c48ac7ed  libkscreen-5.20.4.tar.xz
-44015317e6c496a2cbd0dbea00fafec5  libksysguard-5.20.4.tar.xz
-9000d1bfe0bb16ee499dbe5a5af9bb22  breeze-5.20.4.tar.xz
-f984413303ea9bfa8b09add47eea217a  breeze-gtk-5.20.4.tar.xz
-86f2e76c7408b2ccd327b4ffa7c81f41  kscreenlocker-5.20.4.tar.xz
-792f7f818c18f386118093bb0be035d1  oxygen-5.20.4.tar.xz
-b41353b8c832a2831f04fc180dbabadd  kinfocenter-5.20.4.tar.xz
-fd1267064fa9b085934cbe3f1e5aade7  ksysguard-5.20.4.tar.xz
-cf90264792369ba8bd4d4333a5b59c96  kwayland-server-5.20.4.tar.xz
-2e25eb98bbbc37eaa81d6061817bd164  kwin-5.20.4.tar.xz
-cb4867c20b81ffcd8adae56c3dec0d41  plasma-workspace-5.20.4.tar.xz
-2a177037483a9517c7ecbf003a2b7e5b  plasma-disks-5.20.4.tar.xz
-ac4730c9c47016c1db92e1b1c66b585f  bluedevil-5.20.4.tar.xz
-ea24ffd849444b5ceba4a48023939311  kde-gtk-config-5.20.4.tar.xz
-856e51dfb18f2b51ca39db5af2b9707b  khotkeys-5.20.4.tar.xz
-257cba142fc1c13d328d6817b65cdc3a  kmenuedit-5.20.4.tar.xz
-b8a5116c94ea717b3b71f2fdcc59a881  kscreen-5.20.4.tar.xz
-aea33684c4ed4241e01e3753fd0ea132  kwallet-pam-5.20.4.tar.xz
-65d449b6a51fbff45c9cc65d601536ac  kwayland-integration-5.20.4.tar.xz
-09c0ef8c927c1b0798a41ae7b6ca1397  kwrited-5.20.4.tar.xz
-92e9003a449866335ef154c748846f46  milou-5.20.4.tar.xz
-e05dbd9e6617b49290616d323bc54daf  plasma-nm-5.20.4.tar.xz
-1eebbc148709b42dc4862a2d98fff85b  plasma-pa-5.20.4.tar.xz
-d96c17d9d589cd2ba833d60ac55208e5  plasma-workspace-wallpapers-5.20.4.tar.xz
-44e98339dbe238045d1e72d26282a74d  polkit-kde-agent-1-5.20.4.tar.xz
-5fd24e129d01354d6abaf8aa8766ed85  powerdevil-5.20.4.tar.xz
-ddd01d3a85e5efb2967b7dfa4f162b6f  plasma-desktop-5.20.4.tar.xz
-6e4d4f4717c6149d0213bdc6fbe4cc0e  kdeplasma-addons-5.20.4.tar.xz
-9cf80a513951a8cb8f540d2cc2315664  kgamma5-5.20.4.tar.xz
-7ac6d7e0d6849ce23e86b2ee5ad5d888  ksshaskpass-5.20.4.tar.xz
-#717b10a56d338bb58383f0f3269fb531  plasma-sdk-5.20.4.tar.xz
-16f15fee8b435ac1ce0f304668f538b3  sddm-kcm-5.20.4.tar.xz
-f6f126e5f6d84d8f47516badc7fb7e9c  discover-5.20.4.tar.xz
-#b55f6f11e4fa29c39fce9c0d5568ca88  breeze-grub-5.20.4.tar.xz
-#7d6977a3d6dea4e43ce03b81fc09ba2d  breeze-plymouth-5.20.4.tar.xz
-a74cf024d2e05837b813703daa364713  kactivitymanagerd-5.20.4.tar.xz
-5478e5bb63b40271143166dfbc3c7552  plasma-integration-5.20.4.tar.xz
-ae3ae24c4145ef01680f0120ee2693b8  plasma-tests-5.20.4.tar.xz
-#791d267d4869ea743bbe4d47e798a4cb  plymouth-kcm-5.20.4.tar.xz
-c9a901323a72ccb071c1a2a9b20fe2d0  xdg-desktop-portal-kde-5.20.4.tar.xz
-4515e64c1758dc49a8ca9adb1113a37a  drkonqi-5.20.4.tar.xz
-594abf697ef7ba64ee5a2468a72c93dc  plasma-vault-5.20.4.tar.xz
-1832bd8fabaec98d880fa25ea2adc395  plasma-browser-integration-5.20.4.tar.xz
-3497d575211112126b26c50416ca1271  kde-cli-tools-5.20.4.tar.xz
-e1997939048be759b3344d05028c67bb  systemsettings-5.20.4.tar.xz
-3dd1492bd3ed8edf085a01b536c06a73  plasma-thunderbolt-5.20.4.tar.xz
-#e07b202527e67af36503e96149b974b0  plasma-nano-5.20.4.tar.xz
-#cda92e6b67f50ebf9bd9583593e9942d  plasma-phone-components-5.20.4.tar.xz</literal>
+<literal>7fab69fa5fc3211b35e3d03f1172831a  kdecoration-5.22.4.tar.xz
+a587fecf0473c225f39a7f8a7c611d3b  libkscreen-5.22.4.tar.xz
+115f8e14d6ef58715183eb8036c431c1  libksysguard-5.22.4.tar.xz
+516a58571f6daeb60a2509057e67712b  breeze-5.22.4.tar.xz
+3b06f3768fc345893625ef44d7e72a98  breeze-gtk-5.22.4.tar.xz
+049dabd694abed120b4f84d37f05de8c  layer-shell-qt-5.22.4.tar.xz
+17af84caeb942de9a8e3d819f20645b0  kscreenlocker-5.22.4.tar.xz
+ffe09b47f6cc20d13ec311edeb13a9b3  oxygen-5.22.4.tar.xz
+916bfa4ce6b40ca8ef80b75018d63ab1  kinfocenter-5.22.4.tar.xz
+365f7cd632d41447561ec1bdf7497bba  kwayland-server-5.22.4.tar.xz
+09cf360780185b33fca9561684a0f41f  kwin-5.22.4.tar.xz
+5cb1ab2a9d3ce0c05eba07ef4c8ac478  plasma-workspace-5.22.4.tar.xz
+75dd5e0fed93781f0ae031a091dcce4b  plasma-disks-5.22.4.tar.xz
+3d7abfe0952b356cc12cbd75be14f5e0  bluedevil-5.22.4.tar.xz
+2515439a0daaf325b0fcf9ce1a537660  kde-gtk-config-5.22.4.tar.xz
+8f2f4b902c98d7890dc1ec3756c27871  khotkeys-5.22.4.tar.xz
+aa03bf8d1c799a4410b567b44b47f6cd  kmenuedit-5.22.4.tar.xz
+6fab0d760e9e6a33255441aab3874b2f  kscreen-5.22.4.tar.xz
+3dae9ce525c52ac3bacaff464dc4264c  kwallet-pam-5.22.4.tar.xz
+fa9772ef7737037992aea52739aea95a  kwayland-integration-5.22.4.tar.xz
+51502b6a48f2b7790364881a578cdd1b  kwrited-5.22.4.tar.xz
+6d85652d5fa13953370bc4f37247e3b4  milou-5.22.4.tar.xz
+61c7fc4c00637715e8d0c4491298b5b7  plasma-nm-5.22.4.tar.xz
+31272515681adc5d0ca987a9dc182de5  plasma-pa-5.22.4.tar.xz
+95aefdbfd0a3cd6b871e50968ccf43d9  plasma-workspace-wallpapers-5.22.4.tar.xz
+9a36fb70a6d1f1f637d75a75e77eb9ba  polkit-kde-agent-1-5.22.4.tar.xz
+f7860ee18c994a8b87f39965b53f4f1f  powerdevil-5.22.4.tar.xz
+ba7687bdea331a62127f7cc69029c194  plasma-desktop-5.22.4.tar.xz
+9c393f6da042841ed8cf41f9ad126b5c  kdeplasma-addons-5.22.4.tar.xz
+bf508d7b503f1923fdb5fbd22f957981  kgamma5-5.22.4.tar.xz
+239d00ede4c0e941dc6407f8510f1678  ksshaskpass-5.22.4.tar.xz
+#ba59a194b4812db25022c189e129151f  plasma-sdk-5.22.4.tar.xz
+3ecfe0501ce2ec0f8c8bda3a01c78be7  sddm-kcm-5.22.4.tar.xz
+a81e62bd36f3db28712274da80ed52a4  discover-5.22.4.tar.xz
+#9abba589089c1088e1836cabe9e593f6  breeze-grub-5.22.4.tar.xz
+#d038d1db0f1ed5e80b9d22a537dd1872  breeze-plymouth-5.22.4.tar.xz
+7aef306ec8c2131f0fa22d2b558f73fb  kactivitymanagerd-5.22.4.tar.xz
+8c30da2b1dbcfbfaa715c050339b0e0a  plasma-integration-5.22.4.tar.xz
+006171ce3edae4b67d27b1577cdc84a1  plasma-tests-5.22.4.tar.xz
+#442fd33f46a982eeeb925fd6f7d919b1  plymouth-kcm-5.22.4.tar.xz
+900994c0628b8b3767c83db0b4f16e0c  xdg-desktop-portal-kde-5.22.4.tar.xz
+61ebe5891cf9adcd62d32c5069573ff0  drkonqi-5.22.4.tar.xz
+d464d91d37cf12da1721abc18ec94140  plasma-vault-5.22.4.tar.xz
+8c9a2286634cb89fb04d0278c6af8f8c  plasma-browser-integration-5.22.4.tar.xz
+257e25f2388014932ecf786dd9e49bd5  kde-cli-tools-5.22.4.tar.xz
+9314599d78ed6683018ff5a7b69d2a08  systemsettings-5.22.4.tar.xz
+3ea20e78932f2a487d932acd1eff10f7  plasma-thunderbolt-5.22.4.tar.xz
+#0ecfa8ed1962f4f842967ed7b66d14f8  plasma-nano-5.22.4.tar.xz
+#157a441ad0519936dcb75856ae83010e  plasma-phone-components-5.22.4.tar.xz
+71b0da480c6b91b6445b6bdbe452bdae  plasma-firewall-5.22.4.tar.xz
+026a4d3cd063ba86e77c9ffa711aa769  plasma-systemmonitor-5.22.4.tar.xz
+0d72d2e9f5d6a3975068e1a472ce9982  qqc2-breeze-style-5.22.4.tar.xz
+171c556167b17fd2b16783015c3f8ae6  ksystemstats-5.22.4.tar.xz</literal>
 EOF</userinput></screen>
 
     <note>
@@ -311,6 +326,15 @@ cd $KF5_PREFIX/share/plasma/plasmoids
 for j in $(find -name \*.js); do
   as_root ln -sfv ../code/$(basename $j) $(dirname $j)/../ui/
 done--></userinput></screen>
+
+    <para revision="sysv">
+      Useless systemd units have been installed in
+      <filename class="directory">$KF5_PREFIX/lib</filename>. Remove
+      them now (as <systemitem class="username">root</systemitem>):
+    </para>
+
+<screen role="root"
+        revision="sysv"><userinput>rm -rf $KF5_PREFIX/lib/systemd</userinput></screen>
 
   </sect2>
 <!--
@@ -427,7 +451,8 @@ startx</userinput></screen>
       where X was running. If you wish to see those messages, simultaneously
       press keys Alt-F7 (assuming that X was running on vt7).
     </para>
-
+<!-- Now the entry is "plasma (X11)" for Xorg, so I guess this is
+     not needed anymore:
     <para>
       If you intend to start <application>Plasma</application> using a
     display manager such as <xref linkend="lightdm"/>, there will be two entries
@@ -439,7 +464,7 @@ startx</userinput></screen>
     differentiate between the two:</para>
 
 <screen role="root"><userinput>sed '/^Name=/s/Plasma/Plasma on Xorg/' -i /usr/share/xsessions/plasma.desktop</userinput></screen>
-
+-->
 
   </sect2>
 
@@ -453,7 +478,7 @@ startx</userinput></screen>
 
       <seglistitem>
         <seg>
-           There are too many plasma programs (61 in /opt/kf5/bin) to list
+           There are too many plasma programs (63 in /opt/kf5/bin) to list
            separately here.
         </seg>
         <seg>

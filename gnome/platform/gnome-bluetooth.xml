@@ -8,7 +8,7 @@
            "&gnome-download-http;/gnome-bluetooth/&gnome-minor-34;/gnome-bluetooth-&gnome-bluetooth-version;.tar.xz">
   <!ENTITY gnome-bluetooth-download-ftp
            "&gnome-download-ftp;/gnome-bluetooth/&gnome-minor-34;/gnome-bluetooth-&gnome-bluetooth-version;.tar.xz">
-  <!ENTITY gnome-bluetooth-md5sum        "c82f7df6a411c897d4d59337d5d9a789">
+  <!ENTITY gnome-bluetooth-md5sum        "d83faa54abaf64bb40b5313bc233e74e">
   <!ENTITY gnome-bluetooth-size          "348 KB">
   <!ENTITY gnome-bluetooth-buildsize     "17 MB">
   <!ENTITY gnome-bluetooth-time          "0.2 SBU (Using parallelism=4)">
@@ -18,7 +18,6 @@
   <?dbhtml filename="gnome-bluetooth.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -37,7 +36,7 @@
       <application>GNOME</application> Desktop.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,7 +89,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/>
+      <xref linkend="gtk-doc"/> and
+      <xref linkend="python-dbusmock"/>
     </para>
 
     <bridgehead renderas="sect4">Runtime Dependencies</bridgehead>
@@ -110,17 +110,17 @@
 
     <para>
       Install <application>GNOME Bluetooth</application> by running the
-      following  commands:
+      following commands:
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr .. &amp;&amp;
+meson --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      This package does not come with a test suite.
+      To test the results, issue: <command>ninja test</command>.
     </para>
 
     <para>
@@ -129,6 +129,13 @@ ninja</userinput></screen>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
 
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
   </sect2>
 
   <sect2 role="content">
@@ -165,7 +172,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a <application>GTK+</application> application for transferring
-            files over Bluetooth.
+            files over Bluetooth
           </para>
           <indexterm zone="gnome-bluetooth bluetooth-sendto">
             <primary sortas="b-bluetooth-sendto">bluetooth-sendto</primary>
@@ -178,7 +185,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             contains the <application>GNOME Bluetooth</application> API
-            functions.
+            functions
           </para>
           <indexterm zone="gnome-bluetooth libgnome-bluetooth">
             <primary sortas="c-libgnome-bluetooth">libgnome-bluetooth.so</primary>

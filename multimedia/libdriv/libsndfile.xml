@@ -5,19 +5,18 @@
   %general-entities;
 
   <!ENTITY libsndfile-download-http
-    "http://www.mega-nerd.com/libsndfile/files/libsndfile-&libsndfile-version;.tar.gz">
+    "https://github.com/libsndfile/libsndfile/releases/download/&libsndfile-version;/libsndfile-&libsndfile-version;.tar.bz2">
   <!ENTITY libsndfile-download-ftp  " ">
-  <!ENTITY libsndfile-md5sum        "646b5f98ce89ac60cdb060fcd398247c">
-  <!ENTITY libsndfile-size          "1.1 MB">
-  <!ENTITY libsndfile-buildsize     "34 MB (with tests)">
-  <!ENTITY libsndfile-time          "0.6 SBU (with tests)">
+  <!ENTITY libsndfile-md5sum        "3f3b2a86a032f064ef922a2c8c191f7b">
+  <!ENTITY libsndfile-size          "855 KB">
+  <!ENTITY libsndfile-buildsize     "13 MB (add 9 MB for tests)">
+  <!ENTITY libsndfile-time          "0.3 SBU (add 0.6 SBU for tests)">
 ]>
 
 <sect1 id="libsndfile" xreflabel="libsndfile-&libsndfile-version;">
   <?dbhtml filename="libsndfile.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -35,7 +34,7 @@
       reading and writing files containing sampled audio data.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,13 +75,14 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="flac"/>,
-      <xref linkend="libogg"/>, and
-      <xref linkend="libvorbis"/>
+      <xref linkend="opus"/>, and
+      <xref linkend="libvorbis"/><!-- brings in libogg -->
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="alsa-lib"/> and
+      <xref linkend="alsa-lib"/>,
+      <xref linkend="speex"/>, and
       <xref linkend="sqlite"/>
     </para>
 
@@ -141,8 +141,7 @@ make</userinput></screen>
           sndfile-interleave,
           sndfile-metadata-get,
           sndfile-metadata-set,
-          sndfile-play,
-          sndfile-regtest and
+          sndfile-play, and
           sndfile-salvage
         </seg>
         <seg>libsndfile.so</seg>
@@ -159,7 +158,7 @@ make</userinput></screen>
         <term><command>sndfile-cmp</command></term>
         <listitem>
           <para>
-            compares two audio files.
+            compares two audio files
           </para>
           <indexterm zone="libsndfile sndfile-cmp">
             <primary sortas="b-sndfile-cmp">sndfile-cmp</primary>
@@ -171,7 +170,7 @@ make</userinput></screen>
         <term><command>sndfile-concat</command></term>
         <listitem>
           <para>
-            concatenates two or more audio files.
+            concatenates two or more audio files
           </para>
           <indexterm zone="libsndfile sndfile-concat">
             <primary sortas="b-sndfile-concat">sndfile-concat</primary>
@@ -183,7 +182,7 @@ make</userinput></screen>
         <term><command>sndfile-convert</command></term>
         <listitem>
           <para>
-            converts a sound files from one format to another.
+            converts a sound files from one format to another
           </para>
           <indexterm zone="libsndfile sndfile-convert">
             <primary sortas="b-sndfile-convert">sndfile-convert</primary>
@@ -195,7 +194,7 @@ make</userinput></screen>
         <term><command>sndfile-deinterleave</command></term>
         <listitem>
           <para>
-            splits a multi-channel into multiple single channel files.
+            splits a multi-channel into multiple single channel files
           </para>
           <indexterm zone="libsndfile sndfile-deinterleave">
             <primary sortas="b-sndfile-deinterleave">sndfile-deinterleave</primary>
@@ -207,7 +206,7 @@ make</userinput></screen>
         <term><command>sndfile-info</command></term>
         <listitem>
           <para>
-            displays information about a sound file.
+            displays information about a sound file
           </para>
           <indexterm zone="libsndfile sndfile-info">
             <primary sortas="b-sndfile-info">sndfile-info</primary>
@@ -219,7 +218,7 @@ make</userinput></screen>
         <term><command>sndfile-interleave</command></term>
         <listitem>
           <para>
-            converts multiple single channel files into a multi-channel file.
+            converts multiple single channel files into a multi-channel file
           </para>
           <indexterm zone="libsndfile sndfile-interleave">
             <primary sortas="b-sndfile-interleave">sndfile-interleave</primary>
@@ -231,7 +230,7 @@ make</userinput></screen>
         <term><command>sndfile-metadata-get</command></term>
         <listitem>
           <para>
-            retrieves metadata from a sound file.
+            retrieves metadata from a sound file
           </para>
           <indexterm zone="libsndfile sndfile-metadata-get">
             <primary sortas="b-sndfile-metadata-get">sndfile-metadata-get</primary>
@@ -243,7 +242,7 @@ make</userinput></screen>
         <term><command>sndfile-metadata-set</command></term>
         <listitem>
           <para>
-            sets metadata in a sound file.
+            sets metadata in a sound file
           </para>
           <indexterm zone="libsndfile sndfile-metadata-set">
             <primary sortas="b-sndfile-metadata-set">sndfile-metadata-set</primary>
@@ -255,7 +254,7 @@ make</userinput></screen>
         <term><command>sndfile-play</command></term>
         <listitem>
           <para>
-            plays a sound file.
+            plays a sound file
           </para>
           <indexterm zone="libsndfile sndfile-play">
             <primary sortas="b-sndfile-play">sndfile-play</primary>
@@ -273,25 +272,26 @@ make</userinput></screen>
             <primary sortas="b-sndfile-regtest">sndfile-regtest</primary>
           </indexterm>
         </listitem>
-      </varlistentry>
+      </varlistentry>-->
 
       <varlistentry id="sndfile-salvage">
         <term><command>sndfile-salvage</command></term>
         <listitem>
           <para>
-            does this .....
+            Salvages the audio data from WAV files which are more than
+            4G in length
           </para>
           <indexterm zone="libsndfile sndfile-salvage">
             <primary sortas="b-sndfile-salvage">sndfile-salvage</primary>
           </indexterm>
         </listitem>
-      </varlistentry>-->
+      </varlistentry>
 
       <varlistentry id="libsndfile-lib">
-        <term><filename class='libraryfile'>libsndfile.so</filename></term>
+        <term><filename class="libraryfile">libsndfile.so</filename></term>
         <listitem>
           <para>
-            contains the <application>libsndfile</application> API functions.
+            contains the <application>libsndfile</application> API functions
           </para>
           <indexterm zone="libsndfile libsndfile-lib">
             <primary sortas="c-libsndfile">libsndfile.so</primary>

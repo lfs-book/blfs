@@ -6,23 +6,22 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.gz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "a460bed79b92f6a7833ba6e6390ee6ae">
-  <!ENTITY rust-size          "145 MB">
+  <!ENTITY rust-md5sum        "bd6fbe9ba5fe457d2514e92a6ccd7b24">
+  <!ENTITY rust-size          "161 MB">
   <!-- Gentle Reminder: buildsize is how much the user requires for the real
        install, i.e. the source with its DESTDIR *plus* the DESTDIR.  You
        can 'mkdir /tmp/RUST ; cp -a install/* /tmp/RUST' and then run 'du -sch'
        to measure it, or du -sm to look at the size of the build tree before and
        after the tests. -->
 
-  <!ENTITY rust-buildsize     "7.6 GB (369 MB installed) including 294 MB of ~/.cargo files for the user building this. Add 3.3 GB if running the tests">
-  <!ENTITY rust-time          "39 SBU (add 31 SBU for tests, both on a 4-core machine)">
+  <!ENTITY rust-buildsize     "9.3 GB (407 MB installed) including 291 MB of ~/.cargo files for the user building this. Add 4.0 GB including extra 179 MB of ~/.cargo files if running the tests">
+  <!ENTITY rust-time          "31 SBU (add 13 SBU for tests, both on a 4-core machine)">
 ]>
 
 <sect1 id="rust" xreflabel="rustc-&rust-version;">
   <?dbhtml filename="rust.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -147,7 +146,7 @@
       </para>
     </note>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -325,10 +324,12 @@ python3 ./x.py build --exclude src/tools/miri</userinput></screen>
     </para>
 
     <para>
-      At a minimum, two tests (run-make-fulldeps/long-linker-command-lines
-      and run-make-fulldeps/sysroot-crates-are-unstable) may fail.
-      If a version of <command>gdb</command> which was released after this
-      version of rust is used, such as <xref linkend="gdb"/>, four more failures
+      At a minimum, seven tests will fail: ui/asm/inline-syntax.rs#arm,
+      assembly/target-feature-multiple.rs#SINGLEFLAG,
+      assembly/target-feature-multiple.rs#TWOFLAGS,
+      run-make-fulldeps/long-linker-command-lines, run-make-fulldeps/split-debuginfo,
+      run-make-fulldeps/split-dwarf, run-make-fulldeps/sysroot-crates-are-unstable.
+      With any recent version of <command>gdb</command>, four more failures
       (debuginfo/extern-c-fn.rs, debuginfo/generator-objects.rs,
       debuginfo/issue-57822.rs, debuginfo/pretty-huge-vec.rs) can be expected.
     </para>
@@ -558,7 +559,9 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          cargo-clippy, cargo-fmt, cargo-miri, cargo, clippy-driver, miri, rls, rust-gdb, rust-gdbgui, rust-lldb, rustc, rustdoc, rustfmt.
+          cargo-clippy, cargo-fmt, cargo-miri, cargo, clippy-driver, miri,
+          rls, rust-analyzer, rust-gdb, rust-gdbgui, rust-lldb, rustc,
+          rustdoc, rustfmt.
         </seg>
         <seg>
           Many lib*&lt;16-byte-hash&gt;.so libraries.
@@ -581,7 +584,7 @@ EOF</userinput></screen>
         <term><command>cargo-clippy</command></term>
         <listitem>
           <para>
-            provides lint checks for a cargo package.
+            provides lint checks for a cargo package
           </para>
           <indexterm zone="rust cargo-clippy">
             <primary sortas="b-cargo-clippy">cargo-clippy</primary>
@@ -594,7 +597,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             formats all bin and lib files of the current crate using
-            rustfmt.
+            rustfmt
           </para>
           <indexterm zone="rust cargo-fmt">
             <primary sortas="b-cargo-fmt">cargo-fmt</primary>
@@ -620,7 +623,7 @@ EOF</userinput></screen>
         <term><command>cargo</command></term>
         <listitem>
           <para>
-            is the Package Manager for Rust.
+            is the Package Manager for Rust
           </para>
           <indexterm zone="rust cargo">
             <primary sortas="b-cargo">cargo</primary>
@@ -632,7 +635,7 @@ EOF</userinput></screen>
         <term><command>clippy-driver</command></term>
         <listitem>
           <para>
-            provides lint checks for Rust.
+            provides lint checks for Rust
           </para>
           <indexterm zone="rust clippy-driver">
             <primary sortas="b-clippy-driver">clippy-driver</primary>
@@ -645,7 +648,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is an interpreter for Rust's mid-level intermediate representation
-            (MIR). It is broken in this version.
+            (MIR). It is broken in this version
           </para>
           <indexterm zone="rust miri">
             <primary sortas="b-miri">miri</primary>
@@ -659,10 +662,23 @@ EOF</userinput></screen>
           <para>
             is the Rust Language Server. This can run in the background to
             provide IDEs, editors, and other tools with information about Rust
-            programs.
+            programs
           </para>
           <indexterm zone="rust rls">
             <primary sortas="b-rls">rls</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="rust-analyzer">
+        <term><command>rust-analyzer</command></term>
+        <listitem>
+          <para>
+            is an implementation of Language Server Protocol for the Rust
+            programming language.
+          </para>
+          <indexterm zone="rust rust-analyzer">
+            <primary sortas="b-rust-analyzer">rust-analyzer</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -671,9 +687,9 @@ EOF</userinput></screen>
         <term><command>rust-gdb</command></term>
         <listitem>
           <para>
-            is a wrapper script for gdb, pulling in Python
-            pretty-printing modules installed in <filename
-			class="directory">/opt/rustc-&rust-version;/lib/rustlib/etc</filename>.
+            is a wrapper script for gdb, pulling in Python pretty-printing
+            modules installed in
+            <filename class="directory">/opt/rustc-&rust-version;/lib/rustlib/etc</filename>
           </para>
           <indexterm zone="rust rust-gdb">
             <primary sortas="b-rust-gdb">rust-gdb</primary>
@@ -686,7 +702,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is a wrapper script for a graphical front end to gdb that runs in a
-            browser.
+            browser
           </para>
           <indexterm zone="rust rust-gdbgui">
             <primary sortas="b-rust-gdbgui">rust-gdbgui</primary>
@@ -699,7 +715,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is a wrapper script for LLDB (the LLVM debugger)
-            pulling in the Python pretty-printing modules.
+            pulling in the Python pretty-printing modules
           </para>
           <indexterm zone="rust rust-lldb">
             <primary sortas="b-rust-lldb">rust=lldb</primary>
@@ -711,7 +727,7 @@ EOF</userinput></screen>
         <term><command>rustc</command></term>
         <listitem>
           <para>
-            is the rust compiler.
+            is the rust compiler
           </para>
           <indexterm zone="rust rustc">
             <primary sortas="b-rustc">rustc</primary>
@@ -723,7 +739,7 @@ EOF</userinput></screen>
         <term><command>rustdoc</command></term>
         <listitem>
           <para>
-            generates documentation from rust source code.
+            generates documentation from rust source code
           </para>
           <indexterm zone="rust rustdoc">
             <primary sortas="b-rustdoc">rustdoc</primary>
@@ -735,7 +751,7 @@ EOF</userinput></screen>
         <term><command>rustfmt</command></term>
         <listitem>
           <para>
-            formats rust code.
+            formats rust code
           </para>
           <indexterm zone="rust rustfmt">
             <primary sortas="b-rustfmt">rustfmt</primary>
@@ -747,7 +763,7 @@ EOF</userinput></screen>
         <term><filename class="libraryfile">libstd-&lt;16-byte-hash&gt;.so</filename></term>
         <listitem>
           <para>
-            is the Rust Standard Library, the foundation of portable Rust software.
+            is the Rust Standard Library, the foundation of portable Rust software
           </para>
           <indexterm zone="rust libstd">
             <primary sortas="c-libstd">libstd-&lt;16-byte-hash&gt;.so</primary>
@@ -756,4 +772,5 @@ EOF</userinput></screen>
       </varlistentry>
     </variablelist>
   </sect2>
+
 </sect1>

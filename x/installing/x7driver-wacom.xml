@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY xorg-wacom-driver-version "0.39.0">
+  <!ENTITY xorg-wacom-driver-version "0.40.0">
 
   <!ENTITY xorg-wacom-driver-download-http "https://github.com/linuxwacom/xf86-input-wacom/releases/download/xf86-input-wacom-&xorg-wacom-driver-version;/xf86-input-wacom-&xorg-wacom-driver-version;.tar.bz2">
   <!ENTITY xorg-wacom-driver-download-ftp  " ">
-  <!ENTITY xorg-wacom-driver-md5sum        "9ee7bf6969002d6cfe9301354a72d7b0">
-  <!ENTITY xorg-wacom-driver-size          "608 KB">
+  <!ENTITY xorg-wacom-driver-md5sum        "e97a5230d1875d288010b3df1b332ed5">
+  <!ENTITY xorg-wacom-driver-size          "616 KB">
   <!ENTITY xorg-wacom-driver-buildsize     "12 MB (with tests)">
   <!ENTITY xorg-wacom-driver-time          "0.1 SBU (with tests)">
 ]>
@@ -18,7 +18,6 @@
   <sect2 id="xorg-wacom-driver" xreflabel="Xorg Wacom Driver-&xorg-wacom-driver-version;">
 
   <sect2info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect2info>
 
@@ -39,7 +38,7 @@
         devices without problems.
       </para>
 
-      &lfs10_checked;
+      &lfs110a_checked;
 
       <bridgehead renderas="sect4">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -117,25 +116,23 @@
     <sect3 role="installation">
       <title>Installation of Xorg Wacom Driver</title>
 
+<!-- Fixed in 0.40.0
       <para>
         First, adapt the <application>Xorg Wacom Driver</application> to
         changes in udev:
       </para>
 
 <screen><userinput remap="pre">sed -i 's/ACTION!="add|change"/ACTION=="remove"/' conf/wacom.rules</userinput></screen>
-
+-->
       <para>
         Install <application>Xorg Wacom Driver</application> by running the following
         commands:
       </para>
 
-<screen revision="sysv"><userinput>./configure $XORG_CONFIG --with-systemd-unit-dir=no \
-            --with-udev-rules-dir=/lib/udev/rules.d &amp;&amp;
+<screen revision="sysv"><userinput>./configure $XORG_CONFIG --with-systemd-unit-dir=no &amp;&amp;
 make</userinput></screen>
 
-<screen revision="systemd"><userinput>./configure $XORG_CONFIG \
-            --with-udev-rules-dir=/lib/udev/rules.d \
-            --with-systemd-unit-dir=/lib/systemd/system &amp;&amp;
+<screen revision="systemd"><userinput>./configure $XORG_CONFIG &amp;&amp;
 make</userinput></screen>
 
       <para>
@@ -176,7 +173,7 @@ make</userinput></screen>
           <listitem>
             <para>
               is a commandline utility used to query
-              and modify wacom driver settings.
+              and modify wacom driver settings
             </para>
             <indexterm zone="xorg-wacom-driver xsetwacom">
               <primary sortas="b-xsetwacom">xsetwacom</primary>
@@ -188,7 +185,7 @@ make</userinput></screen>
           <term><filename class="libraryfile">wacom_drv.so</filename></term>
           <listitem>
             <para>
-              is an Xorg input driver for Wacom devices.
+              is an Xorg input driver for Wacom devices
             </para>
             <indexterm zone="xorg-wacom-driver wacom_drv">
               <primary sortas="c-wacom_drv">wacom_drv.so</primary>
@@ -201,4 +198,3 @@ make</userinput></screen>
     </sect3>
 
   </sect2>
-  <!-- End Xorg Wacom Driver -->

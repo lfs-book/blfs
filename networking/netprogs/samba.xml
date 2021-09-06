@@ -6,17 +6,16 @@
 
   <!ENTITY samba-download-http "https://www.samba.org/ftp/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "8a412bc5b58f35cd4721fa6ec4629ce0">
+  <!ENTITY samba-md5sum        "f0db8302944bb861b31f4163fd302f66">
   <!ENTITY samba-size          "18 MB">
-  <!ENTITY samba-buildsize     "629 MB (add 380 MB for quicktest)">
-  <!ENTITY samba-time          "3.1 SBU (using parallelism=4; add 5.1 SBU for quicktest)">
+  <!ENTITY samba-buildsize     "622 MB (add 379 MB for quicktest)">
+  <!ENTITY samba-time          "3.1 SBU (using parallelism=4; add 4.9 SBU for quicktest)">
 ]>
 
 <sect1 id="samba" xreflabel="Samba-&samba-version;">
   <?dbhtml filename="samba.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -38,7 +37,7 @@
       nameserver (which among other things provides LAN browsing support).
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -93,10 +92,10 @@
       <xref linkend="fuse3"/>,
       <xref linkend="gpgme"/>,
       <xref linkend="icu"/>,
+      <xref linkend="libtasn1"/>,
       <xref linkend="libxslt"/> (for documentation),
       <xref linkend="linux-pam"/>,
-      <xref linkend="perl-parse-yapp"/>,
-      <xref linkend="pycryptodome"/>, and
+      <xref linkend="perl-parse-yapp"/>, and
       <xref linkend="openldap"/>
     </para>
 
@@ -123,17 +122,20 @@
       <!--<xref linkend="wireshark"/> (module installed),-->
       <xref linkend="xfsprogs"/>,
       <ulink url="https://cmocka.org/">cmocka</ulink>,
+      <ulink url="https://cryptography.io/en/latest/">cryptography</ulink>,
       <ulink url="https://ctdb.samba.org/">ctdb</ulink> (included),
       <ulink url="https://cwrap.org/">cwrap</ulink>,
       <ulink url="&pypi;/dnspython/">dnspython</ulink>,
-      <ulink url="https://packages.debian.org/stretch/fam/">FAM</ulink>,
+      <ulink url="https://packages.debian.org/stretch/fam">FAM</ulink>,
       <ulink url="https://people.gnome.org/~veillard/gamin/">Gamin</ulink>,
       <ulink url="https://www.gluster.org/">GlusterFS</ulink>,
       <ulink url="https://github.com/heimdal/">Heimdal</ulink> (included),
+      <ulink url="https://pypi.org/project/iso8601/">iso8601</ulink>,
       <ulink url="http://www.nongnu.org/libunwind/">libunwind</ulink>,
       <ulink url="https://ldb.samba.org/">ldb</ulink> (included),
       <ulink url="&pypi;/m2crypto">M2Crypto</ulink> (required for ADS),
       <ulink url="http://www.openafs.org/">OpenAFS</ulink>,
+      <ulink url="https://pypi.org/project/pyasn1/">pyasn1</ulink>,
       <ulink url="&pypi;/pygpgme/">PyGPGME</ulink> (recommended for ADS),
       <ulink url="https://tevent.samba.org/">tevent</ulink> (included), and
       <ulink url="https://tdb.samba.org/">tdb</ulink> (included)
@@ -175,11 +177,12 @@
     <title>Installation of Samba</title>
 
     <para>
-      Fix a file that fails to compile with Glibc-2.32:
+      To support the test suite, set up a Python virtual environment
+      for some Python modules out of the scope of BLFS:
     </para>
 
-<screen><userinput>sed -r 's/nss_(setpw|endpw|setgr|endgr)ent/my_&amp;/' \
-    -i nsswitch/nsstest.c</userinput></screen>
+<screen><userinput remap="pre">python3 -m venv pyvenv &amp;&amp;
+./pyvenv/bin/pip3 install cryptography pyasn1 iso8601</userinput></screen>
 
     <para>
       Fix a test that always fails:
@@ -192,41 +195,44 @@
       commands:
     </para>
 
-<screen revision="sysv"><userinput>CFLAGS="-I/usr/include/tirpc"          \
-LDFLAGS="-ltirpc"                      \
-./configure                            \
-    --prefix=/usr                      \
-    --sysconfdir=/etc                  \
-    --localstatedir=/var               \
-    --with-piddir=/run/samba           \
-    --with-pammodulesdir=/lib/security \
-    --enable-fhs                       \
-    --without-ad-dc                    \
-    --without-systemd                  \
-    --enable-selftest                  &amp;&amp;
+<screen revision="sysv"><userinput>PYTHON=$PWD/pyvenv/bin/python3             \
+CPPFLAGS="-I/usr/include/tirpc"            \
+LDFLAGS="-ltirpc"                          \
+PATH=$PWD/pyvenv/bin:$PATH                 \
+./configure                                \
+    --prefix=/usr                          \
+    --sysconfdir=/etc                      \
+    --localstatedir=/var                   \
+    --with-piddir=/run/samba               \
+    --with-pammodulesdir=/usr/lib/security \
+    --enable-fhs                           \
+    --without-ad-dc                        \
+    --without-systemd                      \
+    --enable-selftest                      &amp;&amp;
 make</userinput></screen>
 
-<screen revision="systemd"><userinput>CFLAGS="-I/usr/include/tirpc"          \
-LDFLAGS="-ltirpc"                      \
-./configure                            \
-    --prefix=/usr                      \
-    --sysconfdir=/etc                  \
-    --localstatedir=/var               \
-    --with-piddir=/run/samba           \
-    --with-pammodulesdir=/lib/security \
-    --enable-fhs                       \
-    --without-ad-dc                    \
-    --enable-selftest                  &amp;&amp;
+<screen revision="systemd"><userinput>PYTHON=$PWD/pyvenv/bin/python3             \
+CPPFLAGS="-I/usr/include/tirpc"            \
+LDFLAGS="-ltirpc"                          \
+./configure                                \
+    --prefix=/usr                          \
+    --sysconfdir=/etc                      \
+    --localstatedir=/var                   \
+    --with-piddir=/run/samba               \
+    --with-pammodulesdir=/usr/lib/security \
+    --enable-fhs                           \
+    --without-ad-dc                        \
+    --enable-selftest                      &amp;&amp;
 make</userinput></screen>
 
     <para>
       To test the results, as the
       <systemitem class="username">root</systemitem> user, issue:
-      <command>make quicktest</command>. The test suite will produce lines that
-      look like failures, but these are innocuous. The last few lines of output
-      should report <emphasis>"ALL OK"</emphasis> for a good test run. A summary
-      of any failures can be found in
-      <filename class="directory">./st/summary</filename>. With Samba-4.12.0,
+      <command>PATH=$PWD/pyvenv/bin:$PATH make quicktest</command>. The test
+      suite will produce lines that look like failures, but these are innocuous.
+      The last few lines of output should report <emphasis>"ALL OK"</emphasis>
+      for a good test run. A summary of any failures can be found in
+      <filename class="directory">./st/summary</filename>. With Samba-4.14.4,
       many tests are known to fail.
     </para>
 
@@ -244,7 +250,8 @@ make</userinput></screen>
     <note>
       <para>
         Additionally, developer test suites are available. If you've installed
-        the optional python modules above, you can run these tests with
+        the optional python modules above in the Python virtual environment
+        for building this package, you can run these tests with
         <command>make test</command>. It is not recommended for the average
         builder at around 290 SBU and over a gigabyte of disk space, and you
         should expect ~73 errors and ~30 failures from the 3000+ tests.
@@ -252,16 +259,32 @@ make</userinput></screen>
     </note>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Fix a hard coded path to Python 3 interpreter:
+    </para>
+
+<screen><userinput>sed '1s@^.*$@#!/usr/bin/python3@' \
+    -i ./bin/default/source4/scripting/bin/samba-gpupdate.inst</userinput></screen>
+
+    <para>
+      If upgrading from an old version of samba, as the
+      <systemitem class="username">root</systemitem> user, remove the old
+      Python support files to prevent some issues:
+    </para>
+
+<screen role="root"><userinput>rm -rf /usr/lib/python&python3-majorver;/site-packages/samba</userinput></screen>
+
+    <para>
+      Still as the <systemitem class="username">root</systemitem> user,
+      install the package:
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
 
-mv -v /usr/lib/libnss_win{s,bind}.so.*  /lib                       &amp;&amp;
-ln -v -sf ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so &amp;&amp;
-ln -v -sf ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so    &amp;&amp;
-
 install -v -m644    examples/smb.conf.default /etc/samba &amp;&amp;
+
+sed -e "s;log file =.*;log file = /var/log/samba/%m.log;" \
+    -e "s;path = /usr/spool/samba;path = /var/spool/samba;" \
+    -i /etc/samba/smb.conf.default &amp;&amp;
 
 mkdir -pv /etc/openldap/schema                        &amp;&amp;
 
@@ -305,6 +328,7 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       specifies the test suite work directory (default=./st).
     </para>
 
+<!-- FIXME removed during merged-/usr transition.
     <para>
       <command>mv -v /usr/lib/libnss_win{s,bind}.so* /lib</command>:
       The nss libraries are installed in
@@ -318,6 +342,7 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       These symlinks are required when applications build against these
       libraries.
     </para>
+-->
 
     <para>
       <command>install -v -m644 examples/LDAP/* /etc/openldap/schema</command>:
@@ -431,7 +456,8 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
         <para>
           There is no need to run any <application>Samba</application>
           servers in this scenario, thus you don't need to install the provided
-          bootscripts.
+          <phrase revision="sysv">bootscripts.</phrase>
+          <phrase revision="systemd">systemd units.</phrase>
         </para>
 
       </sect4>
@@ -447,7 +473,7 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
 
         <para>
           In this case, the <filename>/etc/samba/smb.conf.default</filename>
-          file may be a good template to start from. Also add
+          file may be a good template to start from. Also, you should add the
           <quote>dos charset</quote> and <quote>unix charset</quote> parameters
           to the <quote>[global]</quote> section as described in Scenario 1 in
           order to prevent filename corruption. For security reasons, you may
@@ -508,7 +534,9 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
         <para>
           Since the <command>smbd</command> and <command>nmbd</command> daemons
           are needed in this case, install the <filename>samba</filename>
-          bootscript. Be sure to run <command>smbpasswd</command> (with the
+          <phrase revision="sysv">bootscript.</phrase>
+          <phrase revision="systemd">systemd unit.</phrase>
+          Be sure to run <command>smbpasswd</command> (with the
           <option>-a</option> option to add users) to enable and set passwords
           for all accounts that need <application>Samba</application> access.
           Using the default <application>Samba</application> passdb backend,
@@ -526,8 +554,9 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
           possible. Such setups are advanced topics and cannot be adequately
           covered in BLFS. Many complete books have been written on these topics
           alone. Note that in some domain membership scenarios, the
-          <command>winbindd</command> daemon and the corresponding bootscript
-          are needed.
+          <command>winbindd</command> daemon and the corresponding
+          <phrase revision="sysv">bootscript</phrase>
+          <phrase revision="systemd">systemd unit</phrase> are needed.
         </para>
 
  <!-- All of these docs are years out of date. These were written for Samba 3,
@@ -732,7 +761,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>cifsdd</command></term>
         <listitem>
           <para>
-            is the dd command for SMB.
+            is the dd command for SMB
           </para>
           <indexterm zone="samba cifsdd">
             <primary sortas="b-cifsdd">cifsdd</primary>
@@ -745,7 +774,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is used to read and manipulate TDB/CTDB databases using
-            the dbwrap interface.
+            the dbwrap interface
           </para>
           <indexterm zone="samba dbwrap_tool">
             <primary sortas="b-dbwrap_tool">dbwrap_tool</primary>
@@ -759,7 +788,7 @@ systemctl start smbd.socket</userinput></screen>
           <para>
             is used to write records to eventlogs from STDIN, add the
             specified source and DLL eventlog registry entries and display the
-            active eventlog names (from <filename>smb.conf</filename>).
+            active eventlog names (from <filename>smb.conf</filename>)
           </para>
           <indexterm zone="samba eventlogadm">
             <primary sortas="b-eventlogadm">eventlogadm</primary>
@@ -772,7 +801,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is used to list info about machines that respond to SMB name
-            queries on a subnet.
+            queries on a subnet
           </para>
           <indexterm zone="samba findsmb">
             <primary sortas="b-findsmb">findsmb</primary>
@@ -785,7 +814,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is used to run random generic SMB operations against two
-            SMB servers and show the differences in behavior.
+            SMB servers and show the differences in behavior
           </para>
           <indexterm zone="samba gentest">
             <primary sortas="b-gentest">gentest</primary>
@@ -798,7 +827,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a command-line utility for adding records to an LDB
-            database.
+            database
           </para>
           <indexterm zone="samba ldbadd">
             <primary sortas="b-ldbadd">ldbadd</primary>
@@ -810,7 +839,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>ldbdel</command></term>
         <listitem>
           <para>
-            is a command-line program for deleting LDB database records.
+            is a command-line program for deleting LDB database records
           </para>
           <indexterm zone="samba ldbdel">
             <primary sortas="b-ldbdel">ldbdel</primary>
@@ -822,7 +851,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>ldbedit</command></term>
         <listitem>
           <para>
-            allows you to edit LDB databases using your preferred editor.
+            allows you to edit LDB databases using your preferred editor
           </para>
           <indexterm zone="samba ldbedit">
             <primary sortas="b-ldbedit">ldbedit</primary>
@@ -834,7 +863,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>ldbmodify</command></term>
         <listitem>
           <para>
-            allows you to modify records in an LDB database.
+            allows you to modify records in an LDB database
           </para>
           <indexterm zone="samba ldbmodify">
             <primary sortas="b-ldbmodify">ldbmodify</primary>
@@ -846,7 +875,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>ldbrename</command></term>
         <listitem>
           <para>
-            allows you to rename LDB databases.
+            allows you to rename LDB databases
           </para>
           <indexterm zone="samba ldbrename">
             <primary sortas="b-ldbrename">ldbrename</primary>
@@ -859,7 +888,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             searches an LDB database for records matching a specified
-            expression.
+            expression
           </para>
           <indexterm zone="samba ldbsearch">
             <primary sortas="b-ldbsearch">ldbsearch</primary>
@@ -871,7 +900,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>locktest</command></term>
         <listitem>
           <para>
-            is used to find differences in locking between two SMB servers.
+            is used to find differences in locking between two SMB servers
           </para>
           <indexterm zone="samba locktest">
             <primary sortas="b-locktest">locktest</primary>
@@ -884,7 +913,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is used to find differences in wildcard matching between
-            Samba's implementation and that of a remote server.
+            Samba's implementation and that of a remote server
           </para>
           <indexterm zone="samba masktest">
             <primary sortas="b-masktest">masktest</primary>
@@ -897,7 +926,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             runs <application>Spotlight</application> searches against a SMB
-            server.
+            server
           </para>
           <indexterm zone="samba mdfind">
             <primary sortas="b-mdfind">mdfind</primary>
@@ -909,7 +938,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>mvxattr</command></term>
         <listitem>
           <para>
-            is used to recursively rename extended attributes.
+            is used to recursively rename extended attributes
           </para>
           <indexterm zone="samba mvxattr">
             <primary sortas="b-mvxattr">mvxattr</primary>
@@ -921,7 +950,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>ndrdump</command></term>
         <listitem>
           <para>
-            is a DCE/RPC Packet Parser and Dumper.
+            is a DCE/RPC Packet Parser and Dumper
           </para>
           <indexterm zone="samba ndrdump">
             <primary sortas="b-ndrdump">ndrdump</primary>
@@ -935,7 +964,7 @@ systemctl start smbd.socket</userinput></screen>
           <para>
             is a tool for administration of <application>Samba</application>
             and remote CIFS servers, similar to the <command>net</command>
-            utility for DOS/Windows.
+            utility for DOS/Windows
           </para>
           <indexterm zone="samba net">
             <primary sortas="b-net">net</primary>
@@ -947,7 +976,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>nmbd</command></term>
         <listitem>
           <para>
-            is the <application>Samba</application> NetBIOS name server.
+            is the <application>Samba</application> NetBIOS name server
           </para>
           <indexterm zone="samba nmbd">
             <primary sortas="b-nmbd">nmbd</primary>
@@ -959,7 +988,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>nmblookup</command></term>
         <listitem>
           <para>
-            is used to query NetBIOS names and map them to IP addresses.
+            is used to query NetBIOS names and map them to IP addresses
           </para>
           <indexterm zone="samba nmblookup">
             <primary sortas="b-nmblookup">nmblookup</primary>
@@ -972,7 +1001,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a tool to allow external access to Winbind's
-            NTLM authentication function.
+            NTLM authentication function
           </para>
           <indexterm zone="samba ntlm_auth">
             <primary sortas="b-ntlm_auth">ntlm_auth</primary>
@@ -984,7 +1013,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>oLschema2ldif</command></term>
         <listitem>
           <para>
-            converts LDAP schema's to LDB-compatible LDIF.
+            converts LDAP schema's to LDB-compatible LDIF
           </para>
           <indexterm zone="samba oLschema2ldif">
             <primary sortas="b-oLschema2ldif">oLschema2ldif</primary>
@@ -996,7 +1025,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>pdbedit</command></term>
         <listitem>
           <para>
-            is a tool used to manage the SAM database.
+            is a tool used to manage the SAM database
           </para>
           <indexterm zone="samba pdbedit">
             <primary sortas="b-pdbedit">pdbedit</primary>
@@ -1024,7 +1053,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a utility that reports and changes SIDs in Windows
-            registry files. It currently only supports Windows NT.
+            registry files. It currently only supports Windows NT
           </para>
           <indexterm zone="samba profiles">
             <primary sortas="b-profiles">profiles</primary>
@@ -1036,7 +1065,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>regdiff</command></term>
         <listitem>
           <para>
-            is a Diff program for Windows registry files.
+            is a Diff program for Windows registry files
           </para>
           <indexterm zone="samba regdiff">
             <primary sortas="b-regdiff">regdiff</primary>
@@ -1048,7 +1077,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>regpatch</command></term>
         <listitem>
           <para>
-            applies registry patches to registry files.
+            applies registry patches to registry files
           </para>
           <indexterm zone="samba regpatch">
             <primary sortas="b-regpatch">regpatch</primary>
@@ -1060,7 +1089,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>regshell</command></term>
         <listitem>
           <para>
-            is a Windows registry file browser using readline.
+            is a Windows registry file browser using readline
           </para>
           <indexterm zone="samba regshell">
             <primary sortas="b-regshell">regshell</primary>
@@ -1072,7 +1101,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>regtree</command></term>
         <listitem>
           <para>
-            is a text-mode registry viewer.
+            is a text-mode registry viewer
           </para>
           <indexterm zone="samba regtree">
             <primary sortas="b-regtree">regtree</primary>
@@ -1084,7 +1113,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>rpcclient</command></term>
         <listitem>
           <para>
-            is used to execute MS-RPC client side functions.
+            is used to execute MS-RPC client side functions
           </para>
           <indexterm zone="samba rpcclient">
             <primary sortas="b-rpcclient">rpcclient</primary>
@@ -1097,7 +1126,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a server to provide AD and SMB/CIFS services
-            to clients.
+            to clients
           </para>
           <indexterm zone="samba samba-prog">
             <primary sortas="b-samba-prog">samba</primary>
@@ -1109,7 +1138,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>samba_dnsupdate</command></term>
         <listitem>
           <para>
-            is used to update our DNS names using TSIG-GSS.
+            is used to update the DNS names using TSIG-GSS
           </para>
           <indexterm zone="samba samba_dnsupdate">
             <primary sortas="b-samba_dnsupdate">samba_dnsupdate</primary>
@@ -1122,7 +1151,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             downgrades the Samba AD database to be compatible with a previous
-            version of Samba.
+            version of Samba
           </para>
           <indexterm zone="samba samba_downgrade_db">
             <primary sortas="b-samba_downgrade_db">samba_downgrade_db</primary>
@@ -1135,7 +1164,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a script used to compute your KCC (Knowledge
-            Consistency Checker) topology.
+            Consistency Checker) topology
           </para>
           <indexterm zone="samba samba_kcc">
             <primary sortas="b-samba_kcc">samba_kcc</primary>
@@ -1147,7 +1176,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>samba-gpupdate</command></term>
         <listitem>
           <para>
-            allows you to edit Microsoft Group Policy Objects (GPOs).
+            allows you to edit Microsoft Group Policy Objects (GPOs)
           </para>
           <indexterm zone="samba samba-gpupdate">
             <primary sortas="b-samba-gpupdate">samba-gpupdate</primary>
@@ -1159,7 +1188,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>samba-regedit</command></term>
         <listitem>
           <para>
-            is a ncurses based tool to manage the Samba registry.
+            is a ncurses based tool to manage the Samba registry
           </para>
           <indexterm zone="samba samba-regedit">
             <primary sortas="b-samba-regedit">samba-regedit</primary>
@@ -1172,7 +1201,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a script to update the servicePrincipalName
-            names from spn_update_list.
+            names from spn_update_list
           </para>
           <indexterm zone="samba samba_spnupdate">
             <primary sortas="b-samba_spnupdate">samba_spnupdate</primary>
@@ -1184,7 +1213,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>samba-tool</command></term>
         <listitem>
           <para>
-            is the main Samba administration tool.
+            is the main Samba administration tool
           </para>
           <indexterm zone="samba samba-tool">
             <primary sortas="b-samba-tool">samba-tool</primary>
@@ -1196,7 +1225,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>samba_upgradedns</command></term>
         <listitem>
           <para>
-            upgrades the DNS records in a Samba server to a newer version.
+            upgrades the DNS records in a Samba server to a newer version
           </para>
           <indexterm zone="samba samba_upgradedns">
             <primary sortas="b-samba_upgradedns">samba_upgradedns</primary>
@@ -1208,7 +1237,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>sharesec</command></term>
         <listitem>
           <para>
-            manipulates share ACL permissions on SMB file shares.
+            manipulates share ACL permissions on SMB file shares
           </para>
           <indexterm zone="samba sharesec">
             <primary sortas="b-sharesec">sharesec</primary>
@@ -1220,7 +1249,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbcacls</command></term>
         <listitem>
           <para>
-            is used to manipulate Windows NT access control lists.
+            is used to manipulate Windows NT access control lists
           </para>
           <indexterm zone="samba smbcacls">
             <primary sortas="b-smbcacls">smbcacls</primary>
@@ -1232,7 +1261,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbclient</command></term>
         <listitem>
           <para>
-            is a SMB/CIFS access utility, similar to FTP.
+            is a SMB/CIFS access utility, similar to FTP
           </para>
           <indexterm zone="samba smbclient">
             <primary sortas="b-smbclient">smbclient</primary>
@@ -1245,7 +1274,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is used to control running <command>smbd</command>,
-            <command>nmbd</command> and <command>winbindd</command> daemons.
+            <command>nmbd</command> and <command>winbindd</command> daemons
           </para>
           <indexterm zone="samba smbcontrol">
             <primary sortas="b-smbcontrol">smbcontrol</primary>
@@ -1257,7 +1286,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbcquotas</command></term>
         <listitem>
           <para>
-            is used to manipulate Windows NT quotas on SMB file shares.
+            is used to manipulate Windows NT quotas on SMB file shares
           </para>
           <indexterm zone="samba smbcquotas">
             <primary sortas="b-smbcquotas">smbcquotas</primary>
@@ -1270,7 +1299,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is the main <application>Samba</application> daemon which
-            provides SMB/CIFS services to clients.
+            provides SMB/CIFS services to clients
           </para>
           <indexterm zone="samba smbd">
             <primary sortas="b-smbd">smbd</primary>
@@ -1284,7 +1313,7 @@ systemctl start smbd.socket</userinput></screen>
           <para>
             is a simple utility with <command>wget</command>-like semantics,
             that can download files from SMB servers. You can specify the
-            files you would like to download on the command-line.
+            files you would like to download on the command-line
           </para>
           <indexterm zone="samba smbget">
             <primary sortas="b-smbget">smbget</primary>
@@ -1296,7 +1325,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbpasswd</command></term>
         <listitem>
           <para>
-            changes a user's <application>Samba</application> password.
+            changes a user's <application>Samba</application> password
           </para>
           <indexterm zone="samba smbpasswd">
             <primary sortas="b-smbpasswd">smbpasswd</primary>
@@ -1308,7 +1337,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbspool</command></term>
         <listitem>
           <para>
-            sends a print job to an SMB printer.
+            sends a print job to an SMB printer
           </para>
           <indexterm zone="samba smbspool">
             <primary sortas="b-smbspool">smbspool</primary>
@@ -1320,7 +1349,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbstatus</command></term>
         <listitem>
           <para>
-            reports current <application>Samba</application> connections.
+            reports current <application>Samba</application> connections
           </para>
           <indexterm zone="samba smbstatus">
             <primary sortas="b-smbstatus">smbstatus</primary>
@@ -1333,7 +1362,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a shell script used for backing up SMB/CIFS shares
-            directly to Linux tape drives or a file.
+            directly to Linux tape drives or a file
           </para>
           <indexterm zone="samba smbtar">
             <primary sortas="b-smbtar">smbtar</primary>
@@ -1360,7 +1389,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbtorture</command></term>
         <listitem>
           <para>
-            is  a testsuite that runs several tests against a SMB server.
+            is  a testsuite that runs several tests against a SMB server
           </para>
           <indexterm zone="samba smbtorture">
             <primary sortas="b-smbtorture">smbtorture</primary>
@@ -1372,7 +1401,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbtree</command></term>
         <listitem>
           <para>
-            is a text-based SMB network browser.
+            is a text-based SMB network browser
           </para>
           <indexterm zone="samba smbtree">
             <primary sortas="b-smbtree">smbtree</primary>
@@ -1385,7 +1414,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a tool for backing up or validating the integrity of
-            <application>Samba</application> <filename>.tdb</filename> files.
+            <application>Samba</application> <filename>.tdb</filename> files
           </para>
           <indexterm zone="samba tdbbackup">
             <primary sortas="b-tdbbackup">tdbbackup</primary>
@@ -1398,7 +1427,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a tool used to print the contents of a
-            <application>Samba</application> <filename>.tdb</filename> file.
+            <application>Samba</application> <filename>.tdb</filename> file
           </para>
           <indexterm zone="samba tdbdump">
             <primary sortas="b-tdbdump">tdbdump</primary>
@@ -1411,7 +1440,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a tool for creating a <application>Samba</application>
-            <filename>.tdb</filename> file out of a ntdbdump.
+            <filename>.tdb</filename> file out of a ntdbdump
           </para>
           <indexterm zone="samba tdbrestore">
             <primary sortas="b-tdbrestore">tdbrestore</primary>
@@ -1424,7 +1453,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a tool which allows simple database manipulation from the
-            command line.
+            command line
           </para>
           <indexterm zone="samba tdbtool">
             <primary sortas="b-tdbtool">tdbtool</primary>
@@ -1436,7 +1465,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>testparm</command></term>
         <listitem>
           <para>
-            checks an <filename>smb.conf</filename> file for proper syntax.
+            checks an <filename>smb.conf</filename> file for proper syntax
           </para>
           <indexterm zone="samba testparm">
             <primary sortas="b-testparm">testparm</primary>
@@ -1448,7 +1477,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>wbinfo</command></term>
         <listitem>
           <para>
-            queries a running <command>winbindd</command> daemon.
+            queries a running <command>winbindd</command> daemon
           </para>
           <indexterm zone="samba wbinfo">
             <primary sortas="b-wbinfo">wbinfo</primary>
@@ -1460,7 +1489,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>winbindd</command></term>
         <listitem>
           <para>
-            resolves names from Windows NT servers.
+            resolves names from Windows NT servers
           </para>
           <indexterm zone="samba winbindd">
             <primary sortas="b-winbindd">winbindd</primary>
@@ -1469,11 +1498,11 @@ systemctl start smbd.socket</userinput></screen>
       </varlistentry>
 
       <varlistentry id="libnss_winbind">
-        <term><filename class='libraryfile'>libnss_winbind.so</filename></term>
+        <term><filename class="libraryfile">libnss_winbind.so</filename></term>
         <listitem>
           <para>
             provides Name Service Switch API functions for resolving names
-            from NT servers.
+            from NT servers
           </para>
           <indexterm zone="samba libnss_winbind">
             <primary sortas="c-libnss_winbind">libnss_winbind.so</primary>
@@ -1482,11 +1511,11 @@ systemctl start smbd.socket</userinput></screen>
       </varlistentry>
 
       <varlistentry id="libnss_wins">
-        <term><filename class='libraryfile'>libnss_wins.so</filename></term>
+        <term><filename class="libraryfile">libnss_wins.so</filename></term>
         <listitem>
           <para>
             provides API functions for Samba's implementation of the
-            Windows Internet Naming Service.
+            Windows Internet Naming Service
           </para>
           <indexterm zone="samba libnss_wins">
             <primary sortas="c-libnss_wins">libnss_wins.so</primary>
@@ -1495,11 +1524,11 @@ systemctl start smbd.socket</userinput></screen>
       </varlistentry>
 
       <varlistentry id="libnetapi">
-        <term><filename class='libraryfile'>libnetapi.so</filename></term>
+        <term><filename class="libraryfile">libnetapi.so</filename></term>
         <listitem>
           <para>
-            provides the API functions for the administration tools used
-            for Samba and remote CIFS servers.
+            provides API functions for the administration tools used
+            for Samba and remote CIFS servers
           </para>
           <indexterm zone="samba libnetapi">
             <primary sortas="c-libnetapi">libnetapi.so</primary>
@@ -1508,10 +1537,10 @@ systemctl start smbd.socket</userinput></screen>
       </varlistentry>
 
       <varlistentry id="libsmbclient">
-        <term><filename class='libraryfile'>libsmbclient.so</filename></term>
+        <term><filename class="libraryfile">libsmbclient.so</filename></term>
         <listitem>
           <para>
-            provides the API functions for the Samba SMB client tools.
+            provides API functions for the Samba SMB client tools
           </para>
           <indexterm zone="samba libsmbclient">
             <primary sortas="c-libsmbclient">libsmbclient.so</primary>
@@ -1520,7 +1549,7 @@ systemctl start smbd.socket</userinput></screen>
       </varlistentry>
 <!--
       <varlistentry id="libsmbsharemodes">
-        <term><filename class='libraryfile'>libsmbsharemodes.so</filename></term>
+        <term><filename class="libraryfile">libsmbsharemodes.so</filename></term>
         <listitem>
           <para>
             provides API functions for accessing SMB share modes (locks etc.)
@@ -1532,10 +1561,10 @@ systemctl start smbd.socket</userinput></screen>
       </varlistentry>-->
 
       <varlistentry id="libwbclient">
-        <term><filename class='libraryfile'>libwbclient.so</filename></term>
+        <term><filename class="libraryfile">libwbclient.so</filename></term>
         <listitem>
           <para>
-            provides API functions for Windows domain client services.
+            provides API functions for Windows domain client services
           </para>
           <indexterm zone="samba libwbclient">
             <primary sortas="c-libwbclient">libwbclient.so</primary>

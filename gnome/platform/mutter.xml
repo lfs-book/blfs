@@ -4,19 +4,18 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-minor-38;/mutter-&mutter-version;.tar.xz">
-  <!ENTITY mutter-download-ftp  "&gnome-download-ftp;/mutter/&gnome-minor-38;/mutter-&mutter-version;.tar.xz">
-  <!ENTITY mutter-md5sum        "07307571f9f2bdb433894741222773e1">
-  <!ENTITY mutter-size          "2.5 MB">
-  <!ENTITY mutter-buildsize     "140 MB">
-  <!ENTITY mutter-time          "1.3 SBU (Using parallelism=4)">
+  <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-40;/mutter-&mutter-version;.tar.xz">
+  <!ENTITY mutter-download-ftp  "&gnome-download-ftp;/mutter/&gnome-40;/mutter-&mutter-version;.tar.xz">
+  <!ENTITY mutter-md5sum        "bbfb54fba942b4f388e5b89759f2e9a6">
+  <!ENTITY mutter-size          "2.6 MB">
+  <!ENTITY mutter-buildsize     "296 MB">
+  <!ENTITY mutter-time          "2.1 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="mutter" xreflabel="Mutter-&mutter-version;">
   <?dbhtml filename="mutter.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       machine with a hardware accelerated video driver).
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -88,14 +87,10 @@
     <para role="required">
       <!-- now using internal shipped clutter and cogl copies -->
       <!-- <xref linkend="clutter"/>, -->
-      <xref linkend="gnome-desktop"/>,
       <xref linkend="gnome-settings-daemon"/>,
       <xref linkend="graphene"/>,
-      <xref linkend="libcanberra"/>,
-      <xref linkend="libwacom"/>,
       <xref linkend="libxkbcommon"/>,
-      <xref linkend="pipewire"/>,
-      <xref linkend="upower"/>, and
+      <xref linkend="pipewire"/>, and
       <xref linkend="zenity"/>
     </para>
 
@@ -146,6 +141,13 @@
 -->
 
     <para>
+      First, fix a race condition that sometimes occurs due to meson dependency
+      ordering:
+    </para>
+
+<screen><userinput remap="pre">sed -i '/libmutter_dep = declare_dependency(/a sources: mutter_built_sources,' src/meson.build</userinput></screen>
+
+    <para>
       Install <application>Mutter</application> by running the following
       commands:
     </para>
@@ -153,7 +155,7 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr .. &amp;&amp;
+meson --prefix=/usr --buildtype=debugoptimized .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -161,7 +163,8 @@ ninja</userinput></screen>
       <command>dbus-run-session ninja test</command>. The tests
       require an active X session to run correctly. It is not necessary to
       run a  separate D-bus session if not in a GNOME session, but it
-      provides a clean environment in any case.
+      provides a clean environment in any case. One test,
+      <filename>native-headless</filename>, is known to fail.
     </para>
 
     <para>
@@ -170,6 +173,24 @@ ninja</userinput></screen>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
 
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>--buildtype=debugoptimized</parameter>: Override the
+      default buildtype (<quote>debug</quote>), which would produce
+      unoptimized binaries.  The test suite of this package needs debug
+      to be enabled.
+    </para>
+
+    <para>
+      <option>-Dprofiler=false</option>: Use this option if
+      <application>Sysprof</application> is not installed, and you don't
+      want meson to download <application>Sysprof</application> source
+      code.
+    </para>
   </sect2>
 
   <sect2 role="content">
@@ -185,10 +206,10 @@ ninja</userinput></screen>
           mutter
         </seg>
         <seg>
-          libmutter-7.so
+          libmutter-8.so
         </seg>
         <seg>
-          /usr/{lib,include,libexec/installed-tests,share/{installed-tests}}/mutter-7
+          /usr/{lib,include,libexec/installed-tests,share/{installed-tests}}/mutter-8
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -203,7 +224,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             is a <application>Clutter</application> based compositing
-            <application>GTK+</application> Window Manager.
+            <application>GTK+</application> Window Manager
           </para>
           <indexterm zone="mutter mutter-prog">
             <primary sortas="b-mutter">mutter</primary>
@@ -212,13 +233,13 @@ ninja</userinput></screen>
       </varlistentry>
 
       <varlistentry id="libmutter">
-        <term><filename class="libraryfile">libmutter-7.so</filename></term>
+        <term><filename class="libraryfile">libmutter-8.so</filename></term>
         <listitem>
           <para>
-            contains the <application>Mutter</application> API functions.
+            contains the <application>Mutter</application> API functions
           </para>
           <indexterm zone="mutter libmutter">
-            <primary sortas="c-libmutter">libmutter-7.so</primary>
+            <primary sortas="c-libmutter">libmutter-8.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

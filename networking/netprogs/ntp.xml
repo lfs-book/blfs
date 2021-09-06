@@ -16,7 +16,6 @@
   <?dbhtml filename="ntp.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       NTP protocol.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -127,16 +126,18 @@ useradd -c "Network Time Protocol" -d /var/lib/ntp -u 87 \
     -i scripts/update-leap/update-leap.in</userinput></screen>
 
     <para>
+      Now fix an issue introduced with glibc-2.34:
+    </para>
+
+<screen><userinput>sed -e 's/#ifndef __sun/#if !defined(__sun) \&amp;\&amp; !defined(__GLIBC__)/' \
+    -i libntp/work_thread.c</userinput></screen>
+
+    <para>
       Install <application>ntp</application> by running
       the following commands:
     </para>
 
-<!--
-  Note: Check if -fcommon is still required on versions gtr 4.2.8p14
-        Its a "hack" for gcc-10
--->
-<screen><userinput>./configure CFLAGS="-O2 -g -fPIC -fcommon $CFLAGS" \
-            --prefix=/usr         \
+<screen><userinput>./configure --prefix=/usr         \
             --bindir=/usr/sbin    \
             --sysconfdir=/etc     \
             --enable-linuxcaps    \
@@ -240,7 +241,7 @@ server 0.north-america.pool.ntp.org
 server 2.south-america.pool.ntp.org
 
 driftfile /var/lib/ntp/ntp.drift
-pidfile   /var/run/ntpd.pid
+pidfile   /run/ntpd.pid
 
 leapfile  /var/lib/ntp/ntp.leapseconds</literal>
 EOF</userinput></screen>
@@ -345,7 +346,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <term><command>calc_tickadj</command></term>
         <listitem>
           <para>
-            calculates optimal value for tick given ntp drift file.
+            calculates optimal value for tick given ntp drift file
           </para>
           <indexterm zone="ntp calc_tickadj">
             <primary sortas="b-calc_tickadj">calc_tickadj</primary>
@@ -358,7 +359,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <listitem>
           <para>
             generates cryptographic data files used by the NTPv4 authentication
-            and identification schemes.
+            and identification schemes
           </para>
           <indexterm zone="ntp ntp-keygen">
             <primary sortas="b-ntp-keygen">ntp-keygen</primary>
@@ -371,7 +372,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <listitem>
           <para>
             is useful at boot time, to delay the boot sequence until
-            <command>ntpd</command> has set the time.
+            <command>ntpd</command> has set the time
           </para>
           <indexterm zone="ntp ntp-wait">
             <primary sortas="b-ntp-wait">ntp-wait</primary>
@@ -385,7 +386,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
           <para>
             is a ntp daemon that runs in the background and keeps
             the date and time synchronized based on response from configured
-            ntp servers. It also functions as a ntp server.
+            ntp servers. It also functions as a ntp server
           </para>
           <indexterm zone="ntp ntpd">
             <primary sortas="b-ntpd">ntpd</primary>
@@ -398,7 +399,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <listitem>
           <para>
             is a client program that sets the date and time based on
-            the response from an ntp server. This command is deprecated.
+            the response from an ntp server. This command is deprecated
           </para>
           <indexterm zone="ntp ntpdate">
             <primary sortas="b-ntpdate">ntpdate</primary>
@@ -411,7 +412,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <listitem>
           <para>
             is used to query the ntp daemon about its current state
-            and to request changes in that state.
+            and to request changes in that state
           </para>
           <indexterm zone="ntp ntpdc">
             <primary sortas="b-ntpdc">ntpdc</primary>
@@ -424,7 +425,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <listitem>
           <para>
             is a utility program used to monitor <command>ntpd</command>
-            operations and determine performance.
+            operations and determine performance
           </para>
           <indexterm zone="ntp ntpq">
             <primary sortas="b-ntpq">ntpq</primary>
@@ -436,7 +437,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <term><command>ntptime</command></term>
         <listitem>
           <para>
-            reads and displays time-related kernel variables.
+            reads and displays time-related kernel variables
           </para>
           <indexterm zone="ntp ntptime">
             <primary sortas="b-ntptime">ntptime</primary>
@@ -448,7 +449,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <term><command>ntptrace</command></term>
         <listitem>
           <para>
-            traces a chain of ntp servers back to the primary source.
+            traces a chain of ntp servers back to the primary source
           </para>
           <indexterm zone="ntp ntptrace">
             <primary sortas="b-ntptrace">ntptrace</primary>
@@ -460,7 +461,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <term><command>sntp</command></term>
         <listitem>
           <para>
-            is a Simple Network Time Protocol (SNTP) client.
+            is a Simple Network Time Protocol (SNTP) client
           </para>
           <indexterm zone="ntp sntp">
             <primary sortas="b-sntp">sntp</primary>
@@ -474,7 +475,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
           <para>
             reads, and optionally modifies, several timekeeping-related
             variables in older kernels that do not have support for precision
-            timekeeping.
+            timekeeping
           </para>
           <indexterm zone="ntp tickadj">
             <primary sortas="b-tickadj">tickadj</primary>
@@ -487,7 +488,7 @@ ln -v -sf ../init.d/setclock /etc/rc.d/rc6.d/K46setclock</userinput></screen>
         <listitem>
           <para>
             is a script to verify and, if necessary, update the leap-second
-            definition file.
+            definition file
           </para>
           <indexterm zone="ntp update-leap">
             <primary sortas="b-update-leap">update-leap</primary>

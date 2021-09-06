@@ -7,17 +7,16 @@
   <!ENTITY gpgme-download-http "&gnupg-http;/gpgme/gpgme-&gpgme-version;.tar.bz2">
   <!ENTITY gpgme-download-ftp  "&gnupg-ftp;/gpgme/gpgme-&gpgme-version;.tar.bz2">
   <!ENTITY gpgme-download-ftp  " ">
-  <!ENTITY gpgme-md5sum        "32298e5ccd458f96b25ce7ae8e30780c">
+  <!ENTITY gpgme-md5sum        "e31b9e0efc5a2e1ec1bbed22e7a082a4">
   <!ENTITY gpgme-size          "1.6 MB">
-  <!ENTITY gpgme-buildsize     "256 MB">
-  <!ENTITY gpgme-time          "1.0 SBU (with parallelism=4; with all bindings, add 1.0 SBU for tests)">
+  <!ENTITY gpgme-buildsize     "222 MB">
+  <!ENTITY gpgme-time          "0.8 SBU (with parallelism=4; with all bindings, add 0.7 SBU for tests)">
 ]>
 
 <sect1 id="gpgme" xreflabel="GPGME-&gpgme-version;">
   <?dbhtml filename="gpgme.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -40,7 +39,7 @@
       signature verification and key management.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -85,12 +84,14 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="doxygen"/> and 
+      <xref linkend="doxygen"/> and
       <xref linkend="graphviz"/> (for API documentation),
-      <xref linkend="gnupg2"/> (required if Qt or SWIG are installed; 
+      <xref linkend="gnupg2"/> (required if Qt or SWIG are installed;
         used during the testsuite),
-      <xref linkend="clisp"/>, 
-      <xref linkend="python2"/>, 
+      <xref linkend="clisp"/>,<!--
+gpgme can still use python 2.7, but can use python3 as well,
+so do not advertise python2
+      <xref linkend="python2"/>,-->
       <xref linkend="qt5"/>, and/or
       <xref linkend="swig"/> (for language bindings)
     </para>
@@ -102,6 +103,12 @@
 
   <sect2 role="installation">
     <title>Installation of GPGME</title>
+
+    <para>
+      At first, fix an issue building the package with Glibc-2.34 or later:
+    </para>
+
+<screen><userinput>sed 's/defined(__sun.*$/1/' -i src/posix-io.c</userinput></screen>
 
     <para>
       Install <application>GPGME</application> by running the following
@@ -171,7 +178,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is used to obtain <application>GPGME</application> compilation and
-            linking information.
+            linking information
           </para>
           <indexterm zone="gpgme gpgme-config">
             <primary sortas="b-gpgme-config">gpgme-config</primary>
@@ -183,7 +190,7 @@ make</userinput></screen>
         <term><command>gpgme-json</command></term>
         <listitem>
           <para>
-            outputs <application>GPGME</application> commands in JSON format.
+            outputs <application>GPGME</application> commands in JSON format
           </para>
           <indexterm zone="gpgme gpgme-json">
             <primary sortas="b-gpgme-json">gpgme-json</primary>
@@ -195,7 +202,9 @@ make</userinput></screen>
         <term><command>gpgme-tool</command></term>
         <listitem>
           <para>
-            prints fingerprint and keyid with keyservers.
+            is an assuan server exposing <application>GPGME</application>
+            operations, such as printing fingerprints and keyids with
+            keyservers
           </para>
           <indexterm zone="gpgme gpgme-tool">
             <primary sortas="b-gpgme-tool">gpgme-tool</primary>
@@ -222,7 +231,7 @@ make</userinput></screen>
         <term><filename class="libraryfile">libgpgme.so</filename></term>
         <listitem>
           <para>
-            contains the <application>GPGME</application> API functions.
+            contains the <application>GPGME</application> API functions
           </para>
           <indexterm zone="gpgme libgpgme">
             <primary sortas="c-libgpgme">libgpgme.so</primary>
@@ -234,7 +243,7 @@ make</userinput></screen>
         <term><filename class="libraryfile">libgpgmepp.so</filename></term>
         <listitem>
           <para>
-            contains the C++ <application>GPGME</application> API functions.
+            contains the C++ <application>GPGME</application> API functions
           </para>
           <indexterm zone="gpgme libgpgmepp">
             <primary sortas="c-libgpgmepp">libgpgmepp.so</primary>
@@ -247,7 +256,7 @@ make</userinput></screen>
         <listitem>
           <para>
             contains API functions for handling GPG operations in
-            <application>Qt</application> applications.
+            <application>Qt</application> applications
           </para>
           <indexterm zone="gpgme libqgpgme">
             <primary sortas="c-libqgpgme">libqgpgme.so</primary>

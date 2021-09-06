@@ -7,10 +7,10 @@
   <!ENTITY python3-download-http
            "https://www.python.org/ftp/python/&python3-version;/Python-&python3-version;.tar.xz">
   <!ENTITY python3-download-ftp  " ">
-  <!ENTITY python3-md5sum        "61981498e75ac8f00adcb908281fadb6">
+  <!ENTITY python3-md5sum        "ecc29a7688f86e550d29dba2ee66cf80">
   <!ENTITY python3-size          "18 MB">
-  <!ENTITY python3-buildsize     "202 MB (add 31 MB for tests)">
-  <!ENTITY python3-time          "0.5 SBU (using parallelism=4; add 1.9 SBU for tests, including rebuilding)">
+  <!ENTITY python3-buildsize     "356 MB (add 56 MB for tests)">
+  <!ENTITY python3-time          "0.6 SBU (using parallelism=4; add 2.7 SBU for tests)">
   <!--
   Note: Size does not reflect docs that were install in LFS.
 
@@ -22,7 +22,6 @@
   <?dbhtml filename="python3.html" ?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -50,7 +49,7 @@
       </para>
     </note>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -103,7 +102,8 @@
 
     <bridgehead renderas="sect4">Optional (For Additional Modules)</bridgehead>
     <para role="optional">
-      <xref linkend="db"/> and
+      <xref linkend="db"/>,
+      <xref linkend="libnsl"/>, and
       <xref linkend="tk"/>
     </para>
 
@@ -120,16 +120,18 @@
       commands:
     </para>
 
-<screen><userinput>CXX="/usr/bin/g++"              \
-./configure --prefix=/usr       \
-            --enable-shared     \
-            --with-system-expat \
-            --with-system-ffi   \
-            --with-ensurepip=yes &amp;&amp;
+<screen><userinput>CXX="/usr/bin/g++"               \
+./configure --prefix=/usr        \
+            --enable-shared      \
+            --with-system-expat  \
+            --with-system-ffi    \
+            --with-ensurepip=yes \
+            --enable-optimizations &amp;&amp;
 make</userinput></screen>
 
     <para>
-      The test suite must be run separately, using an X terminal (see below).
+      To test the result, issue <command>make test</command>.
+      Some tests may need an Internet connection.
     </para>
 
     <para>
@@ -137,21 +139,6 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
-
-    <para>
-      The test suite must be run separately from the build, either before or
-      after the package is built and installed. Do not run
-      <command>make install</command> after running the test suite. To build
-      and install the package, you need to start with a fresh or clean source
-      tree. For the tests, you also need a clean source code, so either start by
-      removing the source code directory and starting over, by uncompressing
-      the source tarball or by running <command>make clean</command>. Then
-      configure again, adding <quote>--with-pydebug</quote> to the
-      <command>configure</command> switches above, run <command>make</command>,
-      then <command>make test</command>. Remember that tests must be executed
-      using an X terminal. 
-      The test SBU highly depends on the speed of the internet connection.
-    </para>
 
   </sect2>
 
@@ -170,29 +157,26 @@ make</userinput></screen>
 
     <para>
       <parameter>--with-system-ffi</parameter>: This switch enables linking
-      against system version of <application>libffi</application>. 
+      against the system version of <application>libffi</application>. 
     </para>
 
     <para>
       <parameter>--with-ensurepip=yes</parameter> : This switch enables building
-      <command>pip</command> and <command>setuptools</command> packaging programs.
-      <command>setuptools</command> is needed for building some Python modules.
+      the <command>pip</command> and <command>setuptools</command> packaging 
+      programs. <command>setuptools</command> is needed for building some
+      Python modules.
     </para>
 
     <para>
       <option>--with-dbmliborder=bdb:gdbm:ndbm</option>: Use this switch
-      if you want to build <application>Python</application> DBM Module
+      if you want to build the <application>Python</application> DBM Module
       against <application>Berkeley DB</application> instead of
       <application>GDBM</application>.
     </para>
 
     <para>
-      <option>--enable-optimization</option>: Use this switch
-      if you want to enable <emphasis>expensive</emphasis> optimizations (i.e.
-      Profile Guided Optimizations). This adds around 20 SBU, but can
-      <emphasis>slightly</emphasis> speed up some uses, such as using
-      <application>Sphinx</application> for creating documentation, or use of
-      <application>Python3</application> scripts.
+      <parameter>--enable-optimization</parameter>: This switch enables
+      stable, but expensive, optimizations.
     </para>
 
     <para>
@@ -245,7 +229,9 @@ make</userinput></screen>
           2to3 (symlink) and
           2to3-&python3-majorver;,
 
+          <!--
           easy_install-&python3-majorver;,
+          -->
 
           idle3 (symlink) and
           idle&python3-majorver;,
@@ -258,9 +244,6 @@ make</userinput></screen>
 
           python3 (symlink);
           python&python3-majorver;, and
-
-          python3 (symlink), and
-          python&python3-majorver;
 
           python3-config (symlink) and
           python&python3-majorver;-config
@@ -294,19 +277,20 @@ make</userinput></screen>
         </listitem>
       </varlistentry>
       Put here for easy use when removing Python2 -->
+      <!--
       <varlistentry id="easy_install">
         <term><command>easy_install</command></term>
         <listitem>
           <para>
             is a frontend to pip3 to make it easier to configure python modules
-            through the PIP package manager.
+            through the PIP package manager
           </para>
           <indexterm zone="python3 easy_install">
             <primary sortas="python3 easy_install">easy_install</primary>
           </indexterm>
         </listitem>
       </varlistentry>
-
+      -->
       <varlistentry id="idle3">
         <term><command>idle3</command></term>
         <listitem>
@@ -314,7 +298,7 @@ make</userinput></screen>
             is a wrapper script that opens a <application>Python</application>
             aware GUI editor. For this script to run, you must have installed
             <application>Tk</application> before Python so that the Tkinter
-            Python module is built.
+            Python module is built
           </para>
           <indexterm zone="python3 idle3">
             <primary sortas="b-idle3">idle3</primary>
@@ -327,7 +311,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is the <application>Python</application> documentation
-            tool.
+            tool
           </para>
           <indexterm zone="python3 pydoc3">
             <primary sortas="b-pydoc3">pydo3c</primary>
@@ -340,7 +324,7 @@ make</userinput></screen>
         <listitem>
           <para>
             is an interpreted, interactive, object-oriented programming
-            language.
+            language
           </para>
           <indexterm zone="python3 python3-prog">
             <primary sortas="b-python3">python3</primary>
@@ -353,11 +337,10 @@ make</userinput></screen>
         <listitem>
           <para>
             is a version-specific name for the <command>python</command>
-            program.
+            program
           </para>
           <indexterm zone="python3 python-ver">
-            <primary
-            sortas="b-python&python3-majorver;">python&python3-majorver;</primary>
+            <primary sortas="b-python&python3-majorver;">python&python3-majorver;</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY gnome-shell-download-http
-           "&gnome-download-http;/gnome-shell/&gnome-minor-38;/gnome-shell-&gnome-shell-version;.tar.xz">
+           "&gnome-download-http;/gnome-shell/&gnome-40;/gnome-shell-&gnome-shell-version;.tar.xz">
   <!ENTITY gnome-shell-download-ftp
-           "&gnome-download-ftp;/gnome-shell/&gnome-minor-38;/gnome-shell-&gnome-shell-version;.tar.xz">
-  <!ENTITY gnome-shell-md5sum        "069511072eedd1934b762320467c0ab7">
-  <!ENTITY gnome-shell-size          "1.7 MB">
-  <!ENTITY gnome-shell-buildsize     "72 MB (including tests)">
+           "&gnome-download-ftp;/gnome-shell/&gnome-40;/gnome-shell-&gnome-shell-version;.tar.xz">
+  <!ENTITY gnome-shell-md5sum        "079b731cafd4db458b5d357c9a6ae697">
+  <!ENTITY gnome-shell-size          "1.8 MB">
+  <!ENTITY gnome-shell-buildsize     "69 MB (including tests)">
   <!ENTITY gnome-shell-time          "0.2 SBU (Using parallelism=4, with tests)">
 ]>
 
@@ -18,7 +18,6 @@
   <?dbhtml filename="gnome-shell.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy$</othername>
     <date>$Date$</date>
   </sect1info>
 
@@ -36,7 +35,7 @@
       the <application>GNOME</application> Desktop environment.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,6 +71,18 @@
       </listitem>
     </itemizedlist>
 
+    <!--
+    <bridgehead renderas="sect3" revision="sysv">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact" revision="sysv">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/gnome-shell-&gnome-shell-version;-fix_xwayland-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+    -->
+
     <bridgehead renderas="sect3">GNOME Shell Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -80,6 +91,7 @@
       <xref linkend="gjs"/>,
       <xref linkend="gnome-autoar"/>,
       <xref linkend="gnome-control-center"/>,
+      <xref linkend="gtk4"/>,
       <xref linkend="mutter"/>,
       <xref linkend="sassc"/>,
       <xref linkend="startup-notification"/>, and
@@ -134,13 +146,13 @@
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr -Dsystemd=false .. &amp;&amp;
+meson --prefix=/usr --buildtype=release -Dsystemd=false .. &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr .. &amp;&amp;
+meson --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -159,6 +171,14 @@ ninja</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <para revision="sysv">
+      <command>patch ...</command>: This patch fixes a bug when trying to
+      start an xwayland application on non systemd.
+    </para>
 
     <para revision="sysv">
       <parameter>-Dsystemd=false</parameter>: Prevents installing systemd
@@ -209,7 +229,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
             provides the core user interface functions for the
-            <application>GNOME</application> 3 Desktop.
+            <application>GNOME</application> 3 Desktop
           </para>
           <indexterm zone="gnome-shell gnome-shell-prog">
             <primary sortas="b-gnome-shell">gnome-shell</primary>

@@ -16,8 +16,7 @@
   <?dbhtml filename="libpwquality.html"?>
 
   <sect1info>
-    <othername>$LastChangedBy: fernando $</othername>
-    <date>$Date: 2015-09-25 08:48:24 -0500 (Fri, 25 Sep 2015) $</date>
+    <date>$Date$</date>
   </sect1info>
 
   <title>libpwquality-&libpwquality-version;</title>
@@ -36,7 +35,7 @@
       generating random passwords with good pronounceability.
     </para>
 
-    &lfs10_checked;
+    &lfs110a_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,12 +82,12 @@
     <para role="recommended">
       <xref linkend="linux-pam"/>
     </para>
-
+<!-- Do not advertise python 2 since python 3 can be used
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="python2"/>
     </para>
-
+-->
     <para condition="html" role="usernotes">User Notes:
       <ulink url="&blfs-wiki;/libpwquality"/>
     </para>
@@ -102,10 +101,10 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr                  \
-            --disable-static               \
-            --with-securedir=/lib/security \
-            --with-python-binary=python3 &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                      \
+            --disable-static                   \
+            --with-securedir=/usr/lib/security \
+            --with-python-binary=python3       &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -116,10 +115,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
     
-<screen role="root"><userinput>make install                          &amp;&amp;
-
-mv -v /usr/lib/libpwquality.so.* /lib &amp;&amp;
-ln -sfv ../../lib/$(readlink /usr/lib/libpwquality.so) /usr/lib/libpwquality.so</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -169,7 +165,7 @@ password  required    pam_pwquality.so   authtok_type=UNIX retry=1 difok=1 \
                                          maxclassrepeat=0 geoscheck=0 \
                                          dictcheck=1 usercheck=1 \
                                          enforcing=1 badwords="" \
-                                         dictpath=/lib/cracklib/pw_dict
+                                         dictpath=/usr/lib/cracklib/pw_dict
 # use sha512 hash for encryption, use shadow, and use the
 # authentication token (chosen password) set by pam_pwquality
 # above (or any previous modules)
@@ -213,7 +209,7 @@ EOF
         <listitem>
           <para>
             is a simple configurable tool for generating random
-            and relatively easily pronounceable passwords.
+            and relatively easily pronounceable passwords
           </para>
           <indexterm zone="libpwquality pwmake">
             <primary sortas="b-pwmake">pwmake</primary>
@@ -225,7 +221,7 @@ EOF
         <term><command>pwscore</command></term>
         <listitem>
           <para>
-            is a simple tool for checking quality of a password.
+            is a simple tool for checking quality of a password
           </para>
           <indexterm zone="libpwquality pwscore">
             <primary sortas="b-pwscore">pwscore</primary>
@@ -237,7 +233,7 @@ EOF
         <term><filename class="libraryfile">libpwquality.so</filename></term>
         <listitem>
           <para>
-            contains API functions for checking the password quality.
+            contains API functions for checking the password quality
           </para>
           <indexterm zone="libpwquality libpwquality-lib">
             <primary sortas="c-libpwquality">libpwquality.so</primary>
@@ -250,7 +246,7 @@ EOF
         <listitem>
           <para>
             is a <application>Linux PAM</application> module used to perform
-            password quality checking.
+            password quality checking
           </para>
           <indexterm zone="libpwquality pam_pwquality">
             <primary sortas="c-pam_pwquality">pam_pwquality.so</primary>
