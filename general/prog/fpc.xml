@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY fpc-bin-x86-dl           "https://mirror.freemirror.org/pub/fpc/dist/&freepascal-bin-version;/x86_64-linux/fpc-&freepascal-bin-version;-x86_64-linux.tar">
+  <!ENTITY fpc-bin-x86-md5sum       "519c5e0b9e7b61c07d61511a52aaecaa">
+  <!ENTITY fpc-bin-x86-size         "80.4 MB">
+  <!ENTITY fpc-bin-x86-bldsize      "x.x MB">
+  
+  <!ENTITY fpc-bin-i686-dl          "https://mirror.freemirror.org/pub/fpc/dist/&freepascal-bin-version;/i386-linux/fpc-&freepascal-bin-version;.i386-linux.tar">
+  <!ENTITY fpc-bin-i686-md5sum      "2d9dece3f2c83a82cb07e422e59ca91e">
+  <!ENTITY fpc-bin-i686-size        "146.7 MB">
+  <!ENTITY fpc-bin-i686-bldsize     "x.x MB">
+
+  <!ENTITY fpc-src-dl               "https://mirror.freemirror.org/pub/fpc/dist/&freepascal-version;/source/fpc-&freepascal-version;.source.tar.gz">
+  <!ENTITY fpc-src-md5sum           "e7649ad0fc9230fdd9493a7fcabbd426">
+  <!ENTITY fpc-src-size             "49.8 MB">
+  <!ENTITY fpc-src-bldsize          "x.x MB">
+  
+  <!ENTITY fpc-tmp-target           "/opt/fpc-temp">
+]>
+
+<!--
+  TODO:
+     The instructions below does the bootstrap by using a 
+     binary package to compile the compiler.
+     I've never tested whether the built compiler is capable
+     to recompile itself, maybe it work, maybe not. With the
+     compiler which is installed, building QT5PAS and Lazarus
+     (the Delphi-like GUI) with QT or GTK2 toolkits does work.
+
+     We definitly should test this and maybe tweak the instructions
+     to do a correct build to enable this.
+-->
+
+<sect1 id="fpc" xreflabel="FreePascal-&freepascal-version;">
+  <?dbhtml filename="fpc.html"?>
+
+  <sect1info>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>FreePascal-&freepascal-version;</title>
+
+  <indexterm zone="java">
+    <primary sortas="a-java">FreePascal Binary</primary>
+  </indexterm>
+
+
+  <sect2>
+    <title>About FreePascal</title>
+    <para>
+      FreePascal is a compiler software used to translate Pascal
+      source code to executable programs. An introductory Pascal
+      program looks like:
+    </para>
+
+<screen><literal>program Hello;
+begin
+    writeln('Hello world!');
+end.</literal></screen>
+
+    <para>
+      The <application>FreePascal</application> package does not only
+      contain the compiler itself but also a complete semi-graphical,
+      text based IDE. This IDE can be operated using keyboard commands
+      and by mouse interaction. The IDE is constructed with a toolkit
+      previously named <application>Turbo Vision</application> which
+      was introduced by Borland somewhere back in the MS-DOS age
+      together with <application>Turbo Pascal 6.0</application>
+      - that was in Nov. 1990.
+    </para>
+
+    <para>
+      blah...
+    </para>
+
+  </sect2>
+
+  <sect2 id="fpc-bin" xreflabel="FPC Binary" role="package">
+    <title>Binary FreePascal Information</title>
+
+    <para>
+      Creating the <application>FreePascal</application> compiler from
+      source requires a <application>FreePascal</application> compiler
+      to be available. This is a circular dependency which can be
+      solved by using a precompiled package.
+    </para>
+
+    <para>
+      To start, we set up a binary installation of <application>FreePascal</application>
+      created by the FreePascal development team. It is installed in the <filename>/opt</filename>
+      directory to be easily removed after the source based version
+      has been installed.
+    </para>
+
+    &lfs110a_checked;
+
+    <bridgehead renderas="sect3">Binary Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Binary download (x86): <ulink url="&fpc-bin-i686-dl;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &fpc-bin-i686-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size (binary): &fpc-bin-i686-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &fpc-bin-i686-bldsize;
+        </para>
+      </listitem>
+    </itemizedlist>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Binary download (x86_64): <ulink url="&fpc-bin-x86-dl;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &fpc-bin-x86-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size (binary): &fpc-bin-x86-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &fpc-bin-x86-bldsize;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Source Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Source download: <ulink url="&fpc-src-dl;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &fpc-src-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size (binary): &fpc-src-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &fpc-src-bldsize;
+        </para>
+      </listitem>
+    </itemizedlist>
+    
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch (Required if building on i686 systems):
+          <ulink url="&patch-root;/fpc-&freepascal-version;-glibc_2.34-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+<!--
+    <bridgehead renderas="sect3">Java Binary Runtime Dependencies</bridgehead>
+    <para role="required">
+      <xref role="runtime" linkend="alsa-lib"/>,
+      <xref role="runtime" linkend="cups"/>,
+      <xref role="runtime" linkend="giflib"/>, and
+      <xref role="runtime" linkend="xorg7-lib"/>
+    </para>
+-->
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of FreePascal</title>
+
+    <para>
+      Begin by extracting the appropriate binary tarball for your
+      architecture and changing to the extracted directory. Install
+      the binary <application>FreePascal</application> with the
+      following commands:
+    </para>
+
+<screen><userinput>tar -xf fpc-&freepascal-bin-version;-x86_64-linux.tar &amp;&amp;
+cd fpc-&freepascal-bin-version;-x86_64-linux &amp;&amp;
+sed -e "s;export PREFIX$;export PREFIX=&fpc-tmp-target;;" -i install.sh</userinput></screen>
+
+    <para>Remove some packages which are not required for the
+      temporary compiler:</para>
+      
+<screen><userinput>rm demo.tar.gz &amp;&amp;
+rm doc-pdf.tar.gz</userinput></screen>
+
+    <para>Install the temporary compiler as the
+      <systemitem class="username">root</systemitem> user:</para>
+      
+<screen role="root"><userinput>yes "" | ./install.sh</userinput></screen>
+
+    <para>Remove the extracted binary objects:</para>
+    
+<screen><userinput>cd .. &amp;&amp;
+rm -rf fpc-&freepascal-bin-version;-x86_64-linux</userinput></screen>
+
+    <para>
+      The binary version is now installed in
+      <filename class="directory">&fpc-tmp-target;</filename>. Add this
+      directory to the <envar>PATH</envar> environment variable:
+    </para>
+
+<screen><userinput>export PATH=&fpc-tmp-target;/bin:$PATH</userinput></screen>
+
+    <para>
+      The temporary compiler is now ready to compile the
+      <application>FreePascal</application> suite from source. To do
+      this, extract the source archive and cd into the extracted
+      directory as usual.
+    </para>
+
+    <para>
+      If building on i686 systems (32-bit), a patch is required
+      to overcome an issue with glibc-2.34:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../fpc-&freepascal-version;-glibc_2.34-1.patch</userinput></screen>
+
+    <para>
+      Compile the <application>FreePascal</application> compiler
+      and tools by executing the following commands:
+    </para>
+
+<screen><userinput>make clean &amp;&amp;
+make OVERRIDEVERSIONCHECK=1 all</userinput></screen>
+    
+    <para>
+      Install the <application>FreePascal</application> compiler
+      and tools by executing the following commands as the
+      <systemitem class="username">root</systemitem> user:</para>
+
+<screen role="root"><userinput>make_install -j1 PREFIX=/usr &amp;&amp;
+case "$(uname -m)" in
+    i?86)
+        ln -svf /usr/lib/fpc/&freepascal-version;/ppc386 /usr/bin/
+    ;;
+    x86_64)
+        ln -svf /usr/lib/fpc/&freepascal-version;/ppcx64 /usr/bin/
+    ;;
+esac</userinput></screen>
+
+    <para>
+      Now that the compiler has been created from source, the temporary
+      compiler in <filename class="directory">&fpc-tmp-target;</filename>
+      can be removed. Execute the following commands as the
+      <systemitem class="username">root</systemitem> user:</para>
+
+<screen role="root"><userinput>rm -rf /etc/fppkg* &amp;&amp;
+rm -rf /etc/fpc.* &amp;&amp;
+rm -rf &fpc-tmp-target;</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="configuration">
+    <title>Configuring FreePascal</title>
+
+    <para>
+      A default configuration file <filename>/etc/fpc.cfg</filename>
+      can be created by a tool which is part of the compiler suite.
+      Generate the default config file as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>/usr/lib/fpc/&freepascal-version;/samplecfg /usr/lib/fpc/&freepascal-version; /etc &amp;&amp;
+cat &gt;&gt; /etc/fpc.cfg &lt;&lt;EOF
+#ifdef cpux86_64
+# for x86_64 use -fPIC by default
+-Cg
+#endif
+EOF</userinput></screen>
+
+    <para>
+      If you are going to use QT (most likely when building Lazarus
+      with the QT library), add the QT library path to the config as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+    
+<screen role="root"><userinput>sed -e "/^-Fl\/usr\/lib\/fpc/a -Fl/opt/qt5/lib" \
+    -i /etc/fpc.cfg</userinput></screen>
+
+  </sect2>
+
+</sect1>
