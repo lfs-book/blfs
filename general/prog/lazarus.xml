@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY lazarus-download-http "https://downloads.sourceforge.net/project/lazarus/Lazarus Zip _ GZip/Lazarus &lazarus-version;/lazarus-&lazarus-version;.tar.gz">
+  <!ENTITY lazarus-md5sum        "208dfeb20c528649d2598cc0eb341309">
+  <!ENTITY lazarus-size          "66.3 MB">
+  <!ENTITY lazarus-buildsize     "x.x MB">
+  <!ENTITY lazarus-time          "x SBU">
+]>
+
+<sect1 id="lazarus" xreflabel="lazarus-&lazarus-version;">
+  <?dbhtml filename="lazarus.html"?>
+
+  <sect1info>
+    <date>$Date$</date>
+  </sect1info>
+
+  <title>Lazarus-&lazarus-version;</title>
+
+  <indexterm zone="lazarus">
+    <primary sortas="a-lazarus">lazarus</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to lazarus</title>
+
+    <para><!-- copied from https://www.lazarus-ide.org/ -->
+      Lazarus is a Delphi compatible cross-platform IDE for Rapid
+      Application Development. It has variety of components ready
+      for use and a graphical form designer to easily create complex
+      graphical user interfaces.
+    </para>
+
+    &lfs110a_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&lazarus-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &lazarus-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &lazarus-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &lazarus-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &lazarus-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Lazarus Dependencies</bridgehead>
+    <para role="required">
+      <xref linkend="rsync"/>,
+      <xref linkend="fpc"/>, and one of 
+      <xref linkend="qt5"/> and <xref linkend="qt5pas"/>, or
+      <xref linkend="gtk2"/>
+    </para>
+
+    <para condition="html" role="usernotes">User Notes:
+    <ulink url="&blfs-wiki;/lazarus"/></para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Lazarus</title>
+
+    <para>
+      Ensure that the source tree is in proper state:
+    </para>
+
+<screen><userinput>make -j1 FPC=/usr/bin/fpc clean</userinput></screen>
+
+<!--
+  Looks like that even both versions (gtk2, qt5) can be on one machine
+  when the binaries 'lazarus' and 'startlazarus' are moved to
+    lazarus      -> lazarus-gtk2
+    startlazarus -> startlazarus-gtk2
+  and after building the QT5 variant
+    lazarus      -> lazarus-qt5
+    startlazarus -> startlazarus-qt5
+  (it needs to be analyzed more deeply)
+
+  Instructions are taken from ArchLinux and adopted to LFS
+-->
+    <para>
+      If you want to build <application>Lazarus</application> with
+      the gtk2 toolkit, build the package by running the following
+      commands, otherwise proceed to build the QT5 based variant below.
+    </para>
+
+<screen><userinput>make -j1 FPC=/usr/bin/fpc LCL_PLATFORM=gtk2 bigide</userinput></screen>
+
+    <para>
+      If you have built the gtk2 variant, skip the QT5 section and
+      proceed to the installation. Otherwise 
+      <application>Lazarus</application> is built using the
+      QT5 library by running the following commands:
+    </para>
+
+<screen><userinput>make -j1 FPC=/usr/bin/fpc LCL_PLATFORM=qt5 bigide</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, install <application>lazarus</application> as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<!--            some of the dirs already exists -+
+                                                 V    -->
+<screen role="root"><userinput>mkdir -pv /usr/{lib/lazarus,bin,share{/man/man1,/doc}}
+rsync -a \
+    --exclude="CVS"     --exclude=".cvsignore" \
+    --exclude="*.ppw"   --exclude="*.ppl" \
+    --exclude="*.ow"    --exclude="*.a"\
+    --exclude="*.rst"   --exclude=".#*" \
+    --exclude="*.~*"    --exclude="*.bak" \
+    --exclude="*.orig"  --exclude="*.rej" \
+    --exclude=".xvpics" \
+    --exclude="killme*" --exclude=".gdb_hist*" \
+    --exclude="debian"  --exclude="COPYING*" \
+    --exclude="*.app"   --exclude="tools/install" \
+    . /usr/lib/lazarus
+ln -s /usr/lib/lazarus/lazbuild /usr/bin/lazbuild
+cp -R install/man/man1/* /usr/share/man/man1/
+mv /usr/lib/lazarus/docs /usr/share/doc/lazarus
+
+mkdir -p /usr/lib/lazarus/docs
+ln -s /usr/share/doc/lazarus/chm /usr/lib/lazarus/docs/html
+ln -s /usr/share/doc/lazarus/lazdoc.css /usr/lib/lazarus/docs/lazdoc.css
+
+install -D -m644 COPYING.modifiedLGPL.txt /usr/share/licenses/lazarus/COPYING.modifiedLGPL
+
+sed -e 's|\(Categories\).*|\1=IDE;Development;|' \
+    -e 's|\.png|\.xpm|' -i install/lazarus.desktop
+install -Dm644 install/lazarus.desktop /usr/share/applications/lazarus.desktop
+install -Dm644 images/ide_icon48x48.png /usr/share/pixmaps/lazarus.png</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Program</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>lazarus, ...</seg>
+        <seg>None</seg>
+        <seg>None</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="lazarus-pgm">
+        <term><filename class="libraryfile">lazarus</filename></term>
+        <listitem>
+          <para>
+            the Delphi-like IDE
+          </para>
+          <indexterm zone="lazarus lazarus-pgm">
+            <primary sortas="b-lazarus">lazarus</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>

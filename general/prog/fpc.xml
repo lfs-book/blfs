@@ -48,9 +48,9 @@
     <primary sortas="a-java">FreePascal Binary</primary>
   </indexterm>
 
+  <sect2 id="fpc-bin" xreflabel="FPC Binary" role="package">
+    <title>Binary FreePascal Information</title>
 
-  <sect2>
-    <title>About FreePascal</title>
     <para>
       FreePascal is a compiler software used to translate Pascal
       source code to executable programs. An introductory Pascal
@@ -70,17 +70,9 @@ end.</literal></screen>
       previously named <application>Turbo Vision</application> which
       was introduced by Borland somewhere back in the MS-DOS age
       together with <application>Turbo Pascal 6.0</application>
-      - that was in Nov. 1990.
+      - that was in Nov. 1990. This toolbox is available for own
+      programs, too.
     </para>
-
-    <para>
-      blah...
-    </para>
-
-  </sect2>
-
-  <sect2 id="fpc-bin" xreflabel="FPC Binary" role="package">
-    <title>Binary FreePascal Information</title>
 
     <para>
       Creating the <application>FreePascal</application> compiler from
@@ -91,9 +83,11 @@ end.</literal></screen>
 
     <para>
       To start, we set up a binary installation of <application>FreePascal</application>
-      created by the FreePascal development team. It is installed in the <filename>/opt</filename>
-      directory to be easily removed after the source based version
-      has been installed.
+      created by the FreePascal development team. It is installed in
+      the <filename>/opt</filename> directory. Using this temporary
+      compiler installation, the compiler can be created from source.
+      After this step is done, the temporary compiler can be easily
+      removed.
     </para>
 
     &lfs110a_checked;
@@ -301,6 +295,20 @@ EOF</userinput></screen>
     
 <screen role="root"><userinput>sed -e "/^-Fl\/usr\/lib\/fpc/a -Fl/opt/qt5/lib" \
     -i /etc/fpc.cfg</userinput></screen>
+
+    <para>
+      It is highly recommended that the compiler sources are available
+      for later use. To extract the sources at a proper location,
+      execute the following command as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<!--
+  not sure if we can simply copy the files in $PWD as they may
+  contain compiled binaries
+ -->
+<screen role="root"><userinput>mkdir -p /usr/lib/fpc/src &amp;&amp;
+tar --strip-components=1 -C /usr/lib/fpc/src -xf ../fpc-&freepascal-version;.source.tar.gz</userinput></screen>
 
   </sect2>
 
