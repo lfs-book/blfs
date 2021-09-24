@@ -14,9 +14,9 @@
   <!ENTITY fpc-bin-i686-size        "146.7 MB">
   <!ENTITY fpc-bin-i686-bldsize     "x.x MB">
 
-  <!ENTITY fpc-src-dl               "https://mirror.freemirror.org/pub/fpc/dist/&freepascal-version;/source/fpc-&freepascal-version;.source.tar.gz">
-  <!ENTITY fpc-src-md5sum           "e7649ad0fc9230fdd9493a7fcabbd426">
-  <!ENTITY fpc-src-size             "49.8 MB">
+  <!ENTITY fpc-src-dl               "https://mirror.freemirror.org/pub/fpc/dist/&freepascal-version;/source/fpcbuild-&freepascal-version;.tar.gz">
+  <!ENTITY fpc-src-md5sum           "3681ae4a208be4f64ec65e832a9a702d">
+  <!ENTITY fpc-src-size             "80.2 MB">
   <!ENTITY fpc-src-bldsize          "x.x MB">
   
   <!ENTITY fpc-tmp-target           "/opt/fpc-temp">
@@ -24,6 +24,8 @@
 
 <!--
   TODO:
+  
+  Rebuild itself
      The instructions below does the bootstrap by using a 
      binary package to compile the compiler.
      I've never tested whether the built compiler is capable
@@ -246,34 +248,46 @@ case "$(uname -m)" in
     x86_64)
         rm -rf fpc-&freepascal-bin-version;-x86_64-linux
         ;;
-esac</userinput></screen>
+esac &amp;&amp;
+export PATH=&fpc-tmp-target;/bin:$PATH</userinput></screen>
 
     <para>
       The binary version is now installed in
       <filename class="directory">&fpc-tmp-target;</filename> and
       can be used to create the compiler and utilities from source.
     </para>
+
+    <para>
+      Fix invalid path for man pages:
+    </para>
+
+<screen><userinput>sed -e "/^INSTALL_MANDIR=/ s;/man;/share/man;" \
+    -i install/man/Makefile</userinput></screen>
+
     <para>
       If building on i686 systems (32-bit), a patch is required
       to overcome an issue with glibc-2.34.
     </para>
 
-<screen><userinput>patch -Np1 -i ../fpc-&freepascal-version;-glibc_2.34-1.patch</userinput></screen>
+<screen><userinput>cd fpcsrc &amp;&amp;
+patch -Np1 -i ../../fpc-&freepascal-version;-glibc_2.34-1.patch &amp;&amp;
+cd ..</userinput></screen>
 
     <para>
       Compile the <application>FreePascal</application> compiler
       and tools by executing the following commands:
     </para>
 
-<screen><userinput>PATH=&fpc-tmp-target;/bin:$PATH make clean &amp;&amp;
-PATH=&fpc-tmp-target;/bin:$PATH make OVERRIDEVERSIONCHECK=1 all</userinput></screen>
+<screen><userinput>make clean &amp;&amp;
+make OVERRIDEVERSIONCHECK=1 build</userinput></screen>
     
     <para>
       Install the <application>FreePascal</application> compiler
       and tools by executing the following commands as the
-      <systemitem class="username">root</systemitem> user:</para>
+      <systemitem class="username">root</systemitem> user. Make sure
+      that the temporary compiler is in <envar>PATH</envar>:</para>
 
-<screen role="root"><userinput>PATH=&fpc-tmp-target;/bin:$PATH make -j1 PREFIX=/usr install &amp;&amp;
+<screen role="root"><userinput>make -j1 PREFIX=/usr install &amp;&amp;
 case "$(uname -m)" in
     i?86)
         ln -svf /usr/lib/fpc/&freepascal-version;/ppc386 /usr/bin/
@@ -292,8 +306,13 @@ esac</userinput></screen>
 
 <screen role="root"><userinput>rm -rf /etc/fppkg* &amp;&amp;
 rm -rf /etc/fpc.* &amp;&amp;
+rm -rf $HOME/{.fppkg,.fpc.cfg,.config/fppkg.cfg} &amp;&amp;
 rm -rf &fpc-tmp-target;</userinput></screen>
 
+    <para>
+      You may also want to remove the <filename class="directory">&fpc-tmp-target;</filename>
+      entry from <envar>PATH</envar> now.
+    </para>
   </sect2>
 
   <sect2 role="configuration">
@@ -325,17 +344,19 @@ EOF</userinput></screen>
 
     <para>
       It is highly recommended that the compiler sources are available
-      for later use. To extract the sources at a proper location,
-      execute the following command as the
+      for later use. Since the sources are available on disk already
+      they can be used but some binaries built in the source tree
+      should be removed first:
+    </para>
+
+<screen><userinput>make clean</userinput></screen>
+
+    <para>
+      To copy the source, execute the following command as the
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<!--
-  not sure if we can simply copy the files in $PWD as they may
-  contain compiled binaries. May run a clean before copying...
- -->
-<screen role="root"><userinput>mkdir -p /usr/lib/fpc/src &amp;&amp;
-tar --strip-components=1 -C /usr/lib/fpc/src -xf ../fpc-&freepascal-version;.source.tar.gz</userinput></screen>
+<screen role="root"><userinput>mv fpcsrc /usr/lib/fpc/src</userinput></screen>
 
   </sect2>
 
@@ -350,7 +371,7 @@ tar --strip-components=1 -C /usr/lib/fpc/src -xf ../fpc-&freepascal-version;.sou
       <seglistitem>
         <seg>fpc, fp, samplecfg, ...</seg>
         <seg>None</seg>
-        <seg>None</seg>
+        <seg>/usr/lib/fpc</seg>
       </seglistitem>
     </segmentedlist>
 
