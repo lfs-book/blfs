@@ -185,51 +185,77 @@ end.</literal></screen>
   <sect2 role="installation">
     <title>Installation of FreePascal</title>
 
+    <note>
+      <para>
+        While installation it is required to have administrator
+        privileges. It is assumed that the current user is allowed
+        to use <command>sudo</command> to gain full privileges.
+      </para>
+      <para>
+        Even a temporary binary compiler must be installed prior to
+        compile the compiler from the source, it is assumed that the
+        <application>FreePascal</application> sources has been
+        extracted and the current directory has been changed to it just
+        like as usual.
+      </para>
+    </note>
+
     <para>
       Begin by extracting the appropriate binary tarball for your
-      architecture and changing to the extracted directory. Install
-      the binary <application>FreePascal</application> with the
-      following commands:
+      architecture and changing to the extracted directory. This
+      extraction is performed within the extracted source directory.
+      Install the binary <application>FreePascal</application> and
+      remove some unused files with the following commands:
     </para>
 
-<screen><userinput>tar -xf fpc-&freepascal-bin-version;-x86_64-linux.tar &amp;&amp;
-cd fpc-&freepascal-bin-version;-x86_64-linux &amp;&amp;
-sed -e "s;export PREFIX$;export PREFIX=&fpc-tmp-target;;" -i install.sh</userinput></screen>
+<screen><userinput>case "$(uname -m)" in
+    i?86)
+        tar -xf ../../fpc-&freepascal-bin-version;.i386-linux.tar &amp;&amp;
+        cd fpc-&freepascal-bin-version;.i386-linux
+        ;;
+    x86_64)
+        tar -xf ../../fpc-&freepascal-bin-version;-x86_64-linux.tar &amp;&amp;
+        cd fpc-&freepascal-bin-version;-x86_64-linux
+        ;;
+esac &amp;&amp;
+rm demo.tar.gz &amp;&amp;
+rm doc-pdf.tar.gz &amp;&amp;
+sed -e 's;PREFIX=/usr;test -z "$PREFIX" \&amp;\&amp; &amp;;' -i install.sh</userinput></screen>
 
-    <para>Remove some packages which are not required for the
-      temporary compiler:</para>
-      
-<screen><userinput>rm demo.tar.gz &amp;&amp;
-rm doc-pdf.tar.gz</userinput></screen>
+    <para>
+      Prepare the install directory for the temporary compiler and
+      make it writable to the current user by executing as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
 
-    <para>Install the temporary compiler as the
-      <systemitem class="username">root</systemitem> user:</para>
+<screen role="root"><userinput>install -dm755 -o $(id -u) &fpc-tmp-target;</userinput></screen>
+
+    <para>
+      Install the temporary compiler:
+    </para>
       
-<screen role="root"><userinput>yes "" | ./install.sh</userinput></screen>
+<screen><userinput>yes "" | { PREFIX=&fpc-tmp-target; ./install.sh; }</userinput></screen>
 
     <para>Remove the extracted binary objects:</para>
     
 <screen><userinput>cd .. &amp;&amp;
-rm -rf fpc-&freepascal-bin-version;-x86_64-linux</userinput></screen>
+case "$(uname -m)" in
+    i?86)
+        rm -rf fpc-&freepascal-bin-version;.i386-linux
+        ;;
+    x86_64)
+        rm -rf fpc-&freepascal-bin-version;-x86_64-linux
+        ;;
+esac</userinput></screen>
 
     <para>
       The binary version is now installed in
-      <filename class="directory">&fpc-tmp-target;</filename>. Add this
-      directory to the <envar>PATH</envar> environment variable:
+      <filename class="directory">&fpc-tmp-target;</filename> and
+      can be used to create the compiler and utilities from source.
     </para>
-
-<screen><userinput>export PATH=&fpc-tmp-target;/bin:$PATH</userinput></screen>
-
-    <para>
-      The temporary compiler is now ready to compile the
-      <application>FreePascal</application> suite from source. To do
-      this, extract the source archive and cd into the extracted
-      directory as usual.
-    </para>
-
     <para>
       If building on i686 systems (32-bit), a patch is required
-      to overcome an issue with glibc-2.34:
+      to overcome an issue with glibc-2.34.
     </para>
 
 <screen><userinput>patch -Np1 -i ../fpc-&freepascal-version;-glibc_2.34-1.patch</userinput></screen>
@@ -239,29 +265,30 @@ rm -rf fpc-&freepascal-bin-version;-x86_64-linux</userinput></screen>
       and tools by executing the following commands:
     </para>
 
-<screen><userinput>make clean &amp;&amp;
-make OVERRIDEVERSIONCHECK=1 all</userinput></screen>
+<screen><userinput>PATH=&fpc-tmp-target;/bin:$PATH make clean &amp;&amp;
+PATH=&fpc-tmp-target;/bin:$PATH make OVERRIDEVERSIONCHECK=1 all</userinput></screen>
     
     <para>
       Install the <application>FreePascal</application> compiler
       and tools by executing the following commands as the
       <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root"><userinput>make_install -j1 PREFIX=/usr &amp;&amp;
+<screen role="root"><userinput>PATH=&fpc-tmp-target;/bin:$PATH make -j1 PREFIX=/usr install &amp;&amp;
 case "$(uname -m)" in
     i?86)
         ln -svf /usr/lib/fpc/&freepascal-version;/ppc386 /usr/bin/
-    ;;
+        ;;
     x86_64)
         ln -svf /usr/lib/fpc/&freepascal-version;/ppcx64 /usr/bin/
-    ;;
+        ;;
 esac</userinput></screen>
 
     <para>
       Now that the compiler has been created from source, the temporary
       compiler in <filename class="directory">&fpc-tmp-target;</filename>
       can be removed. Execute the following commands as the
-      <systemitem class="username">root</systemitem> user:</para>
+      <systemitem class="username">root</systemitem> user:
+    </para>
 
 <screen role="root"><userinput>rm -rf /etc/fppkg* &amp;&amp;
 rm -rf /etc/fpc.* &amp;&amp;
@@ -305,7 +332,7 @@ EOF</userinput></screen>
 
 <!--
   not sure if we can simply copy the files in $PWD as they may
-  contain compiled binaries
+  contain compiled binaries. May run a clean before copying...
  -->
 <screen role="root"><userinput>mkdir -p /usr/lib/fpc/src &amp;&amp;
 tar --strip-components=1 -C /usr/lib/fpc/src -xf ../fpc-&freepascal-version;.source.tar.gz</userinput></screen>
@@ -321,7 +348,7 @@ tar --strip-components=1 -C /usr/lib/fpc/src -xf ../fpc-&freepascal-version;.sou
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>fpc, fp</seg>
+        <seg>fpc, fp, samplecfg, ...</seg>
         <seg>None</seg>
         <seg>None</seg>
       </seglistitem>
@@ -364,6 +391,18 @@ tar --strip-components=1 -C /usr/lib/fpc/src -xf ../fpc-&freepascal-version;.sou
           </para>
           <indexterm zone="fpc i-fpcmake">
             <primary sortas="b-fpcmake">fpcmake</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="i-samplecfg">
+        <term><command>samplecfg</command></term>
+        <listitem>
+          <para>
+            Utility to create a default configuration file
+          </para>
+          <indexterm zone="fpc i-samplecfg">
+            <primary sortas="b-samplecfg">samplecfg</primary>
           </indexterm>
         </listitem>
       </varlistentry>
