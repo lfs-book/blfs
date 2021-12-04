@@ -6,9 +6,9 @@
 
   <!ENTITY udisks2-download-http "https://github.com/storaged-project/udisks/releases/download/udisks-&udisks2-version;/udisks-&udisks2-version;.tar.bz2">
   <!ENTITY udisks2-download-ftp  " ">
-  <!ENTITY udisks2-md5sum        "63e18a47069000cb31d5f98cc3c83be0">
-  <!ENTITY udisks2-size          "1.7 MB">
-  <!ENTITY udisks2-buildsize     "38 MB (with tests)">
+  <!ENTITY udisks2-md5sum        "576e057d2654894fab58f0393d105b7b">
+  <!ENTITY udisks2-size          "1.6 MB">
+  <!ENTITY udisks2-buildsize     "52 MB (with tests)">
   <!ENTITY udisks2-time          "0.3 SBU (with tests)">
 ]>
 
@@ -168,6 +168,43 @@ make</userinput></screen>
 
   </sect2>
 
+  <sect2 role="configuration">
+    <title>Configuring UDisks2</title>
+
+    <sect3 id="udisks2-config">
+      <title>Config Files</title>
+      <para>
+        <filename>/etc/udisks2/mount_options.conf</filename> and
+        <filename>/etc/udisks2/udisks2.conf</filename>
+      </para>
+
+      <indexterm zone="udisks2 udisks2-config">
+        <primary sortas="e-etc-udisks2-mount_options.conf">/etc/udisks2/mount_options.conf</primary>
+      </indexterm>
+
+      <indexterm zone="udisks2 udisks2-config">
+        <primary sortas="e-etc-udisks2-udisks2.conf">/etc/udisks2/udisks2.conf</primary>
+      </indexterm>
+    </sect3>
+
+    <sect3>
+      <title>Configuration Information</title>
+      <para>
+        The default configuration of UDisks2 assumes ntfs-3g is used to
+        mount NTFS filesystems.  If the wrapper script for in-kernel NTFS3
+        driver (recommended in the <xref linkend="ntfs-3g"/> page) is used
+        instead, create a configuration file for UDisks2 compatible with
+        NTFS3 to allow mounting NTFS filesystems:
+      </para>
+
+<screen role="root"><userinput>cat &gt;&gt; /etc/udisks2/mount_options.conf &lt;&lt; "EOF"
+<literal>[defaults]
+ntfs_defaults=uid=$UID,gid=$GID</literal>
+EOF</userinput></screen>
+
+    </sect3>
+  </sect2>
+
   <sect2 role="content">
     <title>Contents</title>
 
@@ -188,7 +225,7 @@ make</userinput></screen>
           /usr/include/udisks2,
           /usr/libexec/udisks2,
           /usr/share/gtk-doc/html/udisks2, and
-          /var/{lib,run}/udisks2
+          /var/lib/udisks2
         </seg>
       </seglistitem>
     </segmentedlist>

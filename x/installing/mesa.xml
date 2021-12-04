@@ -6,10 +6,10 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  "ftp://ftp.freedesktop.org/pub/mesa/mesa-&mesa-version;.tar.xz">
-  <!ENTITY mesa-md5sum        "25f4b3a8e92d20e2fc6231e253fce1ee">
-  <!ENTITY mesa-size          "15 MB">
-  <!ENTITY mesa-buildsize     "562 MB (with docs, add 376 MB if running the tests)">
-  <!ENTITY mesa-time          "3.5 SBU (Using parallelism=4; with docs)">
+  <!ENTITY mesa-md5sum        "d6efe1ecc0680cd1adb942f05600d884">
+  <!ENTITY mesa-size          "16 MB">
+  <!ENTITY mesa-buildsize     "588 MB (with docs, add 389 MB for tests)">
+  <!ENTITY mesa-time          "3.4 SBU (Using parallelism=4; with docs, add 0.6 SBU for tests)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
@@ -167,13 +167,6 @@
         freedreno is for qualcom hardware, libdrm will build for it on suitable
         systems. VC4 is for the Broadcom VC4 used in the raspberry pi - ken -->
 
-    <para>
-      Adjust a script file in test suite to use Python 3, instead of the
-      obsolete Python 2:
-    </para>
-
-<screen><userinput>sed '1s/python/&amp;3/' -i bin/symbols-check.py</userinput></screen>
-
     <note>
       <para>
         The measurements above, and the Contents below, are for a full build.
@@ -259,8 +252,9 @@ ninja</userinput></screen>
     <para>
       If you built the tests (see 'Command Explanations'), to run them issue:
       <command>ninja test</command>.
+<!-- All tests passed for me for 21.2.4 [pierre]
       All 33 subtests tests in the mesa:compiler+glsl / glsl compiler warnings
-      suite are known to fail.
+      suite are known to fail.-->
     </para>
 
     <para>
@@ -275,7 +269,8 @@ ninja</userinput></screen>
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>install -v -dm755 /usr/share/doc/mesa-&mesa-version; &amp;&amp;
+<screen role="root"
+        remap="doc"><userinput>install -v -dm755 /usr/share/doc/mesa-&mesa-version; &amp;&amp;
 cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
 
   </sect2>
@@ -352,6 +347,14 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
       to be enabled. To run the tests, issue: <command>ninja test</command>.
     </para>
 
+    <para>
+      <option>-Dvulkan-drivers=...</option>: This option allows choosing which
+      Vulkan drivers are built. Since those drivers depend on the
+      corresponding Gallium3D drivers, do not enable drivers that are not
+      enabled in Gallium3D drivers. Furthermore, since BLFS does not use
+      Vulkan, it is safe to leave the list of Vulkan drivers empty.
+    </para>
+
   </sect2>
 
   <sect2 role="content">
@@ -372,7 +375,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           libGL.so,
           libGLESv1_CM.so,
           libGLESv2.so,
-          libOSMesa.so,
+<!--          libOSMesa.so,-->
           libXvMCnouveau.so,
           libXvMCr600.so,
           libgbm.so,
@@ -385,11 +388,11 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           libxatracker.so,
         </seg>
         <seg>
-          <!-- Begini gallium DRI drivers : this is the full set -->
+          <!-- Begin gallium DRI drivers : this is the full set -->
           d3dadapter9.so (optional), <!-- For Windows games. This is DirectX's
                                           Direct3D -->
           crocus_dri.so,
-          i830_dri.so,
+<!--          i830_dri.so,-->
           i915_dri.so,
           i965_dri.so,
           iris_dri.so,
@@ -417,11 +420,11 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           (Many of these drivers are hard-linked).
         </seg>
         <seg>
-          $XORG_PREFIX/{include/{EGL,GL,GLES,GLES2,GLES3,KHR,vulkan},lib/{dri,vdpau}},
+          $XORG_PREFIX/{include/{EGL,GL,GLES,GLES2,GLES3,KHR},lib/{dri,vdpau}},
           $XORG_PREFIX/include/d3adapter (optional),
           $XORG_PREFIX/lib/d3d (optional),
           $XORG_PREFIX/share/drirc.d (contains workarounds for various applications,
-          particularly browsers and games)
+          particularly browsers and games),
           $XORG_PREFIX/share/vulkan/icd.d,
           and
           /usr/share/doc/mesa-&mesa-version; (optional)
@@ -521,7 +524,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
       <varlistentry id="libOSMesa">
         <term><filename class="libraryfile">libOSMesa.so</filename></term>
         <listitem>
@@ -533,7 +536,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
     </variablelist>
 
   </sect2>
