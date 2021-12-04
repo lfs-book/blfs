@@ -7,10 +7,10 @@
 <!--  <!ENTITY neon-download-http "http://www.webdav.org/neon/neon-&neon-version;.tar.gz"> -->
   <!ENTITY neon-download-http "https://notroj.github.io/neon/neon-&neon-version;.tar.gz">
   <!ENTITY neon-download-ftp  " ">
-  <!ENTITY neon-md5sum        "c871268f0ba365b71f1ec1bf068d6ab3">
-  <!ENTITY neon-size          "848 KB">
-  <!ENTITY neon-buildsize     "8.4 MB (additional 19 MB for the tests)">
-  <!ENTITY neon-time          "0.1 SBU (additional 0.3 SBU for the tests)">
+  <!ENTITY neon-md5sum        "aa20818503e427ba1f4aa50c084a88c4">
+  <!ENTITY neon-size          "860 KB">
+  <!ENTITY neon-buildsize     "6.6 MB (additional 20 MB for the tests)">
+  <!ENTITY neon-time          "0.1 SBU (additional 0.5 SBU for the tests)">
 ]>
 
 <sect1 id="neon" xreflabel="neon-&neon-version;">
@@ -90,6 +90,15 @@
     <title>Installation of neon</title>
 
     <para>
+      The build mechanism tries to recreate the documentaion even
+      though its included in the archive. Recreating would require
+      <application>xmlto</application> to be installed. Apply the
+      following sed to not recreate the docs:
+    </para>
+
+<screen><userinput>sed 's/\(install-\(html\|man\):\).*/\1/' -i Makefile.in</userinput></screen>
+
+    <para>
       Install <application>neon</application> by running the following
       commands:
     </para>
@@ -120,7 +129,7 @@ make</userinput></screen>
       using <application>OpenSSL</application> or
       <application>GnuTLS</application> respectively. To force
       <application>GnuTLS</application> usage when it is are present,
-      simply pass <option>--with-ssl=gnutls</option> and 
+      simply pass <option>--with-ssl=gnutls</option> and
       <option>--with-ca-bundle=/etc/pki/tls/certs/ca-bundle.crt</option> to the
       <command>configure</command> script.
     </para>

@@ -6,10 +6,10 @@
 
   <!ENTITY seamonkey-download-http "&mozilla-http;/seamonkey/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
   <!ENTITY seamonkey-download-ftp " ">
-  <!ENTITY seamonkey-md5sum        "f36c532bbd9c6903036aa02e9a40246b">
+  <!ENTITY seamonkey-md5sum        "70e06d388eb796dc0f8b847794eabea0">
   <!ENTITY seamonkey-size          "272 MB">
-  <!ENTITY seamonkey-buildsize     "6.1 GB (159 MB installed)">
-  <!ENTITY seamonkey-time          "21 SBU (with parallelism=4)">
+  <!ENTITY seamonkey-buildsize     "6.1 GB (161 MB installed)">
+  <!ENTITY seamonkey-time          "19 SBU (with parallelism=4)">
 ]>
 
 <sect1 id="seamonkey" xreflabel="SeaMonkey-&seamonkey-version;">
@@ -105,8 +105,8 @@
       both <xref linkend="gtk2"/> and <xref linkend="gtk3"/>,
       <xref linkend="python2"/>,
       <xref linkend="rust"/>,
-      <xref linkend="unzip"/>, 
-      <xref linkend="yasm"/>, and 
+      <xref linkend="unzip"/>,
+      <xref linkend="yasm"/>, and
       <xref linkend="zip"/>
     </para>
 
@@ -117,7 +117,7 @@
       <!--<xref linkend="libvpx"/>, Causes build failures similar to Firefox -->
       <xref linkend="libwebp"/>
       <xref linkend="nasm"/>,
-      <xref linkend="nspr"/>, 
+      <xref linkend="nspr"/>,
       <xref linkend="nss"/>, and
       <xref linkend="pulseaudio"/>
       <!-- <xref linkend="sqlite"/> system version no longer supported -->
@@ -230,6 +230,10 @@ ac_add_options --disable-crashreporter
 ac_add_options --disable-updater
 ac_add_options --disable-tests
 
+# rust-simd does not compile with recent versions of rust.
+# It is disabled in recent versions of firefox
+ac_add_options --disable-rust-simd
+
 ac_add_options --enable-optimize="-O2"
 ac_add_options --enable-strip
 ac_add_options --enable-install-strip
@@ -286,7 +290,7 @@ EOF</userinput></screen>
     <!-- comment this since llvm must have been installed for rust
     <note>
       <para>
-        The CC and CXX variables above are only needed if 
+        The CC and CXX variables above are only needed if
         <xref linkend="llvm"/> is installed and you do not want to use clang.
       </para>
     </note>-->
@@ -343,7 +347,7 @@ cp -v $(find -name seamonkey.1 | head -n1) /usr/share/man/man1</userinput></scre
 
     <para>
       For installing various <application>SeaMonkey</application> add-ons, refer
-      to <ulink url="https://addons.thunderbird.net/en-US/seamonkey/">Add-ons 
+      to <ulink url="https://addons.thunderbird.net/en-US/seamonkey/">Add-ons
       for Seamonkey</ulink>.
     </para>
 

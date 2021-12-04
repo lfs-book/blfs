@@ -6,15 +6,15 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "f81ca2f266ab3dafdd080f269bbb2286">
-  <!ENTITY firefox-size          "366 MB">
+  <!ENTITY firefox-md5sum        "ad6ab1bbf36c9e799688eb117ead7926">
+  <!ENTITY firefox-size          "364 MB">
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "6.7 GB (196 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "6.7 GB (195 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
-  <!ENTITY firefox-time          "28 SBU (on a typical 4-core machine) without tests">
+  <!ENTITY firefox-time          "31 SBU (on a typical 4-core machine) without tests">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
@@ -78,12 +78,6 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required patch:
-          <ulink url="&patch-root;/firefox-&firefox-version;esr-glibc234-1.patch"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
           Recommended patch:
           <ulink url="&patch-root;/firefox-&firefox-version;esr-disable_rust_test-1.patch"/>
         </para>
@@ -91,16 +85,6 @@
     </itemizedlist>
 
     <note>
-
-      <!-- temporary note, remove with firefox-legacy -->
-      <para>
-        With the 91 ESR series, firefox no-longer works on ftp: links.
-        If that is important to you, as a temporary measure (on non-glibc-2.34
-        systems) you can continue to use <xref linkend="firefox-legacy"/>
-        while you explore alternative approaches.
-      </para>
-      <!-- end of temporary note -->
-
       <para>
         The directory name is firefox-&firefox-version;
       </para>
@@ -162,7 +146,6 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="libnotify"/>,
       <xref linkend="llvm"/> (clang, used for bindgen even if using gcc),
       <xref linkend="nodejs"/>,
-      <xref linkend="nss"/>,
       <xref linkend="pulseaudio"/>
       (or
       <xref linkend="alsa-lib"/> if you edit the mozconfig;
@@ -181,8 +164,10 @@ tar: Exiting with failure status due to previous errors
     <para role="recommended">
       <xref linkend="icu"/>,
       <xref linkend="libevent"/>,
+      <xref linkend="libvpx"/>,
       <xref linkend="libwebp"/>,
-      <xref linkend="nasm"/>
+      <xref linkend="nasm"/>,
+      <xref linkend="nss"/>
     </para>
 
     <note>
@@ -248,17 +233,14 @@ ac_add_options --disable-necko-wifi
 # or uncomment this if you installed alsa-lib instead of PulseAudio
 #ac_add_options --enable-alsa
 
-# Uncomment this line if you are building on an i686 system to fix a build
-# failure due to invalid ASM code.
-#ac_add_options --with-system-libvpx
-
 # Comment out following options if you have not installed
 # recommended dependencies:
+ac_add_options --with-system-icu
 ac_add_options --with-system-libevent
-ac_add_options --with-system-webp
+ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
-ac_add_options --with-system-icu
+ac_add_options --with-system-webp
 
 # Do not specify the gold linker which is not the default. It will take
 # longer and use more disk space when debug symbols are disabled.
@@ -321,13 +303,7 @@ EOF</userinput></screen>
     </para>
 
     <para>
-      Apply a patch which allows compilation on systems running glibc-2.34:
-    </para>
-
-<screen><userinput>patch -Np1 -i ../firefox-&firefox-version;esr-glibc234-1.patch</userinput></screen>
-
-    <para>
-      Now apply a patch which works around unexplained failures on some machines
+      First apply a patch which works around unexplained failures on some machines
       (a message that a python check on libgkrust.a identified 1 networking
       function, getsockname) in the rust static library.
     </para>
@@ -514,9 +490,9 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
 <screen role="root"><userinput>mkdir -pv /usr/share/applications &amp;&amp;
 mkdir -pv /usr/share/pixmaps      &amp;&amp;
 
-MIMETYPE="text/xml;text/mml;text/html;"                                    &amp;&amp;
+MIMETYPE="text/xml;text/mml;text/html"                                     &amp;&amp;
 MIMETYPE="$MIMETYPE;application/xhtml+xml;application/vnd.mozilla.xul+xml" &amp;&amp;
-MIMETYPE="$MIMETYPE;x-scheme-handler/http;x-scheme-handler/https;          &amp;&amp;
+MIMETYPE="$MIMETYPE;x-scheme-handler/http;x-scheme-handler/https"          &amp;&amp;
 
 cat &gt; /usr/share/applications/firefox.desktop &lt;&lt; EOF &amp;&amp;
 <literal>[Desktop Entry]

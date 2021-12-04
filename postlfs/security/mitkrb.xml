@@ -110,6 +110,17 @@
     <title>Installation of MIT Kerberos V5</title>
 
     <para>
+      First, fix a denial-of-service security vulnerability:
+      <!-- CVE-2021-37750, mentioned in Samba release notes for 4.15.0. -->
+    </para>
+
+<screen><userinput remap="pre">sed -i '210a if (sprinc == NULL) {\
+       status = "NULL_SERVER";\
+       errcode = KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN;\
+       goto cleanup;\
+       }' src/kdc/do_tgs_req.c</userinput></screen>
+
+    <para>
       Build <application>MIT Kerberos V5</application> by running the
       following commands:
     </para>
@@ -158,7 +169,7 @@ cp -vfr ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      The first <command>sed</command> increases the width of the virtual 
+      The first <command>sed</command> increases the width of the virtual
       terminal used for some tests to prevent some spurious text in the output
       which is taken as a failure. The second <command>sed</command> removes a
       test that is known to fail. The third <command>sed</command> removes a
@@ -211,8 +222,8 @@ cp -vfr ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
 
     <!-- FIXME: Removed due to merged-/usr setup
     <para>
-      <command>mv -v /usr/lib/libk... /lib </command> and 
-      <command>ln -v -sf ../../lib/libk... /usr/lib/libk...</command>: 
+      <command>mv -v /usr/lib/libk... /lib </command> and
+      <command>ln -v -sf ../../lib/libk... /usr/lib/libk...</command>:
       Move critical libraries to the
       <filename class="directory">/lib</filename> directory so that they are
       available when the <filename class="directory">/usr</filename>
@@ -220,8 +231,8 @@ cp -vfr ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
     </para>
 
     <para>
-      <command>find /usr/lib -type f -name "lib$f*.so*" -exec chmod -v 755 {} \;</command>: 
-      This command changes the permisison of installed libraries.  
+      <command>find /usr/lib -type f -name "lib$f*.so*" -exec chmod -v 755 {} \;</command>:
+      This command changes the permisison of installed libraries.
     </para>
 
     <para>
@@ -497,8 +508,8 @@ EOF</userinput></screen>
           /usr/include/{gssapi,gssrpc,kadm5,krb5},
           /usr/lib/krb5,
           /usr/share/{doc/krb5-&mitkrb-version;,examples/krb5},
-          /var/lib/krb5kdc, and 
-          /run/krb5kdc 
+          /var/lib/krb5kdc, and
+          /run/krb5kdc
         </seg>
       </seglistitem>
     </segmentedlist>

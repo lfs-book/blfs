@@ -6,10 +6,10 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "f08dd55b8b1b0baf2c38a88aa3734cf8">
-  <!ENTITY thunderbird-size          "390 MB">
-  <!ENTITY thunderbird-buildsize     "6.9 GB (201 MB installed)">
-  <!ENTITY thunderbird-time          "29 SBU (on a 4-core machine)">
+  <!ENTITY thunderbird-md5sum        "cc7b08841a4c417cadb0753db9d1f6a5">
+  <!ENTITY thunderbird-size          "387 MB">
+  <!ENTITY thunderbird-buildsize     "6.9 GB (202 MB installed)">
+  <!ENTITY thunderbird-time          "30 SBU (on a 4-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it -->
 ]>
@@ -72,6 +72,7 @@
       </listitem>
     </itemizedlist>
 
+<!-- keeping this for next patch :)
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -81,7 +82,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">Thunderbird Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -215,13 +216,13 @@ ac_add_options --with-system-jpeg
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib</literal>
 EOF</userinput></screen>
-
+<!--
     <para>
       Apply a patch which allows compilation on systems running glibc-2.34:
     </para>
 
 <screen><userinput remap="pre">patch -p1 -i ../thunderbird-&thunderbird-version;-glibc234-1.patch</userinput></screen>
-
+-->
     <para>
       Now invoke the Python <command>mach</command> script to compile
       <application>Thunderbird</application>:
@@ -252,7 +253,7 @@ export MACH_USE_SYSTEM_PYTHON=1 &amp;&amp;
     </para>
 
 <screen role="root"><userinput>MACH_USE_SYSTEM_PYTHON=1 ./mach install</userinput></screen>
-
+<!-- devs: For DESTDIR install, prepend DESTDIR=<dest> to the above -->
     <para>
       Empty the environment variables which were set above:
     </para>
@@ -272,13 +273,13 @@ export MACH_USE_SYSTEM_PYTHON=1 &amp;&amp;
     </para>-->
 
     <para>
-      <command>CC=gcc CXX=g++ ./mach configure</command>: 
+      <command>CC=gcc CXX=g++ ./mach configure</command>:
       <application>Thunderbird</application>
       now uses this <application>python3</application> script to run the
       configuration,
       build and install. Forcing GCC causes the build to come out smaller
       and run faster.
-      <!-- For more info, see Ticket #13969. ~12GB to ~5GB build size, 
+      <!-- For more info, see Ticket #13969. ~12GB to ~5GB build size,
       significantly smaller build time.-->
     </para>
 
@@ -314,7 +315,7 @@ export MACH_USE_SYSTEM_PYTHON=1 &amp;&amp;
         First, open the configuration dialog by opening the <quote>Edit</quote>
         drop-down menu. Choose <quote>Preferences</quote> and then scroll down
         to the bottom of the page. Then, click the <quote>Config Editor</quote>
-        button. Click on the <quote>I accept the risk!</quote> button. 
+        button. Click on the <quote>I accept the risk!</quote> button.
         This will display a list of the configuration preferences and
         information related to each one. You can use the <quote>Filter:</quote>
         bar to enter search criteria and narrow down the listed items. Changing
@@ -391,9 +392,9 @@ ln -sfv /usr/lib/thunderbird/chrome/icons/default/default256.png \
           thunderbird
         </seg>
         <seg>
-          libldap60.so, libldif60.so, liblgpllibs.so, libmozgtk.so, 
+          libldap60.so, libldif60.so, liblgpllibs.so, libmozgtk.so,
           libmozsandbox.so, libmozsqlite3.so, libmozwayland.so,
-          libprldap60.so, librnp.so, and libxul.so, all in the 
+          libprldap60.so, librnp.so, and libxul.so, all in the
           /usr/lib/thunderbird directory
         </seg>
         <seg>

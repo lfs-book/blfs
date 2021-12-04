@@ -7,10 +7,10 @@
   <!ENTITY harfbuzz-download-http
            "https://github.com/harfbuzz/harfbuzz/releases/download/&harfbuzz-version;/harfbuzz-&harfbuzz-version;.tar.xz">
   <!ENTITY harfbuzz-download-ftp  " ">
-  <!ENTITY harfbuzz-md5sum        "b1977caae59978c2fea28a4b66a60da0">
-  <!ENTITY harfbuzz-size          "11 MB">
-  <!ENTITY harfbuzz-buildsize     "86 MB (add 6 MB for tests)">
-  <!ENTITY harfbuzz-time          "0.4 SBU (Using parallelism=4; add 0.4 SBU for tests)">
+  <!ENTITY harfbuzz-md5sum        "fabbb4bafe030877a21f7bbc0c7cba05">
+  <!ENTITY harfbuzz-size          "13 MB">
+  <!ENTITY harfbuzz-buildsize     "117 MB (with tests)">
+  <!ENTITY harfbuzz-time          "0.5 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="harfbuzz" xreflabel="HarfBuzz-&harfbuzz-version;">
@@ -77,7 +77,7 @@
       <xref linkend="gobject-introspection"/> (required if building GNOME),
       <xref linkend="glib2"/> (required for Pango),
       <xref role="first" linkend="graphite2"/> (required for building
-        <xref role="nodep" linkend="texlive"/> or 
+        <xref role="nodep" linkend="texlive"/> or
         <xref role="nodep" linkend="libreoffice"/> with system harfbuzz),
       <xref linkend="icu"/>, and
       <xref role="first" linkend="freetype2"/>
@@ -125,8 +125,7 @@ cd    build &amp;&amp;
 
 meson --prefix=/usr        \
       --buildtype=release  \
-      -Dgraphite=enabled   \
-      -Dbenchmark=disabled &amp;&amp;
+      -Dgraphite2=enabled  &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -154,19 +153,19 @@ ninja</userinput></screen>
     </para>
 -->
     <para>
-      <parameter>-Dgraphite=enabled</parameter>: This switch enables
+      <parameter>-Dgraphite2=enabled</parameter>: This switch enables
       <application>Graphite2</application> support, which is required for
       building <xref linkend="texlive"/> or <xref linkend="libreoffice"/>
       with system harfbuzz.
     </para>
-
+<!--
     <para>
       <parameter>-Dbenchmark=disabled</parameter>: This switch disables
       downloading and building the <application>google-benchmark</application>
       subproject, which requires <xref linkend="git"/>, and is of no
       use for non developpers.
     </para>
-
+-->
     <para>
       <option>-Ddocs=false</option>: If <xref linkend="gtk-doc"/> is installed,
       the documentation is built and installed. This switch prevents that.
@@ -188,7 +187,7 @@ ninja</userinput></screen>
           hb-view (only if cairo is installed)
         </seg>
         <seg>
-          libharfbuzz.so, libharfbuzz-gobject.so, libharfbuzz-icu.so, and 
+          libharfbuzz.so, libharfbuzz-gobject.so, libharfbuzz-icu.so, and
           libharfbuzz-subset.so
         </seg>
         <seg>
@@ -246,8 +245,8 @@ ninja</userinput></screen>
         <listitem>
           <para>
             displays a graphical view of a string shape using a
-            particular font as a set of glyphs. The output format is 
-            automatically defined by the file extension, the supported ones 
+            particular font as a set of glyphs. The output format is
+            automatically defined by the file extension, the supported ones
             being ansi/png/svg/pdf/ps/eps. For example:
             <command>hb-view --output-file=hello.png
               /usr/share/fonts/dejavu/DejaVuSans.ttf "Hello World."</command>

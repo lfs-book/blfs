@@ -12,8 +12,8 @@
   <!ENTITY qtwebengine-download-ftp  " ">
   <!ENTITY qtwebengine-md5sum        "af799617842cca0b765102c312fbdd46">
   <!ENTITY qtwebengine-size          "306 MB">
-  <!ENTITY qtwebengine-buildsize     "5.1 GB (154 MB installed)">
-  <!ENTITY qtwebengine-time          "97 SBU (typical, Using parallelism=4)">
+  <!ENTITY qtwebengine-buildsize     "5.0 GB (154 MB installed)">
+  <!ENTITY qtwebengine-time          "107 SBU (typical, Using parallelism=4)">
 ]>
 
 <sect1 id="qtwebengine" xreflabel="qtwebengine-&qtwebengine-version;">
@@ -156,10 +156,10 @@
       <para>
         By default, ninja will use all online CPUs +2 (if at least 4 exist),
         even if they are not available to the current task because the build
-        terminal has been restricted with 'taskset'.  In BLFS, this package 
+        terminal has been restricted with 'taskset'.  In BLFS, this package
         takes more time to build than than any other.  In one example,
-        the build of this package crashed at about the 90 percent point 
-        due to an out of memory problem on a system with 24 cores and 32 GB 
+        the build of this package crashed at about the 90 percent point
+        due to an out of memory problem on a system with 24 cores and 32 GB
         of memory.
       </para>
 
@@ -223,14 +223,15 @@
           <!-- keep links for releases and git versions as a reminder
                that the tarball names names differ
           <ulink url="&patch-root;/qtwebengine-everywhere-src-&qtwebengine-version;-ICU68-2.patch"/> -->
-           <!--
-          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-upstream_fixes-2.patch"/>
+           
+          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-5.15.7-1.patch"/>
         </para>
       </listitem>
       <listitem>
         <para>
           Required patch:-->
-          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-build_fixes-1.patch"/>
+     <!--     <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-build_fixes-1.patch"/> -->
+          <ulink url="&patch-root;/qtwebengine-5.15.7-build_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -305,22 +306,23 @@
 
 <screen role="root"><userinput>ln -svf /usr/bin/python{2,}</userinput></screen>
 
-<!-- retain, there might later be a patch rather than a full 306MB tarball
+
     <para>
-      Now apply a patch for security and other fixes:
+      Now apply a patch to update from 5.15.6 to the security and other fixes
+      contained in the 5.15.7 source:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-upstream_fixes-2.patch</userinput></screen>-->
+<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-5.15.7-1.patch</userinput></screen>
 
     <para>
       Apply apply a patch to fix several issues that can prevent the build working:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-build_fixes-1.patch</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-5.15.7-build_fixes-1.patch</userinput></screen>
 
 <!-- start of commands for git versions only -->
     <para>
-      Although the patch has ensured that git is not invoked during the build,
+      Although the build_fixes patch has ensured that git is not invoked during the build,
       the build system has labyrinthine rules of byzantine complexity, and in
       particular trying to build without two <filename>.git</filename> directories
       will lead to it eventually falling into unexpected and unbuildable code
@@ -462,14 +464,14 @@ make</userinput></screen>
     </para>
 
     <!--
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
        href="../../xincludes/SIOCGSTAMP.xml"/>
     -->
 
     <para>
       <option>NINJAJOBS=4 make</option>: If you patched system ninja in LFS to
       recognize the NINJAJOBS environment variable, this command will run system
-      ninja with the specified number of jobs (i.e. 4). 
+      ninja with the specified number of jobs (i.e. 4).
       There are several reasons why you might want to use options like this this:
     </para>
 
@@ -488,7 +490,7 @@ make</userinput></screen>
         <listitem>
           <para>
             On a machine with only 4 CPUs online, the default of scheduling
-            N+2 jobsi for qtwebengine is slower by between 3% and 7%, probably
+            N+2 jobs for qtwebengine is slower by between 3% and 7%, probably
             because of the size of the C++ files and their many includes and
             templates. Therefore, if in doubt set NINJAJOBS to the number of CPUs.
           </para>
@@ -503,8 +505,8 @@ make</userinput></screen>
           <para>
             Reducing the number of cores will prevent potential out-of-memory
             problems on systems that do not have enough memory (or swap)
-            when all cores are active.  A suggested approach is to limit 
-            the number of cores to about one core for each 1.5 GB of 
+            when all cores are active.  A suggested approach is to limit
+            the number of cores to about one core for each 1.5 GB of
             combined RAM and swap space.
           </para>
         </listitem>
@@ -575,14 +577,14 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          qtwebengine_convert_dict and 
+          qtwebengine_convert_dict and
           QtWebEngineProcess (in $QT5DIR/libexec)
         </seg>
         <seg>
           libQt5Pdf.so,
           libQt5PdfWidgets.so,
-          libQt5WebEngineCore.so, 
-          libQt5WebEngine.so, and 
+          libQt5WebEngineCore.so,
+          libQt5WebEngine.so, and
           libQt5WebEngineWidgets.so
         </seg>
         <seg>
