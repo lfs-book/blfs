@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY epiphany-download-http
-           "&gnome-download-http;/epiphany/&gnome-40;/epiphany-&epiphany-version;.tar.xz">
+           "&gnome-download-http;/epiphany/&gnome-41;/epiphany-&epiphany-version;.tar.xz">
   <!ENTITY epiphany-download-ftp
-           "&gnome-download-ftp;/epiphany/&gnome-40;/epiphany-&epiphany-version;.tar.xz">
-  <!ENTITY epiphany-md5sum        "9b5709c8ff1bb5650d810a0008b9cc85">
-  <!ENTITY epiphany-size          "5.1 MB">
-  <!ENTITY epiphany-buildsize     "109 MB">
+           "&gnome-download-ftp;/epiphany/&gnome-41;/epiphany-&epiphany-version;.tar.xz">
+  <!ENTITY epiphany-md5sum        "f156959161559985385b33ee3936410f">
+  <!ENTITY epiphany-size          "5.9 MB">
+  <!ENTITY epiphany-buildsize     "125 MB">
   <!ENTITY epiphany-time          "0.3 SBU (Using parallelism=4, including tests)">
 ]>
 
@@ -110,6 +110,21 @@
 
   <sect2 role="installation">
     <title>Installation of Epiphany</title>
+
+    <para>
+      First, fix building with newer versions of
+      <application>meson</application>:
+    </para>
+
+<screen><userinput>sed -i '/merge_file/{n;d}' data/meson.build</userinput></screen>
+
+    <para>
+      Next, fix an issue building <application>Epiphany</application> with
+      libportal-0.5 or later:
+    </para>
+
+<screen><userinput>sed "/dependency/s@'libportal'@'libportal-gtk3'@" -i meson.build
+sed "/portal-gtk3/s@portal/@portal-gtk3/@" -i lib/ephy-flatpak-utils.c</userinput></screen>
 
     <para>
       Install <application>Epiphany</application> by running the following

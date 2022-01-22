@@ -7,8 +7,8 @@
 
   <!ENTITY mariadb-download-http "https://downloads.mariadb.org/interstitial/mariadb-&mariadb-version;/source/mariadb-&mariadb-version;.tar.gz">
   <!ENTITY mariadb-download-ftp  "ftp://mirrors.fe.up.pt/pub/mariadb/mariadb-&mariadb-version;/source/mariadb-&mariadb-version;.tar.gz">
-  <!ENTITY mariadb-md5sum        "0eca3038fbcf56d157c248e6a8b0f5f2">
-  <!ENTITY mariadb-size          "81 MB">
+  <!ENTITY mariadb-md5sum        "b04c9b93af47d698af063398d2064b96">
+  <!ENTITY mariadb-size          "81.1 MB">
   <!ENTITY mariadb-buildsize     "2.3 GB (650 MB installed)">
   <!ENTITY mariadb-time          "7.8 SBU (with parallelism=4, add 0.4 SBU for tests)">
 ]>
@@ -80,6 +80,16 @@
       </para>
     </note>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch to prevent a stack smashing error when usin openssl-3:
+          <ulink url="&patch-root;/mariadb-&mariadb-version;-openssl3_fix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">MariaDB Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -141,13 +151,13 @@
 
 <screen role="root"><userinput>groupadd -g 40 mysql &amp;&amp;
 useradd -c "MySQL Server" -d /srv/mysql -g mysql -s /bin/false -u 40 mysql</userinput></screen>
-<!--
+
     <para>
-      Fix a syntax error that causes CMake to fail:
+      Fix a stack smashing error introduced by openssl-3:
     </para>
 
-<screen><userinput remap="pre">sed -i 's/END()/ENDIF()/' libmariadb/cmake/ConnectorName.cmake</userinput></screen>
--->
+<screen><userinput remap="pre">patch -Np1 -i ../mariadb-&mariadb-version;-openssl3_fix-1.patch</userinput></screen>
+
     <para>
       Install <application>MariaDB</application> by running the
       following commands:
@@ -191,15 +201,15 @@ popd</userinput></screen>
 
     <para>
       Where N is the number of tests to run in parallel.
-      Over 5400 tests are run in about 24 SBU with N=4.  Two tests
-      are known to fail due to character set issues.
+      Over 5400 tests are run in about 24 SBU with N=4.  A few tests
+      may fail, mainly due to character set issues.
     </para></note>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install </userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -402,6 +412,15 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>make install-mysqld</userinput></screen>
 
+      <note>
+        <para>
+          If you have an existing database already and this
+          installation of binaries was just an upgrade to a newer
+          version, check the upstream documentation for upgrading. It
+          is recommended to run:
+          <screen role="nodump"><userinput>mariadb-upgrade</userinput></screen>
+        </para>
+      </note>
     </sect3>
 
   </sect2>

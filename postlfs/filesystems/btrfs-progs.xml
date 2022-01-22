@@ -6,10 +6,10 @@
 
   <!ENTITY btrfs-progs-download-http "&kernel-dl;/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v&btrfs-progs-version;.tar.xz">
   <!ENTITY btrfs-progs-download-ftp  " ">
-  <!ENTITY btrfs-progs-md5sum        "9d15ae3f7764e07702d7f5e048c6a226">
+  <!ENTITY btrfs-progs-md5sum        "ad0673504ece4c60ca041399a5826f78">
   <!ENTITY btrfs-progs-size          "2.2 MB">
-  <!ENTITY btrfs-progs-buildsize     "73 MB (up to 2.7 GB are used during tests)">
-  <!ENTITY btrfs-progs-time          "0.1 SBU (add 17 SBU for tests, but will be longer on slow disks)">
+  <!ENTITY btrfs-progs-buildsize     "51 MB (up to 2.7 GB are used during tests)">
+  <!ENTITY btrfs-progs-time          "0.2 SBU (add 6.2 SBU for tests, but will be longer on slow disks)">
 ]>
 
 <sect1 id="btrfs-progs" xreflabel="btrfs-progs-&btrfs-progs-version;">
@@ -65,6 +65,17 @@
       <listitem>
         <para>
           Estimated build time: &btrfs-progs-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+<bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch if building with linux kernel headers version
+          before 5.12:
+          <ulink url="&patch-root;/btrfs-progs-&btrfs-progs-version;-headers_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -125,6 +136,13 @@
     <title>Installation of btrfs-progs</title>
 
     <para>
+      If your system has linux kernel headers with version before 5.12, apply
+      the following patch:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../btrfs-progs-&btrfs-progs-version;-headers_fix-1.patch</userinput></screen>
+
+    <para>
       Install <application>btrfs-progs</application> by running the following
       commands:
     </para>
@@ -158,8 +176,12 @@ make</userinput></screen>
    ./cli-tests.sh
    ./convert-tests.sh
    ./misc-tests.sh
-   ./fuzz-tests.sh
+   #./fuzz-tests.sh
 popd</userinput></screen>
+
+    <para>
+      The fuzz-tests are currently broken.
+    </para>
 
 <!-- Template for failed test removal:
     <para>
