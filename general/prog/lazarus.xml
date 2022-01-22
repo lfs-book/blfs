@@ -4,11 +4,16 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY lazarus-download-http "https://downloads.sourceforge.net/project/lazarus/Lazarus Zip _ GZip/Lazarus &lazarus-version;/lazarus-&lazarus-version;.tar.gz">
-  <!ENTITY lazarus-md5sum        "208dfeb20c528649d2598cc0eb341309">
-  <!ENTITY lazarus-size          "66.3 MB">
-  <!ENTITY lazarus-buildsize     "x.x MB">
-  <!ENTITY lazarus-time          "x SBU">
+  <!--
+      NOTE:
+      Whenever upgrading to another version of Lazarus,
+      update qt5pas.xml, too!
+  -->
+  <!ENTITY lazarus-download-http "https://downloads.sourceforge.net/project/lazarus/Lazarus Zip _ GZip/Lazarus &lazarus-version;/lazarus-&lazarus-version;-0.tar.gz">
+  <!ENTITY lazarus-md5sum        "c47680c84192008af1d05aa42b58c1da">
+  <!ENTITY lazarus-size          "73.2 MB">
+  <!ENTITY lazarus-buildsize     "817.2 MB">
+  <!ENTITY lazarus-time          "1.5 SBU">
 ]>
 
 <sect1 id="lazarus" xreflabel="lazarus-&lazarus-version;">
@@ -67,10 +72,9 @@
 
     <bridgehead renderas="sect3">Lazarus Dependencies</bridgehead>
     <para role="required">
-      <xref linkend="rsync"/>,
       <xref linkend="fpc"/>, and one of 
-      <xref linkend="qt5"/> and <xref linkend="qt5pas"/>, or
-      <xref linkend="gtk2"/>
+      <xref linkend="qt5"/> and <xref linkend="qt5pas"/> for QT based IDE, or
+      <xref linkend="gtk2"/> for Gtk2 based IDE
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -126,35 +130,20 @@
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<!--            some of the dirs already exists -+
-                                                 V    -->
-<screen role="root"><userinput>mkdir -pv /usr/{lib/lazarus,bin,share{/man/man1,/doc}}
-rsync -a \
-    --exclude="CVS"     --exclude=".cvsignore" \
-    --exclude="*.ppw"   --exclude="*.ppl" \
-    --exclude="*.ow"    --exclude="*.a"\
-    --exclude="*.rst"   --exclude=".#*" \
-    --exclude="*.~*"    --exclude="*.bak" \
-    --exclude="*.orig"  --exclude="*.rej" \
-    --exclude=".xvpics" \
-    --exclude="killme*" --exclude=".gdb_hist*" \
-    --exclude="debian"  --exclude="COPYING*" \
-    --exclude="*.app"   --exclude="tools/install" \
-    . /usr/lib/lazarus
-ln -s /usr/lib/lazarus/lazbuild /usr/bin/lazbuild
-cp -R install/man/man1/* /usr/share/man/man1/
-mv /usr/lib/lazarus/docs /usr/share/doc/lazarus
+<screen role="root"><userinput>make INSTALL_PREFIX=/usr distinstall
 
-mkdir -p /usr/lib/lazarus/docs
-ln -s /usr/share/doc/lazarus/chm /usr/lib/lazarus/docs/html
-ln -s /usr/share/doc/lazarus/lazdoc.css /usr/lib/lazarus/docs/lazdoc.css
+mv /usr/share/lazarus/docs /usr/share/doc/lazarus
 
-install -D -m644 COPYING.modifiedLGPL.txt /usr/share/licenses/lazarus/COPYING.modifiedLGPL
+mv /usr/share/lazarus /usr/lib/
+for L in $(find /usr/bin -type l); do
+    ln -svf "$(readlink $L | sed 's@/share/@/lib/@')" "$L"
+done
 
 sed -e 's|\(Categories\).*|\1=IDE;Development;|' \
-    -e 's|\.png|\.xpm|' -i install/lazarus.desktop
-install -Dm644 install/lazarus.desktop /usr/share/applications/lazarus.desktop
-install -Dm644 images/ide_icon48x48.png /usr/share/pixmaps/lazarus.png</userinput></screen>
+    -i /usr/share/applications/lazarus.desktop
+
+install -Dm644 images/ide_icon48x48.png \
+       /usr/share/pixmaps/lazarus.png</userinput></screen>
 
   </sect2>
 
@@ -167,9 +156,9 @@ install -Dm644 images/ide_icon48x48.png /usr/share/pixmaps/lazarus.png</userinpu
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>lazarus, ...</seg>
+        <seg>startlazarus, lazarus-ide, lrstolfm, updatepofiles, lazbuild, lazres</seg>
         <seg>None</seg>
-        <seg>None</seg>
+        <seg>/usr/lib/lazarus</seg>
       </seglistitem>
     </segmentedlist>
 
@@ -179,13 +168,13 @@ install -Dm644 images/ide_icon48x48.png /usr/share/pixmaps/lazarus.png</userinpu
       <?dbhtml list-presentation="table"?>
 
       <varlistentry id="lazarus-pgm">
-        <term><filename class="libraryfile">lazarus</filename></term>
+        <term><filename class="libraryfile">startlazarus</filename></term>
         <listitem>
           <para>
-            the Delphi-like IDE
+            Starting the Delphi-like IDE
           </para>
           <indexterm zone="lazarus lazarus-pgm">
-            <primary sortas="b-lazarus">lazarus</primary>
+            <primary sortas="b-lazarus">startlazarus</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -4,9 +4,19 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY qt5pas-download-http "https://github.com/davidbannon/libqt5pas/archive/v&qt5pas-version;/libqt5pas-&qt5pas-version;.tar.gz">
-  <!ENTITY qt5pas-md5sum        "f2171acbe358e16e7c4344928c53d2c3">
-  <!ENTITY qt5pas-size          "471.6 KB">
+  <!-- ENTITY qt5pas-download-http "https://github.com/davidbannon/libqt5pas/archive/v&qt5pas-version;/libqt5pas-&qt5pas-version;.tar.gz" -->
+
+  <!--
+       NOTE:
+       The url, size, md5sum is exactly same as in Lazarus as Qt5Pas
+       is included in the Lazarus source package.
+       It needs to be installed before Lazarus can be built based
+       on QT.
+  -->
+     
+  <!ENTITY lazarus-download-http "https://downloads.sourceforge.net/project/lazarus/Lazarus Zip _ GZip/Lazarus &lazarus-version;/lazarus-&lazarus-version;-0.tar.gz">
+  <!ENTITY lazarus-md5sum        "c47680c84192008af1d05aa42b58c1da">
+  <!ENTITY lazarus-size          "73.2 MB">
   <!ENTITY qt5pas-buildsize     "2.5 MB">
   <!ENTITY qt5pas-time          "7 SBU">
 ]>
@@ -37,17 +47,17 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Download (HTTP): <ulink url="&qt5pas-download-http;"/>
+          Download (HTTP): <ulink url="&lazarus-download-http;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download MD5 sum: &qt5pas-md5sum;
+          Download MD5 sum: &lazarus-md5sum;
         </para>
       </listitem>
       <listitem>
         <para>
-          Download size: &qt5pas-size;
+          Download size: &lazarus-size;
         </para>
       </listitem>
       <listitem>
@@ -77,10 +87,17 @@
     <title>Installation of qt5pas</title>
 
     <para>
-      Build the package by running the following commands:
+      The <application>qt5pas</application> package is included in
+      the <application>Lazarus</application> source package but it
+      needs to be built before Lazarus can be built with QT as 
+      graphical interface libraries.</para>
+    <para>There is no need (no way) to specify the installation 
+      target (as usually done by passing --prefix to configure).
+      Qt5pas will be installed in QT's library directory. Build the
+      package by running the following commands:
     </para>
 
-<screen><userinput>cd cbindings &amp;&amp;
+<screen><userinput>cd lcl/interfaces/qt5/cbindings &amp;&amp;
 qmake-qt5 "QT += x11extras" &amp;&amp;
 make</userinput></screen>
 
