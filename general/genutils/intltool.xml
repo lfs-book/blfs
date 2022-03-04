@@ -6,9 +6,9 @@
 
   <!ENTITY intltool-download-http "http://launchpad.net/intltool/trunk/&intltool-version;/+download/intltool-&intltool-version;.tar.gz">
   <!ENTITY intltool-download-ftp  " ">
-  <!ENTITY intltool-md5sum        "23fbd879118253cb99aeac067da5f591">
-  <!ENTITY intltool-size          "188 KB">
-  <!ENTITY intltool-buildsize     "1.4 MB">
+  <!ENTITY intltool-md5sum        "12e517cac2b57a0121cda351570f1e63">
+  <!ENTITY intltool-size          "159 KB">
+  <!ENTITY intltool-buildsize     "1.5 MB">
   <!ENTITY intltool-time          "less than 0.1 SBU">
 ]>
 
@@ -38,7 +38,7 @@
       <filename>.desktop</filename> and <filename>.oaf</filename> files.
     </para>
 
-    &lfs75_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,14 +73,14 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Intltool Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="perl-xml-parser"/>
     </para>
-
+-->
     <para condition="html" role="usernotes">User Notes:
       <ulink url="&blfs-wiki;/intltool"/>
     </para>
@@ -88,6 +88,14 @@
 
   <sect2 role="installation">
     <title>Installation of Intltool</title>
+
+    <para>First fix a warning that is caused by perl-5.22 and later:</para>
+
+<screen><userinput>sed -i 's:\\\${:\\\$\\{:' intltool-update.in</userinput></screen>
+
+    <note><para>The above regular expression looks unusual because of all the
+    backslashes.  What it does is add a backslash before the right brace
+    character in the sequence '\${' resulting in '\$\{'.</para></note>
 
     <para>
       Install <application>Intltool</application> by running the following
@@ -106,8 +114,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-install -v -m644 -D doc/I18N-HOWTO \
-    /usr/share/doc/intltool-&intltool-version;/I18N-HOWTO</userinput></screen>
+install -v -m644 -D doc/I18N-HOWTO /usr/share/doc/intltool-&intltool-version;/I18N-HOWTO</userinput></screen>
 
   </sect2>
 
