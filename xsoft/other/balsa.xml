@@ -128,11 +128,10 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr            \
-            --sysconfdir=/etc        \
-            --localstatedir=/var/lib \
-            --without-html-widget    &amp;&amp;
-make</userinput></screen>
+<screen><userinput>meson --prefix=/usr       \
+      --buildtype=release \
+      -Dhtml-widget=no    &amp;&amp;
+ninja</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -163,49 +162,50 @@ make</userinput></screen>
     </para>
     -->
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <para>
-      <parameter>--without-html-widget</parameter>: This option disables
+      <parameter>-Dhtml-widget=no</parameter>: This option disables
       building the HTML renderer. If you want the HTML renderer to be built,
       verify that you have <xref linkend="webkitgtk"/> installed, and then
       remove this option.
     </para>
 
     <para>
-      <option>--with-canberra</option>: Enable libcanberra support.
+      <option>-Dcanberra=true</option>: Enable libcanberra support.
     </para>
 
     <para>
-      <option>--with-compface</option>: Enable compface support.
+      <option>-Dcompface=true</option>: Enable compface support.
     </para>
 
     <para>
-      <option>--with-gcr</option>: Use libgcr for TLS support.
+      <option>-Dgcr=true</option>: Use libgcr for TLS support.
     </para>
 
     <para>
-      <option>--with-gss</option>: Enable GSSAPI support.
+      <option>-Dgss=true</option>: Enable GSSAPI support.
     </para>
 
     <para>
-      <option>--with-ldap</option>: Use this option to enable LDAP address
+      <option>-Dldap=true</option>: Use this option to enable LDAP address
       book support if <application>OpenLDAP</application> is installed.
     </para>
 
     <para>
-      <option>--with-libsecret</option>: Enable strong password
+      <option>-Dlibsecret=true</option>: Enable strong password
       support and support for gnome-keyring to store passwords.
     </para>
 
-    <!-- configure says this is an invalid option with 2.5.11
     <para>
-      <option>- -with-gpgme</option>: Use this option to enable GPG support
-      if <quote><application>GnuPG</application> Made Easy</quote>
-      (<application>GPGME</application>) is installed.
+      <option>-Dautocrypt=true</option>: Use this option to enable Autocrypt
+      support if both <application>GPGME</application> and
+      <application>SQLite</application> are installed.
     </para>
-    -->
 
     <para>
-      <option>--with-sqlite</option>: Use this option to enable SQLite
+      <option>-Dsqlite=true</option>: Use this option to enable SQLite
       address book support if <application>SQLite</application> is
       installed.
     </para>
