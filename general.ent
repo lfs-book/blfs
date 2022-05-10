@@ -20,27 +20,31 @@
 <!ENTITY % version-entities SYSTEM "version.ent">
 %version-entities;
 <![ %sysv; [
-<!ENTITY lfs-version  "development">
-<!ENTITY blfs-version "svn">
+<!ENTITY lfs-version   "development">
+<!ENTITY blfs-version  "svn">
+<!ENTITY patch-version "svn">
 ]]>
 <![ %systemd; [
-<!ENTITY lfs-version  "systemd">
-<!ENTITY blfs-version "systemd">
+<!ENTITY lfs-version   "systemd">
+<!ENTITY blfs-version  "systemd">
+<!ENTITY patch-version "svn">
 ]]>
 ]]><!-- End %development -->
 
 <![ %release; [
 <![ %sysv; [
-<!ENTITY lfs-version  "%relnum;">
-<!ENTITY blfs-version "%relnum;">
+<!ENTITY lfs-version   "%relnum;">
+<!ENTITY blfs-version  "%relnum;">
+<!ENTITY patch-version "%relnum;">
 ]]>
 <![ %systemd; [
-<!ENTITY lfs-version  "%relnum;-systemd">
-<!ENTITY blfs-version "%relnum;-systemd">
+<!ENTITY lfs-version   "%relnum;-systemd">
+<!ENTITY blfs-version  "%relnum;-systemd">
+<!ENTITY patch-version "%relnum;">
 ]]>
 
 <!ENTITY year           "%relyear;">
-<!ENTITY version        "%relnum">
+<!ENTITY version        "%relnum;">
 <!ENTITY releasedate    "%reldate;">
 <!ENTITY pubdate        "%relpubdate;">
 ]]><!-- End %release -->
@@ -56,19 +60,19 @@
 
 <!ENTITY lfs-website          "https://www.&lfs-domainname;">
 <!-- downloads_root must have an entity because it is needed for scripts
-     change svn to x.y for release. Note:  s/_/-/ in comment to avoid grep error
-     Update 'downloads-root-systemd' to x.y-systemd
+     Note:  s/_/-/ in comment to avoid grep error
+     It is also needed for systemd units
      -->
-<!ENTITY downloads-root       "https://www.linuxfromscratch.org/blfs/downloads/svn">
-<!ENTITY downloads-root-systemd "https://www.linuxfromscratch.org/blfs/downloads/systemd">
-<!--<!ENTITY downloads-project    "https://downloads.&lfs-domainname;">-->
+<!ENTITY downloads-root       "&lfs-website;/blfs/downloads/&blfs-version;">
+<!--<!ENTITY downloads-root-systemd "https://www.linuxfromscratch.org/blfs/downloads/systemd">
+<!ENTITY downloads-project    "https://downloads.&lfs-domainname;">-->
 
 <!ENTITY sources-anduin-http  "https://anduin.linuxfromscratch.org/BLFS">
 <!ENTITY sources-anduin-ftp   "ftp://anduin.linuxfromscratch.org/BLFS">
 
 <!ENTITY hints-root           "https://www.&lfs-domainname;/hints">
 <!ENTITY patch-downloads      "https://www.linuxfromscratch.org/patches/downloads">
-<!ENTITY patch-root           "https://www.&lfs-domainname;/patches/blfs/svn">
+<!ENTITY patch-root           "https://www.&lfs-domainname;/patches/blfs/&patch-version;">
 <!ENTITY errata               "https://www.&lfs-domainname;/blfs/errata/&blfs-version;/">
 <!ENTITY blfs-ticket-root     "https://wiki.&lfs-domainname;/blfs/ticket/">
 
@@ -99,38 +103,34 @@
 <!ENTITY elinks-url           "http://elinks.or.cz">
 <!ENTITY w3m-url              "http://w3m.sourceforge.net/">
 
+<!-- Convenience entities -->
+<!ENTITY root                 "<systemitem class='username'>root</systemitem>">
+
+
 <!-- These entities are used to identify versions of LFS
      packages referenced throughout the BLFS book. -->
-<!ENTITY lfs-autoconf-version         "2.69">
-<!ENTITY lfs-coreutils-version        "8.23">
-<!ENTITY lfs-e2fsprogs-version        "1.42.11">
-<!ENTITY lfs-flex-version             "2.5.39">
-<!ENTITY lfs-gcc-version              "4.9.1">
-<!ENTITY lfs-gdbm-version             "1.11">
-<!ENTITY lfs-m4-version               "1.4.17">
+
 <!-- FIXME - please check the included version of
  List/Utils when upgrading the perl version.
  Scalar-List-Utils is in perl-deps because List-AllUtils
  needs a newer version at runtime than is in 5.34.0 -->
 <!ENTITY lfs-perl-version             "5.34"> <!-- used in git -->
-<!-- this was originally the perl version used by the corresponding
- version of lfs, in those days always for i686, but now BLFS is a rolling
- release. \-\->
-<!ENTITY lfs-perl-version             "&lt;5.x.y&gt;/&lt;arch-linux&gt;">-->
-<!ENTITY lfs-shadow-version           "4.2.1">
-<!ENTITY lfs-vim-version              "7.4">
+
 <!-- End LFS versions -->
 
-<!ENTITY blfs-bootscripts-version     "20210826">
-<!ENTITY systemd-units-version        "20211123">
+<!ENTITY blfs-bootscripts-version     "20220506">
+<!ENTITY systemd-units-version        "20220506">
 
 <!ENTITY blfs-wiki                    "https://wiki.&lfs-domainname;/blfs/wiki">
 
 <!-- These entities are used to annotate the current status of a package as it
      relates to the version of LFS it will build/work against -->
 
-<!ENTITY lfs110a_checked       "<para>This package is known to build and work
-                              properly using an LFS-11.0 platform.</para>">
+<!--<!ENTITY lfs111_checked       "<para>This package is known to build and work
+                              properly using an LFS-11.1 platform.</para>">-->
+<!ENTITY lfs111_checked       "<note><para>Development versions of BLFS may not build or run
+                               some packages properly if dependencies have been updated
+                               since the most recent stable versions of the book.</para></note>">
 <!--
 <!ENTITY lfs110a_built         "<para>This package is known to build using an LFS
                               11.0 platform but has not been tested.</para>">

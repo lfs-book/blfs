@@ -40,7 +40,7 @@
       <command>login</command> and <command>su</command> to utilize PAM.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -143,6 +143,7 @@ sed -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD SHA512@' \
     -i etc/login.defs                                 &amp;&amp;
 
 ./configure --sysconfdir=/etc               \
+            --disable-static                \
             --with-group-name-max-length=32 &amp;&amp;
 make</userinput></screen>
 
@@ -157,7 +158,7 @@ make</userinput></screen>
 <screen role="root"><userinput>make exec_prefix=/usr install</userinput></screen>
 
     <para>
-      The man pages were installed in LFS, but if reinstallation is 
+      The man pages were installed in LFS, but if reinstallation is
       desired, run (as the <systemitem class="username">root</systemitem> user):
     </para>
 
@@ -448,7 +449,8 @@ auth      sufficient  pam_rootok.so
 auth      include     system-auth
 
 # limit su to users in the wheel group
-auth      required    pam_wheel.so use_uid
+# disabled by default
+#auth      required    pam_wheel.so use_uid
 
 # include system account settings
 account   include     system-account

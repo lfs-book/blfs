@@ -11,16 +11,18 @@
 <!--<!ENTITY nss-download-http "https://&nss-url;/NSS_3_&nss-minor-version;_&nss-micro-version;_RTM/src/nss-&nss-version;.tar.gz">-->
 
 <!-- no micro versions -->
-<!ENTITY nss-download-http "https://&nss-url;/NSS_3_&nss-minor-version;_RTM/src/nss-&nss-version;.tar.gz">
+<!ENTITY nss-download-http "https://&nss-url;/NSS_&nss-dir;_RTM/src/nss-&nss-version;.tar.gz">
 
   <!ENTITY nss-download-ftp  " ">
-  <!ENTITY nss-md5sum        "332666556f7d120a4d5141d1d65ac2cf">
-  <!ENTITY nss-size          "80 MB">
-  <!ENTITY nss-buildsize     "308 MB">
-  <!ENTITY nss-time          "1.9 SBU (with parallelism=4, add 18 SBU for tests)">
+  <!ENTITY nss-md5sum        "8162cb8da6fbd91ca1bda8c9f8d8de40">
+  <!ENTITY nss-size          "81 MB">
+  <!ENTITY nss-buildsize     "324 MB (add 157 MB for tests)">
+  <!ENTITY nss-time          "1.9 SBU (with parallelism=4, add 63 SBU for tests, but can be much shorter on a modern CPU)">
+  <!-- On my system, I got 64.2 SBU, but Bruce gets 18 SBU. -renodr -->
+  <!-- On my system, I got 63 SBU, but Xi gets ~18 SBU. -pierre (for 3.78) -->
 ]>
 
-<sect1 id="nss" xreflabel="NSS-&nss-version;">
+<sect1 id="nss" xreflabel="nss-&nss-version;">
   <?dbhtml filename="nss.html"?>
 
   <sect1info>
@@ -46,7 +48,7 @@
       standards into an application.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -158,7 +160,10 @@ cd ../</userinput></screen>
            HOST=localhost and DOMSUF=localdomain are required.
            Without these variables, a FQDN is
            required to be specified and this generic way should work for
-           everyone.
+           everyone, provided <systemitem>localhost.localdomain</systemitem>
+           is defined in <filename>/etc/hosts</filename>, as done in
+           <ulink url="&lfs-root;/chapter09/network.html#ch-config-hosts">the
+           lfs book</ulink>.
         </para>
       </listitem>
       <listitem>
@@ -281,7 +286,7 @@ install -v -m644 Linux*/lib/pkgconfig/nss.pc  /usr/lib/pkgconfig</userinput></sc
       <filename>/usr/sbin/make-ca</filename> script included on the
       <xref linkend="make-ca"/> page can generate a system wide NSS DB with the
       <parameter>-n</parameter> switch, or by modifying the
-      <filename>/etc/make-ca.conf</filename> file.
+      <filename>/etc/make-ca/make-ca.conf</filename> file.
     </para>
 
   </sect2>

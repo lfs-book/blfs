@@ -6,10 +6,10 @@
 
   <!ENTITY xwayland-download-http "&xorg-download-http;/xserver/xwayland-&xwayland-version;.tar.xz">
   <!ENTITY xwayland-download-ftp  "&xorg-download-ftp;/xserver/xwayland-&xwayland-version;.tar.xz">
-  <!ENTITY xwayland-md5sum        "ff45f0bb14c3ab2f984f0a83c880fce6">
+  <!ENTITY xwayland-md5sum        "a32eb7be356b7bd5a320be0de12ee9ef">
   <!ENTITY xwayland-size          "1.2 MB">
-  <!ENTITY xwayland-buildsize     "71 MB (add 350 MB for test)">
-  <!ENTITY xwayland-time          "0.2 SBU (with paralellism=4; add 0.8 SBU for test, not including clone time)">
+  <!ENTITY xwayland-buildsize     "52 MB (add 376 MB for tests)">
+  <!ENTITY xwayland-time          "0.2 SBU (with paralellism=4; add 2.2 SBU for tests, not including clone time)">
 ]>
 
 <sect1 id="xwayland" xreflabel="Xwayland-&xwayland-version;">
@@ -35,7 +35,7 @@
       wayland session.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,6 +75,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
+      <xref linkend="libxcvt"/>,
       <xref linkend="pixman"/>,
       <xref linkend="wayland-protocols"/>, and
       <xref linkend="xorg7-font"/> (only font-util)
@@ -89,8 +90,10 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="git"/> (to download packages needed for the tests),
       <xref linkend="libgcrypt"/>,
       <xref linkend="nettle"/>,
+      <xref linkend="xmlto"/>,
       <xref linkend="xorg7-legacy"/>
          (only bdftopcf, for building fonts required for the tests),
       <ulink url="https://gitlab.freedesktop.org/xorg/test/rendercheck">rendercheck</ulink> (for tests), and
@@ -116,7 +119,6 @@ mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson --prefix=$XORG_PREFIX         \
-      -Dxvfb=false                  \
       -Dxkb_output_dir=/var/lib/xkb \
       ..                            &amp;&amp;
 ninja</userinput></screen>
@@ -131,15 +133,15 @@ ninja</userinput></screen>
       url="https://gitlab.freedesktop.org/xorg/xserver/-/blob/xwayland-21.1/.gitlab-ci/debian-install.sh">
       Upstream continuous integration build</ulink>.
     </para>
-
+<!--
     <para>
       Furthermore, an X server needs to be running during the build of
       <application>xts</application>. If not running the tests in a
       graphical environment, you'll need to enable <command>Xvfb</command>
       by removing the <parameter>-Dxvfb=false</parameter> above. The
-      instructions below suppose this has been done.
+      instructions below expect this has been done.
     </para>
-
+-->
     <para>
       Running the tests involves downloading two other frameworks, in addition
       to the mentioned optional dependencies:
@@ -157,7 +159,7 @@ EOF</literal>
 git clone https://gitlab.freedesktop.org/xorg/test/xts --depth 1   &amp;&amp;
 
 export DISPLAY=:22           &amp;&amp;
-hw/vfb/Xvfb $DISPLAY &amp;
+../hw/vfb/Xvfb $DISPLAY &amp;
 VFB_PID=$!                   &amp;&amp;
 cd xts                       &amp;&amp;
 CFLAGS=-fcommon ./autogen.sh &amp;&amp;
@@ -172,6 +174,7 @@ popd</userinput></screen>
 
 <screen remap="test"><userinput>XTEST_DIR=$(pwd)/tools/xts PIGLIT_DIR=$(pwd)/tools/piglit ninja test</userinput></screen>
 
+    <!-- The xfontset tests fail on my system -renodr -->
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
@@ -185,6 +188,14 @@ EOF</userinput></screen>
 <screen role="root" revision="systemd"><userinput>ninja install &amp;&amp;
 mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
 
+    <para>
+      If <xref linkend='xorg-server'/> is not installed and you do not plan
+      to install it later, you can install <command>Xvfb</command> from this
+      package.  As the &root; user:
+    </para>
+
+<screen role="nodump"><userinput>install -vm755 hw/vfb/Xvfb /usr/bin</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
@@ -195,14 +206,14 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
       installing a manual page for <command>Xserver</command>,
       which is not part of this package.
     </para>
-
+<!--
     <para>
       <parameter>-Dxvfb=false</parameter>: Prevents building the
       <command>xvfb</command> program, which is also installed by
-      <xref linkend="xorg-server"/>. Remove if you do not plan to
+      <xref linkend="xorg-server"/>. Remove this option if you do not plan to
       install the X server.
     </para>
-
+-->
     <para>
       <command>mkdir -pv /etc/X11/xorg.conf.d</command>: This directory is
       needed to put configuration files for Xwayland. This command ensures
@@ -249,7 +260,7 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
         <term><command>Xwayland</command></term>
         <listitem>
           <para>
-            Allows X client to run under wayland.
+            Allows X clients to run under wayland
           </para>
           <indexterm zone="xwayland Xwayland">
             <primary sortas="b-Xwayland">Xwayland</primary>

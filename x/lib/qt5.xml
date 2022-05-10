@@ -12,7 +12,7 @@
   <!ENTITY qt5-md5sum        "e1447db4f06c841d8947f0a6ce83a7b5">
   <!ENTITY qt5-size          "560 MB">
   <!ENTITY qt5-buildsize     "15 GB (257 MB installed)">
-  <!ENTITY qt5-time          "22 SBU (using parallelism=4)">
+  <!ENTITY qt5-time          "29 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="qt5" xreflabel="Qt-&qt5-version;">
@@ -41,7 +41,7 @@
       Frameworks 5 (KF5)</application>.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,8 +81,20 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
+          Now that <application>Qt5</application> updates are restricted to
+          commercial customers, upstream patches for the various modules are
+          being curated at kde.
+          Patches for the modules required by packages in BLFS have been
+          aggregated for the non-modular Qt5 build we use.
+        </para>
+        <para>
           Required patch:
-          <ulink url="&patch-root;/qt-everywhere-src-&qt5-version;-CVE-2021-3481-1.patch"/>
+          <ulink url="&patch-root;/qt-everywhere-src-&qt5-version;-kf5.15-2.patch"/>
+        </para>
+        <para>
+          Details of the kde curation can be found at
+          <ulink url="https://dot.kde.org/2021/04/06/announcing-kdes-qt-5-patch-collection"/>
+          and <ulink url="https://community.kde.org/Qt5PatchCollection"/>.
         </para>
       </listitem>
     </itemizedlist>
@@ -111,7 +123,6 @@
       <xref linkend="libwebp"/>,
       <xref linkend="libxkbcommon"/>,
       <xref linkend="mesa"/>,
-      <xref linkend="mitkrb"/>,
       <xref linkend="mtdev"/>,
       <xref linkend="pcre2"/>,
       <xref linkend="sqlite"/>,
@@ -132,9 +143,10 @@
       <xref linkend="libinput"/>, <!-- needs -libinput switch -->
       <xref linkend="mariadb"/>
         or <ulink url="http://www.mysql.com/">MySQL</ulink>,
-      <xref linkend="pciutils"/> (required for QtWebEngine),
+      <xref linkend="pciutils"/>,
       <xref linkend="postgresql"/>,
-      <xref linkend="python2"/> (required for QtWebEngine),
+      <!-- we handle QtWebEngine separately
+      <xref linkend="python2"/> (required for QtWebEngine), -->
       <xref linkend="pulseaudio"/>,
       <xref linkend="sdl2"/>,
       <xref linkend="unixodbc"/>,
@@ -256,19 +268,11 @@ ln -sfnv qt-&qt5-version; /opt/qt5</userinput></screen>
     </note>
 
     <para>
-      First apply a patch to fix an Out Of Bounds read in QtSVG:
+      First apply a patch to pull in the fixes curated by kde for those
+      modules which are required by packages mentioned in this book:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../qt-everywhere-src-&qt5-version;-CVE-2021-3481-1.patch</userinput></screen>
-
-    <para>
-      Next fix some issues using gcc-11:
-    </para>
-
-<screen><userinput>sed -i '/utility/a #include &lt;limits&gt;'     qtbase/src/corelib/global/qglobal.h         &amp;&amp;
-sed -i '/string/a #include &lt;limits&gt;'      qtbase/src/corelib/global/qfloat16.h        &amp;&amp;
-sed -i '/qbytearray/a #include &lt;limits&gt;'  qtbase/src/corelib/text/qbytearraymatcher.h &amp;&amp;
-sed -i '/type_traits/a #include &lt;limits&gt;' qtdeclarative/src/qmldebug/qqmlprofilerevent_p.h</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../qt-everywhere-src-&qt5-version;-kf5.15-2.patch</userinput></screen>
 
     <para>
       Install <application>Qt5</application> by running the following commands:
@@ -516,7 +520,7 @@ EOF</userinput></screen>
 <screen role="root"><userinput>cat &gt; /etc/sudoers.d/qt &lt;&lt; "EOF"
 <literal>Defaults env_keep += QT5DIR</literal>
 EOF</userinput></screen>
-      
+
     <bridgehead renderas="sect4">If you did not install Qt5 in /usr</bridgehead>
 
       <para>

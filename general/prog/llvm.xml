@@ -8,18 +8,18 @@
 
   <!ENTITY llvm-download-http "&llvm-url;/llvm-&llvm-version;.src.tar.xz">
   <!ENTITY llvm-download-ftp  " ">
-  <!ENTITY llvm-md5sum        "8c24626dce3ee9d87d1079ebf0897db5">
-  <!ENTITY llvm-size          "43 MB">
-  <!ENTITY llvm-buildsize     "4.0 GB (1 GB installed, with documentation, add 15 GB for tests)">
-  <!ENTITY llvm-time          "38 SBU (on 4 CPU cores, with documentation, add 14 SBU for tests)">
+  <!ENTITY llvm-md5sum        "1a656224d12a71310bf3a2a194608c46">
+  <!ENTITY llvm-size          "47 MB">
+  <!ENTITY llvm-buildsize     "3.1 GB (824 MB installed, with documentation, add 20 GB for tests)">
+  <!ENTITY llvm-time          "33 SBU (on 4 CPU cores, with documentation, add 18 SBU for tests)">
 
   <!ENTITY clang-download-http "&llvm-url;/clang-&llvm-version;.src.tar.xz">
-  <!ENTITY clang-md5sum        "020cbac6e5786094fe4f96f72e290763">
-  <!ENTITY clang-size          "17 MB">
+  <!ENTITY clang-md5sum        "14367858adbe1ce2c2e9c9a7ec1d8a82">
+  <!ENTITY clang-size          "18 MB">
 
   <!ENTITY compiler-rt-download-http "&llvm-url;/compiler-rt-&llvm-version;.src.tar.xz">
-  <!ENTITY compiler-rt-md5sum        "e2e136656d27d60c5f40e20260f63c07">
-  <!ENTITY compiler-rt-size          "2.2 MB">
+  <!ENTITY compiler-rt-md5sum        "7c9b3f4d63f41540ed131ce73bdb3fac">
+  <!ENTITY compiler-rt-size          "2.3 MB">
 ]>
 
 <sect1 id="llvm" xreflabel="LLVM-&llvm-version;">
@@ -62,7 +62,7 @@
       <application>Clang</application> and <application>LLVM</application>.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -182,6 +182,18 @@
   <sect2 role="installation">
     <title>Installation of LLVM</title>
 
+    <note>
+      <para>
+        Starting with version 14.0.0, the tarball extracts to two directories:
+        <filename class="directory">llvm-&lt;version&gt;-src</filename>
+        and <filename class="directory">cmake</filename>. This does not change
+        the instructions below; they should be run after changing to
+        the <filename class="directory">llvm-&lt;version&gt;-src</filename>
+        directory, and both directories should be removed after finishing the
+        build.
+      </para>
+    </note>
+
     <para>
       Install <application>clang</application> into
       the source tree by running the following commands:
@@ -201,7 +213,7 @@ mv projects/compiler-rt-&llvm-version;.src projects/compiler-rt</userinput></scr
     <para>
      There are many Python scripts in this package which use
      <command>/usr/bin/env python</command> to access the system Python
-     which on LFS is <xref linkend="python3"/>. Use the following comand
+     which on LFS is <xref linkend="python3"/>. Use the following command
      to fix these scripts:
     </para>
 
@@ -230,8 +242,8 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr               \
       -DLLVM_LINK_LLVM_DYLIB=ON                 \
       -DLLVM_ENABLE_RTTI=ON                     \
       -DLLVM_TARGETS_TO_BUILD="host;AMDGPU;BPF" \
-      -DLLVM_BUILD_TESTS=ON                     \
       -DLLVM_BINUTILS_INCDIR=/usr/include       \
+      -DLLVM_INCLUDE_BENCHMARKS=OFF             \
       -Wno-dev -G Ninja ..                      &amp;&amp;
 ninja</userinput></screen>
 
@@ -266,9 +278,8 @@ ninja docs-llvm-html  docs-llvm-man</userinput></screen>
       class="directory">/sys/devices/system/cpu/cpu&lt;N&gt;/online</filename>
       by the <systemitem class="username">root</systemitem> user and makes them
       temporarily unusable by all jobs on the machine.)
-      Note that a few of the compiler-rt Sanitizer based tests (13 of more than 59000
-      tests run) are known to fail. Some of the LLVM-Unit IR tests are known to
-      fail as well.
+      Note that 2 of more than 62090 tests (llvm-libtool-darwin/L-and-l.test
+      and ThreadSanitizer-x86_64) are known to fail.
     </para>
 
     <para>
@@ -357,6 +368,13 @@ rmdir -v /usr/share/doc/clang</userinput></screen>
       <filename class="libraryfile">LLVMgold.so</filename>, which is needed
       for building programs with <command>clang</command> and Link Time
       Optimization (LTO).
+    </para>
+
+    <para>
+      <parameter>-DLLVM_INCLUDE_BENCHMARKS=OFF</parameter>:
+      is used to disable generation build targets for the LLVM
+      benchmarks. This option requires additional code that
+      is not currently available.
     </para>
 
     <para>

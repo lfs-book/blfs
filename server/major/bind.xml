@@ -6,10 +6,10 @@
 
   <!ENTITY bind-download-http "https://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.xz">
   <!ENTITY bind-download-ftp  "ftp://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.xz">
-  <!ENTITY bind-md5sum        "b77fc1bb53cf2b7a606c76992f1f7103">
-  <!ENTITY bind-size          "4.8 MB">
-  <!ENTITY bind-buildsize     "117 MB (20 MB installed)">
-  <!ENTITY bind-time          "0.8 SBU (with parallelism=4; add 30+ minutes, somewhat processor independent, to run the complete test suite)">
+  <!ENTITY bind-md5sum        "e14b700dc7709af6bbc9e6bfdf8cb36b">
+  <!ENTITY bind-size          "4.9 MB">
+  <!ENTITY bind-buildsize     "136 MB (25 MB installed)">
+  <!ENTITY bind-time          "0.4 SBU (with parallelism=4; add 30+ minutes, somewhat processor independent, to run the complete test suite)">
 ]>
 
 <sect1 id="bind" xreflabel="BIND-&bind-version;">
@@ -34,7 +34,7 @@
       to the <xref linkend="bind-utils"/>.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -136,6 +136,7 @@
   <sect2 role="installation">
     <title>Installation of BIND</title>
 
+<!--
     <para>
       To ensure <application>BIND</application> will build dnssec-keymgr,
       install a python module as the <systemitem
@@ -143,6 +144,7 @@
     </para>
 
 <screen role="root"><userinput>pip3 install ply</userinput></screen>
+-->
 
     <para>
       Install <application>BIND</application> by running the
@@ -153,7 +155,6 @@
             --sysconfdir=/etc       \
             --localstatedir=/var    \
             --mandir=/usr/share/man \
-            --with-libtool          \
             --disable-static        &amp;&amp;
 make</userinput></screen>
 
@@ -214,11 +215,13 @@ to be sphinx based.
       <filename class='directory'>/usr/etc</filename>.
     </para>
 
+    <!-- Seems to be removed in 9.18.0
     <para>
-      <parameter>--with-libtool</parameter>: This parameter forces the
+      <parameter>- -with-libtool</parameter>: This parameter forces the
       building of dynamic libraries and links the installed binaries to these
       libraries.
     </para>
+    -->
 
     <para>
       <option>--with-libidn2</option>: This parameter enables

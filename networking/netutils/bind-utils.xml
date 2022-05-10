@@ -6,10 +6,10 @@
 
   <!ENTITY bind-download-http   "https://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.xz">
   <!ENTITY bind-download-ftp    "ftp://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.xz">
-  <!ENTITY bind-md5sum          "b77fc1bb53cf2b7a606c76992f1f7103">
-  <!ENTITY bind-size            "4.8 MB">
-  <!ENTITY bind-utils-buildsize "107 MB">
-  <!ENTITY bind-utils-time      "0.6 SBU">
+  <!ENTITY bind-md5sum          "e14b700dc7709af6bbc9e6bfdf8cb36b">
+  <!ENTITY bind-size            "4.9 MB">
+  <!ENTITY bind-utils-buildsize "100 MB">
+  <!ENTITY bind-utils-time      "0.2 SBU">
 ]>
 
 <sect1 id="bind-utils" xreflabel="BIND Utilities-&bind-version;">
@@ -39,7 +39,7 @@
     <application>BIND</application> server, but need these
     client side applications.</para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,7 +78,8 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="json-c"/>
+      <xref linkend="json-c"/> and
+      <xref linkend="nghttp2"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -100,11 +101,12 @@
       Install <application>BIND Utilities</application> by
     running the following commands:</para>
 
- <screen><userinput>./configure --prefix=/usr --without-python &amp;&amp;
-make -C lib/dns    &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make -C lib/isc    &amp;&amp;
-make -C lib/bind9  &amp;&amp;
+make -C lib/dns    &amp;&amp;
+make -C lib/ns     &amp;&amp;
 make -C lib/isccfg &amp;&amp;
+make -C lib/bind9  &amp;&amp;
 make -C lib/irs    &amp;&amp;
 make -C bin/dig    &amp;&amp;
 make -C doc</userinput></screen>
@@ -115,7 +117,13 @@ make -C doc</userinput></screen>
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role='root'><userinput>make -C bin/dig install &amp;&amp;
+<screen role='root'><userinput>make -C lib/isc    install &amp;&amp;
+make -C lib/dns    install &amp;&amp;
+make -C lib/ns     install &amp;&amp;
+make -C lib/isccfg install &amp;&amp;
+make -C lib/bind9  install &amp;&amp;
+make -C lib/irs    install &amp;&amp;
+make -C bin/dig    install &amp;&amp;
 cp -v doc/man/{dig.1,host.1,nslookup.1} /usr/share/man/man1</userinput></screen>
 
   </sect2>
@@ -123,9 +131,17 @@ cp -v doc/man/{dig.1,host.1,nslookup.1} /usr/share/man/man1</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+<!-- Not recognized with 9.18.0
     <para>
-      <parameter>--without-python</parameter>: This option eliminates
+      <parameter>- -without-python</parameter>: This option eliminates
       the need for an unused python module.
+    </para>
+-->
+
+    <para>
+      <option>--disable-doh</option>: Use this option if you have not installed
+      <xref linkend="nghttp2" role="nodep"/> and you don't need DNS over HTTPS
+      support.
     </para>
 
     <para>

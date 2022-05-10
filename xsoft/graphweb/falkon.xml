@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY falkon-download-http "https://download.kde.org/stable/falkon/&falkon-major-version;/falkon-&falkon-version;.tar.xz">
+  <!ENTITY falkon-download-http "https://download.kde.org/stable/falkon/&falkon-version;/falkon-&falkon-version;.tar.xz">
   <!ENTITY falkon-download-ftp  " ">
-  <!ENTITY falkon-md5sum        "9255fb335d3ba361dea44b7b297ddf7d">
-  <!ENTITY falkon-size          "2.2 MB">
-  <!ENTITY falkon-buildsize     "60 MB (without optional dependencies)">
-  <!ENTITY falkon-time          "2.2 SBU (Using parallelism=4)">
+  <!ENTITY falkon-md5sum        "8733affc1d98770f4be1c9f587ad29b0">
+  <!ENTITY falkon-size          "2.4 MB">
+  <!ENTITY falkon-buildsize     "162 MB (without optional dependencies)">
+  <!ENTITY falkon-time          "1.4 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="falkon" xreflabel="falkon-&falkon-version;">
@@ -56,7 +56,7 @@
       </para>
     </warning>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -96,14 +96,24 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="extra-cmake-modules"/> and
+      <xref linkend="extra-cmake-modules"/>,
+      <xref linkend="kf5-frameworks"/> (for karchive), and
       <xref linkend="qtwebengine"/>
     </para>
 
+    <note>
+      <para>
+        Strictly speaking, only karchive is required to build falkon,
+        but several other packages in KF5 can be used if they are present. To
+        build only karchive, download that package from the directory specified
+        in <xref linkend="kf5-frameworks"/> and use the build instructions on
+        that page changing the $KF5_PREFIX to /usr.
+      </para>
+    </note>
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gnome-keyring"/>,
-      <xref linkend="kf5-frameworks"/> and
+      <xref linkend="gnome-keyring"/> and
       <ulink
       url="http://download.qt.io/official_releases/QtForPython/pyside2/">PySide2</ulink>
       for experimental <application>Python</application> plugins (compiling this from
@@ -117,16 +127,7 @@
 
   <sect2 role="installation">
     <title>Installation of falkon</title>
-<!--
-    <para>
-      To set the prefix to match KDE (if that has been installed), or
-      else to install in <filename class="directory">/usr</filename>
-      run:
-    </para>
 
-<screen><userinput>test -n "${KF5_PREFIX}" &amp;&amp; export FALKON_PREFIX=${KF5_PREFIX} ||
-  export FALKON_PREFIX=/usr</userinput></screen>
--->
     <para>
       Install <application>falkon</application> by running the following
       commands:
@@ -138,7 +139,7 @@
     </para>
 
 <screen><userinput>rm -rf po/</userinput></screen>
-
+<!--
     <para>
       Fix a missing include in Qt-5.14:
     </para>
@@ -151,7 +152,7 @@
     </para>
 <screen><userinput remap="pre">sed -i '/#include &lt;QPainter&gt;/a #include &lt;QPainterPath&gt;' \
    src/lib/tools/qztools.cpp</userinput></screen>
-
+-->
     <para>
       Now build the program:
     </para>

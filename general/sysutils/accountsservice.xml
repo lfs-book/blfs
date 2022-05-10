@@ -7,10 +7,10 @@
   <!ENTITY accountsservice-download-http
            "https://www.freedesktop.org/software/accountsservice/accountsservice-&accountsservice-version;.tar.xz">
   <!ENTITY accountsservice-download-ftp  " ">
-  <!ENTITY accountsservice-md5sum        "6e4c6fbd490260cfe17de2e76f5d803a">
-  <!ENTITY accountsservice-size          "96 KB">
-  <!ENTITY accountsservice-buildsize     "10 MB">
-  <!ENTITY accountsservice-time          "0.1 SBU">
+  <!ENTITY accountsservice-md5sum        "6dae0b50b48abe61296c8ecf90068c1f">
+  <!ENTITY accountsservice-size          "100 KB">
+  <!ENTITY accountsservice-buildsize     "7.3 MB">
+  <!ENTITY accountsservice-time          "less than 0.1 SBU">
 ]>
 
 <sect1 id="accountsservice" xreflabel="AccountsService-&accountsservice-version;">
@@ -37,7 +37,7 @@
       userdel(8) commands.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,7 +77,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="libgcrypt"/> and
+      <!--<xref linkend="libgcrypt"/> and-->
       <xref linkend="polkit"/>
     </para>
 
@@ -102,14 +102,14 @@
 
   <sect2 role="installation">
     <title>Installation of AccountsService</title>
-
-    <para>
-      First, fix building with recent versions of
-      <application>meson</application>:
+<!-- fixed in 22.08.8
+    <para revision="systemd">
+      First, fix an issue in the systemd unit that causes runtime issues:
+      <!-\- causes errors when trying to change the user's icon in g-c-c -\->
     </para>
 
-<screen><userinput>sed -i '/  policy,/d' data/meson.build</userinput></screen>
-
+<screen revision="systemd"><userinput remap="pre">sed -i '/PrivateTmp/d' data/accounts-daemon.service.in</userinput></screen>
+-->
     <para>
       Install <application>AccountsService</application> by running the following
       commands:
@@ -132,7 +132,6 @@ cd build &amp;&amp;
 meson --prefix=/usr       \
       --buildtype=release \
       -Dadmin_group=adm   \
-      -Dsystemd=true      \
       .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -164,13 +163,6 @@ ninja</userinput></screen>
       the D-Bus interface API documentation.
     </para>
 
-<!--
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gtk-doc-rebuild.xml"/>
--->
   </sect2>
 
  <sect2 role="configuration">
@@ -192,7 +184,7 @@ EOF</userinput></screen>
 <!--      <title><phrase revision="sysv">Boot Script</phrase>
              <phrase revision="systemd">Systemd Units</phrase></title> -->
       <title>Systemd Unit</title>
-<!-- Autmatically started by D-Bus when needed
+<!-- Automatically started by D-Bus when needed
       <para revision="sysv">
         To start the <command>accounts-daemon</command> daemon at boot,
         install the
@@ -201,8 +193,10 @@ EOF</userinput></screen>
         by running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>
+
+<screen role="root" revision="sysv"><userinput>make install-accounts-daemon</userinput></screen>
 -->
-      <para revision="systemd">
+      <para>
         To start the <command>accounts-daemon</command> daemon at boot,
 	enable the previously installed systemd unit
         by running the following command as the
@@ -213,9 +207,7 @@ EOF</userinput></screen>
         <primary sortas="f-accounts-daemon">accounts-daemon</primary>
       </indexterm>
 
-<screen role="root" revision="sysv"><userinput>make install-accounts-daemon</userinput></screen>
-
-<screen role="root" revision="systemd"><userinput>systemctl enable accounts-daemon</userinput></screen>
+<screen role="root"><userinput>systemctl enable accounts-daemon</userinput></screen>
 
     </sect3>
 
@@ -231,15 +223,16 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          accounts-daemon (library executable)
+          accounts-daemon (in
+          <filename class="directory">/usr/libexec</filename>)
         </seg>
         <seg>
           libaccountsservice.so
         </seg>
         <seg>
           /usr/include/accountsservice-1.0,
-          /usr/share/doc/accountsservice,
-          /usr/share/gtk-doc/html/libaccountsservice, and
+          /usr/share/accountsservice,
+          /usr/share/gtk-doc/html/libaccountsservice (optional), and
           /var/lib/AccountsService
         </seg>
       </seglistitem>

@@ -52,7 +52,7 @@
       </para>
     </note>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -106,22 +106,21 @@
 
 
     <bridgehead renderas="sect3">Python 2 Dependencies</bridgehead>
-<!--
+
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="libffi"/>
+      <xref linkend="sqlite"/> (For an additional modules)
     </para>
--->
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="bluez"/> and
       <xref linkend="valgrind"/>
     </para>
 
-    <bridgehead renderas="sect4">Optional (For Additional Modules)</bridgehead>
+    <bridgehead renderas="sect4">Optional (For more additional modules)</bridgehead>
     <para role="optional">
-      <xref linkend="libnsl"/>,
-      <xref linkend="sqlite"/>, and
+      <xref linkend="libnsl"/> and
       <xref linkend="tk"/>
     </para>
 
@@ -169,6 +168,14 @@ make</userinput></screen>
     <para>
       If you invoke the tests, they will run through twice.
       To test the results, issue: <command>make -k test</command>.
+      <!-- https://bugs.python.org/issue46811 -->
+      Several tests are known to fail, including
+      <literal>test_ftplib</literal>,
+      <literal>test_ssl</literal>,
+      <literal>test_urllib2_localnet</literal>,
+      <literal>test_xml_etree</literal>, and
+      <literal>test_minidom</literal>. These failures are due to
+      OpenSSL-3 and Expat-2.4.6.
     </para>
 
     <para>
@@ -219,7 +226,7 @@ find /usr/share/doc/python-&python2-version; -type f -exec chmod 0644 {} \;</use
 
     <para>
       <parameter>--enable-unicode=ucs4</parameter>: This switch enables
-      32bit Unicode support in <application>Python</application>.
+      32-bit Unicode support in <application>Python</application>.
     </para>
 
     <para>

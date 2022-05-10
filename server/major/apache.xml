@@ -7,7 +7,7 @@
   <!ENTITY apache-download-http
            "https://archive.apache.org/dist/httpd/httpd-&apache-version;.tar.bz2">
   <!ENTITY apache-download-ftp  " ">
-  <!ENTITY apache-md5sum        "a94ae42b84309d5ef6e613ae825b92fa">
+  <!ENTITY apache-md5sum        "f594f137137b5bdff3998dc17e3e9526">
   <!ENTITY apache-size          "7.1 MB">
   <!ENTITY apache-buildsize     "88 MB">
   <!ENTITY apache-time          "0.4 SBU (Using parallelism=4)">
@@ -35,7 +35,7 @@
       web serving operations.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,7 +76,7 @@
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/httpd-&apache-version;-blfs_layout-1.patch"/>
+          <ulink url="&patch-root;/httpd-&apache-version;-blfs_layout-3.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -86,7 +86,7 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="apr-util"/> and
-      <xref linkend="pcre"/>
+      <xref linkend="pcre2"/>
     </para>
 <!--
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -134,7 +134,7 @@ useradd -c "Apache Server" -d /srv/www -g apache \
       following commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../httpd-&apache-version;-blfs_layout-1.patch             &amp;&amp;
+<screen><userinput>patch -Np1 -i ../httpd-&apache-version;-blfs_layout-3.patch             &amp;&amp;
 
 sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in              &amp;&amp;
 
@@ -160,14 +160,14 @@ make</userinput></screen>
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
-
+<!-- changing the patch allows doing DESTDIR install as a normal user
     <note>
       <para>
         This package does not install properly using <envar>DESTDIR</envar>
         techniques as an unpriviledged user.
       </para>
     </note>
-
+-->
 <screen role="root"><userinput>make install  &amp;&amp;
 
 mv -v /usr/sbin/suexec /usr/lib/httpd/suexec &amp;&amp;

@@ -6,10 +6,10 @@
 
   <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "ac2959e825fad82cbaa85c0d6ea6a0b8">
-  <!ENTITY samba-size          "18 MB">
-  <!ENTITY samba-buildsize     "628 MB (add 210 MB for quicktest)">
-  <!ENTITY samba-time          "2.9 SBU (using parallelism=4; add 5.3 SBU for quicktest)">
+  <!ENTITY samba-md5sum        "44766ebd125f81147470a05aa4d209dd">
+  <!ENTITY samba-size          "29 MB">
+  <!ENTITY samba-buildsize     "628 MB (add 387 MB for quicktest)">
+  <!ENTITY samba-time          "2.9 SBU (using parallelism=4; add 3.5 SBU for quicktest)">
 ]>
 <!-- [pierre 2021-11-11]: quick test seems to be much smaller than previously.
      I'll update anyway since this is a high priority release: feel free
@@ -41,7 +41,7 @@
       nameserver (which among other things provides LAN browsing support).
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,6 +83,7 @@
     <para role="required">
       <xref linkend="gnutls"/>,
       <xref linkend="jansson"/>,
+      <xref linkend="perl-json"/>,
       <xref linkend="libtirpc"/>,
       <xref linkend="lmdb"/>, and
       <xref linkend="rpcsvc-proto"/>
@@ -116,6 +117,7 @@
       <xref linkend="libcap-pam"/>,
       <xref linkend="libgcrypt"/>,
       <xref linkend="libnsl"/>,
+      <xref linkend="libunwind"/>,
       <xref linkend="mitkrb"/>,
       <xref linkend="nss"/>,
       <xref linkend="popt"/>,
@@ -134,7 +136,6 @@
       <ulink url="https://www.gluster.org/">GlusterFS</ulink>,
       <ulink url="https://github.com/heimdal/">Heimdal</ulink> (included),
       <ulink url="https://pypi.org/project/iso8601/">iso8601</ulink>,
-      <ulink url="http://www.nongnu.org/libunwind/">libunwind</ulink>,
       <ulink url="https://ldb.samba.org/">ldb</ulink> (included),
       <ulink url="&pypi;/m2crypto">M2Crypto</ulink> (required for ADS),
       <ulink url="http://www.openafs.org/">OpenAFS</ulink>,
@@ -416,7 +417,7 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
           instead of copying and editing the default file as mentioned in the
           <quote>Command Explanations</quote> section. How you create/edit the
           <filename>/etc/samba/smb.conf</filename> file will be left up to
-          you. Do ensure the file is only writeable by the
+          you. Do ensure the file is only writable by the
           <systemitem class="username">root</systemitem> user (mode 644).
         </para>
       </note>
@@ -743,7 +744,7 @@ systemctl start smbd.socket</userinput></screen>
         <seg>
           /etc/samba, /run/samba, /usr/include/samba-4.0,
           /usr/lib/python&python3-majorver;/site-packages/samba,
-          /usr/libexec/samba, /usr/{lib,share}/samba,
+          /usr/{lib,libexec,share}/samba,
           and /var/{cache,lib,lock,log,run}/samba
         </seg>
 
@@ -1256,7 +1257,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbspool</command></term>
         <listitem>
           <para>
-            sends a print job to an SMB printer
+            sends a print job to a SMB printer
           </para>
           <indexterm zone="samba smbspool">
             <primary sortas="b-smbspool">smbspool</primary>
@@ -1281,7 +1282,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a shell script used for backing up SMB/CIFS shares
-            directly to Linux tape drives or a file
+            directly to Linux tape drives or to a file
           </para>
           <indexterm zone="samba smbtar">
             <primary sortas="b-smbtar">smbtar</primary>

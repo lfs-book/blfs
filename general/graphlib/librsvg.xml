@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY librsvg-download-http "&gnome-download-http;/librsvg/2.52/librsvg-&librsvg-version;.tar.xz">
-  <!ENTITY librsvg-download-ftp  "&gnome-download-ftp;/librsvg/2.52/librsvg-&librsvg-version;.tar.xz">
-  <!ENTITY librsvg-md5sum        "b667b319a33dafa825abf152a00e6c9b">
-  <!ENTITY librsvg-size          "22 MB">
-  <!ENTITY librsvg-buildsize     "865 MB (26 MB installed), add 211 MB for tests">
-  <!ENTITY librsvg-time          "1.6 SBU (Using parallelism=4), add 1.9 SBU for tests">
+  <!ENTITY librsvg-download-http "&gnome-download-http;/librsvg/&librsvg-minor;/librsvg-&librsvg-version;.tar.xz">
+  <!ENTITY librsvg-download-ftp  "&gnome-download-ftp;/librsvg/&librsvg-minor;/librsvg-&librsvg-version;.tar.xz">
+  <!ENTITY librsvg-md5sum        "7a0532a6c8a19fe610045c3b41b65300">
+  <!ENTITY librsvg-size          "27 MB">
+  <!ENTITY librsvg-buildsize     "992 MB (25 MB installed), add 210 MB for tests">
+  <!ENTITY librsvg-time          "1.2 SBU (Using parallelism=4), add 1.7 SBU for tests">
 ]>
 
 <sect1 id="librsvg" xreflabel="librsvg-&librsvg-version;">
@@ -34,7 +34,7 @@
       Scalable Vector Graphic (SVG) images.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,8 +74,8 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="gdk-pixbuf"/>,
       <xref linkend="cairo"/>,
+      <xref linkend="gdk-pixbuf"/>,
       <xref linkend="pango"/>, and
       <xref linkend="rust"/>
     </para>
@@ -88,7 +88,10 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/>
+      <xref linkend="docutils"/> (for man pages),
+      <xref linkend="xorg7-font"/> (for tests), and
+      <ulink url='https://pypi.org/project/gi-docgen/'>gi-docgen</ulink>
+      (for documentation)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -111,14 +114,10 @@
 make</userinput></screen>
 
     <para>
-      <!-- https://gitlab.gnome.org/GNOME/librsvg/issues/511 -->
-      Many of the tests in 'reftests' may fail (over half in May 2021) because
-      they produce, and then diff, graphic files with text and the details such
-      as spacing vary when the system versions of cairo, freetype, pixman, pango
-      and perhaps harfbuzz differ from the versions on the system where the
-      reference files were created. For this reason, running the tests is not
-      recommended.
-      To test the results anyway, issue: <command>make -k check</command>.
+      To test the results, issue: <command>make -k check</command>. During
+      testing some binaries are rebuilt with a different debug level, so you
+      should run <command>make</command> again after the tests are complete
+      to ensure everything is ready to be installed.
     </para>
 
     <para>
@@ -177,6 +176,7 @@ make</userinput></screen>
         </seg>
         <seg>
           librsvg-2.so and libpixbufloader-svg.so
+          (in <filename class='directory'>/usr/lib/gdk-pixbuf-2.0/2.10.0/</filename>)
         </seg>
         <seg>
           /usr/include/librsvg-2.0,

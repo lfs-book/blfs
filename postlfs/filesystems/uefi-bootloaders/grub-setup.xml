@@ -53,7 +53,7 @@
 
     <para>
       Still as the <systemitem class="username">root</systemitem> user, use
-      the <command>fdisk</command> utility to set the first parition
+      the <command>fdisk</command> utility to set the first partition
       of the USB flash drive to be an <quote>EFI system</quote> partition
       (change <userinput>sdx</userinput> to the device node corresponding
       to your USB flash drive):
@@ -61,15 +61,15 @@
 
 <screen role="nodump"><userinput>fdisk /dev/sdx</userinput>
 <literal>
-Welcome to fdisk (util-linux 2.36.2).
+Welcome to fdisk (util-linux 2.37.4).
 Changes will remain in memory only, until you decide to write them.
 Be careful before using the write command.
 
 
 Command (m for help): </literal><userinput>t</userinput>
-<literal>Selected partition 1
-Hex code or alias (type L to list all): </literal><userinput>ef</userinput>
-<literal>Changed type of partition 'Linux' to 'EFI (FAT-12/16/32)'.
+<literal>Partition number (1-9, default 9): </literal><userinput>1</userinput>
+<literal>Partition type or alias (type L to list all): </literal><userinput>uefi</userinput>
+<literal>Changed type of partition 'Linux filesystem' to 'EFI System'.
 
 Command (m for help): </literal><userinput>w</userinput>
 <literal>The partition table has been altered.
@@ -118,15 +118,15 @@ mount -v -t vfat /dev/sdx1 /mnt/rescue</userinput></screen>
 <screen><literal>Processor type and features ---&gt;
   [*] EFI runtime service support                              [CONFIG_EFI]
   [*]   EFI stub support                                       [CONFIG_EFI_STUB]
-Firmware Drivers ---&gt;
-  EFI (Extensible Firmware Interface) Support ---&gt;
-    &lt; &gt; EFI Variable Support via sysfs                         [CONFIG_EFI_VARS]
-    [*] Export efi runtime maps to sysfs                       [CONFIG_EFI_RUNTIME_MAP]
 Enable the block layer ---&gt;
   Partition Types ---&gt;
     [*] Advanced partition selection                           [CONFIG_PARTITION_ADVANCED]
     [*] EFI GUID Partition support                             [CONFIG_EFI_PARTITION]
 Device Drivers ---&gt;
+  Firmware Drivers ---&gt;
+    EFI (Extensible Firmware Interface) Support ---&gt;
+      &lt; &gt; EFI Variable Support via sysfs                       [CONFIG_EFI_VARS]
+      [*] Export efi runtime maps to sysfs                     [CONFIG_EFI_RUNTIME_MAP]
   Graphics support ---&gt;
     Frame buffer Devices ---&gt;
       Support for frame buffer devices ---&gt;                    [CONFIG_FB]

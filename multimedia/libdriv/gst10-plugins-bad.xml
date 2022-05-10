@@ -7,10 +7,10 @@
   <!ENTITY gst10-plugins-bad-download-http
            "&gstreamer-dl;/gst-plugins-bad/gst-plugins-bad-&gst10-plugins-bad-version;.tar.xz">
   <!ENTITY gst10-plugins-bad-download-ftp  " ">
-  <!ENTITY gst10-plugins-bad-md5sum        "4ab1c19c3cf1ba79c20c65f6be78e7fd">
-  <!ENTITY gst10-plugins-bad-size          "5.4 MB">
-  <!ENTITY gst10-plugins-bad-buildsize     "141 MB (with tests)">
-  <!ENTITY gst10-plugins-bad-time          "0.9 SBU (Using parallelism=4; with tests)">
+  <!ENTITY gst10-plugins-bad-md5sum        "1c537891ea5c412f5e71a632e9e6d96c">
+  <!ENTITY gst10-plugins-bad-size          "5.9 MB">
+  <!ENTITY gst10-plugins-bad-buildsize     "151 MB (with tests)">
+  <!ENTITY gst10-plugins-bad-time          "1.0 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="gst10-plugins-bad" xreflabel="gst-plugins-bad-&gst10-plugins-bad-version;">
@@ -37,7 +37,7 @@
       maintainer, or some actual wide use.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -106,6 +106,7 @@
       <xref linkend="libsndfile"/>,
       <xref linkend="libssh2"/>,
       <xref linkend="libusb"/>,
+      <xref linkend="libva"/>,
       <xref linkend="libwebp"/>,
       <xref linkend="libxkbcommon"/>,
       <xref linkend="neon"/>,
@@ -192,7 +193,8 @@ cd    build &amp;&amp;
 
 meson  --prefix=/usr       \
        --buildtype=release \
-       -Dpackage-origin=https://www.linuxfromscratch.org/blfs/view/svn/ \
+       -Dgpl=enabled       \
+       -Dpackage-origin=https://www.linuxfromscratch.org/blfs/view/&blfs-version;/ \
        -Dpackage-name="GStreamer &gst10-plugins-bad-version; BLFS" &amp;&amp;
 ninja</userinput></screen>
 
@@ -213,6 +215,11 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <para>
+      <parameter>-Dgpl=enabled</parameter>: Without this switch, plugins with
+      dependencies on (A)GPL licensed libraries are not built.
+    </para>
   </sect2>
 
   <sect2 role="content">
@@ -238,18 +245,21 @@ ninja</userinput></screen>
           libgstisoff-1.0.so,
           libgstmpegts-1.0.so,
           libgstphotography-1.0.so,
+          libgstplay-1.0.so,
           libgstplayer-1.0.so,
           libgstsctp-1.0.so,
           libgsttranscoder-1.0.so,
           libgsturidownloader-1.0.so,
+          libgstva-1.0.so,
           libgstwayland-1.0.so,
           libgstwebrtc-1.0.so, and
           several plugins under /usr/lib/gstreamer-1.0
         </seg>
         <seg>
           /usr/include/gstreamer-1.0/gst/{audio,basecamerabinsrc,codecparsers},
-          /usr/include/gstreamer-1.0/gst/{insertbin,interfaces,isoff,mpegts}, and
-          /usr/include/gstreamer-1.0/gst/{player,sctp,transcoder,uridownloader,webrtc}
+          /usr/include/gstreamer-1.0/gst/{insertbin,interfaces,isoff,mpegts},
+          /usr/include/gstreamer-1.0/gst/{play,player,sctp,transcoder}, and
+          /usr/include/gstreamer-1.0/gst/{uridownloader,wayland,webrtc}
         </seg>
       </seglistitem>
     </segmentedlist>

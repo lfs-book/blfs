@@ -6,10 +6,10 @@
 
   <!ENTITY dhcp-download-http "https://ftp.isc.org/isc/dhcp/&dhcp-version;/dhcp-&dhcp-version;.tar.gz">
   <!ENTITY dhcp-download-ftp  "ftp://ftp.isc.org/isc/dhcp/&dhcp-version;/dhcp-&dhcp-version;.tar.gz">
-  <!ENTITY dhcp-md5sum        "3089a1ebd20a802ec0870ae337d43907">
-  <!ENTITY dhcp-size          "9.4 MB">
-  <!ENTITY dhcp-buildsize     "115 MB">
-  <!ENTITY dhcp-time          "0.4 SBU">
+  <!ENTITY dhcp-md5sum        "9076af4cc1293dde5a7c6cae7de6ab45">
+  <!ENTITY dhcp-size          "9.6 MB">
+  <!ENTITY dhcp-buildsize     "200 MB">
+  <!ENTITY dhcp-time          "0.7 SBU">
 ]>
 
 <sect1 id="dhcp" xreflabel="DHCP-&dhcp-version;">
@@ -36,7 +36,7 @@
       network addresses on private networks.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -126,6 +126,7 @@
   <sect2 role="installation">
     <title>Installation of ISC DHCP</title>
 
+<!-- Not needed when building DHCP-4.4.3.
     <para>
       First, fix a build issue with GCC 10 and later:
     </para>
@@ -134,7 +135,7 @@
 sed -r '/u.*(local|remote)_port/d'    \
     -i client/dhclient.c              \
        relay/dhcrelay.c</userinput></screen>
-
+-->
     <note>
       <para>
         This package does not support parallel build.
@@ -314,9 +315,13 @@ EOF</userinput></screen>
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root" revision="sysv"><userinput>dhclient <replaceable>&lt;eth0&gt;</replaceable></userinput></screen>
+<screen role="root"
+        remap="test"
+        revision="sysv"><userinput>dhclient <replaceable>&lt;eth0&gt;</replaceable></userinput></screen>
 
-<screen role="root" revision="systemd"><userinput>systemctl start dhclient@<replaceable>eth0</replaceable></userinput></screen>
+<screen role="root"
+        remap="test"
+        revision="systemd"><userinput>systemctl start dhclient@<replaceable>eth0</replaceable></userinput></screen>
 
       <para revision="sysv">
         Replace <replaceable>&lt;eth0&gt;</replaceable> with your
@@ -432,13 +437,15 @@ EOF</userinput></screen>
         <command>man 5 dhcpd.conf</command> for additional options.
       </para>
 
+<!-- the "touch..." is needed according to dhcpd.leases(5) -->
       <para>
-        Now create the <filename class="directory">/var/lib/dhcpd</filename>
+        Now create the <filename>/var/lib/dhcpd/dhcpd.leases</filename>
         directory which will contain DHCP Server leases by running the following
-        command as the <systemitem class="username">root</systemitem> user:
+        commands as the <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>install -v -dm 755 /var/lib/dhcpd</userinput></screen>
+<screen role="root"><userinput>install -v -dm 755 /var/lib/dhcpd &amp;&amp;
+touch /var/lib/dhcpd/dhcpd.leases</userinput></screen>
 
        <para>
         If you want to start the DHCP Server at boot, install the

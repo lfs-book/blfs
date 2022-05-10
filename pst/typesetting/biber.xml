@@ -12,14 +12,14 @@
 -->
   <!ENTITY biber-download-http "https://github.com/plk/biber/archive/v&biber-version;/biber-&biber-version;.tar.gz">
   <!ENTITY biber-download-ftp  " ">
-  <!ENTITY biber-md5sum        "fafae81d8ae67314692e2b646024fa98">
+  <!ENTITY biber-md5sum        "a54f414f3ca2d6c9bf882bd9cf040480">
   <!ENTITY biber-size          "1.6 MB">
   <!-- Buildsize includes the installed biblatex, except that what matters is
     the difference from the files shipped by texlive, so usually the addition is
     minimal. Copy full texmf to somewhere for working, measure with du -shm,
     then install biblatex over the top of it and remeasure.
     For 3.16, texmf grows by 3MB -->
-  <!ENTITY biber-buildsize     "18 MB"> <!-- 14+1.6 rounds to 15M, add 3M for biblatex in texmf-->
+  <!ENTITY biber-buildsize     "18 MB"> <!-- 14+1.6 rounds to 15M, add 2M for biblatex in texmf-->
   <!ENTITY biber-time          "0.5 SBU including tests">
 
   <!-- Check path.  Directory might not be &biblatex-version; if a suffixed update -->
@@ -27,7 +27,7 @@
   <!ENTITY biblatex-download-http   "https://sourceforge.net/projects/biblatex/files/biblatex-3.15/biblatex-&biblatex-version;.tds.tgz"> -->
   <!ENTITY biblatex-download-http   "https://sourceforge.net/projects/biblatex/files/biblatex-&biblatex-version;/biblatex-&biblatex-version;.tds.tgz">
   <!ENTITY biblatex-download-ftp    "">
-  <!ENTITY biblatex-md5sum          "30342c8ef5309e838968fcb06a314a36">
+  <!ENTITY biblatex-md5sum          "54ab3e8d67ca34cd2822d75602c34254">
   <!ENTITY biblatex-size            "20 MB">
 
 ]>
@@ -53,7 +53,7 @@
       <application>Perl</application>, with full Unicode support.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <!-- note for editors: you can test this by using the latest version
          of the latex-test tarball from
@@ -146,6 +146,10 @@
       </para>-->
     </note>
 
+    <!-- TexLive 2022 already ships biblatex-3.17.  Uncomment if a newer
+         biber requires a newer biblatex.  -->
+
+<!--
     <bridgehead renderas="sect3">Required Additional Download</bridgehead>
 
     <itemizedlist spacing="compact">
@@ -167,14 +171,8 @@
           Download size: &biblatex-size;
         </para>
       </listitem>
- <!-- <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/biber-&biber-version;-test_fixes-1.patch"/>
-        </para>
-      </listitem>-->
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">Biber Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -229,9 +227,11 @@
       <xref linkend="perl-xml-libxslt"/>
       <xref linkend="perl-xml-writer"/> and
       <!-- untarring biblatex requires that the texmf directories already exist -->
+      <!--
       <xref linkend="texlive"/>
       (or <xref linkend="tl-installer"/>, but for that you can use
        <command>tlmgr update</command>)
+      -->
     </para>
 
     <bridgehead renderas="sect4">Recommended (required for the testsuite)</bridgehead>
@@ -282,13 +282,14 @@
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
-
+<!--
 <screen role="root"><userinput>tar -xf ../biblatex-&biblatex-version;.tds.tgz -C /opt/texlive/&texlive-year;/texmf-dist &amp;&amp;
 texhash &amp;&amp;
-./Build install</userinput></screen>
+-->
+<screen role="root"><userinput>./Build install</userinput></screen>
 
   </sect2>
-
+<!--
   <sect2 role="commands">
     <title>Command Explanations</title>
 
@@ -305,7 +306,7 @@ texhash &amp;&amp;
     </para>
 
   </sect2>
-
+-->
   <sect2 role="content">
     <title>Contents</title>
 

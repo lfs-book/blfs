@@ -6,10 +6,10 @@
 
   <!ENTITY seamonkey-download-http "&mozilla-http;/seamonkey/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
   <!ENTITY seamonkey-download-ftp  " ">
-  <!ENTITY seamonkey-md5sum        "b598e21300efebbb1e5d1742aa57780a">
-  <!ENTITY seamonkey-size          "271 MB">
-  <!ENTITY seamonkey-buildsize     "6.0 GB (161 MB installed)">
-  <!ENTITY seamonkey-time          "19 SBU (with parallelism=4)">
+  <!ENTITY seamonkey-md5sum        "173512018674c9036cb54d35ded4a23f">
+  <!ENTITY seamonkey-size          "275 MB">
+  <!ENTITY seamonkey-buildsize     "6.0 GB (159 MB installed)">
+  <!ENTITY seamonkey-time          "17 SBU (with parallelism=4)">
 ]>
 
 <sect1 id="seamonkey" xreflabel="SeaMonkey-&seamonkey-version;">
@@ -43,7 +43,7 @@
       based on the <application>Mozilla</application> source code.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,17 +78,17 @@
         </para>
       </listitem>
     </itemizedlist>
-
-<!--<bridgehead renderas="sect3">Additional Downloads</bridgehead>
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/seamonkey-&seamonkey-version;-security_fixes-1.patch"/>
+          <ulink url="&patch-root;/seamonkey-&seamonkey-version;-security_fix-1.patch"/>
         </para>
       </listitem>
-    </itemizedlist>-->
-
+    </itemizedlist>
+-->
     <note>
       <para>
         The tarball
@@ -253,29 +253,23 @@ EOF</userinput></screen>
        href="../../xincludes/mozshm.xml"/>
       <!-- if this package switches to using ./mach, replace the
            folliowing by including mozmach.xml -->
-      <para>
+      <!--<para>
         Second, either as the <systemitem class="username">root</systemitem>
         user export the <envar>$SHELL</envar> environment variable using
         <command>export SHELL=/bin/sh</command> or else prepend
         <envar>SHELL=/bin/sh</envar> when running the first
         <command>make</command> command.
-      </para>
+      </para>-->
+      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+       href="../../xincludes/mozmach.xml"/>
     </note>
-
-<!--<para>
-      Apply a patch to fix a 0day vulnerability in Seamonkey:
-    </para>
-
-
-<screen><userinput>patch -Np1 -i ../seamonkey-&seamonkey-version;-security_fixes-1.patch</userinput></screen>
-
-
+<!--
     <para>
-      Remove a deprecated include which breaks the build with glibc-2.32:
+      Apply a patch to fix a critical security vulnerability in Seamonkey:
     </para>
 
-<screen><userinput>sed /sysctl/d -i mozilla/memory/build/mozjemalloc.cpp</userinput></screen>-->
-
+<screen><userinput>patch -Np1 -i ../seamonkey-&seamonkey-version;-security_fix-1.patch</userinput></screen>
+-->
     <para>
       Compile <application>SeaMonkey</application> by running the following
       commands:
@@ -421,7 +415,7 @@ ln -sfv /usr/lib/seamonkey/chrome/icons/default/default128.png \
         <seg>
           Numerous libraries, browser, and email/newsgroup components, plugins,
           extensions, and helper modules installed in
-          <filename class="directory">/usr/lib/seamonkey-&seamonkey-version;</filename>
+          <filename class="directory">/usr/lib/seamonkey</filename>
         </seg>
         <seg>
           /usr/lib/seamonkey

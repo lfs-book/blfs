@@ -6,8 +6,8 @@
 
   <!ENTITY Mako-download-http "&pymodules-dl;/M/Mako/Mako-&mako-version;.tar.gz">
   <!ENTITY Mako-download-ftp  " ">
-  <!ENTITY Mako-md5sum        "6d7ccbc372ec6d87113f34d9e8fc65d1">
-  <!ENTITY Mako-size          "484 KB">
+  <!ENTITY Mako-md5sum        "2d8d1fe9c9be3fb20f62a9577c618575">
+  <!ENTITY Mako-size          "480 KB">
   <!ENTITY Mako-buildsize     "3.2 MB">
   <!ENTITY Mako-time          "less than 0.1 SBU">
 ]>
@@ -30,7 +30,7 @@
         <application>Python</application> platform.
       </para>
 
-      &lfs110a_checked;
+      &lfs111_checked;
 
       <bridgehead renderas="sect4">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -66,11 +66,10 @@
         </listitem>
       </itemizedlist>
 
-      <bridgehead renderas="sect4">Mako Dependencies</bridgehead>
+      <bridgehead renderas="sect4" revision="sysv">Mako Dependencies</bridgehead>
 
-      <bridgehead renderas="sect5">Required</bridgehead>
-      <para role="required">
-<!--        <xref linkend="Beaker"/> and -->
+      <bridgehead renderas="sect5" revision="sysv">Required</bridgehead>
+      <para role="required" revision="sysv">
         <xref linkend="MarkupSafe"/>
       </para>
 
@@ -81,48 +80,23 @@
 
     <sect3 role="installation">
       <title>Installation of Mako</title>
-<!--
-      <note>
-        <para>
-          Both <application>Python 2</application> and
-          <application>Python 3</application> modules can
-          be built and installed without any conflicts.
-        </para>
-      </note>
--->
-<!-- Editors note: Use - -root= instead of DESTDIR= when updating. -->
-<!--
+
       <para>
-        To install the <application>Python 2</application> module,
-        run the following command as the
-        <systemitem class="username">root</systemitem> user:
+        Build the module:
       </para>
 
-<screen role="root"><userinput>python2 setup.py install - -optimize=1</userinput></screen>
--->
+<screen><userinput>pip3 wheel -w dist --no-build-isolation --no-deps $PWD</userinput></screen>
+
       <para>
-        To install the <application>Python 3</application> module,
-        run the following command as the
-        <systemitem class="username">root</systemitem> user:
+        Install the module as the &root; user:
       </para>
 
-<!--sed -i "s:mako-render:&amp;3:g" setup.py &amp;&amp;-->
-<screen role="root"><userinput>python3 setup.py install --optimize=1</userinput></screen>
+<screen role="root"><userinput>pip3 install --no-index --find-links dist --no-cache-dir Mako</userinput></screen>
     </sect3>
-<!--
-    <sect3 role="commands">
-      <title>Command Explanations</title>
 
-      <para>
-        <command>sed -i "s:mako-render:&amp;3:g" setup.py</command>: This sed
-        prevents <command>setup.py</command> from overwriting an already
-        installed script by the <application>Python 2</application> module.
-        Remove it if you are building this module only for
-        <application>Python 3</application>.
-      </para>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/pip3-cmd-explain.xml"/>
 
-    </sect3>
--->
     <sect3 role="content">
       <title>Contents</title>
 
@@ -139,12 +113,8 @@
             None
           </seg>
           <seg>
-<!--            /usr/lib/python&python2-majorver;/site-packages/mako,
-            /usr/lib/python&python2-majorver;/site-packages/Mako-&mako-version;-py&python2-majorver;.egg-info and/or-->
-            /usr/lib/python&python3-majorver;/site-packages/Mako-&mako-version;-py&python3-majorver;.egg
-<!-- This is different when doing a -\-root install and a direct install.
-     In the latter case, there is only a .egg directory, and no mako
-     directory. -->
+            /usr/lib/python&python3-majorver;/site-packages/mako and
+            /usr/lib/python&python3-majorver;/site-packages/Mako-&mako-version;.dist=info
           </seg>
         </seglistitem>
       </segmentedlist>

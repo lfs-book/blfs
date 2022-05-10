@@ -6,7 +6,7 @@
 
   <!ENTITY lvm2-download-http "https://sourceware.org/ftp/lvm2/LVM2.&lvm2-version;.tgz">
   <!ENTITY lvm2-download-ftp  "ftp://sourceware.org/pub/lvm2/LVM2.&lvm2-version;.tgz">
-  <!ENTITY lvm2-md5sum        "5a011a90e580f9e29df360a7c10332a1">
+  <!ENTITY lvm2-md5sum        "0dbe745e945461419b56c7a21d7e47e2">
   <!ENTITY lvm2-size          "2.5 MB">
   <!ENTITY lvm2-buildsize     "37 MB (add 18 MB for tests; transient files can grow up to around 800 MB in the /tmp directory during tests)">
   <!-- My build size was 124 MB with tests, but I'll leave this here. -renodr
@@ -39,7 +39,7 @@
       snapshots.
     </para>
 
-    &lfs110a_checked;
+    &lfs111_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -301,6 +301,35 @@ make install_systemd_units</userinput></screen>
 
   </sect2>
 
+  <sect2 role="configuration" revision="systemd">
+    <title>Configuring LVM2</title>
+
+    <sect3 id="lvm2-config">
+      <title>Config File</title>
+      <para>
+        <filename>/etc/lvm/lvm.conf</filename>
+      </para>
+
+      <indexterm zone="lvm2 lvm2-config">
+        <primary
+        sortas="e-etc-lvm-lvm.conf">/etc/lvm/lvm.conf</primary>
+      </indexterm>
+    </sect3>
+
+    <sect3><title>Configuration Information</title>
+      <para>
+        The default configuration still references the obsolete <filename
+        class="directory">/var/lock</filename> directory. This creates
+        a deadlock at boot time. Change this (as the <systemitem
+        class="username">root</systemitem> user):
+      </para>
+
+<screen role="root"><userinput>sed -e '/locking_dir =/{s/#//;s/var/run/}' \
+    -i /etc/lvm/lvm.conf</userinput></screen>
+
+    </sect3>
+  </sect2>
+
   <sect2 role="content">
     <title>Contents</title>
 
@@ -389,7 +418,7 @@ make install_systemd_units</userinput></screen>
         <listitem>
           <para>
             provides the command-line tools for <application>LVM2</application>.
-            Commands are implemented via sympolic links to this program to
+            Commands are implemented via symbolic links to this program to
             manage physical devices (pv*), volume groups (vg*) and logical
             volumes (lv*)
           </para>
