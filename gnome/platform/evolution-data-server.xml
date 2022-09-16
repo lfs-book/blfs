@@ -5,9 +5,9 @@
   %general-entities;
 
   <!ENTITY evolution-data-server-download-http
-           "&gnome-download-http;/evolution-data-server/&gnome-minor-44;/evolution-data-server-&evolution-data-server-version;.tar.xz">
+           "&gnome-download-http;/evolution-data-server/3.46/evolution-data-server-&evolution-data-server-version;.tar.xz">
   <!ENTITY evolution-data-server-download-ftp
-           "&gnome-download-ftp;/evolution-data-server/&gnome-minor-44;/evolution-data-server-&evolution-data-server-version;.tar.xz">
+           "&gnome-download-ftp;/evolution-data-server/3.46/evolution-data-server-&evolution-data-server-version;.tar.xz">
   <!ENTITY evolution-data-server-md5sum        "fe8f0b1b77594589d6897de4b160015e">
   <!ENTITY evolution-data-server-size          "4.6 MB">
   <!ENTITY evolution-data-server-buildsize     "231 MB (with tests)">
@@ -89,7 +89,6 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="gcr"/>,
       <xref linkend="libical"/>,
       <xref linkend="libsecret"/>,
       <xref linkend="nss"/>, and
@@ -103,9 +102,9 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       <xref linkend="gtk3"/>,
       <xref linkend="icu"/>,
       <xref linkend="libcanberra"/>,
-      <xref linkend="libgdata"/>,
-      <xref linkend="libgweather"/>, and
-      <xref linkend="vala"/>
+      <xref linkend="libgweather"/>,
+      <xref linkend="vala"/>, and
+      <xref linkend="webkitgtk"/>
     </para>
 
     <bridgehead renderas="sect4"
@@ -159,9 +158,8 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr   \
       -DENABLE_INTROSPECTION=ON     \
       -DENABLE_GTK_DOC=OFF          \
       -DWITH_LIBDB=OFF              \
-      -DWITH_GWEATHER4=ON           \
       -DWITH_SYSTEMDUSERUNITDIR=no  \
-      .. &amp;&amp;
+      -DENABLE_OAUTH2_WEBKITGTK4=OFF .. &amp;&amp;
 make</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
@@ -177,8 +175,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr   \
       -DENABLE_INTROSPECTION=ON     \
       -DENABLE_GTK_DOC=OFF          \
       -DWITH_LIBDB=OFF              \
-      -DWITH_GWEATHER4=ON           \
-      .. &amp;&amp;
+      -DENABLE_OAUTH2_WEBKITGTK4=OFF .. &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -226,15 +223,16 @@ make</userinput></screen>
       <xref linkend="sqlite"/> is used for normal operation.
     </para>
 
-    <para>
-      <parameter>-DWITH_GWEATHER4=ON</parameter>: This switch allows building
-      this package with <xref linkend="libgweather"/>.
-    </para>
-
     <para revision="sysv">
       <parameter>-DWITH_SYSTEMDUSERUNITDIR=no</parameter>: This switch
       disables installing the systemd units, which are not used for a Sysv
       build.
+    </para>
+
+    <para>
+      <parameter>-DENABLE_OAUTH2_WEBKITGTK4=OFF</parameter>: This switch
+      allows building this package with <xref linkend="webkitgtk"/> which
+      links to <xref linkend="gtk3"/>.
     </para>
 
     <note>
