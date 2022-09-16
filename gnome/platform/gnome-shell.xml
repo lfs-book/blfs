@@ -161,13 +161,18 @@ meson --prefix=/usr       \
       --buildtype=release \
       -Dsystemd=false     \
       -Dtests=false       \
+      -Dsoup2=false       \
       .. &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dtests=false .. &amp;&amp;
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Dtests=false       \
+      -Dsoup2=false       \
+      .. &amp;&amp;
 ninja</userinput></screen>
 
     <para revision='sysv'>
@@ -213,6 +218,13 @@ ninja</userinput></screen>
       <parameter>-Dtests=false</parameter>: Remove this switch if you want
       to build the tests. But then <command>meson</command> will fail if
       <xref linkend="mutter"/> tests are not installed.
+    </para>
+
+    <para>
+      <parameter>-Dsoup2=false</parameter>: Use libsoup-3 instead of
+      libsoup-2.  This it necessary because this package uses libgweather
+      and libgweather uses libsoup-3, so any attempt to use a different
+      libsoup version will cause a crash at runtime.
     </para>
 
   </sect2>
