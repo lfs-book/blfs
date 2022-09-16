@@ -8,7 +8,7 @@
            "&gnome-download-http;/libsoup/&libsoup3-minor;/libsoup-&libsoup3-version;.tar.xz">
   <!ENTITY libsoup3-download-ftp
            "&gnome-download-ftp;/libsoup/&libsoup3-minor;/libsoup-&libsoup3-version;.tar.xz">
-  <!ENTITY libsoup3-md5sum        "312a456caf0526bcb8d8b338a3ebb2ed">
+  <!ENTITY libsoup3-md5sum        "34f1f15aa43f974dadf256aef2e89587">
   <!ENTITY libsoup3-size          "1.5 MB">
   <!ENTITY libsoup3-buildsize     "19 MB (with tests)">
   <!ENTITY libsoup3-time          "0.3 SBU (Using parallelism=4; with tests)">
@@ -120,11 +120,12 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr       \
-      --buildtype=release \
-      -Dvapi=enabled      \
-      -Dgssapi=disabled   \
-      -Dsysprof=disabled  \
+meson --prefix=/usr          \
+      --buildtype=release    \
+      --wrap-mode=nofallback \
+      -Dvapi=enabled         \
+      -Dgssapi=disabled      \
+      -Dsysprof=disabled     \
       ..                  &amp;&amp;
 ninja</userinput></screen>
 
@@ -145,6 +146,9 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-wrap-nofallback.xml"/>
 
     <para>
       <option>-Dvapi=disabled</option>: Use this if you have not installed
