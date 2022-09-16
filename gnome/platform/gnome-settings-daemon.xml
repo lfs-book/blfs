@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY gnome-settings-daemon-download-http
-           "&gnome-download-http;/gnome-settings-daemon/&gnome-42;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+           "&gnome-download-http;/gnome-settings-daemon/43/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
   <!ENTITY gnome-settings-daemon-download-ftp
-           "&gnome-download-ftp;/gnome-settings-daemon/&gnome-42;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
-  <!ENTITY gnome-settings-daemon-md5sum        "f70b13b8225a4e93e2c6c615380c82e8">
-  <!ENTITY gnome-settings-daemon-size          "1.4 MB">
+           "&gnome-download-ftp;/gnome-settings-daemon/43/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+  <!ENTITY gnome-settings-daemon-md5sum        "eb6473312982a751ebddf54e9574df37">
+  <!ENTITY gnome-settings-daemon-size          "1.5 MB">
   <!ENTITY gnome-settings-daemon-buildsize     "31 MB">
   <!ENTITY gnome-settings-daemon-time          "0.1 SBU (Using parallelism=4)">
 ]>
@@ -167,13 +167,18 @@
 <screen revision='sysv'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dsystemd=false .. &amp;&amp;
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Dgcr3=true         \
+      -Dsystemd=false .. &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision='systemd'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release .. &amp;&amp;
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Dgcr3=true .. &amp;&amp;
 ninja</userinput></screen>
 
     <!-- [renodr, June 29th, 2019]: for some reason, on elogind, all tests
@@ -204,6 +209,12 @@ ninja</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
 
+    <!-- Remove it when we goes to gcr-4.x -->
+    <para>
+      <parameter>-Dgcr3=true</parameter>: Allows building this package
+      with <xref linkend='gcr'/>.
+    </para>
+
   </sect2>
 
   <sect2 role="content">
@@ -223,8 +234,8 @@ ninja</userinput></screen>
         </seg>
         <seg>
           /etc/xdg/Xwayland-session.d,
-          /usr/include/gnome-settings-daemon-42,
-          /usr/lib/gnome-settings-daemon-42, and
+          /usr/include/gnome-settings-daemon-43,
+          /usr/lib/gnome-settings-daemon-43, and
           /usr/share/gnome-settings-daemon
         </seg>
       </seglistitem>
