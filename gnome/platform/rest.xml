@@ -4,10 +4,10 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY rest-download-http "&gnome-download-http;/rest/0.8/rest-&rest-version;.tar.xz">
-  <!ENTITY rest-download-ftp  "&gnome-download-ftp;/rest/0.8/rest-&rest-version;.tar.xz">
-  <!ENTITY rest-md5sum        "ece4547298a81105f307369d73c21b9d">
-  <!ENTITY rest-size          "332 KB">
+  <!ENTITY rest-download-http "&gnome-download-http;/rest/0.9/rest-&rest-version;.tar.xz">
+  <!ENTITY rest-download-ftp  "&gnome-download-ftp;/rest/0.9/rest-&rest-version;.tar.xz">
+  <!ENTITY rest-md5sum        "b997b83232be3814a1b78530c5700df9">
+  <!ENTITY rest-size          "72 KB">
   <!ENTITY rest-buildsize     "12.5 MB (with tests)">
   <!ENTITY rest-time          "0.2 SBU (with tests)">
 ]>
@@ -75,8 +75,9 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="make-ca"/> and
-      <xref linkend="libsoup"/>
+      <xref linkend="json-glib"/>,
+      <xref linkend="libsoup3"/>, and
+	  <xref linkend="make-ca"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -86,8 +87,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/> and
-      <ulink url="http://ltp.sourceforge.net/coverage/lcov.php">LCOV</ulink>
+      <xref linkend="libadwaita1"/> (for demo),
+      <xref linkend="vala"/>, and
+      <ulink url="https://gitlab.gnome.org/GNOME/gi-docgen">gi-docgen</ulink> (for documentation)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -103,21 +105,24 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Dexamples=false    \
+      -Dgtk_doc=false     &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
-      The flickr test will fail due to Public API changes on their site.
-      The OAuth tests will fail because the website that it uses to test
-      connectivity via OAuth no longer exists.
+      To test the results, issue: <command>ninja test</command>.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -125,8 +130,25 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../xincludes/gtk-doc-rebuild.xml"/>
+    href="../../xincludes/meson-buildtype-release.xml"/>
 
+    <para>
+      <parameter>-Dexamples=false</parameter>: Remove this parameter if
+	  <application>libadwaita</application> is installed and you wish to
+      build the demo of this package.
+    </para>
+
+    <para>
+      <parameter>-Dgtk_doc=false</parameter>: Remove this parameter if
+	  <application>gi-docgen</application> is installed and you wish to
+      rebuild and install the API documentation.
+    </para>
+
+    <para>
+      <option>-Dvapi=true</option>: Add this option if
+	  <application>Vala</application> is installed and you wish to build
+      and install the Vala binding of this package.
+    </para>
   </sect2>
 
   <sect2 role="content">
@@ -142,11 +164,10 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          librest-0.7.so and librest-extras-0.7.so
+          librest-1.0.so and librest-extras-1.0.so
         </seg>
         <seg>
-          /usr/include/rest-0.7 and
-          /usr/share/gtk-doc/html/rest-0.7
+          /usr/include/rest-1.0
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -156,26 +177,26 @@ make</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="librest-0.7">
-        <term><filename class="libraryfile">librest-0.7.so</filename></term>
+      <varlistentry id="librest-1.0">
+        <term><filename class="libraryfile">librest-1.0.so</filename></term>
         <listitem>
           <para>
             contains the RESTful Web API Query functions
           </para>
-          <indexterm zone="rest librest-0.7">
-            <primary sortas="c-librest-0.7">librest-0.7.so</primary>
+          <indexterm zone="rest librest-1.0">
+            <primary sortas="c-librest-1.0">librest-1.0.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="librest-extras-0.7">
-        <term><filename class="libraryfile">librest-extras-0.7.so</filename></term>
+      <varlistentry id="librest-extras-1.0">
+        <term><filename class="libraryfile">librest-extras-1.0.so</filename></term>
         <listitem>
           <para>
             contains extra RESTful Web API Query functions
           </para>
-          <indexterm zone="rest librest-extras-0.7">
-            <primary sortas="c-librest-extras-0.7">librest-extras-0.7.so</primary>
+          <indexterm zone="rest librest-extras-1.0">
+            <primary sortas="c-librest-extras-1.0">librest-extras-1.0.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
