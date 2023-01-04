@@ -6,18 +6,15 @@
 
   <!ENTITY vlc-download-http "https://download.videolan.org/vlc/&vlc-version;/vlc-&vlc-version;.tar.xz">
   <!ENTITY vlc-download-ftp  " ">
-  <!ENTITY vlc-md5sum        "efc5f7331c033bf81536531c6eba5aa5">
+  <!ENTITY vlc-md5sum        "f3c031357c0eeffb41e928eca220a803">
   <!ENTITY vlc-size          "25 MB">
-  <!ENTITY vlc-buildsize     "849 MB (add 36 MB for tests)">
-  <!ENTITY vlc-time          "2.1 SBU (using parallelism=4; add 0.2 SBU for tests)">
+  <!ENTITY vlc-buildsize     "700 MB">
+  <!ENTITY vlc-time          "1.7 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="vlc" xreflabel="VLC-&vlc-version;">
   <?dbhtml filename="vlc.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>VLC-&vlc-version;</title>
 
@@ -37,7 +34,7 @@
       through the network.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,7 +81,7 @@
       <xref linkend="libgcrypt"/>
       <xref linkend="libmad"/>,
       <xref linkend="lua52"/>, and
-      <xref linkend="x-window-system"/>,
+      <xref linkend="x-window-system"/>
     </para>
 
     <bridgehead renderas="sect4">Optional features and packages</bridgehead>
@@ -102,7 +99,7 @@
       <xref linkend="libdvdcss"/>,
       <xref linkend="libdvdread"/>,
       <xref linkend="libdvdnav"/>,
-      <xref linkend="opencv"/> (currently broken),
+      <xref linkend="opencv"/>,
       <xref linkend="samba"/>,
       <xref linkend="v4l-utils"/>,
       <ulink url="http://www.videolan.org/developers/libbluray.html">libbluray</ulink>,
@@ -140,6 +137,7 @@
       <xref linkend="libvorbis"/>,
       <xref linkend="opus"/>,
       <xref linkend="speex"/>,
+      <xref linkend="libvpx"/>,
       <xref linkend="x264"/>,
       <ulink url="https://aomedia.googlesource.com/aom/">aom</ulink>,
       <ulink url="https://github.com/nkoriyama/aribb24">aribb24</ulink>,
@@ -213,7 +211,7 @@
       <ulink url="https://www.team-mediaportal.com/extensions/mp2-plugins/atmolight">AtmoLight</ulink>,
       <ulink url="https://github.com/videolabs/libmicrodns">libmicrodns</ulink>,
       <ulink url="https://developers.google.com/protocol-buffers/">protobuf</ulink>, and
-      <ulink url="https://www.srtalliance.org/">srt</ulink>
+      <ulink url="https://github.com/Haivision/srt">Srt</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -227,15 +225,12 @@
     <para>
       Install <application>VLC</application> by running the following commands:
     </para>
-<!--
-<screen><userinput>sed -i '/vlc_demux.h/a #define LUA_COMPAT_APIINTCASTS' modules/lua/vlc.h   &amp;&amp;-->
-<screen><userinput>export LUAC=/usr/bin/luac5.2                   &amp;&amp;
-export LUA_LIBS="$(pkg-config --libs lua52)"   &amp;&amp;
-export CPPFLAGS="$(pkg-config --cflags lua52)" &amp;&amp;
 
-BUILDCC=gcc ./configure --prefix=/usr    \
-                        --disable-opencv \
-                        --disable-vpx    &amp;&amp;
+<screen><userinput>export LUAC=/usr/bin/luac5.2                          &amp;&amp;
+export LUA_LIBS="$(pkg-config --libs lua52)"          &amp;&amp;
+export CPPFLAGS="$(pkg-config --cflags lua52)"        &amp;&amp;
+
+BUILDCC=gcc ./configure --prefix=/usr --disable-libva &amp;&amp;
 
 make</userinput></screen>
 
@@ -272,22 +267,27 @@ make</userinput></screen>
       sed commands fix building with Qt-5.15.0.
     </para>-->
 
-    <para>
-      <parameter>--disable-opencv</parameter>: This switch is required to disable
+    <!--<para>
+      <parameter>- -disable-opencv</parameter>: This switch is required to disable
       <application>opencv</application> which is not compatible with this
       version of <application>vlc</application>.
+    </para>-->
+
+    <para>
+      <parameter>--disable-libva</parameter>: This switch is required to disable
+      video acceleration in VLC since it is incompatible with ffmpeg-5, and
+      upstream has no plans to port it due to complexity.
     </para>
 
     <para>
-      <parameter>--disable-vpx</parameter>: This switch is required to disable
-      <application>libvpx</application>. The latest version is not compatible
-      with this version of <application>vlc</application>.
+      <option>--disable-vpx</option>: Use this switch to disable
+      <application>libvpx</application>. 
     </para>
 
-    <para>
-      <option>--disable-lua</option>: Use this switch if you don't have
+    <!--<para>
+      <option>- -disable-lua</option>: Use this switch if you don't have
       <application>Lua</application> installed.
-    </para>
+    </para>-->
 
     <para>
       <option>--disable-mad</option>: Use this switch if you don't

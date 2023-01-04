@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY proftpd-download-http " ">
+  <!ENTITY proftpd-download-http "https://github.com/proftpd/proftpd/archive/&proftpd-version;/proftpd-&proftpd-version;.tar.gz">
   <!ENTITY proftpd-download-ftp  "ftp://ftp.proftpd.org/distrib/source/proftpd-&proftpd-version;.tar.gz">
-  <!ENTITY proftpd-md5sum        "bee3df0bc3c945c62657410610fedeb3">
-  <!ENTITY proftpd-size          "19.4 MB">
-  <!ENTITY proftpd-buildsize     "76 MB">
+  <!ENTITY proftpd-md5sum        "eafdca17287bec7b6e8d88aaeba0f6aa">
+  <!ENTITY proftpd-size          "18.8 MB">
+  <!ENTITY proftpd-buildsize     "66 MB">
   <!ENTITY proftpd-time          "0.3 SBU">
 ]>
 
 <sect1 id="proftpd" xreflabel="ProFTPD-&proftpd-version;">
   <?dbhtml filename="proftpd.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>ProFTPD-&proftpd-version;</title>
 
@@ -34,7 +31,7 @@
       file archives over a network.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,7 +84,7 @@
       <xref linkend="libcap-pam"/>,
       <xref linkend="libssh2"/>,
       <xref linkend="linux-pam"/>,
-      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="mariadb"/> or <ulink url="https://www.mysql.com/">MySQL</ulink>,
       <xref linkend="pcre"/>,
       <xref linkend="postgresql"/>, and
       <ulink url="https://metacpan.org/pod/Net::SSH2">Net::SSH2</ulink>
@@ -112,7 +109,7 @@ useradd -c proftpd -d /srv/ftp -g proftpd \
         -s /usr/bin/proftpdshell -u 46 proftpd     &amp;&amp;
 
 install -v -d -m775 -o proftpd -g proftpd /srv/ftp &amp;&amp;
-ln -v -s /bin/false /usr/bin/proftpdshell          &amp;&amp;
+ln -v -s /usr/bin/false /usr/bin/proftpdshell      &amp;&amp;
 echo /usr/bin/proftpdshell &gt;&gt; /etc/shells</userinput></screen>
 <!--
     <para>
@@ -127,7 +124,7 @@ echo /usr/bin/proftpdshell &gt;&gt; /etc/shells</userinput></screen>
       running the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/run &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/run &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -153,7 +150,7 @@ cp -Rv doc/*     /usr/share/doc/proftpd-&proftpd-version;</userinput></screen>
     </para>
 
     <para>
-      <command>ln -v -s /bin/false /usr/bin/proftpdshell</command>:
+      <command>ln -v -s /usr/bin/false /usr/bin/proftpdshell</command>:
       Set the default shell as a link to an invalid shell.
     </para>
 

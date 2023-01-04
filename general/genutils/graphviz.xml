@@ -6,18 +6,15 @@
 
   <!ENTITY graphviz-download-http "https://gitlab.com/graphviz/graphviz/-/archive/&graphviz-version;/graphviz-&graphviz-version;.tar.bz2">
   <!ENTITY graphviz-download-ftp  " ">
-  <!ENTITY graphviz-md5sum        "d28da63d258a901cc0ea35b879c07db9">
+  <!ENTITY graphviz-md5sum        "7d42913f1a82cacc1544ad02f507563f">
   <!ENTITY graphviz-size          "26 MB">
-  <!ENTITY graphviz-buildsize     "248 MB">
+  <!ENTITY graphviz-buildsize     "264 MB">
   <!ENTITY graphviz-time          "0.7 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="graphviz" xreflabel="Graphviz-&graphviz-version;">
   <?dbhtml filename="graphviz.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Graphviz-&graphviz-version;</title>
 
@@ -37,7 +34,7 @@
       tools, libraries, and language bindings.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -100,18 +97,19 @@
       <xref linkend="xorg7-lib"/>,
       <xref linkend="fontconfig"/>, and
       <xref linkend="libpng"/>, to generate images in bitmap SVG, postscript,
-      PNG, and PDF formats, or displaying the image on screen
+      PNG, and PDF formats, or displaying the image on screen. The PNG
+      output is required for building <xref role="nodep" linkend="gegl"/>
     </para>
 
     <para role="optional">
       Adding
       <xref linkend="gtk2"/> with
-      <xref linkend="libjpeg"/> allows to add JPEG, BMP, TIF, and ICO formats,
-      and to display the image in a GTK+ window
+      <xref linkend="libjpeg"/> adds support for JPEG, BMP, TIF, and ICO
+      formats, and allows displaying the image in a GTK+ window
     </para>
 
     <para role="optional">
-      <ulink url="http://www.libgd.org/">GD Library</ulink> may be used
+      <ulink url="https://www.libgd.org/">GD Library</ulink> may be used
       instead of <application>Pango</application>. It adds the ability to
       generate images in GIF, VRML, and GD formats, but
       <application>Pango</application> provides better outputs for the other
@@ -122,10 +120,10 @@
       Other formats may be added with
       <xref linkend="libwebp"/> (WebP support is considered experimental),
       <ulink url="http://openil.sourceforge.net/projects.php">DevIL</ulink>,
-      <ulink url="https://sourceforge.net/projects/lasi/">libLASi</ulink>,
-      <ulink url="http://www.freedesktop.org/wiki/Software/glitz">glitz</ulink>,
-      and <ulink url="http://www.libming.org/">libming</ulink> (Adobe
-      Flash)
+      <ulink url="https://sourceforge.net/projects/lasi/">libLASi</ulink>, and
+      <ulink url="https://www.freedesktop.org/wiki/Software/glitz">glitz</ulink>
+<!-- deprecated <ulink url="http://www.libming.org/">libming</ulink> (Adobe
+      Flash)-->
     </para>
 
     <bridgehead renderas="sect4">Optional, to load graphic images that may be
@@ -145,37 +143,33 @@
       <ulink url="https://sourceforge.net/projects/gtkglext/">GtkGLExt</ulink>, and
       <ulink url="http://gts.sourceforge.net/">libGTS</ulink>, for building
       the <command>smyrna</command> large graph viewer, which is
-      considered experimental),
-      <xref linkend="qt5"/>, for building the <command>gvedit</command>
-      graph editor. Another graph editor, <command>dotty</command> needs only
-      <xref role="nodep" linkend="xorg7-lib"/>
-<!-- use nodep to avoid repetition -->
+      considered experimental), and
+      <xref linkend="qt5"/> (for building the <command>gvedit</command>
+      graph editor.)
     </para>
 
     <bridgehead renderas="sect4">Optional (To Build Language Bindings)</bridgehead>
     <para role="optional">
       <xref linkend="swig"/> (<application>SWIG</application> must be
       installed or no bindings will be built),
-      <xref linkend="gcc"/> (for the go language),
+      <xref linkend="gcc"/> (for the go compiler),
       <xref linkend="guile"/>,
       <xref linkend="openjdk"/>,
       <xref linkend="lua"/>,
       <xref linkend="php"/>,
-      <!--<xref linkend="python2"/>, Removed in 2.47.3 -->
       <xref linkend="ruby"/>,
-      <!-- <xref linkend="tcl"/>, -->
       <xref linkend="tk"/>,
-      <ulink url="http://iolanguage.org/">Io</ulink>,
-      <ulink url="http://www.mono-project.com/Main_Page">Mono</ulink>,
-      <ulink url="http://ocaml.org/">OCaml</ulink>, and
-      <ulink url="http://www.r-project.org/">R</ulink>
+      <ulink url="https://iolanguage.org/">Io</ulink>,
+      <ulink url="https://www.mono-project.com/Main_Page">Mono</ulink>,
+      <ulink url="https://ocaml.org/">OCaml</ulink>, and
+      <ulink url="https://www.r-project.org/">R</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional (building tools)</bridgehead>
     <para role="optional">
       <ulink url="https://github.com/Snaipe/Criterion">Criterion</ulink>
           (framework for tests) and
-      <ulink url="http://linux.softpedia.com/get/Programming/Debuggers/Electric-Fence-3305.shtml/">Electric Fence</ulink>
+      <ulink url="https://linux.softpedia.com/get/Programming/Debuggers/Electric-Fence-3305.shtml/">Electric Fence</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional (for building the pdf documentation)</bridgehead>
@@ -199,8 +193,24 @@
 <screen><userinput>sed -i '/LIBPOSTFIX="64"/s/64//' configure.ac &amp;&amp;
 
 ./autogen.sh              &amp;&amp;
-./configure --prefix=/usr &amp;&amp;
-make</userinput></screen>
+./configure --prefix=/usr \
+            --docdir=/usr/share/doc/graphviz-&graphviz-version;</userinput></screen>
+
+    <note>
+      <para>
+        A warning is generated by <command>autogen.sh</command> because the
+        build tree is not a git repository. As a result, the build date is set
+        to 0. To get a meaningful date in the version string, you can run:
+      </para>
+
+<screen><userinput>sed -i "s/0/$(date +%Y%m%d)/" builddate.h</userinput></screen>
+    </note>
+
+    <para>
+      Whether or not you fix the date, proceed to compile the package:
+    </para>
+
+<screen><userinput>make</userinput></screen>
 
     <para>
       This package does not come with a test suite that provides
@@ -213,16 +223,6 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
-    <para>
-      If desired, create a symbolic link in the system documents directory
-      to the documentation installed in
-      <filename class="directory">/usr/share/graphviz/doc</filename> using the
-      following command as the <systemitem class="username">root</systemitem>
-      user:
-    </para>
-
-<screen role="root"><userinput>ln -svr /usr/share/graphviz/doc /usr/share/doc/graphviz-&graphviz-version;</userinput></screen>
-
   </sect2>
 
   <sect2 role="commands">
@@ -232,12 +232,6 @@ make</userinput></screen>
       <command>sed ... configure.ac</command>: This command is needed to
       avoid installing files in /usr/lib64.
     </para>
-
-    <para>
-      <parameter>--disable-php</parameter>: This version of graphviz
-      does not support php version 8.
-    </para>
-
     <para>
       <option>--with-javaincludedir="$JAVA_HOME/include
                                    -I$JAVA_HOME/include/linux"</option>:
@@ -307,9 +301,9 @@ make</userinput></screen>
       <seglistitem>
         <seg>
           acyclic, bcomps, ccomps, circo, cluster, diffimg, dijkstra,
-          dot, dot2gxl, dot_builtins, dotty, edgepaint, fdp, gc, gml2gv,
+          dot, dot2gxl, dot_builtins, edgepaint, fdp, gc, gml2gv,
           graphml2gv, gv2gml, gv2gxl, gvcolor, gvedit, gvgen, gvmap, gvmap.sh,
-          gvpack, gvpr, gxl2dot, gxl2gv, lneato, mm2gv, neato, nop,
+          gvpack, gvpr, gxl2dot, gxl2gv, mm2gv, neato, nop,
           osage, patchwork, prune, sccmap, sfdp, tred, twopi,
           unflatten, and vimdot
         </seg>
@@ -317,7 +311,7 @@ make</userinput></screen>
           libcdt.so, libcgraph.so, libgvc.so, libgvpr.so, liblab_gamut.so,
           libpathplan.so, libxdot.so, and several plugins in /usr/lib/graphviz.
           There are also several in subdirectories of
-          /usr/lib/{lua,perl5, <!--php, -->python&python3-majorver;,tcl8.6}.
+          /usr/lib/{lua,perl5,php,python&python3-majorver;,tcl8.6}.
           Unfortunately, some libraries are duplicated.
         </seg>
         <seg>
@@ -404,7 +398,7 @@ make</userinput></screen>
         <term><command>diffimg</command></term>
         <listitem>
           <para>
-            (needs <ulink url="http://www.libgd.org/">GD Library</ulink>)
+            (needs <ulink url="https://www.libgd.org/">GD Library</ulink>)
             generates an image where each pixel is the
             difference between the corresponding pixel in
             each of the two source images
@@ -461,7 +455,7 @@ make</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+      <!--
       <varlistentry id="dotty">
         <term><command>dotty</command></term>
         <listitem>
@@ -475,7 +469,7 @@ make</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+      -->
       <varlistentry id="edgepaint">
         <term><command>edgepaint</command></term>
         <listitem>
@@ -694,7 +688,7 @@ make</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+      <!--
       <varlistentry id="lefty">
         <term><command>lefty</command></term>
         <listitem>
@@ -720,7 +714,7 @@ make</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+      -->
       <varlistentry id="mm2gv">
         <term><command>mm2gv</command></term>
         <listitem>
@@ -948,7 +942,7 @@ make</userinput></screen>
         <listitem>
           <para>
             provides support for parsing and deparsing graphical
-            operations specificed by the xdot language
+            operations specified by the xdot language
           </para>
           <indexterm zone="graphviz libxdot">
             <primary sortas="c-libxdot">libxdot.so</primary>

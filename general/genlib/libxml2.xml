@@ -5,21 +5,19 @@
   %general-entities;
 
   <!-- Also update the download, md5, size entities in libxml2py2.xml -->
-  <!ENTITY libxml2-download-http "http://xmlsoft.org/sources/libxml2-&libxml2-version;.tar.gz">
-  <!ENTITY libxml2-download-ftp  "ftp://xmlsoft.org/libxml2/libxml2-&libxml2-version;.tar.gz">
-  <!ENTITY libxml2-md5sum        "f433a39be087a9f0b197eb2307ad9f75">
-  <!ENTITY libxml2-size          "5.4 MB">
-  <!ENTITY libxml2-buildsize     "116 MB (with tests)">
-  <!ENTITY libxml2-time          "0.4 SBU (with tests)">
+  <!ENTITY libxml2-download-http "https://download.gnome.org/sources/libxml2/2.10/libxml2-&libxml2-version;.tar.xz">
+<!--  <!ENTITY libxml2-download-http "http://xmlsoft.org/sources/libxml2-&libxml2-version;.tar.xz">-->
+  <!ENTITY libxml2-download-ftp  " ">
+  <!ENTITY libxml2-md5sum        "f9edac7fac232b3657a003fd9a5bbe42">
+  <!ENTITY libxml2-size          "2.5 MB">
+  <!ENTITY libxml2-buildsize     "105 MB (with tests)">
+  <!ENTITY libxml2-time          "0.4 SBU (Using parallelism=4; with tests)">
   <!ENTITY testsuite-version     "20130923">
 ]>
 
 <sect1 id="libxml2" xreflabel="libxml2-&libxml2-version;">
   <?dbhtml filename="libxml2.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>libxml2-&libxml2-version;</title>
 
@@ -35,7 +33,7 @@
       and utilities used for parsing XML files.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,7 +73,7 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Optional Testsuite:
+          Optional Test Suite:
           <ulink url="https://www.w3.org/XML/Test/xmlts&testsuite-version;.tar.gz"/> - This
           enables <command>make check</command> to do complete testing.
         </para>
@@ -116,14 +114,16 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr    \
-            --disable-static \
-            --with-history   \
-            --with-python=/usr/bin/python3 &amp;&amp;
+<screen><userinput>./configure --prefix=/usr           \
+            --sysconfdir=/etc       \
+            --disable-static        \
+            --with-history          \
+            PYTHON=/usr/bin/python3 \
+            --docdir=/usr/share/doc/libxml2-&libxml2-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
-      If you downloaded the testsuite, issue the following command:
+      If you downloaded the test suite, issue the following command:
     </para>
 
 <screen><userinput>tar xf ../xmlts&testsuite-version;.tar.gz</userinput></screen>
@@ -171,18 +171,13 @@ make</userinput></screen>
     </para>
 
     <para>
-      <parameter>--with-python=/usr/bin/python3</parameter>: Allows building
+      <parameter>PYTHON=/usr/bin/python3</parameter>: Allows building
       the libxml2 module with Python3 instead of Python2.
     </para>
 
     <para>
       <option>--with-icu</option>: Add this switch if you have built
       <xref linkend="icu"/>, for better unicode support.
-    </para>
-
-    <para>
-      <option>--with-threads</option>: Add this switch to enable multithread
-      support.
     </para>
 
   </sect2>
@@ -199,19 +194,15 @@ make</userinput></screen>
         <seg>
           xml2-config,
           xmlcatalog, and
-          xmllint <!--and the
-          drv_libxml2.py and libxml2.py <application>Python3</application>
-          modules.  These are pythin modules, not programs -->
+          xmllint
         </seg>
         <seg>
-          libxml2.so and
-          libxml2mod.so (<application>Python3</application> module)
+          libxml2.so
         </seg>
         <seg>
           /usr/include/libxml2,
           /usr/lib/cmake/libxml2,
-          /usr/share/doc/libxml2-&libxml2-version;,
-          /usr/share/doc/libxml2-python-&libxml2-version;, and
+          /usr/share/doc/libxml2-&libxml2-version;, and
           /usr/share/gtk-doc/html/libxml2
         </seg>
       </seglistitem>
@@ -260,31 +251,7 @@ make</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-<!--
-      <varlistentry id="drv_libxml2.py3">
-        <term><command>drv_libxml2.py</command></term>
-        <listitem>
-          <para>
-            is a SAX <application>Python3</application> driver for libxml2.
-          </para>
-          <indexterm zone="libxml2 drv_libxml2.py3">
-            <primary sortas="b-drv_libxml2.py3">drv_libxml2.py for Python3</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
 
-      <varlistentry id="libxml2.py3">
-        <term><command>libxml2.py</command></term>
-        <listitem>
-          <para>
-            is the <application>Python3</application> binding for libxml2.
-          </para>
-          <indexterm zone="libxml2 libxml2.py3">
-            <primary sortas="b-libxml2.py3">libxml2.py for Python3</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
--->
       <varlistentry id="libxml2-lib">
         <term><filename class="libraryfile">libxml2.so</filename></term>
         <listitem>
@@ -294,19 +261,6 @@ make</userinput></screen>
           </para>
           <indexterm zone="libxml2 libxml2-lib">
             <primary sortas="c-libxml2">libxml2.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry id="libxml2mod3">
-        <term><filename class="libraryfile">libxml2mod.so</filename></term>
-        <listitem>
-          <para>
-            is the interface for <application>Python3</application>
-            to use <filename class="libraryfile">libxml2.so</filename>
-          </para>
-          <indexterm zone="libxml2 libxml2mod3">
-            <primary sortas="c-libxml2mod">libxml2mod.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

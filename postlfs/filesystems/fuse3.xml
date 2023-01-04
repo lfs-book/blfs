@@ -6,18 +6,15 @@
 
   <!ENTITY fuse3-download-http "https://github.com/libfuse/libfuse/releases/download/fuse-&fuse3-version;/fuse-&fuse3-version;.tar.xz">
   <!ENTITY fuse3-download-ftp  " ">
-  <!ENTITY fuse3-md5sum        "d2eb13af5288047dc942fc84e608cfbd">
-  <!ENTITY fuse3-size          "2.8 MB">
-  <!ENTITY fuse3-buildsize     "161 MB">
+  <!ENTITY fuse3-md5sum        "2640cd55b3c2a2eb9e78054f77f5c87a">
+  <!ENTITY fuse3-size          "3.1 MB">
+  <!ENTITY fuse3-buildsize     "95 MB (with tests and documentation)">
   <!ENTITY fuse3-time          "0.1 SBU (add 0.4 SBU for tests)">
 ]>
 
 <sect1 id="fuse3" xreflabel="Fuse-&fuse3-version;">
   <?dbhtml filename="fuse.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Fuse-&fuse3-version;</title>
 
@@ -36,7 +33,7 @@
       filesystem implementations.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -96,7 +93,7 @@
   &lt;*/M&gt; FUSE (Filesystem in Userspace) support [CONFIG_FUSE_FS]</literal></screen>
 
     <para>
-      Character devices in user space should be enabled too for running the
+      Character devices in userspace should be enabled too for running the
       tests:
     </para>
 
@@ -148,22 +145,28 @@ popd</userinput></screen>
         remap="test"><userinput>python3 -m pytest test/</userinput></screen>
 
     <para>
-      The <ulink url="https://pypi.org/project/pytest/">pytest</ulink>
-       Python module is required for the tests.
+      The <ulink url="https://pypi.org/project/pytest/">pytest</ulink> Python
+      module is required for the tests.  One test named
+      <filename>test_cuse</filename> will fail if the
+      <parameter>CONFIG_CUSE</parameter> configuration item was not enabled
+      when the kernel was built.  Two tests,
+      <filename>test_ctests.py</filename> and
+      <filename>test_examples.py</filename> will produce a warning because a
+      deprecated Python module is used.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>ninja install                                             &amp;&amp;
+<screen role="root"><userinput>ninja install                  &amp;&amp;
+chmod u+s /usr/bin/fusermount3 &amp;&amp;
 
-chmod u+s /usr/bin/fusermount3                &amp;&amp;
-
-install -v -m755 -d /usr/share/doc/fuse-&fuse3-version;      &amp;&amp;
-install -v -m644    ../doc/{README.NFS,kernel.txt} \
-                    /usr/share/doc/fuse-&fuse3-version;      &amp;&amp;
-cp -Rv ../doc/html  /usr/share/doc/fuse-&fuse3-version;</userinput></screen>
+cd ..                          &amp;&amp;
+install -v -m755 -d /usr/share/doc/fuse-&fuse3-version; &amp;&amp;
+install -v -m644    doc/{README.NFS,kernel.txt} \
+                    /usr/share/doc/fuse-&fuse3-version; &amp;&amp;
+cp -Rv doc/html     /usr/share/doc/fuse-&fuse3-version;</userinput></screen>
 
   </sect2>
 

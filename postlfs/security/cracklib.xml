@@ -8,10 +8,10 @@
 
   <!ENTITY cracklib-download-http "&cracklib-url;/v&cracklib-version;/cracklib-&cracklib-version;.tar.bz2">
   <!ENTITY cracklib-download-ftp  " ">
-  <!ENTITY cracklib-md5sum        "0d68de25332cee5660850528a385427f">
-  <!ENTITY cracklib-size          "592 KB">
-  <!ENTITY cracklib-buildsize     "4.2 MB">
-  <!ENTITY cracklib-time          "less than 0.1 SBU">
+  <!ENTITY cracklib-md5sum        "a242301bad13421476db8eecbbc9536a">
+  <!ENTITY cracklib-size          "600 KB">
+  <!ENTITY cracklib-buildsize     "6.7 MB">
+  <!ENTITY cracklib-time          "0.1 SBU">
 
   <!ENTITY crackdict-download     "&cracklib-url;/v&cracklib-version;/cracklib-words-&cracklib-version;.bz2">
   <!ENTITY crackdict-size         "6.7 MB">
@@ -21,9 +21,6 @@
 <sect1 id="cracklib" xreflabel="CrackLib-&cracklib-version;">
   <?dbhtml filename="cracklib.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>CrackLib-&cracklib-version;</title>
 
@@ -40,7 +37,7 @@
       passwords to words in chosen word lists.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,7 +86,7 @@
 
     <para>
       There are additional word lists available for download, e.g., from
-      <ulink url="http://www.cotse.com/tools/wordlists.htm"/>.
+      <ulink url="https://wiki.skullsecurity.org/index.php/Passwords"/>.
       <application>CrackLib</application> can utilize as many, or as few word
       lists you choose to install.
     </para>
@@ -132,11 +129,9 @@
       commands:
     </para>
 
-<screen><userinput>sed -i '/skipping/d' util/packer.c &amp;&amp;
+<screen><userinput>autoreconf -fiv &amp;&amp;
 
-sed -i '15209 s/.*/am_cv_python_version=&python3-majorver;/' configure &amp;&amp;
-
-PYTHON=python3 CPPFLAGS=-I/usr/include/python&python3-majorver; \
+PYTHON=python3               \
 ./configure --prefix=/usr    \
             --disable-static \
             --with-default-dict=/usr/lib/cracklib/pw_dict &amp;&amp;
@@ -200,16 +195,23 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
     </para>
 
     <para>
+      <command>autoreconf -fiv</command>: The configure script shipped with
+      the package is too old to get the right version string of Python
+      3.10 or later. This command regenerates it with a more recent version
+      of autotools, which fixes the issue.
+    </para>
+
+    <para>
       <envar>PYTHON=python3</envar>: This forces the installation of
       python bindings for Python 3, even if Python 2 is installed.
     </para>
-
+    <!-- fixed by autoreconf
     <para>
       <envar>CPPFLAGS=-I/usr/include/python&python3-majorver;</envar>:
       This works around an issue caused by incorrect usage of Python 3
       headers.
     </para>
-
+    -->
     <para>
       <parameter>--with-default-dict=/lib/cracklib/pw_dict</parameter>:
       This parameter forces the installation of the
@@ -219,20 +221,6 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
-
-    <!-- FIXME: No longer needed with merged-/usr configuration
-    <para>
-      <command>mv -v /usr/lib/libcrack.so.2* /lib</command> and
-      <command>ln -v -sf ../../lib/libcrack.so.2.9.0 ...</command>: These two
-      commands move the <filename
-      class="libraryfile">libcrack.so.2.9.0</filename>
-      library and associated symlink from
-      <filename class="directory">/usr/lib</filename> to
-      <filename class="directory">/lib</filename>, then recreates the
-      <filename class="symlink">/usr/lib/libcrack.so</filename> symlink
-      pointing to the relocated file.
-    </para>
-    -->
 
     <para>
       <command>install -v -m644 -D ...</command>: This command creates the

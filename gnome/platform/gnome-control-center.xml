@@ -5,21 +5,18 @@
   %general-entities;
 
   <!ENTITY gnome-control-center-download-http
-           "&gnome-download-http;/gnome-control-center/&gnome-40;/gnome-control-center-&gnome-control-center-version;.tar.xz">
+           "&gnome-download-http;/gnome-control-center/&gnome-43;/gnome-control-center-&gnome-control-center-version;.tar.xz">
   <!ENTITY gnome-control-center-download-ftp
-           "&gnome-download-ftp;/gnome-control-center/&gnome-40;/gnome-control-center-&gnome-control-center-version;.tar.xz">
-  <!ENTITY gnome-control-center-md5sum        "d704e59afe2df9c24ed876841adb3e0a">
-  <!ENTITY gnome-control-center-size          "6.2 MB">
-  <!ENTITY gnome-control-center-buildsize     "187 MB (with tests)">
-  <!ENTITY gnome-control-center-time          "0.4 SBU (Using parallelism=4; with tests)">
+           "&gnome-download-ftp;/gnome-control-center/&gnome-43;/gnome-control-center-&gnome-control-center-version;.tar.xz">
+  <!ENTITY gnome-control-center-md5sum        "0cb954621fc51a331711b5427c267005">
+  <!ENTITY gnome-control-center-size          "5.5 MB">
+  <!ENTITY gnome-control-center-buildsize     "116 MB (with tests)">
+  <!ENTITY gnome-control-center-time          "0.5 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="gnome-control-center" xreflabel="gnome-control-center-&gnome-control-center-version;">
   <?dbhtml filename="gnome-control-center.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gnome-control-center-&gnome-control-center-version;</title>
 
@@ -35,7 +32,7 @@
       <application>GNOME</application> settings manager.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,11 +73,9 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="accountsservice"/>,
-      <xref linkend="clutter-gtk"/>,
       <xref linkend="colord-gtk"/>,
       <xref linkend="gnome-online-accounts"/>,
       <xref linkend="gnome-settings-daemon"/>,
-      <xref linkend="grilo"/>,
       <xref linkend="gsound"/>,
       <xref linkend="libgtop"/>,
       <xref linkend="libpwquality"/>,
@@ -91,12 +86,11 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="cheese"/>,
       <xref linkend="cups"/> and
       <xref linkend="samba"/> (for the Printers Panel),
       <xref linkend="gnome-bluetooth"/>,
       <xref linkend="ibus"/>,
-      <xref linkend="libhandy1"/>, and
+      <xref linkend="libadwaita1"/>, and
       <xref linkend="ModemManager"/> and
       <xref linkend="libnma"/> (for the Network Panel)
       <!-- gnome-remote-desktop can be used in the Sharing panel. -->
@@ -104,7 +98,10 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="python-dbusmock"/> (for tests)
+      <command>Xvfb</command> (from
+      <xref linkend='xorg-server'/> or
+      <xref role='nodep' linkend='xwayland'/>) and
+      <xref linkend="python-dbusmock"/> (both for tests)
     </para>
 
     <bridgehead renderas="sect4"
@@ -116,7 +113,8 @@
     <bridgehead renderas="sect4">Optional Runtime Dependencies</bridgehead>
     <para role="optional">
       <xref role="runtime" linkend="cups-pk-helper"/> (Printers panel),
-      <xref role="runtime" linkend="gnome-color-manager"/> (Color panel), and
+      <xref role="runtime" linkend="gnome-color-manager"/> (Color panel),
+      <xref role="runtime" linkend="gnome-shell"/> (Applications panel), and
       <xref role="runtime" linkend="sound-theme-freedesktop"/> (Additional Sound Effects in Sound panel)
     </para>
 
@@ -136,6 +134,17 @@
   <sect2 role="installation">
     <title>Installation of GNOME Control Center</title>
 
+    <note>
+      <para>
+        If upgrading from gnome-control-center-41 or earlier, remove a
+        desktop file that would result in duplicated menu entries. As the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>rm -f /usr/share/applications/gnome-control-center.desktop</userinput></screen>
+
+    </note>
+
     <para>
       Install <application>GNOME Control Center</application> by running the
       following commands:
@@ -149,7 +158,7 @@ ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>ninja test</command>. Note that
-      you must have <application>python-dbusmock</application> module
+      you must have the <application>python-dbusmock</application> module
       installed in order for the tests to complete successfully.
     </para>
 
@@ -168,13 +177,8 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <option>-Dcheese=false</option>: Use this switch if you have not
-      installed recommended dependency <application>Cheese</application>.
-    </para>
-
-    <para>
       <option>-Dibus=false</option>: Use this switch if you have not
-      installed recommended dependency <application>IBus</application>.
+      installed the recommended <application>IBus</application> dependency.
     </para>
 
   </sect2>

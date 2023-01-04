@@ -6,10 +6,11 @@
 
   <!ENTITY dbus-python-download-http "https://dbus.freedesktop.org/releases/dbus-python/dbus-python-&dbus-python-version;.tar.gz">
   <!ENTITY dbus-python-download-ftp  " ">
-  <!ENTITY dbus-python-md5sum        "468874f3bf61d1b7deac98bbe2cfd8ac">
-  <!ENTITY dbus-python-size          "568 KB">
-  <!ENTITY dbus-python-buildsize     "10 MB (both versions, with tests)">
-  <!ENTITY dbus-python-time          "0.3 SBU (both versions, with tests)">
+  <!ENTITY dbus-python-md5sum        "33be8a4a766e1c7c9a377b8f934ce21a">
+  <!ENTITY dbus-python-size          "592 KB">
+  <!ENTITY dbus-python-buildsize     "4.7 MB (with tests)" >
+  <!ENTITY dbus-python-time          "less than 0.1 SBU (with tests)">
+  <!ENTITY dbus-python-egg-info      "&python3-site;/dbus_python-&dbus-python-version;.egg-info">
 ]>
 
   <!-- Begin D-Bus Python -->
@@ -29,7 +30,7 @@
         <application>D-Bus</application> API interface.
       </para>
 
-      &lfs110a_checked;
+      &lfs112_checked;
 
       <bridgehead renderas="sect4">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -73,12 +74,6 @@
         <xref linkend="glib2"/>
       </para>
 
-      <bridgehead renderas="sect5">Recommended</bridgehead>
-      <para role="recommended">
-        <xref linkend="python2"/> (some applications in the book require
-        the Python 2 module)
-      </para>
-
       <bridgehead renderas="sect5">Optional</bridgehead>
       <para role="optional">
         <xref linkend="pygobject3"/> and
@@ -90,7 +85,7 @@
        Optional (Required to build the API and HTML Documentation)</bridgehead>
       <para role="optional">
         <xref linkend="docutils"/> and
-        <ulink url="http://www.sphinx-doc.org/en/master/">Sphinx</ulink> with
+        <ulink url="https://www.sphinx-doc.org/en/master/">Sphinx</ulink> with
         <ulink url="https://github.com/rtfd/sphinx_rtd_theme">sphinx_rtd_theme</ulink>
       </para>
 
@@ -102,64 +97,41 @@
     <sect3 role="installation">
       <title>Installation of D-Bus Python</title>
 
-      <note>
-        <para>
-          Both <application>Python 2</application> and
-          <application>Python 3</application> modules can
-          be built and installed without any conflicts.
-        </para>
-      </note>
-
       <para>
-        To build <application>D-Bus Python</application> as the
-        <application>Python 2</application> module, run the
-        following commands:
+        Build the D-Bus Python module by running the following  commands:
       </para>
 
-<screen><userinput>mkdir python2 &amp;&amp;
-pushd python2 &amp;&amp;
-PYTHON=/usr/bin/python2     \
-../configure --prefix=/usr --disable-documentation &amp;&amp;
-make &amp;&amp;
-popd</userinput></screen>
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson --prefix=/usr --buildtype=release .. &amp;&amp;
+ninja</userinput></screen>
 
       <para>
-        To test the results, issue: <command>make -C python2 check</command>.
-        Several tests report an error due to dbus issues.
+        To test the results, issue: <command>ninja test</command>.
       </para>
 
       <para>
-        To build <application>D-Bus Python</application> as the
-        <application>Python 3</application> module, run the
-        following commands:
+        Now install the module as the &root; user:
       </para>
 
-<screen><userinput>mkdir python3 &amp;&amp;
-pushd python3 &amp;&amp;
-PYTHON=/usr/bin/python3    \
-../configure --prefix=/usr --docdir=/usr/share/doc/dbus-python-&dbus-python-version; &amp;&amp;
-make &amp;&amp;
-popd</userinput></screen>
+<screen role="root"><userinput>ninja install &amp;&amp;
+cp -rv ../dbus_python.egg-info \
+   -T  &dbus-python-egg-info;</userinput></screen>
+
+    </sect3>
+
+    <sect3 role="commands">
+
+      <title>Command Explanations</title>
 
       <para>
-        To test the results, issue: <command>make -C python3 check</command>.
+        <command>cp -rv ... -T ...</command>: Install the metadata of this
+        Python module so <command>pip3</command> will be able to find this
+        module and use it as a dependency building and installing other
+        modules.  <parameter>-T</parameter> is used to make this command
+        behave properly in case that this module is reinstalled.
       </para>
-
-      <para>
-        To install the <application>Python 2</application> module,
-        run the following command as the
-        <systemitem class="username">root</systemitem> user:
-      </para>
-
-<screen role="root"><userinput>make -C python2 install</userinput></screen>
-
-      <para>
-        To install the <application>Python 3</application> module,
-        run the following command as the
-        <systemitem class="username">root</systemitem> user:
-      </para>
-
-<screen role="root"><userinput>make -C python3 install</userinput></screen>
 
     </sect3>
 
@@ -179,9 +151,7 @@ popd</userinput></screen>
             None
           </seg>
           <seg>
-            /usr/share/doc/dbus-python-&dbus-python-version; and
-            /usr/lib/python&python2-majorver;/site-packages/dbus and/or
-            /usr/lib/python&python3-majorver;/site-packages/dbus
+            &python3-site;/dbus and &dbus-python-egg-info;
           </seg>
         </seglistitem>
       </segmentedlist>

@@ -6,18 +6,15 @@
 
   <!ENTITY mutt-download-http "https://bitbucket.org/mutt/mutt/downloads/mutt-&mutt-version;.tar.gz">
   <!ENTITY mutt-download-ftp  "ftp://ftp.mutt.org/pub/mutt/mutt-&mutt-version;.tar.gz">
-  <!ENTITY mutt-md5sum        "af58d4428359fdfe21952906d2d95782">
-  <!ENTITY mutt-size          "5.2 MB">
-  <!ENTITY mutt-buildsize     "47 MB">
+  <!ENTITY mutt-md5sum        "14cbaec4cc88ad8147fbe6df8a2d48fd">
+  <!ENTITY mutt-size          "5.3 MB">
+  <!ENTITY mutt-buildsize     "48 MB">
   <!ENTITY mutt-time          "0.3 SBU">
 ]>
 
 <sect1 id="mutt" xreflabel="Mutt-&mutt-version;">
   <?dbhtml filename="mutt.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Mutt-&mutt-version;</title>
 
@@ -34,7 +31,7 @@
       deleting your email.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -94,6 +91,7 @@
     <para role="optional">
       <xref linkend="aspell"/>,
       <xref linkend="cyrus-sasl"/>,
+      <xref linkend="docbook-utils"/>,
       <xref linkend="gdb"/>,
       <xref linkend="gnupg2"/>,
       <xref linkend="gnutls"/>,
@@ -108,8 +106,8 @@
       <!-- from configure: \-\-with-bdb[=DIR] Use BerkeleyDB4 if gdbm is not
       available but gdbm is installed in LFS, so do not mention BerkeleyDB
       <xref linkend="db"/> or -->
-      <ulink url="http://fallabs.com/qdbm/">QDBM</ulink> or
-      <ulink url="http://fallabs.com/tokyocabinet/">Tokyo Cabinet</ulink>
+      <ulink url="https://dbmx.net/qdbm/">QDBM</ulink> or
+      <ulink url="https://dbmx.net/tokyocabinet/">Tokyo Cabinet</ulink>
     </para>
 
 <!--<bridgehead renderas="sect4">Optional (To Generate PDF Manual)</bridgehead>
@@ -178,8 +176,10 @@
       <application>elinks</application>), run the following command:
     </para>
 
-<screen><userinput>sed -i -e 's/ -with_backspaces//' -e 's/elinks/links/' \
-  -e 's/-no-numbering -no-references//' doc/Makefile.in</userinput></screen>
+<screen><userinput>sed  -e 's/ -with_backspaces//' \
+     -e 's/elinks/links/'       \
+     -e 's/-no-numbering -no-references//' \
+     -i doc/Makefile.in</userinput></screen>
 
     <para>
       Now configure and build the application:
@@ -226,7 +226,7 @@ make</userinput></screen>
     <note>
       <para>
         If you used a DESTDIR method to only install to a temporary location as
-        a regular user (as part of a package menagement process), you will need
+        a regular user (as part of a package management process), you will need
         to run the following as the <systemitem class="username">root
         </systemitem> user after completing the real install:
       </para>
@@ -394,7 +394,7 @@ chmod -v 2755 /usr/bin/mutt_dotlock</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>flea, mutt, mutt_dotlock, muttbug, pgpewrap, pgpring, and
+        <seg>flea, mutt, mutt_dotlock, muttbug, pgpewrap, mutt_pgpring, and
         smime_keys</seg>
         <seg>None</seg>
         <seg>/usr/share/doc/mutt-&mutt-version;</seg>
@@ -467,16 +467,16 @@ chmod -v 2755 /usr/bin/mutt_dotlock</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="pgpring">
+      <varlistentry id="mutt_pgpring">
         <term><command>pgpring</command></term>
         <listitem>
           <para>
             is a key ring dumper for
-            <ulink url="http://www.pgp.com/">PGP</ulink>. It is not needed for
-            <xref linkend="gnupg2"/>
+            <ulink url="https://www.openpgp.org/about/">PGP</ulink>. It is not
+            needed for <xref linkend="gnupg2"/>
           </para>
-          <indexterm zone="mutt pgpring">
-            <primary sortas="b-pgpring">pgpring</primary>
+          <indexterm zone="mutt mutt_pgpring">
+            <primary sortas="b-mutt_pgpring">mutt_pgpring</primary>
           </indexterm>
         </listitem>
       </varlistentry>

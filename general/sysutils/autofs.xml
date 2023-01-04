@@ -15,9 +15,6 @@
 <sect1 id="autofs" xreflabel="Autofs-&autofs-version;">
   <?dbhtml filename="autofs.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>autofs-&autofs-version;</title>
 
@@ -35,7 +32,7 @@
       based on a set of pre-configured maps.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -126,6 +123,12 @@
   <sect2 role="installation">
 
     <title>Installation of Autofs</title>
+
+    <para>
+      First fix an issue introduced by glibc-2.36:
+    </para>
+
+    <screen><userinput>grep -rl linux/fs modules | xargs sed -i "/linux\/fs/d"</userinput></screen>
 
     <para>
       Install <application>Autofs</application> by running the following
@@ -312,7 +315,7 @@ EOF</userinput></screen>
         feature is not configured in these instructions.  For additional
         configuration information, see the man pages for auto.master(5). There
         are also web resources such as this <ulink
-        url='http://wiki.gentoo.org/wiki/AutoFS'>AUTOFS
+        url='https://wiki.gentoo.org/wiki/AutoFS'>AUTOFS
         HOWTO</ulink> available.
       </para>
 

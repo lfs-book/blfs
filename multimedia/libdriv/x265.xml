@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY x265-download-http "&sources-anduin-http;/x265/x265_&x265-version;.tar.gz">
+  <!ENTITY x265-download-http "&sources-anduin-http;/x265/x265-&x265-version;.tar.xz">
   <!ENTITY x265-download-ftp  " ">
-  <!ENTITY x265-md5sum        "e37b91c1c114f8815a3f46f039fe79b5">
-  <!ENTITY x265-size          "1.4 MB">
-  <!ENTITY x265-buildsize     "35 MB">
-  <!ENTITY x265-time          "0.9 SBU (using parallelism=4)">
+  <!ENTITY x265-md5sum        "d6d470b22dedb72596c459b6204419d2">
+  <!ENTITY x265-size          "1.0 MB">
+  <!ENTITY x265-buildsize     "56 MB">
+  <!ENTITY x265-time          "1.4 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="x265" xreflabel="x265-&x265-version;">
   <?dbhtml filename="x265.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>x265-&x265-version;</title>
 
@@ -33,7 +30,7 @@
       video streams into the H.265/HEVC format.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -103,7 +100,8 @@
 <screen><userinput>mkdir bld &amp;&amp;
 cd    bld &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr ../source &amp;&amp;
+cmake -DCMAKE_INSTALL_PREFIX=/usr \
+      -DGIT_ARCHETYPE=1 ../source &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -121,6 +119,13 @@ rm -vf /usr/lib/libx265.a </userinput></screen>
 
   <sect2 role="commands">
       <title>Command Explanations</title>
+
+      <para>
+        <command>-DGIT_ARCHETYPE=1</command>: Upstream no longer provides
+        releases. BLFS is using a git snapshot, but if the builder has not
+        installed <application>git</application> the build will not install
+        the shared library or the pkgconfig file without this switch.
+      </para>
 
       <para>
         <command>rm -vf /usr/lib/libx265.a</command>: BLFS does not recommend

@@ -6,20 +6,20 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "cc7b08841a4c417cadb0753db9d1f6a5">
-  <!ENTITY thunderbird-size          "387 MB">
-  <!ENTITY thunderbird-buildsize     "6.9 GB (202 MB installed)">
-  <!ENTITY thunderbird-time          "30 SBU (on a 4-core machine)">
+  <!ENTITY thunderbird-md5sum        "c6944a9b65b13a3c9c32fef92850ca33">
+  <!ENTITY thunderbird-size          "486 MB">
+  <!ENTITY thunderbird-buildsize     "7.4 GB (202 MB installed)">
+  <!ENTITY thunderbird-time          "24 SBU (on a 4-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
-       the C/C++ code appears to obey it -->
+       the C/C++ code appears to obey it.
+
+       Version 102.3.3: I disabled all but 4 cores.  SBU was 20 (2019 seconds)
+       -->
 ]>
 
 <sect1 id="thunderbird" xreflabel="Thunderbird-&thunderbird-version;">
   <?dbhtml filename="thunderbird.html" ?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Thunderbird-&thunderbird-version;</title>
 
@@ -36,7 +36,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,28 +72,26 @@
       </listitem>
     </itemizedlist>
 
-<!-- keeping this for next patch :)
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+<!--<bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/thunderbird-&thunderbird-version;-glibc234-1.patch"/>
+          <ulink url="&patch-root;/thunderbird-&thunderbird-version;-gcc12_fix-1.patch"/>
         </para>
       </listitem>
-    </itemizedlist>
--->
+    </itemizedlist>-->
+
     <bridgehead renderas="sect3">Thunderbird Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-<!--      <xref linkend="alsa-lib"/>, no mention in log -->
       <xref linkend="autoconf213"/>,
       <xref linkend="cbindgen"/>,
       <xref linkend="dbus-glib"/>,
       both <xref linkend="gtk3"/>
       and <xref linkend="gtk2"/>,
-      <xref linkend="llvm"/> including clang, <!-- Searched for and used a few times -->
+      <xref linkend="llvm"/> including clang, <!-- used by default if found -->
       <xref linkend="nodejs"/>,
       <xref linkend="pulseaudio"/> (or <xref linkend="alsa-lib"/> if you edit
       the mozconfig; although it is now deprecated by mozilla),
@@ -108,8 +106,7 @@
     <para role="recommended">
       <xref linkend="icu"/>,
       <xref linkend="libevent"/>,
-<!-- Fails to build with version 1.8.0
-      <xref linkend="libvpx"/>,-->
+      <xref linkend="libvpx"/>,
       <xref linkend="nasm"/>,
       <xref linkend="nspr"/>, and
       <xref linkend="nss"/>
@@ -127,15 +124,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <!-- <xref linkend="curl"/>, not in build log-->
       <xref linkend="cyrus-sasl"/>,
       <xref linkend="doxygen"/>,
       <xref linkend="GConf"/>,
-      <!--<xref linkend="gst10-plugins-base"/> (with
-      <xref linkend="gst10-plugins-good"/> and
-      <xref linkend="gst10-libav"/> at runtime),-->
-      <!-- <xref linkend="openjdk"/>, not in build log -->
-      <!--<xref linkend="pulseaudio"/>,-->
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/>, and
       <ulink url="https://facebook.github.io/watchman/">watchman</ulink>
@@ -173,16 +164,12 @@
 ac_add_options --disable-necko-wifi
 
 # Uncomment the following option if you have not installed PulseAudio
-#ac_add_options --disable-pulseaudio
-# and uncomment this if you installed alsa-lib instead of PulseAudio
-#ac_add_options --enable-alsa
-<!-- always built in versions 78+. The option is a noop
-# If you want to compile the Mozilla Calendar, uncomment this line:
-#ac_add_options - -enable-calendar
--->
+#ac_add_options --enable-audio-backends=alsa
+
 # Comment out following options if you have not installed
 # recommended dependencies:
 ac_add_options --with-system-libevent
+ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-icu
@@ -214,14 +201,34 @@ ac_add_options --enable-system-pixman
 
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-png
-ac_add_options --with-system-zlib</literal>
+ac_add_options --with-system-zlib
+
+# Using sandboxed wasm libraries has been moved to all builds instead
+# of only mozilla automation builds. It requires extra llvm packages
+# and was reported to seriously slow the build. Disable it.
+ac_add_options --without-wasm-sandboxed-libraries</literal>
 EOF</userinput></screen>
-<!--
+
     <para>
-      Apply a patch which allows compilation on systems running glibc-2.34:
+      A change in cbindgen-0.24.2 causes a symbol to now be output by
+      cbindgen, but it has already been defined in a header. This sed
+      prevents the build from eventually failing:
     </para>
 
-<screen><userinput remap="pre">patch -p1 -i ../thunderbird-&thunderbird-version;-glibc234-1.patch</userinput></screen>
+<screen><userinput>sed -i '/ROOT_CLIP_CHAIN/d' gfx/webrender_bindings/webrender_ffi.h</userinput></screen>
+
+<!-- Not needed with clang
+     https://bugzilla.mozilla.org/show_bug.cgi?id=1729459
+    <para>
+      If building on a 32 bit machine, the following sed works around
+      an issue with an incompatible <quote>double</quote> type in one
+      header file:
+    </para>
+
+<screen><userinput>case "$(uname -m)" in
+    i?86) sed -e '/typedef[ ]*double/s/double/long double/' \
+              -i modules/fdlibm/src/math_private.h ;;
+esac</userinput></screen>
 -->
     <para>
       Now invoke the Python <command>mach</command> script to compile
@@ -237,10 +244,30 @@ EOF</userinput></screen>
 
     </note>
 
-<screen><userinput>export CC=gcc CXX=g++ &amp;&amp;
-export MACH_USE_SYSTEM_PYTHON=1 &amp;&amp;
-./mach create-mach-environment &amp;&amp;
-./mach configure      &amp;&amp;
+    <para>
+      First remove an obsolete flag in python code, that has been removed
+      in python-3.11:
+    </para>
+
+<screen><userinput>grep -rl \"rU\" | xargs sed -i 's/"rU"/"r"/'</userinput></screen>
+
+    <para>
+      Then fix an issue with regular expressions in python-3.11:
+    </para>
+
+<screen><userinput>sed -e 's/?s)\./?s:.)/'               \
+    -e '/?m)/{s/?m)/?m:/;s/\$"/$)"/}' \
+    -e '/?s)%/{s/?s)/?s:/;s/?"/?)"/}' \
+    -i xpcom/idl-parser/xpidl/xpidl.py</userinput></screen>
+
+     <para>
+       Now invoke the Python <command>mach</command> script to compile the
+       package.
+     </para>
+
+<screen><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
+export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
+./mach configure                                    &amp;&amp;
 ./mach build</userinput></screen>
 
     <para>
@@ -252,47 +279,52 @@ export MACH_USE_SYSTEM_PYTHON=1 &amp;&amp;
       commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>MACH_USE_SYSTEM_PYTHON=1 ./mach install</userinput></screen>
+<screen role="root"><userinput>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none ./mach install</userinput></screen>
 <!-- devs: For DESTDIR install, prepend DESTDIR=<dest> to the above -->
     <para>
       Empty the environment variables which were set above:
     </para>
 
-<screen><userinput>unset CC CXX MACH_USE_SYSTEM_PYTHON</userinput></screen>
+<screen><userinput>unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE MOZBUILD_STATE_PATH</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-<!-- might be necessary, we need to verify this.
-    <para>
-      <command>test $(uname -m) = "i686" &amp;&amp; sed ...</command>: On this
-      version of thunderbird, an old bug has reappeared in 32-bit builds.  With
-      optimization, the install fails with a Python error.  This command will
-      fix i686 builds and preserve the optimization on x86_64.
-    </para>-->
 
     <para>
-      <command>CC=gcc CXX=g++ ./mach configure</command>:
-      <application>Thunderbird</application>
-      now uses this <application>python3</application> script to run the
-      configuration,
-      build and install. Forcing GCC causes the build to come out smaller
-      and run faster.
-      <!-- For more info, see Ticket #13969. ~12GB to ~5GB build size,
-      significantly smaller build time.-->
+      <command>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none</command>: Use the
+      system python to create a virtual environment for <command>mach</command>
+      without downloading any python wheels nor using the system python modules.
+      This prevent version mismatches between system modules and bundled ones.
     </para>
 
     <para>
-      <command>MACH_USE_SYSTEM_PYTHON=1</command>: Use the system python
-      to create a virtual environment for <command>mach</command> without
-      downloading any python wheels.
+      <command>./mach configure</command>: This validates the supplied
+      dependencies and the <filename>mozconfig</filename>.
     </para>
 
     <para>
       <option>./mach build --verbose</option>: Use this alternative if you
       need details of which files are being compiled, together with any C or
       C++ flags being used.
+    </para>
+
+    <para>
+      <option>./mach build -jN</option>: The build should, by default, use
+      all the online CPU cores. If using all the cores causes the build to swap
+      because you have insufficient memory, using fewer cores can be faster.
+    </para>
+
+    <para>
+      <option><envar>CC=gcc CXX=g++</envar></option>: BLFS used to
+      prefer to use gcc and g++ instead of upstream's defaults of the
+      <application>clang</application> programs. With the release of
+      gcc-12 the build takes longer with gcc and g++, primarily because
+      of extra warnings, and is bigger. Set these environment variables
+      <emphasis>before you run the configure script</emphasis>
+      if you wish to continue to use gcc, g++. Building
+      with GCC on i?86 is currently broken.
     </para>
 
   </sect2>
@@ -392,10 +424,7 @@ ln -sfv /usr/lib/thunderbird/chrome/icons/default/default256.png \
           thunderbird
         </seg>
         <seg>
-          libldap60.so, libldif60.so, liblgpllibs.so, libmozgtk.so,
-          libmozsandbox.so, libmozsqlite3.so, libmozwayland.so,
-          libprldap60.so, librnp.so, and libxul.so, all in the
-          /usr/lib/thunderbird directory
+          Numerous libraries and modules in the /usr/lib/thunderbird directory
         </seg>
         <seg>
           /usr/lib/thunderbird

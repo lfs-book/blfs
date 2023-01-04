@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY upower-download-http "https://gitlab.freedesktop.org/upower/upower/uploads/177df5b9f9b76f25a2ad9da41aa0c1fa/upower-&upower-version;.tar.xz">
+  <!ENTITY upower-download-http "https://gitlab.freedesktop.org/upower/upower/-/archive/v&upower-version;/upower-v&upower-version;.tar.bz2">
   <!ENTITY upower-download-ftp  " ">
-  <!ENTITY upower-md5sum        "0c945817c12a7967d2c5edf7138fcf80">
-  <!ENTITY upower-size          "438 KB">
-  <!ENTITY upower-buildsize     "15 MB (with tests)">
-  <!ENTITY upower-time          "0.1 SBU (using parallelism=4, add 0.8 SBU for tests)">
+  <!ENTITY upower-md5sum        "4fba71838a9ba0db6f140418eddbe2b7">
+  <!ENTITY upower-size          "128 KB">
+  <!ENTITY upower-buildsize     "4.9 MB (add 1.3 MB for tests)">
+  <!ENTITY upower-time          "less than 0.1 SBU (using parallelism=4, add 0.6 SBU for tests)">
 ]>
 
 <sect1 id="upower" xreflabel="UPower-&upower-version;">
   <?dbhtml filename="upower.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>UPower-&upower-version;</title>
 
@@ -29,13 +26,13 @@
     <title>Introduction to UPower</title>
 
     <para>
-      The <application>UPower</application> package provides an interface to
+      The <application>UPower</application> package provides an interface for
       enumerating power devices, listening to device events and querying history
       and statistics. Any application or service on the system can access the
       org.freedesktop.UPower service via the system message bus.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -101,8 +98,8 @@
 
   <sect2 role="kernel" id="upower-kernel" revision="systemd">
     <!-- With UPower-0.9.11's hardening of the systemd unit file,
-         User Namespace Support is now required. Without this, you get
-         "ERROR 213/USER" out of a 'systemctl start upower'. -->
+         User Namespace Support (CONFIG_USER_NS) is now required. Without this,
+         you will get "ERROR 213/USER" out of a 'systemctl start upower'. -->
     <title>Kernel Configuration</title>
 
     <para>
@@ -123,19 +120,41 @@
     <title>Installation of UPower</title>
 
     <para>
+      First, remove an unneeded dependency from a test:
+    </para>
+
+<screen><userinput>sed '/parse_version/d' -i src/linux/integration-test.py</userinput></screen>
+
+    <para>
       Install <application>UPower</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr         \
-             --sysconfdir=/etc    \
-             --localstatedir=/var \
-             --enable-deprecated  \
-             --disable-static     &amp;&amp;
-make</userinput></screen>
+<screen revision="sysv"><userinput>mkdir build                         &amp;&amp;
+cd    build                         &amp;&amp;
+meson --prefix=/usr                        \
+      --buildtype=release                  \
+      -Dgtk-doc=false                      \
+      -Dman=false                          \
+      -Dsystemdsystemunitdir=no            \
+      -Dudevrulesdir=/usr/lib/udev/rules.d \
+      ..                            &amp;&amp;
+ninja</userinput></screen>
 
+<screen revision="systemd"><userinput>mkdir build                         &amp;&amp;
+cd    build                         &amp;&amp;
+meson --prefix=/usr       \
+      --buildtype=release \
+      -Dgtk-doc=false     \
+      -Dman=false         \
+      ..                            &amp;&amp;
+ninja</userinput></screen>
+
+    <!-- On my system with LANG=zh_CN.UTF-8, one test attempted to compare
+         Chinese error message with English references and failed.
+         LC_ALL=C fixes the problem.  -->
     <para>
-      To test the results, issue: <command>make check</command>. Some
+      To test the results, issue: <command>LC_ALL=C ninja test</command>. Some
       checks may not pass due to missing files. Test suite should be run from
       a local GUI session started with dbus-launch.
     </para>
@@ -144,7 +163,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -152,16 +171,28 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>--enable-deprecated</parameter>: This switch enables
-      deprecated functionality which is still needed by some
-      applications.
+      <parameter>-Dgtk-doc=false</parameter>: Prevents building the
+      documentation. Remove this if you have <application>GTK-Doc</application>
+      installed and wish to build the documentation.
     </para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
+    <para>
+      <parameter>-Dman=false</parameter>: Prevents building the
+      manual pages. Remove this if you have <application>GTK-Doc</application>
+      installed and wish to build the manual pages.
+    </para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gtk-doc-rebuild.xml"/>
+    <para revision="sysv">
+      <parameter>-Dsystemdsystemunitdir=no</parameter>: Removes
+      the dependency on <application>systemd</application>.
+    </para>
+
+    <para revision="sysv">
+      <parameter>-Dudevrulesdir=/usr/lib/udev/rules.d</parameter>: Tells
+      the build system where to install <application>udev</application>
+      rules because the information is missing in
+      <filename>/usr/lib/pkgconfig/libudev.pc</filename>
+    </para>
 
   </sect2>
 
@@ -182,7 +213,7 @@ make</userinput></screen>
       menu and selecting &apos;Collect kernel timers statistics&apos;.
     </para>
 -->
-    <sect3  id="upower-init" revision="systemd">
+    <sect3  id="upower-init">
       <title>Systemd Unit</title>
 
       <para>

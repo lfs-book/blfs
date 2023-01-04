@@ -6,18 +6,17 @@
 
   <!ENTITY boost-download-http "https://boostorg.jfrog.io/artifactory/main/release/&boost-version;/source/boost_&boost-dl-version;.tar.bz2">
   <!ENTITY boost-download-ftp  " ">
-  <!ENTITY boost-md5sum        "09dc857466718f27237144c6f2432d86">
-  <!ENTITY boost-size          "105 MB">
-  <!ENTITY boost-buildsize     "1.0 GB (189 MB installed)">
-  <!ENTITY boost-time          "1.7 SBU (Using parallelism=4; add 1.3 SBU for tests)">
+  <!ENTITY boost-md5sum        "3276c0637d1be8687740c550237ef999">
+  <!ENTITY boost-size          "113 MB">
+  <!ENTITY boost-buildsize     "1.1 GB (195 MB installed)">
+  <!ENTITY boost-time          "1.4 SBU (Using parallelism=4; add 1.2 SBU for tests)">
 ]>
+
+<!-- Editors: Check test failures with python-3.11 -->
 
 <sect1 id="boost" xreflabel="Boost-&boost-version;">
   <?dbhtml filename="boost.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Boost-&boost-version;</title>
 
@@ -35,7 +34,7 @@
       expressions and unit testing.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -117,7 +116,8 @@
     <para>
       To run the Boost.Build's regression test, issue
       <command>pushd tools/build/test; python3 test_all.py; popd</command>.
-      All 154 tests should pass.
+      With python-3.10.x all 168 tests should pass.  With 
+      <xref linkend='python3'/>, 20 tests fail for undetermined reasons.
     </para>
 
     <para>
@@ -128,14 +128,29 @@
       speed them up.
     </para>
 
+    <note>
+      <para>
+        Boost installs many versioned directories in /usr/lib/cmake.
+        If a new version of <application>Boost</application> is installed over a
+        previous version, the older cmake directories need to be
+        explicitly removed.  To do this, run as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>rm -rf /usr/lib/cmake/[Bb]oost*</userinput></screen>
+
+      <para>
+        before installing the new version.
+      </para>
+    </note>
+
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <!-- dev note: ./b2 - -prefix=<DESTDIR>/usr install threading=multi link=shared -->
 
-<screen role="root"><userinput>./b2 install threading=multi link=shared   <!--      &amp;&amp;
-	ln -svf detail/sha1.hpp /usr/include/boost/uuid/sha1.hpp--></userinput></screen>
+<screen role="root"><userinput>./b2 install threading=multi link=shared</userinput></screen>
 
   </sect2>
 
@@ -157,16 +172,14 @@
     </para>
 
     <para>
-       <option>-jN</option>: This switch may be added to the
-       <command>b2</command> command lines, to run up to N processes in
-       parallel.
+      <parameter>--with-python=python3</parameter>: This switch ensures Python3
+      is used if Python2 is installed.
     </para>
 
     <para>
-      <option>--with-python=python3</option>: Add this switch to the <command>
-      bootstrap</command> command, if you want Boost
-      to use Python3 instead of Python2.  Using Python3 is known to cause the
-      installation to fail on some systems.
+       <option>-jN</option>: This switch may be added to the
+       <command>b2</command> command lines, to run up to N processes in
+       parallel.
     </para>
 
   </sect2>

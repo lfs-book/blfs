@@ -6,18 +6,15 @@
 
   <!ENTITY gegl-download-http "https://download.gimp.org/pub/gegl/0.4/gegl-&gegl-version;.tar.xz">
   <!ENTITY gegl-download-ftp  " ">
-  <!ENTITY gegl-md5sum        "d560cc7d5b5b8c610f51b70f0e37a47d">
-  <!ENTITY gegl-size          "5.4 MB">
-  <!ENTITY gegl-buildsize     "98 MB (with tests)">
-  <!ENTITY gegl-time          "0.6 SBU (Using parallelism=4; with tests)">
+  <!ENTITY gegl-md5sum        "fe182967ce4b678d8b45500c416555c5">
+  <!ENTITY gegl-size          "5.5 MB">
+  <!ENTITY gegl-buildsize     "115 MB (Add 7 MB for tests)">
+  <!ENTITY gegl-time          "0.9 SBU (Using parallelism=4; add 0.2 for tests)">
 ]>
 
 <sect1 id="gegl" xreflabel="gegl-&gegl-version;">
   <?dbhtml filename="gegl.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gegl-&gegl-version;</title>
 
@@ -33,7 +30,7 @@
       image processing format.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,7 +65,17 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/gegl-&gegl-version;-ffmpeg5_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+-->
     <bridgehead renderas="sect3">gegl Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -109,19 +116,21 @@
       <xref linkend="gtk-doc"/>,
       <xref linkend="jasper"/>,
       <xref linkend="lcms2"/>,
+      <xref linkend="libraw"/>,
       <xref linkend="librsvg"/>,
       <xref linkend="libtiff"/>,
       <xref linkend="libwebp"/>,
       <xref linkend="pango"/>,
+      <xref linkend="poppler"/>,
       <xref linkend="ruby"/>,
       <xref linkend="sdl2"/>,
       <xref linkend="v4l-utils"/>,
       <xref linkend="vala"/>,
       <xref linkend="libspiro"/>,
       <ulink url="https://lensfun.github.io/">lensfun</ulink>,
-      <ulink url="https://libopenraw.pages.freedesktop.org/">libopenraw</ulink>,
-      <ulink url="http://faculty.cse.tamu.edu/davis/suitesparse.html">libumfpack</ulink>,
-      <ulink url="http://luajit.org/luajit.html">LuaJIT</ulink>,
+      <ulink url="https://faculty.cse.tamu.edu/davis/suitesparse.html">libumfpack</ulink>,
+      <ulink url="https://luajit.org/luajit.html">LuaJIT</ulink>,
+      <ulink url="https://www.khronos.org/opencl">OpenCL</ulink> (for tests),
       <ulink url="https://github.com/hodefoting/mrg/releases">MRG</ulink>, and
       <ulink url="https://www.openexr.com">OpenEXR</ulink>
     </para>
@@ -135,6 +144,28 @@
     <title>Installation of gegl</title>
 
     <para>
+      If installing over a previous version of <application>gegl</application>,
+      one module needs to be removed.  As the <systemitem class="username">root</systemitem>
+      user, run:
+    </para>
+
+<screen><userinput>rm -f /usr/lib/gegl-0.4/vector-fill.so</userinput></screen>
+<!--
+    <para>
+      Apply a patch to fix problems when building with ffmpeg-5.x:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../gegl-&gegl-version;-ffmpeg5_fixes-1.patch</userinput></screen>
+-->
+    <para>
+      If LibRaw-0.21.0 or above is installed, the build fails due to
+      a change in the ABI. Fix the issue by issuing:
+    </para>
+
+<screen><userinput>sed -e '/shot_select/s/params/raw&amp;/' \
+    -i operations/external/raw-load.c</userinput></screen>
+
+    <para>
       Install <application>gegl</application> by running the following commands:
     </para>
 
@@ -145,7 +176,9 @@ meson --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      To test the results, issue: <command>ninja test</command>.
+      To run the tests, issue:  <command>ninja test</command>.  This should
+      indicate no failures, but will skip many tests depending on optional
+      dependencies installed on the system.
     </para>
 
     <para>

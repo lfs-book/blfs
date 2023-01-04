@@ -6,38 +6,37 @@
 
   <!ENTITY libdrm-download-http "https://dri.freedesktop.org/libdrm/libdrm-&libdrm-version;.tar.xz">
   <!ENTITY libdrm-download-ftp  " ">
-  <!ENTITY libdrm-md5sum        "376523fcbba8b9e194bcb5adff142d5d">
-  <!ENTITY libdrm-size          "424 KB">
-  <!ENTITY libdrm-buildsize     "8.1 MB (with tests)">
-  <!ENTITY libdrm-time          "less than 0.1 SBU (with tests)">
+  <!ENTITY libdrm-md5sum        "07759750351465e5dd39f4fe40f000ea">
+  <!ENTITY libdrm-size          "464 KB">
+  <!ENTITY libdrm-buildsize     "8.2 MB (with tests)">
+  <!ENTITY libdrm-time          "0.1 SBU (with tests)">
   <!-- With version 2.4.102, the tests add 1 second to my build. -->
+  <!-- The 'threaded' test adds about 15 seconds if you're on an NVIDIA system
+       due to it directly interacting with the GPU. -->
 ]>
 
 <sect1 id="libdrm" xreflabel="libdrm-&libdrm-version;">
   <?dbhtml filename="libdrm.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
-  <title>libdrm-&libdrm-version;</title>
+  <title>Libdrm-&libdrm-version;</title>
 
   <indexterm zone="libdrm">
     <primary sortas="a-libdrm">libdrm</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to libdrm</title>
+    <title>Introduction to Libdrm</title>
 
     <para>
-      <application>libdrm</application> provides a user space library for
-      accessing the DRM, direct rendering manager, on operating systems that
-      support the ioctl interface. libdrm is a low-level library, typically used
+      <application>Libdrm</application> provides a userspace library for
+      accessing the direct rendering manager (DRM) on operating systems that
+      support the ioctl interface. Libdrm is a low-level library, typically used
       by graphics drivers such as the Mesa DRI drivers, the X drivers, libva and
       similar projects.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -99,7 +98,7 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of libdrm</title>
+    <title>Installation of Libdrm</title>
 
     <para>
       Install <application>libdrm</application> by running the following
@@ -112,7 +111,7 @@ cd    build &amp;&amp;
 meson --prefix=$XORG_PREFIX \
       --buildtype=release   \
       -Dudev=true           \
-      -Dvalgrind=false      &amp;&amp;
+      -Dvalgrind=disabled   &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -151,10 +150,10 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Dvalgrind=false</parameter>: This parameter disables building
-      libdrm with valgrind support. This fixes building sysprof and other
-      packages that use libdrm. Change this parameter to "true" if you need
-      support for valgrind.
+      <parameter>-Dvalgrind=disabled</parameter>: This parameter disables
+      building libdrm with valgrind support. This fixes building sysprof and
+      other packages that use libdrm. Change this parameter to "enabled"
+      (or remove it) if you need support for valgrind.
     </para>
 
   </sect2>
@@ -173,10 +172,11 @@ ninja</userinput></screen>
         </seg>
         <seg>
           libdrm_amdgpu.so, libdrm_intel.so, libdrm_nouveau.so,
-          libdrm_radeon.so, libdrm.so, and libkms.so
+          libdrm_radeon.so, and libdrm.so<!--, and libkms.so-->
         </seg>
         <seg>
-          /usr/include/libdrm, /usr/include/libkms, and /usr/share/libdrm
+           /usr/include/libdrm <!--,/usr/include/libkms,-->
+           and /usr/share/libdrm
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -249,6 +249,7 @@ ninja</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <!-- Removed in 2.4.111
       <varlistentry id="libkms">
         <term><filename class="libraryfile">libkms.so</filename></term>
         <listitem>
@@ -260,6 +261,7 @@ ninja</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+      -->
 
     </variablelist>
 

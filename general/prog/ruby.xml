@@ -6,18 +6,15 @@
 
   <!ENTITY ruby-download-http "https://cache.ruby-lang.org/pub/ruby/&ruby-minor-version;/ruby-&ruby-version;.tar.xz">
   <!ENTITY ruby-download-ftp  " ">
-  <!ENTITY ruby-md5sum        "7b770258fc3e1fafc5a8552212cb00e5">
+  <!ENTITY ruby-md5sum        "169bbbd82b7ced3d39a4be36f50db459">
   <!ENTITY ruby-size          "14 MB">
-  <!ENTITY ruby-buildsize     "577 MB (add 532 MB for C API docs)">
-  <!ENTITY ruby-time          "1.5 SBU (using parallelism=4; add 4.9 SBU for tests; add 0.8 SBU for C API docs)">
+  <!ENTITY ruby-buildsize     "574 MB (add 547 MB for C API docs)">
+  <!ENTITY ruby-time          "1.3 SBU (using parallelism=4; add 5.0 SBU for tests; add 0.5 SBU for C API docs)">
 ]>
 
 <sect1 id="ruby" xreflabel="Ruby-&ruby-version;">
   <?dbhtml filename="ruby.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Ruby-&ruby-version;</title>
 
@@ -34,7 +31,7 @@
       is useful for object-oriented scripting.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -110,13 +107,22 @@ make</userinput></screen>
 
     <para>
       To test the results, issue: <command>make check</command>. There are over
-      21,000 tests. Some tests related to ipv6 may indicate errors.  If the
+      25,000 tests. Some tests related to ipv6 may indicate errors.  If the
       tests are run in a directory that has a world writable component (e.g.
       /tmp) then several additional tests may fail. A few tests may fail due
       to system configuration expectations.
     </para>
 <!-- With 3.0.2:
-Finished tests in 443.541527s, 47.5739 tests/s, 6031.9921 assertions/s.                           21101 tests, 2675439 assertions, 4 failures, 1 errors, 45 skips -->
+Finished tests in 443.541527s, 47.5739 tests/s, 6031.9921 assertions/s.
+21101 tests, 2675439 assertions, 4 failures, 1 errors, 45 skips 
+
+with 3.2.0 there are several summaries:
+* PASS all 1789 tests
+* Finished tests in 6.815561s, 45.6309 tests/s, 264.2482 assertions/s.
+  311 tests, 1801 assertions, 0 failures, 0 errors, 12 skips
+* Finished tests in 462.613063s, 50.5649 tests/s, 12069.0885 assertions/s.
+  23392 tests, 5583318 assertions, 3 failures, 0 errors, 79 skips
+-->
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -124,13 +130,30 @@ Finished tests in 443.541527s, 47.5739 tests/s, 6031.9921 assertions/s.         
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+    <note>
+      <para>
+        If you have Ruby-On-Rails applications installed and did an
+        upgrade of <application>Ruby</application> by installing this
+        package, you might need to run an update there, too
+        (as the &root; user):
+      </para>
+
+<screen role="nodump"><userinput>cd /path/to/web/app
+bundle update rake</userinput></screen>
+
+      <para>
+        and restart the webserver which serves the application.
+      </para>
+
+    </note>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
-      <parameter>--enable-shared</parameter>: This switch enables building of
+      <parameter>--enable-shared</parameter>: This switch enables building
       the <filename class="libraryfile">libruby</filename> shared library.
     </para>
 
@@ -169,6 +192,7 @@ Finished tests in 443.541527s, 47.5739 tests/s, 6031.9921 assertions/s.         
           racc,
           rake,
           rbs,
+          rdbg,
           rdoc,
           ri,
           ruby, and
@@ -178,7 +202,7 @@ Finished tests in 443.541527s, 47.5739 tests/s, 6031.9921 assertions/s.         
           libruby.so
         </seg>
         <seg>
-          /usr/include/ruby-&ruby-minor-version;.0
+          /usr/include/ruby-&ruby-minor-version;.0,
           /usr/lib/ruby,
           /usr/share/doc/ruby-&ruby-version; and
           /usr/share/ri
@@ -219,8 +243,8 @@ Finished tests in 443.541527s, 47.5739 tests/s, 6031.9921 assertions/s.         
         <term><command>erb</command></term>
         <listitem>
           <para>
-            is Tiny eRuby. It interprets a
-            <application>Ruby</application> code embedded text file
+            is a command line front-end for eRuby, which provides a templating
+            system for <application>Ruby</application>
           </para>
           <indexterm zone="ruby erb">
             <primary sortas="b-erb">erb</primary>
@@ -232,8 +256,9 @@ Finished tests in 443.541527s, 47.5739 tests/s, 6031.9921 assertions/s.         
         <term><command>gem</command></term>
         <listitem>
           <para>
-            command for RubyGems - a sophisticated package manager for
-            <application>Ruby</application>
+            is the command for RubyGems, which is a sophisticated package
+            manager for <application>Ruby</application>. This is similar
+            to Python's 'pip' command
           </para>
           <indexterm zone="ruby gem">
             <primary sortas="b-gem">gem</primary>
@@ -258,10 +283,22 @@ Finished tests in 443.541527s, 47.5739 tests/s, 6031.9921 assertions/s.         
         <term><command>rake</command></term>
         <listitem>
           <para>
-            a make-like build utility for <application>Ruby</application>
+            is a make-like build utility for <application>Ruby</application>
           </para>
           <indexterm zone="ruby rake">
             <primary sortas="b-rake">rake</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="rdbg">
+        <term><command>rdbg</command></term>
+        <listitem>
+          <para>
+            is an interactive debugger for <application>Ruby</application>
+          </para>
+          <indexterm zone="ruby rdbg">
+            <primary sortas="b-rdbg">rdbg</primary>
           </indexterm>
         </listitem>
       </varlistentry>

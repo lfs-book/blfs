@@ -7,7 +7,7 @@
   <!ENTITY ntfs-3g-download-http
            "https://tuxera.com/opensource/ntfs-3g_ntfsprogs-&ntfs-3g-version;.tgz">
   <!ENTITY ntfs-3g-download-ftp  " ">
-  <!ENTITY ntfs-3g-md5sum        "90da343e78877d388eb34cefae6799ae">
+  <!ENTITY ntfs-3g-md5sum        "a038af61be7584b79f8922ff11244090">
   <!ENTITY ntfs-3g-size          "1.3 MB">
   <!ENTITY ntfs-3g-buildsize     "22 MB">
   <!ENTITY ntfs-3g-time          "0.2 SBU">
@@ -16,9 +16,6 @@
 <sect1 id="ntfs-3g" xreflabel="ntfs-3g-&ntfs-3g-version;">
   <?dbhtml filename="ntfs-3g.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>ntfs-3g-&ntfs-3g-version;</title>
 
@@ -31,8 +28,8 @@
 
     <note>
       <para id='ntfs3-kernel'>
-        A new read-write support for NTFS, called NTFS3, has been added
-        into Linux kernel since the 5.14 release.  The performance of NTFS3
+        A new read-write driver for NTFS, called NTFS3, has been added
+        into the Linux kernel since the 5.15 release. The performance of NTFS3
         is much better than ntfs-3g. To enable NTFS3, enable the following
         options in the kernel configuration and recompile the kernel if
         necessary:
@@ -46,11 +43,11 @@
     </indexterm>
 
       <para>
-        To ensure the <command>mount</command> command to use NTFS3 for
+        To ensure the <command>mount</command> command uses NTFS3 for
         ntfs partitions, create a wrapper script:
       </para>
 
-<screen role="nodump"><userinput>cat &gt;&gt; /usr/sbin/mount.ntfs &lt;&lt;"EOF" &amp;&amp;
+<screen role="nodump"><userinput>cat &gt; /usr/sbin/mount.ntfs &lt;&lt; "EOF" &amp;&amp;
 <literal>#!/bin/sh
 exec mount -t ntfs3 "$@"</literal>
 EOF
@@ -68,12 +65,12 @@ chmod -v 755 /usr/sbin/mount.ntfs</userinput></screen>
       read-write open source driver for NTFS partitions. NTFS partitions are
       used by most Microsoft operating systems. Ntfs-3g allows you to mount
       NTFS partitions in read-write mode from your Linux system. It uses the
-      FUSE kernel module to be able to implement NTFS support in user space.
+      FUSE kernel module to be able to implement NTFS support in userspace.
       The package also contains various utilities useful for manipulating NTFS
       partitions.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -175,7 +172,7 @@ make</userinput></screen>
       It's recommended to use the in-kernel NTFS3 driver for mounting
       NTFS filesystems, instead of ntfs-3g (see the note at the start of
       this page).  However, if you want to use ntfs-3g to mount the NTFS
-      filesystems anyway, create a symlink for <command>mount</command>
+      filesystems anyway, create a symlink for the <command>mount</command>
       command:
     </para>
 

@@ -6,18 +6,15 @@
 
   <!ENTITY glib2-download-http "&gnome-download-http;/glib/&glib2-minor;/glib-&glib2-version;.tar.xz">
   <!ENTITY glib2-download-ftp  "&gnome-download-ftp;/glib/&glib2-minor;/glib-&glib2-version;.tar.xz">
-  <!ENTITY glib2-md5sum        "fb613d21fabce3d3d8520f37d12bd473">
-  <!ENTITY glib2-size          "4.6 MB">
-  <!ENTITY glib2-buildsize     "131 MB (add 6 MB for tests)">
-  <!ENTITY glib2-time          "0.5 SBU (add 0.6 SBU for tests; both using parallelism=4)">
+  <!ENTITY glib2-md5sum        "a854964bbf295dcfa98afd210d7fbc39">
+  <!ENTITY glib2-size          "4.9 MB">
+  <!ENTITY glib2-buildsize     "140 MB (add 8 MB for tests)">
+  <!ENTITY glib2-time          "0.5 SBU (add 0.4 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="glib2" xreflabel="GLib-&glib2-version;">
   <?dbhtml filename="glib2.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>GLib-&glib2-version;</title>
 
@@ -35,7 +32,7 @@
       event loop, threads, dynamic loading and an object system.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,14 +83,15 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="libxslt"/> and
-      <xref linkend="pcre"/> (built with Unicode properties)
+      <xref linkend="pcre2"/> 
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="dbus"/> and
+      <xref linkend="dbus"/> (for some tests),
+      <xref linkend="fuse3"/> and
       <ulink url="https://bindfs.org/">bindfs</ulink>
-        (both may be used in some tests),
+        (both needed for one test),
       <xref linkend="gdb"/> (for bindings),
       <xref linkend="DocBook"/>,
       <xref linkend="docbook-xsl"/>,
@@ -132,7 +130,7 @@
       use this library, either  directly or indirectly via other libraries such
       as <xref linkend="gtk3"/>, output numerous warnings when run from the
       command line.  This patch enables the use of an environment variable,
-      <envar>GLIB_LOG_LEVEL</envar>, that supresses unwanted messages. The
+      <envar>GLIB_LOG_LEVEL</envar>, that suppresses unwanted messages. The
       value of the variable is a digit that corresponds to:
     </para>
 
@@ -202,7 +200,7 @@ ninja</userinput></screen>
 <screen role="root"><userinput>ninja install &amp;&amp;
 
 mkdir -p /usr/share/doc/glib-&glib2-version; &amp;&amp;
-cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-version;</userinput></screen>
+cp -r ../docs/reference/{gio,glib,gobject} /usr/share/doc/glib-&glib2-version;</userinput></screen>
 
     <para>
       You should now install <xref linkend="desktop-file-utils"/> and
@@ -210,11 +208,17 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
       run the test suite.
     </para>
 
+    <warning>
+      <para>
+        Do not run the test suite as &root; or some tests will fail
+        unexpectedly and leave some non-FHS-compliant directories in the
+        <filename class='directory'>/usr</filename> hierarchy.
+      </para>
+    </warning>
+
     <para>
       To test the results, after having installed the package, issue:
-      <command>ninja test</command>. One test named
-      <literal>gio / file</literal> is known to fail if the test is run as
-      the <systemitem class="username">root</systemitem> user.
+      <command>LC_ALL=C ninja test</command> as a non-&root; user.
       <!-- glib issue #1954: -->
       <!-- One test named gdbus-server-auth sometimes fails.-->
       <!-- SysV has the symlink now, so gdatetime no longer fails.-->
@@ -226,11 +230,20 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
       g_assert_true (*g_time_zone_get_identifier (tz) != '/');
 
       NOTE: systemd implements this as a hard requirement.  -->
-      <!-- with 2.60.4 on systemd, all tests pass. -->
+      <!-- one test, g-file-info-filesystem-readonly.c, needs both
+      bindfs and fusermount. With fuse3, you need to either create
+      a fusermount->fusermount3 symlink or alter the source of the
+      test so that fusermount3 is seeked and used. bindfs can be
+      built against fuse3. The test is skipped if the dependencies
+      are not found, and reported to pass.-->
       <!-- with 2.64.1 on sysV, all tests pass. -->
       <!-- with 2.70.1 on sysV, all tests pass. -->
+      <!-- with 2.70.2 on sysV, all tests pass. -->
+      <!-- with 2.72.3 on sysV, all tests pass. [pierre, July 2022] -->
+      <!-- with 2.74.0 on sysV, all tests pass. [bdubbs, Sep 2022] -->
+      <!-- with 2.74.3 on sysV, all tests pass. [pierre, Dec 2022] -->
     </para>
-
+<!-- 2.64 is two years old
     <para>
       Finally, if this is a reinstall from glib2-2.64.x or earlier, remove
       (as the <systemitem class="username">root</systemitem> user) an
@@ -238,7 +251,7 @@ cp -r ../docs/reference/{NEWS,gio,glib,gobject} /usr/share/doc/glib-&glib2-versi
     </para>
 
 <screen role="nodump"><userinput>rm -f /usr/include/glib-2.0/glib/gurifuncs.h</userinput></screen>
-
+-->
   </sect2>
 
   <sect2 role="commands">

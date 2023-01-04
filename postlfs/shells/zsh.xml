@@ -6,21 +6,18 @@
 
   <!ENTITY zsh-download-http "https://www.zsh.org/pub/zsh-&zsh-version;.tar.xz">
   <!ENTITY zsh-download-ftp  " ">
-  <!ENTITY zsh-md5sum        "e02a5428620b3dd268800c7843b3dd4d">
-  <!ENTITY zsh-size          "3.0 MB">
-  <!ENTITY zsh-buildsize     "72 MB (includes documentation and tests)">
-  <!ENTITY zsh-time          "1.3 SBU (Using parallelism=4; includes documentation and tests)">
+  <!ENTITY zsh-md5sum        "182e37ca3fe3fa6a44f69ad462c5c30e">
+  <!ENTITY zsh-size          "3.2 MB">
+  <!ENTITY zsh-buildsize     "48 MB (includes documentation and tests)">
+  <!ENTITY zsh-time          "1.6 SBU (Using parallelism=4; includes documentation and tests)">
 
-  <!ENTITY zsh-doc-md5sum    "ef8514401a81bb1a4c4b655ebda8a1a2">
+  <!ENTITY zsh-doc-md5sum    "8db53446f613521fb4f9b0bd9f6adda1">
   <!ENTITY zsh-doc-size      "3.0 MB">
 ]>
 
 <sect1 id="zsh" xreflabel="zsh-&zsh-version;">
   <?dbhtml filename="zsh.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>zsh-&zsh-version;</title>
 
@@ -39,7 +36,7 @@
       <application>ksh</application> but includes many enhancements.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -107,9 +104,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="libcap-pam"/>,
-      <xref linkend="pcre"/>, and
-      <xref linkend="valgrind"/>,
+      <xref linkend="pcre"/> and
+      <xref linkend="valgrind"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -140,9 +136,11 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr         \
-            --sysconfdir=/etc/zsh \
-            --enable-etcdir=/etc/zsh                  &amp;&amp;
+<screen><userinput>./configure --prefix=/usr            \
+            --sysconfdir=/etc/zsh    \
+            --enable-etcdir=/etc/zsh \
+            --enable-cap             \
+            --enable-gdbm                             &amp;&amp;
 make                                                  &amp;&amp;
 
 makeinfo  Doc/zsh.texi --plaintext -o Doc/zsh.txt     &amp;&amp;
@@ -206,12 +204,12 @@ install -v -m644 Doc/zsh.dvi /usr/share/doc/zsh-&zsh-version;</userinput></scree
     </para>
 
     <para>
-      <option>--enable-cap</option>: This option enables
+      <parameter>--enable-cap</parameter>: This option enables
       POSIX capabilities.
     </para>
 
     <para>
-      <option>--disable-gdbm</option>: This option disables the
+      <parameter>--enable-gdbm</parameter>: This option enables the
       use of the <application>GDBM</application> library.
     </para>
 

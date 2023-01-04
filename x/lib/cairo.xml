@@ -4,21 +4,19 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY cairo-download-http "https://www.cairographics.org/snapshots/cairo-&cairo-version;.tar.xz">
-  <!--<!ENTITY cairo-download-http "&sources-anduin-http;/cairo/cairo-&cairo-version;.tar.xz">-->
+  <!ENTITY cairo-download-http "&gnome-download-http;/cairo/&cairo-minor;/cairo-&cairo-version;.tar.xz">
+  <!--<!ENTITY cairo-download-http "https://www.cairographics.org/snapshots/cairo-&cairo-version;.tar.xz">
+  <!ENTITY cairo-download-http "&sources-anduin-http;/cairo/cairo-&cairo-version;.tar.xz">-->
   <!ENTITY cairo-download-ftp  " ">
-  <!ENTITY cairo-md5sum        "bf9d0d324ecbd350d0e9308125fa4ce0">
-  <!ENTITY cairo-size          "40 MB">
-  <!ENTITY cairo-buildsize     "154 MB">
-  <!ENTITY cairo-time          "0.8 SBU">
+  <!ENTITY cairo-md5sum        "c5a6f255af72a2e5faa8e6a53dd882e2">
+  <!ENTITY cairo-size          "33 MB">
+  <!ENTITY cairo-buildsize     "137 MB">
+  <!ENTITY cairo-time          "0.4 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="cairo" xreflabel="Cairo-&cairo-version;">
   <?dbhtml filename="cairo.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Cairo-&cairo-version;</title>
 
@@ -43,11 +41,11 @@
       B&eacute;zier splines, transforming and compositing translucent images,
       and antialiased text rendering. All drawing operations can be transformed
       by any
-      <ulink url="http://en.wikipedia.org/wiki/Affine_transformation">affine
+      <ulink url="https://en.wikipedia.org/wiki/Affine_transformation">affine
       transformation</ulink> (scale, rotation, shear, etc.).
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -112,11 +110,11 @@
       <xref linkend="poppler"/>,
       <xref linkend="qt5"/>,
       <xref linkend="valgrind"/>,
-      <ulink url="http://pkgs.fedoraproject.org/repo/pkgs/directfb/">DirectFB</ulink>,
+      <ulink url="https://pkgs.fedoraproject.org/repo/pkgs/directfb/">DirectFB</ulink>,
       <ulink url="https://github.com/rillian/jbig2dec/">jbig2dec</ulink>,
       <ulink url="https://www.freedesktop.org/wiki/Software/libspectre/">libspectre</ulink>,
       <ulink url="https://skia.org/">Skia</ulink>, and
-      <ulink url="http://download.qt.io/archive/qt/4.8/">Qt4</ulink>.
+      <ulink url="https://download.qt.io/archive/qt/4.8/">Qt4</ulink>.
     </para>
 
     <note>
@@ -135,6 +133,21 @@
   <sect2 role="installation">
     <title>Installation of Cairo</title>
 
+    <!-- /usr/include/ansidecl.h says "This file is part of the GNU C
+    Library", but it's actually installed by Binutils.  -->
+    <para>
+      Adapt this package for Binutils-2.39 or later:
+    </para>
+
+<screen><userinput>sed 's/PTR/void */' -i util/cairo-trace/lookup-symbol.c</userinput></screen>
+
+    <para>
+      Fix a pkg-config file that may cause errors later:
+    </para>
+
+<screen><userinput>sed -e "/@prefix@/a exec_prefix=@exec_prefix@" \
+    -i util/cairo-script/cairo-script-interpreter.pc.in</userinput></screen>
+
     <para>
       Install <application>Cairo</application> by running the following
       commands:
@@ -146,7 +159,7 @@
 make</userinput></screen>
 
     <para>
-      This package does not have a working testsuite.
+      This package does not have a working test suite.
       <!-- The test suite can be run with 'make check', but 488 tests fail and
       59 tests pass. This seems to be due to minute changes in the expected
       output, similar to librsvg's tests. Since it's a huge chunk of the tests,

@@ -7,18 +7,15 @@
   <!ENTITY gst10-plugins-ugly-download-http
            "&gstreamer-dl;/gst-plugins-ugly/gst-plugins-ugly-&gst10-plugins-ugly-version;.tar.xz">
   <!ENTITY gst10-plugins-ugly-download-ftp  " ">
-  <!ENTITY gst10-plugins-ugly-md5sum        "049f90b7a3a72e241ad47564b5cd7a7a">
+  <!ENTITY gst10-plugins-ugly-md5sum        "a1e665c39d446cfdf69190b3397c76da">
   <!ENTITY gst10-plugins-ugly-size          "504 KB">
   <!ENTITY gst10-plugins-ugly-buildsize     "11 MB (with tests)">
-  <!ENTITY gst10-plugins-ugly-time          "0.1 SBU (with tests)">
+  <!ENTITY gst10-plugins-ugly-time          "less than 0.1 SBU (with tests)">
 ]>
 
 <sect1 id="gst10-plugins-ugly" xreflabel="gst-plugins-ugly-&gst10-plugins-ugly-version;">
   <?dbhtml filename="gst10-plugins-ugly.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gst-plugins-ugly-&gst10-plugins-ugly-version;</title>
 
@@ -38,7 +35,7 @@
       be widely known to present patent problems.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -110,10 +107,10 @@
 
   <sect2 role="installation">
     <title>Installation of GStreamer Ugly Plug-ins</title>
-
+    <!--
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gst10-objc-error.xml"/>
-
+    -->
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gst10-plugins.xml"/>
 
@@ -127,8 +124,9 @@ cd    build &amp;&amp;
 
 meson  --prefix=/usr       \
        --buildtype=release \
-       -Dpackage-origin=https://www.linuxfromscratch.org/blfs/view/svn/ \
-       -Dpackage-name="GStreamer &gst10-plugins-good-version; BLFS" &amp;&amp;
+       -Dgpl=enabled       \
+       -Dpackage-origin=https://www.linuxfromscratch.org/blfs/view/&blfs-version;/ \
+       -Dpackage-name="GStreamer &gst10-plugins-ugly-version; BLFS" &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -147,6 +145,11 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <para>
+      <parameter>-Dgpl=enabled</parameter>: Without this switch, plugins with
+      dependencies on (A)GPL licensed libraries are not built.
+    </para>
   </sect2>
 
   <sect2 role="content">
@@ -165,7 +168,7 @@ ninja</userinput></screen>
           Several plugins under /usr/lib/gstreamer-1.0
         </seg>
         <seg>
-          /usr/share/gstreamer-1.0/presets
+          None
         </seg>
       </seglistitem>
     </segmentedlist>

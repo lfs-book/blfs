@@ -6,8 +6,8 @@
 
   <!ENTITY subversion-download-http "https://archive.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">
   <!ENTITY subversion-download-ftp  " ">
-  <!ENTITY subversion-md5sum        "2eccc2c7451397e01a13682600af9563">
-  <!ENTITY subversion-size          "8.1 MB">
+  <!ENTITY subversion-md5sum        "9927b167d1c67d663ca63125907f6f69">
+  <!ENTITY subversion-size          "8.3 MB">
   <!-- for 1.12.0                    1.12.2         1.13.0
        make javahl: 0.5 SBU  28 MB; not avail
        swig-pl:     0.8      42 MB; 0.7 SBU  43 MB; 0.6 SBU 44 MB
@@ -22,9 +22,6 @@
 <sect1 id="subversion" xreflabel="Subversion-&subversion-version;">
   <?dbhtml filename="subversion.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Subversion-&subversion-version;</title>
 
@@ -46,7 +43,7 @@
       a repository is covered at <xref linkend="svnserver"/>.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,7 +84,7 @@
       <listitem>
         <para>
           Required patch for building with <xref linkend="apr"/>:
-	  <ulink url="&patch-root;/subversion-&subversion-version;-apr_1.7.0_fix-1.patch"/>
+          <ulink url="&patch-root;/subversion-&subversion-version;-apr_1.7.0_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -134,13 +131,13 @@
       <xref linkend="ruby"/>,
       <xref linkend="swig"/> (for building Perl, Python and Ruby bindings),
       <ulink url="https://github.com/lz4/lz4/releases">LZ4</ulink>, and
-      <ulink url="http://git.netsurf-browser.org/libutf8proc.git/">UTF8proc</ulink>
+      <ulink url="https://git.netsurf-browser.org/libutf8proc.git/">UTF8proc</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional (for the Java Bindings)</bridgehead>
     <para role="optional">
       One of <xref linkend="openjdk"/>,
-      <ulink url="http://www.inet.no/dante/">Dante</ulink> or
+      <ulink url="https://www.inet.no/dante/">Dante</ulink> or
       <ulink url="http://jikes.sourceforge.net/">Jikes</ulink>,
       <ulink url="https://junit.org/junit4/">JUnit 4</ulink> (to test the Java bindings) and
       <xref linkend="apache-ant"/>.
@@ -214,7 +211,7 @@ make</userinput></screen>
       separately. To build the Java bindings, issue the following command:
     </para>
     <para>
-      <screen><command>make javahl</command></screen>
+      <screen><command>make -j1 javahl</command></screen>
     </para>
 
     <para>
@@ -235,20 +232,6 @@ make</userinput></screen>
       the <filename>commit_tests.py</filename>,
       <filename>prop_tests.py</filename>, and
       <filename>update_tests.py</filename> suites are known to fail.
-    </para>
-
-    <para>
-      To test the results of the Java bindings build,
-      issue <command>LANG=C make check-javahl</command>.
-      <!-- ~~ This explanation is added to the configure above ~~
-      The <application>JUnit</application> testing framework must be installed,
-      and the location of the JUnit jar has to be specified by passing the
-      <option>- -with-junit=&lt;path to junit jar&gt;</option> parameter to
-      <command>configure</command>. Note that <application>JUnit</application>
-      is included in <xref linkend="apache-ant"/>, and can be accessed by
-      passing <option>- -with-junit=/opt/ant/lib/junit-4.12.jar</option>
-      to <command>configure</command>.
-      -->
     </para>
 
     <para>
@@ -291,6 +274,21 @@ cp      -v -R doc/* /usr/share/doc/subversion-&subversion-version;</userinput></
 <command>make install-swig-rb</command></screen>
     </para>
 
+    <para>
+      The java bindings need to be installed in order for the tests to run,
+      since the tests attempt to look for them in CLASSPATH. To test the
+      results of the Java bindings build, issue
+      <command>LANG=C make check-javahl</command>.
+      <!-- ~~ This explanation is added to the configure above ~~
+      The <application>JUnit</application> testing framework must be installed,
+      and the location of the JUnit jar has to be specified by passing the
+      <option>- -with-junit=&lt;path to junit jar&gt;</option> parameter to
+      <command>configure</command>. Note that <application>JUnit</application>
+      is included in <xref linkend="apache-ant"/>, and can be accessed by
+      passing <option>- -with-junit=/opt/ant/lib/junit-4.12.jar</option>
+      to <command>configure</command>.
+      -->
+    </para>
   </sect2>
 
   <sect2 role="commands">

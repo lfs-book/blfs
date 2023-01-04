@@ -6,20 +6,17 @@
 
   <!ENTITY certhost              "https://hg.mozilla.org/">
   <!ENTITY certpath              "/lib/ckfw/builtins/certdata.txt">
-  <!ENTITY make-ca-buildsize     "6.6 MB (with all runtime deps)">
+  <!ENTITY make-ca-buildsize     "6.9 MB (with all runtime deps)">
   <!ENTITY make-ca-time          "0.1 SBU (with all runtime deps)">
 
   <!ENTITY make-ca-download      "https://github.com/lfs-book/make-ca/releases/download/v&make-ca-version;/make-ca-&make-ca-version;.tar.xz">
-  <!ENTITY make-ca-size          "30 KB">
-  <!ENTITY make-ca-md5sum        "68c8625c9456815ed17e4f2219c79372">
+  <!ENTITY make-ca-size          "36 KB">
+  <!ENTITY make-ca-md5sum        "67e0b911e73a859fc326171c5153d455">
 ]>
 
 <sect1 id="make-ca" xreflabel="make-ca-&make-ca-version;">
   <?dbhtml filename="make-ca.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>make-ca-&make-ca-version;</title>
   <indexterm zone="make-ca">
@@ -51,7 +48,7 @@
         url="https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/">here</ulink>.
     </para>
 
-  &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -137,9 +134,11 @@ install -vdm755 /etc/ssl/local</userinput></screen>
     <note>
       <para>
         If running the script a second time with the same version of
-        <filename>certdata.txt</filename>, for instance, to add additional
-        stores as the requisite software is installed, add the
-        <parameter>-r</parameter> switch to the command line. If packaging,
+        <filename>certdata.txt</filename>, for instance, to update the
+        stores when <application>make-ca</application> is upgraded, or to
+        add additional stores as the requisite software is installed,
+        replace the <parameter>-g</parameter> switch with the
+        <parameter>-r</parameter> switch in the command line. If packaging,
         run <command>make-ca --help</command> to see all available command
         line options.
       </para>
@@ -184,7 +183,8 @@ chmod 754 /etc/cron.weekly/update-pki.sh</userinput></screen>
       Mozilla products in this book. RedHat and OpenSUSE, for instance, use the
       version included in <xref linkend="nss"/>. Additional upstream downloads
       are available at the links included in
-      <filename>/etc/make-ca.conf.dist</filename>. Simply copy the file to
+      <filename>/etc/make-ca/make-ca.conf.dist</filename>. Simply copy the
+      file to
       <filename>/etc/make-ca.conf</filename> and edit as appropriate.
     </para>
 
@@ -272,6 +272,69 @@ openssl x509 -in class3.crt -text -fingerprint -setalias "CAcert Class 3 root" \
              -addreject codeSigning \
        > /etc/ssl/local/Disabled_Makebelieve_CA_Root.pem &amp;&amp;
 /usr/sbin/make-ca -r</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="configuration" id="make-ca-python">
+    <title>Using make-ca with Python3</title>
+
+    <para>
+      When <application>Python3</application> was installed in LFS it included
+      the <application>pip3</application> module with vendored certificates
+      from the <application>Certifi</application> module. That was necessary,
+      but it means that whenever <command>pip3</command> is used it can reference
+      those certificates, primarily when creating a virtual environment or when
+      installing a module with all its wheel dependencies in one go.
+    </para>
+
+    <para>
+      It is generally considered that the System Administrator should be in
+      charge of which certificates are available. Now that <xref
+      linkend="make-ca"/> and <xref linkend="p11-kit"/> have been installed and
+      <application>make-ca</application> has been configured, it is possible to
+      make <command>pip3</command> use the system certificates.
+    </para>
+
+    <para>
+      The vendored certificates installed in LFS are a snapshot from when the
+      pulled-in version of <application>Certifi</application> was created. If
+      you regularly update the system certificates, the vendored version will
+      become out of date.
+    </para>
+
+    <para>
+      To use the system certificates in <application>Python3</application> you
+      should set <envar>_PIP_STANDALONE_CERT</envar> to point to them, e.g for
+      the <application>bash</application> shell:
+    </para>
+
+<screen><userinput>export _PIP_STANDALONE_CERT=/etc/pki/tls/certs/ca-bundle.crt</userinput></screen>
+
+    <warning>
+      <para>
+        If you have created virtual environments, for example when testing modules,
+        and those include the <application>Requests</application> and
+        <application>Certifi</application> modules in <filename
+        class="directory">~/.local/lib/python3.11/</filename> then those local
+        modules will be used instead of the system certificates unless you
+        remove the local modules.
+      </para>
+    </warning>
+
+    <para>
+      To use the system certificates in <application>Python3</application> with
+      the BLFS profiles add the following variable to your system or personal
+      profiles:
+    </para>
+
+<screen role="root"><userinput>mkdir -pv /etc/profile.d &amp;&amp;
+cat &gt; /etc/profile.d/pythoncerts.sh &lt;&lt; "EOF"
+<literal># Begin /etc/profile.d/pythoncerts.sh
+
+export _PIP_STANDALONE_CERT=/etc/pki/tls/certs/ca-bundle.crt
+
+# End /etc/profile.d/pythoncerts.sh</literal>
+EOF</userinput></screen>
 
   </sect2>
 

@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY tracker3-miners-download-http "&gnome-download-http;/tracker-miners/3.1/tracker-miners-&tracker3-miners-version;.tar.xz">
-  <!ENTITY tracker3-miners-download-ftp  "&gnome-download-ftp;/tracker-miners/3.1/tracker-miners-&tracker3-miners-version;.tar.xz">
-  <!ENTITY tracker3-miners-md5sum        "51978c7f6ba10dfda2ad377f3ded85f1">
-  <!ENTITY tracker3-miners-size          "3.9 MB">
-  <!ENTITY tracker3-miners-buildsize     "37 MB (with tests)">
-  <!ENTITY tracker3-miners-time          "1.0 SBU (with tests)">
+  <!ENTITY tracker3-miners-download-http "&gnome-download-http;/tracker-miners/3.4/tracker-miners-&tracker3-miners-version;.tar.xz">
+  <!ENTITY tracker3-miners-download-ftp  "&gnome-download-ftp;/tracker-miners/3.4/tracker-miners-&tracker3-miners-version;.tar.xz">
+  <!ENTITY tracker3-miners-md5sum        "119d6a87829e9d80c1635bedb56312bd">
+  <!ENTITY tracker3-miners-size          "6.9 MB">
+  <!ENTITY tracker3-miners-buildsize     "36 MB (with tests)">
+  <!ENTITY tracker3-miners-time          "0.4 SBU (with parallelism=4; add 1.0 SBU for tests, dependent on disk speed)">
 ]>
 
 <sect1 id="tracker3-miners" xreflabel="tracker-miners-&tracker3-miners-version;">
   <?dbhtml filename="tracker3-miners.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Tracker-miners-&tracker3-miners-version;</title>
 
@@ -33,7 +30,7 @@
       data extractors for Tracker.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,12 +78,15 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="ffmpeg"/>,
       <xref linkend="giflib"/>,
+      <xref linkend="gst10-plugins-base"/>,
+      <xref role='runtime' linkend="gst10-plugins-good"/> (runtime),
+      <xref role='runtime' linkend="gst10-libav"/> (runtime),
       <xref linkend="icu"/>,
       <xref linkend="libexif"/>,
       <xref linkend="libgrss"/>,
-      <xref linkend="libgxps"/>, and
+      <xref linkend="libgxps"/>,
+      <xref linkend="libseccomp"/>, and
       <xref linkend="poppler"/>
     </para>
 
@@ -95,8 +95,8 @@
       <xref linkend="asciidoc"/>,
       <xref linkend="cmake"/>,
       <xref linkend="dconf"/>,
+      <xref linkend="ffmpeg"/>,
       <xref linkend="libgsf"/>,
-      <xref linkend="libseccomp"/>,
       <xref linkend="taglib"/>,
       <xref linkend="totem-pl-parser"/>,
       <xref linkend="upower"/>,
@@ -116,6 +116,7 @@
   <sect2 role="installation">
     <title>Installation of Tracker-miners</title>
 
+<!--
     <para>
       First, as the <systemitem class="username">root</systemitem> user,
       remove some files from tracker-2 which will conflict with
@@ -123,6 +124,25 @@
     </para>
 
 <screen role="root"><userinput remap="pre">rm -fv /etc/xdg/autostart/tracker-miner-*</userinput></screen>
+-->
+
+    <note>
+      <para>
+        If you plan to run the tests, some timeouts are too short when
+        using spinning disks. There are two places where timeouts are
+        used: first, individual tests inside a group of tests have a
+        default timeout of 10s. This can be changed by setting the environment
+        variable <envar>TRACKER_TESTS_AWAIT_TIMEOUT</envar> to the desired
+        value when running the tests (see below). Second, a global timeout
+        for a group of tests is fixed at configuration time. The default value
+        in the <filename class="directory">functional-tests</filename>
+        directory (other directories have only short lived tests) may be
+        increased with the following command (replace 200 with a value
+        suitable for your machine):
+      </para>
+
+<screen remap="test"><userinput>sed -i s/120/<replaceable>200</replaceable>/ tests/functional-tests/meson.build</userinput></screen>
+    </note>
 
     <para>
       Install <application>Tracker-miners</application> by running the following
@@ -146,10 +166,19 @@ meson --prefix=/usr                 \
 ninja</userinput></screen>
 
     <para>
-      To test the results, as the <systemitem class="username">root</systemitem>
-      user, issue: <command>ninja test</command>. <!-- 38 tests will fail if the
-      Python 3 module tap.py is not installed. -->
+      To test the results, issue (adjust the individual test timeout to a
+      value suitable for your machine, see the note above):
     </para>
+
+<screen remap="test"><userinput>dbus-run-session env TRACKER_TESTS_AWAIT_TIMEOUT=<replaceable>20</replaceable> ninja test &amp;&amp;
+rm -rf ~/tracker-tests</userinput></screen>
+
+    <note>
+      <para>
+        The tests create files in the user directory (up to 24 MB), so
+        they have to be removed afterwards.
+      </para>
+    </note>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:

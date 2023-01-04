@@ -6,22 +6,19 @@
 
   <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "2245f5b1258b782702ad644c5e9d2857">
-  <!ENTITY samba-size          "18 MB">
-  <!ENTITY samba-buildsize     "628 MB (add 210 MB for quicktest)">
-  <!ENTITY samba-time          "2.1 SBU (using parallelism=4; add 3.4 SBU for quicktest)">
+  <!ENTITY samba-md5sum        "19fda231295a8c5f93ca8c75e695abbf">
+  <!ENTITY samba-size          "29 MB">
+  <!ENTITY samba-buildsize     "627 MB (add 36 MB for quicktest)">
+  <!ENTITY samba-time          "2.4 SBU (using parallelism=4; add 0.6 SBU for quicktest)">
 ]>
 <!-- [pierre 2021-11-11]: quick test seems to be much smaller than previously.
      I'll update anyway since this is a high priority release: feel free
      to update figures. I seem to have all the optional dependencies that
-     are in the book, in addition to the python venv as setup in the
+     are in the book, in addition to the python venv as set up in the
      instructions below. -->
 <sect1 id="samba" xreflabel="Samba-&samba-version;">
   <?dbhtml filename="samba.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Samba-&samba-version;</title>
 
@@ -41,7 +38,7 @@
       nameserver (which among other things provides LAN browsing support).
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,6 +80,7 @@
     <para role="required">
       <xref linkend="gnutls"/>,
       <xref linkend="jansson"/>,
+      <xref linkend="perl-json"/>,
       <xref linkend="libtirpc"/>,
       <xref linkend="lmdb"/>, and
       <xref linkend="rpcsvc-proto"/>
@@ -110,12 +108,13 @@
       <xref linkend="cyrus-sasl"/>,
       <xref linkend="gdb"/>,
       <xref linkend="git"/>,
-      <xref linkend="gnupg2"/> (required for ADS and testsuite),
+      <xref linkend="gnupg2"/> (required for ADS and test suite),
       <xref linkend="libaio"/>,
       <xref linkend="libarchive"/>,
       <xref linkend="libcap-pam"/>,
       <xref linkend="libgcrypt"/>,
       <xref linkend="libnsl"/>,
+      <xref linkend="libunwind"/>,
       <xref linkend="mitkrb"/>,
       <xref linkend="nss"/>,
       <xref linkend="popt"/>,
@@ -130,14 +129,13 @@
       <ulink url="https://cwrap.org/">cwrap</ulink>,
       <ulink url="&pypi;/dnspython/">dnspython</ulink>,
       <ulink url="https://packages.debian.org/stretch/fam">FAM</ulink>,
-      <ulink url="https://people.gnome.org/~veillard/gamin/">Gamin</ulink>,
+      <ulink url="https://packages.debian.org/sid/gamin">Gamin</ulink>,
       <ulink url="https://www.gluster.org/">GlusterFS</ulink>,
       <ulink url="https://github.com/heimdal/">Heimdal</ulink> (included),
       <ulink url="https://pypi.org/project/iso8601/">iso8601</ulink>,
-      <ulink url="http://www.nongnu.org/libunwind/">libunwind</ulink>,
       <ulink url="https://ldb.samba.org/">ldb</ulink> (included),
       <ulink url="&pypi;/m2crypto">M2Crypto</ulink> (required for ADS),
-      <ulink url="http://www.openafs.org/">OpenAFS</ulink>,
+      <ulink url="https://www.openafs.org/">OpenAFS</ulink>,
       <ulink url="https://pypi.org/project/pyasn1/">pyasn1</ulink>,
       <ulink url="&pypi;/pygpgme/">PyGPGME</ulink> (recommended for ADS),
       <ulink url="https://tevent.samba.org/">tevent</ulink> (included),
@@ -188,19 +186,18 @@
 <screen><userinput remap="pre">python3 -m venv pyvenv &amp;&amp;
 ./pyvenv/bin/pip3 install cryptography pyasn1 iso8601</userinput></screen>
 
+    <!-- To editors: with the following "fix", the test suite reports "4
+         unexpected passes" for me.  If those tests still fail on some
+         systems, uncomment *and* change "knownfail" to "skip" to silence
+         the related tests.  -->
+
+<!--
     <para>
       Fix a test that always fails:
     </para>
 
 <screen><userinput>echo "^samba4.rpc.echo.*on.*ncacn_np.*with.*object.*nt4_dc" >> selftest/knownfail</userinput></screen>
-
-    <para>
-      Fix a known regression with Samba-4.15.2:
-    </para>
-
-<screen><userinput remap="pre">sed -e 's/!is_allowed/secure_channel_type == SEC_CHAN_NULL \&amp;\&amp; &amp;/' \
-    -i source3/winbindd/winbindd_util.c</userinput></screen>
-
+-->
     <para>
       Install <application>Samba</application> by running the following
       commands:
@@ -242,14 +239,13 @@ make</userinput></screen>
       suite will produce lines that look like failures, but these are innocuous.
       The last few lines of output should report <emphasis>"ALL OK"</emphasis>
       for a good test run. A summary of any failures can be found in
-      <filename class="directory">./st/summary</filename>. With Samba-4.14.4,
-      many tests are known to fail.
+      <filename class="directory">./st/summary</filename>.
     </para>
 
     <!--
       If doing a security update or a new minor version (point releases do not
       apply here), run 'make testenv' before running 'make test' and 'make
-      subunit-test'. This will setup the test environment and make the tests
+      subunit-test'. This will set up the test environment and make the tests
       run faster, as well as point out any glaring issues that might affect
       the new Samba installation. With 4.10.4, I got 236 failures, 73 errors,
       and 2 unexpected successes. These were all known upstream, and you can
@@ -327,7 +323,7 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       <parameter>--without-ad-dc</parameter>: Disables
       Active Directory Domain Controller functionality. See <ulink url=
       "https://wiki.samba.org/index.php/Setup_a_Samba_Active_Directory_Domain_Controller">
-      Setup a Samba Active Directory Domain Controller</ulink> for detailed
+      Set up a Samba Active Directory Domain Controller</ulink> for detailed
       information. Remove this switch if you've installed the Python modules
       needed for ADS support. Note that BLFS does not provide a samba bootscript
       or systemd unit for an Active Directory domain controller.
@@ -423,7 +419,7 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
           instead of copying and editing the default file as mentioned in the
           <quote>Command Explanations</quote> section. How you create/edit the
           <filename>/etc/samba/smb.conf</filename> file will be left up to
-          you. Do ensure the file is only writeable by the
+          you. Do ensure the file is only writable by the
           <systemitem class="username">root</systemitem> user (mode 644).
         </para>
       </note>
@@ -725,7 +721,8 @@ systemctl start smbd.socket</userinput></screen>
           ldbadd, ldbdel, ldbedit, ldbmodify, ldbrename, ldbsearch, locktest,
           masktest, mdsearch, mvxattr, ndrdump, net, nmbd, nmblookup, ntlm_auth,
           oLschema2ldif, pdbedit, profiles, regdiff, regpatch, regshell,
-          regtree, rpcclient, samba (in /usr/libexec), samba-gpupdate,
+          regtree, rpcclient, <!--samba,--> samba-gpupdate,
+           <!-- with 4.15.3, 'samba' is in /sbin -->
           samba-regedit, samba-tool, sharesec, smbcacls,
           smbclient, smbcontrol, smbcquotas, smbd, smbget, smbpasswd, smbspool,
           smbstatus, smbtar, smbtorture, smbtree,
@@ -734,7 +731,7 @@ systemctl start smbd.socket</userinput></screen>
 
         <seg>
           libdcerpc-binding.so, libdcerpc-samr.so,
-          libdcerpc-server-core.so, libdcerpc-server.so, libdcerpc.so,
+          libdcerpc-server-core.so, <!--libdcerpc-server.so,--> libdcerpc.so,
           libndr-krb5pac.so, libndr-nbt.so, libndr.so,
           libndr-standard.so, libnetapi.so, libnss_winbind.so, libnss_wins.so,
           libsamba-credentials.so, libsamba-errors.so,
@@ -749,7 +746,7 @@ systemctl start smbd.socket</userinput></screen>
         <seg>
           /etc/samba, /run/samba, /usr/include/samba-4.0,
           /usr/lib/python&python3-majorver;/site-packages/samba,
-          /usr/libexec/samba, /usr/{lib,share}/samba,
+          /usr/{lib,libexec,share}/samba,
           and /var/{cache,lib,lock,log,run}/samba
         </seg>
 
@@ -1109,6 +1106,7 @@ systemctl start smbd.socket</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- Removed in 4.17.0
       <varlistentry id="samba-prog">
         <term><command>samba</command></term>
         <listitem>
@@ -1121,6 +1119,7 @@ systemctl start smbd.socket</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="samba-gpupdate">
         <term><command>samba-gpupdate</command></term>
@@ -1262,7 +1261,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbspool</command></term>
         <listitem>
           <para>
-            sends a print job to an SMB printer
+            sends a print job to a SMB printer
           </para>
           <indexterm zone="samba smbspool">
             <primary sortas="b-smbspool">smbspool</primary>
@@ -1287,7 +1286,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a shell script used for backing up SMB/CIFS shares
-            directly to Linux tape drives or a file
+            directly to Linux tape drives or to a file
           </para>
           <indexterm zone="samba smbtar">
             <primary sortas="b-smbtar">smbtar</primary>
@@ -1299,7 +1298,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbtorture</command></term>
         <listitem>
           <para>
-            is  a testsuite that runs several tests against a SMB server
+            is  a test suite that runs several tests against a SMB server
           </para>
           <indexterm zone="samba smbtorture">
             <primary sortas="b-smbtorture">smbtorture</primary>

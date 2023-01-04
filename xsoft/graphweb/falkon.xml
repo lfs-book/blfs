@@ -4,22 +4,19 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY falkon-download-http "https://download.kde.org/stable/falkon/&falkon-major-version;/falkon-&falkon-version;.tar.xz">
+  <!ENTITY falkon-download-http "&kf5apps-download-http;/falkon-&kf5apps-version;.tar.xz">
   <!ENTITY falkon-download-ftp  " ">
-  <!ENTITY falkon-md5sum        "9255fb335d3ba361dea44b7b297ddf7d">
-  <!ENTITY falkon-size          "2.2 MB">
-  <!ENTITY falkon-buildsize     "60 MB (without optional dependencies)">
-  <!ENTITY falkon-time          "2.2 SBU (Using parallelism=4)">
+  <!ENTITY falkon-md5sum        "fe5dd8e1fae06c4e9ac0332e78848009">
+  <!ENTITY falkon-size          "2.4 MB">
+  <!ENTITY falkon-buildsize     "129 MB">
+  <!ENTITY falkon-time          "1.2 SBU (Using parallelism=4)">
 ]>
 
-<sect1 id="falkon" xreflabel="falkon-&falkon-version;">
+<sect1 id="falkon" xreflabel="falkon-&kf5apps-version;">
   <?dbhtml filename="falkon.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
-  <title>Falkon-&falkon-version;</title>
+  <title>Falkon-&kf5apps-version;</title>
 
   <indexterm zone="falkon">
     <primary sortas="a-falkon">falkon</primary>
@@ -56,7 +53,7 @@
       </para>
     </warning>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -96,18 +93,26 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="extra-cmake-modules"/> <!-- and
-      <xref linkend="qtwebengine"/>-->
+      <xref linkend="extra-cmake-modules"/>,
+      <xref linkend="kf5-frameworks"/> (for karchive), and
+      <xref linkend="qtwebengine"/>
     </para>
+
+    <note>
+      <para>
+        Strictly speaking, only karchive is required to build falkon,
+        but several other packages in KF5 can be used if they are present. To
+        build only karchive, download that package from the directory specified
+        in <xref linkend="kf5-frameworks"/> and use the build instructions on
+        that page changing the $KF5_PREFIX to /usr.
+      </para>
+    </note>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gnome-keyring"/>,
-      <xref linkend="kf5-frameworks"/> and
-      <ulink
-      url="http://download.qt.io/official_releases/QtForPython/pyside2/">PySide2</ulink>
-      for experimental <application>Python</application> plugins (compiling this from
-      source is very slow).
+      <ulink url="https://pypi.org/project/PySide2/">PySide2</ulink>, and
+      <ulink url="https://pypi.org/project/shiboken2/">Shiboken2</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -117,43 +122,10 @@
 
   <sect2 role="installation">
     <title>Installation of falkon</title>
-<!--
-    <para>
-      To set the prefix to match KDE (if that has been installed), or
-      else to install in <filename class="directory">/usr</filename>
-      run:
-    </para>
 
-<screen><userinput>test -n "${KF5_PREFIX}" &amp;&amp; export FALKON_PREFIX=${KF5_PREFIX} ||
-  export FALKON_PREFIX=/usr</userinput></screen>
--->
     <para>
       Install <application>falkon</application> by running the following
       commands:
-    </para>
-
-    <para>
-      Unless you have installed both PySide2 and ki18n, remove the translations
-      for the sample <command>hellopython.py</command> script:
-    </para>
-
-<screen><userinput>rm -rf po/</userinput></screen>
-
-    <para>
-      Fix a missing include in Qt-5.14:
-    </para>
-
-<screen><userinput>sed -i '/#include &lt;QSettings&gt;/a#include &lt;QFile&gt;' \
-   src/plugins/VerticalTabs/verticaltabsplugin.cpp</userinput></screen>
-
-    <para>
-      Fix a build problem introduced in Qt-5.15:
-    </para>
-<screen><userinput remap="pre">sed -i '/#include &lt;QPainter&gt;/a #include &lt;QPainterPath&gt;' \
-   src/lib/tools/qztools.cpp</userinput></screen>
-
-    <para>
-      Now build the program:
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
@@ -179,7 +151,7 @@ make</userinput></screen>
 
     <para>
       If you have installed <application>Pyside2</application> you will want to
-      examine the <command>hellopython.py</command> which is in the <filename
+      examine <command>hellopython.py</command> which is in the <filename
       class="directory">scripts/</filename> directory, and perhaps copy it to
       your home directory.
     </para>
@@ -212,7 +184,7 @@ make</userinput></screen>
           libFalkonPrivate.so.3
         </seg>
         <seg>
-          ${FALKON_PREFIX}/lib/plugins, ${FALKON_PREFIX}/share/falkon.
+          /usr/share/falkon
         </seg>
       </seglistitem>
     </segmentedlist>

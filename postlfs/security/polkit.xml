@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY polkit-download-http "https://www.freedesktop.org/software/polkit/releases/polkit-&polkit-version;.tar.gz">
+  <!ENTITY polkit-download-http "https://gitlab.freedesktop.org/polkit/polkit/-/archive/&polkit-version;/polkit-&polkit-version;.tar.gz">
   <!ENTITY polkit-download-ftp  " ">
-  <!ENTITY polkit-md5sum        "a6efe21d021fafe4191ee30331ef801c">
-  <!ENTITY polkit-size          "1.6 MB">
-  <!ENTITY polkit-buildsize     "12 MB">
-  <!ENTITY polkit-time          "0.1 SBU (Using parallelism=4)">
+  <!ENTITY polkit-md5sum        "bbe3e745fc5bc1a41f1b5044f09a0f26">
+  <!ENTITY polkit-size          "728 KB">
+  <!ENTITY polkit-buildsize     "7.0 MB (with tests)">
+  <!ENTITY polkit-time          "0.3 SBU (with tests, using parallelism=4)">
 ]>
 
 <sect1 id="polkit" xreflabel="Polkit-&polkit-version;">
   <?dbhtml filename="polkit.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Polkit-&polkit-version;</title>
 
@@ -34,7 +31,7 @@
       communicate with privileged processes.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,14 +67,19 @@
       </listitem>
     </itemizedlist>
 
-<!-- With the move to meson, the patch is no longer needed
-    <bridgehead renderas="sect3"
-                revision="sysv">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact" revision="sysv">
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Recommended patch:
-          <ulink url="&patch-root;/polkit-&polkit-version;-fix_elogind_detection-1.patch"/>
+          Required patch:
+          <ulink url="&patch-root;/polkit-&polkit-version;-security_fixes-1.patch"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/polkit-&polkit-version;-js91-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -88,7 +90,7 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="glib2"/> and
-      <xref linkend="js78"/>
+      <xref linkend="duktape"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -127,11 +129,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="dbus-python"/> and
-      <xref linkend="python-dbusmock"/> (for tests), and
-      <!--<xref linkend="DocBook"/>, (Part of libxslt's chain)
-      <xref linkend="docbook-xsl"/>,-->
-      <xref linkend="gtk-doc"/>
+      <xref linkend="gtk-doc"/>,
+      <xref linkend="js102"/> (can be used in place of duktape), and
+      <xref linkend="python-dbusmock"/> (for tests)
     </para>
 
     <bridgehead renderas="sect4" revision="systemd">Required Runtime Dependencies</bridgehead>
@@ -151,7 +151,7 @@
       <xref role="runtime" linkend="gnome-shell"/> for GNOME3,
       <xref role="runtime" linkend="polkit-gnome"/> for XFCE, and
       <application>lxpolkit</application> in
-      <xref role="runtime" linkend="lxsession"/> for LXDE.
+      <xref role="runtime" linkend="lxsession"/> for LXDE
     </para>
 
     <note>
@@ -184,31 +184,7 @@
 useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
         -g polkitd -s /bin/false polkitd</userinput></screen>
 
-<!-- All of this is irrelevant with meson
-    <note revision="systemd">
-      <para>
-        When building <application>Polkit</application> with
-        <application>systemd</application> logind support, the
-        <command>configure</command> script explicitly checks if
-        system is booted using <application>systemd</application>.
-        This can cause problems if building the package in chroot,
-        where the <command>configure</command> would fail to
-        detect <application>systemd</application>. To workaround
-        the problem, simply run the following command:
-      </para>
-
-<screen><userinput>sed -i "s:/sys/fs/cgroup/systemd/:/sys:g" configure</userinput></screen>
-    </note>
-
-    <para revision="sysv">
-      Fix an issue introduced in recent <application>Polkit</application>
-      releases with elogind:
-    </para>
-
-<screen revision="sysv"><userinput>patch -Np1 -i ../polkit-&polkit-version;-fix_elogind_detection-1.patch &amp;&amp;
-autoreconf -fv</userinput></screen>
--->
-
+<!--
     <para>
       First, fix problems with setting permissions during installation and with
       meson-0.60.0:
@@ -217,6 +193,20 @@ autoreconf -fv</userinput></screen>
 <screen><userinput remap="pre">sed '/0,/s/^/#/' -i meson_post_install.py &amp;&amp;
 sed '/policy,/d' -i actions/meson.build \
                  -i src/examples/meson.build</userinput></screen>
+
+    <para>
+      Apply a patch to fix two security issues:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../polkit-&polkit-version;-security_fixes-1.patch</userinput></screen>
+
+    <para>
+      Port this package to use JS-91:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../polkit-&polkit-version;-js91-1.patch</userinput></screen>
+-->
+
     <para>
       Install <application>Polkit</application> by running the following
       commands:
@@ -226,9 +216,11 @@ sed '/policy,/d' -i actions/meson.build \
 cd    build &amp;&amp;
 
 meson --prefix=/usr                       \
+      --buildtype=release                 \
       -Dman=true                          \
       -Dsession_tracking=libsystemd-login \
-      --buildtype=release                 \
+      -Dtests=true                        \
+      -Djs_engine=duktape                 \
       ..                                  &amp;&amp;
 ninja</userinput></screen>
 
@@ -236,27 +228,25 @@ ninja</userinput></screen>
 cd    build &amp;&amp;
 
 meson --prefix=/usr                 \
+      --buildtype=release           \
       -Dman=true                    \
       -Dsession_tracking=libelogind \
       -Dsystemdsystemunitdir=/tmp   \
-      --buildtype=release           \
+      -Dtests=true                  \
+      -Djs_engine=duktape           \
       ..                            &amp;&amp;
 ninja</userinput></screen>
 
-<!--
+    <!--
+      "-t3" for raising the timeout to 90s, i. e. 3x the default:
+      https://gitlab.freedesktop.org/polkit/polkit/-/merge_requests/107
+    -->
     <para>
       To test the results, first ensure that the system
-      <application>D-Bus</application> daemon is running.
-      Then run <command>make check</command>.
-    </para>
--->
-
-<!-- The subprojects directory which contains a wrapper for 'mocklibc'
-     is not shipped in the tarball like it should be. Whenever that is
-     fixed, -Dtests=true and ninja test is the ticket. -->
-
-    <para>
-      This package does not ship with a working test suite.
+      <application>D-Bus</application> daemon is running,
+      and both <xref linkend='dbus-python'/> and
+      <xref linkend='python-dbusmock'/> are installed.
+      Then run <command>meson test -t3</command>.
     </para>
 
     <para>
@@ -273,6 +263,23 @@ rm -v /tmp/*.service</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <para>
+      <parameter>-Dtests=true</parameter>: This switch allows to run the
+      test suite of this package.  As <application>Polkit</application> is
+      used for authorizations, its integrity can affect system security.
+      So it's recommended to run the test suite building this package.
+    </para>
+
+    <para>
+      <parameter>-Djs_engine=duktape</parameter>: This switch allows using the
+      <xref linkend="duktape"/> JavaScript engine. Replace with
+      <option>-Djs_engine=mozjs</option> for using the <xref linkend="js102"/>
+      JavaScript engine.
+    </para>
+
     <!--
     <para revision="sysv">
       <parameter>- -disable-libsystemd-login</parameter>: This switch forces
@@ -280,11 +287,11 @@ rm -v /tmp/*.service</userinput></screen>
       systemd-logind.
     </para>
 
-    
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
     -->
-    
+
     <para>
       <option>-Dauthfw=shadow</option>: This switch enables the
       package to use the <application>Shadow</application> rather than the
@@ -369,7 +376,7 @@ EOF</userinput></screen>
       <seglistitem>
         <seg>
           pkaction, pkcheck, <!--pk-example-frobnicate,--> pkexec,
-          pkttyagent and polkitd
+          pkttyagent, and polkitd
         </seg>
         <seg>
           libpolkit-agent-1.so and
@@ -379,7 +386,7 @@ EOF</userinput></screen>
           /etc/polkit-1,
           /usr/include/polkit-1,
           /usr/lib/polkit-1,
-          /usr/share/gtk-doc/html/polkit-1 and
+          /usr/share/gtk-doc/html/polkit-1, and
           /usr/share/polkit-1
         </seg>
       </seglistitem>
@@ -428,7 +435,7 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 -->
-      
+
       <varlistentry id="pkexec">
         <term><command>pkexec</command></term>
         <listitem>

@@ -6,18 +6,15 @@
 
   <!ENTITY pipewire-download-http "https://github.com/PipeWire/pipewire/archive/&pipewire-version;/pipewire-&pipewire-version;.tar.gz">
   <!ENTITY pipewire-download-ftp  " ">
-  <!ENTITY pipewire-md5sum        "eb8ec3e850af30e39d94b93525a23036">
-  <!ENTITY pipewire-size          "1.6 MB">
-  <!ENTITY pipewire-buildsize     "71 MB (with tests)">
+  <!ENTITY pipewire-md5sum        "bc81e63e6e93383106a3bd8295e335ea">
+  <!ENTITY pipewire-size          "1.9 MB">
+  <!ENTITY pipewire-buildsize     "56 MB (with tests)">
   <!ENTITY pipewire-time          "0.5 SBU (with tests, both using parallelism=4)">
 ]>
 
 <sect1 id="pipewire" xreflabel="pipewire-&pipewire-version;">
   <?dbhtml filename="pipewire.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Pipewire-&pipewire-version;</title>
 
@@ -30,12 +27,12 @@
 
     <para>
       The <application>pipewire</application> package contains a server and
-      user-space API to handle multimedia pipelines. This includes a universal
+      userspace API to handle multimedia pipelines. This includes a universal
       API to connect to multimedia devices, as well as sharing multimedia
       files between applications.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,28 +70,41 @@
 
     <bridgehead renderas="sect3">Pipewire Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required">
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
       <xref linkend="bluez"/>,
-      <xref linkend="ffmpeg"/>,
+      <phrase revision="sysv"><xref linkend="dbus"/></phrase>,
       <xref linkend="gstreamer10"/>,
       <xref linkend="gst10-plugins-base"/>,
-      <xref linkend="libva"/>,
       <xref linkend="pulseaudio"/>,
-      <xref linkend="sbc"/>,
-      <xref linkend="sdl2"/>, and
+      <xref linkend="sbc"/>, and
       <xref linkend="v4l-utils"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="alsa-lib"/>,
+      <xref linkend="avahi"/>,
+      <xref linkend="bluez"/>,
+      <xref linkend="fdk-aac"/>,
+      <xref linkend="ffmpeg"/>,
+      <xref linkend="libcanberra"/>,
+      <xref linkend="libdrm"/> (for one example and libcamera support),
+      <xref linkend="libxcb"/>,
+      <xref linkend="libsndfile"/>,
+      <xref linkend="libusb"/>,
+      <xref linkend="opus"/>,
+      <xref linkend="sdl2"/> (for some examples),
       <xref linkend="valgrind"/>,
+      <xref linkend="xorg7-lib"/>,
       <xref linkend="doxygen"/> and
       <xref linkend="graphviz"/> (for documentation),
       <ulink url="https://jackaudio.org/">JACK</ulink>,
       <ulink url="https://github.com/EHfive/ldacBT">ldacBT</ulink>,
       <ulink url="https://libcamera.org/">libcamera</ulink>,
-      <ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>, and
+      <ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>,
+      <ulink url="https://gitlab.freedesktop.org/pipewire/wireplumber/">WirePlumber</ulink>
+      (runtime, for running Pipewire daemon), and
       <ulink url="https://sourceforge.net/projects/xmltoman/">xmltoman</ulink>
     </para>
 
@@ -119,6 +129,8 @@ ninja</userinput></screen>
 
     <para>
       To test the result, issue: <command>ninja test</command>.
+      <phrase revision='systemd'>One test named
+      <filename>test-support</filename> is known to fail.</phrase>
     </para>
 
     <para>
@@ -135,7 +147,7 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dsession-managers=</parameter>: This switch 
+      <parameter>-Dsession-managers=</parameter>: This switch
       prevents automatic downloading external dependencies.
     </para>
 
@@ -150,6 +162,11 @@ ninja</userinput></screen>
       pages. The optional dependencies for documentation need to be installed
       for this to work.
     </para>
+
+    <para>
+      <option>-Dffmpeg=enabled</option>: This switch enables using ffmpeg for
+      audio conversion as a SPA backend.
+    </para>
   </sect2>
 
   <sect2 role="content">
@@ -163,7 +180,7 @@ ninja</userinput></screen>
       <seglistitem>
         <seg>
           pipewire,
-          pipewire-media-session,
+          pipewire-avb,
           pipewire-pulse,
           pw-cat,
           pw-cli,
@@ -176,7 +193,6 @@ ninja</userinput></screen>
           pw-mididump,
           pw-mon,
           pw-profiler,
-          <!--pw-pulse,-->
           pw-reserve,
           pw-top,
           pw-v4l2,
@@ -190,7 +206,7 @@ ninja</userinput></screen>
         </seg>
         <seg>
           libpipewire-0.3.so and
-          30 modules below /usr/lib/pipewire-0.3<!--,
+          56 modules below /usr/lib/pipewire-0.3 and /usr/lib/spa-0.2<!--,
      [pierre July 29th, 2020]: all the following libs are in subdirectories
      of /usr/lib. I'm not sure they should appear. But if they should, there
      are many more libs to list...
@@ -211,13 +227,16 @@ ninja</userinput></screen>
           -->
         </seg>
         <seg>
-          /etc/pipewire,
+          <!--/etc/pipewire,-->
           /usr/include/pipewire-0.3,
           /usr/include/spa-0.2,
           /usr/lib/alsa-lib,
-          /usr/lib/gstreamer-1.0,
-          /usr/lib/pipewire-0.3, and
-          /usr/lib/spa-0.2
+          <!--/usr/lib/gstreamer-1.0, already installed by gstreamer-->
+          /usr/lib/pipewire-0.3,
+          /usr/lib/spa-0.2,
+          /usr/share/alsa-card-profile,
+          /usr/share/pipewire, and
+          /usr/share/spa-0.2
         </seg>
       </seglistitem>
     </segmentedlist>

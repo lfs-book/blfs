@@ -22,9 +22,6 @@
 <sect1 id="sane" xreflabel="SANE-&sane-version;">
   <?dbhtml filename="sane.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>SANE-&sane-version;</title>
 
@@ -50,7 +47,7 @@
       front ends are user interfaces to access the backends.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Back Ends Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -100,7 +97,7 @@
       </listitem>
       <listitem>
         <para>
-          Downlaod MD5 sum: &sane-fe-md5sum;
+          Download MD5 sum: &sane-fe-md5sum;
         </para>
       </listitem>
       <listitem>
@@ -224,6 +221,7 @@
             --sysconfdir=/etc    \
             --localstatedir=/var \
             --with-group=scanner \
+            --with-lockdir=/run/lock \
             --docdir=/usr/share/doc/sane-backends-&sane-version;" &amp;&amp;
 make</userinput></screen>
 
@@ -238,7 +236,8 @@ make</userinput></screen>
 <screen role="root"><userinput>make install                                         &amp;&amp;
 install -m 644 -v tools/udev/libsane.rules           \
                   /etc/udev/rules.d/65-scanner.rules &amp;&amp;
-chgrp -v scanner  /var/lock/sane</userinput></screen>
+mkdir -p          /run/lock/sane &amp;&amp;
+chgrp -v scanner  /run/lock/sane</userinput></screen>
 
       <para>
         With the scanner on, run <command>scanimage -L</command> and the

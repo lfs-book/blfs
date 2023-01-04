@@ -15,9 +15,6 @@
 <sect1 id="serf" xreflabel="Serf-&serf-version;">
   <?dbhtml filename="serf.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Serf-&serf-version;</title>
 
@@ -36,7 +33,7 @@
       performance operation.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,6 +69,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/serf-&serf-version;-openssl3_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Serf Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -92,6 +99,13 @@
 
   <sect2 role="installation">
     <title>Installation of Serf</title>
+
+    <para>
+      First, fix an issue that causes compilation issues in other packages
+      when using OpenSSL-3:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../serf-&serf-version;-openssl3_fixes-1.patch</userinput></screen>
 
     <para>
       Install <application>Serf</application> by running the following
@@ -116,7 +130,7 @@ scons PREFIX=/usr</userinput></screen>
 -->
 
 <!-- With Python 3, check.py is broken. It could be fixed, but since the
-     testsuite hangs anyway...
+     test suite hangs anyway...
     <para>
       To test the results, issue: <command>scons check</command>.
       The tests currently will cause a hang.
@@ -124,7 +138,7 @@ scons PREFIX=/usr</userinput></screen>
 -->
 
     <para>
-      This package does not come with a functional testsuite.
+      This package does not come with a functional test suite.
     </para>
 
     <para>

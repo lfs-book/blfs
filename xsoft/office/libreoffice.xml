@@ -7,24 +7,24 @@
   <!ENTITY libreoffice-dl "https://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "0de4818fdf970042630e270fd7e6bc82">
-  <!ENTITY libreoffice-core-size          "241 MB">
+  <!ENTITY libreoffice-core-md5sum        "85dd5f6035e69074176bcd1ff3b53360">
+  <!ENTITY libreoffice-core-size          "252 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "016f13619df72cb33a1e51c4cbe0dd0c">
-  <!ENTITY libreoffice-dict-size          "48 MB">
+  <!ENTITY libreoffice-dict-md5sum        "185e65812a77b726d0b2ee0d8fb5bd90">
+  <!ENTITY libreoffice-dict-size          "49 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "c38b181dd4f8876d2bd131305a11d8d9">
+  <!ENTITY libreoffice-help-md5sum        "05bb0ea0f472fa7d67e44c6b7bdb6146">
   <!ENTITY libreoffice-help-size          "107 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum        "a13ef745a5ec52516118499760f88ef0">
-  <!ENTITY libreoffice-translations-size          "184 MB">
+  <!ENTITY libreoffice-translations-md5sum        "66c3d9078b5c3163b1a780cb4b28517f">
+  <!ENTITY libreoffice-translations-size          "190 MB">
 
   <!-- full size remeasured for 7.0.0.3 -->
 
-  <!ENTITY libreoffice-buildsize  "6.9 GB including the additional files if downloaded during the build (792 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
+  <!ENTITY libreoffice-buildsize  "9.5 GB including the additional files if downloaded during the build (748 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
 
  <!-- Editors: many updates to poppler will break LO using system poppler until
       somebody is able to provide a patch or sed.  In these cases, please mark
@@ -35,6 +35,7 @@
       the variation in build times will be lost in the noise. - ken
 
       Not a problem with 7.1.7.2 and poppler-21.05.0.  - bdubbs
+      A problem with 7.3.1.3 and poppler-21.05.0, Arch had a patch.  - bdubbs
 
   -->
 
@@ -51,17 +52,17 @@
 
        56 SBU for 7.0.3.1 not including download of translations, help, and
        dictionaries. -renodr
+
+       For 7.2.5.2, It was 58 SBU including DL time.
+
   -->
-  <!ENTITY libreoffice-time "53 SBU with parallelism=4 plus download time">
+  <!ENTITY libreoffice-time "45 SBU with parallelism=4 (will vary due to download time)">
 
 ]>
 
 <sect1 id="libreoffice" xreflabel="LibreOffice-&libreoffice-dlversion;">
   <?dbhtml filename="libreoffice.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>LibreOffice-&libreoffice-version;</title>
 
@@ -78,7 +79,7 @@
       and is descended from <application>OpenOffice.org</application>.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -115,7 +116,8 @@
       <para>
         Around 80 smallish tarballs and zip files will be downloaded during the
         build. The download time will vary with the local internet speed and
-        server load.  The download time will probably be between 30 and 60 minutes.
+        server load.  The download time is about 3 mn on a fiber connection,
+        probably not much more than 10 mn on an ADSL connection.
         If you have not downloaded one or more of the following, they too
         will also be downloaded during the build.
       </para>
@@ -176,16 +178,16 @@
         </para>
       </listitem>
 
-<!-- keep one commented patch, it's sure to again need one or more in a few months:
+<!-- keep one commented patch, it's sure to again need one or more in a few months:-->
 
+<!--
       <listitem>
         <para>
-          Required patch to fix building with <xref linkend="freetype2"/>:
-          <ulink url="&patch-root;/libreoffice-&libreoffice-dlversion;-freetype_fix-1.patch"/>
+          Required patch to fix building with <xref linkend="poppler"/>:
+          <ulink url="&patch-root;/libreoffice-&libreoffice-dlversion;-poppler_22_09_fixes-1.patch"/>
         </para>
       </listitem>
 -->
-
     </itemizedlist>
     <bridgehead renderas="sect3">LibreOffice Dependencies</bridgehead>
 
@@ -210,8 +212,8 @@
 
     <para role="recommended">
       <xref linkend="apache-ant"/>,
-      <xref linkend="apr"/>,
-      <xref linkend="boost"/>,
+<!--  <xref linkend="apr"/>, -->
+      <xref linkend="boost"/> (broken with boost-1.81.0),
       <xref linkend="clucene"/>,
       <xref linkend="cups"/>,
       <xref linkend="curl"/>,
@@ -231,17 +233,19 @@
       <xref linkend="libatomic_ops"/>,
       <xref linkend="lcms2"/>,
       <xref linkend="librsvg"/>,
+      <xref linkend="libtiff"/>,
+      <xref linkend="libwebp"/>,
       <xref linkend="libxml2"/> and
       <xref linkend="libxslt"/>,
       <xref linkend="lxml"/>,
       <xref linkend="mesa"/>,
-      <xref linkend="neon"/>,
+<!--  <xref linkend="neon"/>, -->
       <xref linkend="nss"/>,
       <xref linkend="openldap"/> (if connecting to an LDAP server),
       <xref linkend="poppler"/>,
       <xref linkend="postgresql"/>,
       <xref linkend="redland"/>,
-      <xref linkend="serf"/>, and
+<!--  <xref linkend="serf"/>, --> and
       <xref linkend="unixodbc"/>
     </para>
 
@@ -264,7 +268,7 @@
       <xref linkend="telepathy-glib"/>,
       <xref linkend="valgrind"/>,
       <xref linkend="vlc"/>,
-      <xref linkend="zenity"/>,
+<!--  <xref linkend="zenity"/>, -->
       <ulink url="https://commons.apache.org/proper/commons-codec/">Apache Commons Codec</ulink>,
       <ulink url="https://hc.apache.org/httpcomponents-client-ga/index.html">Apache Commons HttpClient</ulink>,
       <ulink url="https://commons.apache.org/proper/commons-lang/">Apache Commons Lang</ulink>,
@@ -286,7 +290,7 @@
       <ulink url="https://sourceforge.net/projects/libcmis/">libcmis</ulink>,
       <ulink url="http://www.sourceforge.net/projects/libebook/">libebook</ulink>,
       <ulink url="https://sourceforge.net/projects/libepubgen/">libepubgen</ulink>,
-      <ulink url="https://wiki.documentfoundation.org/DLP/libraries/libetonyek">libetonyek</ulink>,
+      <ulink url="https://wiki.documentfoundation.org/DLP/Libraries/libetonyek">libetonyek</ulink>,
       <ulink url="https://wiki.documentfoundation.org/Libexttextcat">libexttextcat</ulink>,
       <ulink url="https://wiki.documentfoundation.org/DLP/Libraries/libfreehand">libfreehand</ulink>,
       <ulink url="http://tagoh.github.io/liblangtag/">liblangtag</ulink>,
@@ -341,23 +345,13 @@
 cd libreoffice-&libreoffice-dlversion;</userinput></screen>
 
 <!-- keep a commented instruction if no patches are currently required -->
-
-    <para>
-     First, fix a problem if bison-3.8 or later is installed:
-    </para>
-
-<screen><userinput>if bison --version|grep -q 3.8; then
-  sed -i 's/yyn/yyrule/' connectivity/source/parse/sqlbison.y
-fi</userinput></screen>
-
 <!--
     <para>
-     Fix build failures introduced by the latest freetype version:
+     First, fix build failures introduced by the latest poppler version:
     </para>
 
-<screen><userinput>patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-freetype_fix-1.patch</userinput></screen>
+<screen><userinput>patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-poppler_22_09_fixes-1.patch</userinput></screen>
 -->
-
     <para>
       If you have downloaded the dictionaries, help and translations tarballs,
       create symlinks to them from the source directory so they won't get
@@ -412,6 +406,30 @@ ln -sv src/libreoffice-translations-&libreoffice-dlversion;/translations/</useri
     </note>
 
     <para>
+      If building on a 32 bit machine, <envar>CFLAGS</envar> is set to
+      <command>-Os</command>, which breaks the build. Prevent this
+      by issuing:
+    </para>
+
+<screen><userinput>case $(uname -m) in
+   i?86) sed /-Os/d -i solenv/gbuild/platform/LINUX_INTEL_GCC.mk ;;
+esac</userinput></screen>
+
+    <para>
+      <xref linkend="openjdk"/> breaks the build if the following variable is
+      not set:
+    </para>
+
+<screen><userinput>export ANT_OPTS="-Djava.security.manager=allow"</userinput></screen>
+
+    <para>
+      The latest version of GPGME breaks configure due to a library change.
+      Fix it by setting the following variable:
+    </para>
+
+<screen><userinput remap="pre">export ac_cv_lib_gpgmepp_progress_callback=yes</userinput></screen>
+
+    <para>
       Prepare <application>LibreOffice</application> for compilation by running
       the following commands:
     </para>
@@ -435,8 +453,7 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
              --enable-release-build=yes  \
              --enable-python=system      \
              --with-jdk-home=/opt/jdk    \
-             --with-system-apr           \
-             --with-system-boost         \
+             --without-system-boost      \
              --with-system-clucene       \
              --with-system-curl          \
              --with-system-epoxy         \
@@ -451,7 +468,6 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
              --with-system-libatomic_ops \
              --with-system-libpng        \
              --with-system-libxml        \
-             --with-system-neon          \
              --with-system-nss           \
              --with-system-odbc          \
              --with-system-openldap      \
@@ -459,9 +475,10 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
              --with-system-poppler       \
              --with-system-postgresql    \
              --with-system-redland       \
-             --with-system-serf          \
+             --with-system-libtiff       \
+             --with-system-libwebp       \
              --with-system-zlib</userinput></screen>
-
+<!--
     <para>
       The instructions below will only build the package without running
       any unit tests. If you prefer to run the unit tests, replace
@@ -470,12 +487,12 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
       surprised if a unit test fails right at the end of the build and
       breaks it.
     </para>
-
+-->
     <para>
       Build the package:
     </para>
 
-<screen><userinput>make build-nocheck</userinput></screen>
+<screen><userinput>make build</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -572,7 +589,7 @@ fi</userinput></screen>
       what languages to support. To list several languages, separate them with
       a space. For all languages, use
       <parameter>--with-lang=ALL</parameter>. Note that the translations file
-      is not needed and won't be downloaded if using only en_US as a language.
+      is not needed and won't be downloaded if using only en-US as a language.
     </para>
 
     <note>
@@ -610,7 +627,7 @@ fi</userinput></screen>
       <parameter>--with-system-boost</parameter>: This switch enables using
       system boost. From time to time, recent versions of boost break
       the build of libreoffice. In this case, it is possible to use the
-      bundled copy of boost, by removing this flag.
+      bundled copy of boost by removing this flag.
     </para>
 
     <para>

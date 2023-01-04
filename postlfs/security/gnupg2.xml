@@ -6,18 +6,15 @@
 
   <!ENTITY gnupg2-download-http "&gnupg-http;/gnupg/gnupg-&gnupg2-version;.tar.bz2">
   <!ENTITY gnupg2-download-ftp  "&gnupg-ftp;/gnupg/gnupg-&gnupg2-version;.tar.bz2">
-  <!ENTITY gnupg2-md5sum        "bcda14a63821435e79d4597bec229ebb">
-  <!ENTITY gnupg2-size          "6.9 MB">
-  <!ENTITY gnupg2-buildsize     "143 MB (with all tests; add 25 MB for docs)">
-  <!ENTITY gnupg2-time          "0.6 SBU (using parallelism=4; add 2.9 SBU for tests)">
+  <!ENTITY gnupg2-md5sum        "1a9dd55be7a9d0a6ef34ec3ba0d674a5">
+  <!ENTITY gnupg2-size          "7.3 MB">
+  <!ENTITY gnupg2-buildsize     "164 MB (with tests)">
+  <!ENTITY gnupg2-time          "0.5 SBU (using parallelism=4; add 0.4 SBU for tests)">
 ]>
 
 <sect1 id="gnupg2" xreflabel="GnuPG-&gnupg2-version;">
   <?dbhtml filename="gnupg.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>GnuPG-&gnupg2-version;</title>
 
@@ -38,7 +35,7 @@
       S/MIME.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -105,7 +102,7 @@
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>),
       <ulink url="http://mcj.sourceforge.net/">fig2dev</ulink> (for
       generating documentation),
-      and <ulink url="http://www.chiark.greenend.org.uk/~ian/adns/">GNU
+      and <ulink url="https://www.chiark.greenend.org.uk/~ian/adns/">GNU
       adns</ulink>
     </para>
 
@@ -116,7 +113,8 @@
 
   <sect2 role="installation">
     <title>Installation of GnuPG</title>
-
+<!--  This is useless with 2.3.x.  If we need gpg-zip we'll have to fetch
+      it somewhere.
     <para>
       By default GnuPG doesn't install the deprecated gpg-zip script,
       but it is still needed by some programs.  Make GnuPG install it with:
@@ -124,31 +122,33 @@
 
 <screen><userinput>sed -e '/noinst_SCRIPTS = gpg-zip/c sbin_SCRIPTS += gpg-zip' \
     -i tools/Makefile.in</userinput></screen>
-
-<!-- Seems to be resolved in 2.2.29
+-->
+<!-- fixed in 2.4.0
     <para>
-      Fix a issue causing build failure if
+      First, fix an issue causing build failure if
       <application>OpenLDAP</application> is not installed:
     </para>
 
-<screen><userinput>sed -e '737a #if USE_LDAP' \
-    -e '760a #endif' \
-    -i dirmngr/dirmngr.c</userinput></screen>
+<screen><userinput>sed -e '/ks_ldap_free_state/i #if USE_LDAP' \
+    -e '/ks_get_state =/a #endif'           \
+    -i dirmngr/server.c</userinput></screen>
 -->
-
     <para>
       Install <application>GnuPG</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr            \
-            --localstatedir=/var     \
-            --sysconfdir=/etc        \
-            --docdir=/usr/share/doc/gnupg-&gnupg2-version; &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+../configure --prefix=/usr           \
+             --localstatedir=/var    \
+             --sysconfdir=/etc       \
+             --docdir=/usr/share/doc/gnupg-&gnupg2-version; &amp;&amp;
 make &amp;&amp;
 
-makeinfo --html --no-split -o doc/gnupg_nochunks.html doc/gnupg.texi &amp;&amp;
-makeinfo --plaintext       -o doc/gnupg.txt           doc/gnupg.texi &amp;&amp;
+makeinfo --html --no-split -I doc -o doc/gnupg_nochunks.html ../doc/gnupg.texi &amp;&amp;
+makeinfo --plaintext       -I doc -o doc/gnupg.txt           ../doc/gnupg.texi &amp;&amp;
 make -C doc html</userinput></screen>
 
     <para>
@@ -166,10 +166,12 @@ make -C doc html</userinput></screen>
     </para>
 
     <para>
+      <!--
       Note that if you have already installed
       <application>GnuPG</application>, the instructions below will overwrite
-      <filename>/usr/share/man/man1/gpg-zip.1</filename>. Now, as the
-      <systemitem class="username">root</systemitem> user:
+      <filename>/usr/share/man/man1/gpg-zip.1</filename>.
+      -->
+      Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
@@ -177,7 +179,7 @@ make -C doc html</userinput></screen>
 install -v -m755 -d /usr/share/doc/gnupg-&gnupg2-version;/html            &amp;&amp;
 install -v -m644    doc/gnupg_nochunks.html \
                     /usr/share/doc/gnupg-&gnupg2-version;/html/gnupg.html &amp;&amp;
-install -v -m644    doc/*.texi doc/gnupg.txt \
+install -v -m644    ../doc/*.texi doc/gnupg.txt \
                     /usr/share/doc/gnupg-&gnupg2-version; &amp;&amp;
 install -v -m644    doc/gnupg.html/* \
                     /usr/share/doc/gnupg-&gnupg2-version;/html</userinput></screen>
@@ -195,10 +197,15 @@ install -v -m644    doc/gnupg.html/* \
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
+<!--
     <para>
       <command>sed ... tools/Makefile.in</command>:
       This command is needed to build the gpg-zip program.
+    </para>
+-->
+    <para>
+      <command>mkdir build &amp;&amp; cd build</command>: the Gnupg2
+      developers recommend to build the package in a dedicated directory.
     </para>
 
     <para>
@@ -235,8 +242,9 @@ install -v -m644    doc/gnupg.html/* \
 
       <seglistitem>
         <seg>addgnupghome, applygnupgdefaults, dirmngr, dirmngr-client, g13
-        (optional), gpg-agent, gpg-connect-agent, gpg, gpgconf, gpgparsemail,
-        gpgscm, gpgsm, gpgsplit, gpgtar, gpgv, gpg-wks-server, gpg-zip, kbxutil,
+        (optional), gpg-agent, gpg-card, gpg-connect-agent, gpg, gpgconf,
+        gpgparsemail, gpgscm, gpgsm, gpgsplit, gpgtar, gpgv, gpg-wks-client,
+        gpg-wks-server, kbxutil,
         <!--symcryptrun,--> and watchgnupg</seg>
         <seg>None</seg>
         <seg>/usr/share/doc/gnupg-&gnupg2-version; and
@@ -325,6 +333,18 @@ install -v -m644    doc/gnupg.html/* \
           </para>
           <indexterm zone="gnupg2 gpg-agent">
             <primary sortas="b-gpg-agent">gpg-agent</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gpg-card">
+        <term><command>gpg-card</command></term>
+        <listitem>
+          <para>
+            is a tool to manage smart cards and tokens
+          </para>
+          <indexterm zone="gnupg2 gpg-card">
+            <primary sortas="b-gpg-card">gpg-card</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -448,6 +468,19 @@ install -v -m644    doc/gnupg.html/* \
         </listitem>
       </varlistentry>
 
+      <varlistentry id="gpg-wks-client">
+        <term><command>gpg-wks-client</command></term>
+        <listitem>
+          <para>
+            is a client for the
+            <application>Web Key Service</application> protocol
+          </para>
+          <indexterm zone="gnupg2 gpg-wks-client">
+            <primary sortas="b-gpg-wks-client">gpg-wks-client</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="gpg-wks-server">
         <term><command>gpg-wks-server</command></term>
         <listitem>
@@ -460,7 +493,7 @@ install -v -m644    doc/gnupg.html/* \
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
       <varlistentry id="gpg-zip">
         <term><command>gpg-zip</command></term>
         <listitem>
@@ -472,7 +505,7 @@ install -v -m644    doc/gnupg.html/* \
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
       <varlistentry id="kbxutil">
         <term><command>kbxutil</command></term>
         <listitem>

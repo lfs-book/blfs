@@ -8,9 +8,6 @@
 <sect1 id="unpacking">
   <?dbhtml filename="notes-on-building.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Notes on Building Software</title>
 
@@ -135,7 +132,7 @@ bunzip2 -v patchname.bz2</userinput></screen>
     genuity of the package.  Download the checksum file from the upstream
     <emphasis role="bold">official</emphasis> website (or somewhere
     <emphasis role="bold">you can trust</emphasis>) and compare the
-    checksum of the package from unoffical location with it.  For example,
+    checksum of the package from unofficial location with it.  For example,
     SHA256 checksum can be checked with the command:</para>
 
     <note>
@@ -206,12 +203,32 @@ bunzip2 -v patchname.bz2</userinput></screen>
 
     <screen><userinput>make -j2</userinput></screen>
 
+    <para>
+      If you have applied the optional <command>sed</command> when building
+      <application>ninja</application> in LFS, you can use:
+    </para>
+
+    <screen><userinput>export NINJAJOBS=2</userinput></screen>
+
+    <para>
+      when a package uses <command>ninja</command>, or just:
+    </para>
+
+    <screen><userinput>ninja -j2</userinput></screen>
+
+    <para>
+      but for ninja, the default number of jobs is &lt;N&gt;+2, where &lt;N&gt;
+      is the number of processors available, so that using the above commands
+      is rather for limiting the number of jobs (see below for why this could
+      be necessary).
+    </para>
+
     <para>Generally the number of processes should not exceed the number of
     cores supported by the CPU.  To list the processors on your
     system, issue: <userinput>grep processor /proc/cpuinfo</userinput>.
     </para>
 
-    <para>In some cases, using multiple processors may result in a 'race'
+    <para>In some cases, using multiple processes may result in a 'race'
     condition where the success of the build depends on the order of the
     commands run by the <command>make</command> program.  For instance, if an
     executable needs File A and File B, attempting to link the program before
@@ -222,7 +239,8 @@ bunzip2 -v patchname.bz2</userinput></screen>
 
     <para>If this occurs, the best way to proceed is to drop back to a
     single processor build.  Adding '-j1' to a make command will override
-    the similar setting in the MAKEFLAGS environment variable.</para>
+    the similar setting in the <envar>MAKEFLAGS</envar> environment
+    variable.</para>
 
     <note><para>When running the package tests or the install portion of the
     package build process, we do not recommend using an option greater than
@@ -230,6 +248,22 @@ bunzip2 -v patchname.bz2</userinput></screen>
     have not been validated using parallel procedures and may fail with issues
     that are difficult to debug.</para></note>
 
+    <important>
+      <para>
+        Another problem may occur with modern CPU's, which have a lot of cores.
+        Each job started consumes memory, and if the sum of the needed
+        memory for each job exceeds the available memory, you may encounter
+        either an OOM (Out of Memory) kernel interrupt or intense swapping
+        that will slow the build beyond reasonable limits.
+      </para>
+
+      <para>
+        Some compilations with <command>g++</command> may consume up to 2.5 GB
+        of memory, so to be safe, you should restrict the number of jobs
+        to (Total Memory in GB)/2.5, at least for big packages such as LLVM,
+        WebKitGtk, QtWebEngine, or libreoffice.
+      </para>
+    </important>
   </sect2>
 
   <sect2 id="automating-builds" xreflabel="Automated Building Procedures">
@@ -461,26 +495,106 @@ chmod 755 blfs-yes-test2</userinput></screen>
   <sect2 id="stripping">
     <title>Stripping One More Time</title>
 
-    <warning>
-      <para>If you did not strip programs and libraries in LFS,
-      the following will probably make your system unusable. To avoid that,
-      run the instructions at <ulink url="&lfs-root;/chapter08/strippingagain.html"/>
-      instead.  After the critical files are  stripped using those instructions,
-      the instructions below can be run any time new packages are installed.
-      </para>
-    </warning>
-
     <para>
-      In LFS, stripping of debugging symbols was discussed a couple of
-      times.  When building BLFS packages, there are generally no special
-      instructions that discuss stripping again.  It is probably not a good
-      idea to strip an executable or a library while it is in use, so exiting
-      any windowing environment is a good idea.  Then you can do:
+      In LFS, stripping of debugging symbols and unneeded symbol table
+      entries was discussed a couple of times.  When building BLFS packages,
+      there are generally no special instructions that discuss stripping
+      again. Stripping can be done while installing a package, or
+      afterwards.
     </para>
 
-<screen><userinput>find /usr/{bin,lib,sbin} \
-    -type f \( -name \*.so* -a ! -name \*dbg \) \
-    -exec strip --strip-unneeded {} \;</userinput></screen>
+    <bridgehead renderas="sect3" id="stripping-install">Stripping while Installing a Package</bridgehead>
+
+    <para>
+      There are several ways to strip executables installed by a
+      package. They depend on the build system used (see below <link
+        linkend="buildsystems">the section about build systems</link>),
+      so only some
+      generalities can be listed here:
+    </para>
+
+    <note>
+      <para>
+        The following methods using the feature of a building system
+        (autotools, meson, or cmake) will not strip static libraries if any
+        is installed.  Fortunately there are not too many static libraries
+        in BLFS, and a static library can always be stripped safely by
+        running <command>strip --strip-unneeded</command> on it manually.
+      </para>
+    </note>
+
+    <itemizedlist>
+      <listitem>
+        <para>
+          The packages using autotools usually have an
+          <parameter>install-strip</parameter> target in their generated
+          <filename>Makefile</filename> files. So installing stripped
+          executables is just a matter of using
+          <command>make install-strip</command> instead of
+          <command>make install</command>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          The packages using the meson build system can accept
+          <parameter>-Dstrip=true</parameter> when running
+          <command>meson</command>.  If you've forgot to add this option
+          running the <command>meson</command>, you can also run
+          <command>meson install --strip</command> instead of
+          <command>ninja install</command>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          <command>cmake</command> generates
+          <parameter>install/strip</parameter> targets for both the
+          <parameter>Unix Makefiles</parameter> and
+          <parameter>Ninja</parameter> generators (the default is
+          <parameter>Unix Makefiles</parameter> on linux). So just run
+          <command>make install/strip</command> or
+          <command>ninja install/strip</command> instead of the
+          <command>install</command> counterparts.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Removing (or not generating) debug symbols can also be
+          achieved by removing the
+          <parameter>-g&lt;something&gt;</parameter> options
+          in C/C++ calls. How to do that is very specific for each
+          package.  And, it does not remove unneeded symbol table entries.
+          So it will not be explained in detail here. See also below
+          the paragraphs about optimization.
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3" id="stripping-installed">Stripping Installed Executables</bridgehead>
+
+    <para>
+      The <command>strip</command> utility changes files in place, which
+      may break anything using it if it is loaded in memory. Note that
+      if a file is in use but just removed from the disk (i.e. not overwritten
+      nor modified), this is not a problem since the kernel can use
+      <quote>deleted</quote> files.
+      Look at <filename>/proc/*/maps</filename>, and it is likely that
+      you'll see some <emphasis>(deleted)</emphasis> entries. The
+      <command>mv</command> just removes the destination file from the
+      directory but does not touch its content, so that it satisfies the
+      condition for the kernel to use the old (deleted) file. The script
+      below is just an example. Feel free to add stronger error detection,
+      other directories to scan, etcetera. It should be run as the &root; user:
+    </para>
+
+<screen role="root"><userinput>{ find /usr/lib -type f \( -name \*.a -o \
+    \( -name \*.so* ! -name \*dbg \) \)
+ find /usr/{bin,sbin,libexec} -type f; } | while read file; do
+      if readelf -h $file >/dev/null 2>&amp;1; then
+        cp -a $file ${file}.tmp            &amp;&amp;
+        strip --strip-unneeded ${file}.tmp &amp;&amp;
+        mv ${file}.tmp $file
+      fi
+    done</userinput></screen>
 
     <para>
       If you install programs in other directories such as <filename
@@ -491,10 +605,11 @@ chmod 755 blfs-yes-test2</userinput></screen>
 
     <para>
       For more information on stripping, see <ulink
-      url="http://www.technovelty.org/linux/stripping-shared-libraries.html"/>.
+      url="https://www.technovelty.org/linux/stripping-shared-libraries.html"/>.
     </para>
 
   </sect2>
+
 <!--
   <sect2 id="libtool">
     <title>Libtool files</title>
@@ -622,24 +737,46 @@ chmod 755 blfs-yes-test2</userinput></screen>
         environment and therefore take precedence.
       </para>
 
-      <itemizedlist>
-        <listitem>
-          <para>Debug : '-g'</para>
-        </listitem>
-        <listitem>
-          <para>Release : '-O3 -DNDEBUG'</para>
-        </listitem>
-        <listitem>
-           <para>RelWithDebInfo : '-O2 -g -DNDEBUG'</para>
-        </listitem>
-        <listitem>
-           <para>MinSizeRel : '-Os -DNDEBUG'</para>
-        </listitem>
-      </itemizedlist>
+      <informaltable align="center">
+        <tgroup cols="2">
+          <colspec colnum="1" align="center"/>
+          <colspec colnum="2" align="center"/>
+          <thead>
+            <row><entry>Value</entry><entry>Flags</entry></row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>Debug</entry><entry><option>-g</option></entry>
+            </row>
+            <row>
+              <entry>Release</entry><entry><option>-O3 -DNDEBUG</option></entry>
+            </row>
+            <row>
+              <entry>RelWithDebInfo</entry><entry><option>-O2 -g -DNDEBUG</option></entry>
+            </row>
+            <row>
+              <entry>MinSizeRel</entry><entry><option>-Os -DNDEBUG</option></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
 
       <para>
         CMake tries to produce quiet builds. To see the details of the commands
-        which are being run, use 'make VERBOSE=1' or 'ninja -v'.
+        which are being run, use <command>make VERBOSE=1</command> or
+        <command>ninja -v</command>.
+      </para>
+
+      <para>
+        By default, CMake treats file installation differently from the other
+        build systems: if a file already exists and is not newer than a file
+        that would overwrite it, then the file is not installed. This may be
+        a problem if a user wants to record which file belongs to a package,
+        either using <envar>LD_PRELOAD</envar>, or by listing files newer
+        than a timestamp. The default can be changed by setting the variable
+        <envar>CMAKE_INSTALL_ALWAYS</envar> to 1 in the
+        <emphasis>environment</emphasis>, for example by
+        <command>export</command>'ing it.
       </para>
 
     <bridgehead renderas="sect3" id="meson-info">Meson</bridgehead>

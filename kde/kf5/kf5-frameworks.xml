@@ -8,17 +8,13 @@
   <!ENTITY kf5-download-http "&kf5-download-http;"> -->
   <!ENTITY kf5-download-ftp  " ">
   <!ENTITY kf5-md5sum        "See Below">
-  <!ENTITY kf5-size          "266 MB">
-  <!ENTITY kf5-buildsize     "1.3 GB (241 MB installed)">
-  <!ENTITY kf5-time          "14 SBU (using parallelism=4)">
+  <!ENTITY kf5-size          "345 MB">
+  <!ENTITY kf5-buildsize     "2.5 GB (246 MB installed)">
+  <!ENTITY kf5-time          "15 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="kf5-frameworks" xreflabel="KDE Frameworks-&kf5-version;">
   <?dbhtml filename="frameworks5.html"?>
-
-  <sect1info>
-     <date>$Date$</date>
-  </sect1info>
 
   <title>Building KDE Frameworks 5 (KF5)</title>
 
@@ -32,7 +28,7 @@
     independent of the KDE Display Environment (Plasma 5).
   </para>
 
-  &lfs110a_checked;
+  &lfs112_checked;
 
   <para>
     The instructions below build all of the KDE Frameworks packages in one
@@ -89,6 +85,7 @@
     <xref linkend="libpng"/>,
     <xref linkend="libxslt"/>,
     <xref linkend="lmdb"/>,
+    <xref linkend="qca"/>,
     <xref linkend="qrencode"/>,
     <xref linkend="phonon"/>,
     <xref linkend="plasma-wayland-protocols"/>,
@@ -124,25 +121,26 @@
     <xref role="runtime" linkend="oxygen-fonts"/> and
     <xref role="runtime" linkend="noto-fonts"/>
   </para>
-
   <bridgehead renderas="sect4">Additional recommended dependencies for kapidox</bridgehead>
   <para role="recommended">
-    <xref role="runtime" linkend="doxygen"/> (Run time),
+    <xref role="runtime" linkend="doxygen"/> (Run time)<phrase revision="sysv">,
     <xref linkend="Jinja2"/>, and
-    <xref linkend="PyYAML"/> (if those python modules are not present at build
-    time, they will be downloaded)
+    <xref linkend="PyYAML"/></phrase>
+    <phrase revision="systemd"> and
+    <xref linkend="PyYAML"/></phrase>
   </para>
 
   <bridgehead renderas="sect4">Other python modules needed by kapidox</bridgehead>
   <para role="optional">
-    <ulink url="https://pypi.org/simple/requests/">requests</ulink>,
-    <ulink url="https://pypi.org/simple/doxyqml/">doxyqml</ulink>,
     <ulink url="https://pypi.org/simple/doxypypy/">doxypypy</ulink>,
-    <ulink url="https://pypi.org/simple/urllib3/">urllib3</ulink>,
-    <ulink url="https://pypi.org/simple/idna/">idna</ulink>,
-    <ulink url="https://pypi.org/simple/charset-normalizer/">charset-normalizer</ulink>, and
-    <ulink url="https://pypi.org/simple/certifi/">certifi</ulink> (all will be
-    automatically installed at build time if not present on the system)
+    <ulink url="https://pypi.org/simple/doxyqml/">doxyqml</ulink>, and
+    <ulink url="https://pypi.org/simple/requests/">requests</ulink>, which
+    itself depends on
+    <ulink url="https://pypi.org/simple/certifi/">certifi</ulink>,
+    <ulink url="https://pypi.org/simple/charset-normalizer/">charset-normalizer</ulink>,
+    <ulink url="https://pypi.org/simple/idna/">idna</ulink>, and
+    <ulink url="https://pypi.org/simple/urllib3/">urllib3</ulink> (all will be
+    installed by the <command>pip3 install</command> command below)
   </para>
 
   <bridgehead renderas="sect4">Additional image formats support in KImageFormats</bridgehead>
@@ -205,90 +203,92 @@ The options used here are:
       Create the list of files in the proper order as follows:
     </para>
 
+<!-- commenting out kapidox for now, see ticket #16805. This package
+     needs special instructions because it is a pure python package. -->
 <screen><userinput>cat &gt; frameworks-&kf5-version;.md5 &lt;&lt; "EOF"
-<literal>06d286995319fd9565d43bf736576a82  attica-5.85.0.tar.xz
-#e4d8d5d70334eb9f40feb14c0e5fa1c3  extra-cmake-modules-5.85.0.tar.xz
-007581e41e7c13cc52f03c50f65c9826  kapidox-5.85.0.tar.xz
-deee0085dbd22032a437106ba01ba7b2  karchive-5.85.0.tar.xz
-3fb5aba8c68be4c384ee17a91798ddec  kcodecs-5.85.0.tar.xz
-eef295c85781ddf9a3abbd95a4da5df3  kconfig-5.85.0.tar.xz
-d7a2748aebb1206fc38cb00bb39bc0eb  kcoreaddons-5.85.0.tar.xz
-c9b3062073d8fb0977aa63fab7582d1e  kdbusaddons-5.85.0.tar.xz
-510b0e437a855592d3512faa94fcd4ba  kdnssd-5.85.0.tar.xz
-7b5b4d7610c45895ac5138c1e762ef41  kguiaddons-5.85.0.tar.xz
-e9463a50c2bc56a6cebc70c487b5a45d  ki18n-5.85.0.tar.xz
-58a3e469ac54cb78469b27f216c87c0a  kidletime-5.85.0.tar.xz
-5cb4de5a5215b8f9412bbff02ac59f11  kimageformats-5.85.0.tar.xz
-3f00cbe1c9ded4b9f061f0dcc3c38071  kitemmodels-5.85.0.tar.xz
-5ed293814f6ca4c37a9fef6963431db0  kitemviews-5.85.0.tar.xz
-040eaecd9952dc73b11ab4570f7b93f8  kplotting-5.85.0.tar.xz
-381c75cf800cfe1483ea3493e2de245c  kwidgetsaddons-5.85.0.tar.xz
-4d9cca227b795280ee920156cdec4859  kwindowsystem-5.85.0.tar.xz
-f530333f5635266765b9d998ddc51d33  networkmanager-qt-5.85.0.tar.xz
-254a03e4914ad144126a615ebbcbc11c  solid-5.85.0.tar.xz
-6883eeb4c62837d70c6d6cbd01ba4cb8  sonnet-5.85.0.tar.xz
-ceb00c86052dd1c9e4bef970c19f46d4  threadweaver-5.85.0.tar.xz
-7e097f4474c43e08b2540a8883dc1e00  kauth-5.85.0.tar.xz
-dcf9b03389d733eac8ae930b26d5389a  kcompletion-5.85.0.tar.xz
-cc72c9ac7cba7207ef1a170bb2e4719e  kcrash-5.85.0.tar.xz
-2676c29e1d3a93bd42e4f84f86961c4d  kdoctools-5.85.0.tar.xz
-f85fe1b8f7319ed6e69d562671a705d0  kpty-5.85.0.tar.xz
-298c9df17377b26ccd76d34f54ffad6c  kunitconversion-5.85.0.tar.xz
-530e29b6a5993c0f23adbe09c48a7f16  kconfigwidgets-5.85.0.tar.xz
-3081cf3c1eae4121b9b1fb71a1aa7c64  kservice-5.85.0.tar.xz
-c3a62eeaf5d94bf326cab38dd1380204  kglobalaccel-5.85.0.tar.xz
-5203415a3948fb0c3c1937bcba5c5758  kpackage-5.85.0.tar.xz
-f57850b50533be59335bdf2d76fcfc76  kdesu-5.85.0.tar.xz
-c4c930b28e1c5bd4e2a1aad9e8c328b0  kemoticons-5.85.0.tar.xz
-edf31862bd801304fdb578050b0326d2  kiconthemes-5.85.0.tar.xz
-b73b00a29afcf70d964190219ee6ccbc  kjobwidgets-5.85.0.tar.xz
-8b7c4520f6ffc7cfc1fbd22e0c9ffa18  knotifications-5.85.0.tar.xz
-fd3490e92465f433a5576b40ac348cbd  ktextwidgets-5.85.0.tar.xz
-5b2362e1d485d80c3111679ae4cad68b  kxmlgui-5.85.0.tar.xz
-679bb7a808f2d51e43f9dc26ce3f62d1  kbookmarks-5.85.0.tar.xz
-ceaebee871b3f792766377c1074216a3  kwallet-5.85.0.tar.xz
-aa1168d883e43dc304bbd809c9aa2f3d  kded-5.85.0.tar.xz
-30c8871003edb993afc385e16f8b1a64  kio-5.85.0.tar.xz
-1da45e0185075d0c384100c17d8a789f  kdeclarative-5.85.0.tar.xz
-2e11d1726375387f2942cf9f3845760a  kcmutils-5.85.0.tar.xz
-975fa5fd7a1db023639eb26f0d5e6809  kirigami2-5.85.0.tar.xz
-8de5ea8546df1d8a23a2eb1ce465dbc9  syndication-5.85.0.tar.xz
-7b1926330878c8c9c8a28f2403ff2e81  knewstuff-5.85.0.tar.xz
-f6178e5a138b0fe4260bb74bfabd2a5f  frameworkintegration-5.85.0.tar.xz
-e86d84f9d34aa94e55d0ca177f49a57c  kinit-5.85.0.tar.xz
-14c79ffe82f063ff67392f64005477d2  kparts-5.85.0.tar.xz
-0fef80b90c110adfe7c775f93e1f3e1d  kactivities-5.85.0.tar.xz
-#3557d248cdecb2bd03e0a00b0dab7ae2  kdewebkit-5.85.0.tar.xz
-1ef1c6039a3e91ec533af11af19539ec  syntax-highlighting-5.85.0.tar.xz
-535adfca5246321df0f69de579c5f29c  ktexteditor-5.85.0.tar.xz
-6f09f3c76f6a698ede4fb67f6bb709cc  kdesignerplugin-5.85.0.tar.xz
-5253a422ba21dcb9bf92ffb53c035f2a  kwayland-5.85.0.tar.xz
-fa2e79613982549dca6e20ecd0907fa5  plasma-framework-5.85.0.tar.xz
-#1ad46346789bc04b7ff10bb4bb257e84  modemmanager-qt-5.85.0.tar.xz
-424f8cbccde63734ca9a41d2be38ce44  kpeople-5.85.0.tar.xz
-148e239b5fd08a66e655116a7399c22d  kxmlrpcclient-5.85.0.tar.xz
-0a90f655455ab7dcbe5e652a84a06a6e  bluez-qt-5.85.0.tar.xz
-866ba6788b62d46011d6d23f4195230d  kfilemetadata-5.85.0.tar.xz
-e4fa06ec978fece6eb13c2a9e6749fcc  baloo-5.85.0.tar.xz
-#42665314255bdf88736973c28c8c0a65  breeze-icons-5.85.0.tar.xz
-#b6cad03903a685db1b323db2165355eb  oxygen-icons5-5.85.0.tar.xz
-65e8097e66204a7b8ae8fd616a9789a9  kactivities-stats-5.85.0.tar.xz
-0da888b4320299c93b56259da68563a8  krunner-5.85.0.tar.xz
-baf7228889d33913fffd26faedca61e5  prison-5.85.0.tar.xz
-daf55ba893a81e851c42507cb7b99e48  qqc2-desktop-style-5.85.0.tar.xz
-5c1a1d58b3ad5bb0d7fbbf427fc0dff1  kjs-5.85.0.tar.xz
-f5e0ca6f84d143f216a38cfb0c083267  kdelibs4support-5.85.0.tar.xz
-06c9c414894382a06a150967d2b1bbee  khtml-5.85.0.tar.xz
-e8f677e831ec75d8894ab77b139b0d77  kjsembed-5.85.0.tar.xz
-346789a75525372ac67d46c39834b150  kmediaplayer-5.85.0.tar.xz
-2e92ff7e9cc04bd2a3e06dfa24cf0f1f  kross-5.85.0.tar.xz
-75032ec4d4b432c7e3bb83b0bdbe0cac  kholidays-5.85.0.tar.xz
-7921bd89698216109cde504e59e115c0  purpose-5.85.0.tar.xz
-eaee772562d93a2752547c09427679cc  kcalendarcore-5.85.0.tar.xz
-565639b8a34802e97efaeac520d894a3  kcontacts-5.85.0.tar.xz
-07a1780a5e1cb8479232cf2244b69f7a  kquickcharts-5.85.0.tar.xz
-345e20cbc8d815173ab5861a72b084bb  knotifyconfig-5.85.0.tar.xz
-fc2b4c6df2f4f7c50955b31445774d3a  kdav-5.85.0.tar.xz</literal>
+<literal>a4c2e458aa82077a801ec5cb82594df9  attica-5.101.0.tar.xz
+#d9c1cdbe014fed6a451f02f0b4debfa7  extra-cmake-modules-5.101.0.tar.xz
+8694c6bc1157af7c412077bad9ef59bc  kapidox-5.101.0.tar.xz
+8a9c8f0c2640cf185202a8127658dc42  karchive-5.101.0.tar.xz
+7871d7b9e5d5fbfb065953d27e1f0b3c  kcodecs-5.101.0.tar.xz
+2ddd6e0bdb352e4df15472efdd1badb9  kconfig-5.101.0.tar.xz
+7c7c6c2cf8298f0d6b9b34366879566f  kcoreaddons-5.101.0.tar.xz
+a8c2d1bb072acf77ed09f88001250439  kdbusaddons-5.101.0.tar.xz
+563207df1ba8641855f0bc2096e426c8  kdnssd-5.101.0.tar.xz
+eeb32c747e137117d124aa861aad7144  kguiaddons-5.101.0.tar.xz
+0419618dcfcd07b8b7275d55b1cc08b1  ki18n-5.101.0.tar.xz
+aaf06f0c309974375c0425b97a0b29ec  kidletime-5.101.0.tar.xz
+79b1fafc0b1a57c62e4a7a8ea8910120  kimageformats-5.101.0.tar.xz
+5fc03df6be2e2c26b4821b8da9fe13d5  kitemmodels-5.101.0.tar.xz
+adcb905a7dc6aa97c7152314df9806c6  kitemviews-5.101.0.tar.xz
+f0d55e374279cde2931b4f359188885b  kplotting-5.101.0.tar.xz
+1bbd20834bedd54f243165b312fa2dd2  kwidgetsaddons-5.101.0.tar.xz
+d8c0435cf25503c5ed4f188ac3e7d73f  kwindowsystem-5.101.0.tar.xz
+1267e2555046ed91ae082283c65a6dc2  networkmanager-qt-5.101.0.tar.xz
+6a3d4b9e161fa6fa10e91b08462747d6  solid-5.101.0.tar.xz
+b0d25a3564df7339eeb5b865d0b67a90  sonnet-5.101.0.tar.xz
+0df99fcc3a2af08b4a9640294daa272f  threadweaver-5.101.0.tar.xz
+7e7309adfe46cc168ee35a79e29d1849  kauth-5.101.0.tar.xz
+7fa25bc8d094f3aa300864437361c715  kcompletion-5.101.0.tar.xz
+b006a7888c619272fdaebd1192b1b195  kcrash-5.101.0.tar.xz
+885498a3a07d448d4a76c6f4f33c5643  kdoctools-5.101.0.tar.xz
+e62f507a5615974663da4b9969bf3bec  kpty-5.101.0.tar.xz
+428b959b65e0554ab52b7936348110e8  kunitconversion-5.101.0.tar.xz
+60bb6220e81269526975f07a50af534c  kconfigwidgets-5.101.0.tar.xz
+be74b473295adb65022b68bbb261387b  kservice-5.101.0.tar.xz
+5881eb04a6c1e2c7f1b0c1c7c9756c90  kglobalaccel-5.101.0.tar.xz
+67891a31b5642865b90f39eeff0c7d67  kpackage-5.101.0.tar.xz
+2a9642691c9c2503165a6af1b688cb7a  kdesu-5.101.0.tar.xz
+aa1a62de293c14fad711e7db33b08c97  kemoticons-5.101.0.tar.xz
+efeb8383250954c291d7985ccb01091a  kiconthemes-5.101.0.tar.xz
+ca997d3349a1f312e8051bd8b55a85db  kjobwidgets-5.101.0.tar.xz
+876831c19fe0e66d4b27de516ad6bd41  knotifications-5.101.0.tar.xz
+d2cbcf9966f472a54827ef23d17d37c5  ktextwidgets-5.101.0.tar.xz
+4354cdc69757bd9695084daefffa8f0d  kxmlgui-5.101.0.tar.xz
+8f7b11b9c7e3a319fd81f2fb80cd12fa  kbookmarks-5.101.0.tar.xz
+5cde3972bfe496c31e6d26c45f8cbd55  kwallet-5.101.0.tar.xz
+341e5c4786c51aab9da709f9ccedace9  kded-5.101.0.tar.xz
+b3f13364ce4c94163afac024ac5aa3a4  kio-5.101.0.tar.xz
+d9d37abe187906604b1c07d4019042ea  kdeclarative-5.101.0.tar.xz
+cda417cb24cf5bbfb3a368fbdea1e478  kcmutils-5.101.0.tar.xz
+7d421207ba332694c90b6dd9e3577b52  kirigami2-5.101.0.tar.xz
+c387dc1ee3d2d7c33811a6640b4682ec  syndication-5.101.0.tar.xz
+01ced6f4d475f3423ef7edfd3ead265b  knewstuff-5.101.0.tar.xz
+29df1e203ed9f00e7b4980169efcb863  frameworkintegration-5.101.0.tar.xz
+ba872350c6c2f6dcbc7980d724426b86  kinit-5.101.0.tar.xz
+c321446c771a416f3b1db518d5fa0a19  kparts-5.101.0.tar.xz
+008da6c3a624531915b1e8057c04d4b2  kactivities-5.101.0.tar.xz
+#ad4fb163c3b10dd1a6dd62eeea5afdcc  kdewebkit-5.101.0.tar.xz
+4c206cea70f899fa01cd48daeb5df76d  syntax-highlighting-5.101.0.tar.xz
+be99ceae9a93fb4c14fb7511f6e397d7  ktexteditor-5.101.0.tar.xz
+67e0a767aada6593f0ec414dc7140d34  kdesignerplugin-5.101.0.tar.xz
+9424f989d07126b2dda5d4e416cd35fc  kwayland-5.101.0.tar.xz
+77d731dedc7a7da106ecf2dcb7f0185c  plasma-framework-5.101.0.tar.xz
+#403543d8c14947135b9705fde7365c83  modemmanager-qt-5.101.0.tar.xz
+d8c1fe3563bc1bb80ee2b729fb57d28e  kpeople-5.101.0.tar.xz
+83729946f2ef3cfe5140b56312b0de78  kxmlrpcclient-5.101.0.tar.xz
+6e4296f6e70b2443285edb0259c7f766  bluez-qt-5.101.0.tar.xz
+1ee27a9a46dcd38099eb943f9bdf8888  kfilemetadata-5.101.0.tar.xz
+33ae3ad511db114a9b69eb8da2b26677  baloo-5.101.0.tar.xz
+#fd0d088682c5597d0bf0890dab56fd83  breeze-icons-5.101.0.tar.xz
+#49a0e7efa4c325a7907f4421be1acd14  oxygen-icons5-5.101.0.tar.xz
+cd8354282540594dde1661c7fdeebb51  kactivities-stats-5.101.0.tar.xz
+0e43ac9aedb01e7565bd96854d308e8a  krunner-5.101.0.tar.xz
+c25f2ab8ef0b7d315e3b9f640ffb1dc0  prison-5.101.0.tar.xz
+8ccce54834e04decd274a732110878d4  qqc2-desktop-style-5.101.0.tar.xz
+21159b2dee3f985063fb8b94caa68999  kjs-5.101.0.tar.xz
+f4854856b54c28d71e51dea512485b2a  kdelibs4support-5.101.0.tar.xz
+c4ede3338a03349d1a7ae90e1746b18c  khtml-5.101.0.tar.xz
+11733a079fcd9431d22c6c36dfdfa1c8  kjsembed-5.101.0.tar.xz
+aa16c24318f79b7e5c1f19db6086db14  kmediaplayer-5.101.0.tar.xz
+4cea90b5e8b4badd82b28c3756affd1a  kross-5.101.0.tar.xz
+cf9d3fc6a85301cc043ded35b9e9c859  kholidays-5.101.0.tar.xz
+07c85066d41aa72bc1124edffe13f2f5  purpose-5.101.0.tar.xz
+ed07dae20d9b8d829de99616d321b0fb  kcalendarcore-5.101.0.tar.xz
+51e3491915ccf12ec6b7cbbaf168a2ed  kcontacts-5.101.0.tar.xz
+7bb958822d0c6090502d0f1110e6f201  kquickcharts-5.101.0.tar.xz
+506aeb414202a910d56cb8f4d6bfa5c2  knotifyconfig-5.101.0.tar.xz
+d595ea2c824ac87a6104e7d767f39a73  kdav-5.101.0.tar.xz</literal>
 EOF</userinput></screen>
 
   <para>
@@ -300,7 +300,7 @@ EOF</userinput></screen>
     optional dependency has been installed. The
     kdewebkit may be built if the external package
     <ulink url="https://download.qt.io/community_releases/5.9/5.9.0-final/">
-    QtWebkit</ulink> has been built.
+    QtWebkit</ulink> has been built. 
   </para>
 
   </sect2>
@@ -360,9 +360,18 @@ ln -sfv /usr/lib/systemd    $KF5_PREFIX/lib</userinput></screen>
 
     tar -xf $file
     pushd $packagedir
+
+      # kapidox is a python module
       case $name in
-        plasma-framework*)
-          sed -i 's/${EGL_TARGET}/GL EGL/' src/declarativeimports/core/CMakeLists.txt ;;
+        kapidox)
+          # First install some python module dependencies
+          as_root pip3 install --no-user doxypypy doxyqml requests
+
+          pip3 wheel -w dist --no-build-isolation --no-deps $PWD
+          as_root pip3 install --no-index --find-links dist --no-cache-dir --no-user kapidox
+          popd
+          rm -rf $packagedir
+          continue
       esac
 
       mkdir build
@@ -396,7 +405,7 @@ exit</userinput></screen>
     <para revision="sysv">
       Useless systemd units have been installed in
       <filename class="directory">$KF5_PREFIX/lib</filename>. Remove
-      them now (as <systemitem class="username">root</systemitem>):
+      them now (as &root;):
     </para>
 
 <screen role="root"

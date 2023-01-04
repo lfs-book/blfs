@@ -4,20 +4,19 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
+  <!-- his can be accessed via https://dvisvgm.de/Downloads/
+       NOT via the tags at github - those use autogen.sh -->
   <!ENTITY dvisvgm-download-http "https://github.com/mgieseki/dvisvgm/releases/download/&dvisvgm-version;/dvisvgm-&dvisvgm-version;.tar.gz">
   <!ENTITY dvisvgm-download-ftp  " ">
-  <!ENTITY dvisvgm-md5sum        "19f6b1fb0a9a8e9b93059c7c8592f799">
-  <!ENTITY dvisvgm-size          "3.1 MB">
-  <!ENTITY dvisvgm-buildsize     "274 MB (40 MB installed, add 706 MB for the tests)">
-  <!ENTITY dvisvgm-time          "0.9 SBU (add 0.6 SBU for the tests, both using parallelism=4)">
+  <!ENTITY dvisvgm-md5sum        "57f23eefa075556e36de64ea9b61d8fd">
+  <!ENTITY dvisvgm-size          "3.0 MB">
+  <!ENTITY dvisvgm-buildsize     "280 MB (41 MB installed, add 949 MB for the tests)">
+  <!ENTITY dvisvgm-time          "1.2 SBU (add 0.7 SBU for the tests, both using parallelism=4)">
 ]>
 
 <sect1 id="dvisvgm" xreflabel="dvisvgm-&dvisvgm-version;">
   <?dbhtml filename="dvisvgm.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>dvisvgm-&dvisvgm-version;</title>
 
@@ -33,7 +32,7 @@
       PDF files to SVG format.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,7 +75,7 @@
       <!-- EDITORS: the docs say it needs clipper, but it uses an internal
        modified version and cannot be built with system clipper -->
       <xref linkend="brotli"/>,
-      <xref linkend="gs"/> and
+      <xref linkend="gs"/>, and
       <xref linkend="potrace"/>
     </para>
 
@@ -108,6 +107,9 @@
 
 <!-- Editors: This is in the book for svg output from asymptote. tested in
  https://www.linuxfromscratch.org/~ken/asy-nontex-testfiles/asy-test-20200123.tar.xz
+ Can also be tested with texlive including tikz
+ https://www.linuxfromscratch.org/~ken/tex-testfiles/ https://www.linuxfromscratch.org/~ken/
+ Or, use use it to convert first or specified page(s) of a PDF to SVG - see the man page
 -->
     <para>
       To enable the build system to link to
@@ -116,37 +118,31 @@
       <filename class="directory">/usr/lib</filename>:
     </para>
 
-<screen role="root"><userinput>ln -svf /opt/texlive/&texlive-year;/lib/libkpathsea.so /usr/lib</userinput></screen>
+<screen role="root"><userinput>ln -svf $TEXLIVE_PREFIX/lib/libkpathsea.so /usr/lib</userinput></screen>
 
-<!--<para>
-      The testsuite assumes that a modern version of <application>Python</application>
-      has been installed as plain <command>python</command>. Adjust it to use
-      <command>python3</command> with the following sed:
+    <para>
+      Fix an issue introduced by ghostscript-10.0.0:
     </para>
 
-<screen><userinput>sed -i 's/python/&amp;3/' tests/Makefile.in</userinput></screen>
+<screen><userinput>sed "s/gs_error_names\[/error_names[/" -i src/Ghostscript.cpp</userinput></screen>
 
--->
     <para>
-      The testsuite assumes that a modern version of <application>Python</application>
+      The test suite assumes that a modern version of <application>Python</application>
       has been installed as plain <command>python</command>. Changing this to use
-      <command>python3</command> requires a sed to one of <filename>Makefile.in</filename>
-      files, but that gets regenerated when <command>autoreconf</command> is run, so
-      the sed must come after that.
+      <command>python3</command> requires a sed to one <filename>Makefile.in</filename>
+      file.
     </para>
 
     <para>
-<!--  Now install <application>dvisvgm</application> by running the following-->
       Install <application>dvisvgm</application> by running the following
       commands:
     </para>
 
-<screen><userinput>autoreconf -fiv                               &amp;&amp;
-sed -i 's/python/&amp;3/' tests/Makefile.in       &amp;&amp;
-./configure                                    \
- --bindir=/opt/texlive/&texlive-year;/bin/${TEXARCH}     \
- --mandir=/opt/texlive/&texlive-year;/texmf-dist/doc/man \
- --with-kpathsea=/opt/texlive/&texlive-year;            &amp;&amp;
+<screen><userinput>sed -i 's/python/&amp;3/' tests/Makefile.in         &amp;&amp;
+./configure                                     \
+    --bindir=$TEXLIVE_PREFIX/bin/${TEXARCH}     \
+    --mandir=$TEXLIVE_PREFIX/texmf-dist/doc/man \
+    --with-kpathsea=$TEXLIVE_PREFIX             &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -165,10 +161,11 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>ln -svf /opt/texlive/&texlive-year;/lib/libkpathsea.so /usr/lib</command>:
+      <command>ln -svf $TEXLIVE_PREFIX/lib/libkpathsea.so /usr/lib</command>:
       Without this, the program will not link correctly,
     </para>
 
+<!-- The autoreconf command is not used above anymore.
     <para>
       <command>autoreconf -fiv</command>: The versions of
       <application>autoconf</application> and <application>automake</application>
@@ -177,13 +174,14 @@ make</userinput></screen>
       unless autoreconf is forced to install missing (i.e. newer) auxiliary
       files.
     </para>
+-->
 
     <!-- EDITORS: the doc target to rebuild the manpage (make man) is not
       recognised unless invoked from the doc directory (unlike make pdf which
       can be invoked from top-level but needs dblatex), and I see no utility
       in explaining how to regenerate it. ken -->
     <para>
-      <command>--with-kpathsea=/opt/texlive/&texlive-year;</command>: This allows
+      <parameter>--with-kpathsea=$TEXLIVE_PREFIX</parameter>: This allows
       the build system to find the headers for <filename
       class="libraryfile">kpathsea</filename>
     </para>

@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gvfs-download-http "&gnome-download-http;/gvfs/1.48/gvfs-&gvfs-version;.tar.xz">
-  <!ENTITY gvfs-download-ftp  "&gnome-download-ftp;/gvfs/1.48/gvfs-&gvfs-version;.tar.xz">
-  <!ENTITY gvfs-md5sum        "a801309d09457bbd0c8a0a871fec0ac3">
+  <!ENTITY gvfs-download-http "&gnome-download-http;/gvfs/1.50/gvfs-&gvfs-version;.tar.xz">
+  <!ENTITY gvfs-download-ftp  "&gnome-download-ftp;/gvfs/1.50/gvfs-&gvfs-version;.tar.xz">
+  <!ENTITY gvfs-md5sum        "7de73da14e0834c1e39d3b66a3e5b559">
   <!ENTITY gvfs-size          "1.2 MB">
-  <!ENTITY gvfs-buildsize     "51 MB">
-  <!ENTITY gvfs-time          "0.4 SBU">
+  <!ENTITY gvfs-buildsize     "33 MB">
+  <!ENTITY gvfs-time          "0.3 SBU">
 ]>
 
 <sect1 id="gvfs" xreflabel="Gvfs-&gvfs-version;">
   <?dbhtml filename="gvfs.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Gvfs-&gvfs-version;</title>
 
@@ -34,7 +31,7 @@
       library.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,9 +83,8 @@
     <para role="required">
       <xref linkend="dbus"/>,
       <xref linkend="glib2"/>,
-      <xref linkend="libusb"/>,
-      <xref linkend="libsecret"/> and
-      <xref linkend="libsoup"/>
+      <xref linkend="libusb"/>, and
+      <xref linkend="libsecret"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -98,6 +94,7 @@
       <xref linkend="libcdio"/>,
       <xref linkend="libgdata"/>,
       <xref linkend="libgudev"/>,
+      <xref linkend="libsoup3"/>,
       <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
       <phrase revision="systemd"><xref linkend="systemd"/>,</phrase> and
       <xref linkend="udisks2"/>
@@ -108,7 +105,6 @@
       <xref linkend="apache"/>,
       <xref linkend="avahi"/>,
       <xref linkend="bluez"/>,
-      <xref linkend="dbus-glib"/>,
       <xref linkend="fuse3"/>,
       <xref linkend="gnome-online-accounts"/>,
       <xref linkend="gtk-doc"/>,
@@ -122,6 +118,7 @@
       <ulink url="http://www.gphoto.org/">libgphoto2</ulink>,
       <ulink url="http://www.libimobiledevice.org/">libimobiledevice</ulink>,
       <ulink url="http://libmtp.sourceforge.net/">libmtp</ulink>,
+      <!--<ulink url="https://download.gnome.org/sources/libsoup/3.0/">libsoup-3</ulink>,-->
       <ulink url="https://github.com/sahlberg/libnfs/">libnfs</ulink>, and
       <ulink url="http://twistedmatrix.com/trac/">Twisted</ulink>
     </para>
@@ -133,13 +130,7 @@
 
   <sect2 role="installation">
     <title>Installation of Gvfs</title>
-<!--
-    <para>
-      First, apply a security patch to fix four security vulnerabilities:
-    </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../gvfs-&gvfs-version;-fix_security_vulnerabilities-1.patch</userinput></screen>
--->
     <para>
       Install <application>Gvfs</application> by running the following
       commands:
@@ -203,10 +194,11 @@ ninja</userinput></screen>
 
     <para>
       <parameter>-D&lt;option&gt;=false</parameter>: These switches are
-      required if the corresponding optional dependency is not installed.
+      required if the corresponding dependency is not installed.
       Remove those where you have installed the corresponding application and
       wish to use it with <application>Gvfs</application>. The dnssd option
-      requires avahi and both goa/google require GNOME Online Accounts.
+      requires avahi and both goa and google require GNOME Online Accounts.
+      The google option also requires libgdata.
     </para>
 
     <para revision="sysv">
@@ -233,10 +225,6 @@ ninja</userinput></screen>
 
       <seglistitem>
         <seg>
-<!--      All of the applications that were previously installed were
-          removed in 1.37.2. There are 20+ library executables, but they
-          won't get documented here.
-          Proceeding with removing the obsolete command explanations. -->
           None
         </seg>
         <seg>

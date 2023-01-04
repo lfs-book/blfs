@@ -9,18 +9,15 @@
   mirror status, some of the mirrors shown as http are actually https -->
   <!ENTITY postfix-download-http "https://ghostarchive.org/postfix/postfix-release/official/postfix-&postfix-version;.tar.gz">
   <!ENTITY postfix-download-ftp  "ftp://ftp.porcupine.org/mirrors/postfix-release/official/postfix-&postfix-version;.tar.gz">
-  <!ENTITY postfix-md5sum        "793f9f4abf74d07a2557bd97a903b98d">
+  <!ENTITY postfix-md5sum        "bbb2168f85530fe4eaa65408a48e731b">
   <!ENTITY postfix-size          "4.6 MB">
-  <!ENTITY postfix-buildsize     "202 MB"> <!-- 149M build, 54M install_root -->
+  <!ENTITY postfix-buildsize     "152 MB"> <!-- 152M build, 55M install_root -->
   <!ENTITY postfix-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="postfix" xreflabel="Postfix-&postfix-version;">
   <?dbhtml filename="postfix.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Postfix-&postfix-version;</title>
 
@@ -39,7 +36,7 @@
       Internet Service Provider.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -97,13 +94,13 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="icu"/> for Email Address Internationalization (SMTPUTF8) support,
-      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="mariadb"/> or <ulink url="https://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openldap"/>,
       <xref linkend="pcre"/>,
       <xref linkend="postgresql"/>,
       <xref linkend="sqlite"/>, and
-      <ulink url="http://cr.yp.to/cdb.html">CDB</ulink> or
-      <ulink url="http://www.corpit.ru/mjt/tinycdb.html">TinyCDB</ulink>
+      <ulink url="https://cr.yp.to/cdb.html">CDB</ulink> or
+      <ulink url="https://www.corpit.ru/mjt/tinycdb.html">TinyCDB</ulink>
     </para>
 
     <para>
@@ -149,13 +146,27 @@ chown -v postfix:postfix /var/mail</userinput></screen>
       </para>
 
 <screen><userinput>sed -i 's/.\x08//g' README_FILES/*</userinput></screen>
-
+<!--
       <para>
         Make an adjustment to allow <application>Postfix</application> to compile
         on <application>Glibc-2.34</application> and later:
       </para>
 
 <screen><userinput>sed -i '/&lt;linux/i #define HAS_CLOSEFROM' src/util/sys_defs.h</userinput></screen>
+-->
+      <para>
+        The <filename>Makefile</filename> looks at the running kernel to
+        decide how to set various things. It does not recognize Linux-6 and
+        fails to make the definitions. After that is fixed, the build
+        references the newly defined version in a header, which also breaks
+        the build. Fix both of these with the following commands:
+      </para>
+
+<!-- '&&' on a sed only fails if the file is not present,
+    not if it changes nothing, but we seem to like it -->
+<screen><userinput>sed -i 's/Linux..345/&amp;6/' makedefs &amp;&amp;
+sed -i 's/LINUX2/LINUX6/' src/util/sys_defs.h</userinput></screen>
+
 
       <para>
         The <application>Postfix</application> source tree does not contain a
@@ -181,7 +192,7 @@ chown -v postfix:postfix /var/mail</userinput></screen>
       </para>
 <!-- We reverted to Berkeley DB-5.3.28 and that is handled
        <para>
-         The current version of	<xref linkend="db"/> is not recognised by a
+         The current version of <xref linkend="db"/> is not recognised by a
          hard-coded test for known versions. To build with this version use the
          following sed:
       </para>
@@ -286,10 +297,10 @@ AUXLIBS='-lssl -lcrypto'</literal></screen>
       <title>Installing Postfix</title>
 
       <para>
-        If you have <application>Cyrus SASL</application> <!--and
-         (openssl has been part of LFS for some time)
-        <application>OpenSSL</application> installed,--> install
-        <application>Postfix</application> by running the following commands:
+        Adjust the following according to your needs. For example,
+        if you have <application>Cyrus SASL</application>,
+        install <application>Postfix</application> by running the following
+        commands:
       </para>
 
 <screen><userinput>make CCARGS="-DNO_NIS -DUSE_TLS -I/usr/include/openssl/            \
@@ -298,7 +309,7 @@ AUXLIBS='-lssl -lcrypto'</literal></screen>
      makefiles &amp;&amp;
 make</userinput></screen>
 
-    <!-- There is a testsuite, but it fails a lot. It seems to need
+    <!-- There is a test suite, but it fails a lot. It seems to need
          the host to be specifically setup for the tests.
          Run with `make tests' and `make root_tests' -->
     <para>
@@ -422,7 +433,7 @@ EOF</userinput></screen>
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>/usr/sbin/postfix upgrade-configuration</userinput></screen>
+<screen role="nodump"><userinput>/usr/sbin/postfix upgrade-configuration</userinput></screen>
 
       <para>
         Before starting <application>Postfix</application>, you should check
@@ -431,7 +442,7 @@ EOF</userinput></screen>
         user to check and start your <application>Postfix</application> server:
       </para>
 
-<screen role="root"><userinput>/usr/sbin/postfix check &amp;&amp;
+<screen role="nodump"><userinput>/usr/sbin/postfix check &amp;&amp;
 /usr/sbin/postfix start</userinput></screen>
 
     </sect3>

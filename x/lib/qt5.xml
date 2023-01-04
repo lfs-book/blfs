@@ -16,9 +16,6 @@
 <sect1 id="qt5" xreflabel="Qt-&qt5-version;">
   <?dbhtml filename="qt5.html" ?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Qt-&qt5-version; Modules</title>
 
@@ -62,7 +59,7 @@
     </listitem>
   </itemizedlist>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
   <bridgehead renderas="sect3">Package Information</bridgehead>
   <itemizedlist spacing="compact">
@@ -102,8 +99,20 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
+          Now that <application>Qt5</application> updates are restricted to
+          commercial customers, upstream patches for the various modules are
+          being curated at kde.
+          Patches for the modules required by packages in BLFS have been
+          aggregated for the non-modular Qt5 build we use.
+        </para>
+        <para>
           Required patch:
-          <ulink url="&patch-root;/qt-everywhere-src-&qt5-version;-CVE-2021-3481-1.patch"/>
+          <ulink url="&patch-root;/qt-everywhere-opensource-src-&qt5-version;-kf5-1.patch"/>
+        </para>
+        <para>
+          Details of the kde curation can be found at
+          <ulink url="https://dot.kde.org/2021/04/06/announcing-kdes-qt-5-patch-collection"/>
+          and <ulink url="https://community.kde.org/Qt5PatchCollection"/>.
         </para>
       </listitem>
     </itemizedlist>
@@ -717,19 +726,11 @@ done
     </note>
 
     <para>
-      First apply a patch to fix an Out Of Bounds read in QtSVG:
+      First apply a patch to pull in the fixes curated by kde for those
+      modules which are required by packages mentioned in this book:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../qt-everywhere-src-&qt5-version;-CVE-2021-3481-1.patch</userinput></screen>
-
-    <para>
-      Next fix some issues using gcc-11:
-    </para>
-
-<screen><userinput>sed -i '/utility/a #include &lt;limits&gt;'     qtbase/src/corelib/global/qglobal.h         &amp;&amp;
-sed -i '/string/a #include &lt;limits&gt;'      qtbase/src/corelib/global/qfloat16.h        &amp;&amp;
-sed -i '/qbytearray/a #include &lt;limits&gt;'  qtbase/src/corelib/text/qbytearraymatcher.h &amp;&amp;
-sed -i '/type_traits/a #include &lt;limits&gt;' qtdeclarative/src/qmldebug/qqmlprofilerevent_p.h</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../qt-everywhere-opensource-src-&qt5-version;-kf5-1.patch</userinput></screen>
 
     <para>
       Install <application>Qt5</application> by running the following commands:
@@ -947,9 +948,19 @@ done</userinput></screen>
     <title>Configuring Qt5</title>
 
     <sect3 id="qt5-config">
-     <!-- <title>Configuration Information</title>-->
+      <title>Configuration Information</title>
 
-    <title>If you installed Qt5 in /usr</title>
+      <para>
+        If <xref linkend="sudo"/> is installed, QT5DIR should be available to
+        the super user as well. Execute the following commands as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/sudoers.d/qt &lt;&lt; "EOF"
+<literal>Defaults env_keep += QT5DIR</literal>
+EOF</userinput></screen>
+
+      <bridgehead renderas="sect4">If you installed Qt5 in /usr</bridgehead>
 
       <para>
         If you installed <application>Qt5</application> in
@@ -968,17 +979,7 @@ pathappend $QT5DIR/bin
 # End /etc/profile.d/qt5.sh</literal>
 EOF</userinput></screen>
 
-      <para>
-        If <xref linkend="sudo"/> is installed, QT5DIR should be available to
-        the super user as well. Execute the following commands as the
-        <systemitem class="username">root</systemitem> user:
-      </para>
-
-<screen role="root"><userinput>cat &gt; /etc/sudoers.d/qt &lt;&lt; "EOF"
-<literal>Defaults env_keep += QT5DIR</literal>
-EOF</userinput></screen>
-      
-    <bridgehead renderas="sect4">If you did not install Qt5 in /usr</bridgehead>
+      <bridgehead renderas="sect4">If you did not install Qt5 in /usr</bridgehead>
 
       <para>
         If you installed <application>Qt5</application> in a location other
@@ -1045,7 +1046,8 @@ EOF</userinput></screen>
           qdbusviewer, qdbusxml2cpp, qdistancefieldgenerator, qdoc, qgltf,
           qhelpgenerator, qlalr, qmake, qml, qmlcachegen,
           qmleasing, qmlformat, qmlimportscanner, qmllint, qmlmin, qmlplugindump,
-          qmlpreview, qmlprofiler, qmlscene, qmltestrunner, qscxmlc,
+          qmlpreview, qmlprofiler, qmlscene, qmltestrunner, qmltime,
+          qmltyperegistrar, qscxmlc,
           qtattributionscanner, qtdiag, qtpaths, qtplugininfo,
           qtwaylandscanner, qvkgen, rcc, repc, sdpscanner, syncqt.pl, tracegen,
           uic, xmlpatterns, and xmlpatternsvalidator

@@ -7,18 +7,15 @@
   <!ENTITY xine-lib-download-http
     "&sourceforge-dl;/xine/xine-lib-&xine-lib-version;.tar.xz">
   <!ENTITY xine-lib-download-ftp  "&gentoo-ftp-repo;/xine-lib-&xine-lib-version;.tar.xz">
-  <!ENTITY xine-lib-md5sum        "417ee1737db4aed150a562a568b0a13b">
-  <!ENTITY xine-lib-size          "5.0 MB">
-  <!ENTITY xine-lib-buildsize     "101 MB (wtih API documentation)">
+  <!ENTITY xine-lib-md5sum        "3d0660c9da158c31dd65e955e4ac8cd2">
+  <!ENTITY xine-lib-size          "5.1 MB">
+  <!ENTITY xine-lib-buildsize     "169 MB (with API documentation)">
   <!ENTITY xine-lib-time          "0.5 SBU (Using parallelism=4; with API documentation)">
 ]>
 
 <sect1 id="xine-lib" xreflabel="xine-lib-&xine-lib-version;">
   <?dbhtml filename="xine-lib.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>xine-lib-&xine-lib-version;</title>
 
@@ -36,7 +33,7 @@
       hardware.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -130,6 +127,25 @@
 
   <sect2 role="installation">
     <title>Installation of Xine Libraries</title>
+
+    <!-- See this thread for more details:
+    https://lists.linuxfromscratch.org/sympa/arc/lfs-dev/2022-07/msg00044.html
+    -->
+
+    <para>
+      First, fix building this package with ffmpeg-5.1:
+    </para>
+
+<screen><userinput remap="pre">sed -e '/\/avformat.h/i #include &lt;libavcodec/version.h&gt;' \
+    -i src/combined/ffmpeg/demux_avformat.c &amp;&amp;
+sed -e '/\/avio.h/i #include &lt;libavutil/avutil.h&gt;' \
+    -i src/combined/ffmpeg/input_avio.c</userinput></screen>
+
+    <para>
+      Then, fix building this package with binutils-2.39:
+    </para>
+
+<screen><userinput remap="pre">sed -e '/xine_set_flags/s/XINE_PROTECTED//' -i include/xine.h</userinput></screen>
 
     <para>
       Install <application>Xine Libraries</application> by running the following
@@ -257,7 +273,7 @@ install -v -m644    doc/api/* \
         <term><command>xine-list-1.2</command></term>
         <listitem>
           <para>
-            is used to get supported filetype information from
+            is used to get supported file type information from
             <application>xine-lib</application>
           </para>
           <indexterm zone="xine-lib xine-list-1.2">

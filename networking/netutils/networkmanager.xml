@@ -8,18 +8,15 @@
 "&gnome-download-http;/NetworkManager/&NetworkManager-minor;/NetworkManager-&NetworkManager-version;.tar.xz">
   <!ENTITY NetworkManager-download-ftp
 "&gnome-download-ftp;/NetworkManager/&NetworkManager-minor;/NetworkManager-&NetworkManager-version;.tar.xz">
-  <!ENTITY NetworkManager-md5sum        "0913815a98c60d0d2bcc6e930b596906">
-  <!ENTITY NetworkManager-size          "5.1 MB">
-  <!ENTITY NetworkManager-buildsize     "286 MB (with tests)">
-  <!ENTITY NetworkManager-time          "0.8 SBU (with tests, using parallelism=4)">
+  <!ENTITY NetworkManager-md5sum        "46be005b3cae8c002339ada4c9f9f3ea">
+  <!ENTITY NetworkManager-size          "6.2 MB">
+  <!ENTITY NetworkManager-buildsize     "275 MB (with tests and documentation)">
+  <!ENTITY NetworkManager-time          "0.9 SBU (with tests, using parallelism=4)">
 ]>
 
 <sect1 id="NetworkManager" xreflabel="NetworkManager-&NetworkManager-version;">
   <?dbhtml filename="networkmanager.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>NetworkManager-&NetworkManager-version;</title>
 
@@ -39,7 +36,7 @@
       available.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <note revision="systemd">
       <para>
@@ -121,7 +118,7 @@
       <xref linkend="qt5"/> (for examples),
       <xref linkend="ModemManager"/>,
       <xref linkend="valgrind"/>,
-      <ulink url="http://www.thekelleys.org.uk/dnsmasq/doc.html">dnsmasq</ulink>,
+      <ulink url="https://thekelleys.org.uk/dnsmasq/doc.html">dnsmasq</ulink>,
       <ulink url="https://firewalld.org/">firewalld</ulink>,
       <ulink url="https://github.com/Distrotech/libaudit">libaudit</ulink>,
       <ulink url="https://github.com/jpirko/libteam">libteam</ulink>,
@@ -139,21 +136,57 @@
     <title>Kernel Configuration</title>
 
     <para>
-      If you wish to run the tests, enable the following options in the
-      kernel configuration and recompile the kernel if necessary:
+      If you wish to run the tests, check that at least the following options
+      are enabled in the kernel configuration. Those options have been
+      determined to be necessary, but may not be sufficient. Recompile the
+      kernel if necessary:
     </para>
 
     <!-- Ethernet Teaming support is potentially optional, but I didn't
          run the tests again to test that. It was needed to convince one of
          the Linux Platform tests to move farther along because otherwise
          RTNETLINK would respond with an Error 95 - unknown device type.
-         This would cause the test to fail early on in the process. -->
+         This would cause the test to fail early on in the process.
 
-<screen><literal>Device Drivers ---&gt;
-  [*] Network device support         [CONFIG_NETDEVICES] ---&gt;
-    [*] Bonding driver support       [CONFIG_BONDING]
-    [*] Dummy net driver support     [CONFIG_DUMMY]
-    [*] Ethernet team driver support [CONFIG_NET_TEAM]</literal></screen>
+         [pierre, Nov 2022]: I cannot tell whether these options are
+         the only ones that are needed. They are the options I had to add
+         in order to have some tests pass. But I already had some other
+         options set for packet filtering (iptables), that may not be
+         available by default and may be necessary. Even with the options
+         below still one test (test-route) fails.-->
+
+<screen><literal>
+[*] Networking support---&gt;                                [CONFIG_NET]
+      Networking options---&gt;
+      [*] TCP/IP networking                               [CONFIG_INET]
+      &lt;*/M&gt;   IP: tunelling                               [CONFIG_NET_IPIP]
+      &lt;*/M&gt;   IP: GRE demultiplexer                       [CONFIG_NET_IPGRE_DEMUX]
+      &lt;*/M&gt;   IP: GRE tunnels over IP                     [CONFIG_NET_IPGRE]
+      &lt;*&gt;   The IPv6 protocol ---&gt;                        [CONFIG_IPV6]
+        &lt;*/M&gt; IPv6: IPv6-in-IPv4 tunnel (SIT driver)      [CONFIG_IPV6_SIT]
+        &lt;*/M&gt; IPv6: GRE tunnel                            [CONFIG_IPV6_GRE]
+        [*] IPv6: Multiple Routing Tables                 [CONFIG_IPV6_MULTIPLE_TABLES]
+      [*]   MPTCP:   Multipath TCP                        [CONFIG_MPTCP]
+      [*]     MPTCP: IPv6 support for Multipath TCP       [CONFIG_MPTCP_IPV6]
+      &lt;*/M&gt; 802.1Q/802.1ad VLAN Support                   [CONFIG_VLAN_8021Q]
+      [*] QoS and/or fair queueing  ---&gt;                  [CONFIG_NET_SCHED]
+        &lt;*/M&gt; Stochastic Fairness Queueing (SFQ)          [CONFIG_NET_SCH_SFQ]
+        &lt;*/M&gt; Token Bucket Filter (TBF)                   [CONFIG_NET_SCH_TBF]
+        &lt;*/M&gt; Fair Queue Controlled Delay AQM (FQ_CODEL)  [CONFIG_NET_SCH_FQ_CODEL]
+        &lt;*/M&gt; Ingress/classifier-action Qdisc             [CONFIG_NET_SCH_INGRESS]
+    Device Drivers ---&gt;
+    [*] Network device support ---&gt;                       [CONFIG_NETDEVICES]
+      [*] Network core driver support                     [CONFIG_NET_CORE]
+      &lt;*&gt;   Bonding driver support                        [CONFIG_BONDING]
+      &lt;*&gt;   Dummy net driver support                      [CONFIG_DUMMY]
+      &lt;*&gt;   Ethernet team driver support ---&gt;             [CONFIG_NET_TEAM]
+      &lt;*&gt;   MAC-VLAN support                              [CONFIG_MACVLAN]
+      &lt;*&gt;     MAC-VLAN based tap driver                   [CONFIG_MACVTAP]
+      &lt;*&gt;   IP-VLAN support                               [CONFIG_IPVLAN]
+      &lt;*&gt;   Virtual eXtensible Local Area Network (VXLAN) [CONFIG_VXLAN]
+      &lt;*&gt;   Virtual ethernet pair device                  [CONFIG_VETH]
+      &lt;*&gt;   Virtual Routing and Forwarding (Lite)         [CONFIG_VRF]
+  </literal></screen>
 
     <indexterm zone="NetworkManager NetworkManager-kernel">
       <primary sortas="d-NetworkManager">NetworkManager</primary>
@@ -234,17 +267,13 @@ meson --prefix=/usr              \
 ninja</userinput></screen>
 
     <para>
-      An already active graphical session
-      with a bus address is necessary to run the tests. To test the results,
-      as the root user, <!-- needs the "ip" command -->
-      issue: <command>ninja test</command>. Five tests,
-      <filename>platform/test-tc-linux</filename>,
-      <!--<filename>platform/test-core</filename>,-->
-      <filename>test-l3cfg</filename>,
-      <filename>devices/test-acd</filename>,
-      <filename>platform/test-route-linux</filename>, and
-      <filename>platform/test-link-linux</filename>,
-      <!--<filename>platform/test-cleanup-linux</filename>,--> are known to fail.
+      An already active graphical session with a bus address is necessary
+      to run the tests. To test the results, issue
+      <command>ninja test</command>.
+    </para>
+
+    <para>
+      A few tests may fail, depending on enabled kernel options.
     </para>
 
     <para>
@@ -253,6 +282,27 @@ ninja</userinput></screen>
 
 <screen role="root"><userinput>ninja install &amp;&amp;
 mv -v /usr/share/doc/NetworkManager{,-&NetworkManager-version;}</userinput></screen>
+
+    <para>
+      If you have not passed the <option>-Ddocs=true</option> option to
+      <command>meson</command>, you can install the pregenerated manual pages
+      with (as the &root; user):
+    </para>
+
+<screen role="root"><userinput>for file in $(echo ../man/*.[1578]); do
+    section=${file##*.} &amp;&amp;
+    install -vdm 755 /usr/share/man/man$section
+    install -vm 644 $file /usr/share/man/man$section/
+done</userinput></screen>
+
+    <para>
+      Still in case you have not used <option>-Ddocs=true</option>, the
+      pregenerated HTML documentation can also be installed with (as
+      the &root; user):
+    </para>
+
+<screen role="root"
+        remap="doc"><userinput>cp -Rv ../docs/{api,libnm} /usr/share/doc/NetworkManager-&NetworkManager-version;</userinput></screen>
 
   </sect2>
 
@@ -284,7 +334,6 @@ mv -v /usr/share/doc/NetworkManager{,-&NetworkManager-version;}</userinput></scr
     </para>
 
     <para>
-  <!--<parameter>-Djson_validation=false</parameter>, no longer recognized -->
       <parameter>-Dlibpsl=false</parameter> and
       <parameter>-Dovs=false</parameter>: These switches disable building with the
       respective libraries. Remove if you have the needed libraries installed.
@@ -299,7 +348,7 @@ mv -v /usr/share/doc/NetworkManager{,-&NetworkManager-version;}</userinput></scr
 -->
 
     <para>
-      <parameter>-Dmodem_manager=false</parameter>: This switch is requried if
+      <parameter>-Dmodem_manager=false</parameter>: This switch is required if
       <application>ModemManager</application> is not installed. Omit if you
       have built <application>ModemManager</application> and
       <application>mobile-broadband-provider-info</application>.
@@ -416,7 +465,7 @@ dns=none</literal>
 EOF</userinput></screen>
 
       <para>
-        For additional configuation options, see
+        For additional configuration options, see
         <command>man 5 NetworkManager.conf</command>.
       </para>
 
@@ -533,8 +582,6 @@ EOF</userinput></screen>
           and
           /var/lib/NetworkManager
         </seg>
-        <!-- A lot of libraries were removed here. We should verify compatibilty.
-        RESTORED AT 1.18.2 -renodr -->
       </seglistitem>
     </segmentedlist>
 

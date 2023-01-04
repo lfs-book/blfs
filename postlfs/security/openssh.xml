@@ -9,20 +9,17 @@
   <!ENTITY openssh-download-ftp
            " "> <!-- at the moment, unable to connect via ftp: ken
            "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-&openssh-version;.tar.gz"> -->
-  <!ENTITY openssh-md5sum        "8ce5f390958baeeab635aafd0ef41453">
-  <!ENTITY openssh-size          "1.7 MB">
-  <!ENTITY openssh-buildsize     "48 MB (add 34 MB for tests)">
-  <!ENTITY openssh-time          "0.3 SBU (Using parallelism=4;
-                                  running the tests takes 20+ minutes,
+  <!ENTITY openssh-md5sum        "471912038124285c96918882ee190a22">
+  <!ENTITY openssh-size          "1.8 MB">
+  <!ENTITY openssh-buildsize     "44 MB (add 21 MB for tests)">
+  <!ENTITY openssh-time          "0.2 SBU (Using parallelism=4;
+                                  running the tests takes about 28 minutes,
                                   irrespective of processor speed)">
 ]>
 
 <sect1 id="openssh" xreflabel="OpenSSH-&openssh-version;">
   <?dbhtml filename="openssh.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>OpenSSH-&openssh-version;</title>
 
@@ -42,7 +39,7 @@
       <command>rcp</command> respectively.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -96,15 +93,16 @@
       <xref linkend="linux-pam"/>,
       <xref linkend="x-window-system"/>,
       <xref linkend="mitkrb"/>,
-      <ulink url="http://www.thrysoee.dk/editline/">libedit</ulink>,
-      <ulink url="http://www.libressl.org/">LibreSSL Portable</ulink>,
+      <xref linkend="which"/> (for tests),
+      <ulink url="https://www.thrysoee.dk/editline/">libedit</ulink>,
+      <ulink url="https://www.libressl.org/">LibreSSL Portable</ulink>,
       <ulink url="https://github.com/OpenSC/OpenSC/wiki">OpenSC</ulink>, and
       <ulink url="http://www.citi.umich.edu/projects/smartcard/sectok.html">libsectok</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional Runtime (Used only to gather entropy)</bridgehead>
     <para role="optional">
-      <xref role="runtime" linkend="openjdk"/>,
+      <!--<xref role="runtime" linkend="openjdk"/>, Not seen in 8.8p1 -->
       <xref role="runtime" linkend="net-tools"/>, and
       <xref role="runtime" linkend="sysstat"/>
     </para>
@@ -168,30 +166,31 @@ fi</userinput></screen>
       commands:
     </para>
 
+<!-- -\-with-md5-passwords used to be here, but a comment inside of a <screen>
+     block leaves an eyesore. -->
 <screen><userinput>./configure --prefix=/usr                            \
             --sysconfdir=/etc/ssh                    \
-            --with-md5-passwords                     \
             --with-privsep-path=/var/lib/sshd        \
             --with-default-path=/usr/bin             \
             --with-superuser-path=/usr/sbin:/usr/bin \
-            --with-pid-dir=/run
+            --with-pid-dir=/run                      &amp;&amp;
 make</userinput></screen>
 
     <para>
-      The testsuite requires an installed copy of <command>scp</command> to
+      The test suite requires an installed copy of <command>scp</command> to
       complete the multiplexing tests. To run the test suite, first copy the
       <command>scp</command> program to
       <filename class="directory">/usr/bin</filename>, making sure that you
       backup any existing copy first.
     </para>
-
+<!--  I got all tests passed without this with 9.0p1.  Apr 13, 2022.
     <para>
       If you wish to run the tests, remove a test suite that is not valid on
       Linux-based platforms:
     </para>
 
 <screen><userinput>sed -i 's/conch-ciphers//' regress/Makefile</userinput></screen>
-
+-->
     <para>
       To test the results, issue: <command>make -j1 tests</command>.
       <!--One test, <filename>key options</filename>, fails when run in chroot.-->
@@ -238,10 +237,12 @@ install -v -m644    INSTALL LICENCE OVERVIEW README* \
       <filename class="directory">/usr/etc</filename>.
     </para>
 
+    <!--
     <para>
-      <parameter>--with-md5-passwords</parameter>: This enables the use of MD5
+      <parameter>-\-with-md5-passwords</parameter>: This enables the use of MD5
       passwords.
     </para>
+    -->
 
     <para>
       <parameter>--with-default-path=/usr/bin</parameter> and
@@ -252,7 +253,7 @@ install -v -m644    INSTALL LICENCE OVERVIEW README* \
 
     <para>
       <parameter>--with-pid-dir=/run</parameter>: This prevents
-      <application>OpenSSH</application> from refering to deprecated
+      <application>OpenSSH</application> from referring to deprecated
       <filename class="directory">/var/run</filename>.
     </para>
 
@@ -343,7 +344,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub <replaceable>REMOTE_USERNAME</replaceable>@<rep
 
 
 <screen role="root"><userinput>echo "PasswordAuthentication no" >> /etc/ssh/sshd_config &amp;&amp;
-echo "ChallengeResponseAuthentication no" >> /etc/ssh/sshd_config</userinput></screen>
+echo "KbdInteractiveAuthentication no" >> /etc/ssh/sshd_config</userinput></screen>
 
       <para>
         If you added <application>Linux-PAM</application> support and you want

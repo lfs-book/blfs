@@ -10,18 +10,15 @@
      URL for a prepared git version -->
   <!ENTITY qtwebengine-download-http "&sources-anduin-http;/qtwebengine/qtwebengine-&qtwebengine-version;.tar.xz">
   <!ENTITY qtwebengine-download-ftp  " ">
-  <!ENTITY qtwebengine-md5sum        "af799617842cca0b765102c312fbdd46">
+  <!ENTITY qtwebengine-md5sum        "1302667c7e8a045fb0cc776f7e3627ad">
   <!ENTITY qtwebengine-size          "306 MB">
-  <!ENTITY qtwebengine-buildsize     "5.0 GB (154 MB installed)">
-  <!ENTITY qtwebengine-time          "107 SBU (typical, Using parallelism=4)">
+  <!ENTITY qtwebengine-buildsize     "5.1 GB (152 MB installed)">
+  <!ENTITY qtwebengine-time          "103 SBU (typical, Using parallelism=4)">
 ]>
 
 <sect1 id="qtwebengine" xreflabel="qtwebengine-&qtwebengine-version;">
   <?dbhtml filename="qtwebengine.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>QtWebEngine-&qtwebengine-version;</title>
 
@@ -77,10 +74,10 @@
       </para>
 
       <para> <!-- for git versions -->
-        The tarball linked to below was created from the 5.15.6 git branch
+        The tarball linked to below was created from the 5.15 git branch
         and the 87-branch of the chromium submodule (which is forked from
-        chromium). See the GIT-VERSIONS file in the tarball (after applying
-        any patches) for details of the latest commits.
+        chromium). See the GIT-VERSIONS file in the tarball for details of the
+        latest commits.
       </para>
     </warning>
 
@@ -105,6 +102,7 @@
       mentioned in the 5.15 cgit web page (below).
       git checkout origin/87-branch (or whatever)
        Use git log or git tk to look at its HEAD and check it seems appropriate.
+       If this doesn't work, use 'git submodule update'
 
       To decide when it might be worth creating a new tarball, periodically keep
       an eye on https://code.qt.io/cgit/qt/qtwebengine.git/ (currently, the 5.15.6
@@ -138,6 +136,10 @@
       tarball, go down to src/3rdparty and untar the submodule tarball.
       Decide on what to call the result and create a full xz tarball using tar -cJf.
 
+      NOTE: To use git archive, use something like this:
+      git archive - -format tar.gz - -output qtwebengine.tar.gz HEAD
+      git archive - -format tar.gz - -output chromium.tar.gz HEAD
+
       UPDATE: Since we have to host the tarball, and it is over 300MB, it makes
       sense to create a patch for subsequent fixes (for the first version, 314KB
       including the updates to the GIT-VERSIONS file).  For future updates, view
@@ -150,7 +152,7 @@
 
          end of note for editors -->
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <warning>
       <para>
@@ -169,6 +171,15 @@
     </warning>
 
     <note>
+      <para>
+        If you  are upgrading and have installed a newer version of <xref
+        linkend='icu'/> since you last installed <xref linkend='qt5'/>, you
+        will need to reinstall Qt5 before upgrading, otherwise the final link
+        of this package will fail with a warning that the version of icu
+        libraries needed by libQt5Core.so may conflict with the version
+        used for this package.
+      </para>
+
       <para>
         Unusually, the shipped GN build system (used to create the Ninja files)
         requires a static <filename class="libraryfile">libstdc++.a</filename>
@@ -217,21 +228,26 @@
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
+  <!--<listitem>
+        <para>
+          Required patch:
+          <!\-\- keep links for releases and git versions as a reminder
+               that the tarball names names differ
+          <ulink url="&patch-root;/qtwebengine-everywhere-src-&qtwebengine-version;-ICU68-2.patch"/> \-\->
+
+          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-5.15.7-1.patch"/>
+        </para>
+      </listitem>-->
       <listitem>
         <para>
           Required patch:
-          <!-- keep links for releases and git versions as a reminder
-               that the tarball names names differ
-          <ulink url="&patch-root;/qtwebengine-everywhere-src-&qtwebengine-version;-ICU68-2.patch"/> -->
-           
-          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-5.15.7-1.patch"/>
+          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-build_fixes-1.patch"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Required patch:-->
-     <!--     <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-build_fixes-1.patch"/> -->
-          <ulink url="&patch-root;/qtwebengine-5.15.7-build_fixes-1.patch"/>
+          Required patch:
+          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-ffmpeg5_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -243,7 +259,8 @@
     <para role="required">
       <xref linkend="nodejs"/>,
       <xref linkend="nss"/>,
-      <xref linkend="python2"/>, and
+      <xref linkend="pciutils"/>, and
+<!--  <xref linkend="python2"/>, and -->
       <xref linkend='qt5'/>
     </para>
 
@@ -271,11 +288,12 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="libevent"/>,
+      <xref linkend="mitkrb"/>,
       <xref linkend="pipewire"/>,
       <xref linkend="poppler"/>,
       <ulink url="https://github.com/open-source-parsers/jsoncpp/releases">jsoncpp</ulink>,
       <ulink url="https://github.com/cisco/libsrtp/releases">libsrtp</ulink>,
-      <ulink url="http://google.github.io/snappy/">snappy</ulink>
+      <ulink url="https://google.github.io/snappy/">snappy</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -286,7 +304,9 @@
   <sect2 role="installation">
     <title>Installation of qtwebengine</title>
 
-    <note>
+<!-- following merely commented instead of deleted, in case we need to
+      drop back when a future version of python3 is released -->
+<!--<note>
       <para>
         Unlike version 5.15.2, the chromium-derived build system now needs
         <command>python</command> to be available and to be python2. In
@@ -304,21 +324,28 @@
       user, create the python symlink:
     </para>
 
-<screen role="root"><userinput>ln -svf /usr/bin/python{2,}</userinput></screen>
+<screen role="root"><userinput>ln -svf /usr/bin/python{2,}</userinput></screen>-->
 
 
-    <para>
+<!--<para>
       Now apply a patch to update from 5.15.6 to the security and other fixes
       contained in the 5.15.7 source:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-5.15.7-1.patch</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-5.15.7-1.patch</userinput></screen>-->
 
     <para>
-      Apply apply a patch to fix several issues that can prevent the build working:
+      Apply a patch to fix several issues that can prevent the build from completing,
+      and to force it to use python3:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-5.15.7-build_fixes-1.patch</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-build_fixes-1.patch</userinput></screen>
+
+    <para>
+      Apply a patch that resolves problems when building with ffmpeg-5:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-ffmpeg5_fixes-1.patch</userinput></screen>
 
 <!-- start of commands for git versions only -->
     <para>
@@ -358,6 +385,15 @@
     -i src/3rdparty/chromium/media/media_options.gni</userinput></screen>
 
     <para>
+      Next, fix the build tools so they can be run with Python-3.11+:
+    </para>
+
+<screen><userinput>sed -e 's/\^(?i)/(?i)^/' \
+    -i src/3rdparty/chromium/tools/metrics/ukm/ukm_model.py &amp;&amp;
+sed -e "s/'rU'/'r'/" \
+    -i src/3rdparty/chromium/tools/grit/grit/util.py</userinput></screen>
+
+    <para>
       Finally, fix a change in the build system which allows its developers to
       pass e.g. -j20 to make (for quick tests of some areas) but breaks the
       build with LFS's use of the NINJAJOBS environment variable:
@@ -381,6 +417,13 @@ et.seq, particularly 037002.html which shows the commit near the end. -->
 <screen role="root"><userinput>if [ -e ${QT5DIR}/lib/libQt5WebEngineCore.so ]; then
   mv -v ${QT5DIR}/lib/libQt5WebEngineCore.so{,.old}
 fi</userinput></screen>-->
+
+<!--<para>
+      The last fix is needed to build with gcc-12:
+    </para>
+
+<screen><userinput>sed -e '/#include/i#include &lt;vector&gt;' \
+    -i src/3rdparty/chromium/third_party/skia/src/utils/SkParseColor.cpp</userinput></screen>-->
 
     <para>
       Install <application>qtwebengine</application> by running the following
@@ -427,12 +470,12 @@ make</userinput></screen>
 <screen role="root"><userinput>find $QT5DIR/ -name \*.prl \
    -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;</userinput></screen>
 
-    <para>
+<!--<para>
       Finally, as the <systemitem class="username">root</systemitem>
       user, remove the python symlink:
     </para>
 
-<screen role="root"><userinput>rm -v /usr/bin/python</userinput></screen>
+<screen role="root"><userinput>rm -v /usr/bin/python</userinput></screen>-->
   </sect2>
 
   <sect2 role="commands">
@@ -463,6 +506,12 @@ make</userinput></screen>
       large amount.
     </para>
 
+    <para>
+      <option>-webengine-kerberos</option>: Add this if you have installed <xref
+      linkend="mitkrb"/> and wish to connect from a browser using QtWebEngine
+      to a webserver which requires you to connect via kerberos.
+    </para>
+
     <!--
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
        href="../../xincludes/SIOCGSTAMP.xml"/>
@@ -483,7 +532,7 @@ make</userinput></screen>
             CPU-intensive tasks at the same time. For an editor on a machine
             with a lot of CPUs, trying to measure the build time for a 4-CPU
             machine, <option>NINJAJOBS=4 make</option> will give a reasonable
-            approximation (there is a short period where N+2 python2 and node
+            approximation (there is a short period where N+2 python and node
             jobs run).
           </para>
         </listitem>

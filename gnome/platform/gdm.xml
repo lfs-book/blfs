@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gdm-download-http "&gnome-download-http;/gdm/&gnome-40;/gdm-&gdm-version;.tar.xz">
-  <!ENTITY gdm-download-ftp  "&gnome-download-ftp;/gdm/&gnome-40;/gdm-&gdm-version;.tar.xz">
-  <!ENTITY gdm-md5sum        "fa32fee88d242ebf5d1c2fb69e74457e">
-  <!ENTITY gdm-size          "788 KB">
-  <!ENTITY gdm-buildsize     "36 MB">
-  <!ENTITY gdm-time          "0.1 SBU">
+  <!ENTITY gdm-download-http "&gnome-download-http;/gdm/&gnome-43;/gdm-&gdm-version;.tar.xz">
+  <!ENTITY gdm-download-ftp  "&gnome-download-ftp;/gdm/&gnome-43;/gdm-&gdm-version;.tar.xz">
+  <!ENTITY gdm-md5sum        "d9ca2abdf2359d0420dc71a1bd1d7530">
+  <!ENTITY gdm-size          "812 KB">
+  <!ENTITY gdm-buildsize     "33 MB">
+  <!ENTITY gdm-time          "0.3 SBU">
 ]>
 
 <sect1 id="gdm" xreflabel="GDM-&gdm-version;">
   <?dbhtml filename="gdm.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>GDM-&gdm-version;</title>
 
@@ -34,7 +31,7 @@
       and remote displays.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -286,6 +283,38 @@ EOF</userinput></screen>
 
   </sect2>
 
+  <sect2 role="starting">
+    <title>Starting GNOME</title>
+
+    <para>
+      It is possible to start <application>GNOME</application> from the command
+      line, rather than using GDM. However, you must still have GDM installed
+      for some portions of the desktop to work. One reason to start from the
+      command line is if you want Wayland support on a system that has the
+      proprietary NVIDIA driver installed, since GDM will not show the Wayland
+      session type on such a system.
+    </para>
+
+    <para>
+      To start <application>GNOME</application> using
+      <xref role="nodep" linkend="xinit"/>, run the following commands:
+    </para>
+
+<screen role="nodump"><userinput>cat &gt; ~/.xinitrc &lt;&lt; "EOF"
+<literal>dbus-run-session gnome-session</literal>
+EOF
+
+startx</userinput></screen>
+
+    <para>
+      Alternatively, to start <application>GNOME</application> with Wayland
+      support, run the following command:
+    </para>
+
+<screen role="nodump"><userinput>dbus-run-session -- gnome-shell --display-server --wayland</userinput></screen>
+
+  </sect2>
+
   <sect2 role="content">
     <title>Contents</title>
 
@@ -304,12 +333,14 @@ EOF</userinput></screen>
         <seg>
           /etc/gdm,
           /usr/include/gdm,
-          /usr/share/gdm,
-          /usr/share/help/*/gdm,
+          /usr/share/gdm, and
+          /usr/share/help/*/gdm
+<!-- seems those diretories are not created at install, but at
+     runtime
           /var/cache/gdm,
           /var/lib/gdm,
           /var/log/gdm, and
-          /var/run/gdm
+          /var/run/gdm-->
         </seg>
       </seglistitem>
     </segmentedlist>

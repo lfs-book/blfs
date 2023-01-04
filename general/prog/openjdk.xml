@@ -5,29 +5,26 @@
   %general-entities;
 
   <!ENTITY ojdk-tarball              "jdk-&openjdk-version;-ga.tar.gz">
-  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk16u">
+  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk19u">
   <!ENTITY ojdk-download             "&ojdk-repo;/archive/&ojdk-tarball;">
 
   <!ENTITY anduin-download           "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;">
 
-  <!ENTITY ojdk-md5sum               "08b1c057136a6756cd8e4609dc517339">
-  <!ENTITY ojdk-size                 "100 MB">
+  <!ENTITY ojdk-md5sum               "e1067bc90894e5377b61dca68a22f07c">
+  <!ENTITY ojdk-size                 "103 MB">
 
-  <!ENTITY jtreg-version             "4.2.0-tip">
+  <!ENTITY jtreg-version             "6.1+1">
   <!ENTITY jtreg-download            "&anduin-download;/jtreg-&jtreg-version;.tar.gz">
-  <!ENTITY jtreg-md5sum              "11818f2ae4be19d2c7ae6501be60ee98">
-  <!ENTITY jtreg-size                "6.9 MB">
+  <!ENTITY jtreg-md5sum              "49e6bfa2506e96f461a01f9421a0961c">
+  <!ENTITY jtreg-size                "8.0 MB">
 
-  <!ENTITY ojdk-bdsize               "4.7 GB (add 456 MB for tests)">
-  <!ENTITY ojdk-time                 "5.2 SBU with 4 jobs (add 59 SBU for tests with 4 jobs)">
+  <!ENTITY ojdk-bdsize               "5.1 GB (add 596 MB for tests)">
+  <!ENTITY ojdk-time                 "5.0 SBU with 4 jobs (add 48 SBU for tests with 4 jobs)">
 ]>
 
 <sect1 id="openjdk" xreflabel="OpenJDK-&openjdk-version;">
   <?dbhtml filename="openjdk.html" ?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>OpenJDK-&openjdk-version;</title>
 
@@ -46,14 +43,14 @@
       runtime environment to run <application>Java</application> programs.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <para>
       OpenJDK is GPL'd code, with a special exception made for non-free
       projects to use these classes in their proprietary products.
       In similar fashion to the LGPL, which allows non-free programs to link
       to libraries provided by free software, the
-      <ulink url="http://openjdk.java.net/legal/gplv2+ce.html">GNU
+      <ulink url="https://openjdk.org/legal/gplv2+ce.html">GNU
       General Public License, version 2, with the Classpath Exception</ulink>
       allows third party programs to use classes provided by free software
       without the requirement that the third party software also be free. As
@@ -66,11 +63,11 @@
         The <application>OpenJDK</application> source includes a very
         thorough, open source test suite using the
         <application>JTreg</application> test harness. The testing instructions
-        below allow to test the just built JDK for reasonable compatibility
+        below allow testing the just built JDK for reasonable compatibility
         with the proprietary Oracle JDK. However, in order for an independent
         implementation to claim compatibility, it must pass a proprietary
         <application>JCK/TCK</application> test suite. No claims of
-        compatibility, even partial compatibility, may be made without passing
+        compatibility, or even partial compatibility, may be made without passing
         an approved test suite.
       </para>
 
@@ -80,7 +77,7 @@
         Neither the binary version provided on the <xref linkend="java"/> page
         nor the JVM built with the instructions below have been tested against
         the <ulink
-  url="http://openjdk.java.net/groups/conformance/JckAccess/jck-access.html">
+  url="https://openjdk.java.net/groups/conformance/JckAccess/jck-access.html">
         TCK</ulink>. Any version that is built using the instructions given,
         cannot claim to be compatible with the proprietary JDK, without the
         user applying for, and completing the compatibility tests themselves.
@@ -90,8 +87,8 @@
         With that in mind, the binaries produced using this build method are
         regularly tested against the TCK by the members listed on the site
         above. In addition to the community license above, an educational,
-        non-commercial license for the TCK can be obtained from <ulink
-        url="http://www.oracle.com/technetwork/java/index-137188.html">
+        non-commercial license for the TCK can be obtained <ulink
+        url="https://www.oracle.com/technetwork/java/index-137188.html">
         here</ulink>.
       </para>
     </note>
@@ -132,7 +129,9 @@
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
 
-    <bridgehead renderas="sect4">Optional test harness</bridgehead>
+    <para>
+      <emphasis role="strong">Optional test harness</emphasis>
+    </para>
 
     <itemizedlist spacing='compact'>
       <listitem>
@@ -234,7 +233,7 @@
         This is the only requirement for the environment. Modern Java
         installations do not need <envar>JAVA_HOME</envar> and
         <envar>CLASSPATH</envar> is not used here. Furthermore, OpenJDK
-        developers recommend to unset <envar>JAVA_HOME</envar>.
+        developers recommend unsetting <envar>JAVA_HOME</envar>.
       </para>
 
       <para>
@@ -246,8 +245,7 @@
     </note>
 
     <para>
-      Configure and build the package with the following commands
-      (--with-milestone value can be modified to fit user preferences):
+      Configure and build the package with the following commands:
     </para>
 
 <screen><userinput>unset JAVA_HOME                                       &amp;&amp;
@@ -284,17 +282,27 @@ unset JT_JAVA</userinput></screen>
       the results, see the files
       <filename>JTreport/test_{jdk,langtools}/text/stats.txt</filename> and
       <filename>JTreport/test_{jdk,langtools}/text/summary.txt</filename>.
-      You should expect to see around 40 failures and about the same number
-      of errors.
+      You should expect to see around 40 failures and 10 errors.
     </para>
-    <!-- 11.0.2+9:
-         for x86_64: 2 Errors, 28 Failures
-         for i686:   13 Errors, 48 Failures
-         12.0.2+10:
-         for x86_64: 5828 Passed, 52 Errors, no failures
-         for i686: PENDING
+    <!--
          14.0.1+7:
-         for x86_64: passed: 5,836; failed: 42; error: 50-->
+         for x86_64: passed: 5,836; failed: 42; error: 50
+         17.0.2+8:
+         for x86_64: passed: 6,238; failed: 48; error: 13
+         for i686:   passed: 6,208; failed: 29; error: 6
+         18.0.1+10:
+         for x86_64: passed: 6,323; failed: 53; error: 14
+         for i686:   passed: 6,290; failed: 29; error: 11
+         18.0.1.1+2:
+         for x86_64: passed: 6,323; failed: 53; error: 14
+         for i686:   passed: 6,290; failed: 29; error: 11
+         18.0.2+8:
+         for x86_64: passed: 6,329; failed: 50; error: 14
+         for i686:   passed: 6,289; failed: 31; error: 13
+         19.0.1+10:
+         for x86_64: passed: 6,423; failed: 58; error: 15
+         for i686:   passed: 6,376; failed: 31; error: 12
+    -->
 
     <para>
       Install the package with the following commands as the
@@ -329,7 +337,7 @@ done</userinput></screen>
 <screen role="root"><userinput>ln -v -nsf jdk-&openjdk-version;+&openjdk-build; /opt/jdk</userinput></screen>
 
     <para>
-      If desired, you may create .desktop files to add entries
+      If desired, you can create .desktop files to add entries
       in the menu for <command>java</command>
       and <command>jconsole</command>. The needed icons have already been
       installed. As the <systemitem class="username">root</systemitem> user:
@@ -478,7 +486,7 @@ EOF</userinput></screen>
 
     <sect3>
       <title>
-        Settting up the JRE Certificate Authority Certificates (cacerts) file
+        Setting up the JRE Certificate Authority Certificates (cacerts) file
       </title>
 
       <para>
@@ -518,10 +526,10 @@ bin/keytool -list -cacerts</userinput></screen>
       <segtitle>Installed Directory</segtitle>
 
       <seglistitem>
-        <seg>jaotc, jar, jarsigner, java, javac, javadoc, javap, jcmd,
+        <seg>jar, jarsigner, java, javac, javadoc, javap, jcmd,
         jconsole, jdb, jdeprscan, jdeps, jfr, jhsdb, jimage, jinfo,
-	jlink, jmap, jmod, jpackage, jps, jrunscript, jshell, jstack,
-	jstat, jstatd, keytool, rmid, rmiregistry, and serialver</seg>
+        jlink, jmap, jmod, jpackage, jps, jrunscript, jshell, jstack,
+        jstat, jstatd, jwebserver, keytool, rmiregistry, and serialver</seg>
         <seg>/opt/jdk-&openjdk-version;/lib/*</seg>
         <seg>/opt/jdk-&openjdk-version;</seg>
       </seglistitem>
@@ -532,6 +540,7 @@ bin/keytool -list -cacerts</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
+<!-- Not seen in 17.0.1
       <varlistentry id="jaotc">
         <term><command>jaotc</command></term>
         <listitem>
@@ -543,6 +552,7 @@ bin/keytool -list -cacerts</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="jar">
         <term><command>jar</command></term>
@@ -877,6 +887,19 @@ bin/keytool -list -cacerts</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="jwebserver">
+        <term><command>jwebserver</command></term>
+        <listitem>
+          <para>
+            provides a minimal HTTP server, designed to be used for
+            prototyping, testing, and debugging
+          </para>
+          <indexterm zone="openjdk jwebserver">
+            <primary sortas="b-jwebserver">jwebserver</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="keytool">
         <term><command>keytool</command></term>
         <listitem>
@@ -916,6 +939,7 @@ bin/keytool -list -cacerts</userinput></screen>
         </listitem>
       </varlistentry>
       -->
+<!-- Not seen in 17.0.1
       <varlistentry id="rmid">
         <term><command>rmid</command></term>
         <listitem>
@@ -927,6 +951,7 @@ bin/keytool -list -cacerts</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="rmiregistry">
         <term><command>rmiregistry</command></term>

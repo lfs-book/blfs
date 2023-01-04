@@ -6,21 +6,18 @@
 
   <!ENTITY lvm2-download-http "https://sourceware.org/ftp/lvm2/LVM2.&lvm2-version;.tgz">
   <!ENTITY lvm2-download-ftp  "ftp://sourceware.org/pub/lvm2/LVM2.&lvm2-version;.tgz">
-  <!ENTITY lvm2-md5sum        "5a011a90e580f9e29df360a7c10332a1">
-  <!ENTITY lvm2-size          "2.5 MB">
-  <!ENTITY lvm2-buildsize     "37 MB (add 18 MB for tests; transient files can grow up to around 800 MB in the /tmp directory during tests)">
+  <!ENTITY lvm2-md5sum        "cda7b89ae45ddb4a0cee768645ac9757">
+  <!ENTITY lvm2-size          "2.6 MB">
+  <!ENTITY lvm2-buildsize     "48 MB (add 25 MB for tests; transient files can grow up to around 800 MB in the /tmp directory during tests)">
   <!-- My build size was 124 MB with tests, but I'll leave this here. -renodr
        The files in /tmp are transient. I monitor /tmp with a loop during
        tests. -pierre, August 2020 -->
-  <!ENTITY lvm2-time          "0.2 SBU (using parallelism=4; add 9 to 48 SBU for tests, depending on disk speed)">
+  <!ENTITY lvm2-time          "0.1 SBU (using parallelism=4; add 9 to 48 SBU for tests, depending on disk speed)">
 ]>
 
 <sect1 id="lvm2" xreflabel="LVM2-&lvm2-version;">
   <?dbhtml filename="lvm2.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>LVM2-&lvm2-version;</title>
 
@@ -39,7 +36,7 @@
       snapshots.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -165,7 +162,7 @@ make</userinput></screen>
 
 <screen role="root"
         remap="test"><userinput>make -C tools install_tools_dynamic &amp;&amp;
-make -C udev  install                 &amp;&amp;
+make -C udev  install               &amp;&amp;
 make -C libdm install</userinput></screen>
 
     <para>
@@ -174,12 +171,12 @@ make -C libdm install</userinput></screen>
     </para>
 
 <screen role="root"
-        remap="test"><userinput>LC_ALL=en_US.UTF-8 make S=lvconvert-repair-replace check_local</userinput></screen>
+        remap="test"><userinput>LC_ALL=en_US.UTF-8 make check_local</userinput></screen>
 
     <para>
-      The <command>S=...</command> option allows to skip tests. The
-      <command>lvconvert-repair-replace</command> test has been reported
-      to hang.
+      Some tests may hang. In this case they can be skipped by adding
+      <command>S=&lt;testname&gt;</command> to the <command>make</command>
+      command.
       Other targets are available and can be listed with
       <command>make -C test help</command>. The test timings are very dependent
       on the speed of the disk(s), and on the number of enabled kernel options.
@@ -202,6 +199,12 @@ make -C libdm install</userinput></screen>
 
     Results for LVM2.2.03.14:
     ### 389 tests: 304 passed, 73 skipped, 0 timed out, 2 warned, 10 failed
+
+    Results for LVM2.2.03.16:
+    ### 395 tests: 241 passed, 145 skipped, 0 timed out, 1 warned, 8 failed
+
+    Results for LVM2.2.03.17:
+    ### 403 tests: 333 passed, 61 skipped, 0 timed out, 3 warned, 6 failed
     -->
 
     <para>
@@ -246,7 +249,7 @@ make -C libdm install</userinput></screen>
     </para>
 
 <screen role="root" revision="sysv"><userinput>make install
-rm /usr/lib/udev/rules.d/69-dm-lvm.rules</userinput></screen>
+rm -fv /usr/lib/udev/rules.d/69-dm-lvm.rules</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>make install
 make install_systemd_units</userinput></screen>
@@ -299,6 +302,35 @@ make install_systemd_units</userinput></screen>
       by default.
     </para>
 
+  </sect2>
+
+  <sect2 role="configuration" revision="systemd">
+    <title>Configuring LVM2</title>
+
+    <sect3 id="lvm2-config">
+      <title>Config File</title>
+      <para>
+        <filename>/etc/lvm/lvm.conf</filename>
+      </para>
+
+      <indexterm zone="lvm2 lvm2-config">
+        <primary
+        sortas="e-etc-lvm-lvm.conf">/etc/lvm/lvm.conf</primary>
+      </indexterm>
+    </sect3>
+
+    <sect3><title>Configuration Information</title>
+      <para>
+        The default configuration still references the obsolete <filename
+        class="directory">/var/lock</filename> directory. This creates
+        a deadlock at boot time. Change this (as the <systemitem
+        class="username">root</systemitem> user):
+      </para>
+
+<screen role="root"><userinput>sed -e '/locking_dir =/{s/#//;s/var/run/}' \
+    -i /etc/lvm/lvm.conf</userinput></screen>
+
+    </sect3>
   </sect2>
 
   <sect2 role="content">
@@ -389,7 +421,7 @@ make install_systemd_units</userinput></screen>
         <listitem>
           <para>
             provides the command-line tools for <application>LVM2</application>.
-            Commands are implemented via sympolic links to this program to
+            Commands are implemented via symbolic links to this program to
             manage physical devices (pv*), volume groups (vg*) and logical
             volumes (lv*)
           </para>

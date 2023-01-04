@@ -5,21 +5,18 @@
   %general-entities;
 
   <!ENTITY gnome-settings-daemon-download-http
-           "&gnome-download-http;/gnome-settings-daemon/&gnome-40;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+           "&gnome-download-http;/gnome-settings-daemon/&gnome-43;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
   <!ENTITY gnome-settings-daemon-download-ftp
-           "&gnome-download-ftp;/gnome-settings-daemon/&gnome-40;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
-  <!ENTITY gnome-settings-daemon-md5sum        "b5cbe98f5d5fe430e402048d5817f875">
+           "&gnome-download-ftp;/gnome-settings-daemon/&gnome-43;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+  <!ENTITY gnome-settings-daemon-md5sum        "eea402f0a87aea7f4d8428af3917fb0c">
   <!ENTITY gnome-settings-daemon-size          "1.4 MB">
-  <!ENTITY gnome-settings-daemon-buildsize     "29 MB">
+  <!ENTITY gnome-settings-daemon-buildsize     "45 MB">
   <!ENTITY gnome-settings-daemon-time          "0.1 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="gnome-settings-daemon" xreflabel="gnome-settings-daemon-&gnome-settings-daemon-version;">
   <?dbhtml filename="gnome-settings-daemon.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gnome-settings-daemon-&gnome-settings-daemon-version;</title>
 
@@ -36,7 +33,7 @@
       and the applications that run under it.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,7 +76,7 @@
       <xref linkend="alsa-lib"/>,
       <xref linkend="colord"/>,
       <xref linkend="fontconfig"/>,
-      <xref linkend="gcr"/>,
+      <xref linkend="gcr4"/>,
       <xref linkend="geoclue2"/>,
       <xref linkend="geocode-glib"/>,
       <xref linkend="gnome-desktop"/>,
@@ -119,9 +116,13 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="gnome-session"/>,
       <xref linkend="mutter"/>,
-      <xref linkend="python-dbusmock"/>, and
-      <xref linkend="umockdev"/>
+      <xref linkend="python-dbusmock"/>,
+      <xref linkend="umockdev"/>, and
+      <command>Xvfb</command> (for tests, from
+      <xref linkend="xorg-server"/> or
+      <xref role="nodep" linkend="xwayland"/>)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -132,8 +133,17 @@
   <sect2 role="installation">
     <title>Installation of GNOME Settings Daemon</title>
 
+<!--
+    <para>
+      First, fix building with recent versions of
+      <application>meson</application>:
+    </para>
+
+<screen><userinput>sed "/  policy,/d" -i plugins/{power,wacom}/meson.build</userinput></screen>
+-->
+
     <para revision="sysv">
-      First, fix libelogind detection for tests:
+      Next, fix libelogind detection for tests:
     </para>
 
 <screen revision="sysv"><userinput>sed -e 's/libsystemd/libelogind/' \
@@ -145,18 +155,6 @@
 
 <screen revision="sysv"><userinput>sed -e 's/(backlight->logind_proxy)/(0)/' \
     -i plugins/power/gsd-backlight.c</userinput></screen>
-
-    <para revision="systemd">
-      First, remove older versions of the systemd units:
-    </para>
-
-<screen revision="systemd" role="root"><userinput remap="pre">rm -fv /usr/lib/systemd/user/gsd-*</userinput></screen>
-
-    <para>
-      Fix an issue with meson-0.60 and later:
-    </para>
-
-<screen><userinput>sed -i /b_ndebug/s/true/\'true\'/ meson.build</userinput></screen>
 
     <para>
       Install <application>GNOME Settings Daemon</application> by running the
@@ -222,8 +220,8 @@ ninja</userinput></screen>
         </seg>
         <seg>
           /etc/xdg/Xwayland-session.d,
-          /usr/include/gnome-settings-daemon-40,
-          /usr/lib/gnome-settings-daemon-40, and
+          /usr/include/gnome-settings-daemon-43,
+          /usr/lib/gnome-settings-daemon-43, and
           /usr/share/gnome-settings-daemon
         </seg>
       </seglistitem>

@@ -5,21 +5,18 @@
   %general-entities;
 
   <!ENTITY gnome-online-accounts-download-http
-           "&gnome-download-http;/gnome-online-accounts/&gnome-minor-40;/gnome-online-accounts-&gnome-online-accounts-version;.tar.xz">
+           "&gnome-download-http;/gnome-online-accounts/&gnome-minor-46;/gnome-online-accounts-&gnome-online-accounts-version;.tar.xz">
   <!ENTITY gnome-online-accounts-download-ftp
-           "&gnome-download-ftp;/gnome-online-accounts/&gnome-minor-40;/gnome-online-accounts-&gnome-online-accounts-version;.tar.xz">
-  <!ENTITY gnome-online-accounts-md5sum        "fcfa7f4b37c5d63a5c5dea28840279f3">
-  <!ENTITY gnome-online-accounts-size          "844 KB">
-  <!ENTITY gnome-online-accounts-buildsize     "28 MB">
-  <!ENTITY gnome-online-accounts-time          "0.4 SBU">
+           "&gnome-download-ftp;/gnome-online-accounts/&gnome-minor-46;/gnome-online-accounts-&gnome-online-accounts-version;.tar.xz">
+  <!ENTITY gnome-online-accounts-md5sum        "018a7d08ec2522e472c44da2e24f3429">
+  <!ENTITY gnome-online-accounts-size          "372 KB">
+  <!ENTITY gnome-online-accounts-buildsize     "16 MB">
+  <!ENTITY gnome-online-accounts-time          "0.2 SBU">
 ]>
 
 <sect1 id="gnome-online-accounts" xreflabel="gnome-online-accounts-&gnome-online-accounts-version;">
   <?dbhtml filename="gnome-online-accounts.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gnome-online-accounts-&gnome-online-accounts-version;</title>
 
@@ -35,7 +32,7 @@
       framework used to access the user's online accounts.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -125,11 +122,15 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --disable-static \
-            --with-google-client-secret=5ntt6GbbkjnTVXx-MSxbmx5e \
-            --with-google-client-id=595013732528-llk8trb03f0ldpqq6nprjp1s79596646.apps.googleusercontent.com &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson --prefix=/usr                                   \
+      --buildtype=release                             \
+      -Dkerberos=false                                \
+      -Dgoogle_client_secret=5ntt6GbbkjnTVXx-MSxbmx5e \
+      -Dgoogle_client_id=595013732528-llk8trb03f0ldpqq6nprjp1s79596646.apps.googleusercontent.com &amp;&amp;
+ninja</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -139,7 +140,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -147,21 +148,24 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
+      href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>--with-google-client-*</parameter>: These switches use the
+      <parameter>-Dgoogle_*</parameter>: These switches set the
       BLFS OAuth ID and secret for Google services.
     </para>
 
     <para>
-      <option>--enable-kerberos</option>: Use this switch if you have
-      installed <xref linkend="mitkrb"/> and wish to use it with
-      <application>GNOME Online Accounts</application>.
+      <option>-Dgtk_doc=true</option>: Use this switch if you have
+      <xref linkend="gtk-doc" role="nodep"/> installed and you wish to generate
+      the API documentation.
     </para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gtk-doc-rebuild.xml"/>
+    <para>
+      <option>-Dkerberos=true</option>: Use this switch if you have
+      installed <xref linkend="mitkrb" role="nodep"/> and wish to use it with
+      <application>GNOME Online Accounts</application>.
+    </para>
 
   </sect2>
 
@@ -183,7 +187,7 @@ make</userinput></screen>
         <seg>
           /usr/include/goa-1.0,
           /usr/lib/goa-1.0, and
-          /usr/share/gtk-doc/html/goa
+          /usr/share/gtk-doc/html/goa (optional)
         </seg>
       </seglistitem>
     </segmentedlist>

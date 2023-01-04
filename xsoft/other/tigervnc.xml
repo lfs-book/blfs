@@ -16,9 +16,6 @@
 <sect1 id="tigervnc" xreflabel="tigervnc-&tigervnc-version;">
   <?dbhtml filename="tigervnc.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Tigervnc-&tigervnc-version;</title>
 
@@ -36,7 +33,7 @@
       viewing of the remote graphical desktop.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -359,7 +356,7 @@ startlxde &amp;</screen>
       systemd aware for VNC sessions and allows desktop environments like
       <application>GNOME</application> to autostart services once the VNC
       session is started. This configuration also gives the added benefit
-      of starting VNC Sessions on system startup. To setup the VNC server
+      of starting VNC Sessions on system startup. To set up the VNC server
       in this fashion, follow these instructions.
     </para>
 
@@ -372,7 +369,7 @@ startlxde &amp;</screen>
 install -v -m755 ../Xsession /etc/X11/tigervnc</userinput></screen>
 
     <para revision="systemd">
-      Next, setup a user mapping in
+      Next, set up a user mapping in
       <filename>/etc/tigervnc/vncserver.users</filename>. This tells the VNC
       Server which session is allocated to a user.
       <!-- For example: :1=renodr will assign 'renodr' to :1 -->
@@ -381,14 +378,15 @@ install -v -m755 ../Xsession /etc/X11/tigervnc</userinput></screen>
 <screen role="root" revision="systemd"><userinput>echo ":1=$(whoami)" >> /etc/tigervnc/vncserver.users</userinput></screen>
 
     <para revision="systemd">
-      Next, setup a configuration file to tell
+      Next, set up a configuration file to tell
       <application>vncserver</application> which desktop environment should be
       used and what display geometry should be used. There are several other
       options that can be defined in this file, but they are outside the scope
       of BLFS.
     </para>
 
-<screen revision="systemd"><userinput>cat &gt; ~/.vnc/config &lt;&lt; EOF
+<screen revision="systemd"><userinput>install -vdm 755 ~/.vnc &amp;&amp;
+cat &gt; ~/.vnc/config &lt;&lt; EOF
 <literal># Begin ~/.vnc/config
 
 session=LXDE      # The session must match one listed in /usr/share/xsessions.

@@ -7,9 +7,9 @@
 <!-- lightdm -->
   <!ENTITY lightdm-download-http "https://github.com/CanonicalLtd/lightdm/releases/download/&lightdm-version;/lightdm-&lightdm-version;.tar.xz">
   <!ENTITY lightdm-download-ftp  " ">
-  <!ENTITY lightdm-md5sum        "c566ea595f2b81e68684be9f8dbcbb42">
-  <!ENTITY lightdm-size          "500 KB">
-  <!ENTITY lightdm-buildsize     "21 MB">
+  <!ENTITY lightdm-md5sum        "e62a5da6c35f612e4d9575eda5c8d467">
+  <!ENTITY lightdm-size          "508 KB">
+  <!ENTITY lightdm-buildsize     "20 MB">
   <!ENTITY lightdm-time          "0.2 SBU ">
 
 <!-- lightdm-gtk-greeter -->
@@ -24,9 +24,6 @@
 <sect1 id="lightdm" xreflabel="lightdm-&lightdm-version;">
   <?dbhtml filename="lightdm.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>lightdm-&lightdm-version;</title>
 
@@ -42,7 +39,7 @@
       display manager based upon GTK.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Lightdm Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -187,17 +184,16 @@ useradd  -c "Lightdm Daemon" \
       commands:
     </para>
 
-<screen><userinput>./configure                          \
-       --prefix=/usr                 \
-       --libexecdir=/usr/lib/lightdm \
-       --localstatedir=/var          \
-       --sbindir=/usr/bin            \
-       --sysconfdir=/etc             \
-       --disable-static              \
-       --disable-tests               \
-       --with-greeter-user=lightdm   \
-       --with-greeter-session=lightdm-gtk-greeter \
-       --docdir=/usr/share/doc/lightdm-&lightdm-version; &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                 \
+            --libexecdir=/usr/lib/lightdm \
+            --localstatedir=/var          \
+            --sbindir=/usr/bin            \
+            --sysconfdir=/etc             \
+            --disable-static              \
+            --disable-tests               \
+            --with-greeter-user=lightdm   \
+            --with-greeter-session=lightdm-gtk-greeter \
+            --docdir=/usr/share/doc/lightdm-&lightdm-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -224,19 +220,17 @@ install -v -dm770 -o lightdm -g lightdm /var/log/lightdm</userinput></screen>
 <screen><userinput>tar -xf ../lightdm-gtk-greeter-&lightdm-gtk-greeter-version;.tar.gz &amp;&amp;
 cd lightdm-gtk-greeter-&lightdm-gtk-greeter-version; &amp;&amp;
 
-./configure                      \
-   --prefix=/usr                 \
-   --libexecdir=/usr/lib/lightdm \
-   --sbindir=/usr/bin            \
-   --sysconfdir=/etc             \
-   --with-libxklavier            \
-   --enable-kill-on-sigterm      \
-   --disable-libido              \
-   --disable-libindicator        \
-   --disable-static              \
-   --disable-maintainer-mode     \
-   --docdir=/usr/share/doc/lightdm-gtk-greeter-&lightdm-gtk-greeter-version; &amp;&amp;
-
+./configure --prefix=/usr                 \
+            --libexecdir=/usr/lib/lightdm \
+            --sbindir=/usr/bin            \
+            --sysconfdir=/etc             \
+            --with-libxklavier            \
+            --enable-kill-on-sigterm      \
+            --disable-libido              \
+            --disable-libindicator        \
+            --disable-static              \
+            --disable-maintainer-mode     \
+            --docdir=/usr/share/doc/lightdm-gtk-greeter-&lightdm-gtk-greeter-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -334,15 +328,13 @@ make</userinput></screen>
 <screen role="root" revision="sysv"><userinput>make install-lightdm</userinput></screen>
 
       <para revision="systemd">
-        Install and enable the systemd unit.  From the
-        <xref linkend="systemd-units"/> package:
+        Install the <filename>lightdm.service</filename> unit included in
+        the <xref linkend="systemd-units"/> package:
       </para>
 
-<screen role="root" revision="systemd"><userinput>make install-lightdm &amp;&amp;
-systemctl enable lightdm</userinput></screen>
+<screen role="root" revision="systemd"><userinput>make install-lightdm</userinput></screen>
 
     </sect3>
-
     <sect3 id="lightdm-init" revision="sysv">
       <title>Starting lightdm</title>
 
@@ -352,8 +344,9 @@ systemctl enable lightdm</userinput></screen>
         user:
       </para>
 
-<screen role="root"><userinput>telinit 5</userinput></screen>
+<screen role="nodump"><userinput>telinit 5</userinput></screen>
 
+<!-- "make install-lightdm already does this already
       <para>
         Alternatively the runlevel can be permanently set to 5, starting the
         <command>lightdm</command> greeter screen automatically, by modifying
@@ -363,7 +356,7 @@ systemctl enable lightdm</userinput></screen>
 
 <screen role="root"><userinput>cp -v /etc/inittab{,-orig} &amp;&amp;
 sed -i '/initdefault/ s/3/5/' /etc/inittab</userinput></screen>
-
+-->
     </sect3>
 
     <sect3 id="lightdm-sessions">

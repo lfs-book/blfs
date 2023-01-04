@@ -5,22 +5,19 @@
   %general-entities;
 
   <!ENTITY evolution-data-server-download-http
-           "&gnome-download-http;/evolution-data-server/&gnome-minor-40;/evolution-data-server-&evolution-data-server-version;.tar.xz">
+           "&gnome-download-http;/evolution-data-server/&gnome-minor-46;/evolution-data-server-&evolution-data-server-version;.tar.xz">
   <!ENTITY evolution-data-server-download-ftp
-           "&gnome-download-ftp;/evolution-data-server/&gnome-minor-40;/evolution-data-server-&evolution-data-server-version;.tar.xz">
-  <!ENTITY evolution-data-server-md5sum        "eb47d38b72b64e863f2c960d37be311e">
-  <!ENTITY evolution-data-server-size          "4.4 MB">
-  <!ENTITY evolution-data-server-buildsize     "215 MB (with tests)">
-  <!ENTITY evolution-data-server-time          "1.2 SBU (using parallelism=4, with tests)">
+           "&gnome-download-ftp;/evolution-data-server/&gnome-minor-46;/evolution-data-server-&evolution-data-server-version;.tar.xz">
+  <!ENTITY evolution-data-server-md5sum        "fb85359dfc2412efb7896d9db0682c24">
+  <!ENTITY evolution-data-server-size          "4.7 MB">
+  <!ENTITY evolution-data-server-buildsize     "245 MB (with tests)">
+  <!ENTITY evolution-data-server-time          "0.7 SBU (using parallelism=4, with tests)">
 ]>
 
 <sect1 id="evolution-data-server"
 xreflabel="evolution-data-server-&evolution-data-server-version;">
   <?dbhtml filename="evolution-data-server.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>evolution-data-server-&evolution-data-server-version;</title>
 
@@ -39,7 +36,7 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       other packages as well.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,27 +71,16 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
         </para>
       </listitem>
     </itemizedlist>
-<!--
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/evolution-data-server-&evolution-data-server-version;-cmake_fix-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
--->
+
     <bridgehead renderas="sect3">Evolution Data Server Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="db"/>,
       <xref linkend="gcr"/>,
       <xref linkend="libical"/>,
       <xref linkend="libsecret"/>,
       <xref linkend="nss"/>, and
-      <xref linkend="sqlite"/>.
+      <xref linkend="sqlite"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -104,9 +90,9 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
       <xref linkend="gtk3"/>,
       <xref linkend="icu"/>,
       <xref linkend="libcanberra"/>,
-      <xref linkend="libgdata"/>,
-      <xref linkend="libgweather"/>, and
-      <xref linkend="vala"/>
+      <xref linkend="libgweather"/>,
+      <xref linkend="vala"/>, and
+      <xref linkend="webkitgtk"/>
     </para>
 
     <bridgehead renderas="sect4"
@@ -117,6 +103,7 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="db"/>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="mitkrb"/>,
       a <xref linkend="server-mail"/> (that provides a <command>sendmail</command> command),
@@ -132,22 +119,6 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
   <sect2 role="installation">
     <title>Installation of Evolution Data Server</title>
 
-    <para revision="systemd">
-      First, as the <systemitem class="username">root</systemitem> user,
-      remove old and incompatible versions of the systemd units:
-    </para>
-
-<screen role="root"
-        revision="systemd"><userinput remap="pre">rm -fv /usr/lib/systemd/user/evolution-*.service</userinput></screen>
-<!--
-    <para>
-      <phrase revision="sysv">First,</phrase>
-      <phrase revision="systemd">Then,</phrase> fix an issue with
-      cmake-3.20.1:
-    </para>
-
-<screen><userinput>patch -Np1 -i ../evolution-data-server-&evolution-data-server-version;-cmake_fix-1.patch</userinput></screen>
--->
     <para>
       Install <application>Evolution Data Server</application> by running
       the following commands:
@@ -156,39 +127,35 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr   \
-      -DSYSCONF_INSTALL_DIR=/etc    \
-      -DENABLE_VALA_BINDINGS=ON     \
-      -DENABLE_INSTALLED_TESTS=ON   \
-      -DENABLE_GOOGLE=ON            \
-      -DWITH_OPENLDAP=OFF           \
-      -DWITH_KRB5=OFF               \
-      -DENABLE_INTROSPECTION=ON     \
-      -DENABLE_GTK_DOC=OFF          \
-      -DWITH_SYSTEMDUSERUNITDIR=no  \
+cmake -DCMAKE_INSTALL_PREFIX=/usr    \
+      -DSYSCONF_INSTALL_DIR=/etc     \
+      -DENABLE_VALA_BINDINGS=ON      \
+      -DENABLE_INSTALLED_TESTS=ON    \
+      -DWITH_OPENLDAP=OFF            \
+      -DWITH_KRB5=OFF                \
+      -DENABLE_INTROSPECTION=ON      \
+      -DENABLE_GTK_DOC=OFF           \
+      -DWITH_LIBDB=OFF               \
+      -DWITH_SYSTEMDUSERUNITDIR=no   \
+      -DENABLE_OAUTH2_WEBKITGTK4=OFF \
       .. &amp;&amp;
 make</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr   \
-      -DSYSCONF_INSTALL_DIR=/etc    \
-      -DENABLE_VALA_BINDINGS=ON     \
-      -DENABLE_INSTALLED_TESTS=ON   \
-      -DENABLE_GOOGLE=ON            \
-      -DWITH_OPENLDAP=OFF           \
-      -DWITH_KRB5=OFF               \
-      -DENABLE_INTROSPECTION=ON     \
-      -DENABLE_GTK_DOC=OFF          \
+cmake -DCMAKE_INSTALL_PREFIX=/usr    \
+      -DSYSCONF_INSTALL_DIR=/etc     \
+      -DENABLE_VALA_BINDINGS=ON      \
+      -DENABLE_INSTALLED_TESTS=ON    \
+      -DWITH_OPENLDAP=OFF            \
+      -DWITH_KRB5=OFF                \
+      -DENABLE_INTROSPECTION=ON      \
+      -DENABLE_GTK_DOC=OFF           \
+      -DWITH_LIBDB=OFF               \
+      -DENABLE_OAUTH2_WEBKITGTK4=OFF \
       .. &amp;&amp;
 make</userinput></screen>
-
-    <para>
-      To test the results, issue: <command>make test</command>. <!--One test,
-      <filename>test-book-client-custom-summary</filename>, is known to
-      fail due to an internal test suite error.-->
-    </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -196,16 +163,26 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+    <para>
+      To test the results, issue: <command>make test</command>.
+    </para>
+
+    <!-- The tests need to be run after the package is installed due to
+    compatibility issues that show up when upgrading from previous versions
+    of e-d-s. This is due to soup2/soup3 mixing. -->
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+<!--
     <para>
       <parameter>-DENABLE_GOOGLE=ON</parameter>: This switch enables
       access to google services via <xref linkend="libgdata"/> and also
       enables the Google Authentication option.
     </para>
+-->
 
     <para>
       <parameter>-DENABLE_VALA_BINDINGS=ON</parameter>: This switch
@@ -218,6 +195,26 @@ make</userinput></screen>
       disables building the API documentation. It is broken for
       this package due to the use of a long deprecated gtk-doc program
       that is no longer available.
+    </para>
+
+    <para>
+      <parameter>-DWITH_LIBDB=OFF</parameter>: This switch allows building
+      this package without <xref linkend="db"/>.  This package only uses
+      <xref linkend="db"/> to import data from very outdated releases.
+      <xref linkend="sqlite"/> is used for normal operation.
+    </para>
+
+<!--
+    <para>
+      <parameter>-DWITH_GWEATHER4=ON</parameter>: This switch allows building
+      this package with <xref linkend="libgweather"/>.
+    </para>
+-->
+
+    <para>
+      <parameter>-DENABLE_OAUTH2_WEBKITGTK4=OFF</parameter>: This switch works
+      around a problem where the gtk-4 version of WebKit would be needed to show
+      OAuth2 login prompts.
     </para>
 
     <para revision="sysv">
@@ -252,11 +249,13 @@ make</userinput></screen>
           libcamel-1.2.so, libebackend-1.2.so, libebook-1.2.so,
           libebook-contacts-1.2.so, libecal-2.0.so, libedata-book-1.2.so,
           libedata-cal-2.0.so, libedataserver-1.2.so,
-          libedataserverui-1.2.so, and libetestserverutils.so
+          libedataserverui-1.2.so, libedataserverui4-1.0.so,
+          and libetestserverutils.so
         </seg>
         <seg>
           /usr/include/evolution-data-server,
           /usr/lib{,exec}/evolution-data-server,
+          /usr/share/evolution-data-server,
           /usr/share/installed-tests/evolution-data-server, and
           <!-- We explicitly disable gtk-doc generation, so comment these out
           /usr/share/gtk-doc/html/{camel,libebackend,libebook},
@@ -386,6 +385,19 @@ make</userinput></screen>
           </para>
           <indexterm zone="evolution-data-server libedataserverui-3">
             <primary sortas="c-libedataserverui-3">libedataserverui-3.0.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libedataserverui4-1">
+        <term><filename class="libraryfile">libedataserverui4-1.0.so</filename></term>
+        <listitem>
+          <para>
+            is the GTK-4 based GUI utility library for
+            <application>Evolution Data Server</application>
+          </para>
+          <indexterm zone="evolution-data-server libedataserverui4-1">
+            <primary sortas="c-libedataserverui4-1">libedataserverui4-1.0.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

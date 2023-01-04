@@ -10,9 +10,6 @@
 <sect1 id="gitserver" xreflabel="Running a Git Server">
   <?dbhtml filename="gitserver.html"?>
 
-  <sect1info>
-  <date>$Date$</date>
-  </sect1info>
 
   <title>Running a Git Server</title>
 
@@ -51,7 +48,7 @@
     </para>
 
     <sect3>
-      <title>1. Setup Users, Groups, and Permissions</title>
+      <title>1. Set Up Users, Groups, and Permissions</title>
 
       <para>
         You will need to be user <systemitem class='username'>root</systemitem>
@@ -65,7 +62,7 @@ useradd -c "git Owner" -d /home/git -m -g git -s /usr/bin/git-shell -u &gituid; 
 sed -i '/^git:/s/^git:[^:]:/git:NP:/' /etc/shadow</userinput></screen>
 
       <para>
-        Putting in an unuable password hash (replacing the <literal>!</literal>
+        Putting in an unusable password hash (replacing the <literal>!</literal>
         by <literal>NP</literal>) unlocks the account but it cannot be used
         to login via password authentication. That is required by
         <application>sshd</application> to work properly.
@@ -159,12 +156,12 @@ chown -R git:git .</userinput></screen>
 
 <screen role="nodump"><userinput>cat &gt; ~/.gitconfig &lt;&lt;EOF
 [user]
-	name = &lt;users-name&gt;
-	email = &lt;users-email-address&gt;
+        name = &lt;users-name&gt;
+        email = &lt;users-email-address&gt;
 EOF</userinput></screen>
 
       <para>
-        On the developer's machine, setup some files to be pushed
+        On the developer's machine, set up some files to be pushed
         to the repository as the initial content:
       </para>
 
@@ -213,8 +210,8 @@ git push</userinput></screen>
           This is a very basic server setup based on
           <application>OpenSSH</application> access. All developers are using
           the <systemitem class="username">git</systemitem> user to perform
-          actions on the repository and the changes users are commiting can be
-          distiguished as the local user name (see
+          actions on the repository and the changes users are committing can be
+          distinguished as the local user name (see
           <filename>~/.gitconfig</filename>) is recorded in the
           changesets.
         </para>
@@ -297,7 +294,7 @@ git push</userinput></screen>
         In order to allow <application>git</application> to export a
         repository, a file named <filename>git-daemon-export-ok</filename>
         is required in each repository directory on the server. The
-        file needs no content, just its existance enables, its absence
+        file needs no content, just its existence enables, its absence
         disables the export of that repository.
       </para>
 

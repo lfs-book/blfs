@@ -6,18 +6,15 @@
 
   <!ENTITY unbound-download-http "https://nlnetlabs.nl/downloads/unbound/unbound-&unbound-version;.tar.gz">
   <!ENTITY unbound-download-ftp  " ">
-  <!ENTITY unbound-md5sum        "5a63b7228141f45f2ab3169662f7ee13">
-  <!ENTITY unbound-size          "5.8 MB">
-  <!ENTITY unbound-buildsize     "132 MB (with docs; add 11 MB for tests)">
-  <!ENTITY unbound-time          "0.5 SBU (Using parallelism=4; with docs; add 0.3 SBU for tests)">
+  <!ENTITY unbound-md5sum        "79c863becb1934f6d467be74240e10b5">
+  <!ENTITY unbound-size          "5.9 MB">
+  <!ENTITY unbound-buildsize     "141 MB (with docs; add 11 MB for tests)">
+  <!ENTITY unbound-time          "0.5 SBU (Using parallelism=4; with docs; add 0.4 SBU for tests)">
 ]>
 
 <sect1 id="unbound" xreflabel="Unbound-&unbound-version;">
   <?dbhtml filename="unbound.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Unbound-&unbound-version;</title>
 
@@ -36,7 +33,7 @@
       library API as an integral part of the architecture.
     </para>
 
-    &lfs110a_checked;
+    &lfs112_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,7 +86,7 @@
       <xref linkend="python2"/>,
       <xref linkend="swig"/> (for Python bindings),
       <xref linkend="doxygen"/> (for html documentation),
-      <ulink url="http://dnstap.info/">dnstap</ulink>, and
+      <ulink url="https://dnstap.info/">dnstap</ulink>, and
       <ulink url="https://pypi.python.org/pypi/Sphinx">Sphinx</ulink> (for
       Python bindings documentation)
     </para>
@@ -216,7 +213,7 @@ install -v -m644 doc/html/* /usr/share/doc/unbound-&unbound-version;</userinput>
         documentation.
       </para>
 
-      <para>
+      <para revision="sysv">
         When <application>Unbound</application> is installed, some package
         builds fail if the file <filename>/etc/unbound/root.key</filename> is
         not found. This file is created by running the boot script (install
@@ -225,7 +222,14 @@ install -v -m644 doc/html/* /usr/share/doc/unbound-&unbound-version;</userinput>
         user:
       </para>
 
-<screen role="root"><userinput>unbound-anchor</userinput></screen>
+      <para revision="systemd">
+        When <application>Unbound</application> is installed, some package
+        builds fail if the file <filename>/etc/unbound/root.key</filename> is
+        not found. Create this file by running the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="nodump"><userinput>unbound-anchor</userinput></screen>
 
     </sect3>
 

@@ -7,23 +7,21 @@
   <!ENTITY python3-download-http
            "https://www.python.org/ftp/python/&python3-version;/Python-&python3-version;.tar.xz">
   <!ENTITY python3-download-ftp  " ">
-  <!ENTITY python3-md5sum        "3e7035d272680f80e3ce4e8eb492d580">
-  <!ENTITY python3-size          "18 MB">
-  <!ENTITY python3-buildsize     "200 MB (add 38 MB for tests)">
-  <!ENTITY python3-time          "2.4 SBU (using parallelism=4; add 1.6 SBU for tests)">
+  <!ENTITY python3-md5sum        "4efe92adf28875c77d3b9b2e8d3bc44a">
+  <!ENTITY python3-size          "19 MB">
+  <!ENTITY python3-buildsize     "282 MB (add 63 MB for tests)">
+  <!ENTITY python3-time          "2.1 SBU (add 1.2 SBU for tests; both using parallelism=4)">
   <!--
   Note: Size does not reflect docs that were install in LFS.
-
+  -->
   <!ENTITY python3htmldoc-download-http
-  "https://docs.python.org/ftp/python/doc/&python3-version;/python-&python3-version;-docs-html.tar.bz2"> -->
+  "https://www.python.org/ftp/python/doc/&python3-version;/python-&python3-version;-docs-html.tar.bz2">
+  <!ENTITY python3-docs-md5sum "32f5cd7d63adf58ca4e0687dc530ce8b" >
 ]>
 
 <sect1 id="python3" xreflabel="Python-&python3-version;">
   <?dbhtml filename="python3.html" ?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Python-&python3-version;</title>
 
@@ -45,11 +43,41 @@
       <para>
         <application>Python 3</application> was installed in LFS.
         The only reason to rebuild it here is if optional modules
-        are needed.
+        are needed, or to upgrade this package.
       </para>
     </note>
 
-    &lfs110a_checked;
+    &lfs112_checked;
+
+    <important>
+      <para>
+         If upgrading to a new Python-3 minor version (for example,
+         from Python-3.10.x to Python-3.11.0), you will need to reinstall
+         any Python3 modules you have installed.  You should also
+         reinstall packages that generate Python3 modules
+         including 
+         <xref linkend="gobject-introspection"/>,
+         <xref linkend="opencv"/>,
+         <xref linkend="graphviz"/> (if swig is installed).
+      </para>
+
+      <para>Before you upgrade, you can get a complete list of modules installed
+        with <command>pip3 list</command>.
+      </para>
+
+      <para>
+         The wheel module and meson from LFS will also have to be reinstalled:
+         <ulink url="https://www.linuxfromscratch.org/lfs/view/development/chapter08/wheel.html"/> and
+         <ulink url="https://www.linuxfromscratch.org/lfs/view/development/chapter08/meson.html"/>.
+      </para>
+
+      <para revision="systemd">
+        On systemd systems, it is also necessary to reinstall the MarkupSafe
+        and Jinja2 modules from LFS:
+        <ulink url="https://www.linuxfromscratch.org/lfs/view/systemd/chapter08/markupsafe.html"/> and
+        <ulink url="https://www.linuxfromscratch.org/lfs/view/systemd/chapter08/jinja2.html"/>.
+      </para>
+    </important>
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -85,6 +113,20 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Optional Download</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&python3htmldoc-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &python3-docs-md5sum;
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Python 3 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -97,7 +139,7 @@
       <xref linkend="bluez"/>,
       <xref linkend="gdb"/> (required for some tests),
       <xref linkend="valgrind"/>, and
-      <ulink url="http://www.bytereef.org/mpdecimal">libmpdec</ulink>
+      <ulink url="https://www.bytereef.org/mpdecimal/">libmpdec</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional (For Additional Modules)</bridgehead>
@@ -125,13 +167,13 @@
             --enable-shared      \
             --with-system-expat  \
             --with-system-ffi    \
-            --with-ensurepip=yes \
             --enable-optimizations &amp;&amp;
 make</userinput></screen>
 
     <para>
       To test the result, issue <command>make test</command>.
-      Some tests may need an Internet connection.
+      Some tests may need an Internet connection. <!--Two tests, test_distutils
+      and test_peg_generator are known to fail.-->
     </para>
 
     <para>
@@ -139,6 +181,19 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      If upgrading and the documentation has been downloaded, optionally install
+      it as the &root; user:
+    </para>
+
+<screen role="root"><userinput>install -v -dm755 /usr/share/doc/python-&python3-version;/html
+
+tar --strip-components=1  \
+    --no-same-owner       \
+    --no-same-permissions \
+    -C /usr/share/doc/python-&python3-version;/html \
+    -xvf ../python-&python3-version;-docs-html.tar.bz2</userinput></screen>
 
   </sect2>
 
@@ -159,14 +214,14 @@ make</userinput></screen>
       <parameter>--with-system-ffi</parameter>: This switch enables linking
       against the system version of <application>libffi</application>.
     </para>
-
+<!--
     <para>
-      <parameter>--with-ensurepip=yes</parameter> : This switch enables building
+      <parameter>- -with-ensurepip=yes</parameter> : This switch enables building
       the <command>pip</command> and <command>setuptools</command> packaging
       programs. <command>setuptools</command> is needed for building some
       Python modules.
     </para>
-
+-->
     <para>
       <option>--with-dbmliborder=bdb:gdbm:ndbm</option>: Use this switch
       if you want to build the <application>Python</application> DBM Module
@@ -175,25 +230,18 @@ make</userinput></screen>
     </para>
 
     <para>
-      <parameter>--enable-optimization</parameter>: This switch enables
+      <parameter>--enable-optimizations</parameter>: This switch enables
       stable, but expensive, optimizations.
     </para>
 
     <para>
       <option>--with-lto</option>: This optional switch enables thick Link
       Time Optimization. Unusually, it creates a much larger <filename
-	  class="libraryfile">/usr/lib/python&python3-majorver;/config-&python3-majorver;-&lt;arch&gt;-linux-gnu/libpython&python3-majorver;.a</filename>
+      class="libraryfile">/usr/lib/python&python3-majorver;/config-&python3-majorver;-&lt;arch&gt;-linux-gnu/libpython&python3-majorver;.a</filename>
       with a small increase in the time to compile
       <application>Python</application>. Run-time results do not appear to show
       any benefit from doing this.
     </para>
-    <!--
-    <para>
-      <command>ln -sfv ...</command>: When upgrading to Python-3.8, it was
-      discovered that the symlink to pip3 is sometimes not created. Create
-      the symlink so that pip3 can be used as described in the book.
-    </para>
-    -->
 
   </sect2>
 
