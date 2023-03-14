@@ -8,18 +8,15 @@
            "&gnome-download-http;/libgweather/&libgweather-minor;/libgweather-&libgweather-version;.tar.xz">
   <!ENTITY libgweather-download-ftp
            "&gnome-download-ftp;/libgweather/&libgweather-minor;/libgweather-&libgweather-version;.tar.xz">
-  <!ENTITY libgweather-md5sum        "2aa2708dfde3481c87da3d7ea27110da">
-  <!ENTITY libgweather-size          "4.5 MB">
-  <!ENTITY libgweather-buildsize     "108 MB (with tests)">
+  <!ENTITY libgweather-md5sum        "4c0c46102dcb5e813ff698e5f713e4bb">
+  <!ENTITY libgweather-size          "2.6 MB">
+  <!ENTITY libgweather-buildsize     "95 MB (with tests)">
   <!ENTITY libgweather-time          "0.2 SBU (with tests)">
 ]>
 
 <sect1 id="libgweather" xreflabel="libgweather-&libgweather-version;">
   <?dbhtml filename="libgweather.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>libgweather-&libgweather-version;</title>
 
@@ -36,7 +33,7 @@
       locations.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,8 +74,9 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="geocode-glib"/>,
-      <xref linkend="gtk3"/>, and
-      <xref linkend="libsoup"/>
+      <xref linkend="gtk3"/>,
+      <xref linkend="libsoup3"/>, and
+      <xref linkend="pygobject3"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -90,16 +88,11 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/>,
-      <ulink url="http://glade.gnome.org/">Glade</ulink>,
-      <ulink url="https://pypi.org/project/pylint/">pylint</ulink>, and
-      for the bundled gi-docgen module:
-      <phrase revision="sysv"><xref linkend="Jinja2"/>,
-      <xref linkend="MarkupSafe"/>,</phrase>
-      <xref linkend="pygments"/>,
-      <ulink url="https://pypi.org/project/Markdown/">Markdown</ulink>,
-      <ulink url="https://pypi.org/project/toml/">toml</ulink>, and
-      <ulink url="https://pypi.org/project/typogrify/">typogrify</ulink>
+      <xref linkend="gi-docgen"/> (gi-docgen is also provided as a meson
+      subproject, which will be used if <option>-Dgtk_doc=false</option>
+      is not passed to <command>meson</command>),
+      <xref linkend="llvm"/> (for clang-format), and
+      <ulink url="https://pypi.org/project/pylint/">pylint</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -118,11 +111,24 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dgtk_doc=false .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dgtk_doc=false     \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      One test needs that the locale files be installed on the system. So
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed "s/libgweather_full_version/'libgweather-&libgweather-version;'/" \
+    -i ../doc/meson.build                             &amp;&amp;
+meson configure -Dgtk_doc=true                        &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      One test needs that the locale files be installed on the system, so
       it is better to run the tests after installing the package.
     </para>
 
@@ -133,8 +139,8 @@ ninja</userinput></screen>
 <screen role="root"><userinput>ninja install</userinput></screen>
 
     <para>
-      To test the results, issue: <command>ninja test</command>. One test,
-      metar, is known to fail.
+      To test the results, issue: <command>LC_ALL=C ninja test</command>. One
+      test, metar, is known to fail.
     </para>
 
   </sect2>
@@ -146,10 +152,7 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dgtk_doc=false</parameter>: allows building without using
-      the bundled <application>gi-docgen</application> module. Remove this
-      switch if you have the needed dependencies, and you wish to rebuild
-      and install the API documentation.
+      <parameter>-Dgtk_doc=false</parameter>: &gi-doc-disable;
     </para>
 
   </sect2>
@@ -191,7 +194,7 @@ ninja</userinput></screen>
             information
           </para>
           <indexterm zone="libgweather libgweather-4">
-            <primary sortas="c-libgweather-3">libgweather-4.so</primary>
+            <primary sortas="c-libgweather-4">libgweather-4.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

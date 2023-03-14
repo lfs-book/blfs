@@ -7,18 +7,15 @@
   <!ENTITY gst10-plugins-base-download-http
            "&gstreamer-dl;/gst-plugins-base/gst-plugins-base-&gst10-plugins-base-version;.tar.xz">
   <!ENTITY gst10-plugins-base-download-ftp  " ">
-  <!ENTITY gst10-plugins-base-md5sum        "e29cc5c279851229b3fcc7b249b1497d">
-  <!ENTITY gst10-plugins-base-size          "3.1 MB">
-  <!ENTITY gst10-plugins-base-buildsize     "90 MB (with tests)">
+  <!ENTITY gst10-plugins-base-md5sum        "0ad54d0aa0221512493b9abb70a1bf59">
+  <!ENTITY gst10-plugins-base-size          "2.2 MB">
+  <!ENTITY gst10-plugins-base-buildsize     "87 MB (with tests)">
   <!ENTITY gst10-plugins-base-time          "0.8 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="gst10-plugins-base" xreflabel="gst-plugins-base-&gst10-plugins-base-version;">
   <?dbhtml filename="gst10-plugins-base.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gst-plugins-base-&gst10-plugins-base-version;</title>
 
@@ -38,7 +35,7 @@
       applications to function properly.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -113,8 +110,8 @@
       <xref linkend="valgrind"/>,
       <ulink url="https://pypi.org/project/hotdoc">hotdoc</ulink>,
       <ulink url="http://libvisual.org/">libvisual</ulink>,
-      <ulink url="http://gstreamer.freedesktop.org/src/orc/">Orc</ulink>, and
-      <ulink url="http://wiki.xiph.org/Tremor">Tremor</ulink>
+      <ulink url="https://gstreamer.freedesktop.org/src/orc/">Orc</ulink>, and
+      <ulink url="https://wiki.xiph.org/Tremor">Tremor</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -124,10 +121,10 @@
 
   <sect2 role="installation">
     <title>Installation of GStreamer Base Plug-ins</title>
-
+    <!--
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gst10-objc-error.xml"/>
-
+    -->
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gst10-plugins.xml"/>
 
@@ -139,11 +136,12 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson  --prefix=/usr       \
-       --buildtype=release \
+meson  setup ..               \
+       --prefix=/usr          \
+       --buildtype=release    \
+       --wrap-mode=nodownload \
        -Dpackage-origin=https://www.linuxfromscratch.org/blfs/view/&blfs-version;/ \
-       -Dpackage-name="GStreamer &gst10-plugins-base-version; BLFS"    \
-       --wrap-mode=nodownload &amp;&amp;
+       -Dpackage-name="GStreamer &gst10-plugins-base-version; BLFS"    &amp;&amp;
 ninja</userinput></screen>
 
     <para>

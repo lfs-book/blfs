@@ -8,23 +8,20 @@
 
   <!ENTITY git-download-http "&git-root;/git-&git-version;.tar.xz">
   <!ENTITY git-download-ftp  " ">
-  <!ENTITY git-md5sum        "b069d4919c8d9faf28db4fd90feb8e1d">
+  <!ENTITY git-md5sum        "32d34dc65ae0955cc68c7152b5ca8b13">
 
-  <!ENTITY git-size          "6.7 MB">
+  <!ENTITY git-size          "6.8 MB">
   <!-- but people keep forgetting that an install not only needs the net build
        space, it also needs the install space (or DESTDIR) -->
-  <!ENTITY git-buildsize     "351 MB (with downloaded documentation, add 17 MB to build documentation)">
+  <!ENTITY git-buildsize     "392 MB (with downloaded documentation, add 18 MB to build documentation)">
   <!-- With 2.23.0, there was a large increase in time for tests. Possibly disk related? -->
   <!-- Confirmed that it is disk related.-->
-  <!ENTITY git-time          "0.4 SBU (with parallelism=4; add 0.4 SBU for building documentation and 6 SBU (disk speed dependent) for tests, both with parallelism=4)">
+  <!ENTITY git-time          "0.3 SBU (with parallelism=4; add 0.4 SBU for building documentation and 1.6 SBU (disk speed dependent) for tests, both with parallelism=4)">
 ]>
 
 <sect1 id="git" xreflabel="git-&git-version;">
   <?dbhtml filename="git.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Git-&git-version;</title>
 
@@ -45,12 +42,12 @@
       easy to do. <application>Git</application> is used for version control of
       files, much like tools such as <xref linkend="mercurial"/>,
       <application>Bazaar</application>, <xref linkend="subversion"/>,
-      <ulink url="http://www.nongnu.org/cvs/">CVS</ulink>,
+      <ulink url="https://www.nongnu.org/cvs/">CVS</ulink>,
       <application>Perforce</application>, and
       <application>Team Foundation Server</application>.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -132,7 +129,10 @@
       <xref linkend="valgrind"/>,
       <ulink url="https://metacpan.org/pod/Authen::SASL">Authen::SASL</ulink> and
       <ulink url="https://metacpan.org/pod/MIME::Base64">MIME::Base64</ulink>
-      (both runtime, for <command>git send-email</command>)
+      (both runtime, for <command>git send-email</command>),
+      and <xref linkend='perl-io-socket-ssl'/> (runtime, for
+      <command>git send-email</command> to connect to a SMTP server with
+      SSL encryption)
     </para>
 
     <bridgehead renderas="sect4">Optional (to create the man pages, html docs
@@ -142,9 +142,9 @@
       <xref linkend="asciidoc"/>
       <!-- or xref linkend="asciidoctor", doesn't work now because it needs docbook-xsl-ns -->,
       and also
-      <ulink url="http://dblatex.sourceforge.net/">dblatex</ulink>
+      <ulink url="https://dblatex.sourceforge.net/">dblatex</ulink>
       (for the PDF version of the user manual), and
-      <ulink url="http://docbook2x.sourceforge.net/">docbook2x</ulink> to
+      <ulink url="https://docbook2x.sourceforge.net/">docbook2x</ulink> to
       create info pages
     </para>
 
@@ -292,7 +292,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
     </para>
 
     <para>
-      <option>--with-libpcre</option>: As an alternative to PCRE2, use this
+      <option>--with-libpcre1</option>: As an alternative to PCRE2, use this
       switch if the deprecated <application>PCRE</application> is installed
       and has been built with the non-default JIT enabled.
     </para>
@@ -356,7 +356,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
         <seg>
           git, git-receive-pack, git-upload-archive, and
           git-upload-pack (hardlinked to each
-          other), git-cvsserver, git-shell, and gitk
+          other), git-cvsserver, git-shell, gitk, and scalar
         </seg>
         <seg>
           None
@@ -463,6 +463,18 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
         </listitem>
       </varlistentry>
 
+      <varlistentry id="scalar">
+        <term><command>scalar</command></term>
+        <listitem>
+          <para>
+            is a repository management tool that optimizes Git for use in
+            large repositories
+          </para>
+          <indexterm zone="git scalar">
+            <primary sortas="b-scalar">scalar</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
     </variablelist>
 
   </sect2>

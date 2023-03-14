@@ -6,19 +6,16 @@
 
   <!ENTITY asymptote-download-http "&sourceforge-dl;/asymptote/asymptote-&asymptote-version;.src.tgz">
   <!ENTITY asymptote-download-ftp  " ">
-  <!ENTITY asymptote-md5sum        "6b7533759e00545363e114bd1147ce68">
+  <!ENTITY asymptote-md5sum        "063786b8914f718d3bccf9d9168458f1">
   <!ENTITY asymptote-size          "15 MB">
-  <!ENTITY asymptote-buildsize     "224 MB (55 MB installed,with all the dependencies which are within BLFS)">
+  <!ENTITY asymptote-buildsize     "222 MB (55 MB installed,with all the dependencies which are within BLFS)">
   <!-- with 2.68 the j1 time was 2.5 SBU, slow enough to use a parallel build -->
-  <!ENTITY asymptote-time          "1.4 SBU (using parallelism=4)">
+  <!ENTITY asymptote-time          "1.3 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="asymptote" xreflabel="asymptote-&asymptote-version;">
   <?dbhtml filename="asymptote.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>asymptote-&asymptote-version;</title>
 
@@ -37,7 +34,7 @@
       and (using <application>dvisvgm</application>) SVG output.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,7 +75,7 @@
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/asymptote-&asymptote-version;-ghostscript_fix-1.patch"/>
+          <ulink url="&patch-root;/asymptote-&asymptote-version;-upstream_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>-->
@@ -103,7 +100,7 @@
 
     <bridgehead renderas="sect4">Recommended at runtime</bridgehead>
     <para role="recommended">
-      <xref role="runtime" linkend="dvisvgm"/>
+      <xref role="runtime" linkend="dvisvgm"/> to allow svg output
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -116,7 +113,8 @@
       to use
       <ulink url="https://microsoft.github.io/language-server-protocol/implementors/tools/">LSP</ulink>
       which can be used with
-      <ulink url="https://asymptote.sourceforge.io/doc/Language-server-protocol.html#index-LSP/">emacs</ulink>
+      <ulink url="https://asymptote.sourceforge.io/doc/Language-server-protocol.html#index-LSP/">emacs</ulink>,
+      and <ulink url="https://eigen.tuxfamily.org/">eigen</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional (at runtime)</bridgehead>
@@ -135,17 +133,29 @@
   <sect2 role="installation">
     <title>Installation of asymptote</title>
 
+    <note>
+      <!-- This is specifically about my cylinder test - it has been
+       broken twice, one time the fix involved changing the script,
+       the second was blamed on the low-end hardware (radeon 3400G).
+       I don't use, or understand the commands of, asy so I will not
+       spend time bisecting it.  Ken -->
+      <para>
+        Certain 3D PDF scripts may not work when invoked from pdflatex
+        on some zen+ amdgpu APU machines.
+      </para>
+    </note>
+
 <!-- Editors: for testing this, the minimal latex functionality is
  covered by the cylinder and triangle tests in
- https://www.linuxfromscratch.org/~ken/tex-testfiles/latex-test-20190318.tar.xz
+ https://www.linuxfromscratch.org/~ken/tex-testfiles/latex-test-20220322.tar.xz
  but the more interesting stuff (WebM html, svg, png, pdf) is tested in
- https://www.linuxfromscratch.org/~ken/asy-nontex-testfiles/asy-test-20200123.tar.xz
+ https://www.linuxfromscratch.org/~ken/asy-nontex-testfiles/asy-test-20200809.tar.xz
 -->
 <!--<para>
-      First apply a patch for building with ghostscript-9.53:
+      First apply a patch to fix runtime issues on some machines:
     </para>
 
-<screen><userinput>patch -Np1 -i ../asymptote-&asymptote-version;-ghostscript_fix-1.patch</userinput></screen>-->
+<screen><userinput>patch -Np1 -i ../asymptote-&asymptote-version;-upstream_fixes-1.patch</userinput></screen>-->
 
     <para>
       Install <application>asymptote</application> by running the following
@@ -154,16 +164,16 @@
 
 <screen><userinput>export TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') &amp;&amp;
 
-./configure --prefix=/opt/texlive/&texlive-year;                          \
-            --bindir=/opt/texlive/&texlive-year;/bin/$TEXARCH             \
-            --datarootdir=/opt/texlive/&texlive-year;/texmf-dist          \
-            --infodir=/opt/texlive/&texlive-year;/texmf-dist/doc/info     \
-            --libdir=/opt/texlive/&texlive-year;/texmf-dist               \
-            --mandir=/opt/texlive/&texlive-year;/texmf-dist/doc/man       \
-            --disable-lsp                                       \
-            --enable-gc=system                                  \
-            --with-latex=/opt/texlive/&texlive-year;/texmf-dist/tex/latex \
-            --with-context=/opt/texlive/&texlive-year;/texmf-dist/tex/context/third &amp;&amp;
+./configure --prefix=$TEXLIVE_PREFIX                          \
+            --bindir=$TEXLIVE_PREFIX/bin/$TEXARCH             \
+            --datarootdir=$TEXLIVE_PREFIX/texmf-dist          \
+            --infodir=$TEXLIVE_PREFIX/texmf-dist/doc/info     \
+            --libdir=$TEXLIVE_PREFIX/texmf-dist               \
+            --mandir=$TEXLIVE_PREFIX/texmf-dist/doc/man       \
+            --disable-lsp                                     \
+            --enable-gc=system                                \
+            --with-latex=$TEXLIVE_PREFIX/texmf-dist/tex/latex \
+            --with-context=$TEXLIVE_PREFIX/texmf-dist/tex/context/third &amp;&amp;
 
 make</userinput></screen>
 
@@ -186,7 +196,7 @@ make</userinput></screen>
      href="../../xincludes/tex-prefix.xml"/>
 
     <para>
-      <parameter>--libdir=/opt/texlive/&texlive-year;/texmf-dist;</parameter>:
+      <parameter>--libdir=$TEXLIVE_PREFIX/texmf-dist;</parameter>:
       This parameter ensures that the <filename
       class="directory">asymptote</filename> directory will similarly
       overwrite any files installed by install-tl-unx.
@@ -245,9 +255,9 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          /opt/texlive/&texlive-year;texmf-dist/asymptote,
-          /opt/texlive/&texlive-year;/doc/asymptote,
-          /opt/texlive/&texlive-year;/info/asymptote
+          $TEXLIVE_PREFIX/texmf-dist/asymptote,
+          $TEXLIVE_PREFIX/doc/asymptote,
+          $TEXLIVE_PREFIX/info/asymptote
         </seg>
       </seglistitem>
     </segmentedlist>

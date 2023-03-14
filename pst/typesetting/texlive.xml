@@ -29,9 +29,6 @@
 <sect1 id="texlive" xreflabel="texlive-&texlive-version;">
   <?dbhtml filename="texlive.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>texlive-&texlive-version;-source</title>
 
@@ -59,7 +56,7 @@
       Most of TeX Live can be built from source without a pre-existing
       installation, but <application>xindy</application> (for indexing) needs
       working versions of <command>latex</command> and
-      <command>pdflatex</command> when configure is run, and the testsuite
+      <command>pdflatex</command> when configure is run, and the test suite
       and install for <command>asy</command> (for vector graphics) will fail
       if TeX has not already been installed. Additionally,
       <application>biber</application> is not provided within the
@@ -75,10 +72,10 @@
       All of those packages are dealt with on their own pages and can be
       built after installing this package. If you have not already done so, you
       should start at <xref linkend="tex-path"/> so that the final commands to
-      initialise the new installation will be found.
+      initialize the new installation will be found.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -195,10 +192,6 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gs"/> <emphasis>including
-      <filename>libgs.so</filename></emphasis>, <!--(for dvisvgm, which is used by e.g.
-      <xref role="nodep" linkend="asymptote"/>); still referenced for dynamic loading,
-      even without dvisvgm - e.fg. by dvipsk -->
       <xref linkend="x-window-system"/>
     </para>
 
@@ -238,11 +231,11 @@
     <caution>
       <para>
         If you wish to upgrade to current <application>texlive</application>
-        on an older system where extra packages (<application>asymptote</application>.
-        <application>biber</application>, <application>dvisvgm</application> or
+        on an older system where extra packages (<application>asymptote</application>,
+        <application>biber</application>, <application>dvisvgm</application>, or
         <application>xindy</application>) have been installed, you will need to
         reinstall those as well as fixing up your <literal>PATH</literal> for
-        <literal>/opt/texlive/&texlive-year;</literal>.
+        <literal>$TEXLIVE_PREFIX</literal>.
       </para>
     </caution>
 
@@ -253,11 +246,11 @@
     </para>
 
 <screen role="root"><userinput>cat &gt;&gt; /etc/ld.so.conf &lt;&lt; EOF
-<literal># Begin texlive &texlive-year; addition
+<literal># Begin texlive addition
 
-/opt/texlive/&texlive-year;/lib
+$TEXLIVE_PREFIX/lib
 
-# End texlive &texlive-year; addition</literal>
+# End texlive addition</literal>
 EOF</userinput></screen>
 
     <note>
@@ -272,42 +265,43 @@ EOF</userinput></screen>
       Now, as a normal user:
     </para>
 
-<screen><userinput>export TEXARCH=$(uname -m |
- sed -e 's/i.86/i386/' -e 's/$/-linux/')                 &amp;&amp;
+<screen><userinput>export TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') &amp;&amp;
 
 mkdir texlive-build &amp;&amp;
-cd texlive-build    &amp;&amp;
+cd    texlive-build &amp;&amp;
 
-../configure                                        \
-    --prefix=/opt/texlive/&texlive-year;                      \
-    --bindir=/opt/texlive/&texlive-year;/bin/$TEXARCH         \
-    --datarootdir=/opt/texlive/&texlive-year;                 \
-    --includedir=/opt/texlive/&texlive-year;/include          \
-    --infodir=/opt/texlive/&texlive-year;/texmf-dist/doc/info \
-    --libdir=/opt/texlive/&texlive-year;/lib                  \
-    --mandir=/opt/texlive/&texlive-year;/texmf-dist/doc/man   \
-    --disable-native-texlive-build                  \
-    --disable-static --enable-shared                \
-    --disable-dvisvgm                               \
-    --with-system-cairo                             \
-    --with-system-fontconfig                        \
-    --with-system-freetype2                         \
-    --with-system-gmp                               \
-    --with-system-graphite2                         \
-    --with-system-harfbuzz                          \
-    --with-system-icu                               \
-    --with-system-libgs                             \
-    --with-system-libpaper                          \
-    --with-system-libpng                            \
-    --with-system-mpfr                              \
-    --with-system-pixman                            \
-    --with-system-zlib                              \
+../configure                                      \
+    --prefix=$TEXLIVE_PREFIX                      \
+    --bindir=$TEXLIVE_PREFIX/bin/$TEXARCH         \
+    --datarootdir=$TEXLIVE_PREFIX                 \
+    --includedir=$TEXLIVE_PREFIX/include          \
+    --infodir=$TEXLIVE_PREFIX/texmf-dist/doc/info \
+    --libdir=$TEXLIVE_PREFIX/lib                  \
+    --mandir=$TEXLIVE_PREFIX/texmf-dist/doc/man   \
+    --disable-native-texlive-build                \
+    --disable-static --enable-shared              \
+    --disable-dvisvgm                             \
+    --with-system-cairo                           \
+    --with-system-fontconfig                      \
+    --with-system-freetype2                       \
+    --with-system-gmp                             \
+    --with-system-graphite2                       \
+    --with-system-harfbuzz                        \
+    --with-system-icu                             \
+    --with-system-libgs                           \
+    --with-system-libpaper                        \
+    --with-system-libpng                          \
+    --with-system-mpfr                            \
+    --with-system-pixman                          \
+    --with-system-zlib                            \
     --with-banner-add=" - BLFS" &amp;&amp;
 
 make</userinput></screen>
 
     <para>
       To test the results, issue: <command>make check</command>.
+      <!-- It started to fail with libpaper-2.0.10. -->
+      One test named <filename>psutils.test</filename> is known to fail.
     </para>
 
     <para>
@@ -317,11 +311,11 @@ make</userinput></screen>
 <!-- Editors, you can run 'make texlinks' in a DESTDIR by passing
 DESTDIR#some/where -->
 <screen role="root"><userinput>make install-strip &amp;&amp;
-/sbin/ldconfig &amp;&amp;
-make texlinks &amp;&amp;
-mkdir -pv /opt/texlive/&texlive-year;/tlpkg/TeXLive/ &amp;&amp;
-install -v -m644 ../texk/tests/TeXLive/* /opt/texlive/&texlive-year;/tlpkg/TeXLive/ &amp;&amp;
-tar -xf ../../texlive-&tex-tlpdb-version;-tlpdb-full.tar.gz -C /opt/texlive/&texlive-year;/tlpkg</userinput></screen>
+/sbin/ldconfig     &amp;&amp;
+make texlinks      &amp;&amp;
+mkdir -pv                                $TEXLIVE_PREFIX/tlpkg/TeXLive/ &amp;&amp;
+install -v -m644 ../texk/tests/TeXLive/* $TEXLIVE_PREFIX/tlpkg/TeXLive/ &amp;&amp;
+tar -xf ../../texlive-&tex-tlpdb-version;-tlpdb-full.tar.gz -C $TEXLIVE_PREFIX/tlpkg</userinput></screen>
 
     <note>
       <para>
@@ -338,7 +332,7 @@ tar -xf ../../texlive-&tex-tlpdb-version;-tlpdb-full.tar.gz -C /opt/texlive/&tex
 
 <!-- if texmf does not need to be patched, remove &amp;&amp; from first line,
  close userinput, screen, comment pushd, patch, popd -->
-<screen role="root"><userinput>tar -xf ../../texlive-&texmf-version;-texmf.tar.xz -C /opt/texlive/&texlive-year; --strip-components=1</userinput></screen>
+<screen role="root"><userinput>tar -xf ../../texlive-&texmf-version;-texmf.tar.xz -C $TEXLIVE_PREFIX --strip-components=1</userinput></screen>
 
     <para>
       It has been established by debian that the <command>python</command>
@@ -348,14 +342,14 @@ tar -xf ../../texlive-&tex-tlpdb-version;-tlpdb-full.tar.gz -C /opt/texlive/&tex
       user:
     </para>
 
-<screen role="root"><userinput>for F in /opt/texlive/&texlive-year;/texmf-dist/scripts/latex-make/*.py ; do
+<screen role="root"><userinput>for F in $TEXLIVE_PREFIX/texmf-dist/scripts/latex-make/*.py ; do
   sed -i 's%/usr/bin/env python%/usr/bin/python3%' $F
 done
 </userinput></screen>
 
     <para>
       Still as the <systemitem class="username">root</systemitem> user,
-      initialise the new system (the commands <command>fmtutil-sys
+      initialize the new system (the commands <command>fmtutil-sys
       --all</command> and <command>mtxrun --generate</command> will produce
       a <emphasis>lot</emphasis> of output):
     </para>
@@ -420,7 +414,7 @@ mtxrun --generate</userinput></screen>
     </para>
 
     <para>
-      <command>tar -xf texlive-&texmf-version;-texmf.tar.xz -C /opt/texlive/&texlive-year; --strip-components=1</command>:
+      <command>tar -xf texlive-&texmf-version;-texmf.tar.xz -C $TEXLIVE_PREFIX --strip-components=1</command>:
       the tarball contains the files for the texmf-dist directory, and because
       of its size we do not want to waste time and space untarring it and then
       copying the files.
@@ -428,7 +422,7 @@ mtxrun --generate</userinput></screen>
 
     <para>
       <command>install -v -m644 ../texk/tests/TeXLive/*
-      /opt/texlive/&texlive-year;/tlpkg/TeXLive/</command>: This puts the perl
+      $TEXLIVE_PREFIX/tlpkg/TeXLive/</command>: This puts the perl
       modules <filename>TLConfig.pm</filename> and <filename>TLUtils.pm</filename>
       into the directory where the binary installer puts them - it is at the
       start of the perl @INC@ PATH within texlive when installed using the above
@@ -461,10 +455,17 @@ mtxrun --generate</userinput></screen>
 
       <seglistitem>
         <seg>Over 300 binaries and symlinks to scripts</seg>
-        <seg>libkpathsea.so, libptexenc.so, libsynctex.so, libtexlua52.so,
-        libtexluajit.so</seg>
-        <seg>/opt/texlive/&texlive-year;/bin, /opt/texlive/&texlive-year;/include,
-        /opt/texlive/&texlive-year;/lib, /opt/texlive/&texlive-year;/texmf-dist</seg>
+        <seg>libkpathsea.so,
+             libptexenc.so,
+             libsynctex.so,
+             libtexlua52.so,
+             libtexluajit.so
+        </seg>
+        <seg>$TEXLIVE_PREFIX/bin,
+             $TEXLIVE_PREFIX/include,
+             $TEXLIVE_PREFIX/lib,
+             $TEXLIVE_PREFIX/texmf-dist
+        </seg>
       </seglistitem>
     </segmentedlist>
 

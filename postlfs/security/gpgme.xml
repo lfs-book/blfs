@@ -7,18 +7,15 @@
   <!ENTITY gpgme-download-http "&gnupg-http;/gpgme/gpgme-&gpgme-version;.tar.bz2">
   <!ENTITY gpgme-download-ftp  "&gnupg-ftp;/gpgme/gpgme-&gpgme-version;.tar.bz2">
   <!ENTITY gpgme-download-ftp  " ">
-  <!ENTITY gpgme-md5sum        "4d3c7699e1cdd4095d103f7a6833ae3a">
+  <!ENTITY gpgme-md5sum        "98f25a7e494d294c4b2c1a769113510e">
   <!ENTITY gpgme-size          "1.7 MB">
-  <!ENTITY gpgme-buildsize     "262 MB">
-  <!ENTITY gpgme-time          "0.6 SBU (with all bindings, add 0.9 SBU for tests; all with parallelism=4)">
+  <!ENTITY gpgme-buildsize     "168 MB (Add 33 MB for tests)">
+  <!ENTITY gpgme-time          "0.7 SBU (with all bindings, add 0.8 SBU for tests; all with parallelism=4)">
 ]>
 
 <sect1 id="gpgme" xreflabel="GPGME-&gpgme-version;">
   <?dbhtml filename="gpgme.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>GPGME-&gpgme-version;</title>
 
@@ -39,7 +36,7 @@
       signature verification and key management.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,6 +72,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Recommended patch (required if SWIG is installed):
+          <ulink url="&patch-root;/gpgme-&gpgme-version;-gpg_error_1_46-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">GPGME Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -87,7 +94,7 @@
       <xref linkend="doxygen"/> and
       <xref linkend="graphviz"/> (for API documentation),
       <xref linkend="gnupg2"/> (required if Qt or SWIG are installed;
-        used during the testsuite),
+        used during the test suite),
       <xref linkend="clisp"/>,<!--
 gpgme can still use python 2.7, but can use python3 as well,
 so do not advertise python2
@@ -105,13 +112,19 @@ so do not advertise python2
     <title>Installation of GPGME</title>
 
     <para>
-      Next, fix an issue building with Python 3.10 installed:
+      First, fix an issue building with Python &python3-majorver; installed:
     </para>
 
-<screen><userinput remap="pre">sed -e 's/3\.9/3.10/'                    \
+<screen><userinput remap="pre">sed -e 's/3\.9/&python3-majorver;/'                    \
     -e 's/:3/:4/'                        \
-    -e '23653 s/distutils"/setuptools"/' \
     -i configure</userinput></screen>
+
+    <para>
+      Apply a patch to fix build failure with SWIG and libgpg-error-1.46
+      or later:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../gpgme-&gpgme-version;-gpg_error_1_46-1.patch</userinput></screen>
 
     <para>
       Install <application>GPGME</application> by running the following
@@ -157,7 +170,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          gpgme-config, gpgme-json, and gpgme-tool
+          gpgme-json, and gpgme-tool
         </seg>
         <seg>
           libgpgme, libgpgmepp.so, and libqgpgme.so
@@ -175,19 +188,6 @@ make</userinput></screen>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
-
-      <varlistentry id="gpgme-config">
-        <term><command>gpgme-config</command></term>
-        <listitem>
-          <para>
-            is used to obtain <application>GPGME</application> compilation and
-            linking information
-          </para>
-          <indexterm zone="gpgme gpgme-config">
-            <primary sortas="b-gpgme-config">gpgme-config</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
 
       <varlistentry id="gpgme-json">
         <term><command>gpgme-json</command></term>

@@ -16,9 +16,6 @@
 <sect1 id="accountsservice" xreflabel="AccountsService-&accountsservice-version;">
   <?dbhtml filename="accountsservice.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>AccountsService-&accountsservice-version;</title>
 
@@ -37,7 +34,7 @@
       userdel(8) commands.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -118,21 +115,21 @@
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd build &amp;&amp;
 
-meson --prefix=/usr             \
-      --buildtype=release       \
-      -Dadmin_group=adm         \
-      -Delogind=true            \
-      -Dsystemdsystemunitdir=no \
-      .. &amp;&amp;
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      -Dadmin_group=adm   \
+      -Delogind=true      \
+      -Dsystemdsystemunitdir=no &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd build &amp;&amp;
 
-meson --prefix=/usr       \
+meson setup ..            \
+      --prefix=/usr       \
       --buildtype=release \
-      -Dadmin_group=adm   \
-      .. &amp;&amp;
+      -Dadmin_group=adm   &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -198,7 +195,7 @@ EOF</userinput></screen>
 -->
       <para>
         To start the <command>accounts-daemon</command> daemon at boot,
-	enable the previously installed systemd unit
+        enable the previously installed systemd unit
         by running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>

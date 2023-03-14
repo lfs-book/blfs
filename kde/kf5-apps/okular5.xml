@@ -6,18 +6,15 @@
 
   <!ENTITY okular5-download-http "&kf5apps-download-http;/okular-&kf5apps-version;.tar.xz">
   <!ENTITY okular5-download-ftp  " ">
-  <!ENTITY okular5-md5sum        "768e786937d5086d7b02d7e89f31f12f">
-  <!ENTITY okular5-size          "7.8 MB">
-  <!ENTITY okular5-buildsize     "75 MB">
-  <!ENTITY okular5-time          "0.8 SBU (using parallelism=4)">
+  <!ENTITY okular5-md5sum        "5c711ce5c783fc8ba3905d98aacec38d">
+  <!ENTITY okular5-size          "8.0 MB">
+  <!ENTITY okular5-buildsize     "82 MB">
+  <!ENTITY okular5-time          "0.7 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="okular5" xreflabel="Okular-&kf5apps-version;">
   <?dbhtml filename="okular5.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Okular-&kf5apps-version;</title>
 
@@ -33,7 +30,7 @@
       including PDF, PostScript, TIFF, Microsoft CHM, DjVu, DVI, XPS and ePub.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,10 +83,11 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="qca"/>,
-      <ulink url="http://djvu.sourceforge.net/">DjVuLibre</ulink>,
+      <ulink url="https://www.pell.portland.or.us/~orc/Code/discount/">discount</ulink>,
+      <ulink url="https://djvu.sourceforge.net/">DjVuLibre</ulink>,
       <ulink url="https://download.kde.org/stable/release-service/&kf5apps-version;/src/">
                  kpimtextedit</ulink>,
-      <ulink url="http://libspectre.freedesktop.org/">libspectre</ulink>
+      <ulink url="https://libspectre.freedesktop.org/">libspectre</ulink>
                  (for PostScript support),
       <ulink url="http://www.jedrea.com/chmlib">libchm</ulink>,
       <ulink url="https://sourceforge.net/projects/ebook-tools">libepub</ulink>, and
@@ -110,12 +108,22 @@
       commands:
     </para>
 
+    <note>
+      <para>
+        If any of the optional dependencies are installed, remove the
+        associated reference in the SKIP_OPTIONAL environment variable.
+      </para>
+    </note>
+
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
+
+SKIP_OPTIONAL='LibSpectre;CHM;LibZip;DjVuLibre;EPub;QMobipocket;Discount'
 
 cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX \
       -DCMAKE_BUILD_TYPE=Release         \
       -DBUILD_TESTING=OFF                \
+      -DFORCE_NOT_REQUIRED_DEPENDENCIES="$SKIP_OPTIONAL" \
       -Wno-dev .. &amp;&amp;
 make</userinput></screen>
 

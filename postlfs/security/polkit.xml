@@ -6,18 +6,15 @@
 
   <!ENTITY polkit-download-http "https://gitlab.freedesktop.org/polkit/polkit/-/archive/&polkit-version;/polkit-&polkit-version;.tar.gz">
   <!ENTITY polkit-download-ftp  " ">
-  <!ENTITY polkit-md5sum        "5687b19e9ca9a0225957b8967d8f4458">
-  <!ENTITY polkit-size          "740 KB">
-  <!ENTITY polkit-buildsize     "8.9 MB (with tests)">
-  <!ENTITY polkit-time          "0.2 SBU (with tests, using parallelism=4)">
+  <!ENTITY polkit-md5sum        "bbe3e745fc5bc1a41f1b5044f09a0f26">
+  <!ENTITY polkit-size          "728 KB">
+  <!ENTITY polkit-buildsize     "7.0 MB (with tests)">
+  <!ENTITY polkit-time          "0.3 SBU (with tests, using parallelism=4)">
 ]>
 
 <sect1 id="polkit" xreflabel="Polkit-&polkit-version;">
   <?dbhtml filename="polkit.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Polkit-&polkit-version;</title>
 
@@ -34,7 +31,7 @@
       communicate with privileged processes.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,6 +67,7 @@
       </listitem>
     </itemizedlist>
 
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -85,13 +83,14 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">Polkit Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="glib2"/> and
-      <xref linkend="js91"/>
+      <xref linkend="duktape"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -130,11 +129,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="dbus-python"/> and
-      <xref linkend="python-dbusmock"/> (both needed for tests), and
-      <!--<xref linkend="DocBook"/>, (Part of libxslt's chain)
-      <xref linkend="docbook-xsl"/>,-->
-      <xref linkend="gtk-doc"/>
+      <xref linkend="gtk-doc"/>,
+      <xref linkend="js102"/> (can be used in place of duktape), and
+      <xref linkend="python-dbusmock"/> (for tests)
     </para>
 
     <bridgehead renderas="sect4" revision="systemd">Required Runtime Dependencies</bridgehead>
@@ -154,7 +151,7 @@
       <xref role="runtime" linkend="gnome-shell"/> for GNOME3,
       <xref role="runtime" linkend="polkit-gnome"/> for XFCE, and
       <application>lxpolkit</application> in
-      <xref role="runtime" linkend="lxsession"/> for LXDE.
+      <xref role="runtime" linkend="lxsession"/> for LXDE
     </para>
 
     <note>
@@ -187,6 +184,7 @@
 useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
         -g polkitd -s /bin/false polkitd</userinput></screen>
 
+<!--
     <para>
       First, fix problems with setting permissions during installation and with
       meson-0.60.0:
@@ -207,6 +205,7 @@ sed '/policy,/d' -i actions/meson.build \
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../polkit-&polkit-version;-js91-1.patch</userinput></screen>
+-->
 
     <para>
       Install <application>Polkit</application> by running the following
@@ -216,36 +215,32 @@ sed '/policy,/d' -i actions/meson.build \
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr                       \
+meson setup ..                            \
+      --prefix=/usr                       \
       --buildtype=release                 \
       -Dman=true                          \
       -Dsession_tracking=libsystemd-login \
-      -Dtests=true                        \
-      ..                                  &amp;&amp;
+      -Dtests=true                        &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr                 \
+meson setup ..                      \
+      --prefix=/usr                 \
       --buildtype=release           \
       -Dman=true                    \
       -Dsession_tracking=libelogind \
       -Dsystemdsystemunitdir=/tmp   \
-      -Dtests=true   \
-      ..                            &amp;&amp;
+      -Dtests=true                  &amp;&amp;
 ninja</userinput></screen>
 
-    <!--
-      "-t3" for raising the timeout to 90s, i. e. 3x the default:
-      https://gitlab.freedesktop.org/polkit/polkit/-/merge_requests/107
-    -->
     <para>
       To test the results, first ensure that the system
       <application>D-Bus</application> daemon is running,
       and both <xref linkend='dbus-python'/> and
       <xref linkend='python-dbusmock'/> are installed.
-      Then run <command>meson test -t3</command>.
+      Then run <command>ninja test</command>.
     </para>
 
     <para>
@@ -272,6 +267,12 @@ rm -v /tmp/*.service</userinput></screen>
       So it's recommended to run the test suite building this package.
     </para>
 
+    <para>
+      <option>-Djs_engine=mozjs</option>: This switch allows using the
+      <xref linkend="js102"/> JavaScript engine instead of the
+      <xref linkend='duktape'/> JavaScript engine.
+    </para>
+
     <!--
     <para revision="sysv">
       <parameter>- -disable-libsystemd-login</parameter>: This switch forces
@@ -283,6 +284,13 @@ rm -v /tmp/*.service</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
     -->
+
+    <para>
+      <option>-Dos_type=lfs</option>: Use this switch if you did not create
+      the <filename>/etc/lfs-release</filename> file or distribution auto
+      detection will fail and you will be unable to use
+      <application>Polkit</application>.
+    </para>
 
     <para>
       <option>-Dauthfw=shadow</option>: This switch enables the
@@ -319,44 +327,6 @@ rm -v /tmp/*.service</userinput></screen>
 
   </sect2>
 
-  <sect2 role="configuration">
-    <title>Configuring Polkit</title>
-
-    <sect3>
-      <title>PAM Configuration</title>
-
-      <note>
-        <para>
-          If you did not build <application>Polkit</application> with
-          <application>Linux PAM</application> support, you can skip this
-          section.
-        </para>
-      </note>
-
-      <para>
-        If you have built <application>Polkit</application> with
-        <application>Linux PAM</application> support, you need to modify
-        the default PAM configuration file which was installed by default to get
-        <application>Polkit</application> to work correctly with BLFS. Issue the
-        following commands as the <systemitem class="username">root</systemitem>
-        user to create the configuration file for <application>Linux PAM</application>:
-      </para>
-
-<screen role="root"><userinput>cat &gt; /etc/pam.d/polkit-1 &lt;&lt; "EOF"
-<literal># Begin /etc/pam.d/polkit-1
-
-auth     include        system-auth
-account  include        system-account
-password include        system-password
-session  include        system-session
-
-# End /etc/pam.d/polkit-1</literal>
-EOF</userinput></screen>
-
-    </sect3>
-
-  </sect2>
-
   <sect2 role="content">
     <title>Contents</title>
 
@@ -368,7 +338,7 @@ EOF</userinput></screen>
       <seglistitem>
         <seg>
           pkaction, pkcheck, <!--pk-example-frobnicate,--> pkexec,
-          pkttyagent and polkitd
+          pkttyagent, and polkitd
         </seg>
         <seg>
           libpolkit-agent-1.so and
@@ -378,7 +348,7 @@ EOF</userinput></screen>
           /etc/polkit-1,
           /usr/include/polkit-1,
           /usr/lib/polkit-1,
-          /usr/share/gtk-doc/html/polkit-1 and
+          /usr/share/gtk-doc/html/polkit-1, and
           /usr/share/polkit-1
         </seg>
       </seglistitem>

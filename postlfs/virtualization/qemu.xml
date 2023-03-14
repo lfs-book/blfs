@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY qemu-download-http "https://download.qemu-project.org/qemu-&qemu-version;.tar.xz">
+  <!ENTITY qemu-download-http "https://download.qemu.org/qemu-&qemu-version;.tar.xz">
   <!ENTITY qemu-download-ftp  " ">
-  <!ENTITY qemu-md5sum        "bfb5b09a0d1f887c8c42a6d5f26971ab">
-  <!ENTITY qemu-size          "120 MB">
-  <!ENTITY qemu-buildsize     "2.4 GB">
-  <!ENTITY qemu-time          "1.4 SBU (using parallelism=4; add 0.5 SBU for tests)">
+  <!ENTITY qemu-md5sum        "7630d6a9eba7ab2bcb9979d6d24c2697">
+  <!ENTITY qemu-size          "117 MB">
+  <!ENTITY qemu-buildsize     "2.1 GB">
+  <!ENTITY qemu-time          "1.3 SBU (add 2.0 SBU for tests, both using parallelism=4)">
 ]>
 
 <sect1 id="qemu" xreflabel="qemu-&qemu-version;">
   <?dbhtml filename="qemu.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>qemu-&qemu-version;</title>
 
@@ -34,7 +31,7 @@
       AMD-V).
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -80,7 +77,8 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="alsa-lib"/> and
+      <xref linkend="alsa-lib"/>,
+      <xref linkend="libslirp"/>, and
       <xref linkend="sdl2"/>
     </para>
 
@@ -107,10 +105,9 @@
       <ulink url="https://gitlab.freedesktop.org/spice/libcacard">libcacard</ulink>
     </para>
 
-    <bridgehead renderas="sect4">Optional dependencies for installing the documentation</bridgehead>
+    <bridgehead renderas="sect4">Optional (for building the documentation)</bridgehead>
     <para role="optional">
-      <ulink url="https://www.sphinx-doc.org/en/master/index.html">sphinx</ulink> with the
-      <ulink url="https://pypi.org/project/sphinx-rtd-theme/">sphinx-rtd-theme</ulink> theme
+      <xref linkend="sphinx_rtd_theme"/>
     </para>
 
     <note>
@@ -133,7 +130,7 @@
       your processor supports Virtualization Technology (VT):
     </para>
 
-    <screen><userinput>egrep '^flags.*(vmx|svm)' /proc/cpuinfo</userinput></screen>
+    <screen><userinput>grep -E '^flags.*(vmx|svm)' /proc/cpuinfo</userinput></screen>
 
     <para>
       If you get any output, you have VT technology (vmx for Intel
@@ -194,7 +191,8 @@ Device Drivers  ---&gt;
 <screen role="root" revision="sysv"><userinput>groupadd -g 61 kvm</userinput></screen>
 -->
     <para>
-      Add any users that might use the KVM device to that group:
+      As the &root; user, add any users that might use the KVM device to that
+      group:
     </para>
 
 <screen role="root"><userinput>usermod -a -G kvm <replaceable>&lt;username&gt;</replaceable></userinput></screen>
@@ -251,7 +249,7 @@ make</userinput></screen>
 
     <para>
       You will also need to add an Udev rule so that the KVM device gets correct
-      permissions:
+      permissions. As the &root; user, issue:
     </para>
 
 <screen role="root"><userinput>cat > /lib/udev/rules.d/65-kvm.rules &lt;&lt; "EOF"
@@ -260,7 +258,8 @@ EOF</userinput></screen>
 
     <para>
       Change the permissions and ownership of a helper script, which is needed
-      when using the <quote>bridge</quote> network device (see below):
+      when using the <quote>bridge</quote> network device (see below). Again
+      as the &root; user, issue:
     </para>
 
 <screen role="root"><userinput>chgrp kvm  /usr/libexec/qemu-bridge-helper &amp;&amp;
@@ -269,7 +268,7 @@ chmod 4750 /usr/libexec/qemu-bridge-helper</userinput></screen>
     <note>
       <para>
         For convenience you may want to create a symbolic link to run
-        the installed program. For instance:
+        the installed program. For instance (as the &root; user):
       </para>
 
 <screen role="root"><userinput>ln -sv qemu-system-`uname -m` /usr/bin/qemu</userinput></screen>
@@ -280,31 +279,19 @@ chmod 4750 /usr/libexec/qemu-bridge-helper</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-<!-- Not used anymore
     <para>
-      <command>sed ... util/memfd.c</command>: This command fixes a conflict
-      introduced with glibc-2.27.
-    </para>
--->
-    <para>
-      <parameter>--audio-drv-list=alsa --disable-pa</parameter>: This switch sets the audio
-      driver to ALSA. See below for enabling other audio drivers.
+      <parameter>--audio-drv-list=alsa --disable-pa</parameter>: This switch
+      sets the audio driver to ALSA. See below for enabling other audio drivers.
     </para>
 
     <para>
-      <option>--audio-drv-list=pa --disable-alsa</option>: This switch sets the audio
-      driver to pulseaudio. For other drivers see the --audio-drv-list list in
-      <command>configure</command>'s help output. The default audio driver is
-      OSS. To enable support for both alsa and pulseaudio, use
+      <option>--audio-drv-list=pa --disable-alsa</option>: This switch sets
+      the audio driver to pulseaudio. For other drivers see the
+      --audio-drv-list choices in the output of
+      <command>./configure --help</command>. The default audio driver is OSS.
+      To enable support for both alsa and pulseaudio, use
       <option>--audio-drv-list=alsa,pa</option>.
     </para>
-
-    <!-- this appears to be rejected in 4.1.0
-         ERROR: unknown option \-\-with-gtkabi=3.0
-    <para>
-      <option>\-\-with-gtkabi=3.0</option>: builds with GTK+-3 if both GTK+-2
-      and GTK+-3 are installed.
-    </para> -->
 
   </sect2>
 
@@ -335,8 +322,9 @@ chmod 4750 /usr/libexec/qemu-bridge-helper</userinput></screen>
       <para>
         The following instructions assume the optional symbolic link,
         <filename>qemu</filename>, has been created. Additionally,
-        <command>qemu</command> must be run from an X Window System based
-        terminal (either locally or over ssh).
+        <command>qemu</command> should be run in a graphical environment.
+        But it is possible to use qemu <quote>headless</quote> or through
+        SSH. See the documentation for the various possibilities.
       </para>
     </note>
 
@@ -455,8 +443,14 @@ qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE</userinput></screen>
     </para>
 
     <para>
-      <parameter>-vga &lt;type&gt;</parameter>: defines the type of vga card
-      to emulate.
+      <parameter>-vga &lt;type&gt;</parameter>: defines the type of VGA card
+      to emulate.  For <parameter>-vga std</parameter>, if you are building
+      a Linux kernel for the guest, it's recommended to enable
+      <option>CONFIG_DRM_BOCHS</option> (as a part of the kernel or a kernel
+      module) to drive all the features of the emulated VGA card, and
+      <option>CONFIG_FB</option> to display the Linux console on it.  The
+      other <option>&lt;type&gt;</option> values are not tested by the
+      editors and may require additional dependencies.
     </para>
 
     <para>
@@ -472,10 +466,41 @@ qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE</userinput></screen>
       if you run several guests at the same time.
     </para>
 
+    <para>
+      <option>-pflash /usr/share/qemu/edk2-x86_64-code.fd</option>: Load a
+      pre-built EDK2 UEFI firmware, instead of the default PC BIOS.  Use
+      this option if you want to boot the guest OS with UEFI.
+    </para>
+
+    <para>
+      <option>-drive file=&lt;filename&gt;,if=virtio</option>: Provide
+      Virtio interface to the guest kernel for accessing the disk image,
+      instead of simulating a real disk hardware.  This can improve disk I/O
+      performance, but it requires a Virtio driver in guest kernel.  Use
+      it instead of a plain <option>-drive</option> if the guest kernel
+      supports Virtio.  To build a Linux kernel with Virtio support for the
+      guest, use
+      <command>make defconfig &amp;&amp; make kvm_guest.config</command> to
+      create an initial kernel configuration with the Virtio drives enabled,
+      then make your customization.  And, if the guest kernel is Linux, the
+      virtual disks using Virtio interface will be named
+      <filename>vdx</filename> in the devtmpfs, instead of
+      <filename>sdx</filename>.
+    </para>
+
+    <para>
+      <option>-net nic,netdev=net0,model=virtio-net-pci</option>: Provide
+      Virtio interface to the guest kernel for accessing the network
+      interface, instead of simulating a real network interface card.  This
+      can improve network I/O performance, but it requires a Virtio driver
+      in guest kernel.  Use it instead of a plain <option>-net</option> if
+      the guest kernel supports Virtio.
+    </para>
+
     <bridgehead renderas="sect3">Controlling the Emulated Display</bridgehead>
     <para>
       It may happen that the guest window displayed by qemu does not correspond
-      to the full capability of the emulated vga card. For example, the vmware
+      to the full capability of the emulated VGA card. For example, the vmware
       card is 1600x900 capable, but only 1024x768 is displayed by default.
       A suitable Xorg configuration on the guest allows to use the full size
       (Note that the Xorg video driver to use is <xref
@@ -519,7 +544,7 @@ EOF</userinput></screen>
 
     <bridgehead renderas="sect3">Networking</bridgehead>
     <para>
-      The below solution for networking allows the guest to access the local
+      The above solution for networking allows the guest to access the local
       network through the host (and possibly to access internet through the
       local routers), but the converse is not true. Not even the host can
       access the guest, unless port forwarding is enabled. And in the case
@@ -566,8 +591,9 @@ EOF</userinput></screen>
 echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
 
     <para>
-      In the command above, replace the switch <parameter>-netdev user,...
-      </parameter> with <parameter>-netdev bridge,id=net0</parameter>.
+      In the qemu command line above, replace the switch
+      <parameter>-netdev user,...</parameter> with
+      <parameter>-netdev bridge,...</parameter>.
     </para>
 
   </sect2>

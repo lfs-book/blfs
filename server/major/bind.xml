@@ -6,18 +6,15 @@
 
   <!ENTITY bind-download-http "https://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.xz">
   <!ENTITY bind-download-ftp  "ftp://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.xz">
-  <!ENTITY bind-md5sum        "e14b700dc7709af6bbc9e6bfdf8cb36b">
-  <!ENTITY bind-size          "4.9 MB">
-  <!ENTITY bind-buildsize     "136 MB (25 MB installed)">
-  <!ENTITY bind-time          "0.4 SBU (with parallelism=4; add 30+ minutes, somewhat processor independent, to run the complete test suite)">
+  <!ENTITY bind-md5sum        "&bind-md5;">
+  <!ENTITY bind-size          "5.2 MB">
+  <!ENTITY bind-buildsize     "143 MB (26 MB installed)"><!-- differs much from prev maybe because of docs? -->
+  <!ENTITY bind-time          "0.4 SBU (with parallelism=4; about 40 minutes somewhat processor independent, to run the complete test suite)">
 ]>
 
 <sect1 id="bind" xreflabel="BIND-&bind-version;">
   <?dbhtml filename="bind.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>BIND-&bind-version;</title>
 
@@ -34,7 +31,7 @@
       to the <xref linkend="bind-utils"/>.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -100,17 +97,17 @@
       <xref linkend="libxml2"/>,
       <xref linkend="lmdb"/>,
       <xref linkend="mitkrb"/>,
+      <xref linkend="pytest"/>,
+      <xref linkend="sphinx"/> (required to build documentation),
       <ulink url="https://cmocka.org/">cmocka</ulink>,
       <ulink url="https://github.com/cjheath/geoip">geoip</ulink>,
-      <ulink url="https://docs.pytest.org/en/stable/">pytest</ulink>,
-      <ulink url="https://pypi.python.org/pypi/Sphinx">Sphinx</ulink>, and
       <ulink url="&w3m-url;">w3m</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional database backends</bridgehead>
     <para role="optional">
       <xref linkend="db"/>,
-      <xref linkend="mariadb"/> or <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <xref linkend="mariadb"/> or <ulink url="https://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openldap"/>,
       <xref linkend="postgresql"/>, and
       <xref linkend="unixodbc"/>
@@ -121,12 +118,14 @@
       <xref linkend="perl-net-dns"/>
     </para>
 
+<!-- docs are now all sphinx based
     <bridgehead renderas="sect4">Optional (to rebuild the documentation)</bridgehead>
     <para role="optional">
       <xref linkend="doxygen"/>,
       <xref linkend="libxslt"/>, and
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
     </para>
+-->
 
     <para condition="html" role="usernotes">User Notes:
     <ulink url="&blfs-wiki;/bind"/></para>
@@ -178,8 +177,8 @@ make</userinput></screen>
     <para>
       The test suite may indicate some skipped tests depending on
       what configuration options are used. Some tests are marked
-      <quote>UNTESTED</quote> if <xref linkend="perl-net-dns"/> is not
-      installed. <!--One test, <quote>CPU</quote>, is known to fail.-->
+      <quote>UNTESTED</quote> or do even fail if <xref linkend="perl-net-dns"/>
+      is not installed. <!--One test, <quote>CPU</quote>, is known to fail.-->
       To run the tests, as an unprivileged user, execute:
     </para>
 
@@ -198,12 +197,22 @@ make</userinput></screen>
       class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
-  </sect2>
-
 <!-- Documentation is an issue - The docs are now all in .rst format and appear
-to be sphinx based.
+to be sphinx based. install source .rst files for now...
+
+leave docs untouched as they does only use disk space when not
+used to recreate the docs via Sphinx. I've added a note regarding
+the documentation. (thomas)
+
+<screen role="root"><userinput>make install &amp;&amp;
+
+install -vdm 755 /usr/share/doc/bind-&bind-version;/{arm,dnssec-guide} &amp;&amp;
+install doc/arm/* /usr/share/doc/bind-&bind-version;/arm               &amp;&amp;
+install doc/dnssec-guide/* /usr/share/doc/bind-&bind-version;/dnssec-guide</userinput></screen>
 -->
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
@@ -245,7 +254,7 @@ to be sphinx based.
       <option>--with-dlz-{mysql,bdb,filesystem,ldap,odbc,stub}</option>: Use
       one (or more) of those options to add Dynamically Loadable Zones support.
       For more information refer to <ulink
-      url="http://bind-dlz.sourceforge.net/">bind-dlz.sourceforge.net</ulink>.
+      url="https://bind-dlz.sourceforge.net/">bind-dlz.sourceforge.net</ulink>.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -438,7 +447,7 @@ EOF</userinput></screen>
 .                       6D  IN      NS      M.ROOT-SERVERS.NET.
 A.ROOT-SERVERS.NET.     6D  IN      A       198.41.0.4
 A.ROOT-SERVERS.NET.     6D  IN      AAAA    2001:503:ba3e::2:30
-B.ROOT-SERVERS.NET.     6D  IN      A       192.228.79.201
+B.ROOT-SERVERS.NET.     6D  IN      A       199.9.14.201
 B.ROOT-SERVERS.NET.     6D  IN      AAAA    2001:500:200::b
 C.ROOT-SERVERS.NET.     6D  IN      A       192.33.4.12
 C.ROOT-SERVERS.NET.     6D  IN      AAAA    2001:500:2::c
@@ -468,12 +477,8 @@ EOF</userinput></screen>
         The <filename>root.hints</filename> file is a list of root name
         servers. This file must be updated periodically with the
         <command>dig</command> utility. A current copy of root.hints can be
-        obtained from <ulink url="ftp://rs.internic.net/domain/named.root" />.
-        For details, consult the "BIND 9 Administrator Reference Manual",
-        included in every source archive of BIND 9 distributed by ISC, in HTML
-        and PDF formats, also available at <ulink
-        url="ftp://ftp.isc.org/isc/bind9/cur/&bind-minor-version;/doc/arm/Bv9ARM.html">
-        BIND 9 Administrator Reference Manual</ulink>.
+        obtained from <ulink url="https://www.internic.net/domain/named.root"/>.
+        For details, consult the "BIND 9 Administrator Reference Manual".
       </para>
 
       <para>
@@ -555,13 +560,32 @@ dig www.&lfs-domainname;</userinput></screen>
       <para>
         You can see almost instantaneous results with the named caching
         lookups. Consult the <application>BIND</application> Administrator
-        Reference Manual located at
-        <ulink url="https://bind9.readthedocs.io/en/v9_16/"/>
-        for further configuration options.
+        Reference Manual (see below) for further configuration options.
       </para>
 
     </sect3>
 
+  </sect2>
+
+  <sect2>
+    <title>Administrator Reference Manual (ARM)</title>
+
+    <para>
+      The ARM documentation (do not confuse with the processor architecture)
+      is included in the source package. The documentation is in .rst
+      format which means, it can be converted in human readable formats
+      if <xref linkend="sphinx"/> is installed.
+    </para>
+
+    <para>
+      When <application>BIND</application> is set up, especially when
+      to operate in a real live scenario, it is <emphasis>highly</emphasis>
+      recommended to consult the ARM documentation. ISC provides an
+      updated set of excellent documentation along with every release
+      so it can be easily viewed and/or downloaded &ndash; so there is
+      no excuse to not read the docs. The formats ISC provides are PDF,
+      epub and html at <ulink url="https://downloads.isc.org/isc/bind9/&bind-version;/doc/arm/"/>.
+    </para>
   </sect2>
 
   <sect2 role="content">

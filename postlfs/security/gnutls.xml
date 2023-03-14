@@ -4,21 +4,18 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gnutls-download-http "&gnupg-http;/gnutls/v3.7/gnutls-&gnutls-version;.tar.xz">
-  <!ENTITY gnutls-download-ftp  "&gnupg-ftp;/gnutls/v3.7/gnutls-&gnutls-version;.tar.xz">
+  <!ENTITY gnutls-download-http "&gnupg-http;/gnutls/v3.8/gnutls-&gnutls-version;.tar.xz">
+  <!ENTITY gnutls-download-ftp  "&gnupg-ftp;/gnutls/v3.8/gnutls-&gnutls-version;.tar.xz">
   <!ENTITY gnutls-download-ftp  " ">
-  <!ENTITY gnutls-md5sum        "4bce06332c525eae540bb237433d4225">
-  <!ENTITY gnutls-size          "5.9 MB">
-  <!ENTITY gnutls-buildsize     "136 MB (add 109 MB for tests)">
-  <!ENTITY gnutls-time          "0.6 SBU (add 2.5 SBU for tests; both using parallelism=4)">
+  <!ENTITY gnutls-md5sum        "20a662caf20112b6b9ad1f4a64db3a97">
+  <!ENTITY gnutls-size          "6.1 MB">
+  <!ENTITY gnutls-buildsize     "165 MB (add 113 MB for tests)">
+  <!ENTITY gnutls-time          "0.8 SBU (add 2.3 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="gnutls" xreflabel="GnuTLS-&gnutls-version;">
   <?dbhtml filename="gnutls.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>GnuTLS-&gnutls-version;</title>
 
@@ -34,26 +31,30 @@
       userspace tools which provide a secure layer over a reliable transport
       layer. Currently the <application>GnuTLS</application> library implements
       the proposed standards by the IETF's TLS working group. Quoting from the
-      TLS protocol specification:
+      <ulink url="https://datatracker.ietf.org/doc/rfc8446/">
+        TLS 1.3 protocol specification
+      </ulink>:
     </para>
 
     <para>
-      <quote>The TLS protocol provides communications privacy over the
-      Internet. The protocol allows client/server applications to communicate in
-      a way that is designed to prevent eavesdropping, tampering, or message
-      forgery.</quote>
+      <quote>
+        TLS allows client/server applications to communicate over the Internet
+        in a way that is designed to prevent eavesdropping, tampering, and
+        message forgery.
+      </quote>
     </para>
 
     <para>
-      <application>GnuTLS</application> provides support for TLS 1.3, TLS 1.2, TLS 1.1,
-      TLS 1.0, and SSL 3.0 protocols, TLS extensions, including server name and max
-      record size. Additionally, the library supports authentication using the
-      SRP protocol, X.509 certificates and OpenPGP keys, along with support for
-      the TLS Pre-Shared-Keys (PSK) extension, the Inner Application (TLS/IA)
-      extension and X.509 and OpenPGP certificate handling.
+      <application>GnuTLS</application> provides support for TLS 1.3, TLS 1.2,
+      TLS 1.1, TLS 1.0, and (optionally) SSL 3.0 protocols. It also supports
+      TLS extensions, including server name and max record size. Additionally,
+      the library supports authentication using the SRP protocol, X.509
+      certificates, and OpenPGP keys, along with support for the TLS
+      Pre-Shared-Keys (PSK) extension, the Inner Application (TLS/IA)
+      extension, and X.509 and OpenPGP certificate handling.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -106,9 +107,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="brotli"/>,
       <xref linkend="doxygen"/>,
       <xref linkend="gtk-doc"/>,
-      <xref linkend="guile"/>,
       <xref linkend="libidn"/> or
       <xref linkend="libidn2"/>,
       <xref linkend="libseccomp"/>,
@@ -123,7 +124,9 @@
     </para>
 
     <note><para>
-      Note that if you do not install <xref linkend="libtasn1"/>, an older
+ <!-- Note that if you do not install <xref linkend="libtasn1"/>, an older
+       3.8.0 includes minitasn1 4.19 which is currnet at the moment. ken -->
+      Note that if you do not install <xref linkend="libtasn1"/>, a
       version shipped in the <application>GnuTLS</application> tarball will be
       used instead.
     </para></note>
@@ -143,10 +146,16 @@
 
 <screen><userinput>./configure --prefix=/usr \
             --docdir=/usr/share/doc/gnutls-&gnutls-version; \
-            --disable-guile \
-            --disable-rpath \
             --with-default-trust-store-pkcs11="pkcs11:" &amp;&amp;
 make</userinput></screen>
+<!-- - -disable-rpath \
+     Old gnutls versions (around 3.5) had a problem with rpath, because
+     libraries in the build tree were linked with rpath pointing to the
+     system libraries, so that tests failed. Present versions don't have
+     this problem, and do exactly what is expected without using the
+     disable-rpath option: rpath pointing to the build tree when libraries
+     are first linked, but rpath removed when libraries are relinked at
+     install time. -->
 
     <para>
       To test the results, issue: <command>make check</command>.
@@ -158,19 +167,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
-<!--
-    <para>
-      If you passed <option>- -enable-gtk-doc</option> to the
-      <command>configure</command> script, the API will automatically be
-      installed.  Otherwise, if desired, you can still install the API
-      documentation to the <filename
-      class="directory">/usr/share/gtk-doc/html/gnutls</filename> directory
-      using the following command as the <systemitem
-      class="username">root</systemitem> user:
-    </para>
 
-<screen role="root"><userinput>make -C doc/reference install-data-local</userinput></screen>
--->
   </sect2>
 
   <sect2 role="commands">
@@ -181,19 +178,14 @@ make</userinput></screen>
       switch tells gnutls to use the PKCS #11 trust store as the default trust.
       Omit this switch if <xref linkend="p11-kit"/> is not installed.
     </para>
-
+    <!-- see above
     <para>
-      <parameter>--disable-guile</parameter>: This switch disables GUILE support,
-      since GnuTLS does not support Guile-2.2.x yet.
-    </para>
-
-    <para>
-      <parameter>--disable-rpath</parameter>: This switch prevents building
+      <parameter>- -disable-rpath</parameter>: This switch prevents building
       GnuTLS utilities and tests with hardcoded runtime library search path.
       Hardcoded rpath is unneeded for BLFS, and it causes test failures if
       an old version of GnuTLS is installed.
     </para>
-
+    -->
     <para>
       <option>--with-default-trust-store-file=/etc/pki/tls/certs/ca-bundle.crt</option>:
       This switch tells <command>configure</command> where to find the
@@ -236,14 +228,14 @@ make</userinput></screen>
           gnutls-serv, ocsptool, p11tool, psktool, and srptool
         </seg>
         <seg>
-          libgnutls.so, libgnutls-dane.so, libgnutlsxx.so, and
-          libgnutls-openssl.so (optional)<!-- disabled , and
-          /usr/lib/guile/2.2/guile-gnutls-v-2.so -->
+          libgnutls.so, libgnutls-dane.so, libgnutlsxx.so,
+          libgnutls-openssl.so (optional), and
+          /usr/lib/guile/3.0/extensions/guile-gnutls-v-2.so
         </seg>
         <seg>
           /usr/include/gnutls,
-          /usr/share/gtk-doc/html/gnutls, and
-<!-- disabled /usr/share/guile/2.2/gnutls -->
+          /usr/lib/guile/3.0/site-ccache/gnutls,
+          /usr/share/guile/site/3.0/gnutls, and
           /usr/share/doc/gnutls-&gnutls-version;
         </seg>
       </seglistitem>

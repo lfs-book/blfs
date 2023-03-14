@@ -8,9 +8,6 @@
 <sect1 id="postlfs-firmware" xreflabel="About Firmware">
   <?dbhtml filename="firmware.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>About Firmware</title>
 
@@ -28,7 +25,7 @@
   <para>
     Currently, most firmware can be found at a <userinput>git</userinput>
     repository: <ulink url=
-      "http://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/"/>.
+      "https://git.kernel.org/cgit/linux/kernel/git/firmware/linux-firmware.git/tree/"/>.
     For convenience, the LFS Project has created a mirror, updated daily, where
     these firmware files can be accessed via <userinput>wget</userinput> or a
     web browser at <ulink url="&sources-anduin-http;/linux-firmware/"/>.
@@ -73,7 +70,7 @@
       </para>
 
       <para>
-        ATI Radeon and AMGPU devices all require firmware to be able to use KMS
+        ATI Radeon and AMDGPU devices all require firmware to be able to use KMS
         (kernel modesetting - the preferred option) as well as for Xorg. For
         old radeon chips (before the R600), the firmware is still in the
         kernel source.
@@ -155,22 +152,22 @@
       firmware are rare and usually only apply to a few models, although
       motherboard manufacturers get AGESA (AMD Generic Encapsulated Software
       Architecture) updates to change BIOS values, e.g. to support more memory
-      variants or newer CPUs.
+      variants, new vulnerability fixes or newer CPUs.
     </para>
 
     <para>
-      There are two ways of loading the microcode, described as 'early' and
+      There were two ways of loading the microcode, described as 'early' and
       'late'. Early loading happens before userspace has been started, late
-      loading happens after userspace has started. Not surprisingly, early
-      loading is preferred, (see e.g. an explanatory comment in a kernel
-      commit noted at <ulink url="https://lwn.net/Articles/530346/">
-        x86/microcode: Early load microcode</ulink> on LWN.)  Indeed, it
-      is needed to work around one particular erratum in early Intel Haswell
-      processors which had TSX enabled.  (See <ulink url=
-      "http://www.anandtech.com/show/8376/intel-disables-tsx-instructions-erratum-found-in-haswell-haswelleep-broadwellyi/">
+      loading happens after userspace has started. However, late loading is
+      known to be problematic and not supported anymore (see the kernel commit
+      <ulink url="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=d23d33e">
+        x86/microcode: Taint and warn on late loading</ulink>.)  Indeed, early
+      loading is needed to work around one particular erratum in early Intel
+      Haswell processors which had TSX enabled.  (See <ulink url=
+      "https://www.anandtech.com/show/8376/intel-disables-tsx-instructions-erratum-found-in-haswell-haswelleep-broadwelly/">
         Intel Disables TSX Instructions: Erratum Found in Haswell,
-        Haswell-E/EP, Broadwell-Y
-      </ulink>.) Without this update glibc can do the wrong thing in uncommon
+        Haswell-E/EP, Broadwell-Y</ulink>.)
+      Without this update glibc can do the wrong thing in uncommon
       situations.
     </para>
 
@@ -184,15 +181,13 @@
     </para>
 
     <para>
-      It is still possible to manually force late loading of microcode, either
-      for testing or to prevent having to reboot. You will need to reconfigure
-      your kernel for either method. The instructions here will create a
-      kernel <filename>.config</filename> to suite early loading, before
-      forcing late loading to see if there is any microcode. If there is,
-      the instructions then show you how to create an initrd for early loading.
-      It is also possible to build the same microcode bin file into the kernel,
-      which allows early loading but requires the kernel to be recompiled to
-      update the microcode
+      It might be still possible to manually force late loading of microcode.
+      But it may cause kernel malfunction and you should take the risk yourself.
+      You will need to reconfigure your kernel for either method. The
+      instructions here will show you how to create an initrd for early
+      loading. It is also possible to build the same microcode bin file into
+      the kernel, which allows early loading but requires the kernel to be
+      recompiled to update the microcode.
     </para>
 
     <para>
@@ -205,7 +200,8 @@
 <screen><userinput>head -n7 /proc/cpuinfo</userinput></screen>
 
     <para>
-      Convert the cpu family, model and stepping to pairs of hexadecimal digits.
+      Convert the cpu family, model and stepping to pairs of hexadecimal
+      digits, and remember the value of the <quote>microcode</quote> field.
       You can now check if there is any microcode available.
     </para>
 
@@ -229,7 +225,7 @@
         <!-- at one time, some skylakes had problems with a certain revision
         secure version of the microcode, for those machines which can boot it, -->
         secure version of the microcode
-        is microcode-20220419.<!-- If you have a Skylake machine, please read the
+        is microcode-20230214.<!-- If you have a Skylake machine, please read the
         Caution in the 'Early loading of microcode' section below.-->  Extract this
         file in the normal way, the microcode is in the <filename>intel-ucode
         </filename> directory, containing various blobs with names in the form
@@ -238,7 +234,10 @@
 
       <para>
         In the past, intel did not provide any details of which blobs had
-        changed versions, but now the releasenote details this.
+        changed versions, but now the releasenote details this.  You can
+        compare the microcode version in <filename>/proc/cpuinfo</filename>
+        with the version for your CPU model in the releasenote to know if
+        there is an update.
       </para>
 
       <para>
@@ -252,23 +251,15 @@
       </para>
 
       <para>
-        For a Skylake i3 6100 (described as Intel(R) Core(TM) i3-6100
-        CPU) the relevant values are cpu family 6, model 94, stepping 3 so in
-        this case the required identification is 06-5e-03. A look at the blobs
-        will show that there is one for this CPU (although for older issues it
-        might have already been applied by the BIOS).
-        If there is a blob for
-        your system then test if it will be applied by copying it (replace
-        &lt;XX-YY-ZZ&gt; by the identifier for your CPU) to where the
-        kernel can find it:
-      </para>
-
-<screen><userinput>mkdir -pv /lib/firmware/intel-ucode
-cp -v intel-ucode/&lt;XX-YY-ZZ&gt; /lib/firmware/intel-ucode</userinput></screen>
-
-      <para>
-        Now that the Intel microcode has been prepared, use the following
-        options when you configure the kernel to load Intel microcode:
+        For an Icelake mobile (described as Intel(R) Core(TM) i7-1065G7
+        CPU) the relevant values are cpu family 6, model 126, stepping 5 so
+        in this case the required identification is 06-7e-05. The
+        releasenote says the latest microcode for it is versioned 0xb8.  If
+        the value of the <quote>microcode</quote> field in
+        <filename>/proc/cpuinfo</filename> is 0xb8 or greater, it indicates
+        the microcode update is already applied by the BIOS.  Otherwise,
+        configure the kernel to support loading Intel microcode, and then
+        proceed to <xref linkend='early-microcode'/>:
       </para>
 
 <screen><literal>General Setup ---&gt;
@@ -276,50 +267,6 @@ cp -v intel-ucode/&lt;XX-YY-ZZ&gt; /lib/firmware/intel-ucode</userinput></screen
 Processor type and features  ---&gt;
   [*] CPU microcode loading support  [CONFIG_MICROCODE]
   [*]      Intel microcode loading support [CONFIG_MICROCODE_INTEL]</literal></screen>
-
-      <para>
-        After you have successfully booted the new system, force late loading
-        by using the command:
-      </para>
-
-<screen><userinput>echo 1 > /sys/devices/system/cpu/microcode/reload</userinput></screen>
-
-      <para>
-        Then use the following command to check if anything was loaded:
-        (N.B. the dates when microcode was created may be months ahead of when
-        it was released.)
-      </para>
-
-<screen><userinput>dmesg | grep -e 'microcode' -e 'Linux version' -e 'Command line'</userinput></screen>
-
-      <para>
-        This old example showing the very old BIOS firmware version
-        was created by temporarily booting without
-        microcode, to show the current Firmware Bug messages, then the late load
-        shows it being updated to revision 0xea which was current at that time.
-      </para>
-
-<screen><literal>[    0.000000] Linux version 5.12.8 (lfs@leshp) (gcc (GCC) 11.1.0,
-               GNU ld (GNU Binutils) 2.36.1)
-               #2 SMP PREEMPT Fri Jun 4 01:25:02 BST 2021
-[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-5.12.8-sda11 root=/dev/sda11 ro
-               resume=/dev/sda10
-[    0.028741] [Firmware Bug]: TSC_DEADLINE disabled due to Errata;
-               please update microcode to version: 0xb2 (or later)
-[    0.115716] SRBDS: Vulnerable: No microcode
-[    0.115826] MDS: Vulnerable: Clear CPU buffers attempted, no microcode
-[    0.389005] microcode: sig=0x506e3, pf=0x2, revision=0x74
-[    0.389030] microcode: Microcode Update Driver: v2.2.
-[   70.089502] microcode: updated to revision 0xea, date = 2021-01-25
-[   70.089528] x86/CPU: CPU features have changed after loading microcode,
-               but might not take effect.
-[   70.089530] microcode: Reload completed, microcode revision: 0xea</literal></screen>
-
-      <para>
-        If the microcode was not updated, there is no new microcode for this
-        system's processor. If it did get updated, you can now proceed to
-        <xref linkend='early-microcode'/>.
-      </para>
 
     </sect3>
 
@@ -332,8 +279,10 @@ Processor type and features  ---&gt;
           '&sources-anduin-http;/linux-firmware/amd-ucode/'/>.
         The family is always specified in hex. Families 10h to 14h (16 to 20)
         are in microcode_amd.bin.  Families 15h, 16h, 17h (Zen, Zen+, Zen2) and
-        19h (Zen3) have their own containers.  Very few machines are likely to
-        get updated microcode. There is a Python3 script at <ulink url=
+        19h (Zen3) have their own containers, but  very few machines are likely to
+        get updated microcode. Instead, AMD provide an updated AGESA to the
+        motherboard makers, who may provide an updated BIOS using this.
+        There is a Python3 script at <ulink url=
         'https://github.com/AMDESE/amd_ucode_info/blob/master/amd_ucode_info.py'/>.
         Download that script and run it against the bin file to check which
         processors have updates.
@@ -342,22 +291,19 @@ Processor type and features  ---&gt;
       <para>
         For the very old Athlon(tm) II X2 in these examples the values were
         cpu family 16, model 5, stepping 3 giving an identification of
-        Family=0x10 Model=0x05 Stepping=0x03
+        Family=0x10 Model=0x05 Stepping=0x03.  One line of the
+        <command>amd_ucode_info.py</command> script output describes the
+        microcode version for it:
       </para>
 
-      <para>
-        If you wish to try late loading,
-        create the required directory and put the firmware you
-        downloaded into it as the <systemitem
-        class="username">root</systemitem> user:
-      </para>
-
-<screen><userinput>mkdir -pv /lib/firmware/amd-ucode
-cp -v microcode_amd* /lib/firmware/amd-ucode</userinput></screen>
+<screen><computeroutput>Family=0x10 Model=0x05 Stepping=0x03: Patch=0x010000c8 Length=960 bytes</computeroutput></screen>
 
       <para>
-        When you configure the kernel, use the following options
-        to load AMD microcode:
+        If the value of the <quote>microcode</quote> field in
+        <filename>/proc/cpuinfo</filename> is 0x10000c8 or greater, it
+        indicates the BIOS has already applied the microcode update.
+        Otherwise, configure the kernel to support loading AMD microcode,
+        and then proceed to <xref linkend='early-microcode'/>:
       </para>
 
 <screen><literal>General Setup ---&gt;
@@ -365,41 +311,6 @@ cp -v microcode_amd* /lib/firmware/amd-ucode</userinput></screen>
 Processor type and features  ---&gt;
   [*] CPU microcode loading support  [CONFIG_MICROCODE]
   [*]      AMD microcode loading support [CONFIG_MICROCODE_AMD]</literal></screen>
-
-      <para>
-        After you have successfully booted the new system, force late loading
-        by using the command:
-      </para>
-
-<screen><userinput>echo 1 > /sys/devices/system/cpu/microcode/reload</userinput></screen>
-
-      <para>
-        Then use the following command to check if anything was loaded:
-      </para>
-
-<screen><userinput>dmesg | grep -e 'microcode' -e 'Linux version' -e 'Command line'</userinput></screen>
-      <para>
-        This historic example from an old Athlon(tm) II X2 shows it has been
-        updated. At that time, all CPUs were still reported in the microcode
-        details on AMD machines (the current position for AMD machines where
-        newer microcode is available is unknown) :
-      </para>
-
-<screen><literal>[    0.000000] Linux version 4.15.3 (ken@testserver) (gcc version 7.3.0 (GCC))
-               #1 SMP Sun Feb 18 02:08:12 GMT 2018
-[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-4.15.3-sda5 root=/dev/sda5 ro
-[    0.307619] microcode: CPU0: patch_level=0x010000b6
-[    0.307671] microcode: CPU1: patch_level=0x010000b6
-[    0.307743] microcode: Microcode Update Driver: v2.2.
-[  187.928891] microcode: CPU0: new patch_level=0x010000c8
-[  187.928899] microcode: CPU1: new patch_level=0x010000c8</literal></screen>
-
-      <para>
-        If the microcode was not updated, there is no new microcode for
-        this system's processor. If it did get updated, you can now proceed to
-        <xref linkend='early-microcode'/>.
-      </para>
-
     </sect3>
 
     <sect3 id="early-microcode">
@@ -428,13 +339,13 @@ cd initrd</userinput></screen>
         family):
       </para>
 
-<screen><userinput>cp -v /lib/firmware/amd-ucode/&lt;MYCONTAINER&gt; kernel/x86/microcode/AuthenticAMD.bin</userinput></screen>
+<screen><userinput>cp -v ../&lt;MYCONTAINER&gt; kernel/x86/microcode/AuthenticAMD.bin</userinput></screen>
 
       <para>
         Or for an Intel machine copy the appropriate blob using this command:
       </para>
 
-<screen><userinput>cp -v /lib/firmware/intel-ucode/&lt;XX-YY-ZZ&gt; kernel/x86/microcode/GenuineIntel.bin</userinput></screen>
+<screen><userinput>cp -v ../intel-ucode/&lt;XX-YY-ZZ&gt; kernel/x86/microcode/GenuineIntel.bin</userinput></screen>
 
 <!-- new version from 20201110 release onwards, assumed to work on all skylakes
    But complaints about previous version took some days to appear, so keep as a comment for now.
@@ -483,37 +394,41 @@ cd initrd</userinput></screen>
         If you are already booting with an initrd (see <xref
         linkend="initramfs"/>), you should run <command>mkinitramfs</command>
         again after putting the appropriate blob or container into <filename
-        class="directory">/lib/firmware</filename> as explained above.
+          class="directory">/lib/firmware</filename>. More precisely, put an
+        intel blob in a <filename
+          class="directory">/lib/firmware/intel-ucode</filename> directory
+        or an AMD container in a <filename
+          class="directory">/lib/firmware/amd-ucode</filename> directory before
+        running <command>mkinitramfs</command>.
         Alternatively, you can have both initrd on the same line, such as
         <userinput>initrd /microcode.img /other-initrd.img</userinput> (adapt
         that as above if /boot is not a separate mountpoint).
       </para>
 
       <para>
-        You can now reboot with the added initrd, and then use the same
+        You can now reboot with the added initrd, and then use the following
         command to check that the early load worked:
       </para>
 
 <screen><userinput>dmesg | grep -e 'microcode' -e 'Linux version' -e 'Command line'</userinput></screen>
 
       <para>
-        If you updated to address vulnerabilities, you can look at <filename
-        class="directory">/sys/devices/system/cpu/vulnerabilities/</filename>
-        to see what is now reported.
+        If you updated to address vulnerabilities, you can look at the
+        output of the <command>lscpu</command> command to see what is now
+        reported.
       </para>
 
       <para>
         The places and times where early loading happens are very different
-        in AMD and Intel machines. First, an old example of an Intel (Skylake) with early loading:
+        in AMD and Intel machines. First, an example of an Intel (Icelake
+        mobile) with early loading:
       </para>
 
-<screen><literal>[    0.000000] microcode: microcode updated early to revision 0xea, date = 2021-01-25
-[    0.000000] Linux version 5.12.8 (lfs@leshp) (gcc (GCC) 11.1.0,
-               GNU ld (GNU Binutils) 2.36.1) #2 SMP PREEMPT Fri Jun 4 01:25:02 BST 2021
-[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-5.12.8-sda11 root=/dev/sda11 ro
-               resume=/dev/sda10
-[    0.381420] microcode: sig=0x506e3, pf=0x2, revision=0xea
-[    0.381479] microcode: Microcode Update Driver: v2.2.</literal></screen>
+<screen><literal>[    0.000000] microcode: microcode updated early to revision 0xb8, date = 2022-08-31
+[    0.000000] Linux version 6.1.11 (xry111@stargazer) (gcc (GCC) 12.2.0, GNU ld (GNU Binutils) 2.40) #2 SMP PREEMPT_DYNAMIC Tue Feb 14 23:23:31 CST 2023
+[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.1.11-lfs-11.3-rc1 root=PARTUUID=<replaceable>&lt;CLASSIFIED&gt;</replaceable> ro
+[    0.452924] microcode: sig=0x706e5, pf=0x80, revision=0xb8
+[    0.453197] microcode: Microcode Update Driver: v2.2.</literal></screen>
 
 
       <para>
@@ -563,7 +478,7 @@ cd initrd</userinput></screen>
 
       <para>
         With that information, check the RadeonFeature page of the Xorg wiki
-        for <ulink url="http://wiki.x.org/wiki/RadeonFeature/#index5h2">Decoder
+        for <ulink url="https://wiki.x.org/wiki/RadeonFeature/#index5h2">Decoder
         ring for engineering vs marketing names</ulink> to identify the family
         (you may need to know this for the Xorg driver in BLFS &mdash;
         Southern Islands and Sea Islands use the radeonsi driver) and the
@@ -630,7 +545,7 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/radeon</userinput></screen>
         Advanced Micro Devices, Inc. [AMD/ATI] Baffin [Radeon RX 550 640SP / RX
         560/560X] needs Polaris11 firmware.  There is a table of "Family, Chipset
         name, Product name and Firmware" at the end of the Kernel sections in
-	<ulink url="https://wiki.gentoo.org/wiki/AMDGPU#Known_firmware_blobs">
+        <ulink url="https://wiki.gentoo.org/wiki/AMDGPU#Known_firmware_blobs">
         AMDGPU</ulink> page of the Gentoo wiki.
     </para>
 
@@ -651,10 +566,10 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/amdgpu</userinput></screen>
     </para>
 
     <para>
-      You are recommended to build the kernel amdgpu driver as a module.
+      Building the kernel amdgpu driver as a module is recommended.
       In your kernel .config set at least the following options and review
-      the other AMDGPU options according to what hardware you are building
-      for, e.g ACP (Audio Co-Processor) support for some APUs,
+      the other AMDGPU options according to your target hardware,
+      for example "ACP (Audio Co-Processor) Configuration":
     </para>
 
 <screen><literal>Device Drivers ---&gt;
@@ -714,8 +629,9 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/amdgpu</userinput></screen>
         installed <xref linkend="python2"/> and run the following commands:
       </para>
 
+      <!-- Someone please port this to Python 3.  -->
 <screen><userinput>wget https://raw.github.com/imirkin/re-vp2/master/extract_firmware.py
-wget http://us.download.nvidia.com/XFree86/Linux-x86/325.15/NVIDIA-Linux-x86-325.15.run
+wget https://us.download.nvidia.com/XFree86/Linux-x86/325.15/NVIDIA-Linux-x86-325.15.run
 sh NVIDIA-Linux-x86-325.15.run --extract-only
 python2 extract_firmware.py
 mkdir -p /lib/firmware/nouveau
@@ -748,6 +664,36 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
 
   </sect2>
 
+  <sect2 id="regulatory-db">
+    <title>Firmware for Regulatory Database of Wireless Devices</title>
+
+    <para>
+      Different countries have different regulations on the radio spectrum
+      usage of wireless devices.  You can install a firmware to make the
+      wireless devices obey local spectrum regulations, so you won't be
+      inquired by local authority or find your wireless NIC jamming the
+      frequencies of other devices (for example, remote controllers).
+      The regulatory database firmware can be downloaded from
+      <ulink url = 'https://kernel.org/pub/software/network/wireless-regdb/'/>.
+      To install it, simply extract <filename>regulatory.db</filename> and
+      <filename>regulatory.db.p7s</filename> from the tarball into
+      <filename class="directory">/lib/firmware</filename>. Note that either
+      the <option>cfg80211</option> driver needs to be selected as a module
+      for the <filename>regulatory.*</filename>
+      files to be loaded, or those files need to be included as firmware into
+      the kernel, as explained above in <xref linkend="video-firmware"/>.
+    </para>
+
+    <para>
+      The access point (AP) would send a country code to your wireless NIC,
+      and <xref linkend='wpa_supplicant'/> would tell the kernel to load
+      the regulation of this country from
+      <filename>regulatory.db</filename>, and enforce it. Note that several AP
+      don't send this country code, so you may be locked to a rather
+      restricted usage (specially if you want to use your interface as an AP).
+    </para>
+  </sect2>
+
   <sect2 id="other-firmware">
     <title>Firmware for Other Devices</title>
 
@@ -762,25 +708,8 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
     <para>
       If possible, you should begin by using a wired connection when you first
       boot your LFS system. To use a wireless connection you will need to
-      use a network tools such as <xref linkend='wireless_tools'/> and <xref
-      linkend='wpa_supplicant'/>.
-    </para>
-
-    <para>
-      Different countries have different regulations on the radio spectrum
-      usage of wireless devices.  You can install a firmware to make the
-      wireless devices obey local spectrum regulations, so you won't be
-      inquired by local authority or find your wireless NIC jamming the
-      frequencies of other devices (for example, remote controllers).
-      The regulatory database firmware can be downloaded from
-      <ulink url = 'https://kernel.org/pub/software/network/wireless-regdb/'/>.
-      To install it, simply extract <filename>regulatory.db</filename> and
-      <filename>regulatory.db.p7s</filename> from the tarball into
-      <filename class="directory">/lib/firmware</filename>.
-      The access point would send a country code to your wireless NIC,
-      and <xref linkend='wpa_supplicant'/> would tell the kernel to load
-      the regulation of this country from
-      <filename>regulatory.db</filename>, and enforce it.
+      use a network tools such as <xref linkend="iw"/>,
+      <xref linkend='wireless_tools'/>, or <xref linkend='wpa_supplicant'/>.
     </para>
 
     <para>

@@ -11,23 +11,27 @@
 <!--<!ENTITY nss-download-http "https://&nss-url;/NSS_3_&nss-minor-version;_&nss-micro-version;_RTM/src/nss-&nss-version;.tar.gz">-->
 
 <!-- no micro versions -->
-<!ENTITY nss-download-http "https://&nss-url;/NSS_&nss-dir;_RTM/src/nss-&nss-version;.tar.gz">
-
+  <!ENTITY nss-download-http "https://&nss-url;/NSS_&nss-dir;_RTM/src/nss-&nss-version;.tar.gz">
   <!ENTITY nss-download-ftp  " ">
-  <!ENTITY nss-md5sum        "8162cb8da6fbd91ca1bda8c9f8d8de40">
-  <!ENTITY nss-size          "81 MB">
-  <!ENTITY nss-buildsize     "324 MB (add 157 MB for tests)">
-  <!ENTITY nss-time          "1.9 SBU (with parallelism=4, add 63 SBU for tests, but can be much shorter on a modern CPU)">
+  <!ENTITY nss-md5sum        "9d5b910dcec7ef8aeb88b53803454f63">
+  <!ENTITY nss-size          "69 MB">
+  <!ENTITY nss-buildsize     "297 MB (add 139 MB for tests)">
+  <!ENTITY nss-time          "1.1 SBU (with parallelism=4, add less than 20 SBU for tests on AMD ryzens or at least 30 SBU on Intel machines)">
   <!-- On my system, I got 64.2 SBU, but Bruce gets 18 SBU. -renodr -->
   <!-- On my system, I got 63 SBU, but Xi gets ~18 SBU. -pierre (for 3.78) -->
+  <!-- On my 3400G for 3.79 I got 16 SBU -ken -->
+  <!-- Still 17 SBU for 3.81 - bdubbs -->
+  <!-- 73 SBU but I'm on Intel. -renodr -->
+  <!-- 3.86 amended the figures -ken
+   3400G 14 SBU with 6.0.12, but the remeasured SBU has become very slow
+   and maybe other people would see a ster SBU on a fresh build;
+   i7-4790 35 SBU with 6.0.12, no failures
+   Bruce's 3900X 19.3 SBU, his i7-12700K about 30 SBU, 12 failures -->
 ]>
 
 <sect1 id="nss" xreflabel="nss-&nss-version;">
   <?dbhtml filename="nss.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>NSS-&nss-version;</title>
 
@@ -48,7 +52,7 @@
       standards into an application.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -115,17 +119,16 @@
   <sect2 role="installation">
     <title>Installation of NSS</title>
 
-    <!-- In 3.53.x, parallel build was possible. See
-         http://lists.linuxfromscratch.org/pipermail/blfs-dev/2020-June/037498.html
-         for more information. -->
-
-    <!-- And with another rebuild of nss-3.54, all is well again, but broken in 3.60 -->
-    <!-- fixed again in 3.62
+    <!-- In 3.53.x, parallel build was possible.
+         And with another rebuild of nss-3.54, all is well again, but
+         broken in 3.60. Fixed again in 3.62. -->
+<!--
     <note>
       <para>
         This package does not support parallel build.
       </para>
-    </note>-->
+    </note>
+-->
 
     <para>
       Install <application>NSS</application> by running the following commands:
@@ -163,7 +166,7 @@ cd ../</userinput></screen>
            everyone, provided <systemitem>localhost.localdomain</systemitem>
            is defined in <filename>/etc/hosts</filename>, as done in
            <ulink url="&lfs-root;/chapter09/network.html#ch-config-hosts">the
-           lfs book</ulink>.
+           LFS book</ulink>.
         </para>
       </listitem>
       <listitem>
@@ -185,6 +188,11 @@ cd ../</userinput></screen>
         <para>
            Test suite results (in HTML format!) can be found at
            ../../test_results/security/localhost.1/results.html
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+           A few tests might fail on some Intel machines for unknown reasons.
         </para>
       </listitem>
       </itemizedlist>
@@ -275,7 +283,7 @@ install -v -m644 Linux*/lib/pkgconfig/nss.pc  /usr/lib/pkgconfig</userinput></sc
       <application>NSS</application> aware applications, rather than the static
       list provided by <filename>/usr/lib/libnssckbi.so</filename>. As the
       <systemitem class="username">root</systemitem> user, execute the following
-      commands:
+      command:
     </para>
 
 <screen role="root"><userinput>ln -sfv ./pkcs11/p11-kit-trust.so /usr/lib/libnssckbi.so</userinput></screen>

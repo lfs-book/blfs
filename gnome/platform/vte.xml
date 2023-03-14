@@ -4,13 +4,14 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY vte-download-http "&gnome-download-http;/vte/&vte-minor;/vte-&vte-version;.tar.xz">
-  <!ENTITY vte-download-ftp "&gnome-download-ftp;/vte/&vte-minor;/vte-&vte-version;.tar.xz">
-  <!ENTITY vte-md5sum        "895a99ff50461fa65717112afbf56e8d">
-  <!ENTITY vte-size          "881 KB">
-  <!ENTITY vte-buildsize     "16 MB (with tests)">
-  <!ENTITY vte-time          "0.3 SBU (using parallelism=4; with tests)">
-  <!-- Consolidating Tests/No Tests in GNOME sections for consistency. -->
+<!--  <!ENTITY vte-download-http "&gnome-download-http;/vte/&vte-minor;/vte-&vte-version;.tar.xz">-->
+<!--  <!ENTITY vte-download-ftp "&gnome-download-ftp;/vte/&vte-minor;/vte-&vte-version;.tar.xz">-->
+  <!ENTITY vte-download-http "https://gitlab.gnome.org/GNOME/vte/-/archive/&vte-version;/vte-&vte-version;.tar.gz">
+  <!ENTITY vte-download-ftp  " ">
+  <!ENTITY vte-md5sum        "86d2b49dcb1d05b489d228892b49c28a">
+  <!ENTITY vte-size          "616 KB">
+  <!ENTITY vte-buildsize     "14 MB (with tests)">
+  <!ENTITY vte-time          "0.4 SBU (using parallelism=4; with tests)">
 
   <!-- For "Contents" and "Short Descriptions" sections -->
   <!ENTITY vte-nano          "91">
@@ -19,9 +20,6 @@
 <sect1 id="vte" xreflabel="VTE-&vte-version;">
   <?dbhtml filename="vte.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>VTE-&vte-version;</title>
 
@@ -37,7 +35,7 @@
       file implementation for terminal emulators.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -92,11 +90,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="fribidi"/> and
-      <xref linkend="gtk-doc"/>
-<!--      <xref linkend="gtk4"/>
-           The  -Dgtk4=true option just returns
-           'not supported on this branch; use git master' -->
+      <xref linkend="fribidi"/>,
+      <xref linkend="gi-docgen"/>, and
+      <xref linkend="gtk4"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -115,16 +111,31 @@
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dfribidi=false .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release -Dfribidi=false .. &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr       \
-      --buildtype=release \
-      -Dfribidi=false     \
-      -D_systemd=false .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dfribidi=false     \
+            -D_systemd=false    &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+    <!-- To editors: you may wonder why this change makes a
+         /usr/share/doc/vte-&vte-version; with only one subdirectory
+         "vte-2.91" inside.  The reason is when -Dgtk4 is enabled,
+         another directory "vte-2.91-gtk4" will also be there.  -->
+<screen role='nodump'><userinput>sed -e "/docdir =/s@\$@/ 'vte-&vte-version;'@" \
+    -e "/fatal-warnings/d"              \
+    -i ../doc/reference/meson.build     &amp;&amp;
+meson configure -Ddocs=true             &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -167,16 +178,8 @@ rm -v /etc/profile.d/vte.*</userinput></screen>
     </para>
 
     <para>
-      <option>-Ddocs=true</option>: Add this switch if wish to
-      build the documentation.
-    </para>
-
-    <!-- Uncomment once vte supports it (only git branch "master" supports it
-         as of vte-0.68.0)
-    <para>
       <option>-Dgtk4=true</option>: Add this switch to build the GTK4 widget.
     </para>
-    -->
   </sect2>
 
   <sect2 role="content">
@@ -203,7 +206,7 @@ rm -v /etc/profile.d/vte.*</userinput></screen>
         </seg>
         <seg>
           /usr/include/vte-2.&vte-nano; and
-          (optional) /usr/share/gtk-doc/html/vte-2.&vte-nano;
+          (optional) /usr/share/doc/vte-&vte-version;
         </seg>
       </seglistitem>
     </segmentedlist>

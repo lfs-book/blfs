@@ -6,18 +6,15 @@
 
   <!ENTITY gtk3-download-http "&gnome-download-http;/gtk+/&gnome-minor-24;/gtk+-&gtk3-version;.tar.xz">
   <!ENTITY gtk3-download-ftp  "&gnome-download-ftp;/gtk+/&gnome-minor-24;/gtk+-&gtk3-version;.tar.xz">
-  <!ENTITY gtk3-md5sum        "83c42707e9be61d6d7a8b4dddce1eb4a">
-  <!ENTITY gtk3-size          "21 MB">
-  <!ENTITY gtk3-buildsize     "480 MB (add 9 MB for tests)">
-  <!ENTITY gtk3-time          "1.6 SBU (using parallelism=4, add 0.3 SBU for tests)">
+  <!ENTITY gtk3-md5sum        "3649dd48556ead2d909467c1f0751956">
+  <!ENTITY gtk3-size          "12 MB">
+  <!ENTITY gtk3-buildsize     "232 MB (add 4 MB for tests)">
+  <!ENTITY gtk3-time          "0.3 SBU (using parallelism=4, add 0.7 SBU for tests)">
 ]>
 
 <sect1 id="gtk3" xreflabel="GTK+-&gtk3-version;">
   <?dbhtml filename="gtk3.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>GTK+-&gtk3-version;</title>
 
@@ -34,7 +31,7 @@
       applications.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,7 +71,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="at-spi2-atk"/>,
+      <xref linkend="at-spi2-core"/>,
       <xref linkend="gdk-pixbuf"/>,
       <xref linkend="libepoxy"/>, and
       <xref linkend="pango"/>
@@ -84,9 +81,11 @@
     <para role="recommended">
       <xref linkend="adwaita-icon-theme"/> (default for some gtk+3 settings
       keys, also needed for tests),
+      <xref linkend="docbook-xsl"/> (for generating manual pages),
       <xref linkend="hicolor-icon-theme"/> (needed for tests),
       <xref linkend="iso-codes"/>,
       <xref linkend="libxkbcommon"/>,
+      <xref linkend="libxslt"/> (for generating manual pages),
       <xref linkend="sassc"/>,
       <xref linkend="wayland"/>, and
       <xref linkend="wayland-protocols"/>
@@ -101,10 +100,10 @@
     <para role="optional">
       <xref linkend="colord"/>,
       <xref linkend="cups"/>,
-      <xref linkend="docbook-utils"/>,
       <xref linkend="gtk-doc"/>,
-      <xref linkend="pyatspi2"/> (for tests), and
-      <ulink url="http://icl.cs.utk.edu/papi/">PAPI</ulink>
+      <xref linkend="pyatspi2"/> (for tests),
+      <xref linkend='tracker3'/>, and
+      <ulink url="https://icl.utk.edu/papi/">PAPI</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -120,54 +119,31 @@
       commands:
     </para>
 
-<!-- There is a meson port available, but upstream's official recommendation
-     is to use autotools, and is the only officially supported build system.
-     See ticket #13459 for more details.-->
-
-<screen><userinput>./configure --prefix=/usr              \
-            --sysconfdir=/etc          \
-            --enable-broadway-backend  \
-            --enable-x11-backend       \
-            --enable-wayland-backend   &amp;&amp;
-make</userinput></screen>
-
-    <para>
-      Some tests fail if
-      <filename>/usr/share/glib-2.0/schemas/gschemas.compiled</filename> is not
-      found. If you wish to run the test suite, create (or update) the file
-      using the following command as the
-      <systemitem class="username">root</systemitem> user:
-      <command>glib-compile-schemas /usr/share/glib-2.0/schemas</command>.
-    </para>
+    <screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+meson setup --prefix=/usr           \
+            --buildtype=release     \
+            -Dman=true              \
+            -Dbroadway_backend=true \
+            ..                      &amp;&amp;
+ninja</userinput></screen>
 
     <para>
       To test the results you need a graphical session, then issue
-      <command>make check</command>. <!--There are several tests that
-      have subtests that are known to fail: scrolledwindow, treeview,
-      accessibility-dump, test-css-nodes, and gtk-reftest.
-      Additionally many tests will fail if the current
-      gtk theme (such as current XFCE themes) has deprecated elements.
-      The accessibility portion of the test suite (7 tests) is known
-      to fail.
-      [pierre Sep 5th, 2020]: not for me for version 3.24.23, but I have
-      other failures: display, and subtests in defaultvalue, objects-finalize,
-      window, and gtk-reftest.
-      [bdubbs Mar 3rd, 2011 Just two tests fail now. -->
-      <!--The accessibility-dump test has subtests that are known to fail.
-      The gtk-reftest suite has two tests that are known to fail as well.-->
-      Several tests associated with scrolledwindow are known to fail.
+      <command>ninja test</command>. One test may fail because the time out
+      setting is too short.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
     <note>
       <para>
         If you installed the package on to your system using a
-c        <quote>DESTDIR</quote> method, an important file was not installed and
+        <quote>DESTDIR</quote> method, an important file was not installed and
         must be copied and/or generated. Generate it using the following
         command as the <systemitem class="username">root</systemitem> user:
       </para>
@@ -182,43 +158,9 @@ c        <quote>DESTDIR</quote> method, an important file was not installed and
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <!-- MESON ONLY
     <para>
       <parameter>-Dbroadway_backend=true</parameter>: This switch enables the
       HTML5 GTK backend.
-    </para>
-    -->
-
-    <para>
-      <parameter>--enable-broadway-backend</parameter>: This switch enables the
-      HTML5 GTK backend.
-    </para>
-
-    <para>
-      <parameter>--enable-x11-backend</parameter>: This switch enables the X11
-      GDK backend.
-    </para>
-
-    <para>
-      <parameter>--enable-wayland-backend</parameter>: This switch
-      enables the Wayland GDK backend. Replace with
-      <option>--disable-wayland-backend</option> if you do not have
-      <xref linkend="wayland"/> and <xref linkend="wayland-protocols"/>
-      or you do not wish to build <application>GNOME</application> with Wayland
-      support.  Other changes may be needed to allow the build to complete
-      without the wayland backend enabled.  Note that a previous installation
-      of gtk+3 built with wayland will interfere with installation without
-      wayland.  If this is desired, remove /usr/lib/libgtk-3* before
-      installation.
-    </para>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gtk-doc-rebuild.xml"/>
-
-    <!-- MESON ONLY
-    <para>
-      <parameter>-Dcolord=yes</parameter>: This switch allows color support
-      in the GTK+ printing backend.
     </para>
 
     <para>
@@ -227,11 +169,15 @@ c        <quote>DESTDIR</quote> method, an important file was not installed and
     </para>
 
     <para>
-      <parameter>-Dgtk_doc=false</parameter>: This switch disables building
-      documentation. Replace with -Dgtk_doc=true if you have
-      <xref linkend="gtk-doc"/> installed and wish to generate documentation.
+      <option>-Dgtk_doc=true</option>: This switch enables building
+      documentation. It requires <xref linkend="gtk-doc"/>.
     </para>
-    -->
+
+    <para>
+      <option>-Dtracker3=true</option>: This switch enables the search
+      function based on Tracker 3 in the GTK+-3 file chooser dialog.
+      It requires <xref linkend="tracker3"/>.
+    </para>
 
   </sect2>
 
@@ -342,8 +288,7 @@ EOF</userinput></screen>
         <seg>
           /etc/gtk-3.0,
           /usr/include/{gail,gtk}-3.0,
-          /usr/{lib,share}/gtk-3.0,
-          /usr/share/gtk-doc/html/{gail-libgail-util,gdk,gtk}3, and
+          /usr/{lib,share}/gtk-3.0, and
           /usr/share/themes/{Default,Emacs}/gtk-3.0
         </seg>
       </seglistitem>

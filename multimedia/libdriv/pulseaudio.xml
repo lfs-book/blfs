@@ -7,18 +7,15 @@
   <!ENTITY pulseaudio-download-http
            "https://www.freedesktop.org/software/pulseaudio/releases/pulseaudio-&pulseaudio-version;.tar.xz">
   <!ENTITY pulseaudio-download-ftp  " ">
-  <!ENTITY pulseaudio-md5sum        "bb888e7747b778c1c487c63b582ddf40">
+  <!ENTITY pulseaudio-md5sum        "2c7b8ceb5d7337565c7314b4d6087ca8">
   <!ENTITY pulseaudio-size          "1.5 MB">
-  <!ENTITY pulseaudio-buildsize     "49 MB (add 1 MB for tests)">
+  <!ENTITY pulseaudio-buildsize     "42 MB (with tests)">
   <!ENTITY pulseaudio-time          "0.2 SBU (Using parallelism=4; add 0.2 SBU for tests)">
 ]>
 
 <sect1 id="pulseaudio" xreflabel="PulseAudio-&pulseaudio-version;">
   <?dbhtml filename="pulseaudio.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>PulseAudio-&pulseaudio-version;</title>
 
@@ -38,7 +35,7 @@
       several sounds into one are easily achieved using a sound server.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,7 +84,6 @@
       <xref linkend="dbus"/>,
       <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
       <xref linkend="glib2"/>,
-      <xref linkend="libcap-pam"/>,
       <xref linkend="speex"/> and
       <xref linkend="xorg7-lib"/>
     </para>
@@ -102,13 +98,13 @@
       <xref linkend="libsamplerate"/>,
       <xref linkend="sbc"/> (Bluetooth support),
       <xref linkend="valgrind"/>,
-      <ulink url="http://www.jackaudio.org/">JACK</ulink>,
-      <ulink url="http://0pointer.de/lennart/projects/libasyncns/">libasyncns</ulink>,
-      <ulink url="http://www.lirc.org/">LIRC</ulink>,
-      <ulink url="http://gstreamer.freedesktop.org/src/orc/">ORC</ulink>,
+      <ulink url="https://www.jackaudio.org/">JACK</ulink>,
+      <ulink url="https://0pointer.de/lennart/projects/libasyncns/">libasyncns</ulink>,
+      <ulink url="https://www.lirc.org/">LIRC</ulink>,
+      <ulink url="https://gstreamer.freedesktop.org/src/orc/">ORC</ulink>,
       <ulink url="https://sourceforge.net/projects/soxr/">soxr</ulink>,
-      <ulink url="http://tdb.samba.org/">TDB</ulink>, and
-      <ulink url="http://freedesktop.org/software/pulseaudio/webrtc-audio-processing/">
+      <ulink url="https://tdb.samba.org/">TDB</ulink>, and
+      <ulink url="https://freedesktop.org/software/pulseaudio/webrtc-audio-processing/">
       WebRTC AudioProcessing</ulink>
       <!--<ulink url="http://www.xenproject.org/">XEN</ulink>-->
     </para>
@@ -132,31 +128,16 @@
       Install <application>PulseAudio</application> by running the following
       commands:
     </para>
-<!--
-<screen revision="sysv"><userinput>./configure - -prefix=/usr                \
-            - -sysconfdir=/etc            \
-            - -localstatedir=/var         \
-            - -disable-bluez5             \
-            - -disable-rpath              \
-            - -with-systemduserunitdir=no &amp;&amp;
-make</userinput></screen>
-
-<screen revision="systemd"><userinput>./configure - -prefix=/usr        \
-            - -sysconfdir=/etc    \
-            - -localstatedir=/var \
-            - -disable-bluez5     \
-            - -disable-rpath      &amp;&amp;
-make</userinput></screen>
--->
 
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr       \
-      --buildtype=release \
-      -Ddatabase=gdbm     \
-      -Ddoxygen=false     \
-      -Dbluez5=disabled   &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Ddatabase=gdbm     \
+            -Ddoxygen=false     \
+            -Dbluez5=disabled   \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
     <para>

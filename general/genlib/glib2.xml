@@ -6,18 +6,15 @@
 
   <!ENTITY glib2-download-http "&gnome-download-http;/glib/&glib2-minor;/glib-&glib2-version;.tar.xz">
   <!ENTITY glib2-download-ftp  "&gnome-download-ftp;/glib/&glib2-minor;/glib-&glib2-version;.tar.xz">
-  <!ENTITY glib2-md5sum        "911ab945faa8c382af3ebac0507d2ce3">
-  <!ENTITY glib2-size          "4.7 MB">
-  <!ENTITY glib2-buildsize     "113 MB (add 6 MB for tests)">
-  <!ENTITY glib2-time          "0.4 SBU (add 0.4 SBU for tests; both using parallelism=4)">
+  <!ENTITY glib2-md5sum        "38f81d4a06c03e667b1f4d73cb803da8">
+  <!ENTITY glib2-size          "5.0 MB">
+  <!ENTITY glib2-buildsize     "122 MB (add 8 MB for tests)">
+  <!ENTITY glib2-time          "0.5 SBU (add 0.4 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="glib2" xreflabel="GLib-&glib2-version;">
   <?dbhtml filename="glib2.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>GLib-&glib2-version;</title>
 
@@ -35,7 +32,7 @@
       event loop, threads, dynamic loading and an object system.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,14 +83,15 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="libxslt"/> and
-      <xref linkend="pcre"/> (built with Unicode properties)
+      <xref linkend="pcre2"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="dbus"/> and
+      <xref linkend="dbus"/> (for some tests),
+      <xref linkend="fuse3"/> and
       <ulink url="https://bindfs.org/">bindfs</ulink>
-        (both may be used in some tests),
+        (both needed for one test),
       <xref linkend="gdb"/> (for bindings),
       <xref linkend="DocBook"/>,
       <xref linkend="docbook-xsl"/>,
@@ -174,10 +172,10 @@ fi</userinput></screen>
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr       \
+meson setup ..            \
+      --prefix=/usr       \
       --buildtype=release \
-      -Dman=true          \
-      ..                  &amp;&amp;
+      -Dman=true          &amp;&amp;
 ninja</userinput></screen>
 
     <note><para>
@@ -210,36 +208,20 @@ cp -r ../docs/reference/{gio,glib,gobject} /usr/share/doc/glib-&glib2-version;</
       run the test suite.
     </para>
 
+    <warning>
+      <para>
+        Do not run the test suite as &root; or some tests will fail
+        unexpectedly and leave some non-FHS-compliant directories in the
+        <filename class='directory'>/usr</filename> hierarchy.
+      </para>
+    </warning>
+
     <para>
       To test the results, after having installed the package, issue:
-      <command>ninja test</command>. One test named
-      <literal>gio / file</literal> is known to fail if the test is run as
-      the <systemitem class="username">root</systemitem> user.
-      <!-- glib issue #1954: -->
-      <!-- One test named gdbus-server-auth sometimes fails.-->
-      <!-- SysV has the symlink now, so gdatetime no longer fails.-->
-      <!-- Needs /etc/localtime to be a symbolic link. In addition
-      the link must be to some place like /usr/share/zoneinfo/...
-
-      This can be overcome if the line below in glib/tests/gdatetime.c
-      is removed or commented out.
-      g_assert_true (*g_time_zone_get_identifier (tz) != '/');
-
-      NOTE: systemd implements this as a hard requirement.  -->
-      <!-- with 2.60.4 on systemd, all tests pass. -->
-      <!-- with 2.64.1 on sysV, all tests pass. -->
-      <!-- with 2.70.1 on sysV, all tests pass. -->
-      <!-- with 2.70.2 on sysV, all tests pass. -->
+      <command>LC_ALL=C ninja test</command> as a non-&root; user.
+      <!-- https://gitlab.gnome.org/GNOME/glib/-/issues/2913 -->
+      One test named <filename>glib:glib / error</filename> is known to fail.
     </para>
-
-    <para>
-      Finally, if this is a reinstall from glib2-2.64.x or earlier, remove
-      (as the <systemitem class="username">root</systemitem> user) an
-      obsolete header file that interferes with some packages:
-    </para>
-
-<screen role="nodump"><userinput>rm -f /usr/include/glib-2.0/glib/gurifuncs.h</userinput></screen>
-
   </sect2>
 
   <sect2 role="commands">

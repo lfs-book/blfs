@@ -6,18 +6,15 @@
 
   <!ENTITY pipewire-download-http "https://github.com/PipeWire/pipewire/archive/&pipewire-version;/pipewire-&pipewire-version;.tar.gz">
   <!ENTITY pipewire-download-ftp  " ">
-  <!ENTITY pipewire-md5sum        "590e7e94908f330540012fb0afb961d8">
-  <!ENTITY pipewire-size          "1.7 MB">
-  <!ENTITY pipewire-buildsize     "74 MB (with tests)">
+  <!ENTITY pipewire-md5sum        "8a85d990c159409578b456f8c8dcf075">
+  <!ENTITY pipewire-size          "1.9 MB">
+  <!ENTITY pipewire-buildsize     "62 MB (with tests)">
   <!ENTITY pipewire-time          "0.5 SBU (with tests, both using parallelism=4)">
 ]>
 
 <sect1 id="pipewire" xreflabel="pipewire-&pipewire-version;">
   <?dbhtml filename="pipewire.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Pipewire-&pipewire-version;</title>
 
@@ -30,12 +27,12 @@
 
     <para>
       The <application>pipewire</application> package contains a server and
-      user-space API to handle multimedia pipelines. This includes a universal
+      userspace API to handle multimedia pipelines. This includes a universal
       API to connect to multimedia devices, as well as sharing multimedia
       files between applications.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,25 +73,38 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="bluez"/>,
+      <phrase revision="sysv"><xref linkend="dbus"/>,</phrase>
       <xref linkend="gstreamer10"/>,
       <xref linkend="gst10-plugins-base"/>,
-      <xref linkend="libva"/>,
       <xref linkend="pulseaudio"/>,
-      <xref linkend="sbc"/>,
-      <xref linkend="sdl2"/>, and
+      <xref linkend="sbc"/>, and
       <xref linkend="v4l-utils"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="alsa-lib"/>,
+      <xref linkend="avahi"/>,
+      <xref linkend="bluez"/>,
+      <xref linkend="fdk-aac"/>,
       <xref linkend="ffmpeg"/>,
+      <xref linkend="libcanberra"/>,
+      <xref linkend="libdrm"/> (for one example and libcamera support),
+      <xref linkend="libxcb"/>,
+      <xref linkend="libsndfile"/>,
+      <xref linkend="libusb"/>,
+      <xref linkend="opus"/>,
+      <xref linkend="sdl2"/> (for some examples),
       <xref linkend="valgrind"/>,
+      <xref linkend="xorg7-lib"/>,
       <xref linkend="doxygen"/> and
       <xref linkend="graphviz"/> (for documentation),
       <ulink url="https://jackaudio.org/">JACK</ulink>,
       <ulink url="https://github.com/EHfive/ldacBT">ldacBT</ulink>,
       <ulink url="https://libcamera.org/">libcamera</ulink>,
-      <ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>, and
+      <ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>,
+      <ulink url="https://gitlab.freedesktop.org/pipewire/wireplumber/">WirePlumber</ulink>
+      (runtime, for running Pipewire daemon), and
       <ulink url="https://sourceforge.net/projects/xmltoman/">xmltoman</ulink>
     </para>
 
@@ -114,7 +124,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dsession-managers= .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dsession-managers= \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -150,6 +163,11 @@ ninja</userinput></screen>
       pages. The optional dependencies for documentation need to be installed
       for this to work.
     </para>
+
+    <para>
+      <option>-Dffmpeg=enabled</option>: This switch enables using ffmpeg for
+      audio conversion as a SPA backend.
+    </para>
   </sect2>
 
   <sect2 role="content">
@@ -163,7 +181,7 @@ ninja</userinput></screen>
       <seglistitem>
         <seg>
           pipewire,
-          <!--pipewire-media-session,-->
+          pipewire-avb,
           pipewire-pulse,
           pw-cat,
           pw-cli,
@@ -176,7 +194,6 @@ ninja</userinput></screen>
           pw-mididump,
           pw-mon,
           pw-profiler,
-          <!--pw-pulse,-->
           pw-reserve,
           pw-top,
           pw-v4l2,
@@ -190,7 +207,7 @@ ninja</userinput></screen>
         </seg>
         <seg>
           libpipewire-0.3.so and
-          30 modules below /usr/lib/pipewire-0.3<!--,
+          56 modules below /usr/lib/pipewire-0.3 and /usr/lib/spa-0.2<!--,
      [pierre July 29th, 2020]: all the following libs are in subdirectories
      of /usr/lib. I'm not sure they should appear. But if they should, there
      are many more libs to list...

@@ -5,21 +5,18 @@
   %general-entities;
 
   <!ENTITY evince-download-http
-     "&gnome-download-http;/evince/&gnome-42;/evince-&evince-version;.tar.xz">
+     "&gnome-download-http;/evince/&gnome-43;/evince-&evince-version;.tar.xz">
   <!ENTITY evince-download-ftp
-     "&gnome-download-ftp;/evince/&gnome-42;/evince-&evince-version;.tar.xz">
-  <!ENTITY evince-md5sum        "faebe1cfaceceac49c589a8d2a6f0fb5">
-  <!ENTITY evince-size          "2.7 MB">
-  <!ENTITY evince-buildsize     "46 MB">
+     "&gnome-download-ftp;/evince/&gnome-43;/evince-&evince-version;.tar.xz">
+  <!ENTITY evince-md5sum        "8b50f6b1fbd707656452a759bd7364e7">
+  <!ENTITY evince-size          "2.8 MB">
+  <!ENTITY evince-buildsize     "44 MB">
   <!ENTITY evince-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="evince" xreflabel="Evince-&evince-version;">
   <?dbhtml filename="evince.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Evince-&evince-version;</title>
 
@@ -38,7 +35,7 @@
       on the <application>GNOME</application> Desktop.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -104,13 +101,13 @@
       <xref linkend="gnome-desktop"/>,
       <xref linkend="gspell"/>,
       <xref linkend="gst10-plugins-base"/>,
+      <xref linkend="gi-docgen"/>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="libgxps"/>,
       <xref linkend="libtiff"/>,
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>),
-      <ulink url="http://djvu.sourceforge.net/">DjVuLibre</ulink>,
-      <ulink url="https://gitlab.gnome.org/GNOME/gi-docgen">gi-docgen</ulink>,
-      <ulink url="http://www.freedesktop.org/wiki/Software/libspectre/">libspectre</ulink>,
+      <ulink url="https://djvu.sourceforge.net/">DjVuLibre</ulink>,
+      <ulink url="https://www.freedesktop.org/wiki/Software/libspectre/">libspectre</ulink>,
       <ulink url="https://github.com/jlaurens/synctex">Synctex</ulink>, and
       <ulink url="https://www.t1lib.org/">t1lib</ulink>
     </para>
@@ -140,25 +137,35 @@ export LDFLAGS="$LDFLAGS -L/opt/texlive/&texlive-year;/lib"</userinput></screen>
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr          \
-      --buildtype=release    \
-      -Dgtk_doc=false        \
-      --wrap-mode=nodownload \
-      -Dsystemduserunitdir=no .. &amp;&amp;
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            -Dgtk_doc=false        \
+            --wrap-mode=nodownload \
+            -Dsystemduserunitdir=no .. &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr          \
-      --buildtype=release    \
-      -Dgtk_doc=false        \
-      --wrap-mode=nodownload \
-      ..                     &amp;&amp;
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            -Dgtk_doc=false        \
+            --wrap-mode=nodownload \
+            ..                     &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      This package does not have a working testsuite.
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed "/fatal-warnings/d" -i ../help/reference/*/meson.build    &amp;&amp;
+sed "/docs_dir/s@\$@ / 'evince-&evince-version;'@" -i ../help/meson.build &amp;&amp;
+meson configure -Dgtk_doc=true                                &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      This package does not have a working test suite.
     </para>
 
     <para>
@@ -191,17 +198,13 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Dgtk_doc=false</parameter>: This switch disables generating
-      the gtk-doc API reference documentation. If you have
-      <xref role="nodep" linkend="gtk-doc"/> installed and wish to generate
-      the API reference documentation, remove this switch and the following
-      one.
-    </para>
-
-    <para>
       <parameter>--wrap-mode=nodownload</parameter>: This switch disables
       fetching any dependency: the build system tries to fetch gi-docgen
       even if <parameter>-Dgtk_doc=false</parameter> is passed.
+    </para>
+
+    <para>
+      <parameter>-Dgtk_doc=false</parameter>: &gi-doc-disable;
     </para>
 
     <para>

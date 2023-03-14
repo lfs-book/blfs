@@ -6,18 +6,15 @@
 
   <!ENTITY libxslt-download-http "https://download.gnome.org/sources/libxslt/1.1/libxslt-&libxslt-version;.tar.xz">
   <!ENTITY libxslt-download-ftp  " ">
-  <!ENTITY libxslt-md5sum        "5b3a634b77effd8a6268c21173575053">
-  <!ENTITY libxslt-size          "1.7 MB">
-  <!ENTITY libxslt-buildsize     "36 MB (with tests)">
+  <!ENTITY libxslt-md5sum        "84e86fc8a1b7495674016e05e4c5da44">
+  <!ENTITY libxslt-size          "1.5 MB">
+  <!ENTITY libxslt-buildsize     "35 MB (with tests)">
   <!ENTITY libxslt-time          "0.2 SBU (with tests)">
 ]>
 
 <sect1 id="libxslt" xreflabel="libxslt-&libxslt-version;">
   <?dbhtml filename="libxslt.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>libxslt-&libxslt-version;</title>
 
@@ -35,7 +32,7 @@
       support XSLT files.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -105,9 +102,10 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="libgcrypt"/> and
+      <xref linkend="libgcrypt"/>
+<!--
       <xref linkend="libxml2py2"/>
-      <!-- Seems to be used for tests -->
+      <!- - Seems to be used for tests - ->
       <note><simpara>The <xref role="nodep" linkend="libxml2py2"/>
       dependency is only appropriate if the <application>Python2</application>
       module for this package is needed. The
@@ -115,6 +113,7 @@
       any package in BLFS but various non-BLFS packages may install
       <application>Python2</application> modules which reference it.
       </simpara></note>
+-->
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -124,29 +123,17 @@
 
   <sect2 role="installation">
     <title>Installation of libxslt</title>
-<!--
-    <para>
-      First, install a security patch to fix a security framework bypass:
-    </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../libxslt-&libxslt-version;-security_fix-1.patch</userinput></screen>
--->
     <para>
       Install <application>libxslt</application> by running the following
       commands:
     </para>
 
-<screen><userinput>sed -i s/3000/5000/ libxslt/transform.c doc/xsltproc.{1,xml} &amp;&amp;
-
-./configure --prefix=/usr --disable-static --without-python  &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                          \
+            --disable-static                       \
+            --docdir=/usr/share/doc/libxslt-&libxslt-version; \
+            PYTHON=/usr/bin/python3 &amp;&amp;
 make</userinput></screen>
-
-    <!-- https://gitlab.gnome.org/GNOME/libxslt/-/issues/64 -->
-    <para>
-      Fix the date field in a shipped man page:
-    </para>
-
-<screen><userinput>sed -e 's@\$Date\$@16 February 2022@' -i doc/xsltproc.1</userinput></screen>
 
     <para>
       To test the results, issue: <command>make check</command>.
@@ -162,19 +149,14 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
+<!--
     <para>
-      <command>sed -i s/3000/5000/ ...</command>: this increases the recursion
-      limit in libxslt. This is needed by some packages for their documentation.
-    </para>
-
-    <para>
-      <parameter>--without-python</parameter>: This parameter disables the libxslt
+      <parameter>- -without-python</parameter>: This parameter disables the libxslt
       python module since it does not support Python3. If you wish to enable
       this module, make sure that <xref role="nodep" linkend="libxml2py2"/> is
       installed, and remove this parameter.
     </para>
-
+-->
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 

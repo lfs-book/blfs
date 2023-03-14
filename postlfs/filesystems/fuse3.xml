@@ -6,18 +6,15 @@
 
   <!ENTITY fuse3-download-http "https://github.com/libfuse/libfuse/releases/download/fuse-&fuse3-version;/fuse-&fuse3-version;.tar.xz">
   <!ENTITY fuse3-download-ftp  " ">
-  <!ENTITY fuse3-md5sum        "c9987e2c366655e2d3d9e1f7aaba3c0d">
-  <!ENTITY fuse3-size          "3.4 MB">
-  <!ENTITY fuse3-buildsize     "90 MB">
+  <!ENTITY fuse3-md5sum        "2070c0f347e2304fa122d4cb0746e8a9">
+  <!ENTITY fuse3-size          "4.2 MB">
+  <!ENTITY fuse3-buildsize     "108 MB (with tests and documentation)">
   <!ENTITY fuse3-time          "0.1 SBU (add 0.4 SBU for tests)">
 ]>
 
 <sect1 id="fuse3" xreflabel="Fuse-&fuse3-version;">
   <?dbhtml filename="fuse.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Fuse-&fuse3-version;</title>
 
@@ -36,7 +33,7 @@
       filesystem implementations.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,7 +73,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="doxygen"/> (to rebuild the API documentation) and
-      <ulink url="https://pypi.org/project/pytest/">pytest</ulink> (required for tests)
+      <xref linkend="pytest"/> (required for tests)
     </para>
 
     <para condition="html" role="usernotes">
@@ -96,7 +93,7 @@
   &lt;*/M&gt; FUSE (Filesystem in Userspace) support [CONFIG_FUSE_FS]</literal></screen>
 
     <para>
-      Character devices in user space should be enabled too for running the
+      Character devices in userspace should be enabled too for running the
       tests:
     </para>
 
@@ -119,10 +116,12 @@
 
 <screen><userinput>sed -i '/^udev/,$ s/^/#/' util/meson.build &amp;&amp;
 
+sed -i 's/HAVE_CONFIG_H/HAVE_LIBFUSE_PRIVATE_CONFIG_H/' meson.build &amp;&amp;
+
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -148,13 +147,14 @@ popd</userinput></screen>
         remap="test"><userinput>python3 -m pytest test/</userinput></screen>
 
     <para>
-      The <ulink url="https://pypi.org/project/pytest/">pytest</ulink>
-      Python module is required for the tests.  One test named
+      The <xref linkend="pytest"/> Python
+      module is required for the tests.  One test named
       <filename>test_cuse</filename> will fail if the
-      <parameter>CONFIG_CUSE</parameter> configuration item was not enabled 
-      when the kernel was built.
-      One test named <filename>test_ctests.py</filename> will produce a
-      warning because a deprecated Python module is used.
+      <parameter>CONFIG_CUSE</parameter> configuration item was not enabled
+      when the kernel was built.  Two tests,
+      <filename>test_ctests.py</filename> and
+      <filename>test_examples.py</filename> will produce a warning because a
+      deprecated Python module is used.
     </para>
 
     <para>
@@ -178,6 +178,11 @@ cp -Rv doc/html     /usr/share/doc/fuse-&fuse3-version;</userinput></screen>
     <para>
       <command>sed ... util/meson.build</command>: This command disables the
       installation of a boot script and udev rule that are not needed.
+    </para>
+
+    <para>
+      <command>sed ... meson.build</command>: This command fixes a bug with the
+      test_passthrough_hp test.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

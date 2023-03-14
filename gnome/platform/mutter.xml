@@ -4,20 +4,18 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-42;/mutter-&mutter-version;.tar.xz">
-  <!ENTITY mutter-download-ftp  "&gnome-download-ftp;/mutter/&gnome-42;/mutter-&mutter-version;.tar.xz">
-  <!ENTITY mutter-md5sum        "59303bc585dd0e61632bf15440b6e343">
-  <!ENTITY mutter-size          "2.6 MB">
-  <!ENTITY mutter-buildsize     "177 MB (with tests)">
-  <!ENTITY mutter-time          "0.9 SBU (Using parallelism=4, add 1.0 SBU for tests)">
+  <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-43;/mutter-&mutter-version;.tar.xz">
+  <!ENTITY mutter-download-ftp  "&gnome-download-ftp;/mutter/&gnome-43;/mutter-&mutter-version;.tar.xz">
+  <!ENTITY mutter-md5sum        "aba8f5170a27fe7d24f07a3b2fdf2725">
+  <!ENTITY mutter-size          "2.7 MB">
+  <!ENTITY mutter-buildsize     "151 MB (without tests)">
+  <!ENTITY mutter-time          "0.6 SBU (Using parallelism=4)">
+  <!ENTITY mutter-time-systemd  "0.6 SBU (Using parallelism=4, add 1.0 SBU for tests)">
 ]>
 
 <sect1 id="mutter" xreflabel="Mutter-&mutter-version;">
   <?dbhtml filename="mutter.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Mutter-&mutter-version;</title>
 
@@ -35,7 +33,7 @@
       machine with a hardware accelerated video driver).
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -64,35 +62,27 @@
           Estimated disk space required: &mutter-buildsize;
         </para>
       </listitem>
-      <listitem>
+      <listitem revision='sysv'>
         <para>
           Estimated build time: &mutter-time;
         </para>
       </listitem>
-    </itemizedlist>
-    <!--
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
+      <listitem revision='systemd'>
         <para>
-          Recommended patch:
-          <ulink url="&patch-root;/mutter-&mutter-version;-consolidated_fixes-1.patch"/>
+          Estimated build time: &mutter-time-systemd;
         </para>
       </listitem>
     </itemizedlist>
-    -->
+
     <bridgehead renderas="sect3">Mutter Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <!-- now using internal shipped clutter and cogl copies -->
-      <!-- <xref linkend="clutter"/>, -->
       <xref linkend="gnome-settings-daemon"/>,
       <xref linkend="graphene"/>,
       <xref linkend="libxcvt"/>,
-      <xref linkend="libxkbcommon"/>,
-      <xref linkend="pipewire"/>, and
-      <xref linkend="zenity"/>
+      <xref linkend="libxkbcommon"/>, and
+      <xref linkend="pipewire"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -122,6 +112,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="python-dbusmock"/> (required for tests),
       <xref linkend="xorg-server"/> (for X11 sessions)
     </para>
 
@@ -137,14 +128,7 @@
 
   <sect2 role="installation">
     <title>Installation of Mutter</title>
-    <!--
-    <para>
-      First, apply a patch that fixes annoying bugs found after GNOME 42
-      release:
-    </para>
 
-<screen><userinput>patch -Np1 -i ../mutter-&mutter-version;-consolidated_fixes-1.patch</userinput></screen>
--->
     <para>
       Install <application>Mutter</application> by running the following
       commands:
@@ -153,7 +137,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dtests=false .. &amp;&amp;
+meson setup --prefix=/usr              \
+            --buildtype=debugoptimized \
+            -Dtests=false              \
+            ..                         &amp;&amp;
 ninja</userinput></screen>
 
 <!--
@@ -166,23 +153,39 @@ ninja</userinput></screen>
       <filename>native-headless</filename>, is known to fail.
     </para>
     -->
+    <!-- there are no added problems in sysv, AFAICT. Running the tests is
+    not easy whatever the init system. But using the instructions below in
+    a gnome session on sysv works (no test failure)...
+    <para revision='sysv'>
+       This package does not come with a test suite that runs properly in the
+       SystemV environment.
+    </para>
+    -->
+
     <para>
-      The test suite requires debug functions enabled in the build, and
-      an external program called <command>xvfb-run</command>.
-      If you wish to run the tests, you should
-      download and install it before running <command>meson</command>.
-      You can obtain it from
-      <ulink url="&sources-anduin-http;/mutter/xvfb-run">xvfb-run</ulink>, and
-      install it in <filename class="directory">/usr/bin</filename>.
-      <command>xvfb-run</command> needs <command>Xvfb</command> at runtime,
-      and <command>Xvfb</command> can be installed from either
-      <xref linkend='xorg-server'/> or <xref linkend='xwayland'/>.
-      You should also replace the
-      <parameter>--buildtype=release -Dtests=false</parameter> in
-      the <command>meson</command> command, with
-      <parameter>--buildtype=debugoptimized -Dtests=true</parameter>.
-      The test suite requires the mutter schema to be installed on the
-      system, so it is better to run the tests after installing the package.
+      The test suite requires debug functions to be enabled in the build, and an
+      external program called <command>xvfb-run</command>.  If you wish to run
+      the tests, you should download and install it before running
+      <command>meson</command>.
+
+      You can obtain it from <ulink
+      url="&sources-anduin-http;/mutter/xvfb-run">xvfb-run</ulink>, and install
+      it with executable permissions in <filename
+      class="directory">/usr/bin</filename>.  <command>xvfb-run</command> needs
+      <command>Xvfb</command> at runtime, and <command>Xvfb</command> can be
+      installed from either <xref linkend='xorg-server'/> or <xref
+      linkend='xwayland'/>.
+
+      You should also replace <parameter>-Dtests=false</parameter> in the
+      <command>meson</command> command, with
+      <parameter>-Dtests=true</parameter>.  The test
+      suite requires the mutter schema to be installed on the system, so it is
+      better to run the tests after installing the package.
+    </para>
+
+    <para>
+      You can also test basic functions of <application>Mutter</application>
+      following <xref linkend='mutter-starting'/>, after installing it.
     </para>
 
     <para>
@@ -192,19 +195,48 @@ ninja</userinput></screen>
 <screen role="root"><userinput>ninja install</userinput></screen>
 
     <para>
-      The tests can now be run: issue
-      <command>dbus-run-session ninja test</command>. Note that the tests
-      require an active X session to run correctly, and that
-      <filename>native-unit</filename> is known to fail.
+      If you wish to run the tests, remove the reference to
+      <application>Zenity</application> which is not a part of BLFS
+      from one test:
+    </para>
+
+<screen role='test'><userinput>sed 's/zenity --[a-z]*/gtk3-demo/' -i ../src/tests/x11-test.sh</userinput></screen>
+
+    <para>
+      Now run the test suite:
+    </para>
+
+    <!-- Without "HOME=" one test can fail with certain monitor
+         configuration in $HOME/.config/monitors.xml. -->
+<screen role='test'><userinput>HOME= ninja test</userinput></screen>
+
+    <para>
+      The tests require an active X or wayland session.
+      The <filename>native-unit</filename> test is known to fail.
+      A lot of tests will fail if the opengl rendering is not done in hardware.
+      Don't make any mouse or keyboard input while the test suite is
+      running or some tests may fail.
     </para>
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <!-- https://gitlab.gnome.org/GNOME/gnome-shell/-/issues/5512
+         If debug is disabled, the "assertion 'CLUTTER_IS_ACTOR (self)'
+         failed" message will turn into a crash.  Enabling debug is just a
+         work around, it's not a proper fix.  -->
+    <para>
+      <parameter>--buildtype=debugoptimized</parameter>: Override the
+      default buildtype (<quote>debug</quote>), which would produce
+      unoptimized binaries.  It's used instead of
+      <option>--buildtype=release</option> to work around an issue
+      causing gnome-shell to crash.
+    </para>
+<!--
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
-
+-->
     <para>
       <parameter>-Dtests=false</parameter>: Prevents building the tests,
       and removes a hard requirement on <command>xvfb-run</command>.
@@ -217,6 +249,44 @@ ninja</userinput></screen>
       code.
     </para>
 
+  </sect2>
+
+  <sect2 role="starting" id="mutter-starting">
+    <title>Starting Mutter</title>
+
+    <!-- Mutter as a Wayland compositor Works with mutter-42.4 and 43.0.
+         IIRC mutter can also be used as a X window manager: just replace
+         "twm" with "mutter &dash;&dash;x11" in xinitrc. But I've not tested
+         such a configuration recently (I don't build Xorg Server or xinit
+         these days.  -->
+
+    <para>
+      <application>Mutter</application> is normally used as a component of
+      <application>gnome-shell</application>, but it can be used as a
+      standalone Wayland compositor too.  To run
+      <application>Mutter</application> as a Wayland compositor, in a
+      virtual console, issue:
+    </para>
+
+    <screen role='nodump'><userinput>mutter --wayland -- vte-2.91</userinput></screen>
+
+    <para>
+      Replace <command>vte-2.91</command> with the command line for the
+      first application you want in the Wayland session. Note that once this
+      application exits, the Wayland session will be terminated.
+    </para>
+
+    <para>
+      <application>Mutter</application> can also function as a nested
+      compositor in another Wayland session.  In a terminal emulator, issue:
+    </para>
+
+    <screen role='nodump'><userinput>MUTTER_DEBUG_DUMMY_MODE_SPECS=1920x1080 mutter --wayland --nested -- vte-2.91</userinput></screen>
+
+    <para>
+      Replace <replaceable>1920x1080</replaceable> with the size you want
+      for the nested Wayland session.
+    </para>
   </sect2>
 
   <sect2 role="content">
@@ -232,10 +302,10 @@ ninja</userinput></screen>
           mutter
         </seg>
         <seg>
-          libmutter-10.so
+          libmutter-11.so
         </seg>
         <seg>
-          /usr/{lib,include,libexec/installed-tests,share/{,installed-tests}}/mutter-10
+          /usr/{lib,include,libexec/installed-tests,share/{,installed-tests}}/mutter-11
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -259,13 +329,13 @@ ninja</userinput></screen>
       </varlistentry>
 
       <varlistentry id="libmutter">
-        <term><filename class="libraryfile">libmutter-9.so</filename></term>
+        <term><filename class="libraryfile">libmutter-11.so</filename></term>
         <listitem>
           <para>
             contains the <application>Mutter</application> API functions
           </para>
           <indexterm zone="mutter libmutter">
-            <primary sortas="c-libmutter">libmutter-9.so</primary>
+            <primary sortas="c-libmutter">libmutter-11.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

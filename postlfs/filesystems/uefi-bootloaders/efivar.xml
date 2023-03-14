@@ -15,9 +15,6 @@
 <sect1 id="efivar" xreflabel="efivar-&efivar-version;">
   <?dbhtml filename="efivar.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>efivar-&efivar-version;</title>
 
@@ -33,7 +30,7 @@
       libraries to manipulate EFI variables.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,6 +66,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch (Required for 32-bit systems):
+          <ulink url="&patch-root;/efivar-&efivar-version;-i686-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">efivar Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -90,6 +97,21 @@
     </para>
 
 <screen><userinput>sed '/prep :/a\\ttouch prep' -i src/Makefile</userinput></screen>
+
+    <note>
+      <para>
+        This package cannot function properly on a 32-bit system with a
+        64-bit UEFI implementation.  Don't install this package (or
+        efibootmgr) on 32-bit system unless you are absolutely sure you have
+        a 32-bit UEFI implementation, which is very rare in practice.
+      </para>
+    </note>
+
+    <para>
+      If building this package on a 32-bit system, apply a patch:
+    </para>
+
+<screen><userinput>[ $(getconf LONG_BIT) = 64 ] || patch -Np1 -i ../efivar-&efivar-version;-i686-1.patch</userinput></screen>
 
     <para>
       Build <application>efivar</application> with the following commands:

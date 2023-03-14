@@ -5,21 +5,18 @@
   %general-entities;
 
   <!ENTITY gnome-settings-daemon-download-http
-           "&gnome-download-http;/gnome-settings-daemon/&gnome-42;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+           "&gnome-download-http;/gnome-settings-daemon/&gnome-43;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
   <!ENTITY gnome-settings-daemon-download-ftp
-           "&gnome-download-ftp;/gnome-settings-daemon/&gnome-42;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
-  <!ENTITY gnome-settings-daemon-md5sum        "3c740049149d18691b9791141bec1d6e">
+           "&gnome-download-ftp;/gnome-settings-daemon/&gnome-43;/gnome-settings-daemon-&gnome-settings-daemon-version;.tar.xz">
+  <!ENTITY gnome-settings-daemon-md5sum        "eea402f0a87aea7f4d8428af3917fb0c">
   <!ENTITY gnome-settings-daemon-size          "1.4 MB">
-  <!ENTITY gnome-settings-daemon-buildsize     "35 MB">
+  <!ENTITY gnome-settings-daemon-buildsize     "45 MB">
   <!ENTITY gnome-settings-daemon-time          "0.1 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="gnome-settings-daemon" xreflabel="gnome-settings-daemon-&gnome-settings-daemon-version;">
   <?dbhtml filename="gnome-settings-daemon.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gnome-settings-daemon-&gnome-settings-daemon-version;</title>
 
@@ -36,7 +33,7 @@
       and the applications that run under it.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,7 +76,7 @@
       <xref linkend="alsa-lib"/>,
       <xref linkend="colord"/>,
       <xref linkend="fontconfig"/>,
-      <xref linkend="gcr"/>,
+      <xref linkend="gcr4"/>,
       <xref linkend="geoclue2"/>,
       <xref linkend="geocode-glib"/>,
       <xref linkend="gnome-desktop"/>,
@@ -121,8 +118,11 @@
     <para role="optional">
       <xref linkend="gnome-session"/>,
       <xref linkend="mutter"/>,
-      <xref linkend="python-dbusmock"/>, and
-      <xref linkend="umockdev"/>
+      <xref linkend="python-dbusmock"/>,
+      <xref linkend="umockdev"/>, and
+      <command>Xvfb</command> (for tests, from
+      <xref linkend="xorg-server"/> or
+      <xref role="nodep" linkend="xwayland"/>)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -164,13 +164,16 @@
 <screen revision='sysv'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dsystemd=false .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dsystemd=false     \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision='systemd'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <!-- [renodr, June 29th, 2019]: for some reason, on elogind, all tests
@@ -220,8 +223,8 @@ ninja</userinput></screen>
         </seg>
         <seg>
           /etc/xdg/Xwayland-session.d,
-          /usr/include/gnome-settings-daemon-42,
-          /usr/lib/gnome-settings-daemon-42, and
+          /usr/include/gnome-settings-daemon-43,
+          /usr/lib/gnome-settings-daemon-43, and
           /usr/share/gnome-settings-daemon
         </seg>
       </seglistitem>

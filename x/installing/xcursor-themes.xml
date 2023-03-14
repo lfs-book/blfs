@@ -4,10 +4,10 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY xcursor-themes-download-http "&xorg-download-http;/data/xcursor-themes-&xcursor-themes-version;.tar.bz2">
-  <!ENTITY xcursor-themes-download-ftp  "&xorg-download-ftp;/data/xcursor-themes-&xcursor-themes-version;.tar.bz2">
-  <!ENTITY xcursor-themes-md5sum        "aea14eabf40528ec4db18f1cfcf5c458">
-  <!ENTITY xcursor-themes-size          "2.3 MB">
+  <!ENTITY xcursor-themes-download-http "&xorg-download-http;/data/xcursor-themes-&xcursor-themes-version;.tar.xz">
+  <!ENTITY xcursor-themes-download-ftp  "&xorg-download-ftp;/data/xcursor-themes-&xcursor-themes-version;.tar.xz">
+  <!ENTITY xcursor-themes-md5sum        "070993be1f010b09447ea24bab2c9846">
+  <!ENTITY xcursor-themes-size          "1.4 MB">
   <!ENTITY xcursor-themes-buildsize     "15 MB">
   <!ENTITY xcursor-themes-time          "less than 0.1 SBU">
 ]>
@@ -15,9 +15,6 @@
 <sect1 id="xcursor-themes" xreflabel="xcursor-themes-&xcursor-themes-version;">
   <?dbhtml filename="xcursor-themes.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>xcursor-themes-&xcursor-themes-version;</title>
 
@@ -33,7 +30,7 @@
       redglass and whiteglass animated cursor themes.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,12 +81,20 @@
   <sect2 role="installation">
     <title>Installation of xcursor-themes</title>
 
+    <note>
+      <para>
+        We explicitly install the cursor themes in /usr instead
+        of <envar>$XORG_PREFIX</envar> so non-Xorg desktop environments can
+        find them.
+      </para>
+    </note>
+
     <para>
       Install <application>xcursor-themes</application> by running the
       following commands:
     </para>
 
-<screen><userinput>./configure $XORG_CONFIG &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -116,9 +121,9 @@ make</userinput></screen>
         <seg>None</seg>
         <seg>None</seg>
         <seg>
-          <envar>$XORG_PREFIX</envar>/share/icons/handhelds,
-          <envar>$XORG_PREFIX</envar>/share/icons/redglass and
-          <envar>$XORG_PREFIX</envar>/share/icons/whiteglass
+          /usr/share/icons/handhelds,
+          /usr/share/icons/redglass, and
+          /usr/share/icons/whiteglass
         </seg>
       </seglistitem>
     </segmentedlist>

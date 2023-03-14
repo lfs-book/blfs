@@ -6,25 +6,25 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "afed7dd6b46abc80470d1d1bab2cd471">
-  <!ENTITY firefox-size          "367 MB">
+  <!ENTITY firefox-md5sum        "&firefox-md5;">
+  <!ENTITY firefox-size          "457 MB">
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "6.7 GB (193 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "7.0 GB (197 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
-  <!ENTITY firefox-time          "25 SBU (on a typical 4-core machine) without tests">
+  <!ENTITY firefox-time          "20 SBU using -j4, without tests">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
   <?dbhtml filename="firefox.html" ?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
-  <title>Firefox-&firefox-version;</title>
+<!-- indicate this is the ESR variant,
+  The point was that the 102.0 stable release differed slightly.
+  <title>Firefox-&firefox-version;</title>-->
+  <title>Firefox-&firefox-version;esr</title>
 
   <indexterm zone="firefox">
     <primary sortas="a-Firefox">Firefox</primary>
@@ -38,7 +38,7 @@
       <application>Mozilla</application> codebase.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,7 +74,7 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+<!--<bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
@@ -88,7 +88,7 @@
           <ulink url="&patch-root;/firefox-&firefox-version;esr-disable_rust_test-1.patch"/>
         </para>
       </listitem>
-    </itemizedlist>
+    </itemizedlist>-->
 
     <note>
       <para>
@@ -122,17 +122,6 @@ tar: Exiting with failure status due to previous errors
         will increase significantly if your machine has to swap.
       </para>
 
-      <!-- commented, by 78.0 it seems to work reliably
-      <para>
-        The mach build system (Python scripts) can be somewhat unreliable: if
-        the build fails and reports an Error, it can still return a status of
-        success, causing a scripted build to try to install (which does not rerun
-        the build), fail during the preparations for installing, but still exit
-        with a status of success. Also, on occasion it may limit itself to only
-        running one set of jobs - that will make the build take about 3 times as
-        long as running with four sets of jobs.
-      </para>-->
-
       <para>
         Although upstream prefer to use <application>PulseAudio</application>,
         for the moment <application>Alsa</application> can still be used. Both
@@ -149,15 +138,13 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="dbus-glib"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="libnotify"/>,
-      <xref linkend="llvm"/> (clang, used for bindgen even if using gcc),
+      <xref linkend="llvm"/> (with clang, used for bindgen even if using gcc),
       <xref linkend="nodejs"/>,
       <xref linkend="pulseaudio"/>
       (or
       <xref linkend="alsa-lib"/> if you edit the mozconfig;
         now deprecated by mozilla), in either case please read the
         Configuration Information,
-      <!-- rustc is required by cbindgen so not needed here
-      <xref linkend="rust"/>,-->
       <xref linkend="python3"/> (rebuilt after installing <xref linkend="sqlite"/>),
       <xref linkend="startup-notification"/>,
       <xref linkend="unzip"/>,
@@ -188,9 +175,7 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="curl"/>,
       <xref linkend="doxygen"/>,
       <xref role="runtime" linkend="ffmpeg"/> (runtime, to play mov, mp3 or mp4 files),
-      <!--      <phrase revision="sysv"><ulink url="https://sourceforge.net/projects/liboauth/files/">liboauth</ulink></phrase> -->
       <xref linkend="liboauth"/>,
-      <!--<xref linkend="openjdk"/>, Not seen in logs -->
       <xref linkend="valgrind"/>,
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/>,
@@ -227,16 +212,15 @@ ac_add_options --disable-necko-wifi
 # Uncomment the following line if you wish to use Mozilla Location Service
 #ac_add_options --with-mozilla-api-keyfile=$PWD/mozilla-key
 
-# Uncomment the following line if you wish to use Google's geolocaton API
+# Uncomment the following line if you wish to use Google's geolocation API
 # (needed for use with saved maps with Google Maps)
 #ac_add_options --with-google-location-service-api-keyfile=$PWD/google-key
 
 # startup-notification is required since firefox-78
 
-# Uncomment the following option if you have not installed PulseAudio
-#ac_add_options --disable-pulseaudio
-# or uncomment this if you installed alsa-lib instead of PulseAudio
-#ac_add_options --enable-alsa
+# Uncomment the following option if you have not installed PulseAudio and
+# want to use alsa instead
+#ac_add_options --enable-audio-backends=alsa
 
 # Comment out following options if you have not installed
 # recommended dependencies:
@@ -247,11 +231,13 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-webp
 
-# Do not specify the gold linker which is not the default. It will take
-# longer and use more disk space when debug symbols are disabled.
+# Unlike with thunderbird, although using the gold linker can
+# save four megabytes in the installed file it does not make
+# the build faster.
 
 # libdavid (av1 decoder) requires nasm. Uncomment this if nasm
-# has not been installed.
+# has not been installed. Do not uncomment this if you have
+# ffmpeg-5 installed.
 #ac_add_options --disable-av1
 
 # You cannot distribute the binary if you do this
@@ -291,6 +277,11 @@ ac_add_options --with-system-jpeg
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
 
+# Using sandboxed wasm libraries has been moved to all builds instead
+# of only mozilla automation builds. It requires extra llvm packages
+# and was reported to seriously slow the build. Disable it.
+ac_add_options --without-wasm-sandboxed-libraries
+
 # The following option unsets Telemetry Reporting. With the Addons Fiasco,
 # Mozilla was found to be collecting user's data, including saved passwords and
 # web form data, without users consent. Mozilla was also found shipping updates
@@ -308,21 +299,16 @@ EOF</userinput></screen>
     </para>
 
     <para>
-      First apply a patch which works around unexplained failures on some machines
-      (a message that a python check on libgkrust.a identified 1 networking
-      function, getsockname) in the rust static library.
+      A change in cbindgen-0.24.2 causes a symbol to now be output by
+      cbindgen, but it has already been defined in a header. This sed
+      prevents the build from eventually failing:
     </para>
 
-<screen><userinput>patch -Np1 -i ../firefox-&firefox-version;esr-disable_rust_test-1.patch</userinput></screen>
+<screen><userinput>sed -i '/ROOT_CLIP_CHAIN/d' gfx/webrender_bindings/webrender_ffi.h</userinput></screen>
 
-    <para>
-      Now apply a patch which allows the build to complete when using gcc-12 or later.
-    </para>
+<!-- Not needed with clang. Upstream bug at
+     https://bugzilla.mozilla.org/show_bug.cgi?id=1729459
 
-<screen><userinput>patch -Np1 -i ../firefox-&firefox-version;esr-gcc12_fix-1.patch</userinput></screen>
-
-<!-- applying this for 11.1: upstream haven't make their mind yet
-     https://bugzilla.mozilla.org/show_bug.cgi?id=1729459 -->
     <para>
       If building on a 32 bit machine, the following sed works around
       an issue with an incompatible <quote>double</quote> type in one
@@ -333,7 +319,7 @@ EOF</userinput></screen>
     i?86) sed -e '/typedef[ ]*double/s/double/long double/' \
               -i modules/fdlibm/src/math_private.h ;;
 esac</userinput></screen>
-
+-->
     <para>
       If the geolocation APIs are needed:
     </para>
@@ -345,7 +331,7 @@ esac</userinput></screen>
         these instructions for another distro, or if you intend to distribute
         binary copies of the software using these instructions, please obtain
         your own keys following the instructions located at
-        <ulink url="http://www.chromium.org/developers/how-tos/api-keys"/> and
+        <ulink url="https://www.chromium.org/developers/how-tos/api-keys"/> and
         <ulink url="https://location.services.mozilla.com/api"/> respectively.
         <!-- BLFS Devs, register an account at Google with your
         @linuxfromscratch.org email address, and I'll make you an administrator
@@ -366,30 +352,30 @@ echo "613364a7-9418-4c86-bcee-57e32fd70c23" > mozilla-key</userinput></screen>
        href="../../xincludes/mozmach.xml"/>
 
     </note>
-    <!--
+    <!-- Fixed in 102.8
     <para>
-      If you are building on i686, apply a fix to prevent Internal Compiler
-      Errors in GCC-7+:
+      First remove an obsolete flag in python code, that has been removed
+      in python-3.11:
     </para>
 
-<screen><userinput remap="pre">case $(uname -m) in
-   i?86) sed -i "562 s/mips64/i386/" gfx/skia/skia/third_party/skcms/src/Transform_inl.h ;;
-esac</userinput></screen>
-    -->
-<!--<para>
-      Apply a patch to allow this to be compiled with <xref linkend="rust"/>:
+<screen><userinput>grep -rl \"rU\" | xargs sed -i 's/"rU"/"r"/'</userinput></screen>
+
+    <para>
+      Then fix an issue with regular expressions in python-3.11:
     </para>
 
-<screen><userinput remap="pre">patch -p1 -i ../firefox-&firefox-version;esr-rustc1470-1.patch</userinput></screen>-->
-
+<screen><userinput>sed -e 's/?s)\./?s:.)/'               \
+    -e '/?m)/{s/?m)/?m:/;s/\$"/$)"/}' \
+    -e '/?s)%/{s/?s)/?s:/;s/?"/?)"/}' \
+    -i xpcom/idl-parser/xpidl/xpidl.py</userinput></screen>
+-->
     <para>
       Now invoke the Python <command>mach</command> script to compile the package.
     </para>
 
-<screen><userinput>export CC=gcc CXX=g++ &amp;&amp;
-export MACH_USE_SYSTEM_PYTHON=1            &amp;&amp;
-export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
-./mach configure                           &amp;&amp;
+<screen><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
+export MOZBUILD_STATE_PATH=${PWD}/mozbuild          &amp;&amp;
+./mach configure                                    &amp;&amp;
 ./mach build</userinput></screen>
 
     <para>
@@ -407,13 +393,13 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>MACH_USE_SYSTEM_PYTHON=1 ./mach install</userinput></screen>
+<screen role="root"><userinput>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none ./mach install</userinput></screen>
 
     <para>
       Empty the environment variables which were set above:
     </para>
 
-<screen><userinput>unset CC CXX MACH_USE_SYSTEM_PYTHON MOZBUILD_STATE_PATH</userinput></screen>
+<screen><userinput>unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE MOZBUILD_STATE_PATH</userinput></screen>
 
   </sect2>
 
@@ -422,21 +408,6 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
 
 <!--<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/SIOCGSTAMP.xml"/>-->
-
-    <para>
-      <command>export CC=gcc CXX=g++ ...</command>: Upstream now prefer
-      <application>clang</application> so that they can use one compiler
-      everywhere. On the X86 architectures <application>clang</application>
-      now appears to support most of the same security-hardening options as
-      <application>GCC</application>.
-      <!-- supported in llvm-11
-      but the newer
-      <literal>-fstack-clash-protection</literal> is still not supported.-->
-      With the current versions and the default flags,
-      <application>GCC</application> creates a marginally bigger build but
-      takes typically 2 SBU less time on a 4-core machine using the mozconfig
-      above.
-    </para>
 
     <para>
       <command>export MOZBUILD_STATE_PATH=${PWD}/mozbuild</command>: The build
@@ -456,9 +427,10 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
     </para>
 
     <para>
-      <command>MACH_USE_SYSTEM_PYTHON=1</command>: Use the system python
-      to create a virtual environment for <command>mach</command> without
-      downloading any python wheels.
+      <command>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none</command>: Use the
+      system python to create a virtual environment for <command>mach</command>
+      without downloading any python wheels nor using the system python modules.
+      This prevent version mismatches between system modules and bundled ones.
     </para>
 
     <para>
@@ -469,8 +441,8 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
     <para>
       <option>./mach build --verbose</option>: Use this alternative if you
       need details of which files are being compiled, together with any C or
-      C++ flags being used. But do not add '--verbose' to the install command,
-      it is not accepted there.
+      C++ flags being used. But do not add '--verbose' to the install command
+      since it is not accepted there.
     </para>
 
     <para>
@@ -479,22 +451,16 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
       because you have insufficient memory, using fewer cores can be faster.
     </para>
 
-<!--
     <para>
-      <command>mkdir -pv /usr/lib/mozilla/plugins</command>: This ensures
-      that <filename class="directory">/usr/lib/mozilla/plugins/</filename>
-      exists.
+      <option><envar>CC=gcc CXX=g++</envar></option>: BLFS used to
+      prefer to use gcc and g++ instead of upstream's defaults of the
+      <application>clang</application> programs. With the release of
+      gcc-12 the build takes longer with gcc and g++, primarily because
+      of extra warnings, and is bigger. Set these environment variables
+      <emphasis>before you run the configure script</emphasis>
+      if you wish to continue to use gcc, g++. Building
+      with GCC on i?86 is currently broken.
     </para>
-
-    <para>
-      <command>ln -sv ... /usr/lib/firefox/browser</command>:
-      This command creates a symbolic link to <filename
-      class="directory">/usr/lib/mozilla/plugins</filename>. It's not really
-      needed, as <application>Firefox</application> checks <filename
-      class="directory">/usr/lib/mozilla/plugins</filename> by default, but the
-      symbolic link is made to keep all the plugins installed in one folder.
-    </para>
--->
 
   </sect2>
 
@@ -505,7 +471,7 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild &amp;&amp;
       If you use a desktop environment like <application>Gnome</application> or
       <application>KDE</application> you may want to create a
       <filename>firefox.desktop</filename> file so that
-      <application>Firefox</application> appears in the panel's menus. 
+      <application>Firefox</application> appears in the panel's menus.
       As the &root; user:
     </para>
 
@@ -553,8 +519,8 @@ ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
       <para>
         If you enabled <application>Alsa</application> for sound, you may need
         to alter one variable to get working sound. If you run
-        <command>firefox</command> from a term and try to play something with
-        sound you might encounter error messages like:
+        <command>firefox</command> from a terminal and try to play something
+        with sound you might encounter error messages like:
       </para>
 
       <para>
@@ -573,7 +539,7 @@ ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
         If you use <command>pulseaudio</command> in a Desktop Environment, it
         might already be started by that DE.  But if it is not, although
         firefox-57 managed to start it, firefox-58 did not.  If you run
-        <command>firefox</command> from a term and this problem is present,
+        <command>firefox</command> from a terminal and this problem is present,
         trying to play sound will
         encounter error messages warning <literal>Can't get cubeb
         context!</literal>
@@ -601,7 +567,7 @@ ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
       <para>
         Although WebRender (using the GPU for compositing) is not used by
         default, it now appears to work well on supported hardware (ATI, Nvidia
-        and Intel GPUs with Mesa-18 or later. For an explanation, please see
+        and Intel GPUs with Mesa-18 or later). For an explanation, please see
         <ulink
        url="https://hacks.mozilla.org/2017/10/the-whole-web-at-maximum-fps-how-webrender-gets-rid-of-jank/">hacks.mozilla.org</ulink>.
        The only downside seems to be that on a machine with limited RAM it might
@@ -610,7 +576,7 @@ ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
 
     <para>
       To check if WebRender is being used, look in about:support. In the Graphics
-      section Compositing will either show 'Basic' (i.e. not in use) or
+      section, Compositing will either show 'Basic' (i.e. not in use) or
       'WebRender'. To enable it, go to about:config and change gfx.webrender.all
       to True. You will need to restart firefox.
     </para>
@@ -644,7 +610,7 @@ ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
           helper modules installed in /usr/lib/firefox
         </seg>
         <seg>
-	  /usr/lib/firefox
+          /usr/lib/firefox
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -658,8 +624,8 @@ ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
         <term><command>firefox</command></term>
         <listitem>
           <para>
-	    is a <application>GTK+-3</application> internet browser that uses
-	    the Mozilla Gecko rendering engine
+            is a <application>GTK+-3</application> internet browser that uses
+            the Mozilla Gecko rendering engine
           </para>
           <indexterm zone="firefox firefox-prog">
             <primary sortas="b-firefox">firefox</primary>

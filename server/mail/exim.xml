@@ -9,7 +9,7 @@
   <!ENTITY exim-download-ftp    "ftp://ftp.exim.org/pub/exim/exim4/exim-&exim-version;.tar.xz">
   <!-- if above don't work, please use one of the official mirrors at
        http://www.exim.org/mirmon/ftp_mirrors.html -->
-  <!ENTITY exim-md5sum          "b57515d34e97b0be12f7d38d316b15eb">
+  <!ENTITY exim-md5sum          "0d10d5b10f2af77ec8c2c2fe5be6c1ad">
   <!ENTITY exim-size            "1.8 MB">
   <!ENTITY exim-buildsize       "20 MB">
   <!ENTITY exim-time            "0.3 SBU">
@@ -20,9 +20,6 @@
 <sect1 id="exim" xreflabel="Exim-&exim-version;">
   <?dbhtml filename="exim.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Exim-&exim-version;</title>
 
@@ -39,7 +36,7 @@
       under the GNU Public License.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,9 +78,10 @@
         <para>
           Additional formats of the documentation (text-based docs are
           shipped with the sources) can be downloaded by following the links
-          shown at <ulink url="http://exim.org/docs.html"/>.
+          shown at <ulink url="https://exim.org/docs.html"/>.
         </para>
       </listitem>
+<!-- Applied in 4.96
       <listitem>
         <para>
           Required patch when building with <application>PAM</application> support:
@@ -96,6 +94,7 @@
           <ulink url="&patch-root;/exim-&exim-version;-openssl3_fix-1.patch"/>
         </para>
       </listitem>
+-->
     </itemizedlist>
 
     <bridgehead renderas="sect3">Exim Dependencies</bridgehead>
@@ -114,13 +113,13 @@
       <xref linkend="libidn"/>,
       <xref linkend="linux-pam"/>,
       <xref linkend="mariadb"/> or
-      <ulink url="http://www.mysql.com/">MySQL</ulink>,
+      <ulink url="https://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openldap"/>,
       <xref linkend="gnutls"/>,
       <xref linkend="postgresql"/>,
       <xref linkend="sqlite"/>,
       <xref linkend="x-window-system"/>,
-      <ulink url="http://www.h5l.org/">Heimdal GSSAPI</ulink>, and
+      <ulink url="https://github.com/heimdal/heimdal">Heimdal GSSAPI</ulink>, and
       <ulink url="http://www.trusteddomain.org/opendmarc/">OpenDMARC</ulink>
     </para>
 
@@ -142,6 +141,7 @@
 <screen role="root"><userinput>groupadd -g 31 exim &amp;&amp;
 useradd -d /dev/null -c "Exim Daemon" -g exim -s /bin/false -u 31 exim</userinput></screen>
 
+<!-- Applied in 4.96
     <para>
       If you want to build with <application>PAM</application> support, apply the following patch:
     </para>
@@ -153,6 +153,7 @@ useradd -d /dev/null -c "Exim Daemon" -g exim -s /bin/false -u 31 exim</userinpu
     </para>
 
 <screen><userinput>patch -Np2 -i ../exim-&exim-version;-openssl3_fix-1.patch</userinput></screen>
+-->
 
     <para>
       Configure <application>Exim</application> with the following commands:
@@ -172,7 +173,7 @@ printf "USE_GDBM = yes\nDBMLIB = -lgdbm\n" >> Local/Makefile &amp;&amp;
       If you want to add <application>Linux PAM</application> support, also run the following commands:
     </para>
 
-<screen><userinput>sed -i '/# SUPPORT_PAM=yes/s,^#,,' Local/Makefile
+<screen role="nodump"><userinput>sed -i '/# SUPPORT_PAM=yes/s,^#,,' Local/Makefile
 echo "EXTRALIBS=-lpam" >> Local/Makefile
 </userinput></screen>
 
@@ -237,7 +238,7 @@ install -v -d -m750 -o exim -g exim /var/spool/exim</userinput></screen>
       <parameter>EXIM_USER=exim</parameter>: This tells
       <application>Exim</application> that after the daemon no longer needs
       <systemitem class="username">root</systemitem> privileges, the process
-      hands off the daemon to the <systemitem
+      needs to hand off the daemon to the <systemitem
       class="username">exim</systemitem> user.
     </para>
 
@@ -303,7 +304,7 @@ install -v -d -m750 -o exim -g exim /var/spool/exim</userinput></screen>
       If you wish to build and install the
       <filename class='extension'>.info</filename> documentation, refer to
       <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch04.html#SECTinsinfdoc"/>.
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch04.html#SECTinsinfdoc"/>.
     </para>
 
     <para>
@@ -311,45 +312,45 @@ install -v -d -m750 -o exim -g exim /var/spool/exim</userinput></screen>
       scanning software directly from access control lists, uncomment the
       <option>WITH_CONTENT_SCAN=yes</option> parameter and review the
       information found at <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch45.html"/>.
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch45.html"/>.
     </para>
 
     <para>
       To use a backend database other than <application>GDBM
       </application>, see the instructions at <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch04.html#SECTdb"/>.
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch04.html#SECTdb"/>.
     </para>
 
     <para>
       For SSL functionality, see the instructions at <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch04.html#SECTinctlsssl"/>
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch04.html#SECTinctlsssl"/>
       and <ulink url="
-      http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch42.html"/>.
+      https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch42.html"/>.
     </para>
 
     <para>
       For <application>tcpwrappers</application> functionality, see the
       instructions at <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch04.html#SECID27"/>.
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch04.html#SECID27"/>.
     </para>
 
     <para>
       For information about adding authentication mechanisms to the
       build, see chapters 33&mdash;41 of <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/index.html"/>.
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/index.html"/>.
     </para>
 
     <para>
       For information about linking <application>Linux-PAM</application>,
       refer to the instructions <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch11.html#SECTexpcond"/>.
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch11.html#SECTexpcond"/>.
     </para>
 
     <para>
       For information about linking database engine libraries used for
       <application>Exim</application> name lookups, see the instructions at
       <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch09.html"/>.
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch09.html"/>.
     </para>
 
     <para>
@@ -357,7 +358,7 @@ install -v -d -m750 -o exim -g exim /var/spool/exim</userinput></screen>
       <application>Exim</application> when invoked in <quote>test
       expansion</quote> (<option>-be</option>) mode, see the information in
       the <option>-be</option> section of <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch05.html#id2525974"/>.
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch05.html#id2525974"/>.
     </para>
 
     <para>
@@ -365,7 +366,7 @@ install -v -d -m750 -o exim -g exim /var/spool/exim</userinput></screen>
       syslog instead of the default
       <filename class='directory'>/var/spool/exim/log</filename> directory. See
       the information at <ulink url=
-      "http://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch-log_files.html"/>.
+      "https://exim.org/exim-html-&exim-version;/doc/html/spec_html/ch-log_files.html"/>.
     </para>
 
     <para>

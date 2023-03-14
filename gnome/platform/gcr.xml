@@ -6,18 +6,15 @@
 
   <!ENTITY gcr-download-http "&gnome-download-http;/gcr/&gcr-minor;/gcr-&gcr-version;.tar.xz">
   <!ENTITY gcr-download-ftp  "&gnome-download-ftp;/gcr/&gcr-minor;/gcr-&gcr-version;.tar.xz">
-  <!ENTITY gcr-md5sum        "6b6d52de90d4ae95be7d36abf66626fa">
-  <!ENTITY gcr-size          "1.0 MB">
-  <!ENTITY gcr-buildsize     "28 MB (with tests)">
+  <!ENTITY gcr-md5sum        "c1e98af977236255006e11e8f8cfbaca">
+  <!ENTITY gcr-size          "1008 KB">
+  <!ENTITY gcr-buildsize     "33 MB (with tests)">
   <!ENTITY gcr-time          "0.2 SBU (with tests; both using parallelism=4)">
 ]>
 
 <sect1 id="gcr" xreflabel="Gcr-&gcr-version;">
   <?dbhtml filename="gcr.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Gcr-&gcr-version;</title>
 
@@ -35,7 +32,7 @@
       <application>GNOME</application> Desktop.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -92,7 +89,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/> and
+      <xref linkend="gi-docgen"/> and
       <xref linkend="valgrind"/>
     </para>
 
@@ -114,12 +111,14 @@
     </caution>
     -->
 
+<!--
     <para>
       First apply a fix for building with newer versions of
       <application>meson</application>:
     </para>
 
 <screen><userinput>find . -name meson.build | xargs sed -i /packages.\*deps/d</userinput></screen>
+-->
 
     <para>
       Install <application>Gcr</application> by running the following
@@ -128,14 +127,24 @@
 
 <screen><userinput>sed -i 's:"/desktop:"/org:' schema/*.xml &amp;&amp;
 
-sed -e '208 s/@BASENAME@/gcr-viewer.desktop/'   \
-    -e '231 s/@BASENAME@/gcr-prompter.desktop/' \
-    -i ui/meson.build                           &amp;&amp;
-
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dgtk_doc=false .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dgtk_doc=false     \
+            ..                  &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed -e "/install_dir/s@,\$@ / 'gcr-&gcr-version;'&amp;@" \
+    -e "/fatal-warnings/d"                    \
+    -i ../docs/*/meson.build                  &amp;&amp;
+meson configure -Dgtk_doc=true                &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -157,6 +166,7 @@ ninja</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
 
+<!--
     <para>
       <command>sed ... schema/*.xml</command>:  This command fixes a
       deprecated entry in the schema template.
@@ -166,6 +176,7 @@ ninja</userinput></screen>
       <command>sed ... ui/meson.build</command>:  This command fixes a
       problem when building with meson-0.59.0.
     </para>
+-->
 
     <!--
     <para>
@@ -183,9 +194,7 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <option>-Dgtk_doc=true</option>: Use this switch if you wish
-      to generate the API reference documentation. Note that you must
-      have <application>GTK-Doc</application>  installed.
+      <option>-Dgtk_doc=true</option>: &gi-doc-disable;
     </para>
 
     <!--<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

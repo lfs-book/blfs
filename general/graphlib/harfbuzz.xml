@@ -7,18 +7,15 @@
   <!ENTITY harfbuzz-download-http
            "https://github.com/harfbuzz/harfbuzz/releases/download/&harfbuzz-version;/harfbuzz-&harfbuzz-version;.tar.xz">
   <!ENTITY harfbuzz-download-ftp  " ">
-  <!ENTITY harfbuzz-md5sum        "1a4152c9134470c6a227c81e37dc1397">
-  <!ENTITY harfbuzz-size          "14 MB">
-  <!ENTITY harfbuzz-buildsize     "126 MB (with tests)">
-  <!ENTITY harfbuzz-time          "0.5 SBU (Using parallelism=4; with tests)">
+  <!ENTITY harfbuzz-md5sum        "761fe38814b74eb6d66f450051604a1f">
+  <!ENTITY harfbuzz-size          "18 MB">
+  <!ENTITY harfbuzz-buildsize     "146 MB (with tests)">
+  <!ENTITY harfbuzz-time          "1.0 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="harfbuzz" xreflabel="HarfBuzz-&harfbuzz-version;">
   <?dbhtml filename="harfbuzz.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>HarfBuzz-&harfbuzz-version;</title>
 
@@ -34,7 +31,7 @@
       shaping engine.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -93,7 +90,7 @@
       <xref linkend="git"/>,
       <xref linkend="gtk-doc"/>,
       <ulink url="https://pypi.org/project/FontTools/">FontTools</ulink>
-      (Python 3 module, for the testsuite), and
+      (Python 3 module, for the test suite), and
       <ulink url="https://www.colm.net/open-source/ragel/">ragel</ulink>
     </para>
 
@@ -123,9 +120,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr        \
-      --buildtype=release  \
-      -Dgraphite2=enabled  &amp;&amp;
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      -Dgraphite2=enabled &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -145,13 +143,6 @@ ninja</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
 
-<!--
-    <para>
-      <parameter>- -with-gobject</parameter>: This switch enables building
-      of the <application>HarfBuzz</application> GObject wrapper. Remove
-      it if you did not install <application>GLib</application>.
-    </para>
--->
     <para>
       <parameter>-Dgraphite2=enabled</parameter>: This switch enables
       <application>Graphite2</application> support, which is required for
@@ -167,8 +158,9 @@ ninja</userinput></screen>
     </para>
 -->
     <para>
-      <option>-Ddocs=false</option>: If <xref linkend="gtk-doc"/> is installed,
-      the documentation is built and installed. This switch prevents that.
+      <option>-Ddocs=disabled</option>: If <xref linkend="gtk-doc"/> is
+      installed, the documentation is built and installed. This switch
+      prevents that.
     </para>
 
   </sect2>
@@ -183,15 +175,23 @@ ninja</userinput></screen>
 
       <seglistitem>
         <seg>
-          hb-ot-shape-closure, hb-shape, hb-subset, and
-          hb-view (only if cairo is installed)
+          hb-info,
+          hb-ot-shape-closure,
+          hb-shape,
+          hb-subset, and
+          hb-view (only if Cairo is installed)
         </seg>
         <seg>
-          libharfbuzz.so, libharfbuzz-gobject.so, libharfbuzz-icu.so, and
+          libharfbuzz.so,
+          libharfbuzz-cairo.so (only if Cairo is installed),
+          libharfbuzz-gobject.so,
+          libharfbuzz-icu.so, and
           libharfbuzz-subset.so
         </seg>
         <seg>
-          /usr/{include,lib/cmake,share/gtk-doc/html}/harfbuzz
+          /usr/include/harbuzz,
+          /usr/lib/cmake/harfbuzz, and
+          /usr/share/gtk-doc/html/harfbuzz (optional)
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -200,6 +200,19 @@ ninja</userinput></screen>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
+
+     <varlistentry id="hb-info">
+       <term><command>hb-info</command></term>
+       <listitem>
+         <para>
+           is used for gathering information about fonts installed on the
+           system
+         </para>
+         <indexterm zone="harfbuzz hb-info">
+           <primary sortas="b-hb-info">hb-info</primary>
+         </indexterm>
+       </listitem>
+     </varlistentry>
 
      <varlistentry id="hb-ot-shape-closure">
         <term><command>hb-ot-shape-closure</command></term>
@@ -269,6 +282,18 @@ ninja</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="libharfbuzz-cairo">
+        <term><filename class="libraryfile">libharfbuzz-cairo.so</filename></term>
+        <listitem>
+          <para>
+            provides Cairo integration for the Harfbuzz text shaping library
+          </para>
+          <indexterm zone="harfbuzz libharfbuzz-cairo">
+            <primary sortas="c-libharfbuzz-cairo">libharfbuzz-cairo</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libharfbuzz-gobject">
         <term><filename class="libraryfile">libharfbuzz-gobject.so</filename></term>
         <listitem>
@@ -289,6 +314,19 @@ ninja</userinput></screen>
           </para>
           <indexterm zone="harfbuzz libharfbuzz-icu">
             <primary sortas="c-libharfbuzz-icu">libharfbuzz-icu.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libharfbuzz-subset">
+        <term><filename class="libraryfile">libharfbuzz-subset.so</filename></term>
+        <listitem>
+          <para>
+            provides API functions for performing subsetting operations on font
+            files
+          </para>
+          <indexterm zone="harfbuzz libharfbuzz-subset">
+            <primary sortas="c-libharfbuzz-subset">libharfbuzz-subset.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

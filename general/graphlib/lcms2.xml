@@ -6,18 +6,15 @@
 
   <!ENTITY lcms2-download-http "https://github.com/mm2/Little-CMS/releases/download/lcms&lcms2-version;/lcms2-&lcms2-version;.tar.gz">
   <!ENTITY lcms2-download-ftp  " ">
-  <!ENTITY lcms2-md5sum        "47a99e781b89c958a773e2012e81ae8c">
-  <!ENTITY lcms2-size          "6.9 MB">
-  <!ENTITY lcms2-buildsize     "19 MB (with the tests)">
+  <!ENTITY lcms2-md5sum        "7f7baa3e605c961b9301135105ee9a34">
+  <!ENTITY lcms2-size          "7.1 MB">
+  <!ENTITY lcms2-buildsize     "20 MB (with the tests)">
   <!ENTITY lcms2-time          "0.2 SBU (with the tests)">
 ]>
 
 <sect1 id="lcms2" xreflabel="Little CMS-&lcms2-version;">
   <?dbhtml filename="lcms2.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Little CMS-&lcms2-version;</title>
 
@@ -35,7 +32,7 @@
       standard for color management.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,16 +83,14 @@
   <sect2 role="installation">
     <title>Installation of Little CMS2</title>
 
-<!-- Seems to be fixed in 2.10
+    <!-- Will be fixed in the next release (2.15 or 2.14.1?)
+         https://github.com/mm2/Little-CMS/commit/93629504f8175e0002 -->
     <para>
-      If you want to run tests, then the build procedure must
-      be modified to make some library internal references visible to
-      the test code:
+      Apply the upstream fix for an issue breaking colord:
     </para>
 
-<screen><userinput>sed -i '/AX_APPEND/s/^/#/' configure.ac &amp;&amp;
-autoreconf</userinput></screen>
--->
+<screen><userinput>sed '/BufferSize &lt; TagSize/,+1 s/goto Error/TagSize = BufferSize/' \
+    -i src/cmsio0.c</userinput></screen>
 
     <para>
       Install <application>Little CMS2</application> by running the following

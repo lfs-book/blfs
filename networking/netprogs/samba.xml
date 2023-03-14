@@ -6,22 +6,15 @@
 
   <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "44766ebd125f81147470a05aa4d209dd">
-  <!ENTITY samba-size          "29 MB">
-  <!ENTITY samba-buildsize     "628 MB (add 387 MB for quicktest)">
-  <!ENTITY samba-time          "2.9 SBU (using parallelism=4; add 3.5 SBU for quicktest)">
+  <!ENTITY samba-md5sum        "a36cc7b01305bb8cba9846ac2fbd56d5">
+  <!ENTITY samba-size          "40 MB">
+  <!ENTITY samba-buildsize     "586 MB (add 30 MB for quicktest)">
+  <!ENTITY samba-time          "2.2 SBU (using parallelism=4; add 0.3 SBU for quicktest)">
 ]>
-<!-- [pierre 2021-11-11]: quick test seems to be much smaller than previously.
-     I'll update anyway since this is a high priority release: feel free
-     to update figures. I seem to have all the optional dependencies that
-     are in the book, in addition to the python venv as setup in the
-     instructions below. -->
+
 <sect1 id="samba" xreflabel="Samba-&samba-version;">
   <?dbhtml filename="samba.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Samba-&samba-version;</title>
 
@@ -37,11 +30,11 @@
       services to SMB/CIFS clients and Windows networking to Linux clients.
       <application>Samba</application> can also be configured as a Windows
       Domain Controller replacement, a file/print server acting as a member
-      of a Windows Active Directory domain and a NetBIOS (rfc1001/1002)
+      of a Windows Active Directory domain and a NetBIOS (RFC1001/1002)
       nameserver (which among other things provides LAN browsing support).
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -111,7 +104,7 @@
       <xref linkend="cyrus-sasl"/>,
       <xref linkend="gdb"/>,
       <xref linkend="git"/>,
-      <xref linkend="gnupg2"/> (required for ADS and testsuite),
+      <xref linkend="gnupg2"/> (required for ADS and test suite),
       <xref linkend="libaio"/>,
       <xref linkend="libarchive"/>,
       <xref linkend="libcap-pam"/>,
@@ -124,7 +117,6 @@
       <xref linkend="talloc"/> (included),
       <xref linkend="vala"/>,
       <xref linkend="valgrind"/> (optionally used by the test suite),
-      <!--<xref linkend="wireshark"/> (module installed),-->
       <xref linkend="xfsprogs"/>,
       <ulink url="https://cmocka.org/">cmocka</ulink>,
       <ulink url="https://cryptography.io/en/latest/">cryptography</ulink>,
@@ -132,13 +124,13 @@
       <ulink url="https://cwrap.org/">cwrap</ulink>,
       <ulink url="&pypi;/dnspython/">dnspython</ulink>,
       <ulink url="https://packages.debian.org/stretch/fam">FAM</ulink>,
-      <ulink url="https://people.gnome.org/~veillard/gamin/">Gamin</ulink>,
+      <ulink url="https://packages.debian.org/sid/gamin">Gamin</ulink>,
       <ulink url="https://www.gluster.org/">GlusterFS</ulink>,
       <ulink url="https://github.com/heimdal/">Heimdal</ulink> (included),
       <ulink url="https://pypi.org/project/iso8601/">iso8601</ulink>,
       <ulink url="https://ldb.samba.org/">ldb</ulink> (included),
       <ulink url="&pypi;/m2crypto">M2Crypto</ulink> (required for ADS),
-      <ulink url="http://www.openafs.org/">OpenAFS</ulink>,
+      <ulink url="https://www.openafs.org/">OpenAFS</ulink>,
       <ulink url="https://pypi.org/project/pyasn1/">pyasn1</ulink>,
       <ulink url="&pypi;/pygpgme/">PyGPGME</ulink> (recommended for ADS),
       <ulink url="https://tevent.samba.org/">tevent</ulink> (included),
@@ -150,12 +142,10 @@
     <para role="optional">
       Install in listed order:
       <xref linkend="six"/>,
+      <xref linkend="pytest"/>,
       <ulink url="&pypi;/argparse/">argparse</ulink>,
       <ulink url="&pypi;/extras/">extras</ulink>,
-      <ulink url="&pypi;/py/">py</ulink>,
-      <!--<ulink url="&pypi;/enum34/">enum34</ulink>,-->
       <ulink url="&pypi;/hypothesis/">hypothesis</ulink>,
-      <ulink url="&pypi;/pytest/">pytest</ulink>,
       <ulink url="&pypi;/coverage/">coverage</ulink>,
       <ulink url="&pypi;/pytest-cov/">pytest-cov</ulink>,
       <ulink url="&pypi;/doctools/">doctools</ulink>,
@@ -188,12 +178,6 @@
 
 <screen><userinput remap="pre">python3 -m venv pyvenv &amp;&amp;
 ./pyvenv/bin/pip3 install cryptography pyasn1 iso8601</userinput></screen>
-
-    <para>
-      Fix a test that always fails:
-    </para>
-
-<screen><userinput>echo "^samba4.rpc.echo.*on.*ncacn_np.*with.*object.*nt4_dc" >> selftest/knownfail</userinput></screen>
 
     <para>
       Install <application>Samba</application> by running the following
@@ -236,14 +220,13 @@ make</userinput></screen>
       suite will produce lines that look like failures, but these are innocuous.
       The last few lines of output should report <emphasis>"ALL OK"</emphasis>
       for a good test run. A summary of any failures can be found in
-      <filename class="directory">./st/summary</filename>. With Samba-4.14.4,
-      many tests are known to fail.
+      <filename class="directory">./st/summary</filename>.
     </para>
 
     <!--
       If doing a security update or a new minor version (point releases do not
       apply here), run 'make testenv' before running 'make test' and 'make
-      subunit-test'. This will setup the test environment and make the tests
+      subunit-test'. This will set up the test environment and make the tests
       run faster, as well as point out any glaring issues that might affect
       the new Samba installation. With 4.10.4, I got 236 failures, 73 errors,
       and 2 unexpected successes. These were all known upstream, and you can
@@ -321,7 +304,7 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       <parameter>--without-ad-dc</parameter>: Disables
       Active Directory Domain Controller functionality. See <ulink url=
       "https://wiki.samba.org/index.php/Setup_a_Samba_Active_Directory_Domain_Controller">
-      Setup a Samba Active Directory Domain Controller</ulink> for detailed
+      Set up a Samba Active Directory Domain Controller</ulink> for detailed
       information. Remove this switch if you've installed the Python modules
       needed for ADS support. Note that BLFS does not provide a samba bootscript
       or systemd unit for an Active Directory domain controller.
@@ -331,22 +314,6 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       <option>--with-selftest-prefix=SELFTEST_PREFIX</option>: This option
       specifies the test suite work directory (default=./st).
     </para>
-
-<!-- FIXME removed during merged-/usr transition.
-    <para>
-      <command>mv -v /usr/lib/libnss_win{s,bind}.so* /lib</command>:
-      The nss libraries are installed in
-      <filename class="directory">/usr/lib</filename> by default. Move them to
-      <filename class="directory">/lib</filename>.
-    </para>
-
-    <para>
-      <command>ln -v -sf ../../lib/libnss_winbind.so.2 /usr/lib/libnss_winbind.so</command>
-      and <command>ln -v -sf ../../lib/libnss_wins.so.2    /usr/lib/libnss_wins.so</command>:
-      These symlinks are required when applications build against these
-      libraries.
-    </para>
--->
 
     <para>
       <command>install -v -m644 examples/LDAP/* /etc/openldap/schema</command>:
@@ -563,38 +530,6 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
           <phrase revision="systemd">systemd unit</phrase> are needed.
         </para>
 
- <!-- All of these docs are years out of date. These were written for Samba 3,
-      and still mention Windows XP Professional as the current OS, dating them
-      back to before 2006 (When Windows Vista Business was released).
-        <para>
-          There is quite a bit of documentation available which covers many
-          of these advanced configurations. Point your web browser to the links
-          below to view some of the documentation included with the
-          <application>Samba</application> package:
-        </para>
-
-        <itemizedlist spacing='compact'>
-          <listitem>
-            <para>
-              Using Samba, 2nd Edition; a popular book published by O'Reilly
-              <ulink url=
-                "http://www.samba.org/samba/docs/using_samba/toc.html"/>
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              The Official Samba HOWTO and Reference Guide <ulink url=
-               "http://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/"/>
-            </para>
-          </listitem>
-          <listitem>
-            <para>
-              Samba-3 by Example
-              <ulink url="http://www.samba.org/samba/docs/man/Samba-Guide/"/>
-            </para>
-          </listitem>
-        </itemizedlist>
- -->
       </sect4>
 
       <sect4>
@@ -719,17 +654,15 @@ systemctl start smbd.socket</userinput></screen>
           ldbadd, ldbdel, ldbedit, ldbmodify, ldbrename, ldbsearch, locktest,
           masktest, mdsearch, mvxattr, ndrdump, net, nmbd, nmblookup, ntlm_auth,
           oLschema2ldif, pdbedit, profiles, regdiff, regpatch, regshell,
-          regtree, rpcclient, samba, samba-gpupdate,
-           <!-- with 4.15.3, 'samba' is in /sbin -->
-          samba-regedit, samba-tool, sharesec, smbcacls,
-          smbclient, smbcontrol, smbcquotas, smbd, smbget, smbpasswd, smbspool,
-          smbstatus, smbtar, smbtorture, smbtree,
+          regtree, rpcclient, samba-gpupdate, samba-regedit, samba-tool,
+          sharesec, smbcacls, smbclient, smbcontrol, smbcquotas, smbd, smbget,
+          smbpasswd, smbspool, smbstatus, smbtar, smbtorture, smbtree,
           tdbbackup, tdbdump, tdbrestore, tdbtool, testparm, wbinfo, and winbindd
         </seg>
 
         <seg>
           libdcerpc-binding.so, libdcerpc-samr.so,
-          libdcerpc-server-core.so, libdcerpc-server.so, libdcerpc.so,
+          libdcerpc-server-core.so, libdcerpc.so,
           libndr-krb5pac.so, libndr-nbt.so, libndr.so,
           libndr-standard.so, libnetapi.so, libnss_winbind.so, libnss_wins.so,
           libsamba-credentials.so, libsamba-errors.so,
@@ -837,7 +770,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>ldbdel</command></term>
         <listitem>
           <para>
-            is a command-line program for deleting LDB database records
+            is a command-line utility for deleting LDB database records
           </para>
           <indexterm zone="samba ldbdel">
             <primary sortas="b-ldbdel">ldbdel</primary>
@@ -1036,7 +969,7 @@ systemctl start smbd.socket</userinput></screen>
         <listitem>
           <para>
             is a utility that reports and changes SIDs in Windows
-            registry files. It currently only supports Windows NT
+            registry files
           </para>
           <indexterm zone="samba profiles">
             <primary sortas="b-profiles">profiles</primary>
@@ -1104,6 +1037,7 @@ systemctl start smbd.socket</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- Removed in 4.17.0
       <varlistentry id="samba-prog">
         <term><command>samba</command></term>
         <listitem>
@@ -1116,6 +1050,7 @@ systemctl start smbd.socket</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="samba-gpupdate">
         <term><command>samba-gpupdate</command></term>
@@ -1294,7 +1229,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>smbtorture</command></term>
         <listitem>
           <para>
-            is  a testsuite that runs several tests against a SMB server
+            is  a test suite that runs several tests against a SMB server
           </para>
           <indexterm zone="samba smbtorture">
             <primary sortas="b-smbtorture">smbtorture</primary>
@@ -1370,7 +1305,7 @@ systemctl start smbd.socket</userinput></screen>
         <term><command>testparm</command></term>
         <listitem>
           <para>
-            checks an <filename>smb.conf</filename> file for proper syntax
+            checks a <filename>smb.conf</filename> file for proper syntax
           </para>
           <indexterm zone="samba testparm">
             <primary sortas="b-testparm">testparm</primary>

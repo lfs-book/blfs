@@ -8,18 +8,15 @@
            "&gnome-download-http;/gdk-pixbuf/2.42/gdk-pixbuf-&gdk-pixbuf-version;.tar.xz">
   <!ENTITY gdk-pixbuf-download-ftp
            "&gnome-download-ftp;/gdk-pixbuf/2.42/gdk-pixbuf-&gdk-pixbuf-version;.tar.xz">
-  <!ENTITY gdk-pixbuf-md5sum        "5f90cf1f1b2b03b047c870da774a2aca">
-  <!ENTITY gdk-pixbuf-size          "8.2 MB">
-  <!ENTITY gdk-pixbuf-buildsize     "52 MB (with tests)">
-  <!ENTITY gdk-pixbuf-time          "0.2 SBU (Using parallelism=4; with tests)">
+  <!ENTITY gdk-pixbuf-md5sum        "4a62f339cb1424693fba9bb7ffef8150">
+  <!ENTITY gdk-pixbuf-size          "6.2 MB">
+  <!ENTITY gdk-pixbuf-buildsize     "36 MB (with tests)">
+  <!ENTITY gdk-pixbuf-time          "0.2 SBU (With tests; both using parallelism=4)">
 ]>
 
 <sect1 id="gdk-pixbuf" xreflabel="gdk-pixbuf-&gdk-pixbuf-version;">
   <?dbhtml filename="gdk-pixbuf.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gdk-pixbuf-&gdk-pixbuf-version;</title>
 
@@ -39,7 +36,7 @@
       package in preparation for the change to <application>GTK+ 3</application>.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,6 +84,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="docutils"/>,
       <xref role="runtime" linkend="librsvg"/> (runtime dependency, needed for
          loading symbolic icons) and
       <xref linkend="libtiff"/>
@@ -99,9 +97,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-       <!--<xref linkend="jasper"/> and-->
-  <!--<xref linkend="gtk-doc"/> and-->
-      <ulink url="https://gitlab.gnome.org/ebassi/gi-docgen">gi-docgen</ulink>
+      <xref linkend="gi-docgen"/>
       (to generate documentation)
     </para>
 
@@ -119,9 +115,21 @@
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
-cd build &amp;&amp;
+cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release --wrap-mode=nofallback .. &amp;&amp;
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      --wrap-mode=nofallback &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed "/docs_dir =/s@\$@ / 'gdk-pixbuf-&gdk-pixbuf-version;'@" -i ../docs/meson.build &amp;&amp;
+meson configure -Dgtk_doc=true                                         &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -157,21 +165,15 @@ ninja</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-wrap-nofallback.xml"/>
 
-    <!-- gtk_doc replaced by gi-docgen
+    <!-- with 2.42.9, docutils must be installed to generate man pages.
+    Without this, you'll get the following output:
+    Program rst2man found: ../docs/meson.build:70:2: ERROR: Problem encountered:
+    No rst2man found, but man pages were explicitly enabled -->
     <para>
-      <option>-Dgtk_doc=true</option>: Use this parameter if
-      <application>GTK-Doc</application> is installed and you wish to rebuild
-      and install the API documentation.
-      <!\-\- -Dgtk_doc is set to "yield=true" in meson_options.txt \-\->
-    </para>-->
-<!-- Removed in 2.42.0
-    <para>
-      <option>-Djasper=true</option>: If you've installed
-      <xref linkend="jasper"/> and you want
-      <application>Gdk Pixbuf</application> to use it to compile a
-      JPEG2000 image loader, pass this switch to meson.
+      <option>-Dman=false</option>: Use this option if you do not want to
+      generate manual pages, or if you do not want to install
+      <xref linkend="docutils" role="nodep"/>.
     </para>
--->
   </sect2>
 
   <sect2 role="content">

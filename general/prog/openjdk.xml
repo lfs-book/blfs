@@ -5,29 +5,26 @@
   %general-entities;
 
   <!ENTITY ojdk-tarball              "jdk-&openjdk-version;-ga.tar.gz">
-  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk18u">
+  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk19u">
   <!ENTITY ojdk-download             "&ojdk-repo;/archive/&ojdk-tarball;">
 
   <!ENTITY anduin-download           "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;">
 
-  <!ENTITY ojdk-md5sum               "b7ce8aaafaf0f244321b54132d9ff72e">
-  <!ENTITY ojdk-size                 "101 MB">
+  <!ENTITY ojdk-md5sum               "2c5489f4830bce40240dc4f76f890156">
+  <!ENTITY ojdk-size                 "103 MB">
 
   <!ENTITY jtreg-version             "6.1+1">
   <!ENTITY jtreg-download            "&anduin-download;/jtreg-&jtreg-version;.tar.gz">
   <!ENTITY jtreg-md5sum              "49e6bfa2506e96f461a01f9421a0961c">
   <!ENTITY jtreg-size                "8.0 MB">
 
-  <!ENTITY ojdk-bdsize               "4.6 GB (add 590 MB for tests)">
-  <!ENTITY ojdk-time                 "4.9 SBU with 4 jobs (add 47 SBU for tests with 4 jobs)">
+  <!ENTITY ojdk-bdsize               "5.1 GB (add 595 MB for tests)">
+  <!ENTITY ojdk-time                 "3.8 SBU with 4 jobs (add 41 SBU for tests with 4 jobs)">
 ]>
 
 <sect1 id="openjdk" xreflabel="OpenJDK-&openjdk-version;">
   <?dbhtml filename="openjdk.html" ?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>OpenJDK-&openjdk-version;</title>
 
@@ -46,14 +43,14 @@
       runtime environment to run <application>Java</application> programs.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <para>
       OpenJDK is GPL'd code, with a special exception made for non-free
       projects to use these classes in their proprietary products.
       In similar fashion to the LGPL, which allows non-free programs to link
       to libraries provided by free software, the
-      <ulink url="http://openjdk.java.net/legal/gplv2+ce.html">GNU
+      <ulink url="https://openjdk.org/legal/gplv2+ce.html">GNU
       General Public License, version 2, with the Classpath Exception</ulink>
       allows third party programs to use classes provided by free software
       without the requirement that the third party software also be free. As
@@ -80,7 +77,7 @@
         Neither the binary version provided on the <xref linkend="java"/> page
         nor the JVM built with the instructions below have been tested against
         the <ulink
-  url="http://openjdk.java.net/groups/conformance/JckAccess/jck-access.html">
+  url="https://openjdk.java.net/groups/conformance/JckAccess/jck-access.html">
         TCK</ulink>. Any version that is built using the instructions given,
         cannot claim to be compatible with the proprietary JDK, without the
         user applying for, and completing the compatibility tests themselves.
@@ -91,7 +88,7 @@
         regularly tested against the TCK by the members listed on the site
         above. In addition to the community license above, an educational,
         non-commercial license for the TCK can be obtained <ulink
-        url="http://www.oracle.com/technetwork/java/index-137188.html">
+        url="https://www.oracle.com/technetwork/java/index-137188.html">
         here</ulink>.
       </para>
     </note>
@@ -132,7 +129,9 @@
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
 
-    <bridgehead renderas="sect4">Optional test harness</bridgehead>
+    <para>
+      <emphasis role="strong">Optional test harness</emphasis>
+    </para>
 
     <itemizedlist spacing='compact'>
       <listitem>
@@ -249,19 +248,19 @@
       Configure and build the package with the following commands:
     </para>
 
-<screen><userinput>unset JAVA_HOME                                       &amp;&amp;
-bash configure --enable-unlimited-crypto              \
-               --disable-warnings-as-errors           \
-               --with-stdc++lib=dynamic               \
-               --with-giflib=system                   \
-               --with-jtreg=$PWD/jtreg                \
-               --with-lcms=system                     \
-               --with-libjpeg=system                  \
-               --with-libpng=system                   \
-               --with-zlib=system                     \
-               --with-version-build="&openjdk-build;"              \
-               --with-version-pre=""                  \
-               --with-version-opt=""                  \
+<screen><userinput>unset JAVA_HOME                             &amp;&amp;
+bash configure --enable-unlimited-crypto    \
+               --disable-warnings-as-errors \
+               --with-stdc++lib=dynamic     \
+               --with-giflib=system         \
+               --with-jtreg=$PWD/jtreg      \
+               --with-lcms=system           \
+               --with-libjpeg=system        \
+               --with-libpng=system         \
+               --with-zlib=system           \
+               --with-version-build="&openjdk-build;"     \
+               --with-version-pre=""        \
+               --with-version-opt=""        \
                --with-cacerts-file=/etc/pki/tls/java/cacerts &amp;&amp;
 make images</userinput></screen>
 
@@ -283,14 +282,9 @@ unset JT_JAVA</userinput></screen>
       the results, see the files
       <filename>JTreport/test_{jdk,langtools}/text/stats.txt</filename> and
       <filename>JTreport/test_{jdk,langtools}/text/summary.txt</filename>.
-      You should expect to see around 40 failures and 10 errors.
+      You should expect to see around 60 failures and 10 errors.
     </para>
-    <!-- 11.0.2+9:
-         for x86_64: 2 Errors, 28 Failures
-         for i686:   13 Errors, 48 Failures
-         12.0.2+10:
-         for x86_64: 5828 Passed, 52 Errors, no failures
-         for i686: PENDING
+    <!--
          14.0.1+7:
          for x86_64: passed: 5,836; failed: 42; error: 50
          17.0.2+8:
@@ -298,7 +292,20 @@ unset JT_JAVA</userinput></screen>
          for i686:   passed: 6,208; failed: 29; error: 6
          18.0.1+10:
          for x86_64: passed: 6,323; failed: 53; error: 14
-         for i686:   passed: 6,290; failed: 29; error: 11-->
+         for i686:   passed: 6,290; failed: 29; error: 11
+         18.0.1.1+2:
+         for x86_64: passed: 6,323; failed: 53; error: 14
+         for i686:   passed: 6,290; failed: 29; error: 11
+         18.0.2+8:
+         for x86_64: passed: 6,329; failed: 50; error: 14
+         for i686:   passed: 6,289; failed: 31; error: 13
+         19.0.1+10:
+         for x86_64: passed: 6,423; failed: 58; error: 15
+         for i686:   passed: 6,376; failed: 31; error: 12
+         19.0.2+7:
+         for x86_64: passed: 6,426; failed: 61; error: 14
+         for i686:   passed: 6,377; failed: 34; error: 11
+    -->
 
     <para>
       Install the package with the following commands as the

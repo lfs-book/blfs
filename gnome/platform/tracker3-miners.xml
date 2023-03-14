@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY tracker3-miners-download-http "&gnome-download-http;/tracker-miners/3.3/tracker-miners-&tracker3-miners-version;.tar.xz">
-  <!ENTITY tracker3-miners-download-ftp  "&gnome-download-ftp;/tracker-miners/3.3/tracker-miners-&tracker3-miners-version;.tar.xz">
-  <!ENTITY tracker3-miners-md5sum        "6947a5ae1c0fb5e681258f55603709b7">
+  <!ENTITY tracker3-miners-download-http "&gnome-download-http;/tracker-miners/3.4/tracker-miners-&tracker3-miners-version;.tar.xz">
+  <!ENTITY tracker3-miners-download-ftp  "&gnome-download-ftp;/tracker-miners/3.4/tracker-miners-&tracker3-miners-version;.tar.xz">
+  <!ENTITY tracker3-miners-md5sum        "12978674553320dc90c283dbd2605b1d">
   <!ENTITY tracker3-miners-size          "6.9 MB">
-  <!ENTITY tracker3-miners-buildsize     "35 MB (with tests)">
-  <!ENTITY tracker3-miners-time          "0.1 SBU (with parallelism=4; add 1.0 SBU for tests, dependent on disk speed)">
+  <!ENTITY tracker3-miners-buildsize     "31 MB (with tests)">
+  <!ENTITY tracker3-miners-time          "0.4 SBU (with parallelism=4; add 1.0 SBU for tests, dependent on disk speed)">
 ]>
 
 <sect1 id="tracker3-miners" xreflabel="tracker-miners-&tracker3-miners-version;">
   <?dbhtml filename="tracker3-miners.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Tracker-miners-&tracker3-miners-version;</title>
 
@@ -33,7 +30,7 @@
       data extractors for Tracker.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,12 +78,10 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="ffmpeg"/>,
       <xref linkend="giflib"/>,
-      <xref linkend="gst10-plugins-good"/>,
-      <xref linkend="gst10-plugins-bad"/>,
-      <xref linkend="gst10-plugins-ugly"/>,
-      <xref linkend="gst10-libav"/>,
+      <xref linkend="gst10-plugins-base"/>,
+      <xref role='runtime' linkend="gst10-plugins-good"/> (runtime),
+      <xref role='runtime' linkend="gst10-libav"/> (runtime),
       <xref linkend="icu"/>,
       <xref linkend="libexif"/>,
       <xref linkend="libgrss"/>,
@@ -100,12 +95,13 @@
       <xref linkend="asciidoc"/>,
       <xref linkend="cmake"/>,
       <xref linkend="dconf"/>,
+      <xref linkend="ffmpeg"/>,
       <xref linkend="libgsf"/>,
       <xref linkend="taglib"/>,
       <xref linkend="totem-pl-parser"/>,
       <xref linkend="upower"/>,
       <ulink url="https://github.com/lipnitsk/libcue">libcue</ulink>,
-      <ulink url="http://libiptcdata.sourceforge.net/">libitpcdata</ulink>,
+      <ulink url="https://libiptcdata.sourceforge.net/">libitpcdata</ulink>,
       <ulink url="https://libosinfo.org">libosinfo</ulink>, and
       <ulink url="https://gitlab.gnome.org/GNOME/gupnp">gupnp</ulink>
       <!--<ulink url="https://pypi.python.org/pypi/tap.py/">tap.py</ulink>
@@ -157,16 +153,20 @@
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dman=false .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dman=false         \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr                 \
-      --buildtype=release           \
-      -Dsystemd_user_services=false \
-      -Dman=false .. &amp;&amp;
+meson setup --prefix=/usr                 \
+            --buildtype=release           \
+            -Dsystemd_user_services=false \
+            -Dman=false                   \
+            ..                            &amp;&amp;
 ninja</userinput></screen>
 
     <para>

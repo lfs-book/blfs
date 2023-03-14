@@ -6,18 +6,15 @@
 
   <!ENTITY seamonkey-download-http "&mozilla-http;/seamonkey/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
   <!ENTITY seamonkey-download-ftp  " ">
-  <!ENTITY seamonkey-md5sum        "173512018674c9036cb54d35ded4a23f">
-  <!ENTITY seamonkey-size          "275 MB">
-  <!ENTITY seamonkey-buildsize     "6.0 GB (159 MB installed)">
-  <!ENTITY seamonkey-time          "17 SBU (with parallelism=4)">
+  <!ENTITY seamonkey-md5sum        "d04916f10d082a503af9a309184365dd">
+  <!ENTITY seamonkey-size          "249 MB">
+  <!ENTITY seamonkey-buildsize     "3.2 GB (159 MB installed)">
+  <!ENTITY seamonkey-time          "11 SBU (with parallelism=4)">
 ]>
 
 <sect1 id="seamonkey" xreflabel="SeaMonkey-&seamonkey-version;">
   <?dbhtml filename="seamonkey.html" ?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>SeaMonkey-&seamonkey-version;</title>
 
@@ -29,21 +26,19 @@
     <title>Introduction to SeaMonkey</title>
 
     <para>
-      <application>SeaMonkey</application> is a browser suite, the Open Source
-      sibling of <application>Netscape</application>. It includes the browser,
-      composer, mail and news clients, and an IRC client. It is the follow-on
-      to the Mozilla browser suite.
+      <application>SeaMonkey</application> is a browser suite, a descendant
+      of <application>Netscape</application>. It includes the browser,
+      composer, mail and news clients, and an IRC client.
     </para>
 
     <para>
-      The Mozilla project also hosts two subprojects that aim to satisfy the
-      needs of users who don't need the complete browser suite or prefer to have
-      separate applications for browsing and e-mail. These subprojects are
-      <xref linkend="firefox"/> and <xref linkend="thunderbird"/>. Both are
-      based on the <application>Mozilla</application> source code.
+      It is the community-driven follow-on to the Mozilla Application Suite,
+      created after Mozilla decided to focus on separate applications for
+      browsing and e-mail. Those applications are
+      <xref linkend="firefox"/> and <xref linkend="thunderbird"/>.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,7 +73,8 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
+
+ <!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -89,6 +85,7 @@
       </listitem>
     </itemizedlist>
 -->
+
     <note>
       <para>
         The tarball
@@ -102,9 +99,9 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="autoconf213"/>,
-      both <xref linkend="gtk2"/> and <xref linkend="gtk3"/>,
+      <xref linkend="cbindgen"/>,
+      <xref linkend="gtk3"/>,
       <xref linkend="python2"/>,
-      <xref linkend="rust"/>,
       <xref linkend="unzip"/>,
       <xref linkend="yasm"/>, and
       <xref linkend="zip"/>
@@ -115,7 +112,8 @@
       <xref linkend="icu"/>,
       <xref linkend="libevent"/>,
       <!--<xref linkend="libvpx"/>, Causes build failures similar to Firefox -->
-      <xref linkend="libwebp"/>
+      <xref linkend="libwebp"/>,
+      <xref linkend="llvm"/> (with clang),
       <xref linkend="nasm"/>,
       <xref linkend="nspr"/>,
       <xref linkend="nss"/>, and
@@ -140,17 +138,17 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="alsa-lib"/>,
-      <xref linkend="curl"/>,
+      <!--<xref linkend="curl"/>,-->
       <xref linkend="dbus-glib"/>,
-      <xref linkend="doxygen"/>,
+      <!--<xref linkend="doxygen"/>,-->
       <xref linkend="GConf"/>,
-      <xref linkend="gst10-plugins-base"/> (and other plugins, only for tests),
+      <!--<xref linkend="gst10-plugins-base"/> (and other plugins, only for tests),-->
       <!--<xref linkend="openjdk"/>, Not seen in logs -->
       <xref linkend="startup-notification"/>,
       <xref linkend="valgrind"/>,
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/>,
-      <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>, and
+      <ulink url="https://hunspell.sourceforge.net/">Hunspell</ulink>, and
       <ulink url="https://facebook.github.io/watchman/">Watchman</ulink>
     </para>
 
@@ -208,6 +206,11 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-webp
 
+# Disabling debug symbols makes the build much smaller and a little
+# faster. Comment this if you need to run a debugger. Note: This is
+# required for compilation on i686.
+ac_add_options --disable-debug-symbols
+
 # The elf-hack is reported to cause failed installs (after successful builds)
 # on some machines. It is supposed to improve startup time and it shrinks
 # libxul.so by a few MB - comment this if you know your machine is not affected.
@@ -251,32 +254,57 @@ EOF</userinput></screen>
     <note>
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
        href="../../xincludes/mozshm.xml"/>
-      <!-- if this package switches to using ./mach, replace the
-           folliowing by including mozmach.xml -->
-      <!--<para>
-        Second, either as the <systemitem class="username">root</systemitem>
-        user export the <envar>$SHELL</envar> environment variable using
-        <command>export SHELL=/bin/sh</command> or else prepend
-        <envar>SHELL=/bin/sh</envar> when running the first
-        <command>make</command> command.
-      </para>-->
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
        href="../../xincludes/mozmach.xml"/>
     </note>
-<!--
+
+ <!--
     <para>
       Apply a patch to fix a critical security vulnerability in Seamonkey:
     </para>
 
 <screen><userinput>patch -Np1 -i ../seamonkey-&seamonkey-version;-security_fix-1.patch</userinput></screen>
 -->
+
+    <para>
+      First remove an obsolete flag in python code, that has been removed
+      in python-3.11:
+    </para>
+
+<screen><userinput>grep -rl \"rU\" | xargs sed -i 's/"rU"/"r"/'</userinput></screen>
+
+<!-- Causes issues since xpidl is python2 in Seamonkey
+    <para>
+      Then fix an issue with regular expressions in python-3.11:
+    </para>
+
+<screen><userinput>sed -e 's/?s)\./?s:.)/'               \
+    -e '/?m)/{s/?m)/?m:/;s/\$"/$)"/}' \
+    -e '/?s)%/{s/?s)/?s:/;s/?"/?)"/}' \
+    -i xpcom/idl-parser/xpidl/xpidl.py</userinput></screen>
+-->
+
+    <para>
+      Next, work around a problem in the Python virtual environment:
+    </para>
+
+<screen><userinput>sed -i "/if sys.executable !=/i\    open(join(bin_dir, 'pyvenv.cfg'), 'w').close()" \
+    third_party/python/virtualenv/virtualenv.py</userinput></screen>
+
+    <para>
+      Next, work around a crash that occurs when playing audio when Seamonkey
+      is compiled with rustc-1.67 or higher:
+    </para>
+
+<screen><userinput>sed -i '/USE_PULSE_RUST/d' media/libcubeb/src/moz.build</userinput></screen>
+
     <para>
       Compile <application>SeaMonkey</application> by running the following
       commands:
     </para>
 
-<screen><userinput>export CC=gcc CXX=g++ &amp;&amp;
-./mach configure      &amp;&amp;
+<screen><userinput>export CC=clang CXX=clang++          &amp;&amp;
+./mach configure || ./mach configure &amp;&amp;
 ./mach build</userinput></screen>
 
 
@@ -309,15 +337,21 @@ cp -v $(find -name seamonkey.1 | head -n1) /usr/share/man/man1</userinput></scre
     <title>Command Explanations</title>
 
     <para>
-      <command>export CC=gcc CXX=g++ ...</command>: Upstream now prefer
-      <application>clang</application> so that they can use one compiler
-      everywhere. On the X86 architectures <application>clang</application>
-      takes a little longer than gcc to compile mozilla applications.
+      <command>export CC=clang CXX=clang++</command>:
+      With the introduction of <application>gcc-12</application>, many
+      more warnings are generated when compiling mozilla applications
+      and that results in a much slower, and larger, build. Furthermore,
+      building with GCC on i?86 is currently broken.
+      Although upstream mozilla code defaults to using
+      <application>llvm</application> unless overridden, the older configure
+      code in <application>SeaMonkey</application> defaults to gcc.
     </para>
 
     <para>
-      <command>./mach configure</command>: This validates the supplied
-      dependencies and the <filename>mozconfig</filename>.
+      <command>./mach configure || ./mach configure</command>: This validates
+      the supplied dependencies and the <filename>mozconfig</filename>.
+      This is run twice because problems with mach will cause it to fail the
+      first time.
     </para>
 
     <para>

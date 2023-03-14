@@ -1,3 +1,4 @@
+# vim:ts=3
 # Makefile for BLFS Book generation.
 # By Tushar Teredesai <tushar@linuxfromscratch.org>
 # 2004-01-31
@@ -162,7 +163,7 @@ $(RENDERTMP)/$(BLFSFULL): general.ent packages.ent $(ALLXML) $(ALLXSL) version
 	@echo "Adjusting for revision $(REV)..."
 	$(Q)xsltproc --nonet                               \
                 --xinclude                            \
-                --output $(RENDERTMP)/$(BLFSHTML2)  \
+                --output $(RENDERTMP)/$(BLFSHTML2)    \
                 --stringparam profile.revision $(REV) \
                 stylesheets/lfs-xsl/profile.xsl       \
                 index.xml
@@ -171,7 +172,7 @@ $(RENDERTMP)/$(BLFSFULL): general.ent packages.ent $(ALLXML) $(ALLXSL) version
 	$(Q)xmllint --nonet                             \
                --noent                             \
                --postvalid                         \
-               --output $(RENDERTMP)/$(BLFSFULL) \
+               --output $(RENDERTMP)/$(BLFSFULL)   \
                $(RENDERTMP)/$(BLFSHTML2)
 
 profile-html: $(RENDERTMP)/$(BLFSHTML)
@@ -179,7 +180,7 @@ $(RENDERTMP)/$(BLFSHTML): $(RENDERTMP)/$(BLFSFULL) version
 	@echo "Generating profiled XML for XHTML..."
 	$(Q)xsltproc --nonet                              \
                 --stringparam profile.condition html \
-                --output $(RENDERTMP)/$(BLFSHTML)  \
+                --output $(RENDERTMP)/$(BLFSHTML)    \
                 stylesheets/lfs-xsl/profile.xsl      \
                 $(RENDERTMP)/$(BLFSFULL)
 
@@ -248,12 +249,12 @@ bootscripts:
 
 systemd-units:
 	@VERSION=`grep "systemd-units-version " general.ent | cut -d\" -f2`; \
-   UNITS="blfs-systemd-units-$$VERSION";                        \
-   if [ ! -e $$UNITS.tar.xz ]; then                             \
-     rm -rf $(RENDERTMP)/$$UNITS;                               \
-     mkdir $(RENDERTMP)/$$UNITS;                                \
-     cp -a ../systemd-units/* $(RENDERTMP)/$$UNITS;             \
-     tar -cJhf $$UNITS.tar.xz -C $(RENDERTMP) $$UNITS;          \
+   UNITS="blfs-systemd-units-$$VERSION";                                \
+   if [ ! -e $$UNITS.tar.xz ]; then                                     \
+     rm -rf $(RENDERTMP)/$$UNITS;                                       \
+     mkdir $(RENDERTMP)/$$UNITS;                                        \
+     cp -a ../systemd-units/* $(RENDERTMP)/$$UNITS;                     \
+     tar -cJhf $$UNITS.tar.xz -C $(RENDERTMP) $$UNITS;                  \
    fi
 
 dump-commands: $(DUMPDIR)
@@ -264,7 +265,7 @@ $(DUMPDIR): $(RENDERTMP)/$(BLFSFULL) version
                 $(RENDERTMP)/$(BLFSFULL)
 	$(Q)touch $(DUMPDIR)
 
-.PHONY: blfs all world html nochunks tmpdir clean  \
+.PHONY: blfs all world html nochunks tmpdir clean             \
    validate profile-html blfs-patch-list wget-list test-links \
    dump-commands  bootscripts systemd-units version
 

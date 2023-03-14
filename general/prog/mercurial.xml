@@ -6,18 +6,15 @@
 
   <!ENTITY mercurial-download-http "https://www.mercurial-scm.org/release/mercurial-&mercurial-version;.tar.gz">
   <!ENTITY mercurial-download-ftp  " ">
-  <!ENTITY mercurial-md5sum        "05b8478d421d2c00726234b2f28ae658">
+  <!ENTITY mercurial-md5sum        "b42fe89d6b57fbd8accc1f17677bb75c">
   <!ENTITY mercurial-size          "7.7 MB">
-  <!ENTITY mercurial-buildsize     "77 MB (with docs, add 1.9 GB for tests)">
+  <!ENTITY mercurial-buildsize     "79 MB (with docs, add 2.0 GB for tests)">
   <!ENTITY mercurial-time          "0.3 SBU (with docs, add 17 SBU for tests using -j4)">
 ]>
 
 <sect1 id="mercurial" xreflabel="Mercurial-&mercurial-version;">
   <?dbhtml filename="mercurial.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Mercurial-&mercurial-version;</title>
 
@@ -36,7 +33,7 @@
       such as Mozilla for Firefox and Thunderbird.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,13 +71,6 @@
 
     <bridgehead renderas="sect3">Mercurial Dependencies</bridgehead>
 
-    <!--
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required">
-      <xref linkend="python2"/>
-    </para>
-    -->
-
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
     <xref linkend="docutils"/>
@@ -93,7 +83,7 @@
     <xref linkend="rust"/> (see <filename>rust/README.rst</filename> and <filename>rust/rhg/README.md</filename>),
     <xref linkend="subversion"/> (with Python bindings),
     <ulink url="https://launchpad.net/bzr">Bazaar</ulink>,
-    <ulink url="http://www.nongnu.org/cvs/">CVS</ulink>,
+    <ulink url="https://www.nongnu.org/cvs/">CVS</ulink>,
     <ulink url="https://pypi.python.org/pypi/pyflakes">pyflakes</ulink>,
     <ulink url="https://www.pyopenssl.org/en/stable/">pyOpenSSL</ulink>, and
     <ulink url="https://github.com/google/re2/">re2</ulink>
@@ -123,7 +113,7 @@
 <screen remap="doc"><userinput>make doc</userinput></screen>
 
     <para>
-      To run the test suite, issue (8 tests are known to fail):
+      To run the test suite, issue:
     </para>
 <screen remap="test"><userinput>TESTFLAGS="-j<replaceable>&lt;N&gt;</replaceable> --tmpdir tmp --blacklist blacklists/fsmonitor --blacklist blacklists/linux-vfat" make check</userinput></screen>
 <!-- The blacklists have to be checked every release of Mercurial, do a listing
@@ -131,7 +121,17 @@
 
     <para>
       where <replaceable>&lt;N&gt;</replaceable> is an integer between one
-      and the number of ( processor X threads ), inclusive.  In order to
+      and the number of ( processor X threads ), inclusive. Several tests
+      fail because some error messages have changed in Python, or
+      some deprecation warnings are printed, that were not present when the
+      test was designed.
+      <!--
+      # Ran 908 tests, 65 skipped, 4 failed.  real  10m37.422s -bdubbs 6 Sep 22.
+      # Ran 881 tests, 102 skipped, 23 failed. -plabs 17 Nov 22.
+      # Ran 919 tests, 64 skipped, 23 failed. real  10m25.285s -bdubbs 10 Jan 23.
+      # Ran 893 tests,101 skipped,  9 failed. real  29m3.014ss -bdubbs  5 Mar 23.
+      -->
+      In order to
       investigate any apparently failing tests, you may use the
       <command>run-tests.py</command> script. To see the almost forty switches,
       some of them very useful, issue <command>tests/run-tests.py
@@ -270,8 +270,12 @@ EOF</userinput></screen>
           /usr/lib/python&python3-majorver;/site-packages/mercurial
         </seg>
         <seg>
-          /etc/mercurial and
-          /usr/lib/python&python3-majorver;/site-packages/{hgdemandimport,hgext,hgext3rd,mercurial}
+          /etc/mercurial,
+          /usr/lib/python&python3-majorver;/site-packages/hgdemandimport,
+          /usr/lib/python&python3-majorver;/site-packages/hgext,
+          /usr/lib/python&python3-majorver;/site-packages/hgext3rd,
+          /usr/lib/python&python3-majorver;/site-packages/mercurial, and
+          /usr/lib/python&python3-majorver;/site-packages/mercurial-&mercurial-version;-py&python3-majorver;.egg-info
         </seg>
       </seglistitem>
     </segmentedlist>

@@ -15,9 +15,6 @@
 <sect1 id="gptfdisk" xreflabel="gptfdisk-&gptfdisk-version;">
   <?dbhtml filename="gptfdisk.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gptfdisk-&gptfdisk-version;</title>
 
@@ -37,7 +34,7 @@
       has an interface similar to the classic <command>fdisk</command> program.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -107,7 +104,8 @@
       The <application>gptfdisk</application> package comes with a
       rudimentary <filename>Makefile</filename>.  First we update it
       to provide a simple build and install interface and fix the
-      location of a header file.
+      location of a header file as well fixing an issue introduced
+      by a recent version of <application>popt</application>.
       Install <application>gptfdisk</application> by running the following
       commands:
     </para>
@@ -115,6 +113,8 @@
 <screen><userinput>patch -Np1 -i ../gptfdisk-&gptfdisk-version;-convenience-1.patch &amp;&amp;
 sed -i 's|ncursesw/||' gptcurses.cc &amp;&amp;
 sed -i 's|sbin|usr/sbin|' Makefile &amp;&amp;
+sed -i '/UUID_H/s/^.*$/#if defined (_UUID_UUID_H) || defined (_UL_LIBUUID_UUID_H)/' guid.cc &amp;&amp;
+sed -i "/device =/s/= \(.*\);/= strdup(\1);/" gptcl.cc &amp;&amp;
 
 make</userinput></screen>
 

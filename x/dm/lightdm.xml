@@ -7,9 +7,9 @@
 <!-- lightdm -->
   <!ENTITY lightdm-download-http "https://github.com/CanonicalLtd/lightdm/releases/download/&lightdm-version;/lightdm-&lightdm-version;.tar.xz">
   <!ENTITY lightdm-download-ftp  " ">
-  <!ENTITY lightdm-md5sum        "c566ea595f2b81e68684be9f8dbcbb42">
-  <!ENTITY lightdm-size          "500 KB">
-  <!ENTITY lightdm-buildsize     "21 MB">
+  <!ENTITY lightdm-md5sum        "e62a5da6c35f612e4d9575eda5c8d467">
+  <!ENTITY lightdm-size          "508 KB">
+  <!ENTITY lightdm-buildsize     "20 MB">
   <!ENTITY lightdm-time          "0.2 SBU ">
 
 <!-- lightdm-gtk-greeter -->
@@ -24,9 +24,6 @@
 <sect1 id="lightdm" xreflabel="lightdm-&lightdm-version;">
   <?dbhtml filename="lightdm.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>lightdm-&lightdm-version;</title>
 
@@ -42,7 +39,7 @@
       display manager based upon GTK.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Lightdm Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -129,11 +126,12 @@
       <xref linkend="exo"/> (for the greeter),
 <!-- required by exo      <xref linkend="gtk3"/>, -->
       <xref linkend="libgcrypt"/>,
-      <xref linkend="itstool"/>, and
-      <xref linkend="linux-pam"/>
+      <xref linkend="itstool"/>,
+      <xref linkend="linux-pam"/>, and
 <!-- Neither lightdm-1.30.0 nor lightdm-gtk-greeter-2.0.8
      mention pcre in their configure scripts
       <xref linkend="pcre"/>-->
+      <xref role='runtime' linkend='xorg-server'/> (Runtime)
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -187,17 +185,16 @@ useradd  -c "Lightdm Daemon" \
       commands:
     </para>
 
-<screen><userinput>./configure                          \
-       --prefix=/usr                 \
-       --libexecdir=/usr/lib/lightdm \
-       --localstatedir=/var          \
-       --sbindir=/usr/bin            \
-       --sysconfdir=/etc             \
-       --disable-static              \
-       --disable-tests               \
-       --with-greeter-user=lightdm   \
-       --with-greeter-session=lightdm-gtk-greeter \
-       --docdir=/usr/share/doc/lightdm-&lightdm-version; &amp;&amp;
+<screen><userinput>./configure --prefix=/usr                 \
+            --libexecdir=/usr/lib/lightdm \
+            --localstatedir=/var          \
+            --sbindir=/usr/bin            \
+            --sysconfdir=/etc             \
+            --disable-static              \
+            --disable-tests               \
+            --with-greeter-user=lightdm   \
+            --with-greeter-session=lightdm-gtk-greeter \
+            --docdir=/usr/share/doc/lightdm-&lightdm-version; &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -224,19 +221,17 @@ install -v -dm770 -o lightdm -g lightdm /var/log/lightdm</userinput></screen>
 <screen><userinput>tar -xf ../lightdm-gtk-greeter-&lightdm-gtk-greeter-version;.tar.gz &amp;&amp;
 cd lightdm-gtk-greeter-&lightdm-gtk-greeter-version; &amp;&amp;
 
-./configure                      \
-   --prefix=/usr                 \
-   --libexecdir=/usr/lib/lightdm \
-   --sbindir=/usr/bin            \
-   --sysconfdir=/etc             \
-   --with-libxklavier            \
-   --enable-kill-on-sigterm      \
-   --disable-libido              \
-   --disable-libindicator        \
-   --disable-static              \
-   --disable-maintainer-mode     \
-   --docdir=/usr/share/doc/lightdm-gtk-greeter-&lightdm-gtk-greeter-version; &amp;&amp;
-
+./configure --prefix=/usr                 \
+            --libexecdir=/usr/lib/lightdm \
+            --sbindir=/usr/bin            \
+            --sysconfdir=/etc             \
+            --with-libxklavier            \
+            --enable-kill-on-sigterm      \
+            --disable-libido              \
+            --disable-libindicator        \
+            --disable-static              \
+            --disable-maintainer-mode     \
+            --docdir=/usr/share/doc/lightdm-gtk-greeter-&lightdm-gtk-greeter-version; &amp;&amp;
 make</userinput></screen>
 
     <para>

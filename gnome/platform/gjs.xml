@@ -4,20 +4,17 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gjs-download-http "&gnome-download-http;/gjs/1.72/gjs-&gjs-version;.tar.xz">
-  <!ENTITY gjs-download-ftp  "&gnome-download-ftp;/gjs/1.72/gjs-&gjs-version;.tar.xz">
-  <!ENTITY gjs-md5sum        "20ffc307c666aafb88f90e2cd31abf58">
-  <!ENTITY gjs-size          "606 KB">
-  <!ENTITY gjs-buildsize     "230 MB (with tests)">
+  <!ENTITY gjs-download-http "&gnome-download-http;/gjs/1.74/gjs-&gjs-version;.tar.xz">
+  <!ENTITY gjs-download-ftp  "&gnome-download-ftp;/gjs/1.74/gjs-&gjs-version;.tar.xz">
+  <!ENTITY gjs-md5sum        "91ba17aa00a661be5648f6f91c04ae37">
+  <!ENTITY gjs-size          "624 KB">
+  <!ENTITY gjs-buildsize     "240 MB (with tests)">
   <!ENTITY gjs-time          "0.6 SBU (with tests)">
 ]>
 
 <sect1 id="gjs" xreflabel="Gjs-&gjs-version;">
   <?dbhtml filename="gjs.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Gjs-&gjs-version;</title>
 
@@ -33,7 +30,7 @@
       <application>GNOME</application>.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,7 +73,7 @@
       <xref linkend="cairo"/>,
       <xref linkend="dbus"/>,
       <xref linkend="gobject-introspection"/>, and
-      <xref linkend="js91"/>
+      <xref linkend="js102"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended (required for GNOME)</bridgehead>
@@ -90,7 +87,7 @@
       <xref linkend="sysprof"/>,
       <xref linkend="valgrind"/> (for tests),
       <ulink url="http://dtrace.org/blogs/about">DTrace</ulink>,
-      <ulink url="http://ltp.sourceforge.net/coverage/lcov.php">LCOV</ulink>, and
+      <ulink url="https://ltp.sourceforge.net/coverage/lcov.php">LCOV</ulink>, and
       <ulink url="https://sourceware.org/systemtap">Systemtap</ulink>
     </para>
 
@@ -110,22 +107,25 @@
 <screen><userinput>mkdir gjs-build &amp;&amp;
 cd    gjs-build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            --wrap-mode=nofallback \
+            ..                     &amp;&amp;
 ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>ninja test</command>. The
       <application>GTK</application> and <application>Cairo</application>
-      tests will fail if not running in an Xorg session. The
-      <filename>gjs:JS / Gtk4</filename> test is known to exit with an ERROR
-      on some systems.
+      tests will fail if not running in an Xorg session.
+      <!-- https://github.com/mesonbuild/meson/issues/10577 --> Four tests
+      are known to timeout.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>ninja install &amp;&amp;</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -134,6 +134,14 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-wrap-nofallback.xml"/>
+
+    <para>
+      <option>-Dprofiler=disabled</option>: prevents building the profiler
+      backend even if <xref linkend="sysprof"/> is installed.
+    </para>
 
   </sect2>
 

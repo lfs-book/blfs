@@ -4,7 +4,7 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY fftw-download-http "http://www.fftw.org/fftw-&fftw-version;.tar.gz">
+  <!ENTITY fftw-download-http "https://www.fftw.org/fftw-&fftw-version;.tar.gz">
   <!ENTITY fftw-download-ftp  "ftp://ftp.fftw.org/pub/fftw/fftw-&fftw-version;.tar.gz ">
   <!ENTITY fftw-md5sum        "8ccbf6a5ea78a16dbc3e1306e234cc5c">
   <!ENTITY fftw-size          "4.0 MB">
@@ -15,9 +15,6 @@
 <sect1 id="fftw" xreflabel="fftw-&fftw-version;">
   <?dbhtml filename="fftw.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>fftw-&fftw-version;</title>
 
@@ -35,7 +32,7 @@
       discrete cosine/sine transforms or DCT/DST).
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -100,7 +97,8 @@
             --disable-static \
             --enable-threads \
             --enable-sse2    \
-            --enable-avx     &amp;&amp;
+            --enable-avx     \
+            --enable-avx2    &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -127,6 +125,7 @@ make</userinput></screen>
             --enable-threads \
             --enable-sse2    \
             --enable-avx     \
+            --enable-avx2    \
             --enable-float   &amp;&amp;
 make</userinput></screen>
 
@@ -169,7 +168,16 @@ make</userinput></screen>
         <parameter>--enable-threads</parameter>: This enables <filename
         class="libraryfile"> libfftw3_threads.so</filename> to be compiled.
         It is used by e.g. the <application>gimp</application> plugin from
-        <ulink url="http://gmic.eu/">G'MIC</ulink>.
+        <ulink url="https://gmic.eu/">G'MIC</ulink>.
+      </para>
+
+      <para>
+        <parameter>--enable-{sse2,avx,avx2}</parameter>: These enables building
+        the optimized routines using SSE2, AVX, and AVX2 instructions.  FFTW
+        will check if these routines can be really used on the current CPU when
+        the FFTW library is loaded, so a FFTW build with these routines enabled
+        can still run on a CPU without SSE2, AVX, or AVX512.  These options
+        are not compatible with <parameter>--enable-long-double</parameter>.
       </para>
 
       <para>
@@ -187,6 +195,15 @@ make</userinput></screen>
         class="libraryfile">libfftw3l.so</filename>.
       </para>
 
+      <para>
+        <option>--enable-avx512</option>: This enables building the optimized
+        routines using AVX512F instructions.  FFTW will check if these routines
+        can be really used on the current CPU when the FFTW library is loaded,
+        so a FFTW build with these routines enabled can still run on a CPU
+        without AVX512F.  Use this option if the FFTW build will be used on
+        a CPU with AVX512F.  This option is not compatible with
+        <option>--enable-long-double</option>.
+      </para>
   </sect2>
 
   <sect2 role="content">

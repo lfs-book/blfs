@@ -6,18 +6,15 @@
 
   <!ENTITY gst10-libav-download-http "&gstreamer-dl;/gst-libav/gst-libav-&gst10-libav-version;.tar.xz">
   <!ENTITY gst10-libav-download-ftp  " ">
-  <!ENTITY gst10-libav-md5sum        "30ec3fe428b9e2a6ba9326d34bd37a4d">
-  <!ENTITY gst10-libav-size          "276 KB">
-  <!ENTITY gst10-libav-buildsize     "9.3 MB">
-  <!ENTITY gst10-libav-time          "less than 0.1 SBU (Using parallelism=4)">
+  <!ENTITY gst10-libav-md5sum        "c898c44220cf8990a886c867249164f1">
+  <!ENTITY gst10-libav-size          "192 KB">
+  <!ENTITY gst10-libav-buildsize     "8.8 MB">
+  <!ENTITY gst10-libav-time          "less than 0.1 SBU">
 ]>
 
 <sect1 id="gst10-libav" xreflabel="gst-libav-&gst10-libav-version;">
   <?dbhtml filename="gst10-libav.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>gst-libav-&gst10-libav-version;</title>
 
@@ -35,7 +32,7 @@
       <application>FFmpeg</application>).
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,15 +78,12 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <!-- With 1.14.x and before, an internal copy of FFMPEG was used.
-      This is no longer the case, so it is now required. -->
       <xref linkend="yasm"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="https://pypi.org/project/hotdoc/">hotdoc</ulink> and
-      <ulink url="http://gstreamer.freedesktop.org/src/orc/">Orc</ulink>
+      <ulink url="https://pypi.org/project/hotdoc/">hotdoc</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -100,9 +94,6 @@
   <sect2 role="installation">
     <title>Installation of GStreamer Libav</title>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gst10-objc-error.xml"/>
-
     <para>
       Install <application>GStreamer Libav</application> by running the following
       commands:
@@ -111,7 +102,8 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson  --prefix=/usr       \
+meson  setup ..            \
+       --prefix=/usr       \
        --buildtype=release \
        -Dpackage-origin=https://www.linuxfromscratch.org/blfs/view/&blfs-version;/ \
        -Dpackage-name="GStreamer &gst10-libav-version; BLFS" &amp;&amp;
@@ -119,7 +111,7 @@ ninja</userinput></screen>
 
 
     <para>
-      To test the results, issue: <command>ninja test</command>
+      To run the tests, issue: <command>ninja test</command>.
     </para>
 
     <para>
@@ -149,7 +141,7 @@ ninja</userinput></screen>
           None
         </seg>
         <seg>
-          libgstlibav.so
+          libgstlibav.so in /usr/lib/gstreamer-1.0 directory
         </seg>
         <seg>
           None

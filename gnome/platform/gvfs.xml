@@ -6,18 +6,15 @@
 
   <!ENTITY gvfs-download-http "&gnome-download-http;/gvfs/1.50/gvfs-&gvfs-version;.tar.xz">
   <!ENTITY gvfs-download-ftp  "&gnome-download-ftp;/gvfs/1.50/gvfs-&gvfs-version;.tar.xz">
-  <!ENTITY gvfs-md5sum        "f1e442570cb79fc25d1cd1bbad6d5cc1">
+  <!ENTITY gvfs-md5sum        "052ef17215d1ff52640713297d4d4f5e">
   <!ENTITY gvfs-size          "1.2 MB">
-  <!ENTITY gvfs-buildsize     "32 MB">
-  <!ENTITY gvfs-time          "0.3 SBU">
+  <!ENTITY gvfs-buildsize     "33 MB">
+  <!ENTITY gvfs-time          "0.1 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="gvfs" xreflabel="Gvfs-&gvfs-version;">
   <?dbhtml filename="gvfs.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Gvfs-&gvfs-version;</title>
 
@@ -34,7 +31,7 @@
       library.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,8 +84,6 @@
       <xref linkend="dbus"/>,
       <xref linkend="glib2"/>,
       <xref linkend="libusb"/>, and
-<!--  Needs libsoup 3, not yet in the book
-      <xref linkend="libsoup"/>, and -->
       <xref linkend="libsecret"/>
     </para>
 
@@ -99,6 +94,7 @@
       <xref linkend="libcdio"/>,
       <xref linkend="libgdata"/>,
       <xref linkend="libgudev"/>,
+      <xref linkend="libsoup3"/>,
       <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
       <phrase revision="systemd"><xref linkend="systemd"/>,</phrase> and
       <xref linkend="udisks2"/>
@@ -109,7 +105,6 @@
       <xref linkend="apache"/>,
       <xref linkend="avahi"/>,
       <xref linkend="bluez"/>,
-      <xref linkend="dbus-glib"/>,
       <xref linkend="fuse3"/>,
       <xref linkend="gnome-online-accounts"/>,
       <xref linkend="gtk-doc"/>,
@@ -119,14 +114,13 @@
       <xref linkend="libxslt"/>,
       <xref linkend="openssh"/>,
       <xref linkend="samba"/>,
-      <ulink url="http://www.videolan.org/developers/libbluray.html">libbluray</ulink>,
+      <ulink url="https://www.videolan.org/developers/libbluray.html">libbluray</ulink>,
       <ulink url="http://www.gphoto.org/">libgphoto2</ulink>,
-      <ulink url="http://www.libimobiledevice.org/">libimobiledevice</ulink>,
-      <ulink url="http://libmtp.sourceforge.net/">libmtp</ulink>,
-      <!-- temporary until we put libsoup-3 into the book -->
-      <ulink url="https://download.gnome.org/sources/libsoup/3.0/">libsoup-3</ulink>,
+      <ulink url="https://www.libimobiledevice.org/">libimobiledevice</ulink>,
+      <ulink url="https://libmtp.sourceforge.net/">libmtp</ulink>,
+      <!--<ulink url="https://download.gnome.org/sources/libsoup/3.0/">libsoup-3</ulink>,-->
       <ulink url="https://github.com/sahlberg/libnfs/">libnfs</ulink>, and
-      <ulink url="http://twistedmatrix.com/trac/">Twisted</ulink>
+      <ulink url="https://twisted.org/">Twisted</ulink>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -144,11 +138,10 @@
 
 <screen revision='sysv'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
-<!-- The -Dhttp=false is a workaround because we do not put libsoup-3
-     in the book yet. Remove when libsoup-3 is in the book. -->
-meson --prefix=/usr       \
+
+meson setup               \
+      --prefix=/usr       \
       --buildtype=release \
-      -Dhttp=false        \
       -Dfuse=false        \
       -Dgphoto2=false     \
       -Dafc=false         \
@@ -165,11 +158,10 @@ ninja</userinput></screen>
 
 <screen revision='systemd'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
-<!-- The -Dhttp=false is a workaround because we do not put libsoup-3
-     in the book yet. Remove when libsoup-3 is in the book. -->
-meson --prefix=/usr       \
+
+meson setup               \
+      --prefix=/usr       \
       --buildtype=release \
-      -Dhttp=false        \
       -Dfuse=false        \
       -Dgphoto2=false     \
       -Dafc=false         \
@@ -204,10 +196,11 @@ ninja</userinput></screen>
 
     <para>
       <parameter>-D&lt;option&gt;=false</parameter>: These switches are
-      required if the corresponding optional dependency is not installed.
+      required if the corresponding dependency is not installed.
       Remove those where you have installed the corresponding application and
       wish to use it with <application>Gvfs</application>. The dnssd option
-      requires avahi and both goa/google require GNOME Online Accounts.
+      requires avahi and both goa and google require GNOME Online Accounts.
+      The google option also requires libgdata.
     </para>
 
     <para revision="sysv">

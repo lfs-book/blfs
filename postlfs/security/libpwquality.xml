@@ -6,18 +6,15 @@
 
   <!ENTITY libpwquality-download-http "https://github.com/libpwquality/libpwquality/releases/download/libpwquality-&libpwquality-version;/libpwquality-&libpwquality-version;.tar.bz2">
   <!ENTITY libpwquality-download-ftp  " ">
-  <!ENTITY libpwquality-md5sum        "1fe43f6641dbf1e1766e2a02cf68a9c3">
-  <!ENTITY libpwquality-size          "420 KB">
-  <!ENTITY libpwquality-buildsize     "4.1 MB">
-  <!ENTITY libpwquality-time          "less than 0.1 SBU">
+  <!ENTITY libpwquality-md5sum        "6b70e355269aef0b9ddb2b9d17936f21">
+  <!ENTITY libpwquality-size          "424 KB">
+  <!ENTITY libpwquality-buildsize     "5.4 MB">
+  <!ENTITY libpwquality-time          "0.1 SBU">
 ]>
 
 <sect1 id="libpwquality" xreflabel="libpwquality-&libpwquality-version;">
   <?dbhtml filename="libpwquality.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>libpwquality-&libpwquality-version;</title>
 
@@ -35,7 +32,7 @@
       generating random passwords with good pronounceability.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -133,17 +130,6 @@ make</userinput></screen>
   <sect2 role="configuration">
     <title>Configuring libpwquality</title>
 
-<!--
-    <para>
-      <application>libpwquality</application> is intended to be a
-      functional replacement for the <filename>pam_cracklib.so</filename>
-      module with additional options. To replace the
-      <filename>pam_cracklib.so</filename> module with the
-      <filename>pam_pwquality.so</filename> module, execute the following
-      commands as the <systemitem class="username">root</systemitem> user:
-    </para>
--->
-
     <para>
       <application>libpwquality</application> is intended to be a
       functional replacement for the now-obsolete
@@ -162,14 +148,16 @@ password  required    pam_pwquality.so   authtok_type=UNIX retry=1 difok=1 \
                                          minlen=8 dcredit=0 ucredit=0 \
                                          lcredit=0 ocredit=0 minclass=1 \
                                          maxrepeat=0 maxsequence=0 \
-                                         maxclassrepeat=0 geoscheck=0 \
+                                         maxclassrepeat=0 gecoscheck=0 \
                                          dictcheck=1 usercheck=1 \
                                          enforcing=1 badwords="" \
                                          dictpath=/usr/lib/cracklib/pw_dict
 # use sha512 hash for encryption, use shadow, and use the
 # authentication token (chosen password) set by pam_pwquality
-# above (or any previous modules)
-password  required    pam_unix.so        sha512 shadow use_authtok
+# above (or any previous modules). Also set the number of crypt rounds
+# to the value used in shadow.
+password  required    pam_unix.so        sha512 shadow use_authtok \
+                                         rounds=500000
 
 # End /etc/pam.d/system-password</literal>
 EOF

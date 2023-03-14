@@ -4,7 +4,7 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY xindy-download-http "http://tug.ctan.org/support/xindy/base/xindy-&xindy-version;.tar.gz">
+  <!ENTITY xindy-download-http "https://tug.ctan.org/support/xindy/base/xindy-&xindy-version;.tar.gz">
   <!ENTITY xindy-download-ftp  " ">
   <!ENTITY xindy-md5sum        "221acfeeb0f6f8388f89a59c56491041">
   <!ENTITY xindy-size          "506 KB">
@@ -15,9 +15,6 @@
 <sect1 id="xindy" xreflabel="xindy-&xindy-version;">
   <?dbhtml filename="xindy.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>xindy-&xindy-version;</title>
 
@@ -37,7 +34,7 @@
       generate indexing information.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -112,17 +109,17 @@ sed -i 's%\(indexentry\)%\1\\%' make-rules/inputenc/make-inp-rules.pl &amp;&amp;
 
 patch -Np1 -i ../xindy-&xindy-version;-upstream_fixes-2.patch &amp;&amp;
 
-./configure --prefix=/opt/texlive/&texlive-year;              \
-            --bindir=/opt/texlive/&texlive-year;/bin/$TEXARCH \
-            --datarootdir=/opt/texlive/&texlive-year;         \
-            --includedir=/usr/include               \
-            --libdir=/opt/texlive/&texlive-year;/texmf-dist   \
-            --mandir=/opt/texlive/&texlive-year;/texmf-dist/doc/man &amp;&amp;
+./configure --prefix=$TEXLIVE_PREFIX              \
+            --bindir=$TEXLIVE_PREFIX/bin/$TEXARCH \
+            --datarootdir=$TEXLIVE_PREFIX         \
+            --includedir=/usr/include             \
+            --libdir=$TEXLIVE_PREFIX/texmf-dist   \
+            --mandir=$TEXLIVE_PREFIX/texmf-dist/doc/man &amp;&amp;
 
 make LC_ALL=POSIX</userinput></screen>
 
     <para>
-      This package does not have a testsuite.
+      This package does not have a test suite.
     </para>
 
     <para>
@@ -199,7 +196,7 @@ make LC_ALL=POSIX</userinput></screen>
           None
         </seg>
         <seg>
-          /opt/texlive/&texlive-year;/texmf-dist/xindy
+          $TEXLIVE_PREFIX/texmf-dist/xindy
         </seg>
       </seglistitem>
     </segmentedlist>

@@ -8,18 +8,15 @@
            "&gnome-download-http;/libsoup/&libsoup-minor;/libsoup-&libsoup-version;.tar.xz">
   <!ENTITY libsoup-download-ftp
            "&gnome-download-ftp;/libsoup/&libsoup-minor;/libsoup-&libsoup-version;.tar.xz">
-  <!ENTITY libsoup-md5sum        "d8c5bc7f471c7462c29cc2ccebe3d9ca">
+  <!ENTITY libsoup-md5sum        "8f657fd301a213629204b3320c35d75a">
   <!ENTITY libsoup-size          "1.4 MB">
-  <!ENTITY libsoup-buildsize     "16 MB (with tests)">
-  <!ENTITY libsoup-time          "0.2 SBU (Using parallelism=4; with tests)">
+  <!ENTITY libsoup-buildsize     "17 MB (with tests)">
+  <!ENTITY libsoup-time          "0.3 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="libsoup" xreflabel="libsoup-&libsoup-version;">
   <?dbhtml filename="libsoup.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>libsoup-&libsoup-version;</title>
 
@@ -37,7 +34,7 @@
       it also has an asynchronous API for use in threaded applications.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,7 +80,7 @@
       </listitem>
     </itemizedlist>
 -->
-
+<!--
     <warning>
       <para>
         You may have noticed newer libsoup releases versioned 3.x.y is
@@ -95,7 +92,7 @@
         to keep using libsoup-2.x for BLFS until GNOME-43 release.
       </para>
     </warning>
-
+-->
     <bridgehead renderas="sect3">libsoup Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -135,7 +132,7 @@
     <title>Installation of libsoup</title>
 <!--
     <para>
-      First, fix a problem in the testsuite caused by
+      First, fix a problem in the test suite caused by
       <xref role="nodep" linkend="glib-networking"/>:
     </para>
 
@@ -149,16 +146,18 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr       \
-      --buildtype=release \
-      -Dvapi=enabled      \
-      -Dgssapi=disabled   \
-      -Dsysprof=disabled  \
-      ..                  &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dvapi=enabled      \
+            -Dgssapi=disabled   \
+            -Dsysprof=disabled  \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>ninja test</command>.
+      <!-- Upstream issue #120.  -->
+      One test named <filename>ssl-test</filename> is known to fail.
     </para>
 
     <para>

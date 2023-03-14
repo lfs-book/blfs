@@ -7,18 +7,15 @@
   <!ENTITY apache-download-http
            "https://archive.apache.org/dist/httpd/httpd-&apache-version;.tar.bz2">
   <!ENTITY apache-download-ftp  " ">
-  <!ENTITY apache-md5sum        "f594f137137b5bdff3998dc17e3e9526">
+  <!ENTITY apache-md5sum        "67f3c04a28df1ad36ff6ea55df010869">
   <!ENTITY apache-size          "7.1 MB">
-  <!ENTITY apache-buildsize     "88 MB">
-  <!ENTITY apache-time          "0.4 SBU (Using parallelism=4)">
+  <!ENTITY apache-buildsize     "94 MB">
+  <!ENTITY apache-time          "0.3 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="apache" xreflabel="Apache-&apache-version;">
   <?dbhtml filename="apache.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Apache-&apache-version;</title>
 
@@ -35,7 +32,7 @@
       web serving operations.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,7 +73,7 @@
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/httpd-&apache-version;-blfs_layout-3.patch"/>
+          <ulink url="&patch-root;/httpd-&apache-version;-blfs_layout-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -88,17 +85,13 @@
       <xref linkend="apr-util"/> and
       <xref linkend="pcre2"/>
     </para>
-<!--
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="openssl"/>
-    </para>
--->
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="brotli"/>,
       <xref linkend="db"/>,
       <xref linkend="doxygen"/>,
+      <xref linkend="jansson"/>,
       <xref linkend="libxml2"/>,
       <xref linkend="lua"/>,
       <xref linkend="lynx"/> or
@@ -134,9 +127,14 @@ useradd -c "Apache Server" -d /srv/www -g apache \
       following commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../httpd-&apache-version;-blfs_layout-3.patch             &amp;&amp;
+<screen><userinput>patch -Np1 -i ../httpd-&apache-version;-blfs_layout-1.patch             &amp;&amp;
 
 sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in              &amp;&amp;
+
+sed -e '/HTTPD_ROOT/s:${ap_prefix}:/etc/httpd:'       \
+    -e '/SERVER_CONFIG_FILE/s:${rel_sysconfdir}/::'   \
+    -e '/AP_TYPES_CONFIG_FILE/s:${rel_sysconfdir}/::' \
+    -i configure  &amp;&amp;
 
 ./configure --enable-authnz-fcgi                              \
             --enable-layout=BLFS                              \

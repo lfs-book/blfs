@@ -6,18 +6,15 @@
 
   <!ENTITY librsvg-download-http "&gnome-download-http;/librsvg/&librsvg-minor;/librsvg-&librsvg-version;.tar.xz">
   <!ENTITY librsvg-download-ftp  "&gnome-download-ftp;/librsvg/&librsvg-minor;/librsvg-&librsvg-version;.tar.xz">
-  <!ENTITY librsvg-md5sum        "7a0532a6c8a19fe610045c3b41b65300">
-  <!ENTITY librsvg-size          "27 MB">
-  <!ENTITY librsvg-buildsize     "992 MB (25 MB installed), add 210 MB for tests">
-  <!ENTITY librsvg-time          "1.2 SBU (Using parallelism=4), add 1.7 SBU for tests">
+  <!ENTITY librsvg-md5sum        "eb56ffb37a7db48491177eb9bd135cb5">
+  <!ENTITY librsvg-size          "21 MB">
+  <!ENTITY librsvg-buildsize     "1 GB (24 MB installed), add 240 MB for tests">
+  <!ENTITY librsvg-time          "1.7 SBU (Using parallelism=4), add 1.1 SBU for tests">
 ]>
 
 <sect1 id="librsvg" xreflabel="librsvg-&librsvg-version;">
   <?dbhtml filename="librsvg.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>librsvg-&librsvg-version;</title>
 
@@ -34,7 +31,7 @@
       Scalable Vector Graphic (SVG) images.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,9 +86,8 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="docutils"/> (for man pages),
-      <xref linkend="xorg7-font"/> (for tests), and
-      <ulink url='https://pypi.org/project/gi-docgen/'>gi-docgen</ulink>
-      (for documentation)
+      <xref linkend="gi-docgen"/> (for documentation), and
+      <xref linkend="xorg7-font"/> (for tests)
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -157,8 +153,11 @@ make</userinput></screen>
       not installed <application>Gobject Introspection</application>.
     </para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gtk-doc-rebuild.xml"/>
+    <para>
+      <option>--disable-gtk-doc</option>: This switch prevents building
+      the API documentation, even if <xref linkend="gi-docgen"/> (despite
+      the name of the option) is available.
+    </para>
 
   </sect2>
 
@@ -175,13 +174,13 @@ make</userinput></screen>
           rsvg-convert
         </seg>
         <seg>
-          librsvg-2.so and libpixbufloader-svg.so
-          (in <filename class='directory'>/usr/lib/gdk-pixbuf-2.0/2.10.0/</filename>)
+          librsvg-2.so
         </seg>
         <seg>
-          /usr/include/librsvg-2.0,
-          /usr/share/doc/librsvg-&librsvg-version;, and
-          /usr/share/gtk-doc/html/rsvg-2.0
+          /usr/include/librsvg-2.0 and
+          /usr/share/doc/librsvg-&librsvg-version;
+<!--      /usr/share/gtk-doc/html/rsvg-2.0 not built with
+               current instructions (needs gi-docgen)-->
         </seg>
       </seglistitem>
     </segmentedlist>

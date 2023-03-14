@@ -4,22 +4,19 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!--  <!ENTITY systemd-download-http "http://anduin.linuxfromscratch.org/LFS/systemd-&systemd-version;-&systemd-stable;.tar.xz"> For whenever we move to a stable snapshot for backports -->
+  <!--  <!ENTITY systemd-download-http "https://anduin.linuxfromscratch.org/LFS/systemd-&systemd-version;-&systemd-stable;.tar.xz"> For whenever we move to a stable snapshot for backports -->
   <!ENTITY systemd-download-http "https://github.com/systemd/systemd/archive/v&systemd-version;/systemd-&systemd-version;.tar.gz">
   <!ENTITY systemd-download-ftp  " ">
-  <!ENTITY systemd-md5sum        "8929beb037c587ada4ed201f19756fe2">
-  <!ENTITY systemd-size          "11 MB">
-  <!ENTITY systemd-buildsize     "307 MB (with tests)">
-  <!ENTITY systemd-time          "2.5 SBU (with tests)">
+  <!ENTITY systemd-md5sum        "7cf12ee8a91a04306fc6cf290eed42e8">
+  <!ENTITY systemd-size          "12 MB">
+  <!ENTITY systemd-buildsize     "297 MB (with tests)">
+  <!ENTITY systemd-time          "3.7 SBU (with tests using 4 cores)">
 
 ]>
 
 <sect1 id="systemd" xreflabel="Systemd-&systemd-version;" revision="systemd">
   <?dbhtml filename="systemd.html"?>
 
-  <sect1info>
-    <date>$Date$</date>
-  </sect1info>
 
   <title>Systemd-&systemd-version;</title>
   <!-- Whenever we switch back to stable backports, make sure to add the systemd-stable reference back. -->
@@ -41,7 +38,7 @@
       which provides many additional features for dependent packages.
     </para>
 
-    &lfs111_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,24 +74,18 @@
       </listitem>
     </itemizedlist>
 
-
+<!--  Keep here in case a patch will be needed.-->
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
          Required patch:
-         <ulink url="&patch-root;/systemd-&systemd-version;-upstream_fixes-1.patch"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-         Required patch:
-         <ulink url="&patch-root;/systemd-&systemd-version;-kernel_5.17_fixes-1.patch"/>
+         <ulink url="&patch-root;/systemd-&systemd-version;-security_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
-
-
+-->
     <bridgehead renderas="sect3">systemd Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -126,6 +117,7 @@
       <xref linkend="qemu"/>,
       <xref linkend="qrencode"/>,
       <xref linkend="rsync"/>,
+      <xref linkend="sphinx"/>,
       <xref linkend="valgrind"/>,
       <xref linkend="zsh"/> (for the zsh completions),
       <ulink url="https://sourceforge.net/projects/gnu-efi/">gnu-efi</ulink>,
@@ -134,10 +126,9 @@
       <ulink url="https://sourceware.org/elfutils/">libdw</ulink>,
       <ulink url="https://developers.yubico.com/libfido2/">libfido2</ulink>,
       <ulink url="https://www.gnu.org/software/libmicrohttpd/">libmicrohttpd</ulink>,
-      <ulink url="http://lz4.github.io/lz4/">lz4</ulink>,
+      <ulink url="https://lz4.github.io/lz4/">lz4</ulink>,
       <!--<ulink url="http://fukuchi.org/works/qrencode/">qrencode</ulink>,-->
-      <ulink url="https://sourceforge.net/projects/linuxquota/">quota-tools</ulink>,
-      <ulink url="https://pypi.python.org/pypi/Sphinx">Sphinx</ulink>, and
+      <ulink url="https://sourceforge.net/projects/linuxquota/">quota-tools</ulink>, and
       <ulink url="https://tpm2-tss.readthedocs.io/en/latest/">tpm2-tss</ulink>
     </para>
 
@@ -156,21 +147,13 @@
 
   <sect2 role="installation">
     <title>Installation of systemd</title>
-
+<!--
     <para>
-      First, apply a patch to fix a security vulnerability and fix issues with the
-      default hostname on some systems:
+      First, fix a security issue in systemd-coredump:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../systemd-&systemd-version;-upstream_fixes-1.patch</userinput></screen>
-
-    <para>
-      Now, apply a patch to fix a problem with the linux kernel headers in
-      versions 5.17 and above:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../systemd-&systemd-version;-kernel_5.17_fixes-1.patch</userinput></screen>
-
+<screen><userinput>patch -Np1 -i ../systemd-&systemd-version;-security_fix-1.patch</userinput></screen>
+-->
     <para>
       Remove two unneeded groups,
       <systemitem class="groupname">render</systemitem> and
@@ -189,30 +172,29 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr                 \
-      --buildtype=release           \
-      -Dblkid=true                  \
-      -Ddefault-dnssec=no           \
-      -Dfirstboot=false             \
-      -Dinstall-tests=false         \
-      -Dldconfig=false              \
-      -Dman=auto                    \
-      -Dsysusers=false              \
-      -Drpmmacrosdir=no             \
-      -Db_lto=false                 \
-      -Dhomed=false                 \
-      -Duserdb=false                \
-      -Dmode=release                \
-      -Dpamconfdir=/etc/pam.d       \
-      -Ddocdir=/usr/share/doc/systemd-&systemd-version; \
-      ..                            &amp;&amp;
+meson setup ..                \
+      --prefix=/usr           \
+      --buildtype=release     \
+      -Ddefault-dnssec=no     \
+      -Dfirstboot=false       \
+      -Dinstall-tests=false   \
+      -Dldconfig=false        \
+      -Dman=auto              \
+      -Dsysusers=false        \
+      -Drpmmacrosdir=no       \
+      -Dhomed=false           \
+      -Duserdb=false          \
+      -Dmode=release          \
+      -Dpam=true              \
+      -Dpamconfdir=/etc/pam.d \
+      -Ddocdir=/usr/share/doc/systemd-&systemd-version; &amp;&amp;
 
 ninja</userinput></screen>
 <!-- Regarding homed and userdb, see the note below in Command Explanations-->
 
     <note>
       <para>
-        For the best test results, make sure you run the testsuite from
+        For the best test results, make sure you run the test suite from
         a system that is booted by the same
         <application>systemd</application> version you are rebuilding.
       </para>
@@ -224,58 +206,16 @@ ninja</userinput></screen>
       <!-- One test named test-repart needs sfdisk, which is in /usr/sbin. -->
     </para>
 
-<!--
-    <warning>
-      <para>
-        Installing the package will overwrite all files installed by
-        <application>systemd</application> in LFS. It is critical that
-        nothing uses either <application>systemd</application> or
-        <application>Udev</application> libraries during the installation.
-        The best way to ensure that these libraries are not being used is to
-        run the installation in rescue mode. To switch to rescue mode,
-        run the following command as the
-        <systemitem class="username">root</systemitem> user (from a TTY):
-      </para>
-
-<screen role="root"><userinput>systemctl isolate rescue.target</userinput></screen>
-    </warning>
-    Nobody has reported problems with this in years. Let's comment it. -->
-
    <para>
      Now, as the <systemitem class="username">root</systemitem> user:
    </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
 
-<!-- Included in the patch
-    <para>
-      Fix a problem in a systemd unit that can cause extra delays when
-      changing TTYs:
-    </para>
-
-<screen role="root"><userinput>sed -i 's/idle/simple/' /usr/lib/systemd/system/getty@.service</userinput></screen>
--->
-  <!-- No longer needed as of systemd-244.
-    <para>
-      Remove a configuration file that causes some problems with PID files:
-    </para>
-
-<screen role="root"><userinput>rm -fv /etc/sysctl.d/50-pid-max.conf</userinput></screen>
-  -->
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-<!-- Not needed with the patch
-    <para>
-      <parameter>-Dc_args=-Wno-format-overflow</parameter>: Prevents an error
-      when building with <application>GCC 10</application>. The default is
-      <option>-Werror=format-overflow</option>,
-      which generates false positives. This switch may be used with previous
-      versions of GCC too.
-    </para>
--->
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
@@ -374,19 +314,6 @@ password required    pam_deny.so
 # End /etc/pam.d/systemd-user</literal>
 EOF</userinput></screen>
 
-<!--
-    <para>
-      At this point, you should reload the systemd daemon, and reenter
-      multi-user mode with the following commands (as the
-      <systemitem class="username">root</systemitem> user).  If a desktop
-      manager is installed and you wish to reenter the graphical mode,
-      replace <userinput>multi-user.target</userinput> with
-      <userinput>graphical.target</userinput>:
-    </para>
-
-<screen role="root"><userinput>systemctl daemon-reexec
-systemctl start multi-user.target</userinput></screen>-->
-
     <warning>
       <para>
         If upgrading from a previous version of systemd and an
@@ -417,9 +344,9 @@ systemctl start multi-user.target</userinput></screen>-->
       <seglistitem>
         <seg>
           <!-- maybe userdbd/userdbctl can go in LFS, try at next time -->
-          homectl (if <xref linkend="cryptsetup"/> is installed),
+          homectl (optional),
           systemd-cryptenroll (if <xref linkend="cryptsetup"/> is installed),
-          and userdbctl (optionally)
+          and userdbctl (optional)
         </seg>
       </seglistitem>
     </segmentedlist>
