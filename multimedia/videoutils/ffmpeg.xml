@@ -6,10 +6,10 @@
 
   <!ENTITY ffmpeg-download-http "https://ffmpeg.org/releases/ffmpeg-&ffmpeg-version;.tar.xz">
   <!ENTITY ffmpeg-download-ftp  " ">
-  <!ENTITY ffmpeg-md5sum        "fa847c43407315c27231b9f883e62c0e">
-  <!ENTITY ffmpeg-size          "9.5 MB">
-  <!ENTITY ffmpeg-buildsize     "184 MB (add 1.7 GB for the FATE suite/tests, add 766 MB for documentation)">
-  <!ENTITY ffmpeg-time          "1.3 SBU (using parallelism=4; add 3.7 SBU (with THREADS=4) to run the FATE suite after sample files are downloaded; add 0.3 SBU for doxygen docs)">
+  <!ENTITY ffmpeg-md5sum        "47b6c5d930937413c3e308e2fdb3dfb5">
+  <!ENTITY ffmpeg-size          "9.8 MB">
+  <!ENTITY ffmpeg-buildsize     "187 MB (add 1.5 GB for the FATE suite/tests, add 786 MB for documentation)">
+  <!ENTITY ffmpeg-time          "1.3 SBU (using parallelism=4; add 3.2 SBU (with THREADS=4) to run the FATE suite after sample files are downloaded; add 0.3 SBU for doxygen docs)">
 ]>
 
 <sect1 id="ffmpeg" xreflabel="FFmpeg-&ffmpeg-version;">
@@ -37,7 +37,7 @@
       source and any Open Sound System audio source.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,6 +87,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="libaom"/>,
       <xref linkend="libass"/>,
       <xref linkend="fdk-aac"/>,
       <xref linkend="freetype2"/>,
@@ -129,12 +130,12 @@
       <xref linkend="xvid"/>,
       <xref linkend="x-window-system"/>,
       <ulink url="https://github.com/festvox/flite">Flite</ulink>,
-      <ulink url="http://www.quut.com/gsm/">GSM</ulink>,
+      <ulink url="https://www.quut.com/gsm/">GSM</ulink>,
       <!--<ulink url="http://xhevc.com/en/hevc/decoder/download.jsp">HEVC/H.265</ulink>,-->
       <!--<ulink url="http://www.ladspa.org/">LADSPA</ulink>,-->
-      <ulink url="http://tipok.org.ua/node/17">libaacplus</ulink>,
-      <ulink url="http://www.videolan.org/developers/libbluray.html">libbluray</ulink>,
-      <ulink url="http://caca.zoy.org/">libcaca</ulink>,
+      <ulink url="https://tipok.org.ua/node/17">libaacplus</ulink>,
+      <ulink url="https://www.videolan.org/developers/libbluray.html">libbluray</ulink>,
+      <ulink url="https://github.com/cacalabs/libcaca">libcaca</ulink>,
       <ulink url="https://gitlab.xiph.org/xiph/celt">libcelt</ulink>,
       <ulink url="https://sourceforge.net/projects/libdc1394">libdc1394</ulink>,
       <ulink url="https://www.videolan.org/developers/libdca.html">libdca</ulink>,
@@ -142,18 +143,18 @@
       <ulink url="https://github.com/dekkers/libilbc">libilbc</ulink>,
       <ulink url="https://sourceforge.net/projects/modplug-xmms/">libmodplug</ulink>,
       <ulink url="https://github.com/Distrotech/libnut">libnut</ulink> (Git checkout),
-      <ulink url="http://rtmpdump.mplayerhq.hu/">librtmp</ulink>,
-      <ulink url="http://www.libssh.org/">libssh</ulink>,
-      <!--<ulink url="http://xavs.sourceforge.net/">libxavs</ulink> (SVN checkout),-->
+      <ulink url="https://rtmpdump.mplayerhq.hu/">librtmp</ulink>,
+      <ulink url="https://www.libssh.org/">libssh</ulink>,
+      <!--<ulink url="https://xavs.sourceforge.net/">libxavs</ulink> (SVN checkout),-->
       <ulink url="https://openal.org/">OpenAL</ulink>,
       <ulink url="https://sourceforge.net/projects/opencore-amr">OpenCore AMR</ulink>,
       <ulink url="https://github.com/Haivision/srt">Srt</ulink>,
       <ulink url="https://sourceforge.net/projects/schrodinger/">Schroedinger</ulink>,
-      <ulink url="http://www.twolame.org/">TwoLAME</ulink>,
+      <ulink url="https://www.twolame.org/">TwoLAME</ulink>,
       <ulink url="https://sourceforge.net/projects/opencore-amr/files/vo-aacenc/">vo-aaenc</ulink>,
       <ulink url="https://sourceforge.net/projects/opencore-amr/files/vo-amrwbenc/">vo-amrwbenc</ulink>, and
       <!--<ulink url="http://www.videolan.org/developers/x265.html">x265 (H.265/MPEG-H HEVC)</ulink>, and-->
-      <ulink url="http://zapping.sourceforge.net/ZVBI/">ZVBI</ulink>
+      <ulink url="https://zapping.sourceforge.net/ZVBI/">ZVBI</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -163,6 +164,14 @@
 
   <sect2 role="installation">
     <title>Installation of FFmpeg</title>
+
+    <note>
+      <para>
+        Some harmless warnings may be output by the build process regarding
+        the HTML documentation. This is due to an incompatibility with
+        Texinfo-7.0 and higher.
+      </para>
+    </note>
 
     <para>
       First, apply a patch that adds an API necessary for some packages to
@@ -177,15 +186,15 @@
       commands:
     </para>
 
-<screen><userinput>sed -i 's/-lflite"/-lflite -lasound"/' configure &amp;&amp;
-
-./configure --prefix=/usr        \
+<!--<screen><userinput>sed -i 's/-lflite"/-lflite -lasound"/' configure &amp;&amp;-->
+<screen><userinput>./configure --prefix=/usr        \
             --enable-gpl         \
             --enable-version3    \
             --enable-nonfree     \
             --disable-static     \
             --enable-shared      \
             --disable-debug      \
+            --enable-libaom      \
             --enable-libass      \
             --enable-libfdk-aac  \
             --enable-libfreetype \
@@ -272,7 +281,7 @@ find /usr/share/doc/ffmpeg-&ffmpeg-version;/api -type d -exec chmod -c 0755 \{} 
     <para>
       To properly test the installation you must have <xref linkend="rsync"/>
       installed and follow the instructions for the <ulink
-      url="http://www.ffmpeg.org/fate.html"> FFmpeg Automated Testing
+      url="https://www.ffmpeg.org/fate.html"> FFmpeg Automated Testing
       Environment</ulink> (FATE). First, about 1 GB of sample files used to
       run FATE are downloaded with the command:
     </para>
@@ -371,6 +380,11 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
       <xref linkend="transcode"/> to be compiled.
     </para>
     -->
+
+    <para>
+      <parameter>--enable-libaom</parameter>: Enables AV1 audio and video
+      decoding via <filename class="libraryfile">libaom</filename>.
+    </para>
 
     <para>
       <parameter>--enable-libass</parameter>: Enables ASS/SSA subtitle format

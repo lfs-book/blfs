@@ -6,7 +6,7 @@
 
   <!ENTITY pango-download-http "&gnome-download-http;/pango/&pango-minor;/pango-&pango-version;.tar.xz">
   <!ENTITY pango-download-ftp  "&gnome-download-ftp;/pango/&pango-minor;/pango-&pango-version;.tar.xz">
-  <!ENTITY pango-md5sum        "fd4b0b23915d6a0255317f811bea4215">
+  <!ENTITY pango-md5sum        "baa2a0a67c71935165a205a76da25954">
   <!ENTITY pango-size          "4.1 MB">
   <!ENTITY pango-buildsize     "47 MB (with tests)">
   <!ENTITY pango-time          "0.1 SBU (Using parallelism=4; with tests)">
@@ -33,7 +33,7 @@
       the <application>GTK+</application> widget toolkit.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -92,8 +92,7 @@
       <xref linkend="cantarell-fonts"/> (for tests),
   <!--<xref linkend="gtk-doc"/>,-->
       <xref linkend="sysprof"/>,
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink>
-      (to generate documentation),
+      <xref linkend="gi-docgen"/> (to generate documentation),
       <ulink url="https://ftpmirror.gnu.org/gnu/help2man">help2man</ulink>, and
       <ulink url="https://linux.thai.net/projects/libthai">libthai</ulink>
     </para>
@@ -114,14 +113,25 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release --wrap-mode=nofallback .. &amp;&amp;
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            --wrap-mode=nofallback \
+            ..                     &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      To test the results, issue: <command>ninja test</command>. Two tests,
-      <filename>test-font</filename> and
-      <filename>test-layout</filename>
-      <!--<filename>test-itemize</filename>, are--> are known to fail. <!--if
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen remap='doc'><userinput>sed "/docs_dir =/s@\$@ / 'pango-&pango-version;'@" -i ../docs/meson.build &amp;&amp;
+meson configure -Dgtk_doc=true                                    &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      To test the results, issue: <command>ninja test</command>. One test,
+      <filename>test-font</filename> is known to fail.
+      <!--<filename>test-itemize</filename>, are are known to fail. if
       <xref linkend="cantarell-fonts"/> are not installed.-->
       <!-- the other problematic tests get skipped now -->
       <!-- Even with cantarell-fonts, pango-1.50.9 test-font fails again. -->
@@ -148,12 +158,6 @@ install -vm 644 ../utils/pango-view.1.in /usr/share/man/man1/pango-view.1</useri
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
-
-    <!-- gtk-doc replaced by gi-docgen
-    <para>
-      <option>-Dgtk_doc</option>: Use this switch if gtk-doc is
-      installed and you wish to rebuild and install the API documentation.
-    </para>-->
 
     <para>
       <option>-Dintrospection=disabled</option>: Use this switch if you do not
@@ -218,10 +222,8 @@ install -vm 644 ../utils/pango-view.1.in /usr/share/man/man1/pango-view.1</useri
           and libpangoxft-1.0.so
         </seg>
         <seg>
-          /usr/include/pango-1.0<!-- and
-          /usr/share/gtk-doc/html/pango
-this last one does not seem to be installed now (since pango-1.48.2 at least)
--->
+          /usr/include/pango-1.0 and
+          /usr/share/doc/pango-&pango-version; (if gi-docgen is available)
         </seg>
       </seglistitem>
     </segmentedlist>

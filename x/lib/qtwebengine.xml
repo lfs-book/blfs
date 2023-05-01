@@ -10,10 +10,10 @@
      URL for a prepared git version -->
   <!ENTITY qtwebengine-download-http "&sources-anduin-http;/qtwebengine/qtwebengine-&qtwebengine-version;.tar.xz">
   <!ENTITY qtwebengine-download-ftp  " ">
-  <!ENTITY qtwebengine-md5sum        "1302667c7e8a045fb0cc776f7e3627ad">
-  <!ENTITY qtwebengine-size          "306 MB">
+  <!ENTITY qtwebengine-md5sum        "40de2170078de5829b1f0ed5b6a636fb">
+  <!ENTITY qtwebengine-size          "307 MB">
   <!ENTITY qtwebengine-buildsize     "5.1 GB (152 MB installed)">
-  <!ENTITY qtwebengine-time          "103 SBU (typical, Using parallelism=4)">
+  <!ENTITY qtwebengine-time          "75 SBU (on a fast machine, Using parallelism=4)">
 ]>
 
 <sect1 id="qtwebengine" xreflabel="qtwebengine-&qtwebengine-version;">
@@ -152,7 +152,7 @@
 
          end of note for editors -->
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <warning>
       <para>
@@ -250,6 +250,12 @@
           <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-ffmpeg5_fixes-1.patch"/>
         </para>
       </listitem>
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-icu_73-1.patch"/>
+        </para>
+      </listitem>
     </itemizedlist>
 
     <bridgehead renderas="sect3">qtwebengine Dependencies</bridgehead>
@@ -342,10 +348,16 @@
 <screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-build_fixes-1.patch</userinput></screen>
 
     <para>
-      Apply a patch that resolves problems when building with ffmpeg-5:
+      Apply a patch that resolves problems when building with ffmpeg-5 and later:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-ffmpeg5_fixes-1.patch</userinput></screen>
+
+    <para>
+      Apply a patch that resolves problems when building with icu-73 and later:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../qtwebengine-&qtwebengine-version;-icu_73-1.patch</userinput></screen>
 
 <!-- start of commands for git versions only -->
     <para>
@@ -432,7 +444,7 @@ fi</userinput></screen>-->
 
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
-qmake .. -- -system-ffmpeg -webengine-icu &amp;&amp;
+qmake .. -- -system-ffmpeg -proprietary-codecs -webengine-icu &amp;&amp;
 make</userinput></screen>
 
 <!--
@@ -488,13 +500,14 @@ make</userinput></screen>
     </para>
 
     <para>
-      <command>-- -system-ffmpeg -webengine-icu</command>: If any options are
-      passed to qmake they must come after '--' which must follow '..' that points
-      to the main directory. The options here cause it to use system ffmpeg and
-      system icu.  If built as part of full Qt5, the system icu is automatically
-      used (only) by Qt5Core if it is available, but unless this option is used
-      webengine will always use its shipped copy of icu, adding time and space
-      to the build.
+      <command>-- -system-ffmpeg -proprietary-codecs -webengine-icu</command>: If
+      any options are passed to qmake they must come after '--' which must follow
+      '..' that points to the main directory. The options here cause it to use
+      system ffmpeg and  system icu. The '-proprietary-codecs' option allows
+      ffmpeg to decode H264 and H265 codecs.  If built as part of full Qt5, the
+      system icu is automatically used (only) by Qt5Core if it is available, but
+      unless this option is used webengine will always use its shipped copy of icu,
+      adding time and space to the build.
     </para>
 
     <para>

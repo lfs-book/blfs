@@ -6,10 +6,10 @@
 
   <!ENTITY gcr4-download-http "&gnome-download-http;/gcr/&gcr4-minor;/gcr-&gcr4-version;.tar.xz">
   <!ENTITY gcr4-download-ftp  "&gnome-download-ftp;/gcr/&gcr4-minor;/gcr-&gcr4-version;.tar.xz">
-  <!ENTITY gcr4-md5sum        "836cd6d1cf57b2e0e9df40f6980fdb99">
-  <!ENTITY gcr4-size          "700 KB">
-  <!ENTITY gcr4-buildsize     "25 MB (with tests)">
-  <!ENTITY gcr4-time          "0.2 SBU (with tests; both using parallelism=4)">
+  <!ENTITY gcr4-md5sum        "bb2e957f0ce11a8c527d1d5079ba485f">
+  <!ENTITY gcr4-size          "708 KB">
+  <!ENTITY gcr4-buildsize     "22 MB (with tests)">
+  <!ENTITY gcr4-time          "0.1 SBU (with tests; both using parallelism=4)">
 ]>
 
 <sect1 id="gcr4" xreflabel="Gcr-&gcr4-version;">
@@ -32,7 +32,7 @@
       <application>GNOME</application> Desktop.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,8 +89,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="valgrind"/> and
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink>
+      <xref linkend="gi-docgen"/> and
+      <xref linkend="valgrind"/>
     </para>
 
     <para condition="html" role="usernotes">
@@ -115,7 +115,21 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dgtk_doc=false .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dgtk_doc=false     \
+            ..                  &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed -e "/install_dir/s@,\$@ / 'gcr-&gcr4-version;'&amp;@" \
+    -e "/fatal-warnings/d"                   \
+    -i ../docs/*/meson.build                 &amp;&amp;
+meson configure -Dgtk_doc=true               &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -144,9 +158,7 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <option>-Dgtk_doc=true</option>: Use this switch if you wish
-      to generate the API reference documentation. Note that you must
-      have <application>GTK-Doc</application>  installed.
+      <option>-Dgtk_doc=true</option>: &gi-doc-disable;
     </para>
 
     <!--<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

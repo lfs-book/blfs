@@ -70,7 +70,7 @@
       </para>
 
       <para>
-        ATI Radeon and AMGPU devices all require firmware to be able to use KMS
+        ATI Radeon and AMDGPU devices all require firmware to be able to use KMS
         (kernel modesetting - the preferred option) as well as for Xorg. For
         old radeon chips (before the R600), the firmware is still in the
         kernel source.
@@ -152,7 +152,7 @@
       firmware are rare and usually only apply to a few models, although
       motherboard manufacturers get AGESA (AMD Generic Encapsulated Software
       Architecture) updates to change BIOS values, e.g. to support more memory
-      variants or newer CPUs.
+      variants, new vulnerability fixes or newer CPUs.
     </para>
 
     <para>
@@ -225,7 +225,7 @@
         <!-- at one time, some skylakes had problems with a certain revision
         secure version of the microcode, for those machines which can boot it, -->
         secure version of the microcode
-        is microcode-20220510.<!-- If you have a Skylake machine, please read the
+        is microcode-20230214.<!-- If you have a Skylake machine, please read the
         Caution in the 'Early loading of microcode' section below.-->  Extract this
         file in the normal way, the microcode is in the <filename>intel-ucode
         </filename> directory, containing various blobs with names in the form
@@ -254,9 +254,9 @@
         For an Icelake mobile (described as Intel(R) Core(TM) i7-1065G7
         CPU) the relevant values are cpu family 6, model 126, stepping 5 so
         in this case the required identification is 06-7e-05. The
-        releasenote says the latest microcode for it is versioned 0xb2.  If
+        releasenote says the latest microcode for it is versioned 0xb8.  If
         the value of the <quote>microcode</quote> field in
-        <filename>/proc/cpuinfo</filename> is 0xb2 or greater, it indicates
+        <filename>/proc/cpuinfo</filename> is 0xb8 or greater, it indicates
         the microcode update is already applied by the BIOS.  Otherwise,
         configure the kernel to support loading Intel microcode, and then
         proceed to <xref linkend='early-microcode'/>:
@@ -279,8 +279,10 @@ Processor type and features  ---&gt;
           '&sources-anduin-http;/linux-firmware/amd-ucode/'/>.
         The family is always specified in hex. Families 10h to 14h (16 to 20)
         are in microcode_amd.bin.  Families 15h, 16h, 17h (Zen, Zen+, Zen2) and
-        19h (Zen3) have their own containers.  Very few machines are likely to
-        get updated microcode. There is a Python3 script at <ulink url=
+        19h (Zen3) have their own containers, but  very few machines are likely to
+        get updated microcode. Instead, AMD provide an updated AGESA to the
+        motherboard makers, who may provide an updated BIOS using this.
+        There is a Python3 script at <ulink url=
         'https://github.com/AMDESE/amd_ucode_info/blob/master/amd_ucode_info.py'/>.
         Download that script and run it against the bin file to check which
         processors have updates.
@@ -337,13 +339,13 @@ cd initrd</userinput></screen>
         family):
       </para>
 
-<screen><userinput>cp -v /lib/firmware/amd-ucode/&lt;MYCONTAINER&gt; kernel/x86/microcode/AuthenticAMD.bin</userinput></screen>
+<screen><userinput>cp -v ../&lt;MYCONTAINER&gt; kernel/x86/microcode/AuthenticAMD.bin</userinput></screen>
 
       <para>
         Or for an Intel machine copy the appropriate blob using this command:
       </para>
 
-<screen><userinput>cp -v /lib/firmware/intel-ucode/&lt;XX-YY-ZZ&gt; kernel/x86/microcode/GenuineIntel.bin</userinput></screen>
+<screen><userinput>cp -v ../intel-ucode/&lt;XX-YY-ZZ&gt; kernel/x86/microcode/GenuineIntel.bin</userinput></screen>
 
 <!-- new version from 20201110 release onwards, assumed to work on all skylakes
    But complaints about previous version took some days to appear, so keep as a comment for now.
@@ -392,14 +394,19 @@ cd initrd</userinput></screen>
         If you are already booting with an initrd (see <xref
         linkend="initramfs"/>), you should run <command>mkinitramfs</command>
         again after putting the appropriate blob or container into <filename
-        class="directory">/lib/firmware</filename> as explained above.
+          class="directory">/lib/firmware</filename>. More precisely, put an
+        intel blob in a <filename
+          class="directory">/lib/firmware/intel-ucode</filename> directory
+        or an AMD container in a <filename
+          class="directory">/lib/firmware/amd-ucode</filename> directory before
+        running <command>mkinitramfs</command>.
         Alternatively, you can have both initrd on the same line, such as
         <userinput>initrd /microcode.img /other-initrd.img</userinput> (adapt
         that as above if /boot is not a separate mountpoint).
       </para>
 
       <para>
-        You can now reboot with the added initrd, and then use the same
+        You can now reboot with the added initrd, and then use the following
         command to check that the early load worked:
       </para>
 
@@ -417,11 +424,11 @@ cd initrd</userinput></screen>
         mobile) with early loading:
       </para>
 
-<screen><literal>[    0.000000] microcode: microcode updated early to revision 0xb2, date = 2022-03-17
-[    0.000000] Linux version 5.19.2 (xry111@xry111-X57S1) (gcc (GCC) 12.2.0, GNU ld (GNU Binutils) 2.39) #123 SMP PREEMPT_DYNAMIC Sun Aug 20 21:14:29 CST 2022
-[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-5.19.2-lfs-11.2-systemd root=/dev/nvme0n1p7 ro
-[    0.435085] microcode: sig=0x706e5, pf=0x80, revision=0xb2
-[    0.435197] microcode: Microcode Update Driver: v2.2.</literal></screen>
+<screen><literal>[    0.000000] microcode: microcode updated early to revision 0xb8, date = 2022-08-31
+[    0.000000] Linux version 6.1.11 (xry111@stargazer) (gcc (GCC) 12.2.0, GNU ld (GNU Binutils) 2.40) #2 SMP PREEMPT_DYNAMIC Tue Feb 14 23:23:31 CST 2023
+[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.1.11-lfs-11.3-rc1 root=PARTUUID=<replaceable>&lt;CLASSIFIED&gt;</replaceable> ro
+[    0.452924] microcode: sig=0x706e5, pf=0x80, revision=0xb8
+[    0.453197] microcode: Microcode Update Driver: v2.2.</literal></screen>
 
 
       <para>
@@ -657,6 +664,36 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
 
   </sect2>
 
+  <sect2 id="regulatory-db">
+    <title>Firmware for Regulatory Database of Wireless Devices</title>
+
+    <para>
+      Different countries have different regulations on the radio spectrum
+      usage of wireless devices.  You can install a firmware to make the
+      wireless devices obey local spectrum regulations, so you won't be
+      inquired by local authority or find your wireless NIC jamming the
+      frequencies of other devices (for example, remote controllers).
+      The regulatory database firmware can be downloaded from
+      <ulink url = 'https://kernel.org/pub/software/network/wireless-regdb/'/>.
+      To install it, simply extract <filename>regulatory.db</filename> and
+      <filename>regulatory.db.p7s</filename> from the tarball into
+      <filename class="directory">/lib/firmware</filename>. Note that either
+      the <option>cfg80211</option> driver needs to be selected as a module
+      for the <filename>regulatory.*</filename>
+      files to be loaded, or those files need to be included as firmware into
+      the kernel, as explained above in <xref linkend="video-firmware"/>.
+    </para>
+
+    <para>
+      The access point (AP) would send a country code to your wireless NIC,
+      and <xref linkend='wpa_supplicant'/> would tell the kernel to load
+      the regulation of this country from
+      <filename>regulatory.db</filename>, and enforce it. Note that several AP
+      don't send this country code, so you may be locked to a rather
+      restricted usage (specially if you want to use your interface as an AP).
+    </para>
+  </sect2>
+
   <sect2 id="other-firmware">
     <title>Firmware for Other Devices</title>
 
@@ -671,25 +708,8 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
     <para>
       If possible, you should begin by using a wired connection when you first
       boot your LFS system. To use a wireless connection you will need to
-      use a network tools such as <xref linkend='wireless_tools'/> and <xref
-      linkend='wpa_supplicant'/>.
-    </para>
-
-    <para>
-      Different countries have different regulations on the radio spectrum
-      usage of wireless devices.  You can install a firmware to make the
-      wireless devices obey local spectrum regulations, so you won't be
-      inquired by local authority or find your wireless NIC jamming the
-      frequencies of other devices (for example, remote controllers).
-      The regulatory database firmware can be downloaded from
-      <ulink url = 'https://kernel.org/pub/software/network/wireless-regdb/'/>.
-      To install it, simply extract <filename>regulatory.db</filename> and
-      <filename>regulatory.db.p7s</filename> from the tarball into
-      <filename class="directory">/lib/firmware</filename>.
-      The access point would send a country code to your wireless NIC,
-      and <xref linkend='wpa_supplicant'/> would tell the kernel to load
-      the regulation of this country from
-      <filename>regulatory.db</filename>, and enforce it.
+      use a network tools such as <xref linkend="iw"/>,
+      <xref linkend='wireless_tools'/>, or <xref linkend='wpa_supplicant'/>.
     </para>
 
     <para>

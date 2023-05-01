@@ -6,10 +6,10 @@
 
   <!ENTITY fuse3-download-http "https://github.com/libfuse/libfuse/releases/download/fuse-&fuse3-version;/fuse-&fuse3-version;.tar.xz">
   <!ENTITY fuse3-download-ftp  " ">
-  <!ENTITY fuse3-md5sum        "2640cd55b3c2a2eb9e78054f77f5c87a">
-  <!ENTITY fuse3-size          "3.1 MB">
-  <!ENTITY fuse3-buildsize     "95 MB (with tests and documentation)">
-  <!ENTITY fuse3-time          "0.1 SBU (add 0.4 SBU for tests)">
+  <!ENTITY fuse3-md5sum        "d5fec7879ffcbc57b789113e6c61c10b">
+  <!ENTITY fuse3-size          "4.2 MB">
+  <!ENTITY fuse3-buildsize     "108 MB (with tests and documentation)">
+  <!ENTITY fuse3-time          "0.2 SBU (add 0.3 SBU for tests)">
 ]>
 
 <sect1 id="fuse3" xreflabel="Fuse-&fuse3-version;">
@@ -33,7 +33,7 @@
       filesystem implementations.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,7 +73,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="doxygen"/> (to rebuild the API documentation) and
-      <ulink url="https://pypi.org/project/pytest/">pytest</ulink> (required for tests)
+      <xref linkend="pytest"/> (required for tests)
     </para>
 
     <para condition="html" role="usernotes">
@@ -119,7 +119,7 @@
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -145,7 +145,7 @@ popd</userinput></screen>
         remap="test"><userinput>python3 -m pytest test/</userinput></screen>
 
     <para>
-      The <ulink url="https://pypi.org/project/pytest/">pytest</ulink> Python
+      The <xref linkend="pytest"/> Python
       module is required for the tests.  One test named
       <filename>test_cuse</filename> will fail if the
       <parameter>CONFIG_CUSE</parameter> configuration item was not enabled
@@ -177,6 +177,13 @@ cp -Rv doc/html     /usr/share/doc/fuse-&fuse3-version;</userinput></screen>
       <command>sed ... util/meson.build</command>: This command disables the
       installation of a boot script and udev rule that are not needed.
     </para>
+
+<!--
+    <para>
+      <command>sed ... meson.build</command>: This command fixes a bug with the
+      test_passthrough_hp test.
+    </para>
+-->
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>

@@ -452,20 +452,52 @@ chmod 755 blfs-yes-test2</userinput></screen>
       <listitem>
         <para><emphasis>Required</emphasis> means that the target package
         cannot be correctly built without the dependency having first been
-        installed.</para>
+        installed, except if the dependency is said to be
+        <quote>runtime</quote>, which means the target package can be built but
+        cannot function without it.</para>
+        <para>
+          Note that a target package can start to <quote>function</quote>
+          in many subtle ways: an installed configuration file can make the
+          init system, cron daemon, or bus daemon to run a program
+          automatically; another package using the target package as an
+          dependency can run a program from the target package in the
+          building system; and the configuration sections in the BLFS book
+          may also run a program from a just installed package.  So if
+          you are installing the target package without a
+          <emphasis>Required (runtime)</emphasis> dependency installed,
+          You should install the dependency as soon as possible after the
+          installation of the target package.
+        </para>
       </listitem>
       <listitem>
         <para><emphasis>Recommended</emphasis> means that BLFS strongly
-        suggests this package is installed first for a clean and trouble-free
+        suggests this package is installed first (except if said to be
+        <quote>runtime</quote>, see below) for a clean and trouble-free
         build, that won't have issues either during the build process, or at
         run-time.  The instructions in the book assume these packages are
         installed.  Some changes or workarounds may be required if these
-        packages are not installed.</para>
+        packages are not installed. If a recommended dependency is said
+        to be <quote>runtime</quote>, it means that BLFS strongly suggests
+        that this dependency is installed before using the package, for
+        getting full funtionality.</para>
       </listitem>
       <listitem>
         <para><emphasis>Optional</emphasis> means that this package might be
         installed for added functionality. Often BLFS will describe the
-        dependency to explain the added functionality that will result.</para>
+        dependency to explain the added functionality that will result.
+        An optional dependency may be automatically pick up by the target
+        package if the dependency is installed, but another some optional
+        dependency may also need additional configuration options to enable
+        them when the target package is built.  Such additional options are
+        often documented in the BLFS book.  If an optional dependency is
+        said to be <quote>runtime</quote>, it means you may install
+        the dependency after installing the target package to support some
+        optional features of the target package if you need these
+        features.</para>
+        <para>An optional dependency may be out of BLFS.  If you need such
+        an <emphasis>external</emphasis> optional dependency for some
+        features you need, read <xref linkend='beyond'/> for the general
+        hint about installing an out-of-BLFS package.</para>
       </listitem>
     </itemizedlist>
 
@@ -572,35 +604,62 @@ chmod 755 blfs-yes-test2</userinput></screen>
     <bridgehead renderas="sect3" id="stripping-installed">Stripping Installed Executables</bridgehead>
 
     <para>
-      The <command>strip</command> utility changes files in place, which
-      may break anything using it if it is loaded in memory. Note that
-      if a file is in use but just removed from the disk (i.e. not overwritten
-      nor modified), this is not a problem since the kernel can use
-      <quote>deleted</quote> files.
-      Look at <filename>/proc/*/maps</filename>, and it is likely that
-      you'll see some <emphasis>(deleted)</emphasis> entries. The
-      <command>mv</command> just removes the destination file from the
-      directory but does not touch its content, so that it satisfies the
-      condition for the kernel to use the old (deleted) file. The script
-      below is just an example. Feel free to add stronger error detection,
-      other directories to scan, etcetera. It should be run as the &root; user:
+      The <command>strip</command> utility changes files in place, which may
+      break anything using it if it is loaded in memory. Note that if a file is
+      in use but just removed from the disk (i.e. not overwritten nor
+      modified), this is not a problem since the kernel can use
+      <quote>deleted</quote> files.  Look at <filename>/proc/*/maps</filename>
+      and it is likely that you'll see some <emphasis>(deleted)</emphasis>
+      entries. The <command>mv</command> just removes the destination file from
+      the directory but does not touch its content, so that it satisfies the
+      condition for the kernel to use the old (deleted) file.
+      But this approach can detach hard links into duplicated copies,
+      causing a bloat which is obviously unwanted as we are stripping to
+      reduce system size.  If two files in a same file system share the
+      same inode number, they are hard links to each other and we should
+      reconstruct the link.  The script below is just an example.
+      It should be run as the &root; user:
     </para>
 
-<screen role="root"><userinput>{ find /usr/lib -type f \( -name \*.a -o \
-    \( -name \*.so* ! -name \*dbg \) \)
- find /usr/{bin,sbin,libexec} -type f; } | while read file; do
-      if readelf -h $file >/dev/null 2>&amp;1; then
-        cp -a $file ${file}.tmp            &amp;&amp;
-        strip --strip-unneeded ${file}.tmp &amp;&amp;
-        mv ${file}.tmp $file
-      fi
-    done</userinput></screen>
+<screen><userinput>cat &gt; /usr/sbin/strip-all.sh &lt;&lt; "EOF"
+<literal>#!/usr/bin/bash
+
+if [ $EUID -ne 0 ]; then
+  echo "Need to be root"
+  exit 1
+fi
+
+last_fs_inode=
+last_file=
+
+{ find /usr/lib -type f -name '*.so*' ! -name '*dbg'
+  find /usr/lib -type f -name '*.a'
+  find /usr/{bin,sbin,libexec} -type f
+} | xargs stat -c '%m %i %n' | sort | while read fs inode file; do
+       if ! readelf -h $file >/dev/null 2>&amp;1; then continue; fi
+       if file $file | grep --quiet --invert-match 'not stripped'; then continue; fi
+
+       if [ "$fs $inode" = "$last_fs_inode" ]; then
+         ln -f $last_file $file;
+         continue;
+       fi
+
+       cp --preserve $file    ${file}.tmp
+       strip --strip-unneeded ${file}.tmp
+       mv ${file}.tmp $file
+
+       last_fs_inode="$fs $inode"
+       last_file=$file
+done</literal>
+EOF
+chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
 
     <para>
       If you install programs in other directories such as <filename
       class="directory">/opt</filename> or <filename
       class="directory">/usr/local</filename>, you may want to strip the files
-      there too.
+      there too. Just add other directories to scan in the compound list of
+      <command>find</command> commands between the braces.
     </para>
 
     <para>
@@ -951,29 +1010,34 @@ chmod 755 blfs-yes-test2</userinput></screen>
       </para>
 
       <para>
-        For hardening options which are reasonably cheap, there is some
-        discussion in the 'tuning' link above (occasionally, one or more
-        of these options might be inappropriate for a package). These
-        options are -D_FORTIFY_SOURCE=2, -fstack-protector=strong, and
-        (for C++) -D_GLIBCXX_ASSERTIONS. On modern machines these should
-        only have a little impact on how fast things run, and often they
-        will not be noticeable.
+        In the past, there was Hardened LFS where gcc (a much older version)
+        was forced to use hardening (with options to turn some of it off on a
+        per-package basis).  The current LFS and BLFS books are carrying
+        forward a part of its spirit by enabling PIE
+        (<option>-fPIE -pie</option>) and SSP
+        (<option>-fstack-protector-strong</option>) as the defaults
+        for GCC and clang.  What is being covered here is different - first
+        you have to make sure that the package is indeed using your added
+        flags and not over-riding them.
       </para>
 
       <para>
-        In the past, there was Hardened LFS where gcc (a much older version)
-        was forced to use hardening (with options to turn some of it off on a
-        per-package basis. What is being covered here is different - first you
-        have to make sure that the package is indeed using your added flags and
-        not over-riding them.
+        For hardening options which are reasonably cheap, there is some
+        discussion in the 'tuning' link above (occasionally, one or more
+        of these options might be inappropriate for a package). These
+        options are <option>-D_FORTIFY_SOURCE=2</option> and
+        (for C++) <option>-D_GLIBCXX_ASSERTIONS</option>. On modern
+        machines these should only have a little impact on how fast things
+        run, and often they will not be noticeable.
       </para>
 
       <para>
         The main distros use much more, such as RELRO (Relocation Read Only)
-        and perhaps -fstack-clash-protection. You may also encounter the
-        so-called 'userspace retpoline' (-mindirect-branch=thunk etc.) which
+        and perhaps <option>-fstack-clash-protection</option>. You may also
+        encounter the so-called <quote>userspace retpoline</quote>
+        (<option>-mindirect-branch=thunk</option> etc.) which
         is the equivalent of the spectre mitigations applied to the linux
-        kernel in late 2018). The kernel mitigations caused a lot of complaints
+        kernel in late 2018. The kernel mitigations caused a lot of complaints
         about lost performance, if you have a production server you might wish
         to consider testing that, along with the other available options, to
         see if performance is still sufficient.

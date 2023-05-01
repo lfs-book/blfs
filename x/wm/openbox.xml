@@ -32,7 +32,7 @@
       almost every aspect of how you interact with your desktop.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,7 +77,7 @@
       <xref linkend="imlib2"/> (to enable icons in the right click menu),
       <xref linkend="imagemagick"/> (to show desktop backgrounds as seen in the
       Configuration Information section below),
-      <xref linkend="pyxdg"/>,
+      <xref linkend="pyxdg"/>, <!-- used for openbox-xdg-autostart -->
       <xref linkend="startup-notification"/>, and
       <xref linkend="librsvg"/>
     </para>
@@ -128,7 +128,17 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
-  </sect2>
+
+    <para>
+      This package creates three <filename>.desktop</filename> files in the
+      <filename class="directory">/usr/share/xsessions/</filename> directory.
+      Two of these are not appropriate in a BLFS system, so prevent the extra
+      files showing up as options in a display manager.  As the &root; user:
+    </para>
+
+<screen role="root"><userinput>rm -v /usr/share/xsessions/openbox-{gnome,kde}.desktop</userinput></screen>
+
+</sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
@@ -206,8 +216,8 @@ make</userinput></screen>
 
         <filename>~/.config/openbox/menu.xml</filename> can be edited with a
         text editor or you can install
-        <ulink url="http://obmenu.sourceforge.net/">Obmenu</ulink> (requires
-        <ulink url="http://pyxml.sourceforge.net/topics/">pyxml</ulink>
+        <ulink url="https://obmenu.sourceforge.net/">Obmenu</ulink> (requires
+        <ulink url="https://pyxml.sourceforge.net/topics/">pyxml</ulink>
         and <xref linkend="pygtk"/>).
       </para>
 

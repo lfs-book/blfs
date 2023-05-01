@@ -6,9 +6,9 @@
 
   <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-43;/mutter-&mutter-version;.tar.xz">
   <!ENTITY mutter-download-ftp  "&gnome-download-ftp;/mutter/&gnome-43;/mutter-&mutter-version;.tar.xz">
-  <!ENTITY mutter-md5sum        "2aa9fae86f51490b419e747885069e96">
+  <!ENTITY mutter-md5sum        "aba8f5170a27fe7d24f07a3b2fdf2725">
   <!ENTITY mutter-size          "2.7 MB">
-  <!ENTITY mutter-buildsize     "150 MB (without tests)">
+  <!ENTITY mutter-buildsize     "151 MB (without tests)">
   <!ENTITY mutter-time          "0.6 SBU (Using parallelism=4)">
   <!ENTITY mutter-time-systemd  "0.6 SBU (Using parallelism=4, add 1.0 SBU for tests)">
 ]>
@@ -33,7 +33,7 @@
       machine with a hardware accelerated video driver).
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -112,7 +112,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="python-dbusmock"/> (required for tests) and
+      <xref linkend="python-dbusmock"/> (required for tests),
       <xref linkend="xorg-server"/> (for X11 sessions)
     </para>
 
@@ -137,7 +137,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=debugoptimized -Dtests=false .. &amp;&amp;
+meson setup --prefix=/usr              \
+            --buildtype=debugoptimized \
+            -Dtests=false              \
+            ..                         &amp;&amp;
 ninja</userinput></screen>
 
 <!--
@@ -192,11 +195,27 @@ ninja</userinput></screen>
 <screen role="root"><userinput>ninja install</userinput></screen>
 
     <para>
-      The tests can now be run: issue
-      <command>ninja test</command>. The tests
-      require an active X or wayland session.
+      If you wish to run the tests, remove the reference to
+      <application>Zenity</application> which is not a part of BLFS
+      from one test:
+    </para>
+
+<screen role='test'><userinput>sed 's/zenity --[a-z]*/gtk3-demo/' -i ../src/tests/x11-test.sh</userinput></screen>
+
+    <para>
+      Now run the test suite:
+    </para>
+
+    <!-- Without "HOME=" one test can fail with certain monitor
+         configuration in $HOME/.config/monitors.xml. -->
+<screen role='test'><userinput>HOME= ninja test</userinput></screen>
+
+    <para>
+      The tests require an active X or wayland session.
       The <filename>native-unit</filename> test is known to fail.
       A lot of tests will fail if the opengl rendering is not done in hardware.
+      Don't make any mouse or keyboard input while the test suite is
+      running or some tests may fail.
     </para>
   </sect2>
 

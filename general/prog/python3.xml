@@ -7,16 +7,16 @@
   <!ENTITY python3-download-http
            "https://www.python.org/ftp/python/&python3-version;/Python-&python3-version;.tar.xz">
   <!ENTITY python3-download-ftp  " ">
-  <!ENTITY python3-md5sum        "4efe92adf28875c77d3b9b2e8d3bc44a">
+  <!ENTITY python3-md5sum        "c8d52fc4fb8ad9932a11d86d142ee73a">
   <!ENTITY python3-size          "19 MB">
-  <!ENTITY python3-buildsize     "282 MB (add 63 MB for tests)">
-  <!ENTITY python3-time          "2.1 SBU (add 1.2 SBU for tests; both using parallelism=4)">
+  <!ENTITY python3-buildsize     "282 MB (add 897 MB for tests)">
+  <!ENTITY python3-time          "2.0 SBU (add 3.9 SBU for tests; both using parallelism=4)">
   <!--
   Note: Size does not reflect docs that were install in LFS.
   -->
   <!ENTITY python3htmldoc-download-http
   "https://www.python.org/ftp/python/doc/&python3-version;/python-&python3-version;-docs-html.tar.bz2">
-  <!ENTITY python3-docs-md5sum "32f5cd7d63adf58ca4e0687dc530ce8b" >
+  <!ENTITY python3-docs-md5sum "7a1fc1824f7c96e779ef35fe10dde120" >
 ]>
 
 <sect1 id="python3" xreflabel="Python-&python3-version;">
@@ -47,7 +47,7 @@
       </para>
     </note>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <important>
       <para>
@@ -55,27 +55,32 @@
          from Python-3.10.x to Python-3.11.0), you will need to reinstall
          any Python3 modules you have installed.  You should also
          reinstall packages that generate Python3 modules
-         including 
+         including
          <xref linkend="gobject-introspection"/>,
          <xref linkend="opencv"/>,
          <xref linkend="graphviz"/> (if swig is installed).
       </para>
 
-      <para>Before you upgrade, you can get a complete list of modules installed
-        with <command>pip3 list</command>.
+      <para>Before you upgrade, you can get a list of modules installed
+        with <command>pip3 list</command>.  The list may be incomplete as
+        some Python modules are not installed with <command>pip3</command>,
+        for example the <literal>cracklib</literal> module installed by
+        <xref role='nodep' linkend='cracklib'/>.  Use <command>ls
+        /usr/lib/python3.<replaceable>minor</replaceable>/site-packages</command>
+        for a comprehensive list.
       </para>
 
       <para>
-         The wheel module and meson from LFS will also have to be reinstalled:
-         <ulink url="https://www.linuxfromscratch.org/lfs/view/development/chapter08/wheel.html"/> and
-         <ulink url="https://www.linuxfromscratch.org/lfs/view/development/chapter08/meson.html"/>.
+         The Python modules from LFS will also have to be reinstalled:
+         <ulink url="&lfs-root;/chapter08/flit-core.html">flit-core</ulink>,
+         <ulink url="&lfs-root;/chapter08/wheel.html">wheel</ulink>, and
+         <ulink url="&lfs-root;/chapter08/meson.html">meson</ulink>.
       </para>
 
       <para revision="systemd">
-        On systemd systems, it is also necessary to reinstall the MarkupSafe
-        and Jinja2 modules from LFS:
-        <ulink url="https://www.linuxfromscratch.org/lfs/view/systemd/chapter08/markupsafe.html"/> and
-        <ulink url="https://www.linuxfromscratch.org/lfs/view/systemd/chapter08/jinja2.html"/>.
+        On systemd systems, it is also necessary to reinstall
+        <ulink url="&lfs-root;/chapter08/markupsafe.html">MarkupSafe</ulink>
+        and <ulink url="&lfs-root;/chapter08/jinja2.html">Jinja2</ulink>.
       </para>
     </important>
 
@@ -172,8 +177,8 @@ make</userinput></screen>
 
     <para>
       To test the result, issue <command>make test</command>.
-      Some tests may need an Internet connection. <!--Two tests, test_distutils
-      and test_peg_generator are known to fail.-->
+      Some tests may need an Internet connection. Two tests, test_distutils
+      and test_embed are known to fail.
     </para>
 
     <para>

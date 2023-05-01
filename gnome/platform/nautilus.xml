@@ -8,9 +8,9 @@
            "&gnome-download-http;/nautilus/&gnome-43;/nautilus-&nautilus-version;.tar.xz">
   <!ENTITY nautilus-download-ftp
            "&gnome-download-ftp;/nautilus/&gnome-43;/nautilus-&nautilus-version;.tar.xz">
-  <!ENTITY nautilus-md5sum        "5e3addb274889ecb9cdc5dfea2a8cc3c">
+  <!ENTITY nautilus-md5sum        "c563e92d7904b2f2b5777105f865163f">
   <!ENTITY nautilus-size          "3.0 MB">
-  <!ENTITY nautilus-buildsize     "95 MB (with tests)">
+  <!ENTITY nautilus-buildsize     "110 MB (with tests)">
   <!ENTITY nautilus-time          "0.7 SBU (with tests, both using parallelism=4)">
 ]>
 
@@ -32,7 +32,7 @@
       <application>GNOME</application> file manager.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -95,7 +95,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink>
+      <xref linkend="gi-docgen"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended (Runtime)</bridgehead>
@@ -114,6 +114,12 @@
     <title>Installation of Nautilus</title>
 
     <para>
+      Fix the location to install the API documentation:
+    </para>
+
+<screen><userinput>sed "/docdir =/s@\$@ / 'nautilus-&nautilus-version;'@" -i meson.build</userinput></screen>
+
+    <para>
       Install <application>Nautilus</application> by running the following
       commands:
     </para>
@@ -121,11 +127,11 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr       \
-      --buildtype=release \
-      -Dselinux=false     \
-      -Dpackagekit=false  \
-      .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dselinux=false     \
+            -Dpackagekit=false  \
+            ..                  &amp;&amp;
 
 ninja</userinput></screen>
 

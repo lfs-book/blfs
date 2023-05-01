@@ -6,15 +6,15 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "9fe60d1991b9344ebfd80592aff2bfa9">
+  <!ENTITY firefox-md5sum        "&firefox-md5;">
   <!ENTITY firefox-size          "457 MB">
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "7.1 GB (199 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "6.9 GB (199 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
-  <!ENTITY firefox-time          "21 SBU using -j4, without tests">
+  <!ENTITY firefox-time          "17 SBU using -j4, without tests">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
@@ -38,7 +38,7 @@
       <application>Mozilla</application> codebase.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,21 +74,21 @@
       </listitem>
     </itemizedlist>
 
-<!--<bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/firefox-&firefox-version;esr-gcc12_fix-1.patch"/>
+          <ulink url="&patch-root;/firefox-&firefox-version;-upstream_fixes-1.patch"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Recommended patch:
-          <ulink url="&patch-root;/firefox-&firefox-version;esr-disable_rust_test-1.patch"/>
+          Required patch for new <xref linkend="ffmpeg"/> API:
+          <ulink url="&patch-root;/firefox-&firefox-version;-ffmpeg_6-1.patch"/>
         </para>
       </listitem>
-    </itemizedlist>-->
+    </itemizedlist>
 
     <note>
       <para>
@@ -237,7 +237,7 @@ ac_add_options --with-system-webp
 
 # libdavid (av1 decoder) requires nasm. Uncomment this if nasm
 # has not been installed. Do not uncomment this if you have
-# ffmpeg-5 installed.
+# ffmpeg installed.
 #ac_add_options --disable-av1
 
 # You cannot distribute the binary if you do this
@@ -297,7 +297,7 @@ EOF</userinput></screen>
       Compile <application>Firefox</application> by issuing the following
       commands:
     </para>
-
+<!-- Fixed in 102.9
     <para>
       A change in cbindgen-0.24.2 causes a symbol to now be output by
       cbindgen, but it has already been defined in a header. This sed
@@ -305,7 +305,7 @@ EOF</userinput></screen>
     </para>
 
 <screen><userinput>sed -i '/ROOT_CLIP_CHAIN/d' gfx/webrender_bindings/webrender_ffi.h</userinput></screen>
-
+-->
 <!-- Not needed with clang. Upstream bug at
      https://bugzilla.mozilla.org/show_bug.cgi?id=1729459
 
@@ -331,7 +331,7 @@ esac</userinput></screen>
         these instructions for another distro, or if you intend to distribute
         binary copies of the software using these instructions, please obtain
         your own keys following the instructions located at
-        <ulink url="http://www.chromium.org/developers/how-tos/api-keys"/> and
+        <ulink url="https://www.chromium.org/developers/how-tos/api-keys"/> and
         <ulink url="https://location.services.mozilla.com/api"/> respectively.
         <!-- BLFS Devs, register an account at Google with your
         @linuxfromscratch.org email address, and I'll make you an administrator
@@ -352,7 +352,7 @@ echo "613364a7-9418-4c86-bcee-57e32fd70c23" > mozilla-key</userinput></screen>
        href="../../xincludes/mozmach.xml"/>
 
     </note>
-
+    <!-- Fixed in 102.8
     <para>
       First remove an obsolete flag in python code, that has been removed
       in python-3.11:
@@ -368,6 +368,20 @@ echo "613364a7-9418-4c86-bcee-57e32fd70c23" > mozilla-key</userinput></screen>
     -e '/?m)/{s/?m)/?m:/;s/\$"/$)"/}' \
     -e '/?s)%/{s/?s)/?s:/;s/?"/?)"/}' \
     -i xpcom/idl-parser/xpidl/xpidl.py</userinput></screen>
+-->
+
+    <para>
+      Fix a build failure that occurs due to the rust-bindgen crate being
+      incompatible with LLVM-16:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;-upstream_fixes-1.patch</userinput></screen>
+
+    <para>
+      Apply the following patch so that firefox is able to play H.264 videos:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;-ffmpeg_6-1.patch</userinput></screen>
 
     <para>
       Now invoke the Python <command>mach</command> script to compile the package.

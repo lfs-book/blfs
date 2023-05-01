@@ -32,7 +32,7 @@
       org.freedesktop.UPower service via the system message bus.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -85,6 +85,8 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gtk-doc"/>,
+      <xref linkend="libxslt"/>,
+      <xref linkend="docbook-xsl"/>,
       <xref linkend="pygobject3"/>,
       <xref linkend="python-dbusmock"/>,
       <xref linkend="umockdev"/> (for part of the test suite), and
@@ -130,24 +132,25 @@
       commands:
     </para>
 
-<screen revision="sysv"><userinput>mkdir build                         &amp;&amp;
-cd    build                         &amp;&amp;
-meson --prefix=/usr                        \
-      --buildtype=release                  \
-      -Dgtk-doc=false                      \
-      -Dman=false                          \
-      -Dsystemdsystemunitdir=no            \
-      -Dudevrulesdir=/usr/lib/udev/rules.d \
-      ..                            &amp;&amp;
+<screen revision="sysv"><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup ..                  \
+      --prefix=/usr             \
+      --buildtype=release       \
+      -Dgtk-doc=false           \
+      -Dman=false               \
+      -Dsystemdsystemunitdir=no \
+      -Dudevrulesdir=/usr/lib/udev/rules.d &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build                         &amp;&amp;
 cd    build                         &amp;&amp;
-meson --prefix=/usr       \
+meson setup ..            \
+      --prefix=/usr       \
       --buildtype=release \
       -Dgtk-doc=false     \
-      -Dman=false         \
-      ..                            &amp;&amp;
+      -Dman=false         &amp;&amp;
 ninja</userinput></screen>
 
     <!-- On my system with LANG=zh_CN.UTF-8, one test attempted to compare
@@ -178,8 +181,9 @@ ninja</userinput></screen>
 
     <para>
       <parameter>-Dman=false</parameter>: Prevents building the
-      manual pages. Remove this if you have <application>GTK-Doc</application>
-      installed and wish to build the manual pages.
+      manual pages. Remove this if you have <xref linkend='libxslt'/> and
+      <xref linkend='docbook-xsl'/> installed and wish to build the manual
+      pages.
     </para>
 
     <para revision="sysv">

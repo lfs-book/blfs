@@ -6,10 +6,10 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  "ftp://ftp.freedesktop.org/pub/mesa/mesa-&mesa-version;.tar.xz">
-  <!ENTITY mesa-md5sum        "f299f32fc3f48db392b12cdfd83fa4fd">
-  <!ENTITY mesa-size          "16 MB">
-  <!ENTITY mesa-buildsize     "372 MB (with docs, add 284 MB for tests)">
-  <!ENTITY mesa-time          "2.2 SBU (Using parallelism=4; with docs, add 0.5 SBU for tests)">
+  <!ENTITY mesa-md5sum        "3d5025f4f135a1d9131183ac75ba91e4">
+  <!ENTITY mesa-size          "17 MB">
+  <!ENTITY mesa-buildsize     "440 MB (with docs, add 205 MB for tests)">
+  <!ENTITY mesa-time          "2.2 SBU (Using parallelism=4; with docs, add 0.7 SBU for tests)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
@@ -37,7 +37,7 @@
       </para>
     </note>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,10 +75,11 @@
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
+    <!-- 9 Apr 23.  Change to unversioned patch since it never changes. -->
       <listitem>
         <para>
           Recommended patch:
-          <ulink url="&patch-root;/mesa-&mesa-version;-add_xdemos-1.patch"/>
+          <ulink url="&patch-root;/mesa-add_xdemos-2.patch"/>
           (installs 2 demo programs for testing Mesa - not needed if you
           install the <ulink url="https://archive.mesa3d.org/demos/">
           mesa-demos</ulink> package)
@@ -126,7 +127,7 @@
       (provides more than 300 extra demos to test
       <application>Mesa</application>; this includes the same programs added by
       the patch above),
-      <ulink url="http://omxil.sourceforge.net/">Bellagio OpenMAX Integration
+      <ulink url="https://omxil.sourceforge.net/">Bellagio OpenMAX Integration
       Layer</ulink> (for mobile platforms),
       <ulink url="https://github.com/KhronosGroup/glslang">glslang</ulink>
       (for vulkan drivers),
@@ -160,7 +161,8 @@
       command:
     </para>
 
-<screen><userinput>patch -Np1 -i ../mesa-&mesa-version;-add_xdemos-1.patch</userinput></screen>
+<!--<screen><userinput>patch -Np1 -i ../mesa-&mesa-version;-add_xdemos-1.patch</userinput></screen>-->
+<screen><userinput>patch -Np1 -i ../mesa-add_xdemos-2.patch</userinput></screen>
 
    <!-- Note that freedreno, vc4, and virgl all need special support from
         libdrm - renodr
@@ -241,7 +243,8 @@ DRI_DRIVERS="i965,nouveau"</userinput></screen>
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=$XORG_PREFIX   \
+meson setup                   \
+      --prefix=$XORG_PREFIX   \
       --buildtype=release     \
       -Dplatforms=x11,wayland \
       -Dgallium-drivers=auto  \
@@ -249,24 +252,14 @@ meson --prefix=$XORG_PREFIX   \
       -Dvalgrind=disabled     \
       -Dlibunwind=disabled    \
       ..                      &amp;&amp;
-<!-- Removed for 22.2.1: seems to be the default  -Dglx=dri      \ -->
+
 ninja</userinput></screen>
 
     <para>
-      If you built the tests (see 'Command Explanations'), to run them issue:
-      <command>ninja test</command>.
+      To test the results, issue:
+      <command>meson configure -Dbuild-tests=true &amp;&amp; ninja test</command>.
     </para>
-<!-- All tests passed for me for 21.2.4 [pierre]
-     All 33 subtests tests in the mesa:compiler+glsl / glsl compiler warnings
-      suite are known to fail.
-
-     For 22.1.0:
-     Ok:                 74
-     Expected Fail:      0
-     Fail:               0
-     Unexpected Pass:    0
-     Skipped:            0
-     Timeout:            0
+<!-- All 88 tests passed for me for 22.3.3 [pierre]
 -->
 
     <para>
@@ -335,8 +328,11 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
     </para>
 
     <para>
-      <option>-Dbuild-tests=true</option>: This switch will cause the test code
-      to be enabled.
+      <command>meson configure -Dbuild-tests=true</command>: This command will
+      reconfigure the build to set <option>-Dbuild-tests=true</option>, but
+      keep the other options specified in the <command>meson setup</command>
+      command unchanged.  It allows <command>ninja test</command> to build and
+      run unit tests.
     </para>
 
     <para>
@@ -365,8 +361,6 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           libGL.so,
           libGLESv1_CM.so,
           libGLESv2.so,
-          libXvMCnouveau.so,
-          libXvMCr600.so,
           libgbm.so,
           libglapi.so, and
           libxatracker.so
@@ -388,6 +382,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           radeonsi_drv_video.so,
           swrast_dri.so,
           virtio_gpu_dri.so,
+          virtio_gpu_drv_video.so,
           vmwgfx_dri.so,
           <!-- End DRI Drivers -->
           <!-- Begin VDPAU drivers -->
@@ -395,6 +390,7 @@ cp -rfv ../docs/* /usr/share/doc/mesa-&mesa-version;</userinput></screen>
           libvdpau_r300.so
           libvdpau_r600.so, and
           libvdpau_radeonsi.so
+          libvdpau_virtio_gpu.so
           <!-- End VDPAU drivers -->
           (Many of these drivers are hard-linked).
         </seg>

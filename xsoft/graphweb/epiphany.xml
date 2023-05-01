@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY epiphany-download-http
-           "&gnome-download-http;/epiphany/&gnome-43;/epiphany-&epiphany-version;.tar.xz">
+           "&gnome-download-http;/epiphany/&gnome-44;/epiphany-&epiphany-version;.tar.xz">
   <!ENTITY epiphany-download-ftp
-           "&gnome-download-ftp;/epiphany/&gnome-43;/epiphany-&epiphany-version;.tar.xz">
-  <!ENTITY epiphany-md5sum        "88daf04ba8e6b2296fc0f00e884de853">
-  <!ENTITY epiphany-size          "3.7 MB">
-  <!ENTITY epiphany-buildsize     "59 MB (with tests)">
+           "&gnome-download-ftp;/epiphany/&gnome-44;/epiphany-&epiphany-version;.tar.xz">
+  <!ENTITY epiphany-md5sum        "0b6e0a3c33408ee417a109342827c944">
+  <!ENTITY epiphany-size          "3.8 MB">
+  <!ENTITY epiphany-buildsize     "60 MB (with tests)">
   <!ENTITY epiphany-time          "0.2 SBU (with tests; both using parallelism=4)">
 ]>
 
@@ -33,7 +33,7 @@
       users. Its principles are simplicity and standards compliance.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,20 +73,14 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="gcr"/>,
+      <xref linkend="gcr4"/>,
       <xref linkend="gnome-desktop"/>,
       <xref linkend="iso-codes"/>,
       <xref linkend="json-glib"/>,
-      <xref linkend="libnotify"/>,
+      <xref linkend="libadwaita1"/>,
       <xref linkend="libportal"/>,
       <xref linkend="nettle"/>, and
-      <xref linkend="webkitgtk"/>
-    </para>
-
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="libdazzle"/> and
-      <xref linkend="libhandy1"/>
+      <xref linkend="webkitgtk"/> (built with GTK-4)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -116,7 +110,7 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -131,7 +125,8 @@ ninja</userinput></screen>
     <para>
       One test would fail if this package is not installed,
       so it's better to run the test suite after installation.
-      To test the results, issue <command>ninja test</command>.
+      To test the results, issue
+      <command>LC_ALL=en_US.UTF-8 ninja test</command>.
       The tests must be run from a graphical session.
     </para>
 

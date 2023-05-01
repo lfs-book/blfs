@@ -35,7 +35,7 @@
       on the <application>GNOME</application> Desktop.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -101,13 +101,13 @@
       <xref linkend="gnome-desktop"/>,
       <xref linkend="gspell"/>,
       <xref linkend="gst10-plugins-base"/>,
+      <xref linkend="gi-docgen"/>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="libgxps"/>,
       <xref linkend="libtiff"/>,
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>),
-      <ulink url="http://djvu.sourceforge.net/">DjVuLibre</ulink>,
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink>,
-      <ulink url="http://www.freedesktop.org/wiki/Software/libspectre/">libspectre</ulink>,
+      <ulink url="https://djvu.sourceforge.net/">DjVuLibre</ulink>,
+      <ulink url="https://www.freedesktop.org/wiki/Software/libspectre/">libspectre</ulink>,
       <ulink url="https://github.com/jlaurens/synctex">Synctex</ulink>, and
       <ulink url="https://www.t1lib.org/">t1lib</ulink>
     </para>
@@ -121,15 +121,6 @@
     <title>Installation of Evince</title>
 
     <para>
-      First, make sure that meson can find TeXLive if it is installed.
-      This has no effect on systems without TeXLive installed.
-    </para>
-
-<screen><userinput remap="pre">export CPPFLAGS="-I/opt/texlive/&texlive-year;/include" &amp;&amp;
-export LDFLAGS="$LDFLAGS -L/opt/texlive/&texlive-year;/lib"</userinput></screen>
-
-
-    <para>
       Install <application>Evince</application> by running the following
       commands:
     </para>
@@ -137,21 +128,33 @@ export LDFLAGS="$LDFLAGS -L/opt/texlive/&texlive-year;/lib"</userinput></screen>
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr          \
-      --buildtype=release    \
-      -Dgtk_doc=false        \
-      --wrap-mode=nodownload \
-      -Dsystemduserunitdir=no .. &amp;&amp;
+CPPFLAGS+=" -I/opt/texlive/&texlive-year;/include" \
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            -Dgtk_doc=false        \
+            --wrap-mode=nodownload \
+            -Dsystemduserunitdir=no .. &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr          \
-      --buildtype=release    \
-      -Dgtk_doc=false        \
-      --wrap-mode=nodownload \
-      ..                     &amp;&amp;
+CPPFLAGS+=" -I/opt/texlive/&texlive-year;/include" \
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            -Dgtk_doc=false        \
+            --wrap-mode=nodownload \
+            ..                     &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed "/fatal-warnings/d" -i ../help/reference/*/meson.build    &amp;&amp;
+sed "/docs_dir/s@\$@ / 'evince-&evince-version;'@" -i ../help/meson.build &amp;&amp;
+meson configure -Dgtk_doc=true                                &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -176,29 +179,19 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>CPPFLAGS="..." LDFLAGS="$LDFLAGS ..."</parameter>: If
-      <application>TeXLive</application> has been installed in
-      <filename class="directory">/opt/texlive/&texlive-year;</filename> the
-      configure script will find
-      <filename class='libraryfile'>libkpathsea.so</filename> and enable the
-      DVI backend, but without this addition the compile will fail because it
-      cannot find the required headers. Adding this to a system where
-      <application>TeXLive</application> has not been installed does not break
-      the build.
-    </para>
-
-    <para>
-      <parameter>-Dgtk_doc=false</parameter>: This switch disables generating
-      the gtk-doc API reference documentation. If you have
-      <xref role="nodep" linkend="gtk-doc"/> installed and wish to generate
-      the API reference documentation, remove this switch and the following
-      one.
+      <parameter>CPPFLAGS+=" -I/opt/texlive/..."</parameter>: 
+      Make sure that meson can find libkpathsea headers from TeXLive if it
+      is installed. This has no effect on systems without TeXLive installed.
     </para>
 
     <para>
       <parameter>--wrap-mode=nodownload</parameter>: This switch disables
       fetching any dependency: the build system tries to fetch gi-docgen
       even if <parameter>-Dgtk_doc=false</parameter> is passed.
+    </para>
+
+    <para>
+      <parameter>-Dgtk_doc=false</parameter>: &gi-doc-disable;
     </para>
 
     <para>

@@ -6,12 +6,16 @@
 
   <!ENTITY dbus-download-http "https://dbus.freedesktop.org/releases/dbus/dbus-&dbus-version;.tar.xz">
   <!ENTITY dbus-download-ftp  " ">
-  <!ENTITY dbus-md5sum        "e36f0f160751fa7ce103782166852c6b">
+  <!ENTITY dbus-md5sum        "e809d7aa905ad82adeaf1d59db5445b1">
   <!ENTITY dbus-size          "1.3 MB">
-  <!ENTITY dbus-buildsize     "23 MB (add 4 MB for tests)">
-  <!ENTITY dbus-time          "0.2 SBU (add 0.2 SBU for tests)">
+  <!ENTITY dbus-buildsize     "23 MB (add 20 MB for tests)">
+  <!ENTITY dbus-time          "0.2 SBU (add 1.7 SBU for tests)">
   <!-- The former value was 0.8 SBU, which was far more sensible. -->
   <!-- I got 'real  0m14.355s' for make check at -j1; bdubbs dbus-1.14.2 -->
+  <!-- Now 'real 2m51.642ss' for make check at -j1; bdubbs dbus-1.14.6 
+# TOTAL: 217
+# PASS:  217
+  -->
 ]>
 
 <sect1 id="dbus" xreflabel="dbus-&dbus-version;">
@@ -45,7 +49,7 @@
       their dependencies didn't fit into LFS.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,24 +87,22 @@
 
     <bridgehead renderas="sect3">D-Bus Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4" revision="systemd">Required</bridgehead>
-    <para role="required" revision="systemd">
-      <xref linkend="systemd"/>
-    </para>
-
-
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="xorg7-lib"/> (for <command>dbus-launch</command> program)
+      <!-- elogind cannot be used by dbus: dbus only uses the systemd service,
+      not the logind one
       <phrase revision="sysv">and <xref linkend="elogind"/> (These are
       circular dependencies. First build without them, and then again after
-      both packages are installed.)</phrase>
+      both packages are installed.)</phrase>-->
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <phrase revision="systemd"><xref role="runtime" linkend="systemd"/>
+      (for registering services launched by D-Bus session daemon as systemd
+      user services);</phrase>
       For the tests:
-      <xref linkend="dbus-glib"/>,
       <xref linkend="dbus-python"/>,
       <xref linkend="pygobject3"/>,
       and <xref linkend="valgrind"/>;
@@ -139,11 +141,13 @@ useradd -c "D-Bus Message Daemon User" -d /var/run/dbus \
       <command>configure</command> command shown below):
     </para>
 
+    <!-- Only usefull for systemd: it installs the services files in the
+    systemd/user
+    - -enable-user-session                \ -->
 <screen revision="sysv"><userinput>./configure --prefix=/usr                        \
             --sysconfdir=/etc                    \
             --localstatedir=/var                 \
             --runstatedir=/run                   \
-            --enable-user-session                \
             --disable-doxygen-docs               \
             --disable-xml-docs                   \
             --disable-static                     \
@@ -232,7 +236,7 @@ chmod -v      4750       /usr/libexec/dbus-daemon-launch-helper</userinput></scr
       <filename>/var/lib/dbus/machine-id</filename> file:
     </para>
 
-<screen role="root" revision="sysv"><userinput>ln -sv /var/lib/dbus/machine-id /etc</userinput></screen>
+<screen role="root" revision="sysv"><userinput>ln -sfv /var/lib/dbus/machine-id /etc</userinput></screen>
 
 <!--
     <para revision="systemd">
@@ -245,13 +249,21 @@ chmod -v      4750       /usr/libexec/dbus-daemon-launch-helper</userinput></scr
 systemctl start multi-user.target</userinput></screen>
 -->
 
+    <!-- Without dbus-python and pygobject3, only 39 tests are run and
+         11 out of 39 are skipped.  With dbus-python and pygobject3
+         installed, 238 tests are run and 37 out of 238 are skipped.  -->
+
     <para>
-      The dbus tests cannot be run until after <xref linkend="dbus-glib"/> has
-      been installed.  They must be run as an unprivileged user from a local
-      session with bus address. To run the standard tests issue
-      <command>make check</command>.
+      Many tests are disabled unless both <xref linkend="dbus-python"/>
+      and <xref linkend="pygobject3"/> have been installed.  They must be
+      run as an unprivileged user from a local session with bus address.
+      To run the standard tests issue <command>make check</command>.
     </para>
 
+    <!-- With dbus-python and pygobject3 installed and these additional
+         debug options, 347 tests are run and 21 out of 347 are skipped.
+         Additionally,  217 tests in the "name-test" directory are run
+         and none is skipped.  -->
     <para>
       If you want to run the unit regression tests, configure requires
       additional parameters which expose additional functionality in the
@@ -463,7 +475,7 @@ EOF</userinput></screen>
             The examples shown previously use
             <command>dbus-launch</command> to specify a program to be run. This
             has the benefit (when also using the
-            <parameter>--exit-with-session</parameter> parameter) of stopping the
+            <parameter>--exit-with-x11</parameter> parameter) of stopping the
             session daemon when the specified program is stopped. You can also
             start the session daemon in your system or personal startup scripts
             by adding the following lines:

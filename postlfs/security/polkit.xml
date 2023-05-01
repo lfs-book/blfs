@@ -31,7 +31,7 @@
       communicate with privileged processes.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -96,10 +96,9 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="gobject-introspection"/>,
-      <xref linkend="libxslt"/>,
-      <xref linkend="linux-pam"/>
-      <phrase revision="sysv">
-        and <xref role="first" linkend="elogind"/>
+      <xref linkend="libxslt"/>,<phrase revision="systemd"> and</phrase>
+      <xref linkend="linux-pam"/><phrase revision="sysv">, and
+        <xref linkend="elogind"/>
       </phrase>
     </para>
 
@@ -215,38 +214,32 @@ sed '/policy,/d' -i actions/meson.build \
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr                       \
+meson setup ..                            \
+      --prefix=/usr                       \
       --buildtype=release                 \
       -Dman=true                          \
       -Dsession_tracking=libsystemd-login \
-      -Dtests=true                        \
-      -Djs_engine=duktape                 \
-      ..                                  &amp;&amp;
+      -Dtests=true                        &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr                 \
+meson setup ..                      \
+      --prefix=/usr                 \
       --buildtype=release           \
       -Dman=true                    \
       -Dsession_tracking=libelogind \
       -Dsystemdsystemunitdir=/tmp   \
-      -Dtests=true                  \
-      -Djs_engine=duktape           \
-      ..                            &amp;&amp;
+      -Dtests=true                  &amp;&amp;
 ninja</userinput></screen>
 
-    <!--
-      "-t3" for raising the timeout to 90s, i. e. 3x the default:
-      https://gitlab.freedesktop.org/polkit/polkit/-/merge_requests/107
-    -->
     <para>
       To test the results, first ensure that the system
       <application>D-Bus</application> daemon is running,
       and both <xref linkend='dbus-python'/> and
       <xref linkend='python-dbusmock'/> are installed.
-      Then run <command>meson test -t3</command>.
+      Then run <command>ninja test</command>.
     </para>
 
     <para>
@@ -274,10 +267,9 @@ rm -v /tmp/*.service</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Djs_engine=duktape</parameter>: This switch allows using the
-      <xref linkend="duktape"/> JavaScript engine. Replace with
-      <option>-Djs_engine=mozjs</option> for using the <xref linkend="js102"/>
-      JavaScript engine.
+      <option>-Djs_engine=mozjs</option>: This switch allows using the
+      <xref linkend="js102"/> JavaScript engine instead of the
+      <xref linkend='duktape'/> JavaScript engine.
     </para>
 
     <!--
@@ -291,6 +283,13 @@ rm -v /tmp/*.service</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
     -->
+
+    <para>
+      <option>-Dos_type=lfs</option>: Use this switch if you did not create
+      the <filename>/etc/lfs-release</filename> file or distribution auto
+      detection will fail and you will be unable to use
+      <application>Polkit</application>.
+    </para>
 
     <para>
       <option>-Dauthfw=shadow</option>: This switch enables the
@@ -324,44 +323,6 @@ rm -v /tmp/*.service</userinput></screen>
       <option>-Dgtk_doc=true</option>: Use this option to enable building and
       installing the API documentation.
     </para>
-
-  </sect2>
-
-  <sect2 role="configuration">
-    <title>Configuring Polkit</title>
-
-    <sect3>
-      <title>PAM Configuration</title>
-
-      <note>
-        <para>
-          If you did not build <application>Polkit</application> with
-          <application>Linux PAM</application> support, you can skip this
-          section.
-        </para>
-      </note>
-
-      <para>
-        If you have built <application>Polkit</application> with
-        <application>Linux PAM</application> support, you need to modify
-        the default PAM configuration file which was installed by default to get
-        <application>Polkit</application> to work correctly with BLFS. Issue the
-        following commands as the <systemitem class="username">root</systemitem>
-        user to create the configuration file for <application>Linux PAM</application>:
-      </para>
-
-<screen role="root"><userinput>cat &gt; /etc/pam.d/polkit-1 &lt;&lt; "EOF"
-<literal># Begin /etc/pam.d/polkit-1
-
-auth     include        system-auth
-account  include        system-account
-password include        system-password
-session  include        system-session
-
-# End /etc/pam.d/polkit-1</literal>
-EOF</userinput></screen>
-
-    </sect3>
 
   </sect2>
 

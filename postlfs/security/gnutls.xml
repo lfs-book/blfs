@@ -4,13 +4,13 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gnutls-download-http "&gnupg-http;/gnutls/v3.7/gnutls-&gnutls-version;.tar.xz">
-  <!ENTITY gnutls-download-ftp  "&gnupg-ftp;/gnutls/v3.7/gnutls-&gnutls-version;.tar.xz">
+  <!ENTITY gnutls-download-http "&gnupg-http;/gnutls/v3.8/gnutls-&gnutls-version;.tar.xz">
+  <!ENTITY gnutls-download-ftp  "&gnupg-ftp;/gnutls/v3.8/gnutls-&gnutls-version;.tar.xz">
   <!ENTITY gnutls-download-ftp  " ">
-  <!ENTITY gnutls-md5sum        "c7b749bae243c341e6be717baf7ffbad">
-  <!ENTITY gnutls-size          "5.8 MB">
-  <!ENTITY gnutls-buildsize     "167 MB (add 111 MB for tests)">
-  <!ENTITY gnutls-time          "0.9 SBU (add 2.6 SBU for tests; both using parallelism=4)">
+  <!ENTITY gnutls-md5sum        "20a662caf20112b6b9ad1f4a64db3a97">
+  <!ENTITY gnutls-size          "6.1 MB">
+  <!ENTITY gnutls-buildsize     "165 MB (add 113 MB for tests)">
+  <!ENTITY gnutls-time          "0.8 SBU (add 2.3 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="gnutls" xreflabel="GnuTLS-&gnutls-version;">
@@ -54,7 +54,7 @@
       extension, and X.509 and OpenPGP certificate handling.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -110,7 +110,6 @@
       <xref linkend="brotli"/>,
       <xref linkend="doxygen"/>,
       <xref linkend="gtk-doc"/>,
-      <xref linkend="guile"/>,
       <xref linkend="libidn"/> or
       <xref linkend="libidn2"/>,
       <xref linkend="libseccomp"/>,
@@ -125,7 +124,9 @@
     </para>
 
     <note><para>
-      Note that if you do not install <xref linkend="libtasn1"/>, an older
+ <!-- Note that if you do not install <xref linkend="libtasn1"/>, an older
+       3.8.0 includes minitasn1 4.19 which is currnet at the moment. ken -->
+      Note that if you do not install <xref linkend="libtasn1"/>, a
       version shipped in the <application>GnuTLS</application> tarball will be
       used instead.
     </para></note>
@@ -145,9 +146,16 @@
 
 <screen><userinput>./configure --prefix=/usr \
             --docdir=/usr/share/doc/gnutls-&gnutls-version; \
-            --disable-rpath \
             --with-default-trust-store-pkcs11="pkcs11:" &amp;&amp;
 make</userinput></screen>
+<!-- - -disable-rpath \
+     Old gnutls versions (around 3.5) had a problem with rpath, because
+     libraries in the build tree were linked with rpath pointing to the
+     system libraries, so that tests failed. Present versions don't have
+     this problem, and do exactly what is expected without using the
+     disable-rpath option: rpath pointing to the build tree when libraries
+     are first linked, but rpath removed when libraries are relinked at
+     install time. -->
 
     <para>
       To test the results, issue: <command>make check</command>.
@@ -159,19 +167,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
-<!--
-    <para>
-      If you passed <option>- -enable-gtk-doc</option> to the
-      <command>configure</command> script, the API will automatically be
-      installed.  Otherwise, if desired, you can still install the API
-      documentation to the <filename
-      class="directory">/usr/share/gtk-doc/html/gnutls</filename> directory
-      using the following command as the <systemitem
-      class="username">root</systemitem> user:
-    </para>
 
-<screen role="root"><userinput>make -C doc/reference install-data-local</userinput></screen>
--->
   </sect2>
 
   <sect2 role="commands">
@@ -182,14 +178,14 @@ make</userinput></screen>
       switch tells gnutls to use the PKCS #11 trust store as the default trust.
       Omit this switch if <xref linkend="p11-kit"/> is not installed.
     </para>
-
+    <!-- see above
     <para>
-      <parameter>--disable-rpath</parameter>: This switch prevents building
+      <parameter>- -disable-rpath</parameter>: This switch prevents building
       GnuTLS utilities and tests with hardcoded runtime library search path.
       Hardcoded rpath is unneeded for BLFS, and it causes test failures if
       an old version of GnuTLS is installed.
     </para>
-
+    -->
     <para>
       <option>--with-default-trust-store-file=/etc/pki/tls/certs/ca-bundle.crt</option>:
       This switch tells <command>configure</command> where to find the
@@ -214,11 +210,6 @@ make</userinput></screen>
       <option>--with-included-unistring</option>: uses the bundled version of
       libunistring, instead of the system one. Use this switch if you have not
       installed <xref linkend="libunistring"/>.
-    </para>
-
-    <para>
-      <option>--disable-guile</option>: If guile is installed, bindings for
-      that languages are built. This prevents building them.
     </para>
 
   </sect2>

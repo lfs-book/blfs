@@ -6,9 +6,9 @@
 
   <!ENTITY pipewire-download-http "https://github.com/PipeWire/pipewire/archive/&pipewire-version;/pipewire-&pipewire-version;.tar.gz">
   <!ENTITY pipewire-download-ftp  " ">
-  <!ENTITY pipewire-md5sum        "bc81e63e6e93383106a3bd8295e335ea">
-  <!ENTITY pipewire-size          "1.9 MB">
-  <!ENTITY pipewire-buildsize     "56 MB (with tests)">
+  <!ENTITY pipewire-md5sum        "3abd73b1b925e34799f0d1dcf51b1dcd">
+  <!ENTITY pipewire-size          "2.0 MB">
+  <!ENTITY pipewire-buildsize     "63 MB (with tests)">
   <!ENTITY pipewire-time          "0.5 SBU (with tests, both using parallelism=4)">
 ]>
 
@@ -32,7 +32,7 @@
       files between applications.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,7 +73,7 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="bluez"/>,
-      <phrase revision="sysv"><xref linkend="dbus"/></phrase>,
+      <phrase revision="sysv"><xref linkend="dbus"/>,</phrase>
       <xref linkend="gstreamer10"/>,
       <xref linkend="gst10-plugins-base"/>,
       <xref linkend="pulseaudio"/>,
@@ -107,10 +107,11 @@
       (runtime, for running Pipewire daemon), and
       <ulink url="https://sourceforge.net/projects/xmltoman/">xmltoman</ulink>
     </para>
-
+<!--
     <para condition="html" role="usernotes">
       User Notes: <ulink url="&blfs-wiki;/pipewire"/>
     </para>
+-->
   </sect2>
 
   <sect2 role="installation">
@@ -124,14 +125,23 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dsession-managers= .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dsession-managers= \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
     <para>
       To test the result, issue: <command>ninja test</command>.
-      <phrase revision='systemd'>One test named
-      <filename>test-support</filename> is known to fail.</phrase>
     </para>
+
+    <para>
+      If upgrading from an earlier release of Pipewire, it's needed to
+      remove any old binary executables that interfere with the
+      installation.  As the &root; user:
+    </para>
+  
+<screen role='root'><userinput>rm -vf /usr/bin/pipewire-*</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -184,6 +194,7 @@ ninja</userinput></screen>
           pipewire-pulse,
           pw-cat,
           pw-cli,
+          pw-config,
           pw-dot,
           pw-dump,
           pw-jack,
@@ -305,6 +316,19 @@ ninja</userinput></screen>
           </para>
           <indexterm zone="pipewire pw-cli">
             <primary sortas="b-pw-cli">pw-cli</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="pw-config">
+        <term><command>pw-config</command></term>
+        <listitem>
+          <para>
+            allows you to interact with pipewire's configuration system
+            for debugging purposes or syntax checking
+          </para>
+          <indexterm zone="pipewire pw-config">
+            <primary sortas="b-pw-config">pw-config</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -32,7 +32,7 @@
       libsoup and libxml to ease remote use of the RESTful API.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,9 +84,10 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="libadwaita1"/> (to build the demo),
-      <xref linkend="vala"/>, and
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink>
+      <xref linkend="gi-docgen"/>,
+      <xref linkend="libadwaita1"/> and
+      <xref linkend="gtksourceview5"/> (to build the demo), and
+      <xref linkend="vala"/>
     </para>
 
     <para condition="html" role="usernotes">User Notes:
@@ -105,10 +106,20 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr        \
-      --buildtype=release  \
-      -Dexamples=false     \
-      -Dgtk_doc=false      .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dexamples=false    \
+            -Dgtk_doc=false     \
+            ..                  &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed "/output/s/librest-1.0/rest-&rest-version;/" -i ../docs/meson.build &amp;&amp;
+meson configure -Dgtk_doc=true                                 &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -130,15 +141,14 @@ ninja</userinput></screen>
     href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dgtk_doc=false</parameter>: Remove this option if
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink>
-      is installed and you wish to build and install the API documentation.
+      <parameter>-Dgtk_doc=false</parameter>: &gi-doc-disable;
     </para>
 
     <para>
       <parameter>-Dexamples=false</parameter>: Remove this option if
-      <xref linkend="libadwaita1"/> is installed and you wish to build the
-      demonstration application provided by this package.
+      <xref linkend="libadwaita1"/> and <xref linkend="gtksourceview5"/> are
+      installed and you wish to build the demonstration application provided
+      by this package.
     </para>
 
     <para>

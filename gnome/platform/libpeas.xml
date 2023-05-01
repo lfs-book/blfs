@@ -31,7 +31,7 @@
       to assume its own extensibility.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,12 +83,12 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink>,
-      <ulink url="http://glade.gnome.org/">Glade</ulink>,
+      <xref linkend="gi-docgen"/>,
+      <ulink url="https://glade.gnome.org/">Glade</ulink>,
       <ulink url="https://pypi.org/project/embed">embed</ulink>,
       <ulink url="https://github.com/pavouk/lgi">LGI</ulink> (for LUA bindings,
       built with LUA-5.1), with either
-      <ulink url="http://luajit.org/">luajit</ulink> or
+      <ulink url="https://luajit.org/">luajit</ulink> or
       <ulink url="https://www.lua.org/ftp/lua-5.1.5.tar.gz">LUA-5.1</ulink>
     </para>
 
@@ -108,7 +108,20 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release --wrap-mode=nofallback .. &amp;&amp;
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            --wrap-mode=nofallback \
+            ..                     &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed "/docs_dir =/s@\$@/ 'libpeas-&libpeas-version;'@" \
+    -i ../docs/reference/meson.build       &amp;&amp;
+meson configure -Dgtk_doc=true             &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -143,12 +156,6 @@ ninja</userinput></screen>
     <para>
       <option>-Ddemos=false</option>: Add this switch if you do not wish to
       build the demo programs.
-    </para>
-
-    <para>
-      <option>-Dgtk_doc=true</option>: Add this switch if you wish to
-      build the reference manual and you have
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink> installed on your system.
     </para>
 
   </sect2>

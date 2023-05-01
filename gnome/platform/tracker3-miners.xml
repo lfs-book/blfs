@@ -6,9 +6,9 @@
 
   <!ENTITY tracker3-miners-download-http "&gnome-download-http;/tracker-miners/3.4/tracker-miners-&tracker3-miners-version;.tar.xz">
   <!ENTITY tracker3-miners-download-ftp  "&gnome-download-ftp;/tracker-miners/3.4/tracker-miners-&tracker3-miners-version;.tar.xz">
-  <!ENTITY tracker3-miners-md5sum        "119d6a87829e9d80c1635bedb56312bd">
+  <!ENTITY tracker3-miners-md5sum        "12978674553320dc90c283dbd2605b1d">
   <!ENTITY tracker3-miners-size          "6.9 MB">
-  <!ENTITY tracker3-miners-buildsize     "36 MB (with tests)">
+  <!ENTITY tracker3-miners-buildsize     "31 MB (with tests)">
   <!ENTITY tracker3-miners-time          "0.4 SBU (with parallelism=4; add 1.0 SBU for tests, dependent on disk speed)">
 ]>
 
@@ -30,7 +30,7 @@
       data extractors for Tracker.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -101,7 +101,7 @@
       <xref linkend="totem-pl-parser"/>,
       <xref linkend="upower"/>,
       <ulink url="https://github.com/lipnitsk/libcue">libcue</ulink>,
-      <ulink url="http://libiptcdata.sourceforge.net/">libitpcdata</ulink>,
+      <ulink url="https://libiptcdata.sourceforge.net/">libitpcdata</ulink>,
       <ulink url="https://libosinfo.org">libosinfo</ulink>, and
       <ulink url="https://gitlab.gnome.org/GNOME/gupnp">gupnp</ulink>
       <!--<ulink url="https://pypi.python.org/pypi/tap.py/">tap.py</ulink>
@@ -153,16 +153,20 @@
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dman=false .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dman=false         \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr                 \
-      --buildtype=release           \
-      -Dsystemd_user_services=false \
-      -Dman=false .. &amp;&amp;
+meson setup --prefix=/usr                 \
+            --buildtype=release           \
+            -Dsystemd_user_services=false \
+            -Dman=false                   \
+            ..                            &amp;&amp;
 ninja</userinput></screen>
 
     <para>

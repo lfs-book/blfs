@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gjs-download-http "&gnome-download-http;/gjs/1.74/gjs-&gjs-version;.tar.xz">
-  <!ENTITY gjs-download-ftp  "&gnome-download-ftp;/gjs/1.74/gjs-&gjs-version;.tar.xz">
-  <!ENTITY gjs-md5sum        "f82d0acac0c750ce5298a2d4789af401">
-  <!ENTITY gjs-size          "624 KB">
+  <!ENTITY gjs-download-http "&gnome-download-http;/gjs/1.76/gjs-&gjs-version;.tar.xz">
+  <!ENTITY gjs-download-ftp  "&gnome-download-ftp;/gjs/1.76/gjs-&gjs-version;.tar.xz">
+  <!ENTITY gjs-md5sum        "0d5ad8f315872e5dce7335d182cda546">
+  <!ENTITY gjs-size          "632 KB">
   <!ENTITY gjs-buildsize     "239 MB (with tests)">
-  <!ENTITY gjs-time          "1.1 SBU (with tests)">
+  <!ENTITY gjs-time          "0.6 SBU (with tests)">
 ]>
 
 <sect1 id="gjs" xreflabel="Gjs-&gjs-version;">
@@ -30,7 +30,7 @@
       <application>GNOME</application>.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,7 +87,7 @@
       <xref linkend="sysprof"/>,
       <xref linkend="valgrind"/> (for tests),
       <ulink url="http://dtrace.org/blogs/about">DTrace</ulink>,
-      <ulink url="http://ltp.sourceforge.net/coverage/lcov.php">LCOV</ulink>, and
+      <ulink url="https://github.com/linux-test-project/lcov">LCOV</ulink>, and
       <ulink url="https://sourceware.org/systemtap">Systemtap</ulink>
     </para>
 
@@ -107,7 +107,10 @@
 <screen><userinput>mkdir gjs-build &amp;&amp;
 cd    gjs-build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            --wrap-mode=nofallback \
+            ..                     &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -122,7 +125,7 @@ ninja</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>ninja install &amp;&amp;</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -131,6 +134,14 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-wrap-nofallback.xml"/>
+
+    <para>
+      <option>-Dprofiler=disabled</option>: prevents building the profiler
+      backend even if <xref linkend="sysprof"/> is installed.
+    </para>
 
   </sect2>
 

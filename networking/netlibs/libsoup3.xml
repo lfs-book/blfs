@@ -8,10 +8,10 @@
            "&gnome-download-http;/libsoup/&libsoup3-minor;/libsoup-&libsoup3-version;.tar.xz">
   <!ENTITY libsoup3-download-ftp
            "&gnome-download-ftp;/libsoup/&libsoup3-minor;/libsoup-&libsoup3-version;.tar.xz">
-  <!ENTITY libsoup3-md5sum        "33902089d52f862d6b39680dd4c4e3aa">
+  <!ENTITY libsoup3-md5sum        "0c78e01758447368ed7cc3802d55c949">
   <!ENTITY libsoup3-size          "1.5 MB">
-  <!ENTITY libsoup3-buildsize     "24 MB (with tests)">
-  <!ENTITY libsoup3-time          "0.3 SBU (Using parallelism=4; with tests)">
+  <!ENTITY libsoup3-buildsize     "27 MB (with tests)">
+  <!ENTITY libsoup3-time          "0.4 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="libsoup3" xreflabel="libsoup-&libsoup3-version;">
@@ -34,7 +34,7 @@
       it also has an asynchronous API for use in threaded applications.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -92,14 +92,14 @@
       <xref linkend="apache"/> (required to run the test suite),
       <xref linkend="brotli"/>,
       <xref linkend="curl"/> (required to run the test suite),
-      <xref linkend="sysprof"/> (for profiling),
+      <xref linkend="gi-docgen"/>,
       <xref linkend="mitkrb"/> (required to run the test suite),
-      <!--<xref linkend="gtk-doc"/>,-->
-         <!-- It seems that XMLRPC is part of PHP 5.4.10 -->
+   <!-- It seems that XMLRPC is part of PHP 5.4.10 -->
       <xref linkend="php"/> compiled with XMLRPC-EPI
       support (only used for the XMLRPC regression tests),
-      <xref linkend="samba"/> (ntlm_auth is required to run the test suite), and
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink>
+      <xref linkend="samba"/> (ntlm_auth is required to run the test suite),
+      <xref linkend="sysprof"/> (for profiling), and
+      <ulink url="https://github.com/posener/wstest">wstest</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -111,6 +111,12 @@
     <title>Installation of libsoup3</title>
 
     <para>
+      Fix the installation path of API documentation:
+    </para>
+
+<screen><userinput>sed 's/apiversion/soup_version/' -i docs/reference/meson.build</userinput></screen>
+
+    <para>
       Install <application>libsoup3</application> by running the following
       commands:
     </para>
@@ -118,13 +124,13 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr          \
-      --buildtype=release    \
-      -Dvapi=enabled         \
-      -Dgssapi=disabled      \
-      -Dsysprof=disabled     \
-      --wrap-mode=nofallback \
-      ..                     &amp;&amp;
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            -Dvapi=enabled         \
+            -Dgssapi=disabled      \
+            -Dsysprof=disabled     \
+            --wrap-mode=nofallback \
+            ..                     &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -155,9 +161,11 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <option>-Ddocs=enabled</option>: Use this option if you want to build
-      the documentation. Note that you must have
-      <ulink url="&gi-docgen-url;">gi-docgen</ulink> installed.
+      <option>-Ddocs=enabled</option>: If <xref linkend='gi-docgen'/> is
+      installed, the API documentation will be built and installed no matter
+      if this option is used or not.  This option causes the
+      <command>meson</command> command to fail if
+      <xref linkend='gi-docgen'/> is not installed.
     </para>
 
     <para>
@@ -190,7 +198,8 @@ ninja</userinput></screen>
         </seg>
         <seg>
           /usr/include/libsoup-3.0,
-          /usr/share/gtk-doc/html/libsoup-3.0 (only installed if -Ddocs=enabled is passed)
+          /usr/share/doc/libsoup-&libsoup3-version;
+          (only installed if -Ddocs=enabled is passed)
         </seg>
       </seglistitem>
     </segmentedlist>

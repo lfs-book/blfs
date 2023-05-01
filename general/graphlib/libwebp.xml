@@ -6,9 +6,9 @@
 
   <!ENTITY libwebp-download-http "http://downloads.webmproject.org/releases/webp/libwebp-&libwebp-version;.tar.gz">
   <!ENTITY libwebp-download-ftp  " ">
-  <!ENTITY libwebp-md5sum        "a80a95461a751118bb7d457b1afca50d">
+  <!ENTITY libwebp-md5sum        "994cf2efb664ef5140fa0b56b83fa721">
   <!ENTITY libwebp-size          "4.0 MB">
-  <!ENTITY libwebp-buildsize     "35 MB">
+  <!ENTITY libwebp-buildsize     "43 MB">
   <!ENTITY libwebp-time          "0.3 SBU">
 ]>
 
@@ -30,7 +30,7 @@
       and support programs to encode and decode images in WebP format.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -66,6 +66,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/libwebp-&libwebp-version;-upstream_fix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">libwebp Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -89,6 +99,14 @@
 
   <sect2 role="installation">
     <title>Installation of libwebp</title>
+
+    <!-- https://bugs.chromium.org/p/webp/issues/detail?id=603
+         but not public yet -->
+    <para>
+      Fix a security issue identified upstream:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../libwebp-&libwebp-version;-upstream_fix-1.patch</userinput></screen>
 
     <para>
       Install <application>libwebp</application> by running the following
@@ -149,6 +167,7 @@ make</userinput></screen>
           and webpmux
         </seg>
         <seg>
+          libsharpyuv.so,
           libwebpdecoder.so,
           libwebpdemux.so,
           libwebpmux.so,

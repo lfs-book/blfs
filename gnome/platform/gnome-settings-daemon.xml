@@ -33,7 +33,7 @@
       and the applications that run under it.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,8 +86,6 @@
       <xref linkend="libnotify"/>,
       <xref linkend="libwacom"/>,
       <xref linkend="pulseaudio"/>,
-      <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
-      <phrase revision="systemd"><xref linkend="systemd"/>,</phrase>
       and <xref linkend="upower"/>
     </para>
 
@@ -164,13 +162,16 @@
 <screen revision='sysv'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dsystemd=false .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dsystemd=false     \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision='systemd'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <!-- [renodr, June 29th, 2019]: for some reason, on elogind, all tests

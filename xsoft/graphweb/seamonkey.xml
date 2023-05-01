@@ -6,9 +6,9 @@
 
   <!ENTITY seamonkey-download-http "&mozilla-http;/seamonkey/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
   <!ENTITY seamonkey-download-ftp  " ">
-  <!ENTITY seamonkey-md5sum        "a179b07515ba05d33d111ee89fe2dbe5">
-  <!ENTITY seamonkey-size          "244 MB">
-  <!ENTITY seamonkey-buildsize     "3.0 GB (159 MB installed)">
+  <!ENTITY seamonkey-md5sum        "92ebcb6d9410442a9c1cf9c321f292f4">
+  <!ENTITY seamonkey-size          "254 MB">
+  <!ENTITY seamonkey-buildsize     "4.4 GB (159 MB installed)">
   <!ENTITY seamonkey-time          "11 SBU (with parallelism=4)">
 ]>
 
@@ -38,7 +38,7 @@
       <xref linkend="firefox"/> and <xref linkend="thunderbird"/>.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,13 +74,13 @@
       </listitem>
     </itemizedlist>
 
- <!--
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/seamonkey-&seamonkey-version;-security_fix-1.patch"/>
+          <ulink url="&patch-root;/seamonkey-&seamonkey-version;-upstream_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -101,6 +101,7 @@
       <xref linkend="autoconf213"/>,
       <xref linkend="cbindgen"/>,
       <xref linkend="gtk3"/>,
+      <xref linkend="nodejs"/>,
       <xref linkend="python2"/>,
       <xref linkend="unzip"/>,
       <xref linkend="yasm"/>, and
@@ -138,17 +139,17 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="alsa-lib"/>,
-      <xref linkend="curl"/>,
+      <!--<xref linkend="curl"/>,-->
       <xref linkend="dbus-glib"/>,
-      <xref linkend="doxygen"/>,
+      <!--<xref linkend="doxygen"/>,-->
       <xref linkend="GConf"/>,
-      <xref linkend="gst10-plugins-base"/> (and other plugins, only for tests),
+      <!--<xref linkend="gst10-plugins-base"/> (and other plugins, only for tests),-->
       <!--<xref linkend="openjdk"/>, Not seen in logs -->
       <xref linkend="startup-notification"/>,
       <xref linkend="valgrind"/>,
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/>,
-      <ulink url="http://hunspell.sourceforge.net/">Hunspell</ulink>, and
+      <ulink url="https://hunspell.sourceforge.net/">Hunspell</ulink>, and
       <ulink url="https://facebook.github.io/watchman/">Watchman</ulink>
     </para>
 
@@ -258,21 +259,21 @@ EOF</userinput></screen>
        href="../../xincludes/mozmach.xml"/>
     </note>
 
- <!--
+<!-- Applied upstream
     <para>
-      Apply a patch to fix a critical security vulnerability in Seamonkey:
+      Apply a patch to fix a build failure with LLVM-16:
     </para>
 
-<screen><userinput>patch -Np1 -i ../seamonkey-&seamonkey-version;-security_fix-1.patch</userinput></screen>
+<screen><userinput>patch -Np1 -i ../seamonkey-&seamonkey-version;-upstream_fixes-1.patch</userinput></screen>
 -->
-
     <para>
       First remove an obsolete flag in python code, that has been removed
       in python-3.11:
     </para>
 
-<screen><userinput>grep -rl \"rU\" | xargs sed -i 's/"rU"/"r"/'</userinput></screen>
+<screen><userinput>grep -rl \'rU\' | xargs sed -i "s/'rU'/'r'/"</userinput></screen>
 
+<!-- Causes issues since xpidl is python2 in Seamonkey
     <para>
       Then fix an issue with regular expressions in python-3.11:
     </para>
@@ -281,14 +282,31 @@ EOF</userinput></screen>
     -e '/?m)/{s/?m)/?m:/;s/\$"/$)"/}' \
     -e '/?s)%/{s/?s)/?s:/;s/?"/?)"/}' \
     -i xpcom/idl-parser/xpidl/xpidl.py</userinput></screen>
+-->
+
+    <para>
+      Next, work around a problem in the Python virtual environment:
+    </para>
+
+<screen><userinput>sed -i "/if sys.executable !=/i\    open(join(bin_dir, 'pyvenv.cfg'), 'w').close()" \
+    third_party/python/virtualenv/virtualenv.py</userinput></screen>
+
+<!-- Applied upstream
+    <para>
+      Next, work around a crash that occurs when playing audio when Seamonkey
+      is compiled with rustc-1.67 or higher:
+    </para>
+
+<screen><userinput>sed -i '/USE_PULSE_RUST/d' media/libcubeb/src/moz.build</userinput></screen>
+-->
 
     <para>
       Compile <application>SeaMonkey</application> by running the following
       commands:
     </para>
 
-<screen><userinput>export CC=clang CXX=clang++ &amp;&amp;
-./mach configure            &amp;&amp;
+<screen><userinput>export CC=clang CXX=clang++          &amp;&amp;
+./mach configure || ./mach configure &amp;&amp;
 ./mach build</userinput></screen>
 
 
@@ -332,8 +350,10 @@ cp -v $(find -name seamonkey.1 | head -n1) /usr/share/man/man1</userinput></scre
     </para>
 
     <para>
-      <command>./mach configure</command>: This validates the supplied
-      dependencies and the <filename>mozconfig</filename>.
+      <command>./mach configure || ./mach configure</command>: This validates
+      the supplied dependencies and the <filename>mozconfig</filename>.
+      This is run twice because problems with mach will cause it to fail the
+      first time.
     </para>
 
     <para>

@@ -6,10 +6,10 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "c6944a9b65b13a3c9c32fef92850ca33">
-  <!ENTITY thunderbird-size          "486 MB">
-  <!ENTITY thunderbird-buildsize     "7.4 GB (202 MB installed)">
-  <!ENTITY thunderbird-time          "24 SBU (on a 4-core machine)">
+  <!ENTITY thunderbird-md5sum        "aebf4e44e428cf0a9055024b96721624">
+  <!ENTITY thunderbird-size          "484 MB">
+  <!ENTITY thunderbird-buildsize     "7.2 GB (201 MB installed)">
+  <!ENTITY thunderbird-time          "20 SBU (on a 4-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
 
@@ -36,7 +36,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,15 +72,15 @@
       </listitem>
     </itemizedlist>
 
-<!--<bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/thunderbird-&thunderbird-version;-gcc12_fix-1.patch"/>
+          <ulink url="&patch-root;/thunderbird-&thunderbird-version;-upstream_fixes-1.patch"/>
         </para>
       </listitem>
-    </itemizedlist>-->
+    </itemizedlist>
 
     <bridgehead renderas="sect3">Thunderbird Dependencies</bridgehead>
 
@@ -89,17 +89,17 @@
       <xref linkend="autoconf213"/>,
       <xref linkend="cbindgen"/>,
       <xref linkend="dbus-glib"/>,
-      both <xref linkend="gtk3"/>
-      and <xref linkend="gtk2"/>,
+      <xref linkend="gtk3"/>,
+      <!--and <xref linkend="gtk2"/>,-->
       <xref linkend="llvm"/> including clang, <!-- used by default if found -->
       <xref linkend="nodejs"/>,
       <xref linkend="pulseaudio"/> (or <xref linkend="alsa-lib"/> if you edit
       the mozconfig; although it is now deprecated by mozilla),
       <xref linkend="python3"/> (rebuilt with the sqlite module),
       <xref linkend="startup-notification"/>,
-      <xref linkend="zip"/>,
-      <xref linkend="unzip"/>, and
-      <xref linkend="yasm"/>
+      <xref linkend="zip"/>, and
+      <xref linkend="unzip"/>
+      <!--<xref linkend="yasm"/>-->
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -124,9 +124,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="cyrus-sasl"/>,
-      <xref linkend="doxygen"/>,
-      <xref linkend="GConf"/>,
+      <!--<xref linkend="cyrus-sasl"/>,-->
+      <!--<xref linkend="doxygen"/>,-->
+      <!--<xref linkend="GConf"/>,-->
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/>, and
       <ulink url="https://facebook.github.io/watchman/">watchman</ulink>
@@ -208,7 +208,7 @@ ac_add_options --with-system-zlib
 # and was reported to seriously slow the build. Disable it.
 ac_add_options --without-wasm-sandboxed-libraries</literal>
 EOF</userinput></screen>
-
+<!-- Fixed in 102.9
     <para>
       A change in cbindgen-0.24.2 causes a symbol to now be output by
       cbindgen, but it has already been defined in a header. This sed
@@ -216,7 +216,7 @@ EOF</userinput></screen>
     </para>
 
 <screen><userinput>sed -i '/ROOT_CLIP_CHAIN/d' gfx/webrender_bindings/webrender_ffi.h</userinput></screen>
-
+-->
 <!-- Not needed with clang
      https://bugzilla.mozilla.org/show_bug.cgi?id=1729459
     <para>
@@ -230,6 +230,13 @@ EOF</userinput></screen>
               -i modules/fdlibm/src/math_private.h ;;
 esac</userinput></screen>
 -->
+
+    <para>
+      Fix building Thunderbird with rustc-1.68.x:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;-upstream_fixes-1.patch</userinput></screen>
+
     <para>
       Now invoke the Python <command>mach</command> script to compile
       <application>Thunderbird</application>:
@@ -243,7 +250,7 @@ esac</userinput></screen>
       href="../../xincludes/mozmach.xml"/>
 
     </note>
-
+    <!-- Fixed in 102.8
     <para>
       First remove an obsolete flag in python code, that has been removed
       in python-3.11:
@@ -259,11 +266,7 @@ esac</userinput></screen>
     -e '/?m)/{s/?m)/?m:/;s/\$"/$)"/}' \
     -e '/?s)%/{s/?s)/?s:/;s/?"/?)"/}' \
     -i xpcom/idl-parser/xpidl/xpidl.py</userinput></screen>
-
-     <para>
-       Now invoke the Python <command>mach</command> script to compile the
-       package.
-     </para>
+-->
 
 <screen><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
 export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
@@ -335,8 +338,8 @@ export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
     <sect3><title>Configuration Information</title>
 
       <para>
-        If your Window or Desktop Manager does not allow you to configure a
-        default browser, you can add a configuration parameter to
+        If your Window Manager or Desktop Environment does not allow you to
+        configure a default browser, you can add a configuration parameter to
         <application>Thunderbird</application> so that a browser will start when
         you click on an Internet/intranet/local URL. The procedure to check
         or modify any of the configuration parameters is quite simple and the
@@ -367,7 +370,7 @@ export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
         set to the path of the desired browser, e.g.
         <option>/usr/bin/firefox</option>.
       </para>
-
+<!--  Bad URL
       <tip>
         <para>
           There is a multitude of configuration parameters you can tweak to
@@ -376,7 +379,7 @@ export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
           <ulink url="http://preferential.mozdev.org/preferences.html"/>.
         </para>
       </tip>
-
+-->
     <para>
 
       If you use a desktop environment such as <application>GNOME</application>

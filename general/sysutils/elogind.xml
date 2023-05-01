@@ -37,7 +37,7 @@
       <filename class="directory">/run/systemd</filename> layout.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,15 +75,11 @@
 
     <bridgehead renderas="sect3">elogind Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required">
-      <xref role="first" linkend="dbus"/>
-    </para>
-
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref role="runtime" linkend="dbus"/> (runtime),
       <xref linkend="linux-pam"/> (required for Xorg),
-      <xref linkend="polkit"/> (runtime),
+      <xref role="runtime" linkend="polkit"/> (runtime),
       <xref linkend="DocBook"/>,
       <xref linkend="docbook-xsl"/>, and
       <xref linkend="libxslt"/> (all three to build the man pages)
@@ -91,11 +87,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      For the tests:
       <xref linkend="lxml"/>,
-      <xref linkend="gobject-introspection"/>,
       <xref linkend="zsh"/>,
-      <xref linkend="valgrind"/>,
+      <xref linkend="valgrind"/> (needed for tests),
       <ulink url="https://github.com/linux-audit/audit-userspace">
       audit-userspace</ulink>,
       <ulink url="https://github.com/scop/bash-completion">
@@ -132,9 +126,11 @@ File systems ---&gt;
       is enabled with:
     </para>
 
-<screen><literal>-*- Cryptographic API ---&gt;                               [CONFIG_CRYPTO]
-   &lt;M/*&gt; Userspace cryptographic algorithm configuration [CONFIG_CRYPTO_USER]
-   &lt;M/*&gt; User-space interface for hash algorithms        [CONFIG_CRYPTO_USER_API_HASH]</literal></screen>
+<screen><literal>-*- Cryptographic API ---&gt;                                  [CONFIG_CRYPTO]
+    Crypto core or helper  --->
+      &lt;M/*&gt; Userspace cryptographic algorithm configuration [CONFIG_CRYPTO_USER]
+    Userspace interface  --->  
+      &lt;M/*&gt; Hash algorithms                                 [CONFIG_CRYPTO_USER_API_HASH]</literal></screen>
 
     <indexterm zone="elogind elogind-kernel">
       <primary sortas="d-elogind">elogind</primary>
@@ -160,12 +156,12 @@ if (r &lt; 0)\
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr                        \
-      --buildtype=release                  \
-      -Dcgroup-controller=elogind          \
-      -Ddbuspolicydir=/etc/dbus-1/system.d \
-      -Dman=auto                           \
-      ..  &amp;&amp;
+meson setup ..                    \
+      --prefix=/usr               \
+      --buildtype=release         \
+      -Dman=auto                  \
+      -Dcgroup-controller=elogind \
+      -Ddbuspolicydir=/etc/dbus-1/system.d &amp;&amp;
 ninja</userinput></screen>
 
     <para>
