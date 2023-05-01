@@ -5,12 +5,20 @@
   %general-entities;
 
 
-  <!ENTITY qt5-download-http "&qt5-url;/">
-  <!ENTITY qt5-download-ftp  " ">
-  <!ENTITY qt5-md5sum        "See below">
-  <!ENTITY qt5-size          "11 MB for basic modules, 59 MB for qtwebengine,">
-  <!ENTITY qt5-buildsize     "930 MB (23 MB installed) for basic modules">
-  <!ENTITY qt5-time          "Using parallelism=4: 3.4 SBU for basic modules">
+  <!ENTITY qt5-qttools-md5            "6b1918dc24e0a56c9fd48d69e78b13fa">
+  <!ENTITY qt5-qtsvg-md5              "5fc7f98d8ba2078446c538a461566d4b">
+  <!ENTITY qt5-qtx11extras-md5        "3646de5ffd3cf29c7a3b266d3a9b7a02">
+  <!ENTITY qt5-qtwayland-md5          "decc31455e124036dce9644b5d8bd754">
+  <!ENTITY qt5-qtdeclarative-md5      "7a811f6ee3b05320d5ae6fffbadc8136">
+  <!ENTITY qt5-qtquickcontrols2-md5   "5e4b1b8145a738a36d6f14d2d6cb32ec">
+  <!ENTITY qt5-qtgraphicaleffects-md5 "0f528e3c1bf0e81befb7c1037c2200de">
+  <!ENTITY qt5-qtxmlpatterns-md5      "438c2f84b44ee681e13e2ebe13360338">
+  <!ENTITY qt5-download-http          "&qt5-url;/">
+  <!ENTITY qt5-download-ftp           " ">
+  <!ENTITY qt5-md5sum                 "See below">
+  <!ENTITY qt5-size                   "11 MB for basic modules, 59 MB for qtwebengine,">
+  <!ENTITY qt5-buildsize              "930 MB (23 MB installed) for basic modules">
+  <!ENTITY qt5-time                   "Using parallelism=4: 3.4 SBU for basic modules">
 ]>
 
 <sect1 id="qt5" xreflabel="Qt-&qt5-version;">
@@ -196,20 +204,20 @@
 
 <screen><userinput>cat &gt; qt5-submodules-&qt5-version;.md5 &lt;&lt; "EOF"
 <literal># Begin basic group
-739403634e1326a3d52902a835015a4b  qttools-everywhere-src-5.15.2.tar.xz
-c0f5c1c2cc1b66e56ce4ef13a2b7093a  qtsvg-everywhere-src-5.15.2.tar.xz
-92cf72015788bb4dcab14494f2835b32  qtx11extras-everywhere-src-5.15.2.tar.xz
-26577fbbe0d011b7034bca3c64bc38ae  qtwayland-everywhere-src-5.15.2.tar.xz
+&qt5-qttools-md5;  qttools-everywhere-opensource-src-&qt5-version;.tar.xz
+&qt5-qtsvg-md5;  qtsvg-everywhere-opensource-src-&qt5-version;.tar.xz
+&qt5-qtx11extras-md5;  qtx11extras-everywhere-opensource-src-&qt5-version;.tar.xz
+&qt5-qtwayland-md5;  qtwayland-everywhere-opensource-src-&qt5-version;.tar.xz
 # End basic group
 # Begin KDE group
-db3c185d6f13fc60828f8f9f20e092c4  qtdeclarative-everywhere-src-5.15.2.tar.xz
-2abc5e7b8e6b4a80d7533daad37749e9  qtquickcontrols2-everywhere-src-5.15.2.tar.xz
-2ae1ef858425aa71d62b15467a84b022  qtgraphicaleffects-everywhere-src-5.15.2.tar.xz
-ef96631d72399cfa495f223ef21bb039  qtxmlpatterns-everywhere-src-5.15.2.tar.xz
+&qt5-qtdeclarative-md5;  qtdeclarative-everywhere-opensource-src-&qt5-version;.tar.xz
+&qt5-qtquickcontrols2-md5;  qtquickcontrols2-everywhere-opensource-src-&qt5-version;.tar.xz
+&qt5-qtgraphicaleffects-md5;  qtgraphicaleffects-everywhere-opensource-src-&qt5-version;.tar.xz
+&qt5-qtxmlpatterns-md5;  qtxmlpatterns-everywhere-opensource-src-&qt5-version;.tar.xz
 # TODO
 # End KDE group
 # Begin qtwebengine
-c88cbe3158feb20c4feb3d54262feb23  qtwebengine-everywhere-src-5.15.2.tar.xz
+c88cbe3158feb20c4feb3d54262feb23  qtwebengine-everywhere-opensource-src-5.15.2.tar.xz
 # End qtwebengine
 # Begin optional group
 # TODO
@@ -252,7 +260,6 @@ module_build() {
       fi
       make
       as_root make install
-      if type -p post_install; then post_install; fi
     popd
 
     rm -rf $packagedir
@@ -286,31 +293,34 @@ set -e # exit the subshell in case of error
 unset OPTIONS
 sed -n "/Begin basic/,/End basic/p" qt5-submodules-&qt5-version;.md5 | \
                 while read MD5_ENTRY; do
-  if [ -z "${MD5_ENTRY%\#*}" ]; then continue; fi
-  case "$MD5_ENTRY" in
-    *qttools*)
-      post_install(){
-        QT5BINDIR=$QT5DIR/bin
+  if [ -n "${MD5_ENTRY%\#*}" ]; then module_build; fi
+done
+)</userinput></screen>
 
-        as_root sh &lt;&lt; ROOT_EOF
-        install -v -dm755 /usr/share/pixmaps/
+    <para>
+      Create desktop menu entries pointing to some tools from the
+      Qt system. As the &root; user:
+    </para>
 
-        install -v -Dm644 src/assistant/assistant/images/assistant-128.png \
-                  /usr/share/pixmaps/assistant-qt5.png
+    <screen role="root"><userinput>QT5BINDIR=$QT5DIR/bin
+install -v -dm755 /usr/share/pixmaps/
 
-        install -v -Dm644 src/designer/src/designer/images/designer.png \
-                  /usr/share/pixmaps/designer-qt5.png
+install -v -Dm644 src/assistant/assistant/images/assistant-128.png \
+          /usr/share/pixmaps/assistant-qt5.png
 
-        install -v -Dm644 src/linguist/linguist/images/icons/linguist-128-32.png \
-                  /usr/share/pixmaps/linguist-qt5.png
+install -v -Dm644 src/designer/src/designer/images/designer.png \
+          /usr/share/pixmaps/designer-qt5.png
 
-        install -v -Dm644 src/qdbus/qdbusviewer/images/qdbusviewer-128.png \
-                  /usr/share/pixmaps/qdbusviewer-qt5.png
+install -v -Dm644 src/linguist/linguist/images/icons/linguist-128-32.png \
+          /usr/share/pixmaps/linguist-qt5.png
 
-        install -dm755 /usr/share/applications
+install -v -Dm644 src/qdbus/qdbusviewer/images/qdbusviewer-128.png \
+          /usr/share/pixmaps/qdbusviewer-qt5.png
 
-        cat &gt; /usr/share/applications/assistant-qt5.desktop &lt;&lt; EOF
-[Desktop Entry]
+install -dm755 /usr/share/applications
+
+cat &gt; /usr/share/applications/assistant-qt5.desktop &lt;&lt; EOF
+<literal>[Desktop Entry]
 Name=Qt5 Assistant
 Comment=Shows Qt5 documentation and examples
 Exec=$QT5BINDIR/assistant
@@ -318,11 +328,11 @@ Icon=assistant-qt5.png
 Terminal=false
 Encoding=UTF-8
 Type=Application
-Categories=Qt;Development;Documentation;
+Categories=Qt;Development;Documentation;</literal>
 EOF
 
-        cat &gt; /usr/share/applications/designer-qt5.desktop &lt;&lt; EOF
-[Desktop Entry]
+cat &gt; /usr/share/applications/designer-qt5.desktop &lt;&lt; EOF
+<literal>[Desktop Entry]
 Name=Qt5 Designer
 GenericName=Interface Designer
 Comment=Design GUIs for Qt5 applications
@@ -332,11 +342,11 @@ MimeType=application/x-designer;
 Terminal=false
 Encoding=UTF-8
 Type=Application
-Categories=Qt;Development;
+Categories=Qt;Development;</literal>
 EOF
 
-        cat &gt; /usr/share/applications/linguist-qt5.desktop &lt;&lt; EOF
-[Desktop Entry]
+cat &gt; /usr/share/applications/linguist-qt5.desktop &lt;&lt; EOF
+<literal>[Desktop Entry]
 Name=Qt5 Linguist
 Comment=Add translations to Qt5 applications
 Exec=$QT5BINDIR/linguist
@@ -345,11 +355,11 @@ MimeType=text/vnd.trolltech.linguist;application/x-linguist;
 Terminal=false
 Encoding=UTF-8
 Type=Application
-Categories=Qt;Development;
+Categories=Qt;Development;</literal>
 EOF
 
-        cat &gt; /usr/share/applications/qdbusviewer-qt5.desktop &lt;&lt; EOF
-[Desktop Entry]
+cat &gt; /usr/share/applications/qdbusviewer-qt5.desktop &lt;&lt; EOF
+<literal>[Desktop Entry]
 Name=Qt5 QDbusViewer
 GenericName=D-Bus Debugger
 Comment=Debug D-Bus applications
@@ -358,25 +368,17 @@ Icon=qdbusviewer-qt5.png
 Terminal=false
 Encoding=UTF-8
 Type=Application
-Categories=Qt;Development;Debugger;
-EOF
-ROOT_EOF
-      }
-      export -f post_install ;;
+Categories=Qt;Development;Debugger;</literal>
+EOF</userinput></screen>
 
-    *) unset -f post_install ;;
-  esac
+    <para>
+      Some packages such as vlc look for certain
+      executables with a -qt5 suffix. Still as the &root; user:
+    </para>
 
-  module_build
-
-done
-#     Some packages such as vlc look for certain
-#     executables with a -qt5 suffix:
-for file in lconvert lrelease lupdate; do
-  as_root ln -sfrvn $QT5DIR/bin/$file /usr/bin/$file-qt5
-done
-
-)</userinput></screen>
+<screen role="root"><userinput>for file in lconvert lrelease lupdate; do
+  ln -sfrvn $QT5DIR/bin/$file /usr/bin/$file-qt5
+done</userinput></screen>
 
     <sect3 role="content">
       <title>Contents of basic modules</title>
@@ -657,6 +659,19 @@ done
     <para>
       Install the modules needed for KDE with the following instructions:
     </para>
+
+<screen><userinput>( # start a subshell
+set -e # exit the subshell in case of error
+
+sed -n "/Begin KDE/,/End KDE/p" qt5-submodules-&qt5-version;.md5 | \
+                while read MD5_ENTRY; do
+  if [ -z "${MD5_ENTRY%\#*}" ]; then continue; fi
+  case $MD5_ENTRY in
+     TODO) OPTIONS=
+  esac
+done
+)</userinput></screen>
+
   </sect2>
 
   <sect2 id="qtwebengine" xreflabel="QtWebEngine">
