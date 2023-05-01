@@ -224,15 +224,17 @@ ln -sfnv qt-&qt5-version; /opt/qt5</userinput></screen>
       commands:
     </para>
 
-<screen><userinput>./configure -prefix $QT5PREFIX                        \
-            -sysconfdir /etc/xdg                      \
-            -confirm-license                          \
-            -opensource                               \
-            -dbus-linked                              \
-            -openssl-linked                           \
-            -system-sqlite                            \
-            -nomake examples                          \
-            -no-rpath                                 &amp;&amp;
+<screen><userinput>./configure -prefix $QT5PREFIX   \
+            -sysconfdir /etc/xdg \
+            -confirm-license     \
+            -opensource          \
+            -dbus-linked         \
+            -openssl-linked      \
+            -system-sqlite       \
+            -system-harfbuzz     \
+            -nomake examples     \
+            -syslog              \
+            -no-rpath            &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -298,8 +300,8 @@ done</userinput></screen>
     </para>
 
    <para>
-      <parameter>-system-sqlite</parameter>: This switch enables use
-      of the system version of <application>SQLite</application>.
+      <parameter>-system-harfbuzz</parameter>: This switch enables use
+      of the system version of <application>Harfbuzz</application>.
     </para>
 
     <para>
@@ -309,6 +311,11 @@ done</userinput></screen>
       <application>OpenSSL</application> libraries into
       <application>Qt5</application> libraries instead of
       <command>dlopen()</command>-ing them.
+    </para>
+
+    <para>
+      <parameter>-syslog</parameter>: This switch allows to send Qt messages
+      to the <command>syslog</command> logging system.
     </para>
 
   </sect2>
