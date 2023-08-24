@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY uacme-version        "1.7.3">
+  <!ENTITY uacme-download-http
+           "https://github.com/ndilieto/uacme/archive/refs/tags/uacme-&uacme-version;.tar.gz">
+  <!ENTITY uacme-download-ftp   " ">
+  <!ENTITY uacme-md5sum        "0b91c492bf96925fb2f2a3985a7d3d73">
+  <!ENTITY uacme-size          "250 KB">
+  <!ENTITY uacme-buildsize     "1 MB">
+  <!ENTITY uacme-time          "0.1 SBU">
+]>
+
+<sect1 id="uacme" xreflabel="Uacme-&uacme-version;">
+  <?dbhtml filename="uacme.html"?>
+
+  <title>Uacme-&uacme-version;</title>
+
+  <indexterm zone="uacme">
+    <primary sortas="u-Uacme">Uacme</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Uacme utility</title>
+
+    <para>
+      The <application>Uacme</application> package contains an easy to
+      use utility to manage certificates provided by <literal>LetsEncrypt</literal>.
+      It is an alternative to the <application>certbot</application>.
+    </para>
+
+    &lfs112_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&uacme-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&uacme-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &uacme-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &uacme-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &uacme-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &uacme-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/uacme-&uacme-version;-blfs_layout-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+-->
+    <bridgehead renderas="sect3">Uacme Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="curl"/>,
+      <xref linkend="gnutls"/> and
+      <xref linkend="apache"/> (runtime)
+    </para>
+<!--
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="openssl"/>
+    </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="brotli"/>,
+      <xref linkend="db"/>,
+      <xref linkend="doxygen"/>,
+      <xref linkend="libxml2"/>,
+      <xref linkend="lua"/>,
+      <xref linkend="lynx"/> or
+      <xref linkend="Links"/> or
+      <ulink url="&elinks-url;">ELinks</ulink>,
+      <xref linkend="nghttp2"/>,
+      <xref linkend="openldap"/> (<xref linkend="apr-util"/> needs to be
+      installed with ldap support),
+      <xref linkend="rsync"/>, and
+      <ulink url="https://sourceforge.net/projects/distcache">Distcache</ulink>
+    </para>
+-->
+
+    <para condition="html" role="usernotes">
+      User Notes: <ulink url="&blfs-wiki;/uacme"/>
+    </para>
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Uacme utility</title>
+
+    <para>
+      First, fix a hard coded path to match the defaut settings of
+      the BLFS httpd installation:
+    </para>
+<screen><userinput>sed -e "s;/var/www/;/srv/www/;" -i uacme.sh</userinput></screen>
+
+    <para>
+      Build and install <application>Uacme</application> by running the
+      following commands:
+    </para>
+
+<screen><userinput>autoreconf                 &amp;&amp;
+./configure --prefix=/usr  \
+            --disable-docs &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>--disable-docs</parameter>: No rebuild of docs.
+    </para>
+
+  </sect2>
+
+  <sect2 role="configuration">
+    <title>Using Uacme</title>
+
+    <note>
+      <para>
+        Make sure that your webserver works fine on http (port 80). It
+        might be checked by pointing the browser to the URL you want to
+        secure with the new certificate. In this example, 
+        point the browser to http://www.your.domain.com and verify that
+        this produces the expected content.
+      </para>
+      <para>
+        This also means that the DNS setup should to be in place so
+        that names can be used instead of bare IP addresses. The
+        webserver has to be reachable from the internet.
+      </para>
+    </note>
+
+    <para>
+      First, create an account and a private key. The directory
+      used in the subsequent command (<filename class="directory">/etc/uacme.d</filename>)
+      can be freely chosen. The certificates will be stored there
+      and the webserver must have read access to it.
+    </para>
+
+<screen><userinput role="nodump">uacme -v -c /etc/uacme.d new</userinput></screen>    
+
+    <para>
+      Next, initiate creating a certificate for your domain
+    </para>
+
+<screen><userinput role="nodump">uacme -v -c /etc/uacme.d issue www.your.domain.com</userinput></screen>
+
+    <para>
+      Note that the program will stop a a specific point and waits
+      for input to continue. This waiting is required as a file
+      needs to be created manually according to the output of the
+      program. Look for a line which looks like
+    </para>
+
+<screen>uacme: challenge=http-01 ident=www.your.domain.com token=kZjqYgAss_sl4XXDfFq-jeQV1_lqsE76v2BoCGegFk4 key_auth=kZjqYgAss_sl4XXDfFq-jeQV1_lqsE76v2BoCGegFk4.2evcXalKLhAybRuxxE-HkSUihdzQ7ZDAKA9EZYrTXwU</screen>
+
+    <para>
+      Create a directory and a file within that directory in the
+      webserver's document root:
+    </para>
+
+<screen><userinput role="nodump">mkdir /srv/www/.well-known/acme-challenge
+echo "kZjqYgAss_sl4XXDfFq-jeQV1_lqsE76v2BoCGegFk4.2evcXalKLhAybRuxxE-HkSUihdzQ7ZDAKA9EZYrTXwU" \
+   > /srv/www/.well-known/acme-challenge/kZjqYgAss_sl4XXDfFq-jeQV1_lqsE76v2BoCGegFk4</userinput></screen>
+
+    <para>
+      Both of that cryptic values can be taken from the output of
+      the <application>uacme</application> program. The filename is
+      the value of <emphasis>token</emphasis> and its content is
+      taken from <emphasis>key-auth</emphasis>.
+    </para>
+    <para>
+      After the file has been created, verify that the webserver has
+      access to it by pointing your browser to
+      <literal>http://www.your.domain.com/.well-known/acme-challenge/kZjqYgAss_sl4XXDfFq-jeQV1_lqsE76v2BoCGegFk4</literal>.
+      The value of the <emphasis>key-auth</emphasis> should appear as
+      simple text in your browser.
+    </para>
+    <para>
+      If done and the response in the browser is ok, press 'y' + Enter
+      and the program will continue to run. When finished, the
+      certificate is placed in 
+      <filename class="directory">/etc/uacme.d/www.your.domain.com/cert.pem</filename> and
+      the private key is stored in
+      <filename class="directory">/etc/uacme.d/private/www.your.domain.com/key.pem</filename>.
+      The well-known directory can now be deleted as its content is 
+      usable only one time so there is no use in keeping it:
+    </para>
+
+<screen><userinput role="nodump">rm -rf /srv/www/.well-known</userinput></screen>
+    
+    <para>
+      Next steps will be to switch off the http protocol in the
+      webserver except there are good reasons to keep it available.
+      Configure the webserver to use the created certificate
+      for https.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          uacme, ualpn
+        </seg>
+        <seg>
+          none
+        </seg>
+        <seg>
+          /usr/share/uacme
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+<!--
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="uacme">
+        <term><command>uacme</command></term>
+        <listitem>
+          <para>
+            is a tool for building and installing extension modules for the
+            <application>Apache</application> HTTP server
+          </para>
+          <indexterm zone="uacme uacme">
+            <primary sortas="b-uacme">uacme</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="ualpn">
+        <term><command>ualpn</command></term>
+        <listitem>
+          <para>
+            is a tool for building and installing extension modules for the
+            <application>Apache</application> HTTP server
+          </para>
+          <indexterm zone="ualpn ualpn">
+            <primary sortas="b-ualpn">ualpn</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+-->
+  </sect2>
+
+</sect1>
