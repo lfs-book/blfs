@@ -6,10 +6,10 @@
 
   <!ENTITY udisks2-download-http "https://github.com/storaged-project/udisks/releases/download/udisks-&udisks2-version;/udisks-&udisks2-version;.tar.bz2">
   <!ENTITY udisks2-download-ftp  " ">
-  <!ENTITY udisks2-md5sum        "576e057d2654894fab58f0393d105b7b">
-  <!ENTITY udisks2-size          "1.6 MB">
-  <!ENTITY udisks2-buildsize     "52 MB (with tests)">
-  <!ENTITY udisks2-time          "0.3 SBU (with tests)">
+  <!ENTITY udisks2-md5sum        "5b5da772a4537951bf487ee11a510ccc">
+  <!ENTITY udisks2-size          "1.7 MB">
+  <!ENTITY udisks2-buildsize     "41 MB (with tests)">
+  <!ENTITY udisks2-time          "0.2 SBU (with tests)">
 ]>
 
 <sect1 id="udisks2" xreflabel="UDisks-&udisks2-version;">
@@ -31,7 +31,7 @@
       devices.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,19 +78,10 @@
       <xref linkend="polkit"/>
     </para>
 
-    <bridgehead renderas="sect4">Required at runtime</bridgehead>
-    <para role="required">
-      <xref role="runtime" linkend="btrfs-progs"/>,
-      <phrase revision="sysv"><xref role="runtime" linkend="dbus"/>,</phrase>
-      <xref role="runtime" linkend="dosfstools"/>,
-      <xref role="runtime" linkend="gptfdisk"/>,
-      <xref role="runtime" linkend="mdadm"/>, and
-      <xref role="runtime" linkend="xfsprogs"/>
-    </para>
-
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <phrase revision="systemd"><xref linkend="systemd"/></phrase>
+      <phrase revision="systemd"><xref role='runtime' linkend="systemd"/>
+      (runtime)</phrase>
       <phrase revision="sysv"><xref linkend="elogind"/></phrase>
     </para>
 
@@ -104,15 +95,22 @@
       <xref linkend="dbus-python"/> (for the integration tests),
       <xref linkend="gtk-doc"/>,
       <xref linkend="lvm2"/>,
-      <xref linkend="ntfs-3g"/>,
+      <!-- <xref linkend="ntfs-3g"/>, -->
       <xref linkend="pygobject3"/> (for the integration tests),
       <ulink url="https://github.com/relan/exfat">exFAT</ulink>, and
       <ulink url="https://github.com/sahlberg/libiscsi">libiscsi</ulink>
     </para>
 
-    <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/udisks2"/>
+    <bridgehead renderas="sect4">Optional Runtime Dependencies</bridgehead>
+    <para role="runtime">
+      <xref linkend="btrfs-progs"/>,
+      <phrase revision="sysv"><xref linkend="dbus"/>,</phrase>
+      <xref linkend="dosfstools"/>,
+      <xref linkend="gptfdisk"/>,
+      <xref linkend="mdadm"/>, and
+      <xref linkend="xfsprogs"/>
     </para>
+
   </sect2>
 
   <sect2 role="installation">
@@ -135,7 +133,8 @@ sed -i '/stderr_channel = g/a g_io_channel_set_encoding (job->child_stderr_chann
 <screen><userinput>./configure --prefix=/usr        \
             --sysconfdir=/etc    \
             --localstatedir=/var \
-            --disable-static     &amp;&amp;
+            --disable-static     \
+            --enable-available-modules &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -163,43 +162,13 @@ make</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gtk-doc-rebuild.xml"/>
 
-  </sect2>
+    <para>
+      <parameter>--enable-available-modules</parameter>: This switch enables
+      additional <application>UDisks2</application> functionalities if
+      <xref linkend='libblockdev'/> has been built with optional
+      dependencies.
+    </para>
 
-  <sect2 role="configuration">
-    <title>Configuring UDisks2</title>
-
-    <sect3 id="udisks2-config">
-      <title>Config Files</title>
-      <para>
-        <filename>/etc/udisks2/mount_options.conf</filename> and
-        <filename>/etc/udisks2/udisks2.conf</filename>
-      </para>
-
-      <indexterm zone="udisks2 udisks2-config">
-        <primary sortas="e-etc-udisks2-mount_options.conf">/etc/udisks2/mount_options.conf</primary>
-      </indexterm>
-
-      <indexterm zone="udisks2 udisks2-config">
-        <primary sortas="e-etc-udisks2-udisks2.conf">/etc/udisks2/udisks2.conf</primary>
-      </indexterm>
-    </sect3>
-
-    <sect3>
-      <title>Configuration Information</title>
-      <para>
-        The default configuration of UDisks2 assumes ntfs-3g is used to
-        mount NTFS filesystems.  If the wrapper script for in-kernel NTFS3
-        driver (recommended in the <xref linkend="ntfs-3g"/> page) is used
-        instead, create a configuration file for UDisks2 compatible with
-        NTFS3 to allow mounting NTFS filesystems:
-      </para>
-
-<screen role="root"><userinput>cat &gt; /etc/udisks2/mount_options.conf &lt;&lt; "EOF"
-<literal>[defaults]
-ntfs_defaults=uid=$UID,gid=$GID</literal>
-EOF</userinput></screen>
-
-    </sect3>
   </sect2>
 
   <sect2 role="content">

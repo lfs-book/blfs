@@ -10,14 +10,15 @@
            " "> <!-- at the moment, unable to connect via ftp: ken
            "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-&openssh-version;.tar.gz"> -->
   <!ENTITY openssh-md5sum        "&openssh-md5sum;">
-  <!ENTITY openssh-size          "1.8 MB">
-  <!ENTITY openssh-buildsize     "44 MB (add 22 MB for tests)">
+  <!ENTITY openssh-size          "1.7 MB">
+  <!ENTITY openssh-buildsize     "45 MB (add 22 MB for tests)">
   <!ENTITY openssh-time          "0.2 SBU (Using parallelism=4;
                                   running the tests takes about 20 minutes,
                                   irrespective of processor speed)">
 ]>
 
-  <!-- make check: real 18m13.005s;  9.2p1 3 Feb 2023 -->
+  <!-- make check: real 18m13.005s;  9.2p1  3 Feb 2023 -->
+  <!-- make check: real 18m08.654s;  9.3p1 17 Mar 2023 -->
 
 <sect1 id="openssh" xreflabel="OpenSSH-&openssh-version;">
   <?dbhtml filename="openssh.html"?>
@@ -40,7 +41,7 @@
       <command>rcp</command> respectively.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -92,7 +93,8 @@
     <para role="optional">
       <xref linkend="gdb"/> (for tests),
       <xref linkend="linux-pam"/>,
-      <xref linkend="x-window-system"/>,
+      <xref linkend="xorg7-app"/> (or
+      <xref linkend='xorg-env' role='nodep'/>, see Command Explanations),
       <xref linkend="mitkrb"/>,
       <xref linkend="which"/> (for tests),
       <ulink url="https://www.thrysoee.dk/editline/">libedit</ulink>,
@@ -109,7 +111,7 @@
     </para>
 
     <para condition="html" role="usernotes">
-        User Notes: <ulink url="&blfs-wiki;/OpenSSH"/>
+        Editor Notes: <ulink url="&blfs-wiki;/OpenSSH"/>
     </para>
   </sect2>
 
@@ -125,8 +127,7 @@
       commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>install  -v -m700 -d /var/lib/sshd &amp;&amp;
-chown    -v root:sys /var/lib/sshd &amp;&amp;
+<screen role="root"><userinput>install -v -g sys -m700 -d /var/lib/sshd &amp;&amp;
 
 groupadd -g 50 sshd        &amp;&amp;
 useradd  -c 'sshd PrivSep' \
@@ -177,6 +178,7 @@ fi</userinput></screen>
             --with-pid-dir=/run                      &amp;&amp;
 make</userinput></screen>
 
+<!--  I got all tests passed without this with 9.3p1, June 12, 2023.
     <para>
       The test suite requires an installed copy of <command>scp</command> to
       complete the multiplexing tests. To run the test suite, first copy the
@@ -184,6 +186,7 @@ make</userinput></screen>
       <filename class="directory">/usr/bin</filename>, making sure that you
       backup any existing copy first.
     </para>
+-->
 <!--  I got all tests passed without this with 9.0p1.  Apr 13, 2022.
     <para>
       If you wish to run the tests, remove a test suite that is not valid on
@@ -264,10 +267,10 @@ install -v -m644    INSTALL LICENCE OVERVIEW README* \
     </para>
 
     <para>
-      <option>--with-xauth=/usr/bin/xauth</option>: Set the default
+      <option>--with-xauth=$XORG_PREFIX/bin/xauth</option>: Set the default
       location for the <command>xauth</command> binary for X authentication.
-      Change the location if <command>xauth</command> will be installed to a
-      different path. This can also be controlled from
+      The environment variable <envar>XORG_PREFIX</envar> should be set
+      following <xref linkend='xorg-env'/>. This can also be controlled from
       <filename>sshd_config</filename> with the XAuthLocation keyword. You can
       omit this switch if <application>Xorg</application> is already installed.
     </para>

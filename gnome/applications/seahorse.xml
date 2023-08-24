@@ -33,7 +33,7 @@
       keys (using GPG/GPGME) and SSH keys.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,7 +86,7 @@
     <para role="recommended">
       <xref linkend="libsoup3"/>,
       <xref linkend="p11-kit"/>,
-      <xref linkend="openldap"/>,
+<!--      <xref linkend="openldap"/>, picked up from gnupg2 -->
       <xref linkend="openssh"/> (for managing SSH keys) and
       <xref linkend="vala"/>
     </para>
@@ -101,9 +101,6 @@
       <xref role="runtime" linkend="gnome-keyring"/>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/seahorse"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -121,7 +118,7 @@ sed -i "s/'2.3.0'/'2.3.0', '2.4.0'/" meson.build &amp;&amp;
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -151,14 +148,12 @@ ninja</userinput></screen>
         <command>sed ... meson.build</command>: This command fixes building
         with GnuPG-2.4 installed.
       </para>
-
+<!-- gnupg2 needs ldap anyway
       <para>
         <option>-Dldap-support=false</option>: Add this switch if you have not
-        installed openldap. <!--Note that you will have to use the following 'sed'
-        command to fix the build:
-        sed -i "448 s/g_list/if (ssrc) &amp;/" pgp/seahorse-pgp-backend.c-->
+        installed openldap.
       </para>
-
+-->
   </sect2>
 
   <sect2 role="content">

@@ -6,10 +6,10 @@
 
   <!ENTITY mitkrb-download-http "https://kerberos.org/dist/krb5/&mitkrb-major-version;/krb5-&mitkrb-version;.tar.gz">
   <!ENTITY mitkrb-download-ftp  " ">
-  <!ENTITY mitkrb-md5sum        "73f5780e7b587ccd8b8cfc10c965a686">
-  <!ENTITY mitkrb-size          "8.3 MB">
-  <!ENTITY mitkrb-buildsize     "94 MB (add 14 MB for tests)">
-  <!ENTITY mitkrb-time          "0.3 SBU (Using parallelism=4; add 5.8 SBU for tests)">
+  <!ENTITY mitkrb-md5sum        "97d5f3a48235c53f6d537c877290d2af">
+  <!ENTITY mitkrb-size          "8.2 MB">
+  <!ENTITY mitkrb-buildsize     "130 MB (add 10 MB for tests)">
+  <!ENTITY mitkrb-time          "0.3 SBU (Using parallelism=4; add 1.0 SBU for tests)">
 ]>
 
 <sect1 id="mitkrb" xreflabel="MIT Kerberos V5-&mitkrb-version;">
@@ -34,7 +34,7 @@
       networks or the Internet.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -108,9 +108,6 @@
       </para>
     </note>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/mitkrb"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -132,7 +129,7 @@
 sed -i -e 's@\^u}@^u cols 300}@' tests/dejagnu/config/default.exp     &amp;&amp;
 -->
 sed -i -e '/eq 0/{N;s/12 //}'    plugins/kdb/db2/libdb2/test/run.test &amp;&amp;
-sed -i '/t_kadm5.py/d'           lib/kadm5/Makefile.in                &amp;&amp;
+<!--sed -i '/t_kadm5.py/d'           lib/kadm5/Makefile.in                &amp;&amp;-->
 
 ./configure --prefix=/usr            \
             --sysconfdir=/etc        \
@@ -145,16 +142,22 @@ sed -i '/t_kadm5.py/d'           lib/kadm5/Makefile.in                &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the build, issue as the <systemitem
-      class="username">root</systemitem> user: <command>make -k -j1 check</command>.
+      To test the build, issue: <command>make -j1 -k check</command>.
       <!-- You need at least <xref link end="tcl"/>, which is used to drive the
       test suite.  Furthermore, <xref link end="dejagnu"/> must be available for
-      some of the tests to run.--> If you have a former version of MIT Kerberos V5
+      some of the tests to run. If you have a former version of MIT Kerberos V5
       installed, it may happen that the test suite may pick up the installed
       versions of the libraries, rather than the newly built ones. If so, it is
-      better to run the tests after the installation. Some tests may fail with
-      the latest version of dejagnu and glibc.
-      <!-- Note: on my laptop -j8 fails but -j1 passes -->
+      better to run the tests after the installation. -->Some tests may fail with
+      the latest version of dejagnu and glibc.  Some tests may hang for a
+      long time and fail if the system is not connected to a network.
+      One test, <filename>t_kadm5srv</filename>, is known to fail.
+      <!-- Note: on my laptop -j8 fails but -j1 passes 
+      For version 1.21, -j1 no longer needs to be specified and the 
+      time for the tests was reduced considerably.  -bdubbs
+      But on one of my machines (4 cores) -j4 fails and -j1 passes...
+      I guess the test suite is just too fragile. -xry111
+      -->
     </para>
 
     <para>
@@ -162,9 +165,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-
-install -v -dm755 /usr/share/doc/krb5-&mitkrb-version; &amp;&amp;
-cp -vfr ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
+cp -vfr ../doc -T /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
 
   </sect2>
 
@@ -172,8 +173,8 @@ cp -vfr ../doc/*  /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      The two <command>sed</command> commands remove
-      tests that are known to fail.
+      The <command>sed</command> command removes a
+      test that is known to fail.
     </para>
 
     <para>

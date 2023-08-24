@@ -6,16 +6,16 @@
 
   <!ENTITY cracklib-url "https://github.com/cracklib/cracklib/releases/download">
 
-  <!ENTITY cracklib-download-http "&cracklib-url;/v&cracklib-version;/cracklib-&cracklib-version;.tar.bz2">
+  <!ENTITY cracklib-download-http "&cracklib-url;/v&cracklib-version;/cracklib-&cracklib-version;.tar.xz">
   <!ENTITY cracklib-download-ftp  " ">
-  <!ENTITY cracklib-md5sum        "a242301bad13421476db8eecbbc9536a">
-  <!ENTITY cracklib-size          "600 KB">
-  <!ENTITY cracklib-buildsize     "6.7 MB">
+  <!ENTITY cracklib-md5sum        "a6dfb1766aab43a54e1cbd78abf0a20a">
+  <!ENTITY cracklib-size          "452 KB">
+  <!ENTITY cracklib-buildsize     "6.8 MB">
   <!ENTITY cracklib-time          "0.1 SBU">
 
-  <!ENTITY crackdict-download     "&cracklib-url;/v&cracklib-version;/cracklib-words-&cracklib-version;.bz2">
-  <!ENTITY crackdict-size         "6.7 MB">
-  <!ENTITY crackdict-md5sum       "94e9963e4786294f7fb0f2efd7618551">
+  <!ENTITY crackdict-download     "&cracklib-url;/v&cracklib-version;/cracklib-words-&cracklib-version;.xz">
+  <!ENTITY crackdict-size         "4.0 MB">
+  <!ENTITY crackdict-md5sum       "f27804022dbf2682a7f7c353317f9a53">
 ]>
 
 <sect1 id="cracklib" xreflabel="CrackLib-&cracklib-version;">
@@ -37,7 +37,7 @@
       passwords to words in chosen word lists.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,11 +75,20 @@
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
+      <para>Recommended word list for English-speaking countries:</para>
       <listitem>
         <para>
-          Recommended word list for English-speaking countries (size:
-          &crackdict-size;; md5sum: &crackdict-md5sum;):
-          <ulink url="&crackdict-download;"/>
+          Download (HTTP): <ulink url="&crackdict-download;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+           Download MD5 sum: &crackdict-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+            Download size:  &crackdict-size;; 
         </para>
       </listitem>
     </itemizedlist>
@@ -116,9 +125,6 @@
       </para>
     </important>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/cracklib"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -153,13 +159,13 @@ make</userinput></screen>
       to the <command>create-cracklib-dict</command> command.
     </para>
 
-<screen role="root"><userinput>install -v -m644 -D    ../cracklib-words-&cracklib-version;.bz2 \
-                         /usr/share/dict/cracklib-words.bz2    &amp;&amp;
+<screen role="root"><userinput>install -v -m644 -D    ../cracklib-words-&cracklib-version;.xz \
+                         /usr/share/dict/cracklib-words.xz    &amp;&amp;
 
-bunzip2 -v               /usr/share/dict/cracklib-words.bz2    &amp;&amp;
-ln -v -sf cracklib-words /usr/share/dict/words                 &amp;&amp;
-echo $(hostname) >>      /usr/share/dict/cracklib-extra-words  &amp;&amp;
-install -v -m755 -d      /usr/lib/cracklib                     &amp;&amp;
+unxz -v                  /usr/share/dict/cracklib-words.xz    &amp;&amp;
+ln -v -sf cracklib-words /usr/share/dict/words                &amp;&amp;
+echo $(hostname) >>      /usr/share/dict/cracklib-extra-words &amp;&amp;
+install -v -m755 -d      /usr/lib/cracklib                    &amp;&amp;
 
 create-cracklib-dict     /usr/share/dict/cracklib-words \
                          /usr/share/dict/cracklib-extra-words</userinput></screen>
@@ -190,11 +196,6 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i '/skipping/d' util/packer.c</command>:
-      Remove a meaningless warning.
-    </para>
-
-    <para>
       <command>autoreconf -fiv</command>: The configure script shipped with
       the package is too old to get the right version string of Python
       3.10 or later. This command regenerates it with a more recent version
@@ -205,13 +206,7 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
       <envar>PYTHON=python3</envar>: This forces the installation of
       python bindings for Python 3, even if Python 2 is installed.
     </para>
-    <!-- fixed by autoreconf
-    <para>
-      <envar>CPPFLAGS=-I/usr/include/python&python3-majorver;</envar>:
-      This works around an issue caused by incorrect usage of Python 3
-      headers.
-    </para>
-    -->
+
     <para>
       <parameter>--with-default-dict=/lib/cracklib/pw_dict</parameter>:
       This parameter forces the installation of the
@@ -264,12 +259,12 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
 
       <seglistitem>
         <seg>cracklib-check, cracklib-format, cracklib-packer,
-        cracklib-unpacker and create-cracklib-dict</seg>
+        cracklib-unpacker, cracklib-update, and create-cracklib-dict</seg>
 
         <seg>libcrack.so and the _cracklib.so
           (<application>Python</application> module)</seg>
 
-        <seg>/lib/cracklib, /usr/share/dict and /usr/share/cracklib</seg>
+        <seg>/usr/lib/cracklib, /usr/share/dict and /usr/share/cracklib</seg>
       </seglistitem>
     </segmentedlist>
 

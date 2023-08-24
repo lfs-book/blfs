@@ -7,10 +7,10 @@
   <!ENTITY harfbuzz-download-http
            "https://github.com/harfbuzz/harfbuzz/releases/download/&harfbuzz-version;/harfbuzz-&harfbuzz-version;.tar.xz">
   <!ENTITY harfbuzz-download-ftp  " ">
-  <!ENTITY harfbuzz-md5sum        "a3f9e51043a5a14b409c52fe4ab1e29e">
+  <!ENTITY harfbuzz-md5sum        "f0040d0fc02cf94cac9f46a94c44c6de">
   <!ENTITY harfbuzz-size          "18 MB">
-  <!ENTITY harfbuzz-buildsize     "142 MB (with tests)">
-  <!ENTITY harfbuzz-time          "0.6 SBU (Using parallelism=4; with tests)">
+  <!ENTITY harfbuzz-buildsize     "145 MB (with tests)">
+  <!ENTITY harfbuzz-time          "0.9 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="harfbuzz" xreflabel="HarfBuzz-&harfbuzz-version;">
@@ -31,7 +31,7 @@
       shaping engine.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,8 +90,9 @@
       <xref linkend="git"/>,
       <xref linkend="gtk-doc"/>,
       <ulink url="https://pypi.org/project/FontTools/">FontTools</ulink>
-      (Python 3 module, for the test suite), and
-      <ulink url="https://www.colm.net/open-source/ragel/">ragel</ulink>
+      (Python 3 module, for the test suite),
+      <ulink url="https://www.colm.net/open-source/ragel/">ragel</ulink>,
+      and <ulink url="https://github.com/bytecodealliance/wasm-micro-runtime">wasm-micro-runtime</ulink>
     </para>
 
     <warning>
@@ -104,9 +105,6 @@
       </para>
     </warning>
 
-    <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/harfbuzz"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -120,9 +118,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr        \
-      --buildtype=release  \
-      -Dgraphite2=enabled  &amp;&amp;
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      -Dgraphite2=enabled &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -174,11 +173,17 @@ ninja</userinput></screen>
 
       <seglistitem>
         <seg>
-          hb-ot-shape-closure, hb-shape, hb-subset, and
-          hb-view (only if cairo is installed)
+          hb-info,
+          hb-ot-shape-closure,
+          hb-shape,
+          hb-subset, and
+          hb-view (only if Cairo is installed)
         </seg>
         <seg>
-          libharfbuzz.so, libharfbuzz-gobject.so, libharfbuzz-icu.so, and
+          libharfbuzz.so,
+          libharfbuzz-cairo.so (only if Cairo is installed),
+          libharfbuzz-gobject.so,
+          libharfbuzz-icu.so, and
           libharfbuzz-subset.so
         </seg>
         <seg>
@@ -193,6 +198,19 @@ ninja</userinput></screen>
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
+
+     <varlistentry id="hb-info">
+       <term><command>hb-info</command></term>
+       <listitem>
+         <para>
+           is used for gathering information about fonts installed on the
+           system
+         </para>
+         <indexterm zone="harfbuzz hb-info">
+           <primary sortas="b-hb-info">hb-info</primary>
+         </indexterm>
+       </listitem>
+     </varlistentry>
 
      <varlistentry id="hb-ot-shape-closure">
         <term><command>hb-ot-shape-closure</command></term>
@@ -262,6 +280,18 @@ ninja</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="libharfbuzz-cairo">
+        <term><filename class="libraryfile">libharfbuzz-cairo.so</filename></term>
+        <listitem>
+          <para>
+            provides Cairo integration for the Harfbuzz text shaping library
+          </para>
+          <indexterm zone="harfbuzz libharfbuzz-cairo">
+            <primary sortas="c-libharfbuzz-cairo">libharfbuzz-cairo</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libharfbuzz-gobject">
         <term><filename class="libraryfile">libharfbuzz-gobject.so</filename></term>
         <listitem>
@@ -282,6 +312,19 @@ ninja</userinput></screen>
           </para>
           <indexterm zone="harfbuzz libharfbuzz-icu">
             <primary sortas="c-libharfbuzz-icu">libharfbuzz-icu.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libharfbuzz-subset">
+        <term><filename class="libraryfile">libharfbuzz-subset.so</filename></term>
+        <listitem>
+          <para>
+            provides API functions for performing subsetting operations on font
+            files
+          </para>
+          <indexterm zone="harfbuzz libharfbuzz-subset">
+            <primary sortas="c-libharfbuzz-subset">libharfbuzz-subset.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -102,15 +102,21 @@ EOF</userinput></screen>
     <para>These dependencies are the bare minimum needed to
     build the package.  Packages in LFS, and the required
     dependencies of these required packages, are omitted from this list.
-    Always remember to check for nested dependencies.</para>
+    Always remember to check for nested dependencies. If a dependency is
+    said to be <quote>runtime</quote>, then it is not needed for building
+    the package, but only to use it after installation.</para>
 
     <bridgehead renderas="sect3">Recommended Dependencies</bridgehead>
 
     <para>These are dependencies the BLFS editors have determined
-    are important to give the package reasonable capabilities.  Package
-    installation instructions assume they are installed.  If a recommended
-    package is not installed, the instructions may require modification, to
-    accommodate the missing package.</para>
+    are important to give the package reasonable capabilities.  If a
+    recommended dependency is not said to be <quote>runtime</quote>, package
+    installation instructions assume it is installed.  If it
+    is not installed, the instructions may require modification, to
+    accommodate the missing package. A recommended <quote>runtime</quote>
+    dependency does not need to be installed before building the package, but
+    must be built afterwards for running the package with reasonable
+    capabilities.</para>
 
     <bridgehead renderas="sect3">Optional Dependencies</bridgehead>
 
@@ -118,7 +124,7 @@ EOF</userinput></screen>
     of optional dependencies may be automatic by the package, or
     additional steps not presented by BLFS may be necessary.  Optional dependencies are
     sometimes listed without explicit BLFS instructions.  In this case you must
-    determine how to perform the installation yourself. </para>
+    determine how to perform the installation yourself.</para>
 
     <para>&nbsp;</para> <!-- add extra white space to improve readability -->
   </sect2>
@@ -129,18 +135,14 @@ EOF</userinput></screen>
     <para>Some packages require specific kernel configuration options.
     The general layout for these looks like this:</para>
 
-<screen><literal>Master section ---&gt;
-  Subsection ---&gt;
-    [*]     Required parameter                     [CONFIG_REQU_PAR]
-    &lt;*&gt;     Required parameter (not as module)     [CONFIG_REQU_PAR_NMOD]
-    &lt;*/M&gt;   Required parameter (could be a module) [CONFIG_REQU_PAR_MOD]
-    &lt;*/M/ &gt; Optional parameter                     [CONFIG_OPT_PAR]
-    [ ] Incompatible parameter                     [CONFIG_INCOMP_PAR]
-    &lt; &gt; Incompatible parameter (even as module)    [CONFIG_INCOMP_PAR_MOD]</literal></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="conventions-kernel.xml"/>
 
-    <para>[CONFIG_...] on the right gives the name of the option, so you can
-    easily check whether it is set in your <filename>.config</filename> file.
-    The meaning of the various entries is:
+    <para>[...] on the right gives the symbolic name of the option, so you
+    can easily check whether it is set in your <filename>.config</filename>
+    file. Note that the <filename>.config</filename> file contains a
+    <literal>CONFIG_</literal> prefix before all symbolic names.  The
+    meaning of the various entries is:
 
     <blockquote>
     <informaltable frame='none'><tgroup cols="2">
@@ -183,11 +185,34 @@ EOF</userinput></screen>
       </row>
       <row>
         <entry>
+          <emphasis role="bold">Required parameter (as
+          a module)</emphasis>
+        </entry>
+        <entry>
+          the option can be built-in, a module, or not selected:
+          it must be selected as a module; selecting it as built-in
+          may cause unwanted effects
+        </entry>
+      </row>
+      <row>
+        <entry>
           <emphasis role="bold">Optional parameter</emphasis>
         </entry>
         <entry>
-          rarely used: the option can be built-in, a module, or not
-          selected: it may be set any way you wish
+          the option can be built-in, a module, or not
+          selected: it may be selected as a module or built-in if you
+          need it for driving the hardware or optional kernel features
+        </entry>
+      </row>
+      <row>
+        <entry>
+          <emphasis role="bold">Optional parameter</emphasis>
+        </entry>
+        <entry>
+          the option can be built-in, a module, or not
+          selected: it may be selected as a module if you need it
+          for driving the hardware or optional kernel features, but
+          selecting it as built-in may cause unwanted effects
         </entry>
       </row>
       <row>
@@ -217,6 +242,13 @@ EOF</userinput></screen>
     or even as dashes (-*- or -M-), when the choice is imposed.
     The help text describing the option specifies the other selections on which this
     option relies, and how those other selections are set.</para>
+
+    <para>
+      The letter in <emphasis role='blue'>blue</emphasis> is the hotkey
+      for this option.  If you are running
+      <command>make menuconfig</command>, you can press a key to quickly
+      traverse all the options with this key as the hotkey on the screen.
+    </para>
 
     <para>&nbsp;</para> <!-- add extra white space to improve readability -->
   </sect2>

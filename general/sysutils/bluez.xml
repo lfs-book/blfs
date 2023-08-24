@@ -6,9 +6,9 @@
 
   <!ENTITY bluez-download-http "&kernel-dl;/linux/bluetooth/bluez-&bluez-version;.tar.xz">
   <!ENTITY bluez-download-ftp  " ">
-  <!ENTITY bluez-md5sum        "3f9496fedf878fba985e56713ed7752e">
+  <!ENTITY bluez-md5sum        "00a72fed12e706b2d8bb40786154d3aa">
   <!ENTITY bluez-size          "2.2 MB">
-  <!ENTITY bluez-buildsize     "149 MB (with tests)">
+  <!ENTITY bluez-buildsize     "158 MB (with tests)">
   <!ENTITY bluez-time          "0.4 SBU (using parallelism=4; with tests)">
 ]>
 
@@ -30,7 +30,7 @@
       Bluetooth protocol stack for Linux.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,9 +90,6 @@
       <xref linkend="docutils"/> (to generate man pages)
     </para>
 
-    <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/bluez"/>
-    </para>
   </sect2>
 
 
@@ -102,49 +99,13 @@
     <para>
       If you are building this package to use bluetooth devices (rather than as a
       build dependency), enable the following options in the kernel configuration,
-      also the options below the next paragraph if you intend to run the tests,
-      and recompile the kernel if necessary:
+      also the options in the <quote>Cryptographic API</quote> section if
+      you intend to run the tests, and recompile the kernel if necessary:
     </para>
 
-<screen><literal>General Setup ---&gt;
-  [*] Configure standard kernel features (expert users)               [CONFIG_EXPERT]
-    [*] Enable timerfd() system call               [CONFIG_TIMERFD]
-    [*] Enable eventfd() system call               [CONFIG_EVENTFD]
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="bluez-kernel.xml"/>
 
-[*] Networking support ---&gt;                [CONFIG_NET]
-  &lt;*/M&gt; Bluetooth subsystem support ---&gt;    [CONFIG_BT]
-    &lt;*/M&gt; RFCOMM protocol support          [CONFIG_BT_RFCOMM]
-    [*]   RFCOMM TTY support               [CONFIG_BT_RFCOMM_TTY]
-    &lt;*/M&gt; BNEP protocol support            [CONFIG_BT_BNEP]
-    [*]   Multicast filter support         [CONFIG_BT_BNEP_MC_FILTER]
-    [*]   Protocol filter support          [CONFIG_BT_BNEP_PROTO_FILTER]
-    &lt;*/M&gt; HIDP protocol support            [CONFIG_BT_HIDP]
-        Bluetooth device drivers ---&gt;
-          (Select the appropriate drivers for your Bluetooth hardware)
-
-   &lt;*/M&gt; RF switch subsystem support ----   [CONFIG_RFKILL]
-
--*- Cryptographic API ---&gt;
-   &lt;*/M*&gt; User-space cryptographic algorithm configuration         [CONFIG_CRYPTO_USER]
-   &lt;*/M*&gt; User-space interface for hash algorithms                 [CONFIG_CRYPTO_USER_API_HASH]
-   &lt;*/M*&gt; User-space interface for symmetric key cipher algorithms [CONFIG_CRYPTO_USER_API_SKCIPHER]
-   &lt;*/M*&gt; MD5 digest algorithm                                     [CONFIG_CRYPTO_MD5]
-   &lt;*/M*&gt; SHA1 digest algorithm                                    [CONFIG_CRYPTO_SHA1]
-
-Security Options ---&gt;
-  &lt;*/M*&gt; Diffie-Hellman operations on retained keys [CONFIG_KEY_DH_OPERATIONS]</literal></screen>
-
-<!--
-    <para>
-      If you wish to run the test suite (even if treating this package as a build
-      dependency), you will need to enable the following options in the kernel
-      configuration and recompile the kernel if necessary:
-    </para>
-
-<screen><literal>-*- Cryptographic API - - -&gt;                                      [CONFIG_CRYPTO]
-  &lt;*/M&gt; User-space interface for hash algorithms                 [CONFIG_CRYPTO_USER_API_HASH]
-  &lt;*/M&gt; User-space interface for symmetric key cipher algorithms [CONFIG_CRYPTO_USER_API_SKCIPHER]</literal></screen>
--->
     <indexterm zone="bluez bluez-kernel">
       <primary sortas="d-bluez">bluez</primary>
     </indexterm>

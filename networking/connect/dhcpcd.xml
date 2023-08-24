@@ -4,20 +4,13 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY dhcpcd-download-http "https://roy.marples.name/downloads/dhcpcd/dhcpcd-&dhcpcd-version;.tar.xz">
-<!--  <!ENTITY dhcpcd-download-ftp  "ftp://roy.marples.name/pub/dhcpcd/dhcpcd-&dhcpcd-version;.tar.xz">-->
+  <!ENTITY dhcpcd-download-http "https://github.com/NetworkConfiguration/dhcpcd/releases/download/v&dhcpcd-version;/dhcpcd-&dhcpcd-version;.tar.xz">
   <!ENTITY dhcpcd-download-ftp  " ">
-  <!ENTITY dhcpcd-md5sum        "2b2f46648bc96979f96127f0e0e07d9b">
-  <!ENTITY dhcpcd-size          "251 KB">
-  <!ENTITY dhcpcd-buildsize     "3.6 MB (with tests)">
+  <!ENTITY dhcpcd-md5sum        "1f266e2c32567bc778ea22c599fb06d9">
+  <!ENTITY dhcpcd-size          "260 KB">
+  <!ENTITY dhcpcd-buildsize     "3.1 MB (with tests)">
   <!ENTITY dhcpcd-time          "less than 0.1 SBU (with tests)">
 ]>
-<!--
-  Use this URL as ChangeLog:
-    https://roy.marples.name/blog/dhcpcd-9-2-0-released.html
-    Substitute the 9-2-0 with 9-2-1 or 9-2-2 ...
-pierre: seems that it now returns Error 404 (November 2021).
--->
 
 <sect1 id="dhcpcd" xreflabel="dhcpcd-&dhcpcd-version;">
   <?dbhtml filename="dhcpcd.html"?>
@@ -40,7 +33,7 @@ pierre: seems that it now returns Error 404 (November 2021).
       DHCP client.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -86,9 +79,6 @@ pierre: seems that it now returns Error 404 (November 2021).
       <ulink url="https://github.com/thkukuk/ypbind-mt/">ypbind</ulink>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/dhcpcd"/></para>
-
   </sect2>
 
   <sect2 id='dhcpcd-privsep'>
@@ -121,12 +111,12 @@ chown    -v dhcpcd:dhcpcd /var/lib/dhcpcd </userinput></screen>
 
   <sect2 role="installation">
     <title>Installation of dhcpcd</title>
-
+<!--  Now in the code
     <para>Fix a runtime error caused by a change in glibc-2.36:</para>
 
 <screen><userinput>sed '/Deny everything else/i SECCOMP_ALLOW(__NR_getrandom),' \
     -i src/privsep-linux.c</userinput></screen>
-
+-->
     <para>
       Build <application>dhcpcd</application> without privilege separation
       by running the following command:
@@ -141,11 +131,11 @@ chown    -v dhcpcd:dhcpcd /var/lib/dhcpcd </userinput></screen>
 make</userinput></screen>
 
     <para>
-      Build <application>dhcpcd</application> with privilege separation
-      by running the following commands:
+      Alternatively, build <application>dhcpcd</application> with privilege
+      separation by running the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr                \
+<screen role="nodump"><userinput>./configure --prefix=/usr                \
             --sysconfdir=/etc            \
             --libexecdir=/usr/lib/dhcpcd \
             --dbdir=/var/lib/dhcpcd      \
@@ -181,43 +171,40 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
     <title>Command Explanations</title>
 
     <para>
-      <parameter>--libexecdir=/usr/lib/dhcpcd</parameter>: Set a more proper
-      location for dhcpcd internal libraries.
+      <parameter>--libexecdir=/usr/lib/dhcpcd</parameter>: This switch sets a
+      better location for the dhcpcd internal libraries.
     </para>
 
     <para>
-      <parameter>--dbdir=/var/lib/dhcpcd</parameter>: The default
-      <filename class="directory">/var/db</filename> is not FHS-compliant
+      <parameter>--dbdir=/var/lib/dhcpcd</parameter>: This switch adjusts the
+      database directory because the default directory,
+      <filename class="directory">/var/db</filename>, is not FHS-compliant.
     </para>
 
     <para>
-      <parameter>--runstatedir=/run</parameter>: The default
+      <parameter>--runstatedir=/run</parameter>: This switch sets the runtime
+      state directory because the default
       <filename class="directory">/var/run</filename> is a symbolic
-      link to <filename class="directory">/run</filename>.
+      link to <filename class="directory">/run</filename>, and using
+      <filename class="directory">/var/run</filename> is deprecated.
+    </para>
+
+    <para>
+      <parameter>--disable-privsep</parameter>: This switch disables privilege
+      separation, which is the default in dhcpcd. This switch is not used in
+      the build configuration where privilege separation is used.
+    </para>
+
+    <para>
+      <parameter>--privsepuser=dhcpcd</parameter>: This switch sets the
+      privilege separation user in the build configuration where privilege
+      escalation is used.
     </para>
 
     <para>
       <option>--with-hook=...</option>: You can optionally install more hooks,
       for example to install some configuration files such as
-      <filename>ntp.conf</filename>. The set of hooks is in the
-      <filename class="directory">dhcpcd-hooks</filename> directory in the
-      build tree.
-    </para>
-
-    <para>
-      <parameter>--disable-privsep</parameter>: Do not use privilege separation,
-      which is the default.
-    </para>
-
-    <para>
-      <parameter>--privsepuser=dhcpcd</parameter>: Use this unprivileged user
-      in a privilege separation setup.
-    </para>
-
-    <para>
-      <option>--with-hook=...</option>: You can optionally install more hooks,
-      for example to install some configuration files such as
-      <filename>ntp.conf</filename>. The set of hooks is in the
+      <filename>ntp.conf</filename>. A set of hooks can be found in the
       <filename class="directory">dhcpcd-hooks</filename> directory in the
       build tree.
     </para>
@@ -257,26 +244,14 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
 <screen role='root'><userinput>make install-service-dhcpcd</userinput></screen>
 
       <note>
-        <para id="dhcpcd-config6">
-          the network service script <filename>/usr/lib/services/dhcpcd</filename>
-          contained in bootscripts up to blfs-bootscripts-20191204 is
-          not compatible with latest dhcpcd, as the location of the pidfile
-          changed.
-          To work around this, issue the following command:
-
-<screen role='root'><userinput>sed -i "s;/run/dhcpcd-;/run/dhcpcd/;g" /lib/services/dhcpcd</userinput></screen>
-        </para>
-      </note>
-
-      <note>
         <para id="dhcpcd-config3">
           The default for <command>dhcpcd</command> is to set the hostname
           and mtu. It also overwrites <filename>/etc/resolv.conf </filename>
           and <filename>/etc/ntp.conf</filename>. These
           modifications to system files are done by hooks which are stored in
           <filename class="directory">/usr/lib/dhcpcd/dhcpcd-hooks</filename>.
-          Set up <command>dhcpcd</command> by removing or adding hooks from/to
-          that directory.  The execution of hooks can be disabled by using
+          You can change this behavior by removing or adding hooks from/to
+          that directory. The execution of hooks can be disabled by using
           the <option>--nohook</option> (<option>-C</option>) command line
           option or by the <option>nohook</option> option in the
           <filename>/etc/dhcpcd.conf</filename> file.
@@ -377,7 +352,7 @@ EOF</userinput></screen>
           </filename> and <filename>/etc/ntp.conf</filename>. These
           modifications to system configuration files are done by hooks which
           are stored in <filename class="directory">
-          /lib/dhcpcd/dhcpcd-hooks</filename>. Set up <command>dhcpcd</command>
+          /usr/lib/dhcpcd/dhcpcd-hooks</filename>. You can change this behavior
           by removing or adding hooks from/to that directory. The execution
           of hooks can be disabled by using the <option>--nohook</option>
           (<option>-C</option>) command line option or by the

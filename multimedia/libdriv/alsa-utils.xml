@@ -6,9 +6,9 @@
 
   <!ENTITY alsa-utils-download-http "&alsa-download-http;/utils/alsa-utils-&alsa-utils-version;.tar.bz2">
   <!ENTITY alsa-utils-download-ftp  "&alsa-download-ftp;/utils/alsa-utils-&alsa-utils-version;.tar.bz2">
-  <!ENTITY alsa-utils-md5sum        "51175f5cd413daf7009a80684c65113d">
-  <!ENTITY alsa-utils-size          "1.5 MB">
-  <!ENTITY alsa-utils-buildsize     "15 MB">
+  <!ENTITY alsa-utils-md5sum        "095a31a5924695a7cc5b40f9574ba85e">
+  <!ENTITY alsa-utils-size          "1.6 MB">
+  <!ENTITY alsa-utils-buildsize     "16 MB">
   <!ENTITY alsa-utils-time          "0.2 SBU">
 ]>
 
@@ -31,7 +31,7 @@
       card.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -80,16 +80,25 @@
       <xref linkend="fftw"/>,
       <xref linkend="libsamplerate"/>,
       <xref linkend="xmlto"/>, and
-	  <ulink url="https://hightek.org/projects/dialog/">Dialog</ulink>
+      <ulink url="https://hightek.org/projects/dialog/">Dialog</ulink>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
+    <para condition="html" role="usernotes">Editor Notes:
       <ulink url="&blfs-wiki;/alsa-utils"/>
     </para>
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of ALSA Utilities</title>
+
+    <para>
+      This package provides its own implementation of
+      <literal>strlcpy</literal> and <literal>strlcat</literal> functions.
+      But they are provided by Glibc-2.38 now, so we need to remove the
+      custom implementation to avoid a conflict with the Glibc header:
+    </para>
+
+    <screen><userinput>echo '' > alsactl/init_sysdeps.c</userinput></screen>
 
     <para>
       Install <application>ALSA Utilities</application> by
@@ -103,7 +112,7 @@
 make</userinput></screen>
 
     <para>
-      This package does not come with a test suite.
+      To test the results, issue: <command>make check</command>.
     </para>
 
     <para>
@@ -141,7 +150,7 @@ make</userinput></screen>
 
   </sect2>
 
-  <sect2 role="configuration">
+  <sect2 role="configuration" id="alsa-utils-config-sect">
     <title>Configuring ALSA Utilities</title>
 
     <sect3 id="alsa-utils-config">
@@ -161,7 +170,13 @@ make</userinput></screen>
       <title>Configuration Information</title>
 
       <para>
-        Note that all channels of your sound card are muted by default.
+        As the &root; user, apply the default setting for the sound card:
+      </para>
+
+<screen role="root"><userinput>alsactl init</userinput></screen>
+
+      <para>
+        Note that all channels of your sound card may be muted by default.
         You can use the <command>alsamixer</command> program to change
         this. Use <command>speaker-test</command> to check that your
         settings have been applied correctly. You should hear
@@ -184,7 +199,7 @@ make</userinput></screen>
         <application>Udev</application> when the device is detected
         (during boot or when plugged in for USB devices).
       </para>
-
+<!-- not needed with elogind or systemd-logind
       <para>
         All sound devices are not accessible for any user except
         <systemitem class="username">root</systemitem> and members of the
@@ -201,6 +216,25 @@ make</userinput></screen>
           should work as well.
         </para>
       </note>
+-->
+      <para>
+        On systems which have multiple sound cards, you may need to adjust the
+        default audio device so that you can get output from your speakers.
+        To set the default device, first check the
+        <filename>/proc/asound/cards</filename> file to determine which number
+        you need to set. After you know this information, set the default card
+        with the following command as the
+        <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="nodump"><userinput>cat &gt; /etc/asound.conf &lt;&lt; "EOF"
+<literal># Begin /etc/asound.conf
+
+defaults.pcm.card 1
+defaults.ctl.card 1
+
+# End /etc/asound.conf</literal>
+EOF</userinput></screen>
 
     </sect3>
 

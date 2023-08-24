@@ -7,10 +7,10 @@
   <!--  <!ENTITY systemd-download-http "https://anduin.linuxfromscratch.org/LFS/systemd-&systemd-version;-&systemd-stable;.tar.xz"> For whenever we move to a stable snapshot for backports -->
   <!ENTITY systemd-download-http "https://github.com/systemd/systemd/archive/v&systemd-version;/systemd-&systemd-version;.tar.gz">
   <!ENTITY systemd-download-ftp  " ">
-  <!ENTITY systemd-md5sum        "b9456750a212dd54d81caeb3c38134b6">
-  <!ENTITY systemd-size          "11 MB">
-  <!ENTITY systemd-buildsize     "307 MB (with tests)">
-  <!ENTITY systemd-time          "2.8 SBU (with tests)">
+  <!ENTITY systemd-md5sum        "0d266e5361dc72097b6c18cfde1c0001">
+  <!ENTITY systemd-size          "14 MB">
+  <!ENTITY systemd-buildsize     "198 MB (with tests)">
+  <!ENTITY systemd-time          "3.7 SBU (with tests using 4 cores)">
 
 ]>
 
@@ -38,7 +38,7 @@
       which provides many additional features for dependent packages.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,7 +75,7 @@
     </itemizedlist>
 
 <!--  Keep here in case a patch will be needed.-->
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -85,17 +85,28 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">systemd Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required">
-      <xref linkend="linux-pam"/>
-    </para>
+    <bridgehead renderas="sect4">Recommended</bridgehead>
 
-    <bridgehead renderas="sect4">Recommended Runtime Dependency</bridgehead>
+    <note>
+      <para>
+        <xref linkend='linux-pam'/> is not strictly required to build
+        <application>systemd</application>, but the main reason to rebuild
+        <application>systemd</application> in BLFS (it's already built in
+        LFS anyway) is for the <command>systemd-logind</command> daemon and
+        the
+        <filename class='libraryfile'>pam_systemd.so</filename> PAM module.
+        <xref linkend='linux-pam'/> is required for them.  All packages in
+        BLFS book with a dependency on <application>systemd</application>
+        expects it has been rebuilt with <xref linkend='linux-pam'/>.
+      </para>
+    </note>
+
     <para role="recommended">
-      <xref role="runtime" linkend="polkit"/>
+      <xref linkend="linux-pam"/> and
+      <xref role="runtime" linkend="polkit"/> (runtime)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -120,16 +131,23 @@
       <xref linkend="sphinx"/>,
       <xref linkend="valgrind"/>,
       <xref linkend="zsh"/> (for the zsh completions),
-      <ulink url="https://sourceforge.net/projects/gnu-efi/">gnu-efi</ulink>,
+      <ulink url="https://www.apparmor.net/">AppArmor</ulink>,
+      <ulink url="https://github.com/linux-audit/audit-userspace">audit-userspace</ulink>,
+      <ulink url="https://github.com/scop/bash-completion">bash-completion</ulink>,
+      <ulink url="https://jekyllrb.com/">jekyll</ulink>,
       <ulink url="https://www.kernel.org/pub/linux/utils/kernel/kexec/">kexec-tools</ulink>,
       <ulink url="https://github.com/libbpf/libbpf">libbpf</ulink>,
       <ulink url="https://sourceware.org/elfutils/">libdw</ulink>,
       <ulink url="https://developers.yubico.com/libfido2/">libfido2</ulink>,
       <ulink url="https://www.gnu.org/software/libmicrohttpd/">libmicrohttpd</ulink>,
       <ulink url="https://lz4.github.io/lz4/">lz4</ulink>,
-      <!--<ulink url="http://fukuchi.org/works/qrencode/">qrencode</ulink>,-->
-      <ulink url="https://sourceforge.net/projects/linuxquota/">quota-tools</ulink>, and
+      <ulink url="https://pypi.org/project/pyelftools/">pyelftools</ulink>,
+      <ulink url="https://sourceforge.net/projects/linuxquota/">quota-tools</ulink>,
+      <ulink url="https://rpm.org/">rpm</ulink>,
+      <ulink url="https://github.com/SELinuxProject/selinux">SELinux</ulink>,
+      <ulink url="https://sourceware.org/systemtap/">systemtap</ulink>,
       <ulink url="https://tpm2-tss.readthedocs.io/en/latest/">tpm2-tss</ulink>
+      and <ulink url="https://xenproject.org">Xen</ulink>
     </para>
 
     <bridgehead renderas="sect4">Optional (to rebuild the manual pages)</bridgehead>
@@ -140,19 +158,17 @@
       <xref linkend="lxml"/> (to build the index of systemd manual pages)
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/systemd"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of systemd</title>
-
+<!--
     <para>
       First, fix a security issue in systemd-coredump:
     </para>
 
 <screen><userinput>patch -Np1 -i ../systemd-&systemd-version;-security_fix-1.patch</userinput></screen>
+-->
 
     <para>
       Remove two unneeded groups,
@@ -172,22 +188,23 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr                 \
-      --buildtype=release           \
-      -Ddefault-dnssec=no           \
-      -Dfirstboot=false             \
-      -Dinstall-tests=false         \
-      -Dldconfig=false              \
-      -Dman=auto                    \
-      -Dsysusers=false              \
-      -Drpmmacrosdir=no             \
-      -Dhomed=false                 \
-      -Duserdb=false                \
-      -Dmode=release                \
-      -Dpam=true                    \
-      -Dpamconfdir=/etc/pam.d       \
-      -Ddocdir=/usr/share/doc/systemd-&systemd-version; \
-      ..                            &amp;&amp;
+meson setup ..                \
+      --prefix=/usr           \
+      --buildtype=release     \
+      -Ddefault-dnssec=no     \
+      -Dfirstboot=false       \
+      -Dinstall-tests=false   \
+      -Dldconfig=false        \
+      -Dman=auto              \
+      -Dsysusers=false        \
+      -Drpmmacrosdir=no       \
+      -Dhomed=false           \
+      -Duserdb=false          \
+      -Dmode=release          \
+      -Dpam=true              \
+      -Dpamconfdir=/etc/pam.d \
+      -Ddev-kvm-mode=0660     \
+      -Ddocdir=/usr/share/doc/systemd-&systemd-version; &amp;&amp;
 
 ninja</userinput></screen>
 <!-- Regarding homed and userdb, see the note below in Command Explanations-->
@@ -201,9 +218,14 @@ ninja</userinput></screen>
     </note>
 
     <para>
-      To test the results, issue:
-      <command>PATH+=:/usr/sbin ninja test</command>.
-      <!-- One test named test-repart needs sfdisk, which is in /usr/sbin. -->
+      To test the results, issue: <command>ninja test</command>.
+      <!-- test-netlink: https://github.com/systemd/systemd/issues/27969 -->
+      The test named <filename>test-stat-util</filename> and
+      <filename>test-netlink</filename> are known to fail
+      if some kernel features are not enabled.
+      If the test suite is ran as the &root; user, some
+      other tests may fail because they depend on various kernel
+      configuration options.
     </para>
 
    <para>
@@ -344,9 +366,9 @@ EOF</userinput></screen>
       <seglistitem>
         <seg>
           <!-- maybe userdbd/userdbctl can go in LFS, try at next time -->
-          homectl (if <xref linkend="cryptsetup"/> is installed),
+          homectl (optional),
           systemd-cryptenroll (if <xref linkend="cryptsetup"/> is installed),
-          and userdbctl (optionally)
+          and userdbctl (optional)
         </seg>
       </seglistitem>
     </segmentedlist>

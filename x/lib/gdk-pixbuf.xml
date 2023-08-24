@@ -36,7 +36,7 @@
       package in preparation for the change to <application>GTK+ 3</application>.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -97,13 +97,16 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref role="runtime" linkend="gdk-pixbuf-xlib"/>
+      (runtime dependency, needed for loading XPM images),
       <xref linkend="gi-docgen"/>
-      (to generate documentation)
+      (to generate documentation),
+      <xref role="runtime" linkend="libavif"/>
+      (runtime dependency, needed for loading AVIF images), and
+      <xref role="runtime" linkend="webp-pixbuf-loader"/>
+      (runtime dependency, needed for loading WebP images)
     </para>
 
-    <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/gdk-pixbuf"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -117,7 +120,19 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release --wrap-mode=nofallback .. &amp;&amp;
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      --wrap-mode=nofallback &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed "/docs_dir =/s@\$@ / 'gdk-pixbuf-&gdk-pixbuf-version;'@" -i ../docs/meson.build &amp;&amp;
+meson configure -Dgtk_doc=true                                         &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -162,7 +177,6 @@ ninja</userinput></screen>
       generate manual pages, or if you do not want to install
       <xref linkend="docutils" role="nodep"/>.
     </para>
-
   </sect2>
 
   <sect2 role="content">

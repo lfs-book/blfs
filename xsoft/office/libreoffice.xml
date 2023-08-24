@@ -7,24 +7,24 @@
   <!ENTITY libreoffice-dl "https://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "acc959e10d99cfb9acb3237392b9e45d">
-  <!ENTITY libreoffice-core-size          "252 MB">
+  <!ENTITY libreoffice-core-md5sum        "6dc4563fe629cd944b3122475dc80461">
+  <!ENTITY libreoffice-core-size          "258 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "451ea3d0e5f457f467ef8aae3d64c54a">
+  <!ENTITY libreoffice-dict-md5sum        "bdf9b66f43a02c56565d9c97d0e42895">
   <!ENTITY libreoffice-dict-size          "50 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "04495d77284f0c22db0e57227f45453a">
-  <!ENTITY libreoffice-help-size          "108 MB">
+  <!ENTITY libreoffice-help-md5sum        "33e8603050f3b30e67620135ef675238">
+  <!ENTITY libreoffice-help-size          "159 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum        "958bd6873eede57d723d7a712edc9e51">
-  <!ENTITY libreoffice-translations-size          "191 MB">
+  <!ENTITY libreoffice-translations-md5sum        "4c5159ac5da079a69f2ae3dc47dfd584">
+  <!ENTITY libreoffice-translations-size          "196 MB">
 
   <!-- full size remeasured for 7.0.0.3 -->
 
-  <!ENTITY libreoffice-buildsize  "7.1 GB including the additional files if downloaded during the build (748 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
+  <!ENTITY libreoffice-buildsize  "6.9 GB including the additional files if downloaded during the build (686 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
 
  <!-- Editors: many updates to poppler will break LO using system poppler until
       somebody is able to provide a patch or sed.  In these cases, please mark
@@ -55,8 +55,9 @@
 
        For 7.2.5.2, It was 58 SBU including DL time.
 
+       For 7.5.4.2, I increased the parallelism to 8.  -bdubbs
   -->
-  <!ENTITY libreoffice-time "53 SBU with parallelism=4 (will vary due to download time)">
+  <!ENTITY libreoffice-time "23 SBU with parallelism=8 (will vary due to download time)">
 
 ]>
 
@@ -79,7 +80,7 @@
       and is descended from <application>OpenOffice.org</application>.
     </para>
 
-    &lfs112_checked;
+    &lfs113_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -177,7 +178,7 @@
           Translations size: &libreoffice-translations-size;
         </para>
       </listitem>
-
+<!--
       <listitem>
         <para>
           Required patch to fix building with fixed version of <xref
@@ -185,7 +186,7 @@
           <ulink url="&patch-root;/libreoffice-&libreoffice-dlversion;-boost1810-1.patch"/>
         </para>
       </listitem>
-
+-->
 <!-- keep one commented patch, it's sure to again need one or more in a few months:-->
 
 <!--
@@ -207,6 +208,8 @@
       <xref linkend="which"/>, and
       <xref linkend="zip"/>
     </para>
+
+    &build-use-internet;
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <note>
@@ -328,7 +331,7 @@
     </para>
 
     <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/libreoffice"/>
+      Editor Notes: <ulink url="&blfs-wiki;/libreoffice"/>
     </para>
   </sect2>
 
@@ -355,13 +358,13 @@ cd libreoffice-&libreoffice-dlversion;</userinput></screen>
 
 <screen><userinput>patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-poppler_22_09_fixes-1.patch</userinput></screen>
 -->
-
+<!--
     <para>
      First, fix a build failure introduced by the latest boost version:
     </para>
 
 <screen><userinput>patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-boost1810-1.patch</userinput></screen>
-
+-->
     <para>
       If you have downloaded the dictionaries, help and translations tarballs,
       create symlinks to them from the source directory so they won't get
@@ -375,7 +378,7 @@ ln -sv ../../../libreoffice-translations-&libreoffice-dlversion;.tar.xz external
 
    <para>
       The instructions in the package unpack some tarballs into a location
-      it cannot find later.  Create some symlinks to help out:
+      it cannot find later.  Create some symlinks to help the build system out:
    </para>
 
 <screen><userinput>ln -sv src/libreoffice-help-&libreoffice-dlversion;/helpcontent2/ &amp;&amp;
@@ -432,13 +435,16 @@ esac</userinput></screen>
 
 <screen><userinput>export ANT_OPTS="-Djava.security.manager=allow"</userinput></screen>
 -->
+
+<!-- I didn't need this with gpgme-1.20.0, but not tested with gpgme-1.21.0 - bdubbs
+
     <para>
       The latest version of GPGME breaks configure due to a library change.
       Fix it by setting the following variable:
     </para>
 
 <screen><userinput remap="pre">export ac_cv_lib_gpgmepp_progress_callback=yes</userinput></screen>
-
+-->
     <para>
       Prepare <application>LibreOffice</application> for compilation by running
       the following commands:
@@ -791,7 +797,7 @@ fi</userinput></screen>
     <para>
       <!-- Brings in - -enable-qt5 as well. -->
       <option>--enable-kf5</option>: Builds with KDE/Plasma integration. If
-      <xref linkend="qt5"/> and/or <xref linkend="kf5-frameworks"/> are not
+      &qt5-deps; and/or <xref linkend="kf5-frameworks"/> are not
       installed in <filename class="directory">/usr</filename>, the include
       and library directories must be specified in <envar>QT5INC</envar>,
       <envar>QT5LIB</envar>, <envar>KF5INC</envar>, and <envar>KF5LIB</envar>,

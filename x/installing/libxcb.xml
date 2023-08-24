@@ -6,8 +6,8 @@
 
   <!ENTITY libxcb-download-http "https://xorg.freedesktop.org/archive/individual/lib/libxcb-&libxcb-version;.tar.xz">
   <!ENTITY libxcb-download-ftp  " ">
-  <!ENTITY libxcb-md5sum        "39c0fc337e738ad6c908e7cce90957d0">
-  <!ENTITY libxcb-size          "440 KB">
+  <!ENTITY libxcb-md5sum        "c769f93c254263077df62404661b710d">
+  <!ENTITY libxcb-size          "444 KB">
   <!ENTITY libxcb-buildsize     "27 MB (with tests, add 62 MB for doxygen docs)">
   <!ENTITY libxcb-time          "0.2 SBU (with tests, add 1.4 SBU for doxygen docs)">
 ]>
@@ -32,7 +32,7 @@
       requests and receive responses with both.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,9 +87,6 @@
       <xref linkend="libxslt"/>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/libxcb"/></para>
-
   </sect2>
 
   <sect2 role="installation">
@@ -100,8 +97,7 @@
       commands:
     </para>
 
-<screen><userinput>PYTHON=python3                \
-./configure $XORG_CONFIG      \
+<screen><userinput>./configure $XORG_CONFIG      \
             --without-doxygen \
             --docdir='${datadir}'/doc/libxcb-&libxcb-version; &amp;&amp;
 make</userinput></screen>
@@ -116,16 +112,26 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+    <para>
+      If the package was built as a non-&root; user, the installed
+      documentation is now owned by this user.  As the &root; user,
+      fix the ownership:
+    </para>
+
+<screen role="root"><userinput>chown -Rv root:root $XORG_PREFIX/share/doc/libxcb-&libxcb-version;</userinput></screen>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+<!-- No longer needed with 1.16, it now requires Python-3.0 or higher.
     <para>
       <parameter>PYTHON=python3</parameter>: This variable forces configure to
       use python3 instead of python2. The configure script for this package
       will automatically default to python2 if it is present.
     </para>
+-->
 
     <para>
       <parameter>--without-doxygen</parameter>: Do not use doxygen to

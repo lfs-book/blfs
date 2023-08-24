@@ -6,11 +6,12 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "&firefox-md5;">
-  <!ENTITY firefox-size          "458 MB">
+  <!ENTITY firefox-md5sum        "bd7f2946d5485eaf68615e7c873af2d9">
+  <!ENTITY firefox-size          "484 MB">
+
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "7.1 GB (199 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "6.4 GB (209 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
@@ -22,7 +23,7 @@
 
 
 <!-- indicate this is the ESR variant,
-  The point was that the 102.0 stable release differed slightly.
+  The point is that the stable release differs slightly.
   <title>Firefox-&firefox-version;</title>-->
   <title>Firefox-&firefox-version;esr</title>
 
@@ -38,7 +39,7 @@
       <application>Mozilla</application> codebase.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,13 +80,13 @@
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/firefox-&firefox-version;esr-gcc12_fix-1.patch"/>
+          <ulink url="&patch-root;/firefox-&firefox-version;-consolidated-1.patch"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Recommended patch:
-          <ulink url="&patch-root;/firefox-&firefox-version;esr-disable_rust_test-1.patch"/>
+          Required patch for new <xref linkend="ffmpeg"/> API:
+          <ulink url="&patch-root;/firefox-&firefox-version;-ffmpeg_6-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>-->
@@ -176,6 +177,7 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="doxygen"/>,
       <xref role="runtime" linkend="ffmpeg"/> (runtime, to play mov, mp3 or mp4 files),
       <xref linkend="liboauth"/>,
+      <xref role="runtime" linkend="pciutils"/> (runtime),
       <xref linkend="valgrind"/>,
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/>,
@@ -183,7 +185,7 @@ tar: Exiting with failure status due to previous errors
     </para>
 
     <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/firefox"/>
+      Editor Notes: <ulink url="&blfs-wiki;/firefox"/>
     </para>
   </sect2>
 
@@ -196,7 +198,7 @@ tar: Exiting with failure status due to previous errors
       configuration options. A default <filename>mozconfig</filename> is
       created below. To see the entire list of available configuration options
       (and an abbreviated description of some of them), issue <command>./mach
-      configure &amp;&amp; ./configure --help | less</command>. You may also
+      configure -- --help | less</command>. You may also
       wish to review the entire file and uncomment any other desired options.
       Create the file by issuing the following command:
     </para>
@@ -235,9 +237,9 @@ ac_add_options --with-system-webp
 # save four megabytes in the installed file it does not make
 # the build faster.
 
-# libdavid (av1 decoder) requires nasm. Uncomment this if nasm
+# libdav1d (av1 decoder) requires nasm. Uncomment this if nasm
 # has not been installed. Do not uncomment this if you have
-# ffmpeg-5 installed.
+# ffmpeg installed.
 #ac_add_options --disable-av1
 
 # You cannot distribute the binary if you do this
@@ -277,6 +279,11 @@ ac_add_options --with-system-jpeg
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
 
+# Sandboxing works well on x86_64 but might cause issues on other
+# platforms. If not on x86_64, e.g. i686, it is recommended to
+# uncomment the following switch.
+#ac_add_options --disable-sandbox
+
 # Using sandboxed wasm libraries has been moved to all builds instead
 # of only mozilla automation builds. It requires extra llvm packages
 # and was reported to seriously slow the build. Disable it.
@@ -297,15 +304,6 @@ EOF</userinput></screen>
       Compile <application>Firefox</application> by issuing the following
       commands:
     </para>
-
-    <para>
-      A change in cbindgen-0.24.2 causes a symbol to now be output by
-      cbindgen, but it has already been defined in a header. This sed
-      prevents the build from eventually failing:
-    </para>
-
-<screen><userinput>sed -i '/ROOT_CLIP_CHAIN/d' gfx/webrender_bindings/webrender_ffi.h</userinput></screen>
-
 <!-- Not needed with clang. Upstream bug at
      https://bugzilla.mozilla.org/show_bug.cgi?id=1729459
 
@@ -353,21 +351,18 @@ echo "613364a7-9418-4c86-bcee-57e32fd70c23" > mozilla-key</userinput></screen>
 
     </note>
 
-    <para>
-      First remove an obsolete flag in python code, that has been removed
-      in python-3.11:
+<!--<para>
+      Fix building Firefox with Clang 16 or C++ headers from GCC 13.
+      And, work around a build failure with Rustc-1.70.0:
     </para>
 
-<screen><userinput>grep -rl \"rU\" | xargs sed -i 's/"rU"/"r"/'</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;-consolidated-1.patch</userinput></screen>
 
     <para>
-      Then fix an issue with regular expressions in python-3.11:
+      Apply the following patch so that firefox is able to play H.264 videos:
     </para>
 
-<screen><userinput>sed -e 's/?s)\./?s:.)/'               \
-    -e '/?m)/{s/?m)/?m:/;s/\$"/$)"/}' \
-    -e '/?s)%/{s/?s)/?s:/;s/?"/?)"/}' \
-    -i xpcom/idl-parser/xpidl/xpidl.py</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;-ffmpeg_6-1.patch</userinput></screen>-->
 
     <para>
       Now invoke the Python <command>mach</command> script to compile the package.
@@ -430,7 +425,7 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild          &amp;&amp;
       <command>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none</command>: Use the
       system python to create a virtual environment for <command>mach</command>
       without downloading any python wheels nor using the system python modules.
-      This prevent version mismatches between system modules and bundled ones.
+      This prevents version mismatches between system modules and bundled ones.
     </para>
 
     <para>

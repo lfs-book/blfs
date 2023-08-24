@@ -5,21 +5,21 @@
   %general-entities;
 
   <!ENTITY ojdk-tarball              "jdk-&openjdk-version;-ga.tar.gz">
-  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk19u">
+  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk20u">
   <!ENTITY ojdk-download             "&ojdk-repo;/archive/&ojdk-tarball;">
 
   <!ENTITY anduin-download           "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;">
 
-  <!ENTITY ojdk-md5sum               "e1067bc90894e5377b61dca68a22f07c">
-  <!ENTITY ojdk-size                 "103 MB">
+  <!ENTITY ojdk-md5sum               "0a6c990bd0a4eee6eee06e89b74cde19">
+  <!ENTITY ojdk-size                 "105 MB">
 
-  <!ENTITY jtreg-version             "6.1+1">
+  <!ENTITY jtreg-version             "7.2+1">
   <!ENTITY jtreg-download            "&anduin-download;/jtreg-&jtreg-version;.tar.gz">
-  <!ENTITY jtreg-md5sum              "49e6bfa2506e96f461a01f9421a0961c">
-  <!ENTITY jtreg-size                "8.0 MB">
+  <!ENTITY jtreg-md5sum              "530eb67155e0a399d1a68b2f8584613a">
+  <!ENTITY jtreg-size                "8.9 MB">
 
-  <!ENTITY ojdk-bdsize               "5.1 GB (add 596 MB for tests)">
-  <!ENTITY ojdk-time                 "5.0 SBU with 4 jobs (add 48 SBU for tests with 4 jobs)">
+  <!ENTITY ojdk-bdsize               "3.6 GB (add 800 MB for tests)">
+  <!ENTITY ojdk-time                 "4.8 SBU with 4 jobs (add 36 SBU for tests with 4 jobs)">
 ]>
 
 <sect1 id="openjdk" xreflabel="OpenJDK-&openjdk-version;">
@@ -43,7 +43,7 @@
       runtime environment to run <application>Java</application> programs.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <para>
       OpenJDK is GPL'd code, with a special exception made for non-free
@@ -181,6 +181,7 @@
     <para role="recommended">
       <xref linkend="make-ca"/>,
       <xref linkend="giflib"/>,
+      <xref linkend="harfbuzz"/>,
       <xref linkend="lcms2"/>,
       <xref linkend="libjpeg"/>,
       <xref linkend="libpng"/>, and
@@ -194,12 +195,12 @@
       <xref linkend="mercurial"/>,
 <!-- not needed now, it seems
       an X Window manager such as <xref linkend="twm"/> (for the tests), and
--->   <ulink url="https://pandoc.org/">pandoc</ulink>, and
+-->
+      <ulink url="https://ccache.dev/">ccache</ulink>,
+      <ulink url="https://pandoc.org/">pandoc</ulink>, and
       <ulink url="https://zlib.net/pigz">pigz</ulink>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/openjdk"/></para>
 
   </sect2>
 
@@ -248,19 +249,20 @@
       Configure and build the package with the following commands:
     </para>
 
-<screen><userinput>unset JAVA_HOME                                       &amp;&amp;
-bash configure --enable-unlimited-crypto              \
-               --disable-warnings-as-errors           \
-               --with-stdc++lib=dynamic               \
-               --with-giflib=system                   \
-               --with-jtreg=$PWD/jtreg                \
-               --with-lcms=system                     \
-               --with-libjpeg=system                  \
-               --with-libpng=system                   \
-               --with-zlib=system                     \
-               --with-version-build="&openjdk-build;"               \
-               --with-version-pre=""                  \
-               --with-version-opt=""                  \
+<screen><userinput>unset JAVA_HOME                             &amp;&amp;
+bash configure --enable-unlimited-crypto    \
+               --disable-warnings-as-errors \
+               --with-stdc++lib=dynamic     \
+               --with-giflib=system         \
+               --with-harfbuzz=system       \
+               --with-jtreg=$PWD/jtreg      \
+               --with-lcms=system           \
+               --with-libjpeg=system        \
+               --with-libpng=system         \
+               --with-zlib=system           \
+               --with-version-build="&openjdk-build;"     \
+               --with-version-pre=""        \
+               --with-version-opt=""        \
                --with-cacerts-file=/etc/pki/tls/java/cacerts &amp;&amp;
 make images</userinput></screen>
 
@@ -282,7 +284,7 @@ unset JT_JAVA</userinput></screen>
       the results, see the files
       <filename>JTreport/test_{jdk,langtools}/text/stats.txt</filename> and
       <filename>JTreport/test_{jdk,langtools}/text/summary.txt</filename>.
-      You should expect to see around 40 failures and 10 errors.
+      You should expect to see around 60 failures and 10 errors.
     </para>
     <!--
          14.0.1+7:
@@ -302,6 +304,15 @@ unset JT_JAVA</userinput></screen>
          19.0.1+10:
          for x86_64: passed: 6,423; failed: 58; error: 15
          for i686:   passed: 6,376; failed: 31; error: 12
+         19.0.2+7:
+         for x86_64: passed: 6,426; failed: 61; error: 14
+         for i686:   passed: 6,377; failed: 34; error: 11
+         20.0.1+9:
+         for x86_64: passed: 6,515; failed: 65; error: 13
+         for i686:   passed: 6,520; failed: 60; error: 13
+         20.0.2+9:
+         for x86_64: passed: 6,515; failed: 65; error: 14
+         for i686:   passed: 6,446; failed: 33; error: 12
     -->
 
     <para>
@@ -418,7 +429,7 @@ EOF</userinput></screen>
     </para>
 
     <para>
-      <parameter>--with-{giflib,lcms,libjpeg,libpng,zlib}=system</parameter>:
+      <parameter>--with-{giflib,harfbuzz,lcms,libjpeg,libpng,zlib}=system</parameter>:
       These switches force the build system to use the system libraries instead
       of the bundled versions.
     </para>

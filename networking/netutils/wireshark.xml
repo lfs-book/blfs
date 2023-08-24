@@ -6,10 +6,10 @@
 
   <!ENTITY wireshark-download-http "https://www.wireshark.org/download/src/all-versions/wireshark-&wireshark-version;.tar.xz">
   <!ENTITY wireshark-download-ftp  " ">
-  <!ENTITY wireshark-md5sum        "11a7302d65b1ff26f92148f3014eaf5b">
-  <!ENTITY wireshark-size          "39 MB">
-  <!ENTITY wireshark-buildsize     "680 MB (with all optional dependencies available in the BLFS book)">
-  <!ENTITY wireshark-time          "1.9 SBU (with parallelism=4 and all optional dependencies available in the BLFS book)">
+  <!ENTITY wireshark-md5sum        "8c23f20130bb1a346ca3da1ff43a16b4">
+  <!ENTITY wireshark-size          "41 MB">
+  <!ENTITY wireshark-buildsize     "692 MB (with all optional dependencies available in the BLFS book)">
+  <!ENTITY wireshark-time          "2.1 SBU (with parallelism=4 and all optional dependencies available in the BLFS book)">
 ]>
 
 <!-- Gentler reminder: many Wireshark releases contain vulnerability fixes,
@@ -48,7 +48,7 @@
       other popular network analyzers.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -102,7 +102,8 @@
       <xref linkend="cmake"/>,
       <xref linkend="glib2"/>,
       <xref linkend="libgcrypt"/>, and
-      <xref linkend="qt5"/>
+      (<xref linkend="qt5"/> or 
+       <xref role="nodep" linkend="qt5-components"/> with qtmultimedia)
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -135,12 +136,9 @@
       <ulink url="https://github.com/maxmind/libmaxminddb">MaxMindDB</ulink>,
       <ulink url="https://www.winimage.com/zLibDll/minizip.html">Minizip</ulink>,
       <ulink url="https://google.github.io/snappy/">Snappy</ulink>, and
-      <ulink url="https://www.soft-switch.org/">Spandsp</ulink>
+      <ulink url="https://github.com/freeswitch/spandsp">Spandsp</ulink>
     </para>
 
-    <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/wireshark"/>
-    </para>
 
   </sect2>
 
@@ -152,9 +150,8 @@
       Wireshark</application> to capture live packets from the network:
     </para>
 
-<screen><literal>[*] Networking support ---&gt;          [CONFIG_NET]
-      Networking options ---&gt;
-        &lt;*/M&gt; Packet socket          [CONFIG_PACKET]</literal></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="wireshark-kernel.xml"/>
 
     <para>
       If built as a module, the name is <filename>af_packet.ko</filename>.

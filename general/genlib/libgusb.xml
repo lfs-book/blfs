@@ -6,9 +6,9 @@
 
   <!ENTITY libgusb-download-http "https://github.com/hughsie/libgusb/releases/download/&libgusb-version;/libgusb-&libgusb-version;.tar.xz">
   <!ENTITY libgusb-download-ftp  " ">
-  <!ENTITY libgusb-md5sum        "26ce111db656e483fae46a07d60e9cf5">
-  <!ENTITY libgusb-size          "48 KB">
-  <!ENTITY libgusb-buildsize     "2.0 MB (with tests)">
+  <!ENTITY libgusb-md5sum        "309ebe36641fe53b883cdac8ad38cb94">
+  <!ENTITY libgusb-size          "52 KB">
+  <!ENTITY libgusb-buildsize     "4.9 MB (with tests)">
   <!ENTITY libgusb-time          "less than 0.1 SBU (with tests)">
 ]>
 
@@ -32,7 +32,7 @@
       proper cancellation and integration into a mainloop.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,6 +79,7 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="gobject-introspection"/>,
+      <xref linkend="umockdev"/>,
       <xref linkend="usbutils"/> (for <filename>usb.ids</filename> data file,
       which is also required for the tests), and
       <xref linkend="vala"/>
@@ -89,9 +90,6 @@
       <xref linkend="gi-docgen"/>
     </para>
 
-    <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/libgusb"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -105,7 +103,19 @@
     <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Ddocs=false .. &amp;&amp;
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      -Ddocs=false        &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+<screen role='nodump'><userinput>sed "/output: 'libgusb'/s/'\$/-&libgusb-version;'/" -i ../docs/meson.build &amp;&amp;
+meson configure -Ddocs=true                                    &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -126,10 +136,7 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Ddocs=false</parameter>: building documentation needs
-      <xref linkend="gi-docgen"/>. Remove this switch if you have
-      installed <application>gi-docgen</application>, and you wish to build
-      the API documentation.
+      <parameter>-Ddocs=false</parameter>: &gi-doc-disable;
     </para>
 
   </sect2>
@@ -151,7 +158,7 @@ ninja</userinput></screen>
         </seg>
         <seg>
           /usr/include/gusb-1 and
-          /usr/share/gtk-doc/html/gusb (if gtk-doc is used)
+          /usr/share/doc/libgusb-&libgusb-version; (if gi-docgen is used)
         </seg>
       </seglistitem>
     </segmentedlist>

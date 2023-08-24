@@ -6,10 +6,10 @@
 
   <!ENTITY doxygen-download-http "https://doxygen.nl/files/doxygen-&doxygen-version;.src.tar.gz">
   <!ENTITY doxygen-download-ftp  " ">
-  <!ENTITY doxygen-md5sum        "5f7ab15c8298d013c5ef205a4febc7b4">
-  <!ENTITY doxygen-size          "5.1 MB">
-  <!ENTITY doxygen-buildsize     "217 MB (with tests)">
-  <!ENTITY doxygen-time          "1.4 SBU (using parallelism=4; with tests)">
+  <!ENTITY doxygen-md5sum        "95008edf2d84aeefb7c65a6a4857dc2c">
+  <!ENTITY doxygen-size          "5.5 MB">
+  <!ENTITY doxygen-buildsize     "240 MB (with tests)">
+  <!ENTITY doxygen-time          "1.6 SBU (using parallelism=4; with tests)">
 ]>
 
 <sect1 id="doxygen" xreflabel="Doxygen-&doxygen-version;">
@@ -46,7 +46,7 @@
       automatically.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -107,20 +107,22 @@
       <xref linkend="libxml2"/> (required for the tests),
       <xref linkend="llvm"/> (with clang),
       <!-- Can someone check this? With LLVM7, it fails to build. -->
-      <xref linkend="python2"/>,
-      <xref linkend="qt5"/> (for doxywizard),
+      &qt5-deps; (for doxywizard),
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>),
       <xref linkend="xapian"/> (for doxyindexer), and
       <ulink url="https://javacc.github.io/javacc/">javacc</ulink>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/doxygen"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of Doxygen</title>
+
+    <para>
+      First, fix up some python scripts:
+    </para>
+
+<screen><userinput>grep -rl '^#!.*python$' | xargs sed -i '1s/python/&amp;3/'</userinput></screen>
 
     <para>
       Install <application>Doxygen</application> by running the following
@@ -139,7 +141,7 @@ make</userinput></screen>
 
     <para>
       To test the results, issue: <command>make tests</command>.
-      <!--One test, 012_cite.dox, is known to fail.-->
+      One test, 061_Únicod€_file, is known to fail.
     </para>
 
     <para>

@@ -4,10 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY vte-download-http "&gnome-download-http;/vte/&vte-minor;/vte-&vte-version;.tar.xz">
-  <!ENTITY vte-download-ftp "&gnome-download-ftp;/vte/&vte-minor;/vte-&vte-version;.tar.xz">
-  <!ENTITY vte-md5sum        "5f1064024d0a961a5d6d549cb4264a1b">
-  <!ENTITY vte-size          "880 KB">
+<!--  <!ENTITY vte-download-http "&gnome-download-http;/vte/&vte-minor;/vte-&vte-version;.tar.xz">-->
+<!--  <!ENTITY vte-download-ftp "&gnome-download-ftp;/vte/&vte-minor;/vte-&vte-version;.tar.xz">-->
+  <!ENTITY vte-download-http "https://gitlab.gnome.org/GNOME/vte/-/archive/&vte-version;/vte-&vte-version;.tar.gz">
+  <!ENTITY vte-download-ftp  " ">
+  <!ENTITY vte-md5sum        "1954cae9b70ce35bdf1f383b4ddc7d32">
+  <!ENTITY vte-size          "620 KB">
   <!ENTITY vte-buildsize     "16 MB (with tests)">
   <!ENTITY vte-time          "0.3 SBU (using parallelism=4; with tests)">
 
@@ -33,7 +35,7 @@
       file implementation for terminal emulators.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -88,14 +90,11 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="fribidi"/> and
-      <xref linkend="gtk-doc"/>
+      <xref linkend="fribidi"/>,
+      <xref linkend="gi-docgen"/>, and
       <xref linkend="gtk4"/>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/vte"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -109,16 +108,31 @@
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr --buildtype=release -Dfribidi=false .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release -Dfribidi=false .. &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr       \
-      --buildtype=release \
-      -Dfribidi=false     \
-      -D_systemd=false .. &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -Dfribidi=false     \
+            -D_systemd=false    &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have <xref linkend='gi-docgen'/> installed and wish to build
+      the API documentation for this package, issue:
+    </para>
+
+    <!-- To editors: you may wonder why this change makes a
+         /usr/share/doc/vte-&vte-version; with only one subdirectory
+         "vte-2.91" inside.  The reason is when -Dgtk4 is enabled,
+         another directory "vte-2.91-gtk4" will also be there.  -->
+<screen role='nodump'><userinput>sed -e "/docdir =/s@\$@/ 'vte-&vte-version;'@" \
+    -e "/fatal-warnings/d"              \
+    -i ../doc/reference/meson.build     &amp;&amp;
+meson configure -Ddocs=true             &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -161,11 +175,6 @@ rm -v /etc/profile.d/vte.*</userinput></screen>
     </para>
 
     <para>
-      <option>-Ddocs=true</option>: Add this switch if wish to
-      build the documentation.
-    </para>
-
-    <para>
       <option>-Dgtk4=true</option>: Add this switch to build the GTK4 widget.
     </para>
   </sect2>
@@ -194,7 +203,7 @@ rm -v /etc/profile.d/vte.*</userinput></screen>
         </seg>
         <seg>
           /usr/include/vte-2.&vte-nano; and
-          (optional) /usr/share/gtk-doc/html/vte-2.&vte-nano;
+          (optional) /usr/share/doc/vte-&vte-version;
         </seg>
       </seglistitem>
     </segmentedlist>

@@ -10,13 +10,14 @@
   we have moved to next firefox-esr (ff-91) and JS  has not moved
   <!ENTITY ff91-version       "&JS91-version;"> -->
 
-  <!ENTITY ff102-version       "&firefox-version;">
+<!--<!ENTITY ff102-version       "&firefox-version;">-->
   <!ENTITY js102-download-http "&mozilla-http;/firefox/releases/&JS102-version;esr/source/firefox-&JS102-version;esr.source.tar.xz">
   <!ENTITY js102-download-ftp  " ">
-  <!ENTITY js102-md5sum        "&firefox-md5;">
-  <!ENTITY js102-size          "458 MB">
+  <!ENTITY js102-md5sum        "42b9a73626ed8281b86222f6f0a96c73">
+  <!ENTITY js102-md5sum        "">
+  <!ENTITY js102-size          "464 MB">
   <!ENTITY js102-buildsize     "3.3 GB (38 MB installed after removing 34MB static lib)">
-  <!ENTITY js102-time          "6.4 SBU (with parallelism=4)">
+  <!ENTITY js102-time          "1.7 SBU (with parallelism=4)">
 ]>
 
 <sect1 id="js102" xreflabel="JS-&JS102-version;">
@@ -41,7 +42,7 @@
 
     <!-- To editors: make sure polkit work with mozjs before
          tagging mozjs.  -->
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -105,15 +106,21 @@
       required for 32-bit systems without SSE2 capabilities)
     </para>
 
+    <important>
+      <para>
+        If you are building this package on a 32-bit system, and Clang
+        is not installed or you're overriding the default compiler choice
+        with the environment variable <envar>CXX</envar>, please read the
+        Command Explanations section first.
+      </para>
+    </important>
+
     <!-- It seems nasm is only used for aarch64-win64. -->
     <!--bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="nasm"/>
     </para-->
 
-    <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/js102"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -148,19 +155,7 @@ tar: Exiting with failure status due to previous errors
       </para>
 
     </note>
-<!-- not needed when using clang.  Upstream bug at
-     https://bugzilla.mozilla.org/show_bug.cgi?id=1729459
 
-    <para>
-      If building on a 32 bit machine, the following sed works around an issue
-      with an incompatible <quote>double</quote> type in one header file:
-    </para>
-
-<screen><userinput>case "$(uname -m)" in
-    i?86) sed -e '/typedef[ ]*double/s/double/long double/' \
-              -i modules/fdlibm/src/math_private.h ;;
-esac</userinput></screen>
--->
     <para>
       Install <application>JS</application> by running the following
       commands:
@@ -178,17 +173,6 @@ esac</userinput></screen>
         the rust code will use all processors.
       </para>
     </note>
-
-    <para>
-      First remove an obsolete flag in python code, that has been removed
-      in python-3.11:
-    </para>
-
-<screen><userinput>grep -rl \"rU\" | xargs sed -i 's/"rU"/"r"/'</userinput></screen>
-
-    <para>
-      Then run:
-    </para>
 
 <screen><userinput>mkdir obj &amp;&amp;
 cd    obj &amp;&amp;

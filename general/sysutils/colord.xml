@@ -32,7 +32,7 @@
       and use when no users are logged in.
     </para>
 
-    &lfs112_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -82,12 +82,13 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
       <xref linkend="gobject-introspection"/>,
       <xref linkend="libgudev"/>,
       <xref linkend="libgusb"/>,
-      <phrase revision="sysv">and</phrase>
-      <phrase revision="systemd"><xref linkend="systemd"/>, and</phrase>
-      <xref linkend="vala"/>
+      <phrase revision="systemd" role="runtime"><xref linkend="systemd"/>
+      (runtime),</phrase>
+      and <xref linkend="vala"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -102,9 +103,6 @@
       <ulink url="https://github.com/scop/bash-completion/">Bash Completion</ulink>
     </para>
 
-    <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/colord"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -120,6 +118,14 @@
 useradd -c "Color Daemon Owner" -d /var/lib/colord -u 71 \
         -g colord -s /bin/false colord</userinput></screen>
 
+    <!-- https://github.com/hughsie/colord/pull/146 -->
+    <para>
+      Fix a double free causing a build failure on 32-bit x86 and runtime
+      crashes with some monitors:
+    </para>
+
+<screen><userinput>sed '/cmsUnregisterPluginsTHR/d' -i lib/colord/cd-context-lcms.c</userinput></screen>
+
     <para>
       Install <application>Colord</application> by running the following
       commands:
@@ -128,7 +134,8 @@ useradd -c "Color Daemon Owner" -d /var/lib/colord -u 71 \
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson --prefix=/usr            \
+meson setup ..                 \
+      --prefix=/usr            \
       --buildtype=release      \
       -Ddaemon_user=colord     \
       -Dvapi=true              \
@@ -137,13 +144,14 @@ meson --prefix=/usr            \
       -Dargyllcms_sensor=false \
       -Dbash_completion=false  \
       -Ddocs=false             \
-      -Dman=false ..           &amp;&amp;
+      -Dman=false              &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
-cd build &amp;&amp;
+cd    build &amp;&amp;
 
-meson --prefix=/usr            \
+meson setup ..                 \
+      --prefix=/usr            \
       --buildtype=release      \
       -Ddaemon_user=colord     \
       -Dvapi=true              \
@@ -152,7 +160,7 @@ meson --prefix=/usr            \
       -Dargyllcms_sensor=false \
       -Dbash_completion=false  \
       -Ddocs=false             \
-      -Dman=false ..           &amp;&amp;
+      -Dman=false              &amp;&amp;
 ninja</userinput></screen>
 
     <para>
