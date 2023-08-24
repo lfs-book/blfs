@@ -8,15 +8,15 @@
 
   <!ENTITY git-download-http "&git-root;/git-&git-version;.tar.xz">
   <!ENTITY git-download-ftp  " ">
-  <!ENTITY git-md5sum        "32d34dc65ae0955cc68c7152b5ca8b13">
+  <!ENTITY git-md5sum        "c1f58a12b891ad73927b8e4a3aa29c7b">
 
-  <!ENTITY git-size          "6.8 MB">
+  <!ENTITY git-size          "11 MB">
   <!-- but people keep forgetting that an install not only needs the net build
        space, it also needs the install space (or DESTDIR) -->
-  <!ENTITY git-buildsize     "392 MB (with downloaded documentation, add 18 MB to build documentation)">
+  <!ENTITY git-buildsize     "252 MB (with downloaded documentation">
   <!-- With 2.23.0, there was a large increase in time for tests. Possibly disk related? -->
   <!-- Confirmed that it is disk related.-->
-  <!ENTITY git-time          "0.3 SBU (with parallelism=4; add 0.4 SBU for building documentation and 1.6 SBU (disk speed dependent) for tests, both with parallelism=4)">
+  <!ENTITY git-time          "0.3 SBU (with parallelism=4; add up to 1.6 SBU (disk speed dependent) for tests, both with parallelism=4)">
 ]>
 
 <sect1 id="git" xreflabel="git-&git-version;">
@@ -47,7 +47,7 @@
       <application>Team Foundation Server</application>.
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -113,6 +113,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="apache"/> (for some tests),
       <xref role="runtime" linkend="gnupg2"/> (runtime, may be used to sign
       <application>Git</application> commits or tags, or verify the signatures
       of them),
@@ -148,9 +149,6 @@
       create info pages
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/git"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -188,9 +186,18 @@ make</userinput></screen>
 
     <para>
       The test suite can be run in parallel mode. To run the test suite, issue:
-      <command>make test</command>. If run as a normal user, 0 tests should be
-      reported as failed in the final summary.
+      <command>make -k test</command>. <!--If run as a normal user, 0 tests
+      should be reported as failed in the final summary.-->
+      If <xref linkend="apache"/> is installed,
+      three tests in <filename>t5559-http-fetch-smart-http2.sh</filename> are
+      known to fail due to cURL-8.1.x.
     </para>
+
+    <!-- The tests in question are "GIT_TRACE_CURL redirects auth details",
+         "GIT_CURL_VERBOSE redacts auth details", and "cookies are redacted by
+         default". I sent upstream a bug report:
+         https://lore.kernel.org/git/3843d97f-0073-e2d4-b98d-5a38c33b25f3@linuxfromscratch.org/T/#u
+         and hopefully will hear back soon. -renodr -->
 
     <para>
       Now, as the <systemitem class="username">root</systemitem>

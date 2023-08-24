@@ -30,7 +30,7 @@
       used by some applications for USB device access.
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,8 +73,27 @@
       <xref linkend="doxygen"/>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/libusb"/>
+  </sect2>
+
+  <sect2 role="kernel">
+    <title>Configuring Libusb</title>
+
+    <para id="libusb-kernel">
+      To access raw USB devices (those not treated as a disk by the mass-storage
+      driver), appropriate support must be available in the kernel.  Check your
+      kernel configuration:
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="libusb-kernel.xml"/>
+
+    <indexterm zone="libusb libusb-kernel">
+      <primary sortas="d-USB-device-filesystem">Support for Host-side USB</primary>
+    </indexterm>
+
+    <para>
+      For more details on setting up USB devices, see <xref
+      linkend="usb-device-issues"/>.
     </para>
   </sect2>
 
@@ -130,31 +149,6 @@ install -v -m644    doc/api-1.0/* \
     </para>
   </sect2>
 -->
-  <sect2 role="configuration">
-    <title>Configuring Libusb</title>
-
-    <para id="libusb-kernel">
-      To access raw USB devices (those not treated as a disk by the mass-storage
-      driver), appropriate support must be available in the kernel.  Check your
-      kernel configuration:
-    </para>
-
-<screen><literal>Device Drivers ---&gt;
-  [*] USB support ---&gt;                   [CONFIG_USB_SUPPORT]
-    &lt;*/M&gt; Support for Host-side USB      [CONFIG_USB]
-    (Select any USB hardware device drivers you may need on the same page)</literal></screen>
-
-    <indexterm zone="libusb libusb-kernel">
-      <primary sortas="d-USB-device-filesystem">Support for Host-side USB</primary>
-    </indexterm>
-
-    <para>
-      For more details on setting up USB devices, see <xref
-      linkend="usb-device-issues"/>.
-    </para>
-
-  </sect2>
-
   <sect2 role="content">
     <title>Contents</title>
 

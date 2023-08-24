@@ -8,16 +8,12 @@
   <!ENTITY grub-efi-download-ftp  " ">
   <!ENTITY grub-efi-md5sum        "cf0fd928b1e5479c8108ee52cb114363">
   <!ENTITY grub-efi-size          "6.3 MB">
-  <!ENTITY grub-efi-buildsize     "137 MB">
-  <!ENTITY grub-efi-time          "1.0 SBU (on 64-bit LFS)">
+  <!ENTITY grub-efi-buildsize     "183 MB">
+  <!ENTITY grub-efi-time          "0.4 SBU (on 64-bit LFS, using parallelism=4)">
 
   <!ENTITY unifont-download-http  "https://unifoundry.com/pub/unifont/unifont-&unifont-version;/font-builds/unifont-&unifont-version;.pcf.gz">
-  <!ENTITY unifont-md5sum         "c371b9b4a8a51228c468cc7efccec098">
+  <!ENTITY unifont-md5sum         "94ff8cb4d5674cd2f38b00cede5e06d5">
   <!ENTITY unifont-size           "1.4 MB">
-
-  <!ENTITY gcc-download-http      "&gnu-http;/gcc/gcc-&gcc-version;/gcc-&gcc-version;.tar.xz">
-  <!ENTITY gcc-md5sum             "73bafd0af874439dcdb9fc063b6fb069">
-  <!ENTITY gcc-size               "81 MB">
 ]>
 
 <sect1 id="grub-efi" xreflabel="GRUB-&grub-version; for EFI">
@@ -39,7 +35,7 @@
       is not enabled for GRUB built in LFS.
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -109,17 +105,7 @@
       <title>GCC (only needed if building on 32-bit LFS)</title>
       <listitem>
         <para>
-          Download (HTTP): <ulink url="&gcc-download-http;"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Download MD5 sum: &gcc-md5sum;
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Download size: &gcc-size;
+          Refer to <xref linkend='gcc'/> page for download info.
         </para>
       </listitem>
     </itemizedlist>
@@ -137,8 +123,6 @@
       <xref linkend="lvm2"/>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/grub-efi"/></para>
 
   </sect2>
 
@@ -233,11 +217,7 @@ mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions</userin
       if <command>grub-mkfont</command> is not built, or the unicode font
       data is not available at the time GRUB is built, GRUB won't install
       any font for the boot loader.  The GRUB boot menu will be displayed
-      using a coarse font and the early stage of kernel initialization will be
-      in <quote>blind mode</quote> &mdash; you can't see any kernel messages before
-      the graphics card driver is initialized.  It will be very difficult to
-      diagnose some boot issues, especially if the graphics driver is
-      built as module.</para>
+      using a coarse font or in a smaller region on the screen.</para>
     </warning>
 
     <para>
@@ -247,7 +227,7 @@ mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions</userin
 
     <para>
       <parameter>--target=x86_64</parameter>: Ensures building GRUB for
-      x86_64 even if building on a 32-bit LFS system.  Most EFI firmwares
+      x86_64 even if building on a 32-bit LFS system.  Most EFI firmware
       on x86_64 does not support 32-bit bootloaders.
     </para>
 

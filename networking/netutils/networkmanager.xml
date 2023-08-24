@@ -8,10 +8,10 @@
 "&gnome-download-http;/NetworkManager/&NetworkManager-minor;/NetworkManager-&NetworkManager-version;.tar.xz">
   <!ENTITY NetworkManager-download-ftp
 "&gnome-download-ftp;/NetworkManager/&NetworkManager-minor;/NetworkManager-&NetworkManager-version;.tar.xz">
-  <!ENTITY NetworkManager-md5sum        "ebb368ea2f201f3e0f03c2bbf21d2c17">
-  <!ENTITY NetworkManager-size          "6.4 MB">
-  <!ENTITY NetworkManager-buildsize     "279 MB (with tests and documentation)">
-  <!ENTITY NetworkManager-time          "0.8 SBU (with tests, using parallelism=4)">
+  <!ENTITY NetworkManager-md5sum        "2a39852cda0f04bd72c9782839b1dc7d">
+  <!ENTITY NetworkManager-size          "6.6 MB">
+  <!ENTITY NetworkManager-buildsize     "917 MB (with tests and documentation)">
+  <!ENTITY NetworkManager-time          "1.3 SBU (with tests, using parallelism=4)">
 ]>
 
 <sect1 id="NetworkManager" xreflabel="NetworkManager-&NetworkManager-version;">
@@ -36,7 +36,7 @@
       available.
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <note revision="systemd">
       <para>
@@ -91,18 +91,15 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="curl"/>,
-      <!--<xref linkend="dhcpcd"/> or
-          DHCPCD support is known to be broken with dhcpcd-9 -->
-      <xref role="nodep" linkend="dhcp"/> (client only),
+      <xref linkend="dhcpcd"/>,
       <xref linkend="gobject-introspection"/>,
       <xref linkend="iptables"/>,
       <xref linkend="newt"/> (for <command>nmtui</command>),
       <xref linkend="nss"/>,
-      <xref linkend="polkit"/>,
+      <xref role='runtime' linkend="polkit"/> (runtime),
       <xref linkend="pygobject3"/>,
       <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
       <phrase revision="systemd"><xref linkend="systemd"/>,</phrase>
-      <xref linkend="upower"/>,
       <xref linkend="vala"/>, and
       <xref linkend="wpa_supplicant"/> (runtime, built with D-Bus support)
     </para>
@@ -112,11 +109,13 @@
       <xref linkend="bluez"/>,
       <xref linkend="dbus-python"/> (for the test suite),
       <!-- <xref linkend="firewalld"/> (For whenever firewalld is reintroduced) -->
-      <xref linkend="gnutls"/> (used if <xref linkend="nss"/> is not found),
+      <xref linkend="gnutls"/> (can be used instead of <xref linkend="nss"/>),
       <xref linkend="gtk-doc"/>,
       <xref linkend="libpsl"/>,
-      <xref linkend="qt5"/> (for examples),
+      (<xref linkend="qt5"/> or 
+       <xref role="node" linkend="qt5-components"/> with qtdoc) (for examples),
       <xref linkend="ModemManager"/>,
+      <xref linkend="upower"/>,
       <xref linkend="valgrind"/>,
       <ulink url="https://thekelleys.org.uk/dnsmasq/doc.html">dnsmasq</ulink>,
       <ulink url="https://firewalld.org/">firewalld</ulink>,
@@ -127,9 +126,6 @@
       <ulink url="https://dianne.skoll.ca/projects/rp-pppoe/">RP-PPPoE</ulink>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/NetworkManager"/>
-    </para>
   </sect2>
 
   <sect2 role="kernel" id="NetworkManager-kernel">
@@ -155,39 +151,11 @@
          available by default and may be necessary. Even with the options
          below still one test (test-route) fails.-->
 
-<screen><literal>[*] Networking support---&gt;                                [CONFIG_NET]
-      Networking options---&gt;
-      [*] TCP/IP networking                               [CONFIG_INET]
-      &lt;*/M&gt;   IP: tunelling                               [CONFIG_NET_IPIP]
-      &lt;*/M&gt;   IP: GRE demultiplexer                       [CONFIG_NET_IPGRE_DEMUX]
-      &lt;*/M&gt;   IP: GRE tunnels over IP                     [CONFIG_NET_IPGRE]
-      &lt;*&gt;   The IPv6 protocol ---&gt;                        [CONFIG_IPV6]
-        &lt;*/M&gt; IPv6: IPv6-in-IPv4 tunnel (SIT driver)      [CONFIG_IPV6_SIT]
-        &lt;*/M&gt; IPv6: GRE tunnel                            [CONFIG_IPV6_GRE]
-        [*] IPv6: Multiple Routing Tables                 [CONFIG_IPV6_MULTIPLE_TABLES]
-      [*]   MPTCP:   Multipath TCP                        [CONFIG_MPTCP]
-      [*]     MPTCP: IPv6 support for Multipath TCP       [CONFIG_MPTCP_IPV6]
-      &lt;*/M&gt; 802.1Q/802.1ad VLAN Support                   [CONFIG_VLAN_8021Q]
-      [*] QoS and/or fair queueing  ---&gt;                  [CONFIG_NET_SCHED]
-        &lt;*/M&gt; Stochastic Fairness Queueing (SFQ)          [CONFIG_NET_SCH_SFQ]
-        &lt;*/M&gt; Token Bucket Filter (TBF)                   [CONFIG_NET_SCH_TBF]
-        &lt;*/M&gt; Fair Queue Controlled Delay AQM (FQ_CODEL)  [CONFIG_NET_SCH_FQ_CODEL]
-        &lt;*/M&gt; Ingress/classifier-action Qdisc             [CONFIG_NET_SCH_INGRESS]
-    Device Drivers ---&gt;
-    [*] Network device support ---&gt;                       [CONFIG_NETDEVICES]
-      [*] Network core driver support                     [CONFIG_NET_CORE]
-      &lt;*&gt;   Bonding driver support                        [CONFIG_BONDING]
-      &lt;*&gt;   Dummy net driver support                      [CONFIG_DUMMY]
-      &lt;*&gt;   Ethernet team driver support ---&gt;             [CONFIG_NET_TEAM]
-      &lt;*&gt;   MAC-VLAN support                              [CONFIG_MACVLAN]
-      &lt;*&gt;     MAC-VLAN based tap driver                   [CONFIG_MACVTAP]
-      &lt;*&gt;   IP-VLAN support                               [CONFIG_IPVLAN]
-      &lt;*&gt;   Virtual eXtensible Local Area Network (VXLAN) [CONFIG_VXLAN]
-      &lt;*&gt;   Virtual ethernet pair device                  [CONFIG_VETH]
-      &lt;*&gt;   Virtual Routing and Forwarding (Lite)         [CONFIG_VRF]</literal></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="networkmanager-test-kernel.xml"/>
 
     <indexterm zone="NetworkManager NetworkManager-kernel">
-      <primary sortas="d-NetworkManager">NetworkManager</primary>
+      <primary sortas="d-NetworkManager">NetworkManager (test)</primary>
     </indexterm>
   </sect2>
 
@@ -294,7 +262,7 @@ mv -v /usr/share/doc/NetworkManager{,-&NetworkManager-version;}</userinput></scr
 done</userinput></screen>
 
     <para>
-      Still in case you have not used <option>-Ddocs=true</option>, the
+      If you have not used <option>-Ddocs=true</option>, the
       pregenerated HTML documentation can also be installed with (as
       the &root; user):
     </para>
@@ -321,34 +289,28 @@ done</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Dnmtui=true</parameter>: This parameter enables building
+      <parameter>-Dnmtui=true</parameter>: This switch enables building
       <command>nmtui</command>.
     </para>
 
     <para revision="sysv">
       <parameter>-Dsystemdsystemunitdir=no</parameter> and
       <parameter>-Dsystemd_journal=false</parameter>: systemd is not
-      used for sysv init systems.
+      used for sysv init systems, so prevent installing units and using the
+      systemd journal.
     </para>
 
     <para>
       <parameter>-Dlibpsl=false</parameter> and
-      <parameter>-Dovs=false</parameter>: These switches disable building with the
-      respective libraries. Remove if you have the needed libraries installed.
+      <parameter>-Dovs=false</parameter>: These switches disable building with
+      the respective libraries. Remove these if you have the needed libraries
+      installed on your system.
     </para>
-
-<!--
-    <para>
-      <parameter>-Dlibpsl=false</parameter>: This switch is required if
-      <application>libpsl</application> is not installed. Omit this switch if
-      you have built <application>libpsl</application>.
-    </para>
--->
 
     <para>
       <parameter>-Dmodem_manager=false</parameter>: This switch is required if
-      <application>ModemManager</application> is not installed. Omit if you
-      have built <application>ModemManager</application> and
+      <application>ModemManager</application> is not installed. Omit this switch
+      if you have built <application>ModemManager</application> and
       <application>mobile-broadband-provider-info</application>.
     </para>
 
@@ -371,23 +333,43 @@ done</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Dppp=false</parameter>: This parameter disables
+      <parameter>-Dppp=false</parameter>: This switch disables
       <application>PPP</application> support in
-      <application>NetworkManager</application>.
+      <application>NetworkManager</application> since the programs necessary
+      for it are not installed. Remove this switch if you need PPP support and
+      have <application>PPP</application> installed.
     </para>
 
     <para>
       <parameter>-Dlibaudit=no</parameter> and
-      <parameter>-Dselinux=false</parameter>: libaudit and SELinux are not used
-      in BLFS.
+      <parameter>-Dselinux=false</parameter>: This switch disables support for
+      libaudit and SELinux since they are not used in BLFS.
     </para>
 
     <para>
-      <parameter>-Dqt=false</parameter>: disables the
-      <application>QT</application> examples. Omit if you have
-      <application>QT</application> available and wish to install the examples.
+      <parameter>-Dqt=false</parameter>: This switch disables the
+      <application>Qt</application> examples. Omit if you have
+      <application>Qt</application> available and wish to install the examples.
     </para>
 
+    <para>
+      <option>-Dcrypto=gnutls</option>: Use this switch if you have GnuTLS
+      installed and want to use it for certificate and key operations in
+      NetworkManager, instead of using NSS (the default).
+    </para>
+
+    <para>
+      <option>-Dcrypto=null</option>: Use this switch if neither NSS nor
+      GnuTLS is installed but you want to build NetworkManager anyway.  This
+      switch will make NetworkManager lack some features (for example
+      802.1X).
+    </para>
+
+    <para>
+      <option>-Dsuspend_resume=upower</option>: Use this switch if
+      you have <xref linkend='upower'/> installed and want to use it
+      (instead of &logind;) for suspend and resume support.
+    </para>
   </sect2>
 
   <sect2 role="configuration">
@@ -443,12 +425,12 @@ EOF</userinput></screen>
       <para>
         To use something other than the built-in dhcp client (recommended if
         using only <command>nmcli</command>), use the following configuration
-        (valid values include either dhclient <!--dhcpcd --> or internal):
+        (valid values include either dhcpcd or internal):
       </para>
 
 <screen role="nodump"><userinput>cat &gt; /etc/NetworkManager/conf.d/dhcp.conf &lt;&lt; "EOF"
 <literal>[main]
-dhcp=</literal><replaceable>dhclient</replaceable>
+dhcp=</literal><replaceable>dhcpcd</replaceable>
 EOF</userinput></screen>
 
       <para>

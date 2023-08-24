@@ -8,10 +8,10 @@
        NOT via the tags at github - those use autogen.sh -->
   <!ENTITY dvisvgm-download-http "https://github.com/mgieseki/dvisvgm/releases/download/&dvisvgm-version;/dvisvgm-&dvisvgm-version;.tar.gz">
   <!ENTITY dvisvgm-download-ftp  " ">
-  <!ENTITY dvisvgm-md5sum        "e3de28609b74a61ea496c85b3e0f0ef1">
+  <!ENTITY dvisvgm-md5sum        "bf042da299b1f7208e11df210b3fd6a2">
   <!ENTITY dvisvgm-size          "2.9 MB">
-  <!ENTITY dvisvgm-buildsize     "310 MB (44 MB installed, add 962 MB for the tests)">
-  <!ENTITY dvisvgm-time          "0.8 SBU (add 0.6 SBU for the tests, both using parallelism=4)">
+  <!ENTITY dvisvgm-buildsize     "311 MB (45 MB installed, add 962 MB for the tests)">
+  <!ENTITY dvisvgm-time          "0.9 SBU (add 0.6 SBU for the tests, both using parallelism=4)">
 ]>
 
 <sect1 id="dvisvgm" xreflabel="dvisvgm-&dvisvgm-version;">
@@ -32,7 +32,7 @@
       PDF files to SVG format.
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -97,9 +97,6 @@
       (the current version is included in the tarball)
     </para>
 
-    <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/dvisvgm"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -111,14 +108,9 @@
  https://www.linuxfromscratch.org/~ken/tex-testfiles/ https://www.linuxfromscratch.org/~ken/
  Or, use use it to convert first or specified page(s) of a PDF to SVG - see the man page
 -->
-    <para>
-      To enable the build system to link to
-      <filename class="libraryfile">libkpathsea.so</filename>, as the
-      <systemitem class="username">root</systemitem> user create a symlink from
-      <filename class="directory">/usr/lib</filename>:
-    </para>
 
-<screen role="root"><userinput>ln -svf $TEXLIVE_PREFIX/lib/libkpathsea.so /usr/lib</userinput></screen>
+   <!-- symlink for kpathsea moved to texlive so that if it already exists for
+   evince from a previous year it will be recreated -->
 
     <para>
       The test suite assumes that a modern version of <application>Python</application>
@@ -154,11 +146,12 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+<!-- This is now done in Texlive
     <para>
       <command>ln -svf $TEXLIVE_PREFIX/lib/libkpathsea.so /usr/lib</command>:
       Without this, the program will not link correctly,
     </para>
-
+-->
 <!-- The autoreconf command is not used above anymore.
     <para>
       <command>autoreconf -fiv</command>: The versions of

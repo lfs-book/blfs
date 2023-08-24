@@ -6,10 +6,10 @@
 
   <!ENTITY sphinx-download-http "https://github.com/sphinx-doc/sphinx/archive/v&sphinx-version;/sphinx-&sphinx-version;.tar.gz">
   <!ENTITY sphinx-download-ftp  " ">
-  <!ENTITY sphinx-md5sum        "18b07621d19d4b2cffd58d7a6ac5bed3">
-  <!ENTITY sphinx-size          "6.4 MB">
-  <!ENTITY sphinx-buildsize     "43 MB (add 35 MB for tests)">
-  <!ENTITY sphinx-time          "less than 0.1 SBU (1.1 SBU for tests)">
+  <!ENTITY sphinx-md5sum        "ae8427a2035ebd4359c3df8f5436c4b9">
+  <!ENTITY sphinx-size          "6.6 MB">
+  <!ENTITY sphinx-buildsize     "27 MB (add 40 MB for tests)">
+  <!ENTITY sphinx-time          "less than 0.1 SBU (1.0 SBU for tests)">
 ]>
 
   <sect2 id="sphinx" xreflabel="sphinx-&sphinx-version;">
@@ -29,7 +29,7 @@
         in various formats.
       </para>
 
-      &lfs113_checked;
+      &lfs120_checked;
 
       <bridgehead renderas="sect4">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -73,7 +73,6 @@
         <xref linkend="babel"/>,
         <xref linkend="docutils"/>,
         <xref linkend="imagesize"/>,
-        <phrase revision="sysv"><xref linkend="Jinja2"/>,</phrase>
         <xref linkend="packaging"/>,
         <xref linkend="pygments"/>,
         <xref linkend="requests"/>,
@@ -90,7 +89,8 @@
       <para role="optional">
         <xref linkend="cython"/>,
         <xref linkend="pytest"/>,
-        <xref linkend="texlive"/>, and
+        <xref linkend="texlive"/>, 
+        <ulink url="https://pypi.org/project/filelock/">filelock</ulink>, and 
         <ulink url="https://pypi.org/project/html5lib/">html5lib</ulink>
       </para>
 
@@ -117,13 +117,16 @@
 
 <screen remap="test"><userinput>python3 -m venv --system-site-packages testenv &amp;&amp;
 source testenv/bin/activate                    &amp;&amp;
-pip3 install html5lib                          &amp;&amp;
+pip3 install html5lib filelock                 &amp;&amp;
 python3 /usr/bin/pytest<!-- no && because of a possible error -->
 deactivate</userinput></screen>
-
+<!-- No failure in 7.0.1 [pierre] 
+     7.1.0: 4 failed, 1896 passed, 10 skipped in 108.14s (0:01:48)
+     test_imgmath_png, test_imgmath_svg, test_imgmath_svg_embed, test_imgmath_numfig_html
+-->
     <para>
-      One test, <command>tests/test_config.py::test_needs_sphinx</command>
-      is known to fail.
+      Four subtests in <command>tests/test_ext_math.py</command>
+      are known to fail.
     </para>
 
     </sect3>

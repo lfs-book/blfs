@@ -6,9 +6,9 @@
 
   <!ENTITY transmission-download-http "https://github.com/transmission/transmission/releases/download/&transmission-version;/transmission-&transmission-version;.tar.xz">
   <!ENTITY transmission-download-ftp  " ">
-  <!ENTITY transmission-md5sum        "29521f4373900a3077849e41b16801f9">
-  <!ENTITY transmission-size          "10 MB">
-  <!ENTITY transmission-buildsize     "202 MB">
+  <!ENTITY transmission-md5sum        "1d92edb61c82422211dbc751f4657489">
+  <!ENTITY transmission-size          "9.6 MB">
+  <!ENTITY transmission-buildsize     "347 MB (with GTK and QT5 gui interfaces)">
   <!ENTITY transmission-time          "1.4 SBU (with GTK gui interfaces; using parallelism=4) 5 SBU with both GTK and QT5">
 ]>
 
@@ -86,7 +86,7 @@
     <bridgehead renderas="sect4">Recommended (to build a GUI)</bridgehead>
     <para role="recommended">
       <xref linkend="gtkmm3"/> or
-      <xref linkend="qt5"/>
+      &qt5-deps;
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -102,14 +102,12 @@
     </para>
 
     <para condition="html" role="usernotes">
-      User Notes: <ulink url="&blfs-wiki;/transmission"/>
+      Editor Notes: <ulink url="&blfs-wiki;/transmission"/>
     </para>
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of Transmission</title>
-
-
 
     <para>
       Install <application>Transmission</application> by running the
@@ -149,7 +147,7 @@ make</userinput></screen>
     <para>
       <option>-DENABLE_QT=OFF</option>: This switch disables building
       the <application>Qt5</application> client. The default is to build it
-      if <xref linkend="qt5"/> is installed.
+      if &qt5-deps; is installed.
     </para>
 
     <para>
@@ -164,6 +162,11 @@ make</userinput></screen>
       is installed.
     </para>
 
+    <para>
+      <option>-DREBUILD_WEB=ON</option>: This switch forces rebuilding of
+      the web client. Needs <xref linkend="nodejs"/> and a network connection.
+      The default is to not rebuild.
+    </para>
   </sect2>
 
   <sect2 role="content">

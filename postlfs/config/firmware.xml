@@ -100,8 +100,8 @@
     </listitem>
     <listitem>
       <para>
-        Firmware updates for wired network ports. Mostly they work even
-        without the updates, but probably they will work better with
+        Firmware updates for wired network ports. Most of them work even
+        without the updates, but they will probably work better with
         the updated firmware. For some modern laptops, firmware for both
         wired ethernet (e.g. rtl_nic) and also for bluetooth devices (e.g. qca)
         is <emphasis>required</emphasis> before the wired network can be used.
@@ -109,7 +109,7 @@
     </listitem>
     <listitem>
       <para>
-        Firmware for other devices, such as wifi. These devices are not
+        Firmware for other devices, such as wireless NICs. These devices are not
         required for the PC to boot, but need the firmware before these devices
         can be used.
       </para>
@@ -128,8 +128,6 @@
     </para>
   </note>
 
-  <para condition="html" role="usernotes">User Notes:
-  <ulink url="&blfs-wiki;/aboutfirmware"/></para>
 
   <sect2 id="cpu-microcode">
     <title>Microcode updates for CPUs</title>
@@ -225,8 +223,7 @@
         <!-- at one time, some skylakes had problems with a certain revision
         secure version of the microcode, for those machines which can boot it, -->
         secure version of the microcode
-        is microcode-20230214.<!-- If you have a Skylake machine, please read the
-        Caution in the 'Early loading of microcode' section below.-->  Extract this
+        is microcode-20230808.  Extract this
         file in the normal way, the microcode is in the <filename>intel-ucode
         </filename> directory, containing various blobs with names in the form
         XX-YY-ZZ. There are also various other files, and a releasenote.
@@ -251,22 +248,19 @@
       </para>
 
       <para>
-        For an Icelake mobile (described as Intel(R) Core(TM) i7-1065G7
-        CPU) the relevant values are cpu family 6, model 126, stepping 5 so
-        in this case the required identification is 06-7e-05. The
-        releasenote says the latest microcode for it is versioned 0xb8.  If
+        For an Tigerlake mobile (described as Intel(R) Core(TM) i5-11300H
+        CPU) the relevant values are cpu family 6, model 140, stepping 1 so
+        in this case the required identification is 06-8c-01. The
+        releasenote says the latest microcode for it is versioned 0xac.  If
         the value of the <quote>microcode</quote> field in
-        <filename>/proc/cpuinfo</filename> is 0xb8 or greater, it indicates
+        <filename>/proc/cpuinfo</filename> is 0xac or greater, it indicates
         the microcode update is already applied by the BIOS.  Otherwise,
         configure the kernel to support loading Intel microcode, and then
         proceed to <xref linkend='early-microcode'/>:
       </para>
 
-<screen><literal>General Setup ---&gt;
-  [*] Initial RAM filesystem and RAM disk (initramfs/initrd) support [CONFIG_BLK_DEV_INITRD]
-Processor type and features  ---&gt;
-  [*] CPU microcode loading support  [CONFIG_MICROCODE]
-  [*]      Intel microcode loading support [CONFIG_MICROCODE_INTEL]</literal></screen>
+      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+        href="intel-ucode-kernel.xml"/>
 
     </sect3>
 
@@ -306,11 +300,9 @@ Processor type and features  ---&gt;
         and then proceed to <xref linkend='early-microcode'/>:
       </para>
 
-<screen><literal>General Setup ---&gt;
-  [*] Initial RAM filesystem and RAM disk (initramfs/initrd) support [CONFIG_BLK_DEV_INITRD]
-Processor type and features  ---&gt;
-  [*] CPU microcode loading support  [CONFIG_MICROCODE]
-  [*]      AMD microcode loading support [CONFIG_MICROCODE_AMD]</literal></screen>
+      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+        href="amd-ucode-kernel.xml"/>
+
     </sect3>
 
     <sect3 id="early-microcode">
@@ -420,15 +412,14 @@ cd initrd</userinput></screen>
 
       <para>
         The places and times where early loading happens are very different
-        in AMD and Intel machines. First, an example of an Intel (Icelake
+        in AMD and Intel machines. First, an example of an Intel (Tigerlake
         mobile) with early loading:
       </para>
 
-<screen><literal>[    0.000000] microcode: microcode updated early to revision 0xb8, date = 2022-08-31
-[    0.000000] Linux version 6.1.11 (xry111@stargazer) (gcc (GCC) 12.2.0, GNU ld (GNU Binutils) 2.40) #2 SMP PREEMPT_DYNAMIC Tue Feb 14 23:23:31 CST 2023
-[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-6.1.11-lfs-11.3-rc1 root=PARTUUID=<replaceable>&lt;CLASSIFIED&gt;</replaceable> ro
-[    0.452924] microcode: sig=0x706e5, pf=0x80, revision=0xb8
-[    0.453197] microcode: Microcode Update Driver: v2.2.</literal></screen>
+<screen><literal>[    0.000000] microcode: microcode updated early: 0x86 -> 0xac, date = 2023-02-27
+[    0.000000] Linux version 6.4.7 (root@stargazer) (gcc (GCC) 13.2.0, GNU ld (GNU Binutils) 2.41) #1 SMP PREEMPT_DYNAMIC Wed Aug  2 19:08:46 CST 2023
+[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-6.4.7 root=PARTUUID=<replaceable>&lt;CLASSIFIED&gt;</replaceable> ro
+[    0.424002] microcode: Microcode Update Driver: v2.2.</literal></screen>
 
 
       <para>
@@ -498,31 +489,15 @@ cd initrd</userinput></screen>
 <screen><userinput>mkdir -pv /lib/firmware/radeon
 cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/radeon</userinput></screen>
 
-      <para>
-        There are actually two ways of installing this firmware. BLFS, in the
-        'Kernel Configuration for additional firmware' section part of the
-        <xref linkend="xorg-ati-driver"/> section gives an example of
-        compiling the firmware into the kernel - that is slightly faster to
-        load, but uses more kernel memory. Here we will use the alternative
-        method of making the radeon driver a module. In your kernel config
-        set the following:
-      </para>
-
-<screen><literal>Device Drivers ---&gt;
-  Graphics support ---&gt;
-      Direct Rendering Manager ---&gt;
-        [*] Direct Rendering Manager (XFree86 ... support)  [CONFIG_DRM]
-      [M] ATI Radeon                                        [CONFIG_DRM_RADEON]</literal></screen>
-
-      <para>
-        Loading several large blobs from /lib/firmware takes a noticeable
-        time, during which the screen will be blank. If you do not enable the
-        penguin framebuffer logo, or change the console size by using a bigger
-        font, that probably does not matter. If desired, you can slightly
-        reduce the time if you follow the alternate method of specifying 'y'
-        for CONFIG_DRM_RADEON covered in BLFS at the link above &mdash; you
-        must specify each needed radeon blob if you do that.
-      </para>
+    <para>
+      Building the kernel amdgpu driver as a module is recommended because
+      the firmware files need to be accessible at the time it is loaded.
+      If you are building it as a part of the kernel image for any reason,
+      you need to either include the firmware files in the initramfs (read
+      <xref linkend='initramfs'/> for details), or include them in the
+      kernel image itself (read <xref linkend='firmware-in-kernel-image'/>
+      for details).
+    </para>
 
     </sect3>
 
@@ -566,29 +541,14 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/amdgpu</userinput></screen>
     </para>
 
     <para>
-      Building the kernel amdgpu driver as a module is recommended.
-      In your kernel .config set at least the following options and review
-      the other AMDGPU options according to your target hardware,
-      for example "ACP (Audio Co-Processor) Configuration":
+      Building the kernel amdgpu driver as a module is recommended because
+      the firmware files need to be accessible at the time it is loaded.
+      If you are building it as a part of the kernel image for any reason,
+      you need to either include the firmware files in the initramfs (read
+      <xref linkend='initramfs'/> for details), or include them in the
+      kernel image itself (read <xref linkend='firmware-in-kernel-image'/>
+      for details).
     </para>
-
-<screen><literal>Device Drivers ---&gt;
-  Graphics support ---&gt;
-      Direct Rendering Manager ---&gt;
-        [*] Direct Rendering Manager (XFree86 ... support)  [CONFIG_DRM]
-        [M] AMD GPU                                         [CONFIG_DRM_AMDGPU]
-        Display Engine Configuration ---&gt;
-          [*] AMD DC - Enable new display engine (NEW)      [CONFIG_DRM_AMD_DC]</literal></screen>
-
-      <para>
-        As written above at the end of the section on 'Firmware for ATI video
-        chips', loading large blobs from /lib/firmware can take a noticeable
-        time during which the screen will be blank. On a slow machine you might
-        wish to refer to the 'Kernel Configuration for additional firmware'
-        part of <xref linkend="xorg-amdgpu-driver"/> and compile all the
-        required modules into the kernel to reduce this time, at the cost of
-        using more kernel memory.
-      </para>
 
     </sect3>
 
@@ -604,18 +564,8 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/amdgpu</userinput></screen>
       <para>
         For more exact information about which chips need extracted firmware, see
         <ulink url=
-          "https://nouveau.freedesktop.org/wiki/VideoAcceleration/#firmware"/>.
+          "https://nouveau.freedesktop.org/VideoAcceleration.html"/>.
       </para>
-
-      <para>
-        First, the kernel Nvidia driver must be activated:
-      </para>
-
-<screen><literal>Device Drivers ---&gt;
-  Graphics support ---&gt;
-      Direct Rendering Manager ---&gt;
-        &lt;*&gt; Direct Rendering Manager (XFree86 ... support)  [CONFIG_DRM]
-      &lt;*/M&gt; Nouveau (NVIDIA) cards                          [CONFIG_DRM_NOUVEAU]</literal></screen>
 
       <para>
         If the necessary firmware is available in the
@@ -625,15 +575,14 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/amdgpu</userinput></screen>
       </para>
       <para>
         If the firmware has not been made available in linux-firmware,
-        for the old chips mentioned in the nouveau wiki link above ensure you have
-        installed <xref linkend="python2"/> and run the following commands:
+        for the old chips mentioned in the nouveau wiki link above
+        run the following commands:
       </para>
 
-      <!-- Someone please port this to Python 3.  -->
-<screen><userinput>wget https://raw.github.com/imirkin/re-vp2/master/extract_firmware.py
-wget https://us.download.nvidia.com/XFree86/Linux-x86/325.15/NVIDIA-Linux-x86-325.15.run
-sh NVIDIA-Linux-x86-325.15.run --extract-only
-python2 extract_firmware.py
+<screen><userinput>wget https://anduin.linuxfromscratch.org/BLFS/nvidia-firmware/extract_firmware.py
+wget https://us.download.nvidia.com/XFree86/Linux-x86/340.32/NVIDIA-Linux-x86-340.32.run
+sh NVIDIA-Linux-x86-340.32.run --extract-only
+python3 extract_firmware.py
 mkdir -p /lib/firmware/nouveau
 cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
 
@@ -694,6 +643,45 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
     </para>
   </sect2>
 
+  <sect2 id="sound-open-firmware">
+    <title>Sound Open Firmware</title>
+
+    <para>
+      Some systems (especially budget laptops) utilizes a DSP shipped with
+      the CPU for connection with the audio codec.  The Sound Open Firmware
+      must be loaded onto the DSP to make it functional.  These firmware
+      files can be downloaded from
+      <ulink url='https://github.com/thesofproject/sof-bin/releases'/>.
+      Extract the tarball and changing into the extracted directory,
+      then as the &root; user install the firmware:
+    </para>
+
+    <screen role="nodump"><userinput>install -vdm755 /usr/lib/firmware/intel       &amp;&amp;
+cp -av -T --no-preserve=ownership sof-v*      \
+   /usr/lib/firmware/intel/sof                &amp;&amp;
+cp -av -T --no-preserve=ownership sof-tplg-v* \
+   /usr/lib/firmware/intel/sof-tplg</userinput></screen>
+
+    <para>
+      <xref linkend="alsa-lib"/> needs Use Case Manager configuration files
+      for the systems using Sound Open Firmware as well.  The ALSA UCM
+      configuration files can be downloaded from
+      <ulink url='https://github.com/alsa-project/alsa-ucm-conf/tags'/>.
+      Extract the tarball and changing into the extracted directory,
+      then as the &root; user install the configuration files:
+    </para>
+
+    <screen role="nodump"><userinput>install -vdm755 /usr/share/alsa &amp;&amp;
+cp -av -T --no-preserve=ownership ucm2 /usr/share/alsa/ucm2</userinput></screen>
+
+    <para>
+      Once the firmware is loaded (you may need a reboot so the kernel will
+      load them) and the UCM configuration files are installed, following
+      <xref linkend="alsa-utils-config-sect"/> to set up your sound card for
+      ALSA properly.
+    </para>
+  </sect2>
+
   <sect2 id="other-firmware">
     <title>Firmware for Other Devices</title>
 
@@ -717,6 +705,50 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
       controllers, bluetooth adaptors, or TV recorders. The same principles
       apply.
     </para>
+
+  </sect2>
+
+  <sect2 id='firmware-in-kernel-image'>
+    <title>Include Firmware Blobs in the Kernel Image</title>
+
+    <para>
+      Some drivers, notably the drivers for ATI or AMD GPU, requires the
+      firmware files accessible at the time it is loaded.  The easiest
+      method to handle these drivers is building them as a kernel module.
+      An alternative method is creating an initramfs (read
+      <xref linkend='initramfs'/> for details) including the firmware files.
+      If you don't want to use either methods, you may include the firmware
+      files in the kernel image itself.  Install the needed firmware files
+      into <filename class='directory'>/lib/firmware</filename> first, then
+      set the following kernel configuration and rebuild the kernel:
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="builtin-fw-kernel.xml"/>
+
+    <para>
+      Replace <replaceable>xx/aa.bin xx/bb.bin</replaceable>
+      with a whitespace-separated list of paths to the needed firmware
+      files, relative to
+      <filename class='directory'>/lib/firmware</filename>.  A method
+      easier than manually typing the list (it may be long) is running the
+      following command:
+    </para>
+
+    <screen><userinput>echo CONFIG_EXTRA_FIRMWARE='"'$({ cd /lib/firmware; echo <replaceable>amdgpu/*</replaceable> })'"' &gt;&gt; .config
+make oldconfig</userinput></screen>
+
+    <para>
+      Replace <replaceable>amdgpu/*</replaceable> with a shell pattern
+      matching the needed firmware files.
+    </para>
+
+    <warning>
+      <para>
+        Do not distribute a kernel image containing the firmware to others
+        or you may violate the GPL.
+      </para>
+    </warning>
 
   </sect2>
 

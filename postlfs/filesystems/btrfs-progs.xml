@@ -6,10 +6,10 @@
 
   <!ENTITY btrfs-progs-download-http "&kernel-dl;/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v&btrfs-progs-version;.tar.xz">
   <!ENTITY btrfs-progs-download-ftp  " ">
-  <!ENTITY btrfs-progs-md5sum        "01ae2a122acefb0f34ad7de8a41c213d">
-  <!ENTITY btrfs-progs-size          "2.3 MB">
-  <!ENTITY btrfs-progs-buildsize     "84 MB (transcient files created during tests need up to 10 GB)">
-  <!ENTITY btrfs-progs-time          "0.2 SBU (add 5.0 SBU for tests, up to 77 SBU on slow disks)">
+  <!ENTITY btrfs-progs-md5sum        "1b5705b3e9503f09a9598dad1e7bfbc8">
+  <!ENTITY btrfs-progs-size          "3.0 MB">
+  <!ENTITY btrfs-progs-buildsize     "62 MB (transient files created during tests need up to 10 GB)">
+  <!ENTITY btrfs-progs-time          "0.2 SBU (add 3.8 SBU for tests, up to 80 SBU on slow disks if reiserfsprogs is installed)">
 ]>
 
 <sect1 id="btrfs-progs" xreflabel="btrfs-progs-&btrfs-progs-version;">
@@ -30,7 +30,7 @@
       administration and debugging tools for the B-tree file system (btrfs).
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -94,12 +94,10 @@
     <para role="optional">
       <xref linkend="lvm2"/> (<command>dmsetup</command> is used in tests),
       <xref linkend="reiserfs"/> (for tests), and
-      <xref linkend="sphinx"/> (required to build documentation),
+      <xref linkend="sphinx"/> (required to build documentation)
 
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-    <ulink url="&blfs-wiki;/btrfs-progs"/></para>
 
   </sect2>
 
@@ -111,8 +109,8 @@
       and recompile the kernel:
     </para>
 
-<screen><literal>File systems ---&gt;
-  &lt;*/M&gt; Btrfs filesystem support [CONFIG_BTRFS_FS]</literal></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="btrfs-progs-kernel.xml"/>
 
     <para>
       In addition to the above and to the options required for
@@ -120,10 +118,8 @@
       options must be enabled for running tests:
     </para>
 
-<screen><literal>File systems  ---&gt;
-  [*]   Btrfs POSIX Access Control Lists      [CONFIG_BTRFS_FS_POSIX_ACL]
-  [*]   ReiserFS extended attributes          [CONFIG_REISERFS_FS_XATTR]
-  [*]     ReiserFS POSIX Access Control Lists [CONFIG_REISERFS_FS_POSIX_ACL]</literal></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="btrfs-progs-test-kernel.xml"/>
 
     <indexterm zone="btrfs-progs btrfs-progs-kernel">
       <primary sortas="d-btrfs-progs">BTRFS Programs</primary>
@@ -193,15 +189,15 @@ Substitute your test failure with the one above.
     <note>
       <para>
         If the above mentioned kernel options are not enabled, some tests
-        fail, and prevent all the remaining tests to run because the test
+        fail, and prevent all the remaining tests from running because the test
         disk image is not cleanly unmounted.
       </para>
     </note>
-
+<!--  Now passes in version 6.3.1.
     <para>
       The mkfs test 025-zoned-parallel is known to fail.
     </para>
-
+-->
     <para>
       Install the package as the &root; user:
     </para>

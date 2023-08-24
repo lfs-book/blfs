@@ -6,8 +6,8 @@
 
   <!ENTITY alsa-lib-download-http "&alsa-download-http;/lib/alsa-lib-&alsa-lib-version;.tar.bz2">
   <!ENTITY alsa-lib-download-ftp  "&alsa-download-ftp;/lib/alsa-lib-&alsa-lib-version;.tar.bz2">
-  <!ENTITY alsa-lib-md5sum        "ab32de4b6054d7ab23723f8d85e50a27">
-  <!ENTITY alsa-lib-size          "1.0 MB">
+  <!ENTITY alsa-lib-md5sum        "d29f5ebe9a4ff1be70508ecbf6655318">
+  <!ENTITY alsa-lib-size          "1.1 MB">
   <!ENTITY alsa-lib-buildsize     "45 MB (with tests and docs)">
   <!ENTITY alsa-lib-time          "0.3 SBU (with tests and docs)">
 ]>
@@ -32,7 +32,7 @@
       interface.
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,6 +70,21 @@
 
     <bridgehead renderas="sect3">ALSA Library Dependencies</bridgehead>
 
+    <bridgehead renderas="sect4">Recommended (Runtime)</bridgehead>
+    <para role="runtime">
+      <phrase revision='sysv'><xref linkend='elogind'/></phrase>
+      <phrase revision='systemd'><xref linkend='systemd'/></phrase>
+    </para>
+
+    <note>
+      <para>
+        If the recommended runtime dependency is not installed, you may
+        need to run any application requiring ALSA library as the &root;
+        user or a user in the
+        <systemitem class='groupname'>audio</systemitem> group.
+      </para>
+    </note>
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="doxygen"/>,
@@ -77,9 +92,6 @@
       <ulink url="https://www.alsa-project.org/files/pub/lib/">alsa-ucm-conf</ulink>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/alsa-lib"/>
-    </para>
   </sect2>
 
   <sect2 role="kernel"  id="alsa-lib-kernel">
@@ -90,10 +102,8 @@
        configuration and recompile the kernel:
     </para>
 
-    <screen><literal>Device Drivers ---&gt;
-  &lt;*/M&gt; Sound card support ---&gt;                  [CONFIG_SOUND]
-    &lt;*/M&gt; Advanced Linux Sound Architecture ---&gt; [CONFIG_SND]
-            Select settings and drivers appropriate for your hardware.</literal></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="alsa-lib-kernel.xml"/>
 
     <para>
       In the Device Drivers &rArr; Sound card support &rArr; Advanced Linux

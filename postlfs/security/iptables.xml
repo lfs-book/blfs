@@ -30,7 +30,7 @@
       used to configure the Linux 2.4 and later kernel packet filtering ruleset.
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,10 +81,6 @@
       <ulink url="https://netfilter.org/projects/nftables/">nftables</ulink>
     </para>
 
-
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/iptables"/>
-    </para>
   </sect2>
 
   <sect2 role="kernel" id="iptables-kernel">
@@ -96,16 +92,8 @@
       following kernel configuration parameters are required:
     </para>
 
-<screen><literal>[*] Networking support  ---&gt;                                          [CONFIG_NET]
-      Networking Options  ---&gt;
-        [*] Network packet filtering framework (Netfilter) ---&gt;       [CONFIG_NETFILTER]
-          [*] Advanced netfilter configuration                        [CONFIG_NETFILTER_ADVANCED]
-          Core Netfilter Configuration ---&gt;
-            &lt;*/M&gt; Netfilter connection tracking support               [CONFIG_NF_CONNTRACK]
-            &lt;*/M&gt; Netfilter Xtables support (required for ip_tables)  [CONFIG_NETFILTER_XTABLES]
-            &lt;*/M&gt; LOG target support                                  [CONFIG_NETFILTER_XT_TARGET_LOG]
-          IP: Netfilter Configuration ---&gt;
-            &lt;*/M&gt; IP tables support (required for filtering/masq/NAT) [CONFIG_IP_NF_IPTABLES]</literal></screen>
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="iptables-kernel.xml"/>
 
     <para>
       Include any connection tracking protocols that will be used, as well as
@@ -296,6 +284,11 @@ iptables -A OUTPUT -j ACCEPT
 # and permit new connections related to established ones
 # (e.g. port mode ftp)
 iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Drop any incoming MULTICAST or BROADCAST packet before logging:
+# The box outputs several of them when using netbios or mDNS, and those
+# appear immediately as incoming, which clutters the log.
+iptables -A INPUT -m addrtype --dst-type BROADCAST,MULTICAST -j DROP
 
 # Log everything else.
 iptables -A INPUT -j LOG --log-prefix "FIREWALL:INPUT "

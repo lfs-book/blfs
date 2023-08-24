@@ -5,13 +5,13 @@
   %general-entities;
 
   <!ENTITY at-spi2-core-download-http
-           "&gnome-download-http;/at-spi2-core/2.46/at-spi2-core-&at-spi2-core-version;.tar.xz">
+           "&gnome-download-http;/at-spi2-core/2.48/at-spi2-core-&at-spi2-core-version;.tar.xz">
   <!ENTITY at-spi2-core-download-ftp
-           "&gnome-download-ftp;/at-spi2-core/2.46/at-spi2-core-&at-spi2-core-version;.tar.xz">
-  <!ENTITY at-spi2-core-md5sum        "16e85a40442d80be960b4e1e3992fd5b">
-  <!ENTITY at-spi2-core-size          "528 KB">
+           "&gnome-download-ftp;/at-spi2-core/2.48/at-spi2-core-&at-spi2-core-version;.tar.xz">
+  <!ENTITY at-spi2-core-md5sum        "4ef1875d9e7035f672d494b997c892af">
+  <!ENTITY at-spi2-core-size          "541 KB">
   <!ENTITY at-spi2-core-buildsize     "20 MB (with tests)">
-  <!ENTITY at-spi2-core-time          "0.2 SBU (with tests)">
+  <!ENTITY at-spi2-core-time          "less than 0.1 SBU (with tests, except if there is a timeout)">
 ]>
 
 <sect1 id="at-spi2-core" xreflabel="at-spi2-core-&at-spi2-core-version;">
@@ -35,7 +35,7 @@
       applications.
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,12 +90,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/>
+      <xref linkend="gi-docgen"/> and <xref linkend='sphinx'/>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/at-spi2-core"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -126,6 +123,8 @@ ninja</userinput></screen>
       is necessary to run the tests. The test suite also requires the glib
       schemas of the package to be installed already. To test the results,
       install the package first, then issue: <command>ninja test</command>.
+      One test, <filename>atk-test</filename>, is known to timeout on some
+      systems.
     </para>
 
     <para>
@@ -138,23 +137,24 @@ rm /tmp/at-spi-dbus-bus.service</userinput></screen>
 
   </sect2>
 
-
-  <sect2 role="commands" revision="sysv">
-    <title>Command Explanations</title>
-
-    <para>
-      <parameter>-Dsystemd_user_dir=/tmp</parameter>: This flag puts the
-      systemd unit file in /tmp where it will be removed. SysV, is unable to
-      use this file.
-    </para>
-
-  </sect2>
-
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <para revision="sysv">
+      <parameter>-Dsystemd_user_dir=/tmp</parameter>: This flag puts the
+      systemd unit file in /tmp where it will be removed. SysV is unable to
+      use this file.
+    </para>
+
+    <para>
+      <option>-Ddocs=true</option>: Use this switch if you want to build the
+      documentation. Note that you must have both
+      <xref role="nodep" linkend="gi-docgen"/>
+      and <xref linkend='sphinx'/> installed on your system.
+    </para>
 
   </sect2>
 
@@ -185,7 +185,7 @@ rm /tmp/at-spi-dbus-bus.service</userinput></screen>
           /usr/include/at-spi2-atk,
           /usr/lib/gnome-settings-daemon-3.0,
           /usr/share/defaults/at-spi2, and
-          /usr/share/gtk-doc/html/libatspi
+          /usr/share/gtk-doc/html/libatspi (optional)
         </seg>
       </seglistitem>
     </segmentedlist>

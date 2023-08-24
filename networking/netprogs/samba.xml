@@ -6,10 +6,10 @@
 
   <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "a36cc7b01305bb8cba9846ac2fbd56d5">
-  <!ENTITY samba-size          "40 MB">
-  <!ENTITY samba-buildsize     "586 MB (add 30 MB for quicktest)">
-  <!ENTITY samba-time          "2.2 SBU (using parallelism=4; add 0.3 SBU for quicktest)">
+  <!ENTITY samba-md5sum        "d7e75ab3de1f48ea696c030c869c96f2">
+  <!ENTITY samba-size          "39 MB">
+  <!ENTITY samba-buildsize     "600 MB (add 100 MB for quicktest)">
+  <!ENTITY samba-time          "1.7 SBU (using parallelism=4; add 0.3 SBU for quicktest)">
 ]>
 
 <sect1 id="samba" xreflabel="Samba-&samba-version;">
@@ -34,7 +34,7 @@
       nameserver (which among other things provides LAN browsing support).
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,7 +78,7 @@
       <xref linkend="jansson"/>,
       <xref linkend="perl-json"/>,
       <xref linkend="libtirpc"/>,
-      <xref linkend="lmdb"/>, and
+      <xref linkend="perl-parse-yapp"/>, and
       <xref linkend="rpcsvc-proto"/>
     </para>
 
@@ -91,8 +91,7 @@
       <xref linkend="icu"/>,
       <xref linkend="libtasn1"/>,
       <xref linkend="libxslt"/> (for documentation),
-      <xref linkend="linux-pam"/>,
-      <xref linkend="perl-parse-yapp"/>, and
+      <xref linkend="linux-pam"/>, and
       <xref linkend="openldap"/>
     </para>
 
@@ -106,11 +105,13 @@
       <xref linkend="git"/>,
       <xref linkend="gnupg2"/> (required for ADS and test suite),
       <xref linkend="libaio"/>,
-      <xref linkend="libarchive"/>,
+      <xref linkend="libarchive"/> (for tar in smbclient),
       <xref linkend="libcap-pam"/>,
       <xref linkend="libgcrypt"/>,
       <xref linkend="libnsl"/>,
       <xref linkend="libunwind"/>,
+      <xref linkend="lmdb"/>,
+      <xref linkend="markdown"/>,
       <xref linkend="mitkrb"/>,
       <xref linkend="nss"/>,
       <xref linkend="popt"/>,
@@ -163,7 +164,7 @@
       <ulink url="&pypi;/python-subunit/">python-subunit</ulink>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
+    <para condition="html" role="usernotes">Editor Notes:
     <ulink url="&blfs-wiki;/samba4"/></para>
 
   </sect2>
@@ -185,8 +186,6 @@
     </para>
 
 <screen revision="sysv"><userinput>PYTHON=$PWD/pyvenv/bin/python3             \
-CPPFLAGS="-I/usr/include/tirpc"            \
-LDFLAGS="-ltirpc"                          \
 PATH=$PWD/pyvenv/bin:$PATH                 \
 ./configure                                \
     --prefix=/usr                          \
@@ -201,8 +200,6 @@ PATH=$PWD/pyvenv/bin:$PATH                 \
 make</userinput></screen>
 
 <screen revision="systemd"><userinput>PYTHON=$PWD/pyvenv/bin/python3             \
-CPPFLAGS="-I/usr/include/tirpc"            \
-LDFLAGS="-ltirpc"                          \
 ./configure                                \
     --prefix=/usr                          \
     --sysconfdir=/etc                      \
@@ -276,7 +273,7 @@ sed -e "s;log file =.*;log file = /var/log/samba/%m.log;" \
 mkdir -pv /etc/openldap/schema                        &amp;&amp;
 
 install -v -m644    examples/LDAP/README              \
-                    /etc/openldap/schema/README.LDAP  &amp;&amp;
+                    /etc/openldap/schema/README.samba &amp;&amp;
 
 install -v -m644    examples/LDAP/samba*              \
                     /etc/openldap/schema              &amp;&amp;
@@ -298,6 +295,11 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       <parameter>--without-systemd</parameter>: Disable
       <application>systemd</application> integration, since it is not built
       in the System V version of LFS/BLFS.
+    </para>
+
+    <para revision="sysv">
+      <parameter>--with-shared-modules='!vfs_snapper'</parameter>: Disable
+      the vfs_snapper module if you want to build samba without <application>dbus</application> support, for setups without graphical user intefaces.
     </para>
 
     <para>

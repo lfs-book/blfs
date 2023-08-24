@@ -6,14 +6,14 @@
 
   <!ENTITY linux-pam-download-http "https://github.com/linux-pam/linux-pam/releases/download/v&linux-pam-version;/Linux-PAM-&linux-pam-version;.tar.xz">
   <!ENTITY linux-pam-download-ftp  " ">
-  <!ENTITY linux-pam-md5sum        "895e8adfa14af334f679bbeb28503f66">
-  <!ENTITY linux-pam-size          "966 KB">
+  <!ENTITY linux-pam-md5sum        "a913bd5fbf9edeafaacf3eb1eb86fd83">
+  <!ENTITY linux-pam-size          "967 KB">
   <!ENTITY linux-pam-buildsize     "39 MB (with tests)">
   <!ENTITY linux-pam-time          "0.4 SBU (with tests)">
 
   <!ENTITY linux-pam-docs-download "https://github.com/linux-pam/linux-pam/releases/download/v&linux-pam-version;/Linux-PAM-&linux-pam-docs-version;-docs.tar.xz">
-  <!ENTITY linux-pam-docs-md5sum   "ceb3dc248cb2f49a40904b93cb91db1b">
-  <!ENTITY linux-pam-docs-size     "433 KB">
+  <!ENTITY linux-pam-docs-md5sum   "c3771fdc447be78b4c1756b875235965">
+  <!ENTITY linux-pam-docs-size     "456 KB">
   <!--
   <!ENTITY debian-pam-docs         "http://debian.securedservers.com/kernel/pub/linux/libs/pam">
   -->
@@ -39,7 +39,7 @@
       users.
     </para>
 
-    &lfs113_checked;
+    &lfs120_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -105,6 +105,8 @@
       <ulink url="https://github.com/linux-audit/audit-userspace">libaudit</ulink>, and
       <ulink url="https://www.prelude-siem.org">Prelude</ulink>
     </para>
+<!-- With 1.5.3, building the doc requires the namespaced version of
+     docbook-xsl, which is beyond BLFS.
 
     <bridgehead renderas="sect4">Optional (To Rebuild the Documentation)</bridgehead>
     <para role="optional">
@@ -115,7 +117,7 @@
       <xref linkend="lynx"/> or
       <ulink url="&w3m-url;">W3m</ulink>
     </para>
-
+-->
     <note>
       <para role="required">
         <xref role="runtime" linkend="shadow"/>
@@ -132,9 +134,6 @@
       </para>
     </note>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/linux-pam"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -154,7 +153,7 @@ autoreconf</userinput></screen>
     </para>
 
 <screen><userinput>tar -xf ../Linux-PAM-&linux-pam-docs-version;-docs.tar.xz --strip-components=1</userinput></screen>
-
+<!--
     <para>
       If you want to regenerate the documentation yourself, fix the
       <command>configure</command> script so it will detect lynx:
@@ -163,7 +162,7 @@ autoreconf</userinput></screen>
 <screen><userinput>sed -e 's/dummy elinks/dummy lynx/'                                    \
     -e 's/-no-numbering -no-references/-force-html -nonumbers -stdin/' \
     -i configure</userinput></screen>
-
+-->
     <para>
       Compile and link <application>Linux PAM</application> by
       running the following commands:
@@ -250,9 +249,9 @@ chmod -v 4755 /usr/sbin/unix_chkpwd</userinput></screen>
       This switch sets the installation location for the
       <application>PAM</application> modules.
     </para>
-
+<!--
     <para>
-      <option>--disable-regenerate-docu</option> : If the needed dependencies
+      <option>- -disable-regenerate-docu</option> : If the needed dependencies
       (<xref linkend="DocBook"/>, <xref linkend="docbook-xsl"/>, <xref
       linkend="libxslt"/>, and <xref linkend="lynx"/> or <ulink
       url="&w3m-url;">W3m</ulink>) are installed, the manual pages, and the
@@ -261,7 +260,7 @@ chmod -v 4755 /usr/sbin/unix_chkpwd</userinput></screen>
       documentation is generated and installed. Use this switch if you do not
       want to rebuild the documentation.
     </para>
-
+-->
     <para>
       <command>chmod -v 4755 /usr/sbin/unix_chkpwd</command>:
       The setuid bit for the <command>unix_chkpwd</command> helper program must be
@@ -343,11 +342,10 @@ EOF
 cat &gt; /etc/pam.d/system-password &lt;&lt; "EOF"
 <literal># Begin /etc/pam.d/system-password
 
-# use sha512 hash for encryption, use shadow, and try to use any previously
-# defined authentication token (chosen password) set by any prior module.
-# Use the same number of rounds as shadow.
-password  required    pam_unix.so       sha512 shadow try_first_pass \
-                                        rounds=500000
+# use yescrypt hash for encryption, use shadow, and try to use any
+# previously defined authentication token (chosen password) set by any
+# prior module.
+password  required    pam_unix.so       yescrypt shadow try_first_pass
 
 # End /etc/pam.d/system-password</literal>
 EOF
@@ -360,63 +358,6 @@ EOF
        PAM module with strong password support.
      </para>
 
-<!-- With the removal of the pam_cracklib module, we're supposed to be using
-     libpwquality. That already includes instructions in its configuration
-     information page, so we'll use those instead.
-
-     Linux-PAM must be installed prior to libpwquality so that PAM support
-     is built in, and the PAM module is built.
--->
-<!-- WARNING: If for any reason the instructions below are reinstated be
-     careful with the number of rounds, which should match the one in shadow.
-      <para>
-        The remaining generic file depends on whether <xref
-        linkend="cracklib"/> is installed.  If it is installed, use:
-      </para>
-
-<screen role="root"><userinput>cat &gt; /etc/pam.d/system-password &lt;&lt; "EOF"
-<literal># Begin /etc/pam.d/system-password
-
-# check new passwords for strength (man pam_cracklib)
-password  required    pam_cracklib.so    authtok_type=UNIX retry=1 difok=5 \
-                                         minlen=9 dcredit=1 ucredit=1 \
-                                         lcredit=1 ocredit=1 minclass=0 \
-                                         maxrepeat=0 maxsequence=0 \
-                                         maxclassrepeat=0 \
-                                         dictpath=/lib/cracklib/pw_dict
-# use sha512 hash for encryption, use shadow, and use the
-# authentication token (chosen password) set by pam_cracklib
-# above (or any previous modules)
-password  required    pam_unix.so        sha512 shadow use_authtok
-
-# End /etc/pam.d/system-password</literal>
-EOF</userinput></screen>
-
-      <note>
-        <para>
-          In its default configuration, pam_cracklib will
-          allow multiple case passwords as short as 6 characters, even with
-          the <parameter>minlen</parameter> value set to 11. You should review
-          the pam_cracklib(8) man page and determine if these default values
-          are acceptable for the security of your system.
-        </para>
-      </note>
-
-      <para>
-        If <xref linkend="cracklib"/> is <emphasis>NOT</emphasis> installed,
-        use:
-      </para>
-
-<screen role="nodump"><userinput>cat &gt; /etc/pam.d/system-password &lt;&lt; "EOF"
-<literal># Begin /etc/pam.d/system-password
-
-# use sha512 hash for encryption, use shadow, and try to use any previously
-# defined authentication token (chosen password) set by any prior module
-password  required    pam_unix.so       sha512 shadow try_first_pass
-
-# End /etc/pam.d/system-password</literal>
-EOF</userinput></screen>
--->
       <para>
         Next, add a restrictive <filename>/etc/pam.d/other</filename>
         configuration file.  With this file, programs that are PAM aware will
