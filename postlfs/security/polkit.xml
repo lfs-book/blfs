@@ -130,8 +130,8 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gtk-doc"/>,
-      <xref linkend="js102"/> (can be used in place of duktape), and
-      <xref linkend="python-dbusmock"/> (for tests)
+      <xref linkend="python-dbusmock"/>, and
+      <xref linkend="spidermonkey"/> (can be used in place of duktape)
     </para>
 
     <bridgehead renderas="sect4" revision="systemd">Required Runtime Dependencies</bridgehead>
@@ -148,10 +148,10 @@
       <application>polkit-kde-agent</application> in
       <xref role="runtime" linkend="plasma5-build"/> for KDE,
       the agent built in
-      <xref role="runtime" linkend="gnome-shell"/> for GNOME3,
-      <xref role="runtime" linkend="polkit-gnome"/> for XFCE, and
-      <application>lxpolkit</application> in
-      <xref role="runtime" linkend="lxsession"/> for LXDE
+      <xref role="runtime" linkend="gnome-shell"/> for GNOME3, and
+      <xref role="runtime" linkend="polkit-gnome"/> for XFCE
+      <!--<application>lxpolkit</application> in
+      <xref role="runtime" linkend="lxsession"/> for LXDE-->
     </para>
 
     <note>
@@ -182,11 +182,12 @@ useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
         -g polkitd -s /bin/false polkitd</userinput></screen>
 
     <para>
-      If using <xref linkend="js102"/>, make the following change (see Command
-      Explanations below for more information):
+      If using <xref linkend="spidermonkey"/>, make the following change
+      (see Command Explanations below for more information):
     </para>
 
-<screen><userinput remap="nodump">sed -e 's/JS_Init/JS::DisableJitBackend(); &amp;/' \
+<screen><userinput remap="nodump">sed -e '/mozjs/s/102/115/' -i meson.build      &amp;&amp;
+sed -e 's/JS_Init/JS::DisableJitBackend(); &amp;/' \
     -i src/polkitbackend/polkitbackendjsauthority.cpp</userinput></screen>
 
 <!--
@@ -250,6 +251,12 @@ ninja</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
+      <command>sed -e '/mozjs/s/102/115/' meson.build</command>:
+      Allow building this package with SpiderMonkey from Firefox 115 ESR
+      releases.
+    </para>
+
+    <para>
       <command>sed -e 's/JS_Init/JS::DisableJitBackend(); &amp;/' ...
       </command>: The JIT compiling of JS102 needs W+X mapping which
       is dangerous and is not permitted by the
@@ -272,7 +279,7 @@ ninja</userinput></screen>
 
     <para>
       <option>-Djs_engine=mozjs</option>: This switch allows using the
-      <xref linkend="js102"/> JavaScript engine instead of the
+      <xref linkend="spidermonkey"/> JavaScript engine instead of the
       <xref linkend='duktape'/> JavaScript engine.
     </para>
 

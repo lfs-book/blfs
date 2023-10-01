@@ -77,6 +77,12 @@
       <xref linkend="cmake"/>
     </para>
 
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="pluggy"/> and
+      <xref linkend="pytest"/> (for testing Python3 bindings)
+    </para>
+
   </sect2>
 
   <sect2 role="installation">
@@ -119,14 +125,39 @@ make</userinput></screen>
     </para>
 
 <screen><userinput>cd .. &amp;&amp;
-pip3 wheel -w dist --no-build-isolation --no-deps $PWD</userinput></screen>
+sed "/c\/.*\.[ch]'/d;\
+     /include_dirs=\[/\
+     i libraries=['brotlicommon','brotlidec','brotlienc']," \
+    -i setup.py &amp;&amp;
+&build-wheel-cmd; $PWD</userinput></screen>
 
     <para>
       Install the <application>Python3</application>
       bindings as the &root; user:
     </para>
 
-<screen role="root"><userinput>pip3 install --no-index --find-links dist --no-cache-dir --no-user Brotli</userinput></screen>
+<screen role="root"><userinput>&install-wheel; Brotli</userinput></screen>
+
+    <!-- "131 passed in 2.76s" for me with 1.1.0 -->
+    <para>
+      To test the <application>Python3</application> binding, issue:
+      <command>pytest</command>.
+    </para>
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <!-- https://github.com/google/brotli/issues/933 -->
+    <para>
+      <command>sed ... -i setup.py</command>: Stop
+      <filename>setup.py</filename> from rebuilding the entire package all
+      over again, use the already installed libraries for the
+      <application>Python3</application> binding instead.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
 
   </sect2>
 

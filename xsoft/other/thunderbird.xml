@@ -6,9 +6,9 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "71242ab653ce087d137ccc1b3c6bdeb3">
-  <!ENTITY thunderbird-size          "507 MB">
-  <!ENTITY thunderbird-buildsize     "6.7 GB (236 MB installed)">
+  <!ENTITY thunderbird-md5sum        "d1a72df19949cae096a0122f551f6b05">
+  <!ENTITY thunderbird-size          "509 MB">
+  <!ENTITY thunderbird-buildsize     "6.7 GB (235 MB installed)">
   <!ENTITY thunderbird-time          "22 SBU (on a 4-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
@@ -80,14 +80,12 @@
       <xref linkend="cbindgen"/>,
       <xref linkend="dbus-glib"/>,
       <xref linkend="gtk3"/>,
-      <!--and <xref linkend="gtk2"/>,-->
       <xref linkend="llvm"/> including clang, <!-- used by default if found -->
       <xref linkend="nodejs"/>,
       <xref linkend="pulseaudio"/> (or <xref linkend="alsa-lib"/> if you edit
       the mozconfig; although it is now deprecated by mozilla),
       <xref linkend="python3"/> (rebuilt with the sqlite module),
-      <xref linkend="startup-notification"/>,
-      <xref linkend="zip"/>, and
+      <xref linkend="startup-notification"/>, and
       <xref linkend="unzip"/>
       <!--<xref linkend="yasm"/>-->
     </para>
@@ -101,6 +99,7 @@
       <!--<xref linkend="icu"/>,-->
       <xref linkend="libevent"/>,
       <xref linkend="libvpx"/>,
+      <xref linkend="libwebp"/>,
       <xref linkend="nasm"/>,
       <xref linkend="nspr"/>, and
       <xref linkend="nss"/>
@@ -167,6 +166,7 @@ ac_add_options --with-system-libevent
 ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
+ac_add_options --with-system-webp
 
 # The elf-hack causes failed installs on some machines.
 # It is supposed to improve startup time and it shrinks libxul.so
@@ -202,35 +202,6 @@ ac_add_options --with-system-zlib
 # and was reported to seriously slow the build. Disable it.
 ac_add_options --without-wasm-sandboxed-libraries</literal>
 EOF</userinput></screen>
-<!-- Fixed in 102.9
-    <para>
-      A change in cbindgen-0.24.2 causes a symbol to now be output by
-      cbindgen, but it has already been defined in a header. This sed
-      prevents the build from eventually failing:
-    </para>
-
-<screen><userinput>sed -i '/ROOT_CLIP_CHAIN/d' gfx/webrender_bindings/webrender_ffi.h</userinput></screen>
--->
-<!-- Not needed with clang
-     https://bugzilla.mozilla.org/show_bug.cgi?id=1729459
-    <para>
-      If building on a 32 bit machine, the following sed works around
-      an issue with an incompatible <quote>double</quote> type in one
-      header file:
-    </para>
-
-<screen><userinput>case "$(uname -m)" in
-    i?86) sed -e '/typedef[ ]*double/s/double/long double/' \
-              -i modules/fdlibm/src/math_private.h ;;
-esac</userinput></screen>
--->
-
-    <para>
-      Fix an issue occurring when building with GCC-13:
-    </para>
-
-<screen><userinput>sed -e '/&lt;exception&gt;/i#include &lt;cstdint&gt;' \
-    -i comm/third_party/rnp/src/libsexp/include/sexp/sexp-error.h</userinput></screen>
 
     <para>
       Now invoke the Python <command>mach</command> script to compile

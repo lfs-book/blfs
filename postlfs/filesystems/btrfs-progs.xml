@@ -6,10 +6,11 @@
 
   <!ENTITY btrfs-progs-download-http "&kernel-dl;/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v&btrfs-progs-version;.tar.xz">
   <!ENTITY btrfs-progs-download-ftp  " ">
-  <!ENTITY btrfs-progs-md5sum        "1b5705b3e9503f09a9598dad1e7bfbc8">
+  <!ENTITY btrfs-progs-md5sum        "33a7b2b36d1ab57899b823e581e950ac">
   <!ENTITY btrfs-progs-size          "3.0 MB">
-  <!ENTITY btrfs-progs-buildsize     "62 MB (transient files created during tests need up to 10 GB)">
-  <!ENTITY btrfs-progs-time          "0.2 SBU (add 3.8 SBU for tests, up to 80 SBU on slow disks if reiserfsprogs is installed)">
+  <!ENTITY btrfs-progs-buildsize     "91 MB (transient files created during tests need up to 10 GB)">
+  <!ENTITY btrfs-progs-time          "less than 0.1 SBU (with parallelism=4; add 3.7 SBU for tests, up to 14 SBU on slow disks)">
+  <!-- tests run with reiserfs disabled in kernel -->
 ]>
 
 <sect1 id="btrfs-progs" xreflabel="btrfs-progs-&btrfs-progs-version;">
@@ -93,8 +94,10 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="lvm2"/> (<command>dmsetup</command> is used in tests),
-      <xref linkend="reiserfs"/> (for tests), and
-      <xref linkend="sphinx"/> (required to build documentation)
+      <xref linkend="sphinx"/> (required to build documentation), and 
+      <ulink 
+        url='https://mirrors.edge.kernel.org/pub/linux/kernel/people/jeffm/reiserfsprogs/'>
+        reiserfsprogs</ulink> (for tests).
 
     </para>
 
@@ -114,7 +117,7 @@
 
     <para>
       In addition to the above and to the options required for
-      <xref linkend="lvm2"/> and <xref linkend="reiserfs"/>, the following
+      <xref linkend="lvm2"/>, the following
       options must be enabled for running tests:
     </para>
 
@@ -163,10 +166,7 @@ make</userinput></screen>
    ./fsck-tests.sh
    ./mkfs-tests.sh
    ./cli-tests.sh
-   sed 's/,orphan_file//' /etc/mke2fs.conf >./custom_mke2fs.conf &amp;&amp;
-   export MKE2FS_CONFIG=$PWD/custom_mke2fs.conf                  &amp;&amp;
    ./convert-tests.sh
-   unset MKE2FS_CONFIG &amp;&amp; rm custom_mke2fs.conf
    ./misc-tests.sh
    ./fuzz-tests.sh
 popd</userinput></screen>
@@ -227,6 +227,7 @@ done</userinput></screen>
       disables rebuilding the manual pages, because it requires
       <xref linkend="sphinx"/>.
     </para>
+<!--
     <para>
       <command>sed 's/,orphan_file//" ...</command>: In this version of
       <application>btrfs-progs</application>, the
@@ -236,6 +237,7 @@ done</userinput></screen>
       a custom configuration file that prevents creating a filesystem
       with this feature.
     </para>
+-->
     <!--
     <para>
       <command>ln -s ... /usr/lib/libbtrfs.so</command>: Creates a
@@ -248,7 +250,7 @@ done</userinput></screen>
     </para>
 -->
   </sect2>
-
+<!--
   <sect2 role="using" id="using-btrfs-convert">
     <title>Using the btrfs-convert Program</title>
 
@@ -266,6 +268,7 @@ done</userinput></screen>
       you want to convert.
     </para>
   </sect2>
+-->
 
   <sect2 role="content">
     <title>Contents</title>
@@ -319,8 +322,8 @@ done</userinput></screen>
         <term><command>btrfs-convert</command></term>
         <listitem>
           <para>
-            converts from an ext2/3/4 or reiserfs filesystem to btrfs (see
-            <xref linkend="using-btrfs-convert"/> above)
+            converts from an ext2/3/4 or reiserfs filesystem to btrfs <!--(see
+            <xref linkend="using-btrfs-convert"/> above)-->
           </para>
           <indexterm zone="btrfs-progs btrfs-convert">
             <primary sortas="b-btrfs-convert">btrfs-convert</primary>

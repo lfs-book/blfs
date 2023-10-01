@@ -6,10 +6,10 @@
 
   <!ENTITY pipewire-download-http "https://github.com/PipeWire/pipewire/archive/&pipewire-version;/pipewire-&pipewire-version;.tar.gz">
   <!ENTITY pipewire-download-ftp  " ">
-  <!ENTITY pipewire-md5sum        "04906e549ffd8feb1caad23f687c5257">
+  <!ENTITY pipewire-md5sum        "adcb4c81d2eb27d18fe221a8d3133dff">
   <!ENTITY pipewire-size          "2.1 MB">
-  <!ENTITY pipewire-buildsize     "66 MB (with tests)">
-  <!ENTITY pipewire-time          "0.5 SBU (with tests, both using parallelism=4)">
+  <!ENTITY pipewire-buildsize     "144 MB (with tests)">
+  <!ENTITY pipewire-time          "0.8 SBU (with tests, both using parallelism=4)">
 ]>
 
 <sect1 id="pipewire" xreflabel="pipewire-&pipewire-version;">
@@ -77,8 +77,9 @@
       <xref linkend="gstreamer10"/>,
       <xref linkend="gst10-plugins-base"/>,
       <xref linkend="pulseaudio"/>,
-      <xref linkend="sbc"/>, and
-      <xref linkend="v4l-utils"/>
+      <xref linkend="sbc"/>,
+      <xref linkend="v4l-utils"/>, and
+      <xref role="runtime" linkend="wireplumber"/> (runtime)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -103,9 +104,11 @@
       <ulink url="https://github.com/EHfive/ldacBT">ldacBT</ulink>,
       <ulink url="https://libcamera.org/">libcamera</ulink>,
       <ulink url="https://github.com/hoene/libmysofa">libmysofa</ulink>,
-      <ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>,
+      <ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>, and
+      <!--
       <ulink url="https://gitlab.freedesktop.org/pipewire/wireplumber/">WirePlumber</ulink>
       (runtime, for running the Pipewire daemon), and
+      -->
       <ulink url="https://sourceforge.net/projects/xmltoman/">xmltoman</ulink>
     </para>
 
@@ -159,12 +162,14 @@ ninja</userinput></screen>
 
     <para>
       <parameter>-Dsession-managers=[]</parameter>: This switch
-      allows to specify the session managers to build as subprojects. Since
-      the recommended session manager (<ulink
-        url="https://gitlab.freedesktop.org/pipewire/wireplumber">
-        WirePlumber</ulink>) is available as a standalone
-      project, don't specify anything here. This prevents downloading external
-      dependencies during the meson step.
+      allows specifying the session managers to build as subprojects.
+      We specify an empty list to prevent <command>meson</command> from
+      downloading any external copy of the session managers. A Pipewire
+      session manager recommended by the PipeWire developers for general
+      use, <xref linkend="wireplumber" role="nodep"/>, is available as a
+      separate BLFS package.  Build it after installing Pipewire if you
+      need to run the Pipewire daemon (for example in order to support
+      <xref linkend="snapshot" role="nodep"/>).
     </para>
 
     <para>
@@ -222,7 +227,7 @@ ninja</userinput></screen>
         </seg>
         <seg>
           libpipewire-0.3.so and
-          58 modules below /usr/lib/pipewire-0.3 and /usr/lib/spa-0.2
+          60 modules below /usr/lib/pipewire-0.3 and /usr/lib/spa-0.2
         </seg>
         <seg>
           /usr/include/pipewire-0.3,
