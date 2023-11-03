@@ -6,10 +6,10 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "d1a72df19949cae096a0122f551f6b05">
-  <!ENTITY thunderbird-size          "509 MB">
-  <!ENTITY thunderbird-buildsize     "6.7 GB (235 MB installed)">
-  <!ENTITY thunderbird-time          "22 SBU (on a 4-core machine)">
+  <!ENTITY thunderbird-md5sum        "2a21d248686c589c79f6871c9098f786">
+  <!ENTITY thunderbird-size          "513 MB">
+  <!ENTITY thunderbird-buildsize     "6.7 GB (233 MB installed)">
+  <!ENTITY thunderbird-time          "10 SBU (on a 8-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
 
@@ -140,6 +140,58 @@
         Make sure that you have adequate swap or RAM before continuing.
       </para>
     </note>
+
+    <para>
+      The building system ships several internal copies of the Python 3
+      modules <application>setuptools</application> and
+      <filename>six.py</filename>.  The shipped copies are too old
+      to work well with Python 3.12 or later.  Replace them with the
+      symlinks to the LFS <application>setuptools</application> package and
+      <xref linkend='six'/> already installed on the system, and adapt the
+      building system for these updated Python modules.  We also need to
+      rewrite the code based on the <filename>imp</filename> module removed
+      in Python 3.12 and later using the <filename>importlib</filename>
+      module:
+    </para>
+
+<screen><userinput>(for i in $(find -name six.py); do
+   ln -sfv /usr/lib/python&python3-majorver;/site-packages/six.py $i
+   [ $? = 0 ] || exit $?
+ done) &amp;&amp;
+
+sed '/ConfigParser/s/Safe//'                          \
+    -i testing/mozbase/mozprofile/mozprofile/prefs.py &amp;&amp;
+
+(for i in setuptools distutils-precedence.pth  \
+          pkg_resources _distutils_hack; do
+   rm -rf third_party/python/setuptools/$i     &amp;&amp;
+   ln -sv /usr/lib/python&python3-majorver;/site-packages/$i \
+          third_party/python/setuptools
+   [ $? = 0 ] || exit $?
+ done) &amp;&amp;
+
+sed 's/distutils/setuptools._&amp;/'           \
+    -i python/mozbuild/mozbuild/nodeutil.py &amp;&amp;
+
+sed -e '/^import/s/imp$/importlib.util/'             \
+    -e 's/imp.new_module/__import__/'                \
+    -e "s/imp.load_source\(.*\)/spec =               \
+        importlib.util.spec_from_file_location\1;    \
+        mod = importlib.util.module_from_spec(spec); \
+        spec.loader.exec_module(mod)/" -i python/mach/mach/main.py &amp;&amp;
+sed '/import imp/d' -i netwerk/dns/prepare_tlds.py
+</userinput></screen>
+
+    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1859752
+         https://hg.mozilla.org/try/rev/d5f3b0c4f08a -->
+    <para>
+      If building with system ICU, adapt the line break mapping for ICU
+      74 or later:
+    </para>
+
+<screen><userinput>(for i in {43..47}; do
+   sed '/ZWJ/s/}/,CLASS_CHARACTER&amp;/' -i intl/lwbrk/LineBreaker.cpp || exit $?
+ done)</userinput></screen>
 
     <para>
       The configuration of <application>Thunderbird</application> is

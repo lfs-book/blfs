@@ -6,10 +6,10 @@
 
   <!ENTITY poppler-download-http "https://poppler.freedesktop.org/poppler-&poppler-version;.tar.xz">
   <!ENTITY poppler-download-ftp  " ">
-  <!ENTITY poppler-md5sum        "def86e7c805ce427c01fa77a3c77615f">
+  <!ENTITY poppler-md5sum        "3be79099d8725debef73ea07502b771a">
   <!ENTITY poppler-size          "1.8 MB">
-  <!ENTITY poppler-buildsize     "91 MB (with Qt5 library and tests)">
-  <!ENTITY poppler-time          "0.8 SBU (with parallelism=4, Qt5 library, and tests)">
+  <!ENTITY poppler-buildsize     "92 MB (with Qt5 library and tests)">
+  <!ENTITY poppler-time          "0.9 SBU (with parallelism=4, Qt5 library, and tests)">
   <!-- Time increase might be due to git.freedesktop.org -->
 
   <!ENTITY poppler-data-version       "0.4.12">
@@ -128,11 +128,15 @@
     <para role="recommended">
       <xref linkend="boost"/>,
       <xref linkend="cairo"/>,
+      <xref linkend="gpgme"/>,
       <xref linkend="lcms2"/>,
       <xref linkend="libjpeg"/>,
       <xref linkend="libpng"/>,
-      <xref linkend="nss"/>, and
-      <xref linkend="openjpeg2"/>
+      <xref linkend="libtiff"/>,
+      <xref linkend="nss"/>,
+      <xref linkend="openjpeg2"/>, and
+      &qt5-deps;
+      (required for PDF support in <xref role="nodep" linkend="okular5"/>)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -140,13 +144,9 @@
       <xref linkend="curl"/>,
       <xref linkend="gdk-pixbuf"/>,
       <xref linkend="git"/> (for downloading test files),
-      <xref linkend="gpgme"/>,
       <xref linkend="gtk-doc"/>,
-      <xref linkend="gtk3"/>,
-      <xref linkend="libtiff"/>,
-      &qt5-deps;
-      (required for PDF support in <xref role="nodep" linkend="okular5"/>), and
-      <ulink url="https://download.qt.io/archive/qt/">Qt-6.1 or later</ulink>.
+      <xref linkend="gtk3"/>, and
+      <ulink url="https://download.qt.io/archive/qt/">Qt-6.2 or later</ulink>.
 
     </para>
 
@@ -166,6 +166,7 @@ cd    build                         &amp;&amp;
 cmake  -DCMAKE_BUILD_TYPE=Release   \
        -DCMAKE_INSTALL_PREFIX=/usr  \
        -DTESTDATADIR=$PWD/testfiles \
+       -DENABLE_QT6=OFF             \
        -DENABLE_UNSTABLE_API_ABI_HEADERS=ON \
        ..                           &amp;&amp;
 make</userinput></screen>
@@ -183,15 +184,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
-<!-- Seems makeinstall does the job now:
-    <para>
-      If you have Qt installed, again as the
-      <systemitem class="username">root</systemitem> user:
-    </para>
 
-<screen role="root"><userinput>make -C qt5 install &amp;&amp;
-install -m644 poppler-qt5.pc /usr/lib/pkgconfig</userinput></screen>
--->
     <para>
       To install the documentation, run the following commands as
       <systemitem class="username">root</systemitem>:
@@ -233,18 +226,17 @@ cd poppler-data-&poppler-data-version;</userinput></screen>
     </para>
 
     <para>
+      <parameter>-DENABLE_QT6=OFF</parameter>: This switch is needed to
+      prevent an error when Qt6 is not installed. Remove it if you
+      have installed qt-6.2 or later.
+    </para>
+
+    <para>
       <parameter>-DENABLE_UNSTABLE_API_ABI_HEADERS=ON</parameter>: Installs some old
       <application>Xpdf</application> headers required by certain programs.
       <!--(e.g. <application>Inkscape</application>).-->
     </para>
 
-<!--  This was broken for me - Bruce
-      Still broken with 0.69.0 - Doug
-      Seems to work with 0.73.0 - Pierre
-      Works with 20.09.0 but without the
-         sed -i '1s/python/&3/' make-glib-api-docs
-         and pygments is required - Thomas
--->
     <para>
       <option>-DENABLE_GTK_DOC=ON</option>: Use this parameter if
       GTK-Doc <!--and Pygments--> is installed and you wish to rebuild and
@@ -252,9 +244,29 @@ cd poppler-data-&poppler-data-version;</userinput></screen>
     </para>
 
     <para>
+      <option>-DENABLE_QT5=OFF</option>: Use this parameter if
+      &qt5-deps; is not installed. 
+    </para>
+
+    <para>
       <option>-DENABLE_BOOST=OFF</option>: Use this parameter if you have
       not installed <application>boost</application> (the Splash backend for
       Qt5 recommends boost).
+    </para>
+
+    <para>
+      <option>-DENABLE_NSS3=OFF</option>: Use this parameter if you have
+      not installed <application>nss</application>.
+    </para>
+
+    <para>
+      <option>-DENABLE_GPGME=OFF</option>: Use this parameter if you have
+      not installed <application>gpgme</application>.
+    </para>
+
+    <para>
+      <option>-DENABLE_LIBTIFF=OFF</option>: Use this parameter if you have
+      not installed <application>libtiff</application>.
     </para>
 
     <para>

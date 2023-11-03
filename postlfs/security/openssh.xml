@@ -6,9 +6,7 @@
 
   <!ENTITY openssh-download-http
            "https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-&openssh-version;.tar.gz">
-  <!ENTITY openssh-download-ftp
-           " "> <!-- at the moment, unable to connect via ftp: ken
-           "ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-&openssh-version;.tar.gz"> -->
+  <!ENTITY openssh-download-ftp  " ">
   <!ENTITY openssh-md5sum        "&openssh-md5sum;">
   <!ENTITY openssh-size          "1.7 MB">
   <!ENTITY openssh-buildsize     "45 MB (add 22 MB for tests)">
@@ -176,8 +174,7 @@ fi</userinput></screen>
             --with-privsep-path=/var/lib/sshd        \
             --with-default-path=/usr/bin             \
             --with-superuser-path=/usr/sbin:/usr/bin \
-            --with-pid-dir=/run                      \
-            --without-zlib-version-check             &amp;&amp;
+            --with-pid-dir=/run                      &amp;&amp;
 make</userinput></screen>
 
 <!--  I got all tests passed without this with 9.3p1, June 12, 2023.
@@ -340,8 +337,8 @@ install -v -m644    INSTALL LICENCE OVERVIEW README* \
         to succeed:
       </para>
 
-<screen><userinput>ssh-keygen &amp;&amp;
-ssh-copy-id -i ~/.ssh/id_rsa.pub <replaceable>REMOTE_USERNAME</replaceable>@<replaceable>REMOTE_HOSTNAME</replaceable></userinput></screen>
+<screen role='nodump'><userinput>ssh-keygen &amp;&amp;
+ssh-copy-id -i ~/.ssh/id_ed25519.pub <replaceable>REMOTE_USERNAME</replaceable>@<replaceable>REMOTE_HOSTNAME</replaceable></userinput></screen>
 
       <para>
         Once you've got passwordless logins working it's actually more secure

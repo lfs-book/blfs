@@ -6,10 +6,10 @@
 
   <!ENTITY spidermonkey-download-http "&mozilla-http;/firefox/releases/&spidermonkey-version;esr/source/firefox-&spidermonkey-version;esr.source.tar.xz">
   <!ENTITY spidermonkey-download-ftp  " ">
-  <!ENTITY spidermonkey-md5sum        "3d5cd8d91491dea9a6aae8e6c1ea1a8d">
-  <!ENTITY spidermonkey-size          "487 MB">
+  <!ENTITY spidermonkey-md5sum        "93fb7e0baa3e99209e870f7c032ca513">
+  <!ENTITY spidermonkey-size          "482 MB">
   <!ENTITY spidermonkey-buildsize     "3.5 GB (40 MB installed after removing 36MB static lib; additional 29 MB for the main tests and 31 MB for the jit tests with 4 cores online)">
-  <!ENTITY spidermonkey-time          "2.3 SBU (with parallelism=4; additional 1.7 SBU for the main test and 5.2 SBU for the jit test)">
+  <!ENTITY spidermonkey-time          "2.5 SBU (with parallelism=4; additional 1.8 SBU for the main test and 4.4 SBU for the jit test)">
 ]>
 
 <sect1 id="spidermonkey" xreflabel="SpiderMonkey from Firefox-&spidermonkey-version;">
@@ -84,7 +84,8 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="icu"/>,
-      <xref linkend="rust"/>, and
+      <xref linkend="rust"/>,
+      <xref linkend="six"/>, and
       <xref linkend="which"/>
     </para>
 
@@ -150,6 +151,17 @@ tar: Exiting with failure status due to previous errors
     </note>
 
     <para>
+      The building system ships several internal copies of the Python 3
+      module <filename>six.py</filename>.  The shipped copies are too old
+      to work well with Python 3.12 or later.  Replace them with the
+      symlinks to <xref linkend='six'/> already installed on the system:
+    </para>
+
+<screen><userinput>for i in $(find -name six.py); do
+  ln -sfv /usr/lib/python&python3-majorver;/site-packages/six.py $i;
+done</userinput></screen>
+
+    <para>
       Install <application>SpiderMonkey</application> by running the following
       commands:
     </para>
@@ -185,7 +197,7 @@ make</userinput></screen>
       JSTESTS_EXTRA_ARGS="--timeout 300 --wpt=disabled"</command>.
       It's recommended to redirect the output into a log.
       <!-- recheck when ICU gets upgraded -->
-      Because we are building with system ICU, 8 tests
+      Because we are building with system ICU, 41 tests
       (out of a total of more than 50,000) are known to fail.
       The test suite is executed with all CPU cores available: even in a
       cgroup with less cores assigned, it still attempts to spawn as many
