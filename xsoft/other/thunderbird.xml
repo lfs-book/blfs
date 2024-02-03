@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,10 +6,10 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "2a21d248686c589c79f6871c9098f786">
-  <!ENTITY thunderbird-size          "513 MB">
-  <!ENTITY thunderbird-buildsize     "6.7 GB (233 MB installed)">
-  <!ENTITY thunderbird-time          "10 SBU (on a 8-core machine)">
+  <!ENTITY thunderbird-md5sum        "2e1fc62cc993c138b64afc20e147163a">
+  <!ENTITY thunderbird-size          "508 MB">
+  <!ENTITY thunderbird-buildsize     "6.5 GB (236 MB installed)">
+  <!ENTITY thunderbird-time          "14 SBU (on a 8-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
 
@@ -84,7 +84,7 @@
       <xref linkend="nodejs"/>,
       <xref linkend="pulseaudio"/> (or <xref linkend="alsa-lib"/> if you edit
       the mozconfig; although it is now deprecated by mozilla),
-      <xref linkend="python3"/> (rebuilt with the sqlite module),
+      <xref linkend="python311"/> (rebuilt with the sqlite module),
       <xref linkend="startup-notification"/>, and
       <xref linkend="unzip"/>
       <!--<xref linkend="yasm"/>-->
@@ -117,18 +117,12 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <!--<xref linkend="cyrus-sasl"/>,-->
-      <!--<xref linkend="doxygen"/>,-->
-      <!--<xref linkend="GConf"/>,-->
       <xref role="runtime" linkend="pciutils"/> (runtime),
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/>, and
       <ulink url="https://facebook.github.io/watchman/">watchman</ulink>
     </para>
 
-    <para condition="html" role="usernotes">
-      Editor Notes: <ulink url="&blfs-wiki;/Thunderbird"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -141,6 +135,7 @@
       </para>
     </note>
 
+ <!-- Restore after Python 3.12 is usable for this package again
     <para>
       The building system ships several internal copies of the Python 3
       modules <application>setuptools</application> and
@@ -170,7 +165,7 @@ sed '/ConfigParser/s/Safe//'                          \
    [ $? = 0 ] || exit $?
  done) &amp;&amp;
 
-sed 's/distutils/setuptools._&amp;/'           \
+sed 's/distutils/setuptools._&amp;/'            \
     -i python/mozbuild/mozbuild/nodeutil.py &amp;&amp;
 
 sed -e '/^import/s/imp$/importlib.util/'             \
@@ -181,17 +176,7 @@ sed -e '/^import/s/imp$/importlib.util/'             \
         spec.loader.exec_module(mod)/" -i python/mach/mach/main.py &amp;&amp;
 sed '/import imp/d' -i netwerk/dns/prepare_tlds.py
 </userinput></screen>
-
-    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1859752
-         https://hg.mozilla.org/try/rev/d5f3b0c4f08a -->
-    <para>
-      If building with system ICU, adapt the line break mapping for ICU
-      74 or later:
-    </para>
-
-<screen><userinput>(for i in {43..47}; do
-   sed '/ZWJ/s/}/,CLASS_CHARACTER&amp;/' -i intl/lwbrk/LineBreaker.cpp || exit $?
- done)</userinput></screen>
+-->
 
     <para>
       The configuration of <application>Thunderbird</application> is
@@ -219,11 +204,13 @@ ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-webp
-
-# The elf-hack causes failed installs on some machines.
-# It is supposed to improve startup time and it shrinks libxul.so
-# by a few MB - comment this if you know your machine is not affected.
+<!-- With Thunderbird ESR 128 we'd replace the following part with
+"- -enable-elf-hack=relr", or remove it if relr becomes the default. -->
+# on some machines. It is supposed to improve startup time and it shrinks
+# libxul.so by a few MB.  With recent Binutils releases the linker already
+# supports a much safer and generic way for this.
 ac_add_options --disable-elf-hack
+export LDFLAGS="$LDFLAGS -Wl,-z,pack-relative-relocs"
 
 # The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
@@ -235,11 +222,13 @@ ac_add_options --disable-debug
 ac_add_options --disable-debug-symbols
 ac_add_options --disable-tests
 
-ac_add_options --enable-optimize=-O2
-ac_add_options --enable-linker=gold
+# This enables SIMD optimization in the shipped encoding_rs crate.
+ac_add_options --enable-rust-simd
+
 ac_add_options --enable-strip
 ac_add_options --enable-install-strip
 
+# You cannot distribute the binary if you do this.
 ac_add_options --enable-official-branding
 
 ac_add_options --enable-system-ffi
@@ -263,16 +252,12 @@ EOF</userinput></screen>
     <note>
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
        href="../../xincludes/mozshm.xml"/>
-
-      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/mozmach.xml"/>
-
     </note>
 
 <screen><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
 export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
-./mach configure                                    &amp;&amp;
-./mach build</userinput></screen>
+export PYTHON311=/opt/python3.11/bin/python3.11     &amp;&amp;
+$PYTHON311 ./mach build</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -283,13 +268,16 @@ export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
       commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none ./mach install</userinput></screen>
+<screen role="root"><userinput>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none $PYTHON311 ./mach install</userinput></screen>
 <!-- devs: For DESTDIR install, prepend DESTDIR=<dest> to the above -->
+
     <para>
       Empty the environment variables which were set above:
     </para>
 
-<screen><userinput>unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE MOZBUILD_STATE_PATH</userinput></screen>
+<screen><userinput>unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE &amp;&amp;
+unset MOZBUILD_STATE_PATH                     &amp;&amp;
+unset PYTHON311</userinput></screen>
 
   </sect2>
 
@@ -303,10 +291,12 @@ export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
       This prevent version mismatches between system modules and bundled ones.
     </para>
 
+<!--
     <para>
       <command>./mach configure</command>: This validates the supplied
       dependencies and the <filename>mozconfig</filename>.
     </para>
+-->
 
     <para>
       <option>./mach build --verbose</option>: Use this alternative if you

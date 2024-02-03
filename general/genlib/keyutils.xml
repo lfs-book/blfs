@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY keyutils-download-http "https://people.redhat.com/~dhowells/keyutils/keyutils-&keyutils-version;.tar.bz2">
+  <!ENTITY keyutils-download-http "https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git/snapshot/keyutils-&keyutils-version;.tar.gz">
   <!ENTITY keyutils-download-ftp  " ">
-  <!ENTITY keyutils-md5sum        "919af7f33576816b423d537f8a8692e8">
-  <!ENTITY keyutils-size          "96 KB">
-  <!ENTITY keyutils-buildsize     "1.9 MB (with tests)">
-  <!ENTITY keyutils-time          "less than 0.1 SBU (add 0.6 SBU for tests)">
+  <!ENTITY keyutils-md5sum        "6b70b2b381c1b6d9adfaf66d5d3e7c00">
+  <!ENTITY keyutils-size          "136 KB">
+  <!ENTITY keyutils-buildsize     "2.6 MB (with tests)">
+  <!ENTITY keyutils-time          "less than 0.1 SBU (add 0.4 SBU for tests)">
 ]>
 
 <sect1 id="keyutils" xreflabel="keyutils-&keyutils-version;">
@@ -68,18 +68,29 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">keyutils Dependencies</bridgehead>
+    <bridgehead renderas="sect3">Keyutils Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required">
-      <xref linkend="mitkrb"/>
-      <!-- Without krb5 installed, a FTBFS occurs while trying to compile dns.afsdb.c.
-      It looks for profile.h, which is installed by krb5. -->
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="lsb-tools"/> (referred by the test suite)
     </para>
-
-
   </sect2>
 
+  <sect2 role="kernel" id="keyutils-test-kernel">
+    <title>Kernel Configuration</title>
+
+    <para>
+      If running the test suite, some tests needs the following kernel
+      features enabled:
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="keyutils-test-kernel.xml"/>
+
+    <indexterm zone="keyutils keyutils-test-kernel">
+      <primary sortas="d-keyutils">keyutils (testing)</primary>
+    </indexterm>
+  </sect2>
   <sect2 role="installation">
     <title>Installation of keyutils</title>
 
@@ -88,21 +99,7 @@
       commands:
     </para>
 
-<screen><userinput>sed -i 's:$(LIBDIR)/$(PKGCONFIG_DIR):/usr/lib/pkgconfig:' Makefile &amp;&amp;
-make</userinput></screen>
-
-    <para>
-      To test the results, issue, as the
-      <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root" remap="test"><userinput>make -k test</userinput></screen>
-
-    <para>
-      Note that several tests will fail if certain uncommon kernel options
-      were not used when the kernel was built.  These include CONFIG_BIG_KEYS,
-      CONFIG_KEY_DH_OPERATIONS, and CONFIG_CRYPTO_DH.
-    </para>
+<screen><userinput>make</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -110,15 +107,39 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make NO_ARLIB=1 LIBDIR=/usr/lib BINDIR=/usr/bin SBINDIR=/usr/sbin install</userinput></screen>
 
+    <para>
+      The test suite can only run after installing this package.
+      To test the results, issue, as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root" remap="test"><userinput>make -k test</userinput></screen>
+
+    <para>
+      If <xref linkend='lsb-tools'/> is not installed, the test suite will
+      output some lines complaining the <command>lsb_release</command>
+      command not available but it won't affect the test result.
+    </para>
+
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+<!--
     <para>
       <command>sed ... Makefile</command>: This command ensures the pkgconfig
       file is placed in the correct directory.
     </para>
+
+    <para>
+      <command>sed ... tests/toolbox.inc.sh</command>: In LFS, GCC has been
+      configured with <option>- -enable-default-pie</option> so
+      <command>/usr/bin/bash</command> is a PIE, but the test script does
+      not anticipate it.  Fix this oversight so the test can run on a LFS
+      system.
+    </para>
+-->
 
     <para>
       <parameter>NO_ARLIB=1</parameter>: This make flag disables installing the
@@ -161,7 +182,9 @@ make</userinput></screen>
       <seglistitem>
         <seg>keyctl, key.dns_resolver, and request-key</seg>
         <seg>libkeyutils.so</seg>
-        <seg>/etc/request-key.d and /usr/share/keyutils</seg>
+        <seg>/etc/keyutils,
+        /etc/request-key.d,
+        and /usr/share/keyutils</seg>
       </seglistitem>
     </segmentedlist>
 

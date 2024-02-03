@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY v4l-download-http "https://www.linuxtv.org/downloads/v4l-utils/v4l-utils-&v4l-utils-version;.tar.bz2">
+  <!ENTITY v4l-download-http "https://www.linuxtv.org/downloads/v4l-utils/v4l-utils-&v4l-utils-version;.tar.xz">
   <!ENTITY v4l-download-ftp  " ">
-  <!ENTITY v4l-md5sum        "8ba9c73c4319b6afab5fa4358edc43de">
-  <!ENTITY v4l-size          "2.2 MB">
-  <!ENTITY v4l-buildsize     "126 MB">
+  <!ENTITY v4l-md5sum        "a3565a8ccc427dcce52845c2b8880c28">
+  <!ENTITY v4l-size          "1.2 MB">
+  <!ENTITY v4l-buildsize     "32 MB">
   <!ENTITY v4l-time          "1.1 SBU (using parallelism=4)">
 ]>
 
@@ -27,8 +27,8 @@
 
     <para>
       <application>v4l-utils</application> provides a series of utilities for
-      media devices, allowing to handle the proprietary formats available at
-      most webcams (libv4l), and providing tools to test V4L devices.
+      media devices, allowing the ability to handle the proprietary formats 
+      available from most webcams (libv4l), and providing tools to test V4L devices.
     </para>
 
     &lfs120_checked;
@@ -79,11 +79,6 @@
 -->
     <bridgehead renderas="sect3">v4l-utils Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required">
-      <xref linkend="llvm"/> (with target BPF)
-    </para>
-
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="alsa-lib"/>,
@@ -94,8 +89,12 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="doxygen"/> and
-      <xref linkend="sdl2"/>
+      <xref linkend="doxygen"/>,
+      <xref linkend="sdl2"/>,
+      both <xref linkend="llvm"/> (with Clang and target BPF)
+      and <ulink url='https://github.com/libbpf/libbpf'>libbpf</ulink>
+      (for infrared remote control decoders based on BPF), and
+      <ulink url="https://github.com/libsdl-org/SDL_image">SDL_image</ulink>
     </para>
 
   </sect2>
@@ -103,15 +102,33 @@
   <sect2 role="installation">
     <title>Installation of v4l-utils</title>
 
+    <note>
+      <para>
+        If you've installed both LLVM and libbpf (not in BLFS), either
+        enable the BPF target (via
+        <option>-DLLVM_TARGETS_TO_BUILD=</option>) building LLVM, or disable
+        the infrared remote control decoders based on BPF:
+      </para>
+
+      <!-- not "nodump" because it's harmless for BLFS anyway -->
+      <screen><userinput>sed '/^ir_bpf_enabled/s/=.*/= false/' \
+    -i utils/keytable/meson.build</userinput></screen>
+    </note>
+
     <para>
       Install <application>v4l-utils</application> by running
       the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr     \
-            --sysconfdir=/etc \
-            --disable-static  &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup --prefix=/usr          \
+            -Ddoxygen-doc=disabled \
+            -Dgconv=disabled       \
+            --buildtype=release    .. &amp;&amp;
+ninja</userinput></screen>
+
 
     <para>
       This package does not come with a test suite.
@@ -121,9 +138,30 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make -j1 install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
+
+    <para>
+      If you also wish to install the contrib programs, add:
+    </para>
+
+<screen role="root"><userinput>for prog in v4l2gl v4l2grab
+do
+   cp -v contrib/test/$prog /usr/bin
+done</userinput></screen>
+
 
   </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>-Dgconv=disabled</parameter>: This switch disables
+      the erroneous installation of gconv-modules that would break glibc.
+    </para>
+
+  </sect2>
+
 
   <sect2 role="content">
     <title>Contents</title>
@@ -154,7 +192,9 @@ make</userinput></screen>
           rds-ctl,
           v4l2-compliance,
           v4l2-ctl,
-          v4l2-dbg, and
+          v4l2-dbg,
+          v4l2gl,
+          v4l2grab, and
           v4l2-sysfs-path
         </seg>
         <seg>
@@ -364,6 +404,32 @@ make</userinput></screen>
           </para>
           <indexterm zone="v4l-utils v4l2-dbg">
             <primary sortas="b-v4l2-dbg">v4l2-dbg</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="v4l2gl">
+        <term><command>v4l2gl</command></term>
+        <listitem>
+          <para>
+            captures images using libv4l and stores them as PPM files
+          </para>
+          <indexterm zone="v4l-utils v4l2gl">
+            <primary sortas="b-v4l2gl">v4l2gl</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="v4l2grab">
+        <term><command>v4l2grab</command></term>
+        <listitem>
+          <para>
+            captures images using libv4l and stores them as PPM files, while
+            also allowing for additional options such as setting the amount of
+            frames captured and saving the file as a RAW file
+          </para>
+          <indexterm zone="v4l-utils v4l2grab">
+            <primary sortas="b-v4l2grab">v4l2grab</primary>
           </indexterm>
         </listitem>
       </varlistentry>

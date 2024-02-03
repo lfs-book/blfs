@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -89,7 +89,6 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="brotli"/>,
-      <xref linkend="db"/>,
       <xref linkend="doxygen"/>,
       <xref linkend="jansson"/>,
       <xref linkend="libxml2"/>,
@@ -100,13 +99,11 @@
       <xref linkend="nghttp2"/>,
       <xref linkend="openldap"/> (<xref linkend="apr-util"/> needs to be
       installed with ldap support),
-      <xref linkend="rsync"/>, and
+      <xref linkend="rsync"/>, 
+      &berkeley-db;, and
       <ulink url="https://sourceforge.net/projects/distcache">Distcache</ulink>
     </para>
 
-    <para condition="html" role="usernotes">
-      Editor Notes: <ulink url="&blfs-wiki;/apache"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -135,6 +132,9 @@ sed -e '/HTTPD_ROOT/s:${ap_prefix}:/etc/httpd:'       \
     -e '/SERVER_CONFIG_FILE/s:${rel_sysconfdir}/::'   \
     -e '/AP_TYPES_CONFIG_FILE/s:${rel_sysconfdir}/::' \
     -i configure  &amp;&amp;
+
+sed -e '/encoding.h/a # include &lt;libxml/xmlstring.h&gt;' \
+    -i modules/filters/mod_xml2enc.c  &amp;&amp;
 
 ./configure --enable-authnz-fcgi                              \
             --enable-layout=BLFS                              \
@@ -183,6 +183,15 @@ chown -v -R apache:apache /srv/www</userinput></screen>
       <command>sed '/dir.*CFG_PREFIX/s@^@#@'...</command>: Forces the
       <application>apxs</application> utility to use absolute pathnames for
       modules, when instructed to do so.
+    </para>
+
+    <para>
+      <command>sed -e '/HTTPD_ROOT/s ...</command>: Fixes some paths.
+    </para>
+
+    <para>
+      <command>sed -e '/encoding.h/a ...</command>; Fix building against
+      libxml-2.12.x.
     </para>
 
     <para>

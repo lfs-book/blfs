@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -66,6 +66,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch (required for running the test suite):
+          <ulink url="&patch-root;/libportal-&libportal-version;-testsuite_fix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">libportal Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -77,6 +87,18 @@
     <para role="recommended">
       <xref linkend="gtk3"/> and
       <xref linkend="gtk4"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended (Runtime)</bridgehead>
+    <para role="runtime">
+      To make this package really useful, install
+      <xref linkend="xdg-desktop-portal"/>,
+      <xref linkend="xdg-desktop-portal-gtk"/>,
+      <xref role="nodep" linkend="xdg-desktop-portal-gnome"/> (if running
+      a GNOME desktop environment), and
+      <xref role="nodep" linkend="xdg-desktop-portal-lxqt"/> (if running
+      a LXQt desktop environment).  They are not needed if only using this
+      package to satisfy a build dependency.
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -105,6 +127,13 @@
     mv -vf /usr/include/libportal{,.old}
 fi</userinput></screen>
     </warning>
+
+    <para>
+      If running the test suite, apply a patch to fix a dozen of test
+      failures with python-dbusmock 0.30.0 or later:
+    </para>
+
+    <screen><userinput>patch -Np1 -i ../libportal-&libportal-version;-testsuite_fix-1.patch</userinput></screen>
 
     <para>
       Install <application>libportal</application> by running the following

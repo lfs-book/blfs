@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,10 +6,10 @@
 
   <!ENTITY wireshark-download-http "https://www.wireshark.org/download/src/all-versions/wireshark-&wireshark-version;.tar.xz">
   <!ENTITY wireshark-download-ftp  " ">
-  <!ENTITY wireshark-md5sum        "29d710e0cf96e26005bd13b9d1cd9384">
-  <!ENTITY wireshark-size          "41 MB">
-  <!ENTITY wireshark-buildsize     "822 MB (with all optional dependencies available in the BLFS book)">
-  <!ENTITY wireshark-time          "2.3 SBU (with parallelism=4 and all optional dependencies available in the BLFS book)">
+  <!ENTITY wireshark-md5sum        "3012a4f3afc2b131f54d5e98351daf72">
+  <!ENTITY wireshark-size          "43 MB">
+  <!ENTITY wireshark-buildsize     "740 MB (with all optional dependencies available in the BLFS book; 167 MB installed)">
+  <!ENTITY wireshark-time          "2.7 SBU (with parallelism=4 and all optional dependencies available in the BLFS book)">
 ]>
 
 <!-- Gentle reminder: many Wireshark releases contain vulnerability fixes,
@@ -86,6 +86,14 @@
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
+    <!--
+      <listitem>
+        <para>
+          Required patch to build with Python-3.12:
+          <ulink url="&patch-root;/wireshark-&wireshark-version;-py_3.12_fix-1.patch"/>
+        </para>
+      </listitem>
+    -->
       <listitem>
         <para>
           Additional Documentation:
@@ -103,9 +111,16 @@
       <xref linkend="c-ares"/>,
       <xref linkend="glib2"/>,
       <xref linkend="libgcrypt"/>, and
-      (<xref linkend="qt5"/> or
-       <xref role="nodep" linkend="qt5-components"/> with qtmultimedia)
+      <xref linkend="qt6"/>
     </para>
+
+    <note>
+      <para>
+        <xref linkend="qt6"/> is not strictly required, since it can be
+        replaced with <application>Qt5</application>. See <quote>Command
+        explanations</quote> below.
+      </para>
+    </note>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
@@ -125,9 +140,11 @@
       <xref linkend="lua52"/>,
       <xref linkend="mitkrb"/>,
       <xref linkend="nghttp2"/>,
+      (<xref linkend="qt5"/> or
+      <xref role="nodep" linkend="qt5-components"/> with qtmultimedia)
+      (required if <xref role="nodep" linkend="qt6"/> is not installed),
       <xref linkend="sbc"/>,
       <xref linkend="speex"/>,
-      <!--<ulink url="https://asciidoctor.org/">Asciidoctor</ulink>,-->
       <ulink url="https://www.linphone.org/technical-corner/bcg729">BCG729</ulink>,
       <ulink url="https://github.com/TimothyGu/libilbc">libilbc</ulink>,
       <ulink url="https://www.ibr.cs.tu-bs.de/projects/libsmi/">libsmi</ulink>,
@@ -248,17 +265,24 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
     </para>
 
   </sect2>
-<!--
+
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+      <para>
+        <option>-DUSE_qt6=OFF</option>: Use this switch if
+        <xref linkend="qt6"/> is not available. You'll need
+        <xref linkend="qt5"/> or at least <xref linkend="qt5-components"/>
+        with qtmultimedia in this case.
+      </para>
+<!--
     <para>
       <option>- -disable-wireshark</option>: Use this switch if you
       have <application>Qt</application> installed but do not want to build
       any of the GUIs.
     </para>
-  </sect2>
 -->
+  </sect2>
 
   <sect2 role="configuration">
     <title>Configuring Wireshark</title>
@@ -328,7 +352,7 @@ chmod -v 6550 /usr/bin/{tshark,dumpcap}</userinput></screen>
           libwsutil.so, and numerous modules under /usr/lib/wireshark/plugins
         </seg>
         <seg>
-          /usr/{include,lib,share}/wireshark and
+          /usr/{lib,share}/wireshark and
           /usr/share/doc/wireshark-&wireshark-version;
          </seg>
       </seglistitem>

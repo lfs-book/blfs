@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY appstream-download-http "https://www.freedesktop.org/software/appstream/releases/AppStream-0.16.3.tar.xz">
+  <!ENTITY appstream-download-http "https://www.freedesktop.org/software/appstream/releases/AppStream-&appstream-version;.tar.xz">
   <!ENTITY appstream-download-ftp  " ">
-  <!ENTITY appstream-md5sum        "d60cdc2c2641398c2fde38e6436d185b">
-  <!ENTITY appstream-size          "2.4 MB">
-  <!ENTITY appstream-buildsize     "31 MB">
-  <!ENTITY appstream-time          "0.6 SBU">
+  <!ENTITY appstream-md5sum        "a1122ba2d3c41ba694f00844c84dddd7">
+  <!ENTITY appstream-size          "2.6 MB">
+  <!ENTITY appstream-buildsize     "34 MB">
+  <!ENTITY appstream-time          "0.3 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="appstream" xreflabel="AppStream-&appstream-version;">
@@ -82,8 +82,10 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/>,
-      &qt5-deps;, and
+      <xref linkend="gi-docgen"/>,
+      &qt5-deps;,
+      <xref linkend="qt6"/>,
+      <ulink url="https://github.com/openSUSE/daps">DAPS</ulink>, and
       <ulink url="https://github.com/zvelo/libstemmer">libstemmer</ulink>
     </para>
 
@@ -133,8 +135,9 @@ mv -v /usr/share/doc/appstream{,-&appstream-version;}</userinput></screen>
     <para>
       <parameter>-Dapidocs=false</parameter>: This switch disables building the
       API documentation. Remove it if you have
-      <xref linkend="gtk-doc" role="nodep"/> installed and wish to generate the
-      API documentation.
+      <xref linkend="gi-docgen" role="nodep"/> installed and wish to
+      regenerate the API documentation.  When the API documentation is
+      not regenerated, a pre-built copy is installed anyway.
     </para>
 
     <para>
@@ -145,11 +148,18 @@ mv -v /usr/share/doc/appstream{,-&appstream-version;}</userinput></screen>
     </para>
     
     <para>
-      <option>-Dqt=true</option>: Use this option if you have &qt5-deps;
-      installed and you want to build support for Qt applications into this
+      <option>-Dqt5=true</option>: Use this option if you have &qt5-deps;
+      installed and you want to build support for Qt-5 applications into this
       package.
     </para>
     
+    <para>
+      <option>-Dqt=true</option>: Use this option if you have
+      <xref linkend="qt6" role="nodep"/> installed and you want to build support
+      for Qt6 applications into this package. This option conflicts with
+      <option>-Dqt5=true</option>.
+    </para>
+
   </sect2>
   
   <sect2 role="configuration">
@@ -184,7 +194,7 @@ cat > /usr/share/metainfo/org.linuxfromscratch.lfs.xml &lt;&lt; EOF
 &lt;component type="operating-system"&gt;
   &lt;id&gt;org.linuxfromscratch.lfs&lt;/id&gt;
   &lt;name&gt;Linux From Scratch&lt;/name&gt;
-  &lt;summary&gt;A customized Linux system built entirely from source.&lt;/summary&gt;
+  &lt;summary&gt;A customized Linux system built entirely from source&lt;/summary&gt;
   &lt;description&gt;
     &lt;p&gt;
       Linux From Scratch (LFS) is a project that provides you with
@@ -194,10 +204,12 @@ cat > /usr/share/metainfo/org.linuxfromscratch.lfs.xml &lt;&lt; EOF
   &lt;/description&gt;
   &lt;url type="homepage"&gt;https://www.linuxfromscratch.org/lfs/&lt;/url&gt;
   &lt;metadata_license&gt;MIT&lt;/metadata_license&gt;
-  &lt;developer_name&gt;The Linux From Scratch Editors&lt;/developer_name&gt;
+  &lt;developer id='linuxfromscratch.org'&gt;
+    &lt;name&gt;The Linux From Scratch Editors&lt;/name&gt;
+  &lt;/developer&gt;
 
   &lt;releases&gt;
-    &lt;release version="12.1" type="development"&gt;
+    &lt;release version="12.1" type="development" date="2024-03-01"&gt;
       &lt;description&gt;
         &lt;p&gt;The next release of Linux From Scratch.&lt;/p&gt;
       &lt;/description&gt;

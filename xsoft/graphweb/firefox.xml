@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,16 +6,16 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "93fb7e0baa3e99209e870f7c032ca513">
-  <!ENTITY firefox-size          "482 MB">
+  <!ENTITY firefox-md5sum        "9105bdf076d457ce5e0aa5628d5acc84">
+  <!ENTITY firefox-size          "492 MB">
 
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "6.3 GB (209 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "6.1 GB (199 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
-  <!ENTITY firefox-time          "14.0 SBU using -j8, without tests">
+  <!ENTITY firefox-time          "12 SBU using -j8, without tests">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
@@ -145,7 +145,8 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="alsa-lib"/> if you edit the mozconfig;
         now deprecated by mozilla), in either case please read the
         Configuration Information,
-      <xref linkend="python3"/> (rebuilt after installing <xref linkend="sqlite"/>),
+      <xref linkend="python311"/> (built after installing <xref linkend="sqlite"/>),
+      <!--<xref linkend="six"/>,-->
       <xref linkend="startup-notification"/>, and
       <xref linkend="unzip"/>
     </para>
@@ -189,47 +190,6 @@ tar: Exiting with failure status due to previous errors
 
   <sect2 role="installation">
     <title>Installation of Firefox</title>
-
-    <para>
-      The building system ships several internal copies of the Python 3
-      modules <application>setuptools</application> and
-      <filename>six.py</filename>.  The shipped copies are too old
-      to work well with Python 3.12 or later.  Replace them with the
-      symlinks to the LFS <application>setuptools</application> package and
-      <xref linkend='six'/> already installed on the system, and adapt the
-      building system for these updated Python modules.  We also need to
-      rewrite the code based on the <filename>imp</filename> module removed
-      in Python 3.12 and later using the <filename>importlib</filename>
-      module:
-    </para>
-
-<screen><userinput>(for i in $(find -name six.py); do
-   ln -sfv /usr/lib/python&python3-majorver;/site-packages/six.py $i
-   [ $? = 0 ] || exit $?
- done) &amp;&amp;
-
-sed '/ConfigParser/s/Safe//'                          \
-    -i testing/mozbase/mozprofile/mozprofile/prefs.py &amp;&amp;
-
-(for i in setuptools distutils-precedence.pth  \
-          pkg_resources _distutils_hack; do
-   rm -rf third_party/python/setuptools/$i     &amp;&amp;
-   ln -sv /usr/lib/python&python3-majorver;/site-packages/$i \
-          third_party/python/setuptools
-   [ $? = 0 ] || exit $?
- done) &amp;&amp;
-
-sed 's/distutils/setuptools._&amp;/'           \
-    -i python/mozbuild/mozbuild/nodeutil.py &amp;&amp;
-
-sed -e '/^import/s/imp$/importlib.util/'             \
-    -e 's/imp.new_module/__import__/'                \
-    -e "s/imp.load_source\(.*\)/spec =               \
-        importlib.util.spec_from_file_location\1;    \
-        mod = importlib.util.module_from_spec(spec); \
-        spec.loader.exec_module(mod)/" -i python/mach/mach/main.py &amp;&amp;
-sed '/import imp/d' -i netwerk/dns/prepare_tlds.py
-</userinput></screen>
 
     <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1859752
          https://hg.mozilla.org/try/rev/d5f3b0c4f08a -->
@@ -287,12 +247,12 @@ ac_add_options --with-system-webp
 # save four megabytes in the installed file it does not make
 # the build faster.
 
-# libdav1d (av1 decoder) requires nasm. Uncomment this if nasm
-# has not been installed. Do not uncomment this if you have
+# The libdav1d library (av1 decoder) requires nasm. Uncomment this
+# if nasm has not been installed. Do not uncomment this if you have
 # ffmpeg installed.
 #ac_add_options --disable-av1
 
-# You cannot distribute the binary if you do this
+# You cannot distribute the binary if you do this.
 ac_add_options --enable-official-branding
 
 # Stripping is now enabled by default.
@@ -304,23 +264,27 @@ ac_add_options --enable-official-branding
 # faster. Comment this if you need to run a debugger. Note: This is
 # required for compilation on i686.
 ac_add_options --disable-debug-symbols
-
+<!-- With Firefox ESR 128 we'd replace the following part with
+"- -enable-elf-hack=relr", or remove it if relr becomes the default. -->
 # The elf-hack is reported to cause failed installs (after successful builds)
 # on some machines. It is supposed to improve startup time and it shrinks
-# libxul.so by a few MB - comment this if you know your machine is not affected.
+# libxul.so by a few MB.  With recent Binutils releases the linker already
+# supports a much safer and generic way for this.
 ac_add_options --disable-elf-hack
+export LDFLAGS="$LDFLAGS -Wl,-z,pack-relative-relocs"
 
 # The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
 ac_add_options --enable-application=browser
 ac_add_options --disable-crashreporter
 ac_add_options --disable-updater
-# enabling the tests will use a lot more space and significantly
+
+# Enabling the tests will use a lot more space and significantly
 # increase the build time, for no obvious benefit.
 ac_add_options --disable-tests
 
-# The default level of optimization again produces a working build with gcc.
-ac_add_options --enable-optimize
+# This enables SIMD optimization in the shipped encoding_rs crate.
+ac_add_options --enable-rust-simd
 
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
@@ -392,13 +356,8 @@ esac</userinput></screen>
 echo "613364a7-9418-4c86-bcee-57e32fd70c23" > mozilla-key</userinput></screen>
 
     <note>
-
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
        href="../../xincludes/mozshm.xml"/>
-
-      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-       href="../../xincludes/mozmach.xml"/>
-
     </note>
 
 <!--<para>
@@ -420,8 +379,8 @@ echo "613364a7-9418-4c86-bcee-57e32fd70c23" > mozilla-key</userinput></screen>
 
 <screen><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
 export MOZBUILD_STATE_PATH=${PWD}/mozbuild          &amp;&amp;
-./mach configure                                    &amp;&amp;
-./mach build</userinput></screen>
+export PYTHON311=/opt/python3.11/bin/python3.11     &amp;&amp;
+$PYTHON311 ./mach build</userinput></screen>
 
     <para>
       The <filename>mozconfig</filename> above disables the tests because
@@ -438,25 +397,26 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild          &amp;&amp;
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none ./mach install</userinput></screen>
+<screen role="root"><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
+export PYTHON311=/opt/python3.11/bin/python3.11     &amp;&amp;
+$PYTHON311 ./mach install</userinput></screen>
 
     <para>
       Empty the environment variables which were set above:
     </para>
 
-<screen><userinput>unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE MOZBUILD_STATE_PATH</userinput></screen>
+<screen><userinput>unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE
+unset MOZBUILD_STATE_PATH
+unset PYTHON311</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-<!--<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/SIOCGSTAMP.xml"/>-->
-
     <para>
       <command>export MOZBUILD_STATE_PATH=${PWD}/mozbuild</command>: The build
-      is now supposed to tell you that it intends to create <filename
+      tells you that it intends to create <filename
       class="directory">~/.mozbuild</filename>, and offer you an option to
       press &lt;ENTER&gt; to accept this, or Ctrl-C to cancel and restart the
       build after specifying the directory. In practice, the message may not
@@ -465,23 +425,23 @@ export MOZBUILD_STATE_PATH=${PWD}/mozbuild          &amp;&amp;
 
     <para>
       That directory is used for a (probably random) telemetry identifier.
-      Creating this in the build directory, and deleting that after the
-      installation, prevents it being used. If you wish to participate in
-      telemetry, export MOZBUILD_STATE_PATH to point to its default directory
-      and remove the entry from the <filename>mozconfig</filename>.
+      Creating this directory within the build directory and deleting it after the
+      installation prevents it being used.
     </para>
 
     <para>
       <command>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none</command>: Use the
       system python to create a virtual environment for <command>mach</command>
-      without downloading any python wheels nor using the system python modules.
+      without downloading any python wheels and without using the system python modules.
       This prevents version mismatches between system modules and bundled ones.
     </para>
 
+<!--
     <para>
       <command>./mach configure</command>: This validates the supplied
       dependencies and the <filename>mozconfig</filename>.
     </para>
+-->
 
     <para>
       <option>./mach build --verbose</option>: Use this alternative if you

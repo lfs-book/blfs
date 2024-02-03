@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -46,6 +46,9 @@ pathappend \$TEXLIVE_PREFIX/texmf-dist/doc/man  MANPATH
 pathappend \$TEXLIVE_PREFIX/texmf-dist/doc/info INFOPATH
 pathappend \$TEXLIVE_PREFIX/bin/$TEXARCH
 
+TEXMFCNF=\$TEXLIVE_PREFIX/texmf-dist/web2c
+export TEXMFCNF
+
 # End texlive setup</literal>
 EOF
 
@@ -73,20 +76,6 @@ unset TEXARCH</userinput></screen>
   </para>
 
 <screen><userinput>source /etc/profile</userinput></screen>
-
-  <para>
-    The shared libraries will be installed into a texlive directory.
-    As the <systemitem class="username">root</systemitem> user, add it to
-    your <filename>/etc/ld.so.conf</filename>:
-  </para>
-
-<screen role="root"><userinput>cat &gt;&gt; /etc/ld.so.conf &lt;&lt; EOF
-<literal># Begin texlive addition
-
-$TEXLIVE_PREFIX/lib
-
-# End texlive addition</literal>
-EOF</userinput></screen>
 
   <para>
     You should now proceed either to <xref linkend="tl-installer"/> for

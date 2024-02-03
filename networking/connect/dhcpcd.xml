@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,8 +6,8 @@
 
   <!ENTITY dhcpcd-download-http "https://github.com/NetworkConfiguration/dhcpcd/releases/download/v&dhcpcd-version;/dhcpcd-&dhcpcd-version;.tar.xz">
   <!ENTITY dhcpcd-download-ftp  " ">
-  <!ENTITY dhcpcd-md5sum        "3e99fcd70276cb20a2e8cd63b26125ed">
-  <!ENTITY dhcpcd-size          "263 KB">
+  <!ENTITY dhcpcd-md5sum        "ef8356d711b17701928ead7206d15234">
+  <!ENTITY dhcpcd-size          "264 KB">
   <!ENTITY dhcpcd-buildsize     "3.0 MB (with tests)">
   <!ENTITY dhcpcd-time          "less than 0.1 SBU (with tests)">
 ]>
@@ -68,6 +68,19 @@
         </para>
       </listitem>
     </itemizedlist>
+<!--
+
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/dhcpcd-&dhcpcd-version;-upstream_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">dhcpcd Dependencies</bridgehead>
 
@@ -111,11 +124,14 @@ chown    -v dhcpcd:dhcpcd /var/lib/dhcpcd </userinput></screen>
 
   <sect2 role="installation">
     <title>Installation of dhcpcd</title>
-<!--  Now in the code
-    <para>Fix a runtime error caused by a change in glibc-2.36:</para>
 
-<screen><userinput>sed '/Deny everything else/i SECCOMP_ALLOW(__NR_getrandom),' \
-    -i src/privsep-linux.c</userinput></screen>
+<!--
+    <para>
+      First, fix an issue that occurs when running dhcpcd with the '-b' switch:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../dhcpcd-&dhcpcd-version;-upstream_fixes-1.patch</userinput></screen>
+
 -->
     <para>
       Build <application>dhcpcd</application> without privilege separation

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -9,10 +9,10 @@
   mirror status, some of the mirrors shown as http are actually https -->
   <!ENTITY postfix-download-http "https://ghostarchive.org/postfix/postfix-release/official/postfix-&postfix-version;.tar.gz">
   <!ENTITY postfix-download-ftp  " ">
-  <!ENTITY postfix-md5sum        "3e9d80bbbb692693f4172d465c08c893">
+  <!ENTITY postfix-md5sum        "ae12d4dfc965a74a691a22ace14e7207">
   <!ENTITY postfix-size          "4.6 MB">
-  <!ENTITY postfix-buildsize     "152 MB">
-  <!ENTITY postfix-time          "0.2 SBU (Using parallelism=4)">
+  <!ENTITY postfix-buildsize     "208 MB">
+  <!ENTITY postfix-time          "0.1 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="postfix" xreflabel="Postfix-&postfix-version;">
@@ -86,9 +86,9 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="db"/>,
-      <xref linkend="cyrus-sasl"/>, and
-      <xref linkend="libnsl"/>
+      <xref linkend="cyrus-sasl"/>,
+      <xref linkend="libnsl"/>, and
+      <xref linkend="lmdb"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -96,9 +96,11 @@
       <xref linkend="icu"/> for Email Address Internationalization (SMTPUTF8) support,
       <xref linkend="mariadb"/> or <ulink url="https://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openldap"/>,
-      <xref linkend="pcre"/>,
+      <xref linkend="pcre2"/> (<emphasis>or</emphasis> the deprecated <xref
+      role='nodep' linkend='pcre'/>),
       <xref linkend="postgresql"/>,
-      <xref linkend="sqlite"/>, and
+      <xref linkend="sqlite"/>,
+      &berkeley-db;, and
       <ulink url="https://cr.yp.to/cdb.html">CDB</ulink> or
       <ulink url="https://www.corpit.ru/mjt/tinycdb.html">TinyCDB</ulink>
     </para>
@@ -161,8 +163,9 @@ chown -v postfix:postfix /var/mail</userinput></screen>
       <note>
         <para>
           For all variants of the CCARGS you should ensure that -DNO_NIS is
-          specified so that the build does not attempt to access an rpcsvc header
-          which does not exist in BLFS.
+          specified so that the build does not attempt to access an rpcsvc
+          header which do not exist in BLFS.  If &berkeley-db; is
+          not installed, -DNO_DB needs to be specified as well.
         </para>
       </note>
 
@@ -178,9 +181,20 @@ chown -v postfix:postfix /var/mail</userinput></screen>
           <application>Postfix</application>, use the following arguments:
         </para>
 
-<screen><literal>CCARGS='-DNO_NIS -DUSE_SASL_AUTH -DUSE_CYRUS_SASL -I/usr/include/sasl'
+<screen><literal>CCARGS="-DNO_NIS -DNO_DB \
+        -DUSE_SASL_AUTH -DUSE_CYRUS_SASL -I/usr/include/sasl"
 AUXLIBS='-lsasl2'</literal></screen>
+      </sect4>
 
+      <sect4>
+        <title>LMDB</title>
+        <para>
+          To use <application>LMDB</application> with
+          <application>Postfix</application>, use the following arguments:
+        </para>
+
+<screen><literal>CCARGS='-DNO_NIS -DNO_DB -DHAS_LMDB'
+AUXLIBS_LMDB='-llmdb'</literal></screen>
       </sect4>
 
       <sect4>
@@ -191,8 +205,8 @@ AUXLIBS='-lsasl2'</literal></screen>
           <application>Postfix</application>, use the following arguments:
         </para>
 
-<screen><literal>CCARGS='-DNO_NIS -DHAS_LDAP'
-AUXLIBS='-lldap -llber'</literal></screen>
+<screen><literal>CCARGS='-DNO_NIS -DNO_DB -DHAS_LDAP'
+AUXLIBS_LDAP='-lldap -llber'</literal></screen>
 
       </sect4>
 
@@ -204,8 +218,8 @@ AUXLIBS='-lldap -llber'</literal></screen>
           <application>Postfix</application>, use the following arguments:
         </para>
 
-<screen><literal>CCARGS='-DNO_NIS -DHAS_SQLITE'
-AUXLIBS='-lsqlite3 -lpthread'</literal></screen>
+<screen><literal>CCARGS='-DNO_NIS -DNO_DB -DHAS_SQLITE'
+AUXLIBS_SQLITE='-lsqlite3 -lpthread'</literal></screen>
 
       </sect4>
 
@@ -217,8 +231,8 @@ AUXLIBS='-lsqlite3 -lpthread'</literal></screen>
           <application>Postfix</application>, use the following arguments:
         </para>
 
-<screen><literal>CCARGS='-DNO_NIS -DHAS_MYSQL -I/usr/include/mysql'
-AUXLIBS='-lmysqlclient -lz -lm'</literal></screen>
+<screen><literal>CCARGS='-DNO_NIS -DNO_DB -DHAS_MYSQL -I/usr/include/mysql'
+AUXLIBS_MYSQL='-lmysqlclient -lz -lm'</literal></screen>
 
       </sect4>
 
@@ -230,8 +244,8 @@ AUXLIBS='-lmysqlclient -lz -lm'</literal></screen>
           <application>Postfix</application>, use the following arguments:
         </para>
 
-<screen><literal>CCARGS='-DNO_NIS -DHAS_PGSQL -I/usr/include/postgresql'
-AUXLIBS='-lpq -lz -lm'</literal></screen>
+<screen><literal>CCARGS='-DNO_NIS -DNO_DB -DHAS_PGSQL -I/usr/include/postgresql'
+AUXLIBS_PGSQL='-lpq -lz -lm'</literal></screen>
 
       </sect4>
 
@@ -244,8 +258,8 @@ AUXLIBS='-lpq -lz -lm'</literal></screen>
           <application>Postfix</application>, use the following arguments:
         </para>
 
-<screen><literal>CCARGS='-DNO_NIS -DHAS_CDB'
-AUXLIBS='<replaceable>&lt;/path/to/CDB&gt;</replaceable>/libcdb.a'</literal></screen>
+<screen><literal>CCARGS='-DNO_NIS -DNO_DB -DHAS_CDB'
+AUXLIBS_CDB='<replaceable>&lt;/path/to/CDB&gt;</replaceable>/libcdb.a'</literal></screen>
 
       </sect4>
 
@@ -257,7 +271,7 @@ AUXLIBS='<replaceable>&lt;/path/to/CDB&gt;</replaceable>/libcdb.a'</literal></sc
           <application>Postfix</application>, use the following arguments:
         </para>
 
-<screen><literal>CCARGS='-DNO_NIS -DUSE_TLS -I/usr/include/openssl/'
+<screen><literal>CCARGS='-DNO_NIS -DNO_DB -DUSE_TLS -I/usr/include/openssl/'
 AUXLIBS='-lssl -lcrypto'</literal></screen>
       </sect4>
 
@@ -268,14 +282,17 @@ AUXLIBS='-lssl -lcrypto'</literal></screen>
 
       <para>
         Adjust the following according to your needs. For example,
-        if you have <application>Cyrus SASL</application>,
+	if you have <application>Cyrus SASL</application> and
+	<application>LMDB</application>,
         install <application>Postfix</application> by running the following
         commands:
       </para>
 
-<screen><userinput>make CCARGS="-DNO_NIS -DUSE_TLS -I/usr/include/openssl/            \
-             -DUSE_SASL_AUTH -DUSE_CYRUS_SASL -I/usr/include/sasl" \
+<screen><userinput>make CCARGS="-DNO_NIS -DNO_DB -DUSE_TLS -I/usr/include/openssl/    \
+             -DUSE_SASL_AUTH -DUSE_CYRUS_SASL -I/usr/include/sasl  \
+             -DHAS_LMDB"                                           \
      AUXLIBS="-lssl -lcrypto -lsasl2"                              \
+     AUXLIBS_LMDB="-llmdb"                                         \
      makefiles &amp;&amp;
 make</userinput></screen>
 
@@ -375,6 +392,38 @@ EOF</userinput></screen>
         To protect an existing <filename>/etc/aliases</filename> file,
         the above command appends these aliases to it if it exists. This file
         should be checked and duplicate aliases removed, if present.
+      </para>
+
+      <para>
+        The BLFS editors recommend to use LMDB instead of Berkeley DB for
+        Postfix tables.  Add three lines into
+        <filename>/etc/postfix/main.cf</filename> to make
+        <command>postmap</command> encode the lookup tables in the LMDB
+        format by default and to change the default hash setting of the
+        alias tables:
+      </para>
+
+<screen role="root"><userinput>echo 'default_database_type = lmdb'       &gt;&gt; /etc/postfix/main.cf &amp;&amp;
+echo 'alias_database = lmdb:/etc/aliases' &gt;&gt; /etc/postfix/main.cf &amp;&amp;
+echo 'alias_maps = lmdb:/etc/aliases'     &gt;&gt; /etc/postfix/main.cf</userinput></screen>
+
+      <para>
+        To protect your server against the recent SMTP smuggling attacks,
+        additional steps are required. Add two lines into
+        <filename>/etc/postfix/mail.cf</filename> to disconnect remote SMTP
+        clients that send bare newlines, while also allowing clients on your
+        network with non-standard SMTP implementations to still send mail:
+      </para>
+
+<screen role="root"><userinput>echo 'smtpd_forbid_bare_newline = yes' &gt;&gt; /etc/postfix/main.cf &amp;&amp;
+echo 'smtpd_forbid_bare_newline_exclusions = $mynetworks' &gt;&gt; /etc/postfix/main.cf</userinput></screen>
+
+      <para>
+        Note that if you are following an online tutorial to configure
+        Postfix, the tutorial may refer to a lookup table with
+        <literal>hash:/path/to/lookup_table</literal>.  You should replace
+        <literal>hash</literal> with <literal>lmdb</literal> in order to use
+        a lookup table encoded in the LMDB format.
       </para>
 
       <note>

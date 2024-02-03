@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -154,12 +154,30 @@ ninja</userinput></screen>
     <!-- Headphone hotplug (bluetooth and AUX) was tested and seems to work
          okay even with the test faliures. Maybe it's wants headphones plugged
          in during the test? Regardless, it can be safely ignored. -->
+    <!-- On a 32-bit machine, the following test failure can be observed:
+         ======================================================================
+         FAIL: test_battery_energy_charge_mixed (__main__.Tests.test_battery_energy_charge_mixed)
+         battery which reports both current charge and energy
+
+         self.assertEqual(self.get_dbus_dev_property(bat0_up, 'Percentage'), 40.0)
+         AssertionError: 40.00000000000001 != 40.0
+
+         This is known upstream as https://gitlab.freedesktop.org/upower/upower/-/issues/251
+         Not sure if this is an actual problem, but it seems to start and work
+         properly -renodr
+
+         test_bluetooth_le_device: upstream MR !207  -xry111 -->
+
     <para>
       To test the results, issue: <command>LC_ALL=C ninja test</command>. Some
-      checks may not pass due to missing files. Test suite should be run from
-      a local GUI session started with dbus-launch. 2 tests relating to the
-      headphone hotplug feature are known to fail, these can be safely ignored
-      as the headphone functionality does still work.
+      checks may not pass due to missing files. The test suite should be run
+      from a local GUI session started with dbus-launch. On 32-bit machines,
+      one test will fail due to rounding errors:
+      <filename>Tests.test_battery_energy_charge_mixed</filename>. On some
+      systems, two tests relating to the headphone hotplug feature are known
+      to fail. Those can be safely ignored since the functionality still works.
+      The test named <filename>Tests.test_bluetooth_le_device</filename>
+      is known to fail with dbusmock-0.30.1 or later.
     </para>
 
     <para>
@@ -197,43 +215,6 @@ ninja</userinput></screen>
       rules because the information is missing in
       <filename>/usr/lib/pkgconfig/libudev.pc</filename>
     </para>
-
-  </sect2>
-
-  <sect2 role="configuration" revision="systemd">
-
-    <title>Configuring UPower</title>
-<!-- timer statistics have been removed from kernel (since 4.11)
-     I do not know if there is a replacement. See
-     https://patchwork.kernel.org/patch/9561519
-     and https://bugs.freedesktop.org/show_bug.cgi?id=100626
-
-    <para>
-      To use the command <command>upower -w</command> for information about
-      processor wakeups (this command is used by <phrase revision="sysv">
-      <ulink url="&gnome-download-http;/gnome-power-manager/">gnome-power-manager</ulink></phrase><phrase revision="systemd"><xref linkend="gnome-power-manager"/></phrase>)
-      you need to enable CONFIG_TIMER_STATS.  This is achieved in
-      <command>make menuconfig</command> by going to the &apos;kernel-hacking&apos;
-      menu and selecting &apos;Collect kernel timers statistics&apos;.
-    </para>
--->
-    <sect3  id="upower-init">
-      <title>Systemd Unit</title>
-
-      <para>
-        To start the <command>UPower</command> service at boot,
-        enable the previously installed systemd unit by
-        running the following command as the
-        <systemitem class="username">root</systemitem> user:
-      </para>
-
-      <indexterm zone="upower upower-init">
-        <primary sortas="f-upower">upower</primary>
-      </indexterm>
-
-<screen role="root"><userinput>systemctl enable upower</userinput></screen>
-
-    </sect3>
 
   </sect2>
 

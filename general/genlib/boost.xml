@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY boost-download-http "https://boostorg.jfrog.io/artifactory/main/release/&boost-version;/source/boost_&boost-dl-version;.tar.bz2">
+  <!ENTITY boost-download-http "https://github.com/boostorg/boost/releases/download/boost-&boost-version;/boost-&boost-version;.tar.xz">
   <!ENTITY boost-download-ftp  " ">
-  <!ENTITY boost-md5sum        "406f0b870182b4eb17a23a9d8fce967d">
-  <!ENTITY boost-size          "117 MB">
+  <!ENTITY boost-md5sum        "893b5203b862eb9bbd08553e24ff146a">
+  <!ENTITY boost-size          "90 MB">
   <!ENTITY boost-buildsize     "1.1 GB (199 MB installed)">
-  <!ENTITY boost-time          "2.8 SBU (Using parallelism=4; add 0.7 SBU for tests)">
+  <!ENTITY boost-time          "1.7 SBU (Using parallelism=4; add 0.1 SBU for tests)">
 ]>
 
 <sect1 id="boost" xreflabel="Boost-&boost-version;">
@@ -99,7 +99,7 @@
 
   <sect2 role="installation">
     <title>Installation of Boost</title>
-
+<!--
     <para>
       A change in this version of <application>boost</application> breaks
       the few packages which use the <application>phoenix</application>
@@ -110,7 +110,7 @@
 
 <screen><userinput>sed -i '/#include.*phoenix.*tuple.hpp.*/d' \
   boost/phoenix/stl.hpp</userinput></screen>
-
+-->
     <para>
       This package can be built with several jobs running in parallel. In
       the instructions below, <parameter>&lt;N&gt;</parameter> stands for the
@@ -125,9 +125,9 @@
     <para>
       To run Boost.Build's regression tests, issue
       <command>pushd tools/build/test; python3 test_all.py; popd</command>.
-      <!--With python-3.10.x all 168 tests should pass.  With
-      <xref linkend='python3'/>, 20 tests fail for undetermined reasons.-->
-      <!-- This was fixed in 1.83.0 -->
+      With python-3.11.x all 169 tests should pass.  With
+      <xref linkend='python3'/>, 7 tests fail for undetermined reasons.
+      <!-- This was fixed in 1.83.0 and broken for python-3.12 and 1.84.0 -->
     </para>
 
     <para>
@@ -166,18 +166,13 @@
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
+<!--
     <para>
-      <parameter>sed -i '/#include ...</parameter>: This removes the inclusion
+      <command>sed -i '/#include ...</command>: This removes the inclusion
       of <filename>boost/phoenix/stl/tuple.hpp</filename> from this header-only
       library, allowing applications which use it to link using recent C++.
-      <!-- FIXME: remove before 11.3 is we still use 1.81.0 and LO-7.4,
-      this alternative is only for people working through the development book.-->
-      An alternative is to edit
-      <filename>/usr/include/boost/phoenix/stl.hpp</filename> if this version of
-      boost has already been installed without this <command>sed</command>.
     </para>
-
+-->
     <para>
       <parameter>threading=multi</parameter>: This parameter ensures that
       <application>Boost</application> is built with multithreading support.

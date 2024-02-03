@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,9 +6,9 @@
 
   <!ENTITY sudo-download-http "https://www.sudo.ws/dist/sudo-&sudo-version;.tar.gz">
   <!ENTITY sudo-download-ftp  " ">
-  <!ENTITY sudo-md5sum        "4cc21cf7c9a89290b230954aed0d1e11">
-  <!ENTITY sudo-size          "5.0 MB">
-  <!ENTITY sudo-buildsize     "51 MB (add 17 MB for tests)">
+  <!ENTITY sudo-md5sum        "4166279cb188ecb6641c7a2ba5f68270">
+  <!ENTITY sudo-size          "5.1 MB">
+  <!ENTITY sudo-buildsize     "53 MB (add 18 MB for tests)">
   <!ENTITY sudo-time          "0.2 SBU (with parallelism=4; add 0.1 SBU for tests)">
 ]>
 
@@ -78,16 +78,15 @@
       <xref linkend="openldap"/>,
       <xref linkend="server-mail"/> (that provides a
       <command>sendmail</command> command),
-      <ulink url="https://www.openafs.org/">AFS</ulink>, and
+      <ulink url="https://www.openafs.org/">AFS</ulink>,
 <!--  It seems dead for decades, nowhere to download source code
       <ulink url="https://www.fwtk.org/">FWTK</ulink>, and
 -->
-      <ulink url="&sourceforge-dl;/opie/">Opie</ulink>
+      <ulink url="https://github.com/linux-audit/audit-userspace">libaudit</ulink>,
+      <ulink url="&sourceforge-dl;/opie/">Opie</ulink>, and
+      <ulink url="https://sssd.io/">Sssd</ulink>
     </para>
 
-    <para condition="html" role="usernotes">Editor Notes:
-      <ulink url="&blfs-wiki;/sudo"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
@@ -100,16 +99,16 @@
 <screen><userinput>./configure --prefix=/usr              \
             --libexecdir=/usr/lib      \
             --with-secure-path         \
-            --with-all-insults         \
             --with-env-editor          \
             --docdir=/usr/share/doc/sudo-&sudo-version; \
             --with-passprompt="[sudo] password for %p: " &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>env LC_ALL=C make check 2&gt;&amp;1
-      | tee make-check.log</command>. Check the results with <command>grep
-      failed make-check.log</command>.
+      To test the results, issue:
+      <!-- line breaks in command tags confuse jhalfs -->
+      <command>env LC_ALL=C make check |&amp; tee make-check.log</command>.
+      Check the results with <command>grep failed make-check.log</command>.
     </para>
 
     <para>
@@ -118,8 +117,7 @@ make</userinput></screen>
 
 <!-- for a DESTDIR install as normal user, use
     "make install INSTALL_OWNER= DESTDIR=<destdir>"-->
-<screen role="root"><userinput>make install &amp;&amp;
-ln -sfv libsudo_util.so.0.0.0 /usr/lib/sudo/libsudo_util.so.0</userinput></screen>
+<screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
 
@@ -141,11 +139,6 @@ ln -sfv libsudo_util.so.0.0.0 /usr/lib/sudo/libsudo_util.so.0</userinput></scree
     </para>
 
     <para>
-      <parameter>--with-all-insults</parameter>: This switch includes all the
-      <application>sudo</application> insult sets.
-    </para>
-
-    <para>
       <parameter>--with-env-editor</parameter>: This switch enables use of the
       environment variable EDITOR for <command>visudo</command>.
     </para>
@@ -160,9 +153,14 @@ ln -sfv libsudo_util.so.0.0.0 /usr/lib/sudo/libsudo_util.so.0</userinput></scree
       <application>Linux-PAM</application> support when
       <application>Linux-PAM</application> is installed on the system.
     </para>
-<!-- See the developer note above before the configure command
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>-->
+
+    <para>
+      <option>--with-all-insults</option>: This switch includes all the
+      sudo insult sets. Insults are printed if the user types a bad
+      password, and if enabled in <filename>/etc/sudoers</filename>. Use
+      <option>--with-insults</option> to have them enabled by default.
+      Various sets of insults can be selected with some other switches.
+    </para>
 
     <note>
       <para>
@@ -171,13 +169,13 @@ ln -sfv libsudo_util.so.0.0.0 /usr/lib/sudo/libsudo_util.so.0</userinput></scree
         <command>configure --help</command> output for a complete list.
       </para>
     </note>
-
+    <!-- Seems to be fixed
     <para>
       <command>ln -sfv libsudo_util...</command>: Works around a bug in the
       installation process, which links to the previously installed
       version (if there is one) instead of the new one.
     </para>
-
+    -->
   </sect2>
 
   <sect2 role="configuration">
@@ -301,8 +299,8 @@ chmod 644 /etc/pam.d/sudo</userinput></screen>
           shared objects in /usr/lib/sudo look more like modules than
           libraries. Leaving them now, and updating the list, but I think
           they should not be listed. -->
-          audit_json.so, group_file.so, libsudo_util.so, sample_approval.so,
-          sudoers.so, sudo_noexec.so, and system_group.so
+          audit_json.so, group_file.so, libsudo_util.so,
+          sudoers.so, sudo_intercept.so, sudo_noexec.so, and system_group.so
         </seg>
         <seg>
           /etc/sudoers.d,

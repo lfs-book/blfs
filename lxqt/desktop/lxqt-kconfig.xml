@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,7 +6,7 @@
 
   <!ENTITY kconfig-download-http "&kf5-download-http;/kconfig-&kf5-version;.tar.xz">
   <!ENTITY kconfig-download-ftp  " ">
-  <!ENTITY kconfig-md5sum        "fe2b1c516c2f9caadd6c8e3bf35ffd96">
+  <!ENTITY kconfig-md5sum        "d9d231a843e344bfb69361eeff1df5dd">
   <!ENTITY kconfig-size          "288 KB">
   <!ENTITY kconfig-buildsize     "20 MB">
   <!ENTITY kconfig-time          "0.1 SBU (Using parallelism=4)">
@@ -96,11 +96,12 @@
 <screen><userinput>mkdir -v build &amp;&amp;
 cd       build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr \
-      -DCMAKE_BUILD_TYPE=Release  \
-      -DCMAKE_INSTALL_LIBDIR=lib  \
-      -DBUILD_TESTING=OFF         \
-      -Wno-dev ..                 &amp;&amp;
+cmake -DCMAKE_INSTALL_PREFIX=/usr        \
+      -DCMAKE_BUILD_TYPE=Release         \
+      -DCMAKE_INSTALL_LIBEXECDIR=libexec \
+      -DKDE_INSTALL_USE_QT_SYS_PATHS=ON  \
+      -DBUILD_TESTING=OFF                \
+      -Wno-dev ..                        &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -113,12 +114,23 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
     <para>
-      Finally, remove some unneeded files as the &root; user:
+      <parameter>-DCMAKE_INSTALL_LIBEXECDIR=libexec</parameter>: This overrides
+      the default in extra-cmake-modules, which is <filename
+      class="directory">/usr/lib/libexec</filename> and is not FHS compliant.
     </para>
 
-<screen role="root"><userinput>rm -rf /usr/mkspecs &amp;&amp;
-rm -rf /usr/lib/libexec</userinput></screen>
+    <para>
+      <parameter>-DKDE_INSTALL_USE_QT_SYS_PATHS=ON</parameter>: This forces
+      installation of Qt plugins in the same directory as <xref linkend="qt5"/>
+      itself. Otherwise they get installed into <filename
+      class="directory">/usr/mkspecs</filename>, which is not FHS compliant.
+    </para>
 
   </sect2>
 

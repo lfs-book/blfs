@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -186,7 +186,9 @@
     <para>
       It might be still possible to manually force late loading of microcode.
       But it may cause kernel malfunction and you should take the risk yourself.
-      You will need to reconfigure your kernel for either method. The
+      You will need to reconfigure your kernel for late loading, but
+      early loading is always supported by Linux kernel version 6.6
+      or later on a x86 (no matter 32-bit or 64-bit) system.  The
       instructions here will show you how to create an initrd for early
       loading. It is also possible to build the same microcode bin file into
       the kernel, which allows early loading but requires the kernel to be
@@ -228,7 +230,7 @@
         <!-- at one time, some skylakes had problems with a certain revision
         secure version of the microcode, for those machines which can boot it, -->
         secure version of the microcode
-        is microcode-20230808.  Extract this
+        is microcode-20231114.  Extract this
         file in the normal way, the microcode is in the <filename>intel-ucode
         </filename> directory, containing various blobs with names in the form
         XX-YY-ZZ. There are also various other files, and a releasenote.
@@ -256,17 +258,12 @@
         For an Tigerlake mobile (described as Intel(R) Core(TM) i5-11300H
         CPU) the relevant values are cpu family 6, model 140, stepping 1 so
         in this case the required identification is 06-8c-01. The
-        releasenote says the latest microcode for it is versioned 0xac.  If
+        releasenote says the latest microcode for it is versioned 0xb4.  If
         the value of the <quote>microcode</quote> field in
-        <filename>/proc/cpuinfo</filename> is 0xac or greater, it indicates
+        <filename>/proc/cpuinfo</filename> is 0xb4 or greater, it indicates
         the microcode update is already applied by the BIOS.  Otherwise,
-        configure the kernel to support loading Intel microcode, and then
-        proceed to <xref linkend='early-microcode'/>:
+        proceed to <xref linkend='early-microcode'/>.
       </para>
-
-      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-        href="intel-ucode-kernel.xml"/>
-
     </sect3>
 
     <sect3 id="amd-microcode">
@@ -301,13 +298,8 @@
         If the value of the <quote>microcode</quote> field in
         <filename>/proc/cpuinfo</filename> is 0x10000c8 or greater, it
         indicates the BIOS has already applied the microcode update.
-        Otherwise, configure the kernel to support loading AMD microcode,
-        and then proceed to <xref linkend='early-microcode'/>:
+        Otherwise, proceed to <xref linkend='early-microcode'/>.
       </para>
-
-      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-        href="amd-ucode-kernel.xml"/>
-
     </sect3>
 
     <sect3 id="early-microcode">
@@ -421,9 +413,9 @@ cd initrd</userinput></screen>
         mobile) with early loading:
       </para>
 
-<screen><literal>[    0.000000] microcode: microcode updated early: 0x86 -> 0xac, date = 2023-02-27
-[    0.000000] Linux version 6.4.7 (root@stargazer) (gcc (GCC) 13.2.0, GNU ld (GNU Binutils) 2.41) #1 SMP PREEMPT_DYNAMIC Wed Aug  2 19:08:46 CST 2023
-[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-6.4.7 root=PARTUUID=<replaceable>&lt;CLASSIFIED&gt;</replaceable> ro
+<screen><literal>[    0.000000] microcode: microcode updated early: 0x86 -> 0xb4, date = 2023-09-07
+[    0.000000] Linux version 6.6.1 (xry111@stargazer) (gcc (GCC) 13.2.0, GNU ld (GNU Binutils) 2.41) #36 SMP PREEMPT_DYNAMIC Tue Nov 14 01:56:04 CST 2023
+[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-6.6.1 root=PARTUUID=<replaceable>&lt;CLASSIFIED&gt;</replaceable> ro
 [    0.424002] microcode: Microcode Update Driver: v2.2.</literal></screen>
 
 
@@ -652,7 +644,7 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
     <title>Sound Open Firmware</title>
 
     <para>
-      Some systems (especially budget laptops) utilizes a DSP shipped with
+      Some systems (especially budget laptops) utilize a DSP shipped with
       the CPU for connection with the audio codec.  The Sound Open Firmware
       must be loaded onto the DSP to make it functional.  These firmware
       files can be downloaded from
@@ -661,10 +653,10 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
       then as the &root; user install the firmware:
     </para>
 
-    <screen role="nodump"><userinput>install -vdm755 /usr/lib/firmware/intel       &amp;&amp;
-cp -av -T --no-preserve=ownership sof-v*      \
-   /usr/lib/firmware/intel/sof                &amp;&amp;
-cp -av -T --no-preserve=ownership sof-tplg-v* \
+    <screen role="nodump"><userinput>install -vdm755 /usr/lib/firmware/intel    &amp;&amp;
+cp -av -T --no-preserve=ownership sof      \
+   /usr/lib/firmware/intel/sof             &amp;&amp;
+cp -av -T --no-preserve=ownership sof-tplg \
    /usr/lib/firmware/intel/sof-tplg</userinput></screen>
 
     <para>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -75,12 +75,13 @@
       Install <application>NSPR</application> by running the following commands:
     </para>
 
-<screen><userinput>cd nspr                                                     &amp;&amp;
+<screen><userinput>cd nspr &amp;&amp;
+
 sed -ri '/^RELEASE/s/^/#/' pr/src/misc/Makefile.in &amp;&amp;
 sed -i 's#$(LIBRARY) ##'   config/rules.mk         &amp;&amp;
 
-./configure --prefix=/usr \
-            --with-mozilla \
+./configure --prefix=/usr   \
+            --with-mozilla  \
             --with-pthreads \
             $([ $(uname -m) = x86_64 ] &amp;&amp; echo --enable-64bit) &amp;&amp;
 make</userinput></screen>
@@ -125,8 +126,7 @@ make</userinput></screen>
     </para>
 
     <para>
-      <parameter>$([ $(uname -m) = x86_64 ] &amp;&amp; echo
-      --enable-64bit)</parameter>: The --enable-64bit parameter is
+      <parameter>--enable-64bit</parameter>: The --enable-64bit parameter is
       <emphasis>required</emphasis> on an x86_64 system to prevent
       <command>configure</command> failing with a claim that this is a system
       without pthread support. The [ $(uname -m) = x86_64 ] test ensures it has

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,10 +6,10 @@
 
   <!ENTITY pipewire-download-http "https://gitlab.freedesktop.org/pipewire/pipewire/-/archive/&pipewire-version;/pipewire-&pipewire-version;.tar.bz2">
   <!ENTITY pipewire-download-ftp  " ">
-  <!ENTITY pipewire-md5sum        "54434df181f7c5e5423eb772ed11fc5e">
+  <!ENTITY pipewire-md5sum        "4b154db5a7985463ab5d58161299aefe">
   <!ENTITY pipewire-size          "1.6 MB">
   <!ENTITY pipewire-buildsize     "67 MB (with tests)">
-  <!ENTITY pipewire-time          "0.5 SBU (with tests, both using parallelism=4)">
+  <!ENTITY pipewire-time          "0.6 SBU (with tests, both using parallelism=4)">
 ]>
 
 <sect1 id="pipewire" xreflabel="pipewire-&pipewire-version;">
@@ -96,14 +96,15 @@
       <xref linkend="opus"/>,
       <xref linkend="sdl2"/> (for some examples),
       <xref linkend="valgrind"/>,
+      <xref linkend="vulkan-loader"/>,
       <xref linkend="xorg7-lib"/>,
       <xref linkend="doxygen"/> and
       <xref linkend="graphviz"/> (for documentation),
       <ulink url="https://jackaudio.org/">JACK</ulink>,
       <ulink url="https://github.com/EHfive/ldacBT">ldacBT</ulink>,
       <ulink url="https://libcamera.org/">libcamera</ulink>,
-      <ulink url="https://github.com/hoene/libmysofa">libmysofa</ulink>,
-      <ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>, and
+      <ulink url="https://github.com/hoene/libmysofa">libmysofa</ulink>, and
+      <!--<ulink url="https://vulkan.lunarg.com/sdk/home/">Vulkan</ulink>, and-->
       <ulink url="https://sourceforge.net/projects/xmltoman/">xmltoman</ulink>
     </para>
 
@@ -156,7 +157,7 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dsession-managers=[]</parameter>: This switch
+      <parameter>-Dsession-managers="[]"</parameter>: This switch
       allows specifying the session managers to build as subprojects.
       We specify an empty list to prevent <command>meson</command> from
       downloading any external copy of the session managers. A Pipewire
@@ -183,6 +184,12 @@ ninja</userinput></screen>
       <option>-Dffmpeg=enabled</option>: This switch enables using ffmpeg for
       audio conversion as a SPA backend.
     </para>
+
+    <para>
+      <option>-Dvulkan=enabled</option>: This switch enables using Vulkan for
+      video rendering as a SPA backend.
+    </para>
+
   </sect2>
 
   <sect2 role="content">

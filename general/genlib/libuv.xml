@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,9 +6,9 @@
 
   <!ENTITY libuv-download-http "https://dist.libuv.org/dist/v&libuv-version;/libuv-v&libuv-version;.tar.gz">
   <!ENTITY libuv-download-ftp  " ">
-  <!ENTITY libuv-md5sum        "fa56dafe664d21f9568adebc428d2d64">
+  <!ENTITY libuv-md5sum        "968592dcd4e0f962720eb669a6352463">
   <!ENTITY libuv-size          "1.2 MB">
-  <!ENTITY libuv-buildsize     "14 MB (add 14 MB for tests)">
+  <!ENTITY libuv-buildsize     "14 MB (add 16 MB for tests)">
   <!ENTITY libuv-time          "less than 0.1 SBU (add 0.5 SBU for tests)">
 ]>
 
@@ -65,19 +65,19 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
-    <bridgehead renderas="sect3">libuv Dependencies</bridgehead>
 
+    <bridgehead renderas="sect3">libuv Dependencies</bridgehead>
+<!--
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="???"/>
     </para>
-
+-->
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="???"/>
+      <xref linkend="sphinx"/>
     </para>
--->
+
   </sect2>
 
   <sect2 role="installation">
@@ -112,22 +112,30 @@ make </userinput></screen>
 <screen><userinput>sh autogen.sh                              &amp;&amp;
 ./configure --prefix=/usr --disable-static &amp;&amp;
 make </userinput></screen>
-<!--
+
     <para>
-      If you want to run the tests, add -DBUILD_TESTING=true to
-      the cmake line above and after building run:
-      <command>make test</command>.
+      If you installed the optional <xref linkend="sphinx"/> python module,
+      create the man page:
     </para>
--->
+
+<screen remap="doc"><userinput>make man -C docs</userinput></screen>
+
     <para>
       If you want to run the tests, run: <command>make check</command> as
       a non-root user. <!-- the test suite refuses to run as root -->
     </para>
+
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+ 
+    <para>
+      If you built the man page, install it  as the &root; user:
+    </para>
+    
+<screen role="root" remap="doc"><userinput>install -Dm644 docs/build/man/libuv.1 /usr/share/man/man1</userinput></screen>
 
   </sect2>
 

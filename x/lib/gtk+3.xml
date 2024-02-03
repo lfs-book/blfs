@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,10 +6,10 @@
 
   <!ENTITY gtk3-download-http "&gnome-download-http;/gtk+/&gnome-minor-24;/gtk+-&gtk3-version;.tar.xz">
   <!ENTITY gtk3-download-ftp  " ">
-  <!ENTITY gtk3-md5sum        "7ed2f5914683ebd515da22f5784389f4">
-  <!ENTITY gtk3-size          "12 MB">
-  <!ENTITY gtk3-buildsize     "233 MB (add 4 MB for tests)">
-  <!ENTITY gtk3-time          "0.2 SBU (using parallelism=4, add 0.5 SBU for tests)">
+  <!ENTITY gtk3-md5sum        "2321e8158feac093b6ed82aac66dbbfd">
+  <!ENTITY gtk3-size          "13 MB">
+  <!ENTITY gtk3-buildsize     "238 MB (add 8 MB for tests)">
+  <!ENTITY gtk3-time          "0.8 SBU (using parallelism=4; add 0.2 SBU for tests)">
 ]>
 
 <sect1 id="gtk3" xreflabel="GTK+-&gtk3-version;">
@@ -79,8 +79,9 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="adwaita-icon-theme"/> (default for some gtk+3 settings
-      keys, also needed for tests),
+      <xref role='runtime' linkend="adwaita-icon-theme"/>
+        (at runtime; default for some gtk+3 settings keys and
+        also needed for one test),
       <xref linkend="docbook-xsl"/> (for generating manual pages),
       <xref linkend="hicolor-icon-theme"/> (needed for tests),
       <xref linkend="iso-codes"/>,
@@ -101,6 +102,7 @@
       <xref linkend="colord"/>,
       <xref linkend="cups"/>,
       <xref linkend="gtk-doc"/>,
+      <xref linkend="libcloudproviders"/>,
       <xref linkend="pyatspi2"/> (for tests),
       <xref linkend='tracker3'/>, and
       <ulink url="https://icl.utk.edu/papi/">PAPI</ulink>
@@ -135,6 +137,11 @@ ninja</userinput></screen>
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
+
+    <para>
+      One test named <filename>check-cursor-names</filename> is known
+      to fail if <xref linkend='adwaita-icon-theme'/> is not installed.
+    </para>
 
     <note>
       <para>
@@ -175,6 +182,12 @@ ninja</userinput></screen>
       It requires <xref linkend="tracker3"/>.
     </para>
 
+    <para>
+      <option>-Dcloudproviders=true</option>: Use this switch if you have
+      <xref linkend="libcloudproviders" role="nodep"/> installed and wish to
+      enable support for cloud providers in a file chooser window.
+    </para>
+
   </sect2>
 
   <sect2 role="configuration">
@@ -205,7 +218,7 @@ ninja</userinput></screen>
         If you have installed a <application>GTK+ 3</application> theme (e.g.
         the Adwaita theme built in <application>GTK+ 3</application>),
         an icon theme (such as <xref
-        linkend="oxygen-icons5"/>) and/or a font (<xref linkend="dejavu-fonts"/>),
+        linkend="oxygen-icons"/>) and/or a font (<xref linkend="dejavu-fonts"/>),
         you can set your preferences in <filename>~/.config/gtk-3.0/settings.ini</filename>,
         or the default system wide configuration file (as the <systemitem
         class="username">root</systemitem> user), in

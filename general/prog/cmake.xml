@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -6,10 +6,10 @@
 
   <!ENTITY cmake-download-http "https://cmake.org/files/v&cmake-major-version;/cmake-&cmake-version;.tar.gz">
   <!ENTITY cmake-download-ftp  " ">
-  <!ENTITY cmake-md5sum        "0f11cf15c7f2fa6234b9fc415c78029c">
-  <!ENTITY cmake-size          "10.4 MB">
-  <!ENTITY cmake-buildsize     "503 MB (add 1.2 GB for tests)">
-  <!ENTITY cmake-time          "2.7 SBU (add 3.9 SBU for tests, both using parallelism=4)">
+  <!ENTITY cmake-md5sum        "db659ed92a8fcc880f95b492bde2eb44">
+  <!ENTITY cmake-size          "11 MB">
+  <!ENTITY cmake-buildsize     "427 MB (add 1.2 GB for tests)">
+  <!ENTITY cmake-time          "2.2 SBU (add 3.9 SBU for tests, both using parallelism=4)">
 ]>
 
 <sect1 id="cmake" xreflabel="CMake-&cmake-version;">
@@ -97,7 +97,8 @@
       <xref linkend="gcc"/> (for gfortran),
       <xref linkend="git"/> (for use during tests),
       <xref linkend="mercurial"/> (for use during tests),
-      &qt5-deps; (for the Qt-based GUI),
+      <xref linkend="openjdk"/> (for use during tests),
+      &qt5-deps; or <xref linkend="qt6" role="nodep"/> (for the Qt-based GUI),
       <xref linkend="sphinx"/> (for building documents),
       <xref linkend="subversion"/> (for testing),
       <ulink url="https://github.com/google/cppdap/">cppdap</ulink>,
@@ -178,12 +179,10 @@ make</userinput></screen>
     </para>
 
     <para>
-      <parameter>--system-libs</parameter>: This switch forces the build system
-      to link against <application>Zlib</application>,
-      <application>Bzip2</application>, <application>cURL</application>,
-      <application>nghttp2</application>,
-      <application>Expat</application> and <application>libarchive</application>
-      installed on the system.
+      <parameter>--system-libs</parameter>: This switch forces the build
+      system to link against the system installed version for all needed
+      libraries but those explicitly specified via a
+      <option>--no-system-*</option> option.
     </para>
 
     <para>

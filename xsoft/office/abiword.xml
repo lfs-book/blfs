@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
@@ -8,13 +8,13 @@
   <!ENTITY AbiWord-docs-version "3.0.2">
 
   <!ENTITY AbiWord-download-http
-           "https://www.abisource.com/downloads/abiword/&AbiWord-version;/source/abiword-&AbiWord-version;.tar.gz">
+           "&sources-anduin-http;/abiword/abiword-&AbiWord-version;.tar.gz">
   <!ENTITY AbiWord-download-ftp  " ">
   <!ENTITY AbiWord-md5sum        "a8f218b711450e4ccae43a0522e0e806">
   <!ENTITY AbiWord-size          "11 MB">
 
   <!ENTITY AbiWordDocs-download-http
-           "https://www.abisource.com/downloads/abiword/&AbiWord-docs-version;/source/abiword-docs-&AbiWord-docs-version;.tar.gz">
+           "&sources-anduin-http;/abiword/abiword-docs-&AbiWord-docs-version;.tar.gz">
   <!ENTITY AbiWordDocs-md5sum        "c92c0e1e2081db20757231a53d80c338">
   <!ENTITY AbiWordDocs-size          "1.5 MB">
 
@@ -141,7 +141,7 @@
       <ulink url="https://www.abisource.com/projects/link-grammar/">
       Link Grammar Parser</ulink>,
       <ulink url="&gnome-download-http;/loudmouth">Loudmouth</ulink>,
-      <ulink url="https://sourceforge.net/projects/otslibrary/">OTS</ulink>, and
+      <ulink url="https://packages.ubuntu.com/focal/libots-dev">OTS</ulink>, and
       <ulink url="https://software.frodo.looijaard.name/psiconv/">Psiconv</ulink>
     </para>
 
@@ -162,13 +162,12 @@
   <sect2 role="installation">
     <title>Installation of AbiWord</title>
 
-<!--
     <para>
-      First, fix a build failure when using GCC-11:
+      First, fix a build failure when using libxml-2.12.x:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../abiword-&AbiWord-version;-gcc11_fixes-1.patch</userinput></screen>
--->
+<screen><userinput>sed -e '/libxml/a #include &lt;libxml/xmlmemory.h&gt;' \
+    -i src/af/util/xp/ut_stringbuf.cpp</userinput></screen>
 
     <para>
       Install <application>AbiWord</application> by running the following
