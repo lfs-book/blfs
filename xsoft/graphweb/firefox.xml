@@ -6,8 +6,8 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "9105bdf076d457ce5e0aa5628d5acc84">
-  <!ENTITY firefox-size          "492 MB">
+  <!ENTITY firefox-md5sum        "212e126b43e8fb72a7314f2c3256b79f">
+  <!ENTITY firefox-size          "485 MB">
 
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
@@ -39,7 +39,7 @@
       <application>Mozilla</application> codebase.
     </para>
 
-    &lfs120_checked;
+    &lfs121_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -191,17 +191,6 @@ tar: Exiting with failure status due to previous errors
   <sect2 role="installation">
     <title>Installation of Firefox</title>
 
-    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1859752
-         https://hg.mozilla.org/try/rev/d5f3b0c4f08a -->
-    <para>
-      If building with system ICU, adapt the line break mapping for ICU
-      74 or later:
-    </para>
-
-<screen><userinput>(for i in {43..47}; do
-   sed '/ZWJ/s/}/,CLASS_CHARACTER&amp;/' -i intl/lwbrk/LineBreaker.cpp || exit $?
- done)</userinput></screen>
-
     <para>
       The configuration of <application>Firefox</application> is accomplished
       by creating a <filename>mozconfig</filename> file containing the desired
@@ -313,6 +302,17 @@ unset MOZ_TELEMETRY_REPORTING
 
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir</literal>
 EOF</userinput></screen>
+
+    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1859752
+         https://hg.mozilla.org/try/rev/d5f3b0c4f08a -->
+    <para>
+      If building with system ICU, adapt the line break mapping for ICU
+      74 or later.  This construct adds five entries to a c++ array.
+    </para>
+
+<screen><userinput>for i in {43..47}; do
+   sed -i '/ZWJ/s/}/,CLASS_CHARACTER&amp;/' intl/lwbrk/LineBreaker.cpp 
+done</userinput></screen>
 
     <para>
       Compile <application>Firefox</application> by issuing the following
