@@ -15,9 +15,10 @@
 
   <!ENTITY iceauth-version                 "1.0.10">
   <!ENTITY iceauth-md5sum                  "30f898d71a7d8e817302970f1976198c">
-
+<!--
   <!ENTITY luit-version                    "1.1.1">
   <!ENTITY luit-md5sum                     "c4a3664e08e5a47c120ff9263ee2f20c">
+-->
 <!--
   <!ENTITY mkfontdir-version               "1.0.7">
   <!ENTITY mkfontdir-md5sum                "18c429148c96c2079edda922a2b67632">
@@ -205,7 +206,6 @@
 
 <screen><userinput>cat &gt; app-&xorg-version;.md5 &lt;&lt; "EOF"
 <literal>&iceauth-md5sum;  iceauth-&iceauth-version;.tar.xz
-&luit-md5sum;  luit-&luit-version;.tar.bz2
 &mkfontscale-md5sum;  mkfontscale-&mkfontscale-version;.tar.xz
 &sessreg-md5sum;  sessreg-&sessreg-version;.tar.xz
 &setxkbmap-md5sum;  setxkbmap-&setxkbmap-version;.tar.xz
@@ -279,12 +279,6 @@ do
   packagedir=${package%.tar.?z*}
   tar -xf $package
   pushd $packagedir
-     case $packagedir in
-       luit-[0-9]* )
-         sed -i -e "/D_XOPEN/s/5/6/" configure
-       ;;
-     esac
-
      ./configure $XORG_CONFIG
      make
      as_root make install
