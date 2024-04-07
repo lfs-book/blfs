@@ -6,9 +6,9 @@
 
   <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "123979dc044d747be56393dcb455454e">
-  <!ENTITY samba-size          "40 MB">
-  <!ENTITY samba-buildsize     "610 MB (add 64 MB for quicktest)">
+  <!ENTITY samba-md5sum        "3563da3ffc17f3f2b37572c15f37a0b4">
+  <!ENTITY samba-size          "41 MB">
+  <!ENTITY samba-buildsize     "615 MB (add 64 MB for quicktest)">
   <!ENTITY samba-time          "2.1 SBU (using parallelism=4; add 0.4 SBU for quicktest)">
 ]>
 
@@ -91,7 +91,8 @@
       <xref linkend="icu"/>,
       <xref linkend="libtasn1"/>,
       <xref linkend="libxslt"/> (for documentation),
-      <xref linkend="linux-pam"/>, and
+      <xref linkend="linux-pam"/>,
+      <xref linkend="mitkrb"/>, and
       <xref linkend="openldap"/>
     </para>
 
@@ -112,7 +113,6 @@
       <xref linkend="libunwind"/>,
       <xref linkend="lmdb"/>,
       <xref linkend="markdown"/>,
-      <xref linkend="mitkrb"/>,
       <xref linkend="nss"/>,
       <xref linkend="popt"/>,
       <xref linkend="talloc"/> (included),
@@ -181,6 +181,7 @@ PATH=$PWD/pyvenv/bin:$PATH                 \
     --enable-fhs                           \
     --without-ad-dc                        \
     --without-systemd                      \
+    --with-system-mitkrb5                  \
     --enable-selftest                      &amp;&amp;
 make</userinput></screen>
 
@@ -193,6 +194,7 @@ make</userinput></screen>
     --with-pammodulesdir=/usr/lib/security \
     --enable-fhs                           \
     --without-ad-dc                        \
+    --with-system-mitkrb5                  \
     --enable-selftest                      &amp;&amp;
 make</userinput></screen>
 
@@ -295,6 +297,13 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       information. Remove this switch if you've installed the Python modules
       needed for ADS support. Note that BLFS does not provide a samba bootscript
       or systemd unit for an Active Directory domain controller.
+    </para>
+
+    <para>
+      <parameter>--with-system-mitkrb5</parameter>: Enables
+      building with the system version of Kerberos. This
+      mitigates security vulnerabilties and reduces build time.
+      Remove this if you do not have <xref linkend="mitkrb"/> installed.
     </para>
 
     <para>
