@@ -4,15 +4,15 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY qt6-major "6.6">
+  <!ENTITY qt6-major "6.7">
   <!ENTITY qt6-url   "https://download.qt.io/archive/qt/&qt6-major;/&qt6-version;/single">
 
   <!ENTITY qt6-download-http "&qt6-url;/qt-everywhere-src-&qt6-version;.tar.xz">
   <!ENTITY qt6-download-ftp  " ">
-  <!ENTITY qt6-md5sum        "0e2c9dd87cbc6768da2bfc7f776c272f">
-  <!ENTITY qt6-size          "764 MB">
-  <!ENTITY qt6-buildsize     "33 GB (354 MB installed)">
-  <!ENTITY qt6-time          "16 SBU (using parallelism=8)">
+  <!ENTITY qt6-md5sum        "4468b457adb3a96294947e601fc877ca">
+  <!ENTITY qt6-size          "891 MB">
+  <!ENTITY qt6-buildsize     "35 GB (358 MB installed)">
+  <!ENTITY qt6-time          "17 SBU (using parallelism=8)">
 ]>
 
 <sect1 id="qt6" xreflabel="Qt-&qt6-version;">
@@ -224,7 +224,7 @@ ln -sfnv qt-&qt6-version; /opt/qt6</userinput></screen>
       <para>
         If <application>Qt6</application> is being reinstalled into the
         same directory as an existing instance, run the commands done by
-        <systemitem class="username">root</systemitem>, such as
+        &root;, such as
         <command>make install</command>, from a console or non-Qt6 based
         window manager. It overwrites <application>Qt6</application>
         libraries that should not be in use during the install process.
@@ -273,6 +273,12 @@ ln -sfnv qt-&qt6-version; /opt/qt6</userinput></screen>
     </note>
 
     <para>
+      First make a correction identified uostream:
+    </para>
+
+<screen><userinput>sed -i '/if __cpp_lib_span/s/if/ifdef/' qtbase/src/corelib/tools/qspan.h</userinput></screen>
+
+    <para>
       Install <application>Qt6</application> by running the following commands:
     </para>
 
@@ -313,11 +319,6 @@ ninja</userinput></screen>
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
-
-    <!-- Not sure this is correct for Qt6
-
-         EDITORS NOTE: This package uses INSTALL_ROOT= instead of DESTDIR= for
-         installing in a temporary directory. -->
 
     <para>
       Remove references to the build directory from installed library
