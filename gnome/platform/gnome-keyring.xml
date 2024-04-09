@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY gnome-keyring-download-http
-           "&gnome-download-http;/gnome-keyring/&gnome-42;/gnome-keyring-&gnome-keyring-version;.tar.xz">
+           "&gnome-download-http;/gnome-keyring/&gnome-46;/gnome-keyring-&gnome-keyring-version;.tar.xz">
   <!ENTITY gnome-keyring-download-ftp  " ">
-  <!ENTITY gnome-keyring-md5sum        "8728a6d344f29c545d9d31cb5c708f14">
+  <!ENTITY gnome-keyring-md5sum        "f0e5c53046aa337c1abdfee4368535c4">
   <!ENTITY gnome-keyring-size          "1.3 MB">
-  <!ENTITY gnome-keyring-buildsize     "116 MB">
-  <!ENTITY gnome-keyring-time          "0.2 SBU (Using parallelism=4; add 0.3 SBU for tests)">
+  <!ENTITY gnome-keyring-buildsize     "139 MB">
+  <!ENTITY gnome-keyring-time          "0.2 SBU (Using parallelism=4; add 0.2 SBU for tests)">
 ]>
 
 <sect1 id="gnome-keyring" xreflabel="gnome-keyring-&gnome-keyring-version;">
@@ -84,10 +84,10 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="https://github.com/linux-test-project/lcov">LCOV</ulink>,
-      <ulink url="https://people.redhat.com/sgrubb/libcap-ng/">libcap-ng</ulink>,
-      <xref linkend="gnupg2"/>, and
-      <xref linkend="valgrind"/>
+      <xref linkend="gnupg2"/>,
+      <xref linkend="valgrind"/>,
+      <ulink url="https://github.com/linux-test-project/lcov">LCOV</ulink>, and
+      <ulink url="https://people.redhat.com/sgrubb/libcap-ng/">libcap-ng</ulink>
     </para>
 
   </sect2>
@@ -102,8 +102,9 @@
 
 <screen><userinput>sed -i 's:"/desktop:"/org:' schema/*.xml &amp;&amp;
 
-./configure --prefix=/usr     \
-            --sysconfdir=/etc &amp;&amp;
+./configure --prefix=/usr      \
+            --sysconfdir=/etc  \
+            --enable-ssh-agent &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -125,6 +126,13 @@ make</userinput></screen>
     <para>
       <command>sed ... schema/*.xml</command>:  This command fixes a
       deprecated entry in the schema template.
+    </para>
+
+    <para>
+      <parameter>--enable-ssh-agent</parameter>: This switch enables the SSH
+      agent built in to gnome-keyring instead of the one in GCR. This is done
+      due to bugs in gcr which cause the agent to not work correctly.
+      <!--https://bugzilla.redhat.com/show_bug.cgi?id=2250704-->
     </para>
 
   </sect2>
