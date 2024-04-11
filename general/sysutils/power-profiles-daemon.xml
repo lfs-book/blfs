@@ -33,7 +33,9 @@
       The <application>Power-profiles-daemon</application> package provides a program 
       that allows modification of the system power/behavior state. This is used on
       many laptops and can be used by a Desktop Environment to activate power saving 
-      or performance CPU governors through dbus.
+      or performance CPU governors through dbus. On other systems, Power-profiles-daemon
+      can be used as a streamlined way to set the CPU governor in order to increase system
+      performance at the cost of energy usage.
     </para>
 
     &lfs121_checked;
@@ -156,7 +158,7 @@ ninja</userinput></screen>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
 
-    <para>
+    <para revision="sysv">
       Now, clean up an unneeded systemd unit installed into /tmp:
     </para>
 
@@ -222,6 +224,40 @@ ninja</userinput></screen>
       </para>
 
       <screen role="root"><userinput>systemctl enable power-profiles-daemon</userinput></screen>
+    </sect3>
+
+    <sect3>
+      <title>Select a Power Profile</title>
+
+      <para>
+        To list all supported power profiles, issue:
+      </para>
+
+      <screen role="nodump"><userinput>powerprofilesctl</userinput></screen>
+
+      <para>
+        To activate a power profile (for example
+        <replaceable>performance</replaceable>), issue:
+      </para>
+
+      <screen role="nodump"><userinput>powerprofilesctl set <replaceable>performance</replaceable></userinput></screen>
+
+      <para>
+        Some desktop environments (for example GNOME and KDE) also provide
+        a graphical interface to interact with
+        <command>power-profiles-daemon</command> and activate a power
+        profile.
+      </para>
+
+      <para>
+        The activated power profile is automatically stored in
+        <filename>/var/lib/power-profiles-daemon/state.ini</filename> and
+        <command>power-profiles-daemon</command> will read it out and
+        activate it again on the next boot if the
+        <phrase revision='sysv'>bootscript is
+        installed</phrase><phrase revision='systemd'>Systemd
+        unit is enabled</phrase> as above.
+      </para>
     </sect3>
 
   </sect2>
