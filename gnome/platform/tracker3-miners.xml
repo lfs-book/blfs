@@ -120,6 +120,22 @@
 
   </sect2>
 
+  <sect2 role="kernel" id="tracker3-miners-kernel">
+    <title>Kernel Configuration</title>
+
+    <para>
+      Enable the following options in the kernel configuration, then recompile
+      the kernel and reboot if necessary:
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="tracker3-miners-kernel.xml"/>
+
+    <indexterm zone="tracker3-miners tracker3-miners-kernel">
+      <primary sortas="d-traker-miners">tracker-miners</primary>
+    </indexterm>
+  </sect2>
+
   <sect2 role="installation">
     <title>Installation of Tracker-miners</title>
 
@@ -162,7 +178,6 @@ cd    build &amp;&amp;
 meson setup --prefix=/usr       \
             --buildtype=release \
             -Dman=false         \
-            -Dlandlock=disabled \
             ..                  &amp;&amp;
 ninja</userinput></screen>
 
@@ -173,7 +188,6 @@ meson setup --prefix=/usr                 \
             --buildtype=release           \
             -Dsystemd_user_services=false \
             -Dman=false                   \
-            -Dlandlock=disabled           \
             ..                            &amp;&amp;
 ninja</userinput></screen>
 
@@ -214,12 +228,6 @@ rm -rf ~/tracker-tests</userinput></screen>
       install the man pages.
     </para>
 
-    <para>
-      <parameter>-Dlandlock=disabled</parameter>: This switch disables the
-      Landlock file access sandbox due to it requiring additional kernel
-      configuration and packages such as selinux or AppArmor.
-    </para>
-
     <para revision="sysv">
       <parameter>-Dsystemd_user_services=false</parameter>: This switch prevents
       the build process from installing systemd units since they are useless
@@ -230,7 +238,18 @@ rm -rf ~/tracker-tests</userinput></screen>
       <option>-Dseccomp=false</option>: This option disables the seccomp system
       call filter. On some architectures, such as i686 and ARM, the functions
       that tracker-miners uses are not guarded properly, and tracker-miners
-      will get killed with a SIGSYS as a result.
+      will get killed with a SIGSYS as a result.  Note that disabling
+      seccomp might cause the system compromised more severely in case a
+      security vulnerability in tracker-miners or its dependencies is
+      exploited.
+    </para>
+
+    <para>
+      <option>-Dlandlock=disabled</option>: This switch disables the
+      Landlock file access sandbox.  Use it if you don't want to build the
+      kernel with Landlock support.  Note that disabling Landlock might
+      cause the system compromised more severely in case a security
+      vulnerability in tracker-miners or its dependencies is exploited.
     </para>
 
     <para>
