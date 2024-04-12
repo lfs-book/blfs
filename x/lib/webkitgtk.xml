@@ -6,10 +6,10 @@
 
   <!ENTITY webkitgtk-download-http "https://webkitgtk.org/releases/webkitgtk-&webkitgtk-version;.tar.xz">
   <!ENTITY webkitgtk-download-ftp  " ">
-  <!ENTITY webkitgtk-md5sum        "20fef6a9122fc46f66f2f8550d5f08c6">
-  <!ENTITY webkitgtk-size          "36 MB">
-  <!ENTITY webkitgtk-buildsize     "1.2 GB (195 MB installed, add 148 MB for GTK-4)">
-  <!ENTITY webkitgtk-time          "23 SBU (for GTK-3, using parallelism=8, add 22 SBU for GTK-4)">
+  <!ENTITY webkitgtk-md5sum        "b3a4504892162b30a774d3afde4707f7">
+  <!ENTITY webkitgtk-size          "35 MB">
+  <!ENTITY webkitgtk-buildsize     "1.2 GB (156 MB installed, add 151 MB for GTK-4)">
+  <!ENTITY webkitgtk-time          "25 SBU (for GTK-3, using parallelism=8, add 25 SBU for GTK-4)">
 
   <!ENTITY libbacktrace
     "<ulink url='https://github.com/ianlancetaylor/libbacktrace'>libbacktrace</ulink>">
@@ -116,6 +116,7 @@
       &gobject-introspection;,
       <xref linkend="hicolor-icon-theme"/>,
       <xref linkend="libavif"/>,
+      <xref linkend="libjxl"/>,
       <xref linkend="libseccomp"/>, and
       <xref linkend="xdg-dbus-proxy"/>
     </para>
@@ -128,8 +129,8 @@
       <xref linkend="woff2"/>,
       <ulink url="https://ccache.dev/">ccache</ulink>,
       <ulink url="https://sourceforge.net/projects/hunspell/files/Hyphen/">Hyphen</ulink>,
-      &libbacktrace;,
-      <ulink url="https://github.com/libjxl/libjxl">libjxl</ulink>, and
+      &libbacktrace;, and
+      <!--<ulink url="https://github.com/libjxl/libjxl">libjxl</ulink>, and-->
       <ulink url="https://gnome.pages.gitlab.gnome.org/libmanette/">libmanette</ulink>
     </para>
 
@@ -173,7 +174,6 @@ cmake -DCMAKE_BUILD_TYPE=Release  \
       -DENABLE_DOCUMENTATION=OFF  \
       -DUSE_WOFF2=OFF             \
       -DUSE_GTK4=OFF              \
-      -DUSE_JPEGXL=OFF            \
       -DENABLE_BUBBLEWRAP_SANDBOX=ON \
       -Wno-dev -G Ninja ..        &amp;&amp;
 ninja</userinput></screen>
@@ -193,7 +193,6 @@ cmake -DCMAKE_BUILD_TYPE=Release  \
       -DENABLE_DOCUMENTATION=OFF  \
       -DUSE_WOFF2=OFF             \
       -DUSE_GTK4=OFF              \
-      -DUSE_JPEGXL=OFF            \
       -DENABLE_JOURNALD_LOG=OFF   \
       -DENABLE_BUBBLEWRAP_SANDBOX=ON \
       -Wno-dev -G Ninja ..        &amp;&amp;
@@ -231,7 +230,6 @@ cmake -DCMAKE_BUILD_TYPE=Release  \
       -DENABLE_DOCUMENTATION=OFF  \
       -DUSE_WOFF2=OFF             \
       -DUSE_GTK4=ON               \
-      -DUSE_JPEGXL=OFF            \
       -DENABLE_BUBBLEWRAP_SANDBOX=ON \
       -Wno-dev -G Ninja ..        &amp;&amp;
 ninja</userinput></screen>
@@ -250,7 +248,6 @@ cmake -DCMAKE_BUILD_TYPE=Release  \
       -DENABLE_DOCUMENTATION=OFF  \
       -DUSE_WOFF2=OFF             \
       -DUSE_GTK4=ON               \
-      -DUSE_JPEGXL=OFF            \
       -DENABLE_JOURNALD_LOG=OFF   \
       -DENABLE_BUBBLEWRAP_SANDBOX=ON \
       -Wno-dev -G Ninja ..        &amp;&amp;
@@ -319,12 +316,13 @@ cp -rv ../Documentation/* /usr/share/gtk-doc/html</userinput></screen>
       compiling and installing the MiniBrowser.
     </para>
 
+<!--
     <para>
       <parameter>-DUSE_JPEGXL=OFF</parameter>: This switch turns off support
       for JPEG-XL images. Remove it if you have the optional package
       <ulink url="https://github.com/libjxl/libjxl">libjxl</ulink> installed.
     </para>
-
+-->
     <para>
       <parameter>-DENABLE_BUBBLEWRAP_SANDBOX=ON</parameter>: This switch
       enables the Bubblewrap sandbox, which helps mitigate the impact of most
@@ -362,6 +360,12 @@ cp -rv ../Documentation/* /usr/share/gtk-doc/html</userinput></screen>
       <option>-DUSE_WOFF2=ON</option>: Use this switch if the optional
       package <xref linkend="woff2"/> is installed. This adds additional
       support for fonts.
+    </para>
+
+    <para>
+      <option>-DUSE_JPEGXL=OFF</option>: Use this switch if the recommended
+      package <xref linkend="libjxl"/> is not installed. Note that you will not
+      have support for JPEG XL images if this option is passed.
     </para>
 
   </sect2>
