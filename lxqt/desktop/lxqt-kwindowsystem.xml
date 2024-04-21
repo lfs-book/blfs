@@ -4,19 +4,19 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY kwindowsystem-download-http "&kf5-download-http;/kwindowsystem-&kf5-version;.tar.xz">
+  <!ENTITY kwindowsystem-download-http "&kf6-download-http;/kwindowsystem-&kf6-version;.tar.xz">
   <!ENTITY kwindowsystem-download-ftp  " ">
-  <!ENTITY kwindowsystem-md5sum        "7ff6c4358016468807c4d8c9ab9e0f5e">
+  <!ENTITY kwindowsystem-md5sum        "0157d6b3717278454e4d4890d37537c7">
   <!ENTITY kwindowsystem-size          "2.3 MB">
-  <!ENTITY kwindowsystem-buildsize     "69 MB">
-  <!ENTITY kwindowsystem-time          "0.2 SBU">
+  <!ENTITY kwindowsystem-buildsize     "73 MB">
+  <!ENTITY kwindowsystem-time          "0.6 SBU">
 ]>
 
-<sect1 id="lxqt-kwindowsystem" xreflabel="kwindowsystem-&kf5-version; for lxqt">
+<sect1 id="lxqt-kwindowsystem" xreflabel="kwindowsystem-&kf6-version; for lxqt">
   <?dbhtml filename="lxqt-kwindowsystem.html"?>
 
 
-  <title>kwindowsystem-&kf5-version; for lxqt</title>
+  <title>kwindowsystem-&kf6-version; for lxqt</title>
 
   <indexterm zone="lxqt-kwindowsystem">
     <primary sortas="a-kwindowsystem">kwindowsystem</primary>
@@ -33,16 +33,16 @@
     </para>
 
     &lfs121_checked;
-<!--
+
     <important>
       <para>
-        This package is extracted from the KF5 set of packages.
-        If <xref linkend="kf5- frameworks"/> is built, do <emphasis
+        This package is extracted from the KF6 set of packages.
+        If <xref linkend="kf6-frameworks"/> is built, do <emphasis
         role="bold">NOT</emphasis> also build this package as presented
         here.
       </para>
     </important>
--->
+
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -82,8 +82,9 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="extra-cmake-modules"/>,
-      <xref linkend="xorg7-lib"/>, and
-      &qt5-deps;
+      <xref linkend="plasma-wayland-protocols"/>,
+      <xref linkend="qt6"/>, and
+      <xref linkend="xorg7-lib"/> 
     </para>
 
 <!--
@@ -101,15 +102,13 @@
       following commands:
     </para>
 
-<screen><userinput>mkdir -v build &amp;&amp;
-cd       build &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr        \
-      -DCMAKE_INSTALL_LIBEXECDIR=libexec \
-      -DKDE_INSTALL_USE_QT_SYS_PATHS=ON  \
-      -DCMAKE_BUILD_TYPE=Release         \
-      -DBUILD_TESTING=OFF                \
-      -Wno-dev ..                        &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      -D BUILD_TESTING=OFF         \
+      -W no-dev ..                 &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -123,7 +122,7 @@ make</userinput></screen>
 <screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
-
+<!--
   <sect2 role="commands">
     <title>Command Explanations</title>
 
@@ -141,7 +140,7 @@ make</userinput></screen>
     </para>
 
   </sect2>
-
+-->
   <sect2 role="content">
     <title>Contents</title>
 
@@ -158,9 +157,11 @@ make</userinput></screen>
           libKF5WindowSystem.so
         </seg>
         <seg>
-          /usr/lib/cmake/KF5WindowSystem,
-          /usr/include/KF5, and
-          /usr/lib/plugins/kf5
+          $QT6DIR/qml/org/kde,
+          $QT6DIR/plugins/kf6,
+          /usr/share/qlogging-categories6,
+          /usr/lib/cmake/KF5WindowSystem, and
+          /usr/include/KF6
         </seg>
       </seglistitem>
     </segmentedlist>
