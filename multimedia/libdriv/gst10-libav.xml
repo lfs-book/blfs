@@ -92,6 +92,23 @@
     <title>Installation of GStreamer Libav</title>
 
     <para>
+      Remove/Check for a series of deprecated API's by running the following
+      commands:
+    </para>
+
+<screen><userinput>sed -i '444a#if LIBAVUTIL_VERSION_MAJOR &lt; 59' ext/libav/gstavcfg.c &amp;&amp;
+sed -i '446a#endif' ext/libav/gstavcfg.c &amp;&amp;
+sed -i '/ID_R210/d' ext/libav/gstavviddec.c &amp;&amp;
+sed -i 's/ID_V410\ ||/ID_V410\ ||\ in_plugin->id\ ==\ AV_CODEC_ID_R210/' ext/libav/gstavviddec.c &amp;&amp;
+sed -i '/ID_R210/a#if\ LIBAVCODEC_VERSION_MAJOR\ \&lt;\ 61' ext/libav/gstavviddec.c &amp;&amp;
+sed -i '/ID_AYUV/a#endif' ext/libav/gstavviddec.c &amp;&amp;
+sed -i '/ID_R210/d' ext/libav/gstavvidenc.c &amp;&amp;
+sed -i 's/ID_V410\ ||/ID_V410\ ||\ in_plugin->id\ ==\ AV_CODEC_ID_R210/' ext/libav/gstavvidenc.c &amp;&amp;
+sed -i '/ID_R210/a#if\ LIBAVCODEC_VERSION_MAJOR\ \&lt;\ 61' ext/libav/gstavvidenc.c &amp;&amp;
+sed -i '/ID_AYUV/a#endif' ext/libav/gstavvidenc.c &amp;&amp;</userinput></screen>
+
+
+    <para>
       Install <application>GStreamer Libav</application> by running the following
       commands:
     </para>
