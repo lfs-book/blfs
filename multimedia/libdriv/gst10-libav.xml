@@ -105,7 +105,12 @@ sed -i '/ID_AYUV/a#endif' ext/libav/gstavviddec.c &amp;&amp;
 sed -i '/ID_R210/d' ext/libav/gstavvidenc.c &amp;&amp;
 sed -i 's/ID_V410\ ||/ID_V410\ ||\ in_plugin->id\ ==\ AV_CODEC_ID_R210/' ext/libav/gstavvidenc.c &amp;&amp;
 sed -i '/ID_R210/a#if\ LIBAVCODEC_VERSION_MAJOR\ \&lt;\ 61' ext/libav/gstavvidenc.c &amp;&amp;
-sed -i '/ID_AYUV/a#endif' ext/libav/gstavvidenc.c &amp;&amp;</userinput></screen>
+sed -i '/ID_AYUV/a#endif' ext/libav/gstavvidenc.c &amp;&amp;
+sed -i ext/libav/gstavdemux.c -e '1375,1430d' \
+            -e '2058d' \
+            -e '2105,2140d' \
+            -e '2217,2221d' &amp;&amp;
+sed -i '2122aif (!gst_element_register (plugin, type_name, rank, type)) {' ext/libav/gstavdemux.c</userinput></screen>
 
 
     <para>
