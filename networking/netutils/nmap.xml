@@ -6,10 +6,10 @@
 
   <!ENTITY nmap-download-http "https://nmap.org/dist/nmap-&nmap-version;.tar.bz2">
   <!ENTITY nmap-download-ftp  " ">
-  <!ENTITY nmap-md5sum        "4f65e08148d1eaac6b1a1482e7185e1d">
+  <!ENTITY nmap-md5sum        "b481d293e53b20278d5370458da9a950">
   <!ENTITY nmap-size          "11 MB">
-  <!ENTITY nmap-buildsize     "138 MB (add 17 MB for tests)">
-  <!ENTITY nmap-time          "0.3 SBU (Using parallelism=4; add 0.1 SBU for tests)">
+  <!ENTITY nmap-buildsize     "116 MB (add 38 MB for tests)">
+  <!ENTITY nmap-time          "0.4 SBU (Using parallelism=4; add 0.1 SBU for tests)">
 ]>
 
 <sect1 id="nmap" xreflabel="Nmap-&nmap-version;">
@@ -66,7 +66,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing='compact'>
       <listitem>
@@ -76,7 +76,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">Nmap Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -111,13 +111,11 @@
     <title>Installation of Nmap</title>
 
     <para>
-      If and only if the recommended dependency
-      <xref linkend='pcre2'/> is installed, apply a patch to allow building
-      this package with system <xref linkend='pcre2'/> instead of an
-      internal copy of the outdated PCRE1:
+      First, if it is not already installed, add a needed Python module.
+      As the &root; user:
     </para>
 
-    <screen><userinput>patch -Np1 -i ../nmap-&nmap-version;-pcre_2-1.patch</userinput></screen>
+<screen role="root"><userinput>pip3 install build</userinput></screen>
 
     <para>
       Install <application>Nmap</application> by running the following
@@ -148,17 +146,6 @@ make</userinput></screen>
 <screen role="root"><userinput>make install</userinput></screen>
 
   </sect2>
-
-<!-- nmap-7.90: everything seems ok without this switch
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-    <para>
-      <parameter>- -with-liblua=included</parameter>: This switch is
-      required to fix compilation with <application>lua</application> 5.4.
-    </para>
-
-  </sect2>
--->
 
   <sect2 role="content">
     <title>Contents</title>
