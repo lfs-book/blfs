@@ -6,27 +6,27 @@
 
   <!ENTITY mlt-download-http "https://github.com/mltframework/mlt/releases/download/v&mlt-version;/mlt-&mlt-version;.tar.gz">
   <!ENTITY mlt-download-ftp  " ">
-  <!ENTITY mlt-md5sum        "9f747ae1b7388937be6328b4c234431b">
+  <!ENTITY mlt-md5sum        "08b3604ad071a13fd172f7a18abd610b">
   <!ENTITY mlt-size          "1.6 MB">
-  <!ENTITY mlt-buildsize     "30 MB">
-  <!ENTITY mlt-time          "0.1 SBU (Using parallelism=4)">
+  <!ENTITY mlt-buildsize     "28 MB">
+  <!ENTITY mlt-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="mlt" xreflabel="mlt-&mlt-version;">
   <?dbhtml filename="mlt.html"?>
 
 
-  <title>MLT-&mlt-version;</title>
+  <title>mlt-&mlt-version;</title>
 
   <indexterm zone="mlt">
-    <primary sortas="a-mlt">MLT</primary>
+    <primary sortas="a-mlt">mlt</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to MLT</title>
+    <title>Introduction to mlt</title>
 
     <para>
-      <application>MLT</application> package is the Media Lovin Toolkit.
+      The <application>mlt</application> package is the Media Lovin Toolkit.
       It is an open source multimedia framework, designed and developed for
       television broadcasting. It provides a toolkit for broadcasters, video
       editors, media players, transcoders, web streamers and many more types of
@@ -69,12 +69,12 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">MLT Dependencies</bridgehead>
+    <bridgehead renderas="sect3">mlt Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para>
       <xref linkend='frei0r'/> and
-      &qt5-deps;
+      <xref linkend='qt6'/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -83,6 +83,7 @@
       <xref linkend='fftw'/>,
       <xref linkend="libexif"/>,
       <xref linkend="sdl2"/>,
+      &qt5-deps;,
       <ulink url="https://jackaudio.org">JACK</ulink>,
       <ulink url="https://www.ipswitch.com/moveit/">MOVEit</ulink>,
       <ulink url="https://sox.sourceforge.net/">SoX</ulink>, and
@@ -94,19 +95,20 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of MLT</title>
+    <title>Installation of mlt</title>
 
     <para>
-      Install <application>MLT</application> by running the following commands:
+      Install <application>mlt</application> by running the following commands:
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr \
-      -DCMAKE_BUILD_TYPE=Release  \
-      -Wno-dev .. &amp;&amp;
-
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      -D MOD_QT=OFF                \
+      -D MOD_QT6=ON                \
+      -W no-dev .. &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -146,9 +148,6 @@ make</userinput></screen>
              libmlt++-7.so, and
              over twenty plugins</seg>
         <seg>/usr/include/mlt-7,
-          <!-- Now in /usr/include/mlt-7, it seems
-             /usr/include/melt-7/mlt++,
-             /usr/include/melt-7/framework,-->
              /usr/lib/mlt-7,
              /usr/lib/cmake/Mlt7, and
              /usr/share/mlt-7
@@ -165,7 +164,7 @@ make</userinput></screen>
         <term><command>melt</command></term>
         <listitem>
           <para>
-            is a test tool for MLT
+            is a test tool for mlt
           </para>
           <indexterm zone="mlt melt">
             <primary sortas="b-melt">melt</primary>
