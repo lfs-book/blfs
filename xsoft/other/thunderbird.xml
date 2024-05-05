@@ -283,6 +283,13 @@ sed '/mInputImageMap/s/uint32_t/uint64_t/' \
     -i dom/media/webrtc/libwebrtcglue/WebrtcGmpVideoCodec.h</userinput></screen>
 
     <para>
+      Remove several lines of Rust code only useful for ARM and failing to
+      compile with Rustc-1.78.0 or newer:
+    </para>
+
+    <screen><userinput>sed '/cfg_attr/,/)]/d' -i gfx/qcms/src/lib.rs</userinput></screen>
+
+    <para>
       Now invoke the Python <command>mach</command> script to compile
       <application>Thunderbird</application>:
     </para>
