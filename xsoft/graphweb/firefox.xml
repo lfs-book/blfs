@@ -267,8 +267,10 @@ ac_add_options --disable-updater
 # increase the build time, for no obvious benefit.
 ac_add_options --disable-tests
 
-# This enables SIMD optimization in the shipped encoding_rs crate.
-ac_add_options --enable-rust-simd
+# The SIMD code relies on the unmaintained packed_simd crate which
+# fails to build with Rustc >= 1.78.0.  We may re-enable it once
+# Mozilla port the code to use std::simd and std::simd is stablized.
+ac_add_options --disable-rust-simd
 
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
