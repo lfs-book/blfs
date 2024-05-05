@@ -68,6 +68,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+         Required patch:
+         <ulink url="&patch-root;/colord-&colord-version;-upstream_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Colord Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -106,6 +116,14 @@
 
   <sect2 role="installation">
     <title>Installation of Colord</title>
+
+    <para>
+      First, fix a misuse of sqlite API causing a test failure and potential
+      runtime crash<phrase revision='systemd'> and an over-strict systemd
+      hardening setting causing the systemd service fail to start</phrase>:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../colord-&colord-version;-upstream_fixes-1.patch</userinput></screen>
 
     <para>
       There should be a dedicated user and group to take control of the colord
