@@ -98,6 +98,18 @@
 <screen><userinput>sed -e 's/set_from_init_file/texinfo_&amp;/' \
     -i Doc/Makefile.in</userinput></screen>
 
+    <!-- https://github.com/zsh-users/zsh/commit/4c89849c9817
+         https://github.com/zsh-users/zsh/commit/ab4d62eb975a -->
+    <para>
+      Some programs shipped in the building system for detecting system
+      features use pre-C99 syntax rejected by GCC-14.1 or later.  Fix them
+      up or Zsh would be wrongly configured and fail to build:
+    </para>
+
+<screen><userinput>sed -i -e 's/^main/int &amp;/' -e 's/exit(/return(/' aczsh.m4 configure.ac &amp;&amp;
+sed -i 's/test = /&amp;(char**)/'                    configure.ac          &amp;&amp;
+autoconf</userinput></screen>
+
     <para>
       The documentation files contain references to zsh configuration
       files in <filename class='directory'>/etc</filename>, but we'll
