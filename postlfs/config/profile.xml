@@ -171,8 +171,8 @@ export HISTSIZE=1000
 export HISTIGNORE="&amp;:[bf]g:exit"
 
 # Set some defaults for graphical systems
-export XDG_DATA_DIRS=${XDG_DATA_DIRS:-/usr/share/}
-export XDG_CONFIG_DIRS=${XDG_CONFIG_DIRS:-/etc/xdg/}
+export XDG_DATA_DIRS=${XDG_DATA_DIRS:-/usr/share}
+export XDG_CONFIG_DIRS=${XDG_CONFIG_DIRS:-/etc/xdg}
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/tmp/xdg-$USER}
 
 # Set up a red prompt for root and a green one for users.
@@ -344,9 +344,25 @@ if [ -d /usr/local/share ]; then
 fi
 
 # Set some defaults before other applications add to these paths.
-pathappend /usr/share/man  MANPATH
 pathappend /usr/share/info INFOPATH</literal>
 EOF</userinput></screen>
+
+      <note>
+        <para>
+          The <command>man</command> program automatically deduce the search
+          path for man pages by examining the content of the
+          <envar>PATH</envar> variable, see
+          <ulink role='man' url='&man;manpath.5'>manpath(5)</ulink> for
+          details.  Setting the <envar>MANPATH</envar> variable may override
+          the automatic deduction, so the BLFS editors do not recommend to
+          set it.  If you must set it for any reason, it's better to start
+          its value with a colon (<literal>:</literal>), for example
+          <command>MANPATH=:/opt/somepkg/share/man:/opt/otherpkg/share/man</command>
+          so the paths listed in the <envar>MANPATH</envar> variable will
+          be appended to the automatically deduced value instead of
+          overriding it.
+        </para>
+      </note>
 
     </sect3>
 

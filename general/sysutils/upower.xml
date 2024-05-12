@@ -6,10 +6,10 @@
 
   <!ENTITY upower-download-http "https://gitlab.freedesktop.org/upower/upower/-/archive/v&upower-version;/upower-v&upower-version;.tar.bz2">
   <!ENTITY upower-download-ftp  " ">
-  <!ENTITY upower-md5sum        "bfd6e3275e61d7e097b53eb2b216fffa">
-  <!ENTITY upower-size          "136 KB">
-  <!ENTITY upower-buildsize     "6.5 MB (add 1.1 MB for tests)">
-  <!ENTITY upower-time          "less than 0.1 SBU (using parallelism=4, add 0.6 SBU for tests)">
+  <!ENTITY upower-md5sum        "2399845217a9c6e4510f66033fcd7cf6">
+  <!ENTITY upower-size          "140 KB">
+  <!ENTITY upower-buildsize     "5.5 MB (add 2.6 MB for tests)">
+  <!ENTITY upower-time          "less than 0.1 SBU (add 0.6 SBU for tests)">
 ]>
 
 <sect1 id="upower" xreflabel="UPower-&upower-version;">
@@ -78,7 +78,7 @@
 
     <bridgehead renderas="sect4">Optional (Required if building GNOME)</bridgehead>
     <para role="optional">
-      <xref linkend="gobject-introspection"/>
+      &gobject-introspection;
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -115,12 +115,6 @@
 
   <sect2 role="installation">
     <title>Installation of UPower</title>
-
-    <para>
-      First, remove an unneeded dependency from a test:
-    </para>
-
-<screen><userinput>sed '/parse_version/d' -i src/linux/integration-test.py</userinput></screen>
 
     <para>
       Install <application>UPower</application> by running the following
@@ -168,16 +162,17 @@ ninja</userinput></screen>
 
          test_bluetooth_le_device: upstream MR !207  -xry111 -->
 
+    <!-- On my system all 68 tests passed for v1.90.4.  
+         Did not check on a 32-bit system. - bdubbs -->
+
     <para>
-      To test the results, issue: <command>LC_ALL=C ninja test</command>. Some
-      checks may not pass due to missing files. The test suite should be run
-      from a local GUI session started with dbus-launch. On 32-bit machines,
-      one test will fail due to rounding errors:
-      <filename>Tests.test_battery_energy_charge_mixed</filename>. On some
-      systems, two tests relating to the headphone hotplug feature are known
-      to fail. Those can be safely ignored since the functionality still works.
-      The test named <filename>Tests.test_bluetooth_le_device</filename>
-      is known to fail with dbusmock-0.30.1 or later.
+      To test the results, issue: <command>LC_ALL=C ninja test</command>.  The
+      test suite should be run from a local GUI session started with
+      dbus-launch. On 32-bit machines, one test will fail due to rounding
+      errors: <filename>Tests.test_battery_energy_charge_mixed</filename>. On
+      some systems, two tests relating to the headphone hotplug feature are
+      known to fail. Those can be safely ignored since the functionality still
+      works.
     </para>
 
     <para>

@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY at-spi2-core-download-http
-           "&gnome-download-http;/at-spi2-core/2.50/at-spi2-core-&at-spi2-core-version;.tar.xz">
+           "&gnome-download-http;/at-spi2-core/2.52/at-spi2-core-&at-spi2-core-version;.tar.xz">
   <!ENTITY at-spi2-core-download-ftp  " ">
-  <!ENTITY at-spi2-core-md5sum        "14a15f1087292f18a1ab02c2bdd0ce53">
-  <!ENTITY at-spi2-core-size          "556 KB">
-  <!ENTITY at-spi2-core-buildsize     "24 MB (with tests)">
+  <!ENTITY at-spi2-core-md5sum        "e6591545b2bf204fe9a58f777bd0b78a">
+  <!ENTITY at-spi2-core-size          "564 KB">
+  <!ENTITY at-spi2-core-buildsize     "15 MB (with tests)">
   <!ENTITY at-spi2-core-time          "0.2 SBU (with tests)">
 ]>
 
@@ -75,16 +75,11 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="dbus"/>,
-      <xref linkend="glib2"/>,
+      <xref linkend="glib2"/> (GObject Introspection required for GNOME),
       <!-- Reports "Cannot get the default GSettingsSchemaSource" on
            startup w/o it. -->
       <xref role="runtime" linkend="gsettings-desktop-schemas"/> (Runtime),
       and <xref linkend="xorg7-lib"/>
-    </para>
-
-    <bridgehead renderas="sect4">Optional (Required if building GNOME)</bridgehead>
-    <para role="optional">
-      <xref linkend="gobject-introspection"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -118,11 +113,10 @@ meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      The test suite also requires the glib schemas of the package to be
-      installed already. To test the results, install the package first,
+      The test suite requires the glib schemas of the package to be
+      installed already. The tests also need to run in a graphical
+      environment.  To test the results, install the package first,
       then issue: <command>dbus-run-session ninja test</command>.
-      One test, <filename>atk-test</filename>, is known to timeout on some
-      systems.
     </para>
 
     <para>

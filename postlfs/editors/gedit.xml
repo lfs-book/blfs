@@ -4,17 +4,30 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gedit-download-http "&gnome-download-http;/gedit/46/gedit-&gedit-version;.tar.xz">
+  <!ENTITY gedit-download-http "&gnome-download-http;/gedit/47/gedit-&gedit-version;.tar.xz">
   <!ENTITY gedit-download-ftp  " ">
-  <!ENTITY gedit-md5sum        "01327f0d35778d8f3a914fffb69e8cd6">
-  <!ENTITY gedit-size          "2.6 MB">
+  <!ENTITY gedit-md5sum        "88aa416009439007815a3c01ce45e4fe">
+  <!ENTITY gedit-size          "2.7 MB">
   <!ENTITY gedit-buildsize     "66 MB (with tests)">
   <!ENTITY gedit-time          "0.2 SBU (using parallelism=4; with tests)">
+
+  <!ENTITY libgedit-tepl-download-http "https://github.com/gedit-technology/libgedit-tepl/releases/download/&libgedit-tepl-version;/libgedit-tepl-&libgedit-tepl-version;.tar.xz">
+  <!ENTITY libgedit-tepl-download-ftp  " ">
+  <!ENTITY libgedit-tepl-md5sum        "0bc684817b93abbcba290094bc94abdb">
+  <!ENTITY libgedit-tepl-size          "168 KB">
+  <!ENTITY libgedit-tepl-buildsize     "10 MB (with tests)">
+  <!ENTITY libgedit-tepl-time          "0.3 SBU (with tests)">
+
+  <!ENTITY libgedit-gfls-download-http "https://github.com/gedit-technology/libgedit-gfls/releases/download/0.1.0/libgedit-gfls-0.1.0.tar.xz">
+  <!ENTITY libgedit-gfls-download-ftp  " ">
+  <!ENTITY libgedit-gfls-md5sum        "fa465c84be20de668b00deb2723334f3">
+  <!ENTITY libgedit-gfls-size          "20 KB">
+  <!ENTITY libgedit-gfls-buildsize     "1.0 MB (with tests)">
+  <!ENTITY libgedit-gfls-time          "less than 0.1 SBU (with tests)">
 ]>
 
 <sect1 id="gedit" xreflabel="Gedit-&gedit-version;">
   <?dbhtml filename="gedit.html"?>
-
 
   <title>Gedit-&gedit-version;</title>
 
@@ -66,16 +79,81 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&libgedit-tepl-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&libgedit-tepl-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &libgedit-tepl-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &libgedit-tepl-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &libgedit-tepl-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &libgedit-tepl-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&libgedit-gfls-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&libgedit-gfls-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &libgedit-gfls-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &libgedit-gfls-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &libgedit-gfls-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &libgedit-gfls-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Gedit Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <!--<xref linkend="git"/>, unneeded -->
       <xref linkend="gsettings-desktop-schemas"/>,
-      <xref linkend="itstool"/>,
-      <xref linkend="libpeas"/>,
-      <xref linkend="libgedit"/>, and
-      <xref linkend="tepl"/>
+      <xref linkend="itstool"/>, and
+      <xref linkend="libpeas"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -83,8 +161,7 @@
       <xref linkend="gspell"/>,
       <xref role="runtime" linkend="gvfs"/> (runtime),
       <xref linkend="iso-codes"/>, and
-      <xref linkend="pygobject3"/>
-      (<application>Python</application> 3 module)
+      <xref linkend="pygobject3"/> (<application>Python3</application> module)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -99,17 +176,62 @@
   <sect2 role="installation">
     <title>Installation of Gedit</title>
 
-<!-- Not needed in 46.2
     <para>
-      First change the <filename>meson.build</filename> script so that
-      it can accept a <option>release</option> build.
+      First, build the gfls library:
     </para>
 
-<screen><userinput>sed -i s/plain/release/ meson.build</userinput></screen>
--->
+<screen><userinput>tar -xf ../libgedit-gfls-&libgedit-gfls-version;.tar.xz &amp;&amp;
+pushd libgedit-gfls-&libgedit-gfls-version;             &amp;&amp;
+
+mkdir gfls-build &amp;&amp;
+cd    gfls-build &amp;&amp;
+
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -D gtk_doc=false    \
+            ..                  &amp;&amp;
+ninja</userinput></screen>
 
     <para>
-      Install <application>Gedit</application> by running the following
+      To test the results, run: <command>ninja test</command>.
+    </para>
+
+    <para>
+      Now, as the &root; user:
+    </para>
+
+<screen role="root"><userinput>ninja install &amp;&amp;
+popd</userinput></screen>
+
+    <para>
+      Second, build the tepl library:
+    </para>
+
+<screen><userinput>tar -xf ../libgedit-tepl-&libgedit-tepl-version;.tar.xz &amp;&amp;
+pushd libgedit-tepl-&libgedit-tepl-version;             &amp;&amp;
+
+mkdir tepl-build &amp;&amp;
+cd    tepl-build &amp;&amp;
+
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -D gtk_doc=false    \
+            ..                  &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      To test the results, run: <command>ninja test</command>.
+    </para>
+
+    <para>
+      Now, as the &root; user:
+    </para>
+
+<screen role="root"><userinput>ninja install &amp;&amp;
+popd</userinput></screen>
+
+    <para>
+      Finally, install <application>Gedit</application> by running the following
       commands:
     </para>
 
@@ -118,7 +240,7 @@ cd    gedit-build &amp;&amp;
 
 meson setup --prefix=/usr       \
             --buildtype=release \
-            -Dgtk_doc=false     \
+            -D gtk_doc=false    \
             .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -127,7 +249,7 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
@@ -139,10 +261,7 @@ ninja</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-<!--
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/meson-buildtype-release.xml"/>
--->
+
     <para>
       <parameter>-Dgtk_doc=false</parameter>: This switch disables
       generating the API documentation. Omit this switch if you have
@@ -165,10 +284,14 @@ ninja</userinput></screen>
           gedit
         </seg>
         <seg>
+          libgedit-gfls-1.so.
+          libgedit-tepl-6.so. and
           libgedit-46.so
         </seg>
         <seg>
-          /usr/include/gedit-46 and
+          /usr/include/libgedit-gfls-1,
+          /usr/include/libgedit-tepl-6,
+          /usr/include/gedit-46, and
           /usr/{lib,share,share/help/*}/gedit
         </seg>
       </seglistitem>

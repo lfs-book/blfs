@@ -6,8 +6,8 @@
 
   <!ENTITY pango-download-http "&gnome-download-http;/pango/&pango-minor;/pango-&pango-version;.tar.xz">
   <!ENTITY pango-download-ftp  " ">
-  <!ENTITY pango-md5sum        "dad79982a79badc27901d90400a32324">
-  <!ENTITY pango-size          "1.9 MB">
+  <!ENTITY pango-md5sum        "ed3c57bdaff980ddc4c840919ce512ac">
+  <!ENTITY pango-size          "1.8 MB">
   <!ENTITY pango-buildsize     "28 MB (with tests)">
   <!ENTITY pango-time          "0.1 SBU (Using parallelism=4; with tests)">
 ]>
@@ -76,14 +76,12 @@
       <xref linkend="fontconfig"/> (must be built with
        <xref linkend="freetype2"/> using <xref linkend="harfbuzz"/>),
       <xref linkend="fribidi"/>, and
-      <xref linkend="glib2"/>
-
+      <xref linkend="glib2"/> (GObject Introspection required for GNOME)
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="cairo"/>,
-      <xref linkend="gobject-introspection"/> (Required if building GNOME), and
+      <xref linkend="cairo"/> (built after <xref linkend="harfbuzz"/>) and
       <xref linkend="xorg7-lib"/>
     </para>
 
@@ -127,10 +125,14 @@ meson configure -Dgtk_doc=true                                   &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      To test the results, issue: <command>ninja test</command>. One test,
+      To test the results, issue: <command>ninja test</command>.
+      One test (test-layout) is known to fail on i686 systems for
+      unknown reason.
+      <!-- One test,
       <filename>test-font</filename> is known to fail.  Some tests may
       fail if no Opentype or Truetype fonts are installed in
       <filename class='directory'>/usr/share/fonts</filename>.
+      -->
       <!--<filename>test-itemize</filename>, are are known to fail. if
       <xref linkend="cantarell-fonts"/> are not installed.-->
       <!-- the other problematic tests get skipped now -->
@@ -161,7 +163,7 @@ install -vm 644 ../utils/pango-view.1.in /usr/share/man/man1/pango-view.1</useri
 
     <para>
       <option>-Dintrospection=disabled</option>: Use this switch if you do not
-      want to use <xref linkend="gobject-introspection"/>.
+      want to use GObject Introspection.
     </para>
 
     <!-- gi-docgen can get installed without this, if deps exist -->

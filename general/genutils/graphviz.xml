@@ -6,10 +6,10 @@
 
   <!ENTITY graphviz-download-http "https://gitlab.com/graphviz/graphviz/-/archive/&graphviz-version;/graphviz-&graphviz-version;.tar.bz2">
   <!ENTITY graphviz-download-ftp  " ">
-  <!ENTITY graphviz-md5sum        "5d343d0ba08dc11624d3961af2b4755c">
+  <!ENTITY graphviz-md5sum        "cbc948bb249ff4a26cd3f0ef35938a98">
   <!ENTITY graphviz-size          "26 MB">
-  <!ENTITY graphviz-buildsize     "220 MB">
-  <!ENTITY graphviz-time          "0.8 SBU (using parallelism=4)">
+  <!ENTITY graphviz-buildsize     "203 MB">
+  <!ENTITY graphviz-time          "0.6 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="graphviz" xreflabel="Graphviz-&graphviz-version;">
@@ -179,6 +179,15 @@
 
   <sect2 role="installation">
     <title>Installation of Graphviz</title>
+
+    <!-- https://gitlab.com/graphviz/graphviz/-/merge_requests/3739 -->
+    <para>
+      Remove a duplicated declaration causing some <xref linkend='vala'/>
+      tests to fail:
+    </para>
+
+    <screen><userinput>awk -i inplace '/aghtmlstr/ &amp;&amp; ++f == 2 {getline} 1' \
+    lib/cgraph/cgraph.h</userinput></screen>
 
     <para>
       Install <application>Graphviz</application> by running the following

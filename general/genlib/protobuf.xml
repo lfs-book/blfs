@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY protobuf-download-http "https://github.com/protocolbuffers/protobuf/releases/download/v&protobuf-version;/protobuf-&protobuf-version;.tar.gz">
+  <!ENTITY protobuf-md5sum        "6ad6edec05fd08477a442db77dbebf98">
+  <!ENTITY protobuf-size          "5.7 MB">
+  <!ENTITY protobuf-buildsize     "89 MB">
+  <!ENTITY protobuf-time          "1.3 SBU (with parallelism=4)">
+]>
+
+<sect1 id="protobuf" xreflabel="Protobuf-&protobuf-version;">
+  <?dbhtml filename="protobuf.html"?>
+
+  <title>Protobuf-&protobuf-version;</title>
+
+  <indexterm zone="protobuf">
+    <primary sortas="a-protobuf">Protobuf</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to Protobuf</title>
+
+    <para>
+      The <application>Protobuf</application> package contains utilities and
+      libraries for using data in Google's data interchange format.
+    </para>
+
+    &lfs121_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&protobuf-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &protobuf-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &protobuf-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &protobuf-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &protobuf-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Protobuf Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="abseil-cpp"/> and
+      <xref linkend="cmake"/>
+    </para>
+    
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <ulink url="https://github.com/google/googletest">gtest (for tests)</ulink>
+    </para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of Protobuf</title>
+
+    <para>
+      Install <application>Protobuf</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr      \
+      -DCMAKE_BUILD_TYPE=Release       \
+      -Dprotobuf_BUILD_TESTS=OFF       \
+      -Dprotobuf_ABSL_PROVIDER=package \
+      -Dprotobuf_BUILD_SHARED_LIBS=ON  \
+      -Dutf8_range_ENABLE_INSTALL=OFF  \
+      -G Ninja ..                      &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      This package does come with a test suite, but it requires
+      <ulink url="https://github.com/google/googletest">gtest</ulink>, which
+      is not part of BLFS.
+    </para>
+
+    <para>
+      Now, as the &root; user:
+    </para>
+
+<screen role="root"><userinput>sed 's/utf8_range//' -i *.pc &amp;&amp;
+ninja install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <command>sed 's/utf8_range//' -i *.pc</command>: This command removes a
+      leftover reference to libutf8_range from the pkg-config files installed
+      by this package.
+    </para>
+
+    <para>
+      <parameter>-Dprotobuf_BUILD_TESTS=OFF</parameter>: This parameter prevents
+      the tests from being built because
+      <ulink url="https://github.com/google/googletest">gtest</ulink> is not
+      part of BLFS.
+    </para>
+
+    <para>
+      <parameter>-Dprotobuf_ABSL_PROVIDER=package</parameter>: This parameter
+      allows the build system to use the system-installed copy of
+      <xref linkend="abseil-cpp" role="nodep"/>.
+    </para>
+
+    <para>
+      <parameter>-Dprotobuf_BUILD_SHARED_LIBS=ON</parameter>: This parameter
+      enables building shared versions of the libraries provided by this package
+      instead of static versions.
+    </para>
+
+    <para>
+      <parameter>-Dutf8_range_ENABLE_INSTALL=OFF</parameter>: This parameter
+      disables installing the utf8_range static library.  The functions
+      provided by this library and used by protobuf is already embedded into
+      <filename class='libraryfile'>libprotobuf.so</filename>, so installing
+      a full copy of the static library is just wasting the disk space.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          protoc-26.1.0 and protoc (a symlink to protoc-26.1.0)
+        </seg>
+        <seg>
+          libprotobuf.so,
+          libprotobuf-lite.so, and
+          libprotoc.so
+        </seg>
+        <seg>
+          /usr/include/google,
+          /usr/include/java,
+          /usr/include/upb_generator, and
+          /usr/lib/cmake/protobuf
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="protoc">
+        <term><command>protoc</command></term>
+        <listitem>
+          <para>
+            parses protocol buffer files and generates output for several
+            programming languages and formats
+          </para>
+          <indexterm zone="protobuf protoc">
+            <primary sortas="b-protoc">protoc</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libprotobuf">
+        <term><filename class="libraryfile">libprotobuf.so</filename></term>
+        <listitem>
+          <para>
+            contains functions for utilizing data in Google's data interchange
+            format
+          </para>
+          <indexterm zone="protobuf libprotobuf">
+            <primary sortas="c-libprotobuf">libprotobuf.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libprotobuf-lite">
+        <term><filename class="libraryfile">libprotobuf-lite.so</filename></term>
+        <listitem>
+          <para>
+            contains a simpler version of the functions for utilizing data in
+            Google's data interchange format
+          </para>
+          <indexterm zone="protobuf libprotobuf-lite">
+            <primary sortas="c-libprotobuf-lite">libprotobuf-lite.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libprotoc">
+        <term><filename class="libraryfile">libprotoc.so</filename></term>
+        <listitem>
+          <para>
+            contains functions used by protoc at runtime for outputting data
+            for several programming languages and formats
+          </para>
+          <indexterm zone="protobuf libprotoc">
+            <primary sortas="c-libprotoc">libprotoc.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+</sect1>

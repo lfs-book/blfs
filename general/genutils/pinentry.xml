@@ -6,10 +6,10 @@
 
   <!ENTITY pinentry-download-http "&gnupg-http;/pinentry/pinentry-&pinentry-version;.tar.bz2">
   <!ENTITY pinentry-download-ftp  " ">
-  <!ENTITY pinentry-md5sum        "be9b0d4bb493a139d2ec20e9b6872d37">
-  <!ENTITY pinentry-size          "536 KB">
-  <!ENTITY pinentry-buildsize     "5.6 MB">
-  <!ENTITY pinentry-time          "less than 0.1 SBU">
+  <!ENTITY pinentry-md5sum        "ccae9619032fda53b234849c7c2253ac">
+  <!ENTITY pinentry-size          "600 KB">
+  <!ENTITY pinentry-buildsize     "17 MB">
+  <!ENTITY pinentry-time          "0.2 SBU">
 ]>
 
 <sect1 id="pinentry" xreflabel="pinentry-&pinentry-version;">
@@ -89,11 +89,11 @@
     <para role="optional">
       <xref linkend="emacs"/>,
       <xref linkend="fltk"/>,
-      <xref linkend="gcr"/>,
-      <xref linkend="gtk2"/>,
+      <xref linkend="gcr4"/> (or <xref role="nodep" linkend="gcr"/>),
+      <!--<xref linkend="gtk 2"/>, We don't wan to reference this any more -->
       <!-- <xref linkend="libcap-pam"/>, This is in LFS already. PAM is not
       necessary. -->
-      <xref linkend="kf5-frameworks"/> (or <xref linkend="lxqt-kwayland"/>),
+      <xref linkend="kf6-frameworks"/> (or <xref linkend="lxqt-kwayland"/>),
       <!-- If Qt5 is present, it will look for KWayland for Wayland support.-->
       <xref linkend="libsecret"/>,
       &qt5-deps;, and
@@ -110,7 +110,10 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --enable-pinentry-tty &amp;&amp;
+<screen><userinput>./configure --prefix=/usr          \
+            --enable-pinentry-tty  \
+            --disable-pinentry-qt5 \
+            &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -129,6 +132,11 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
+      <option>--disable-pinentry-qt5</option>: Don't use qt5 even if 
+      it is available.  Qt5 is deprecated.
+    </para>
+
+    <para>
       <option>--enable-inside-emacs=yes/no</option>: Default is no.
     </para>
 
@@ -145,7 +153,8 @@ make</userinput></screen>
 
     <para>
       <option>--enable-pinentry-gnome3=yes/no</option>: Default is yes.
-      Actually, it uses <application>Gcr</application> for the pinentry
+      Actually, it uses <xref linkend='gcr4'/> (or
+      <xref linkend='gcr'/> if the former is not installed) for the pinentry
       dialog.
     </para>
 

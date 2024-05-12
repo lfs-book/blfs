@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "14a8ac688b461a3127090cad513aee05">
-  <!ENTITY rust-size          "155 MB">
+  <!ENTITY rust-md5sum        "ce1c084daec811aac07951cc954e7809">
+  <!ENTITY rust-size          "152 MB">
   <!ENTITY rust-buildsize     "8.9 GB (298 MB installed); add 6.4 GB if running the tests">
   <!ENTITY rust-time          "6.7 SBU (including download time; add 6.2 SBU for tests, both using parallelism=8)">
 ]>
@@ -144,7 +144,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+    <!-- only keep this here for reuse in case we need a patch
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -154,7 +154,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+    -->
     <bridgehead renderas="sect3">Rust Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -170,10 +170,11 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="libssh2"/> and
+      <xref linkend="libssh2"/>,
       <xref linkend="llvm"/>
       (built with -DLLVM_LINK_LLVM_DYLIB=ON so that rust can link to
-      system LLVM instead of building its shipped version)
+      system LLVM instead of building its shipped version), and
+      <xref linkend="sqlite"/>
     </para>
 
     <note>
@@ -250,13 +251,6 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
     </note>
 
     <para>
-      If running the test suite, apply a patch to prevent the build
-      system from unnecessarily rebuilding the compiler:
-    </para>
-
-    <screen><userinput>patch -Np1 -i ../rustc-&rust-version;-testsuite_fix-1.patch</userinput></screen>
-
-    <para>
       Create a suitable <filename>config.toml</filename> file which will
       configure the build.
     </para>
@@ -269,7 +263,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn us to do such a review.
-change-id = 118703
+change-id = 121754
 
 [llvm]
 # by default, rust will build for a myriad of architectures
@@ -350,7 +344,9 @@ EOF</userinput></screen>
        src/tools/cargo/Cargo.toml &amp;&amp; -->
 
 <screen><userinput>{ [ ! -e /usr/include/libssh2.h ] ||
-  export LIBSSH2_SYS_USE_PKG_CONFIG=1; } &amp;&amp;
+  export LIBSSH2_SYS_USE_PKG_CONFIG=1; }    &amp;&amp;
+{ [ ! -e /usr/include/sqlite3.h ] ||
+  export LIBSQLITE3_SYS_USE_PKG_CONFIG=1; } &amp;&amp;
 python3 x.py build</userinput></screen>
 
     <note>
@@ -371,19 +367,29 @@ python3 x.py build</userinput></screen>
 <screen remap="test"><userinput>SSL_CERT_DIR=/etc/ssl/certs \
 python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
 
-    <!-- https://github.com/rust-lang/rust/pull/115869 -->
+    <!-- highlighting.rs:
+         may be fixed by
+         https://github.com/rust-lang/rust/pull/124398 ?
+         it seems harmless anyway
+
+         issue-21763.rs:
+         https://github.com/rust-lang/rust/pull/115869, see my comment
+
+         regression-bad-location-list-67992.rs: rust bug or gdb bug ???? -->
     <para>
-      Two tests,<filename>tests/ui/issues/issue-21763.rs</filename> and
+      Three tests, <filename>tests/ui/error-emitter/highlighting.rs</filename>,
+      <filename>tests/ui/issues/issue-21763.rs</filename>, and
       <filename>tests/debuginfo/regression-bad-location-list-67992.rs</filename>,
       are known to fail.
     </para>
-
+<!-- Let's just comment this out.  Nobody has tested on a system w/o
+     FileCheck for a long time.
     <para>
       If <command>FileCheck</command> from <application>LLVM</application> has
       not been installed, all 47 tests from the <quote>assembly</quote> suite
       will fail.
     </para>
-
+-->
     <para>
       As with all large test suites, other tests might fail on some machines -
       if the number of additional failures is low,
@@ -428,46 +434,44 @@ python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></scre
       <para>
         If <command>sudo</command> or <command>su</command> is invoked for
         switching to the &root; user, ensure
-        <envar>LIBSSH2_SYS_USE_PKG_CONFIG</envar> is correctly passed or the
-        following command may completely rebuild this package.  For
-        <command>sudo</command>, use the
-        <option>--preserve-env=LIBSSH2_SYS_USE_PKG_CONFIG</option> option.
-        For <command>su</command>, do <emphasis>not</emphasis> use the
-        <option>-</option> or <option>--login</option> options.
+        <envar>LIBSSH2_SYS_USE_PKG_CONFIG</envar> and
+        <envar>LIBSQLITE3_SYS_USE_PKG_CONFIG</envar> are correctly passed or
+        the following command may rebuild <command>cargo</command> with
+        shipped copies of libssh2 and sqlite.  For <command>sudo</command>,
+        use the
+        <option>--preserve-env=LIB{SSH2,SQLITE3}_SYS_USE_PKG_CONFIG</option>
+        option.  For <command>su</command>, do <emphasis>not</emphasis> use
+        the <option>-</option> or <option>--login</option> options.
       </para>
     </note>
 
-<screen role='root'><userinput>python3 x.py install</userinput></screen>
-
-    <!-- https://github.com/rust-lang/rust/issues/115213 -->
-    <para>
-      The building system attempts to install some files twice, and during
-      the second attempt it renames the old one (installed in the first
-      attempt) with the <filename class='extension'>.old</filename> suffix.
-      As the &root; user, remove these files:
-    </para>
-
-    <screen role='root'><userinput>find /opt/rustc-&rust-version; -name "*.old" -delete</userinput></screen>
+<screen role='root'><userinput>python3 x.py install rustc std &amp;&amp;
+python3 x.py install --stage=1 cargo clippy rustfmt</userinput></screen>
 
     <para>
-      Still as the &root; user, symlink a <application>Zsh</application>
+      Still as the &root; user, fix the installation of documentations
+      and symlink a <application>Zsh</application>
       completion file into the correct location:
     </para>
 
-<screen role='root'><userinput>install -vdm755 /usr/share/zsh/site-functions      &amp;&amp;
+    <screen role='root'><userinput>rm -fv /opt/rustc-&rust-version;/share/doc/rustc-&rust-version;/*.old   &amp;&amp;
+install -vm644 README.md                                \
+               /opt/rustc-&rust-version;/share/doc/rustc-&rust-version; &amp;&amp;
+
+install -vdm755 /usr/share/zsh/site-functions      &amp;&amp;
 ln -sfv /opt/rustc/share/zsh/site-functions/_cargo \
         /usr/share/zsh/site-functions</userinput></screen>
 
     <para>
-      Finally, unset the <envar>LIBSSH2_SYS_USE_PKG_CONFIG</envar> variable:
+      Finally, unset the exported environment variables:
     </para>
 
-<screen><userinput>unset LIBSSH2_SYS_USE_PKG_CONFIG</userinput></screen>
+<screen><userinput>unset LIB{SSH2,SQLITE3}_SYS_USE_PKG_CONFIG</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
-    <title>Command Explanations</title>			
+    <title>Command Explanations</title>
 
     <para>
       <command>ln -svfn rustc-&rust-version; /opt/rustc</command>: if this is
@@ -528,6 +532,15 @@ ln -sfv /opt/rustc/share/zsh/site-functions/_cargo \
       <command>cargo</command> to link to system libssh2.
     </para>
 
+    <!-- src/tools/cargo/Cargo.toml is specifying "bundled" as the
+         upstream is suggesting to avoid issues building for Windoge.
+         We don't care about Windoge so override this if we have
+         system sqlite3.  -->
+    <para>
+      <command>export LIBSQLITE3_SYS_USE_PKG_CONFIG=1</command>: Allow
+      <command>cargo</command> to link to system sqlite.
+    </para>
+
 <!--<para>
       <command>export RUSTFLAGS="$RUSTFLAGS -C link-args=-lffi"</command>:
       This adds a link to libffi to any RUSTFLAGS you may already be passing
@@ -552,6 +565,13 @@ ln -sfv /opt/rustc/share/zsh/site-functions/_cargo \
     <para>
       <parameter>--no-fail-fast</parameter>: this switch ensures that the test suite
       will not stop at the first error.
+    </para>
+
+    <!-- https://github.com/rust-lang/rust/issues/94147 -->
+    <para>
+      <parameter>--stage=1</parameter>: this switch works around an issue
+      causing some Rustc components unnecessarily rebuilt running
+      <command>python3 x.py install</command>.
     </para>
 
   </sect2>
@@ -579,9 +599,6 @@ ln -sfv /opt/rustc/share/zsh/site-functions/_cargo \
 
 pathprepend /opt/rustc/bin           PATH
 
-# Include /opt/rustc/man in the MANPATH variable to access manual pages
-pathappend  /opt/rustc/share/man     MANPATH
-
 # End /etc/profile.d/rustc.sh</literal>
 EOF</userinput></screen>
 
@@ -604,7 +621,7 @@ EOF</userinput></screen>
       <segtitle>Installed Libraries</segtitle>
       <segtitle>Installed Directories</segtitle>
 
-      <seglistitem>			
+      <seglistitem>
         <seg>
           cargo-clippy, cargo-fmt, cargo, clippy-driver, rust-gdb,
           rust-gdbgui, rust-lldb, rustc, rustdoc, and rustfmt

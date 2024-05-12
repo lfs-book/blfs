@@ -6,9 +6,9 @@
 
   <!ENTITY docutils-download-http "https://files.pythonhosted.org/packages/source/d/docutils/docutils-&docutils-version;.tar.gz">
   <!ENTITY docutils-download-ftp  " ">
-  <!ENTITY docutils-md5sum        "93bcfe0065cf1d0b6a0bcabeca7a2335">
-  <!ENTITY docutils-size          "2.0 MB">
-  <!ENTITY docutils-buildsize     "12 MB">
+  <!ENTITY docutils-md5sum        "c4064e1e0e3cd142951fd2b95b830874">
+  <!ENTITY docutils-size          "2.1 MB">
+  <!ENTITY docutils-buildsize     "10 MB">
   <!ENTITY docutils-time          "less than 0.1 SBU">
 ]>
 
@@ -74,6 +74,15 @@
 <!-- Editors note: Use - -root= instead of DESTDIR= when updating. -->
 
       <para>
+        First, remove some files installed in a previous version
+        that are no longer valid. As the &root; user:
+      </para>
+
+<screen role="root"><userinput>for f in /usr/bin/rst*.py; do
+  sudo rm -fv /usr/bin/$(basename $f .py)
+done</userinput></screen>
+
+      <para>
         To build the <application>Python 3</application> applications,
         run the following command:
       </para>
@@ -85,16 +94,15 @@
         run the following as the &root; user:
       </para>
 
-<screen role="root"><userinput>&install-wheel; docutils &amp;&amp;
-
-for f in /usr/bin/rst*.py; do
-  ln -svf $(basename $f) /usr/bin/$(basename $f .py)
-done</userinput></screen>
+<screen role="root"><userinput>&install-wheel; docutils</userinput></screen>
 
       <!-- FHS 3.0 section 4.4.2:
            "There must be no subdirectories in /usr/bin."
            But pip maintainers closed this as WONTFIX:
-           https://github.com/pypa/pip/issues/6906 -->
+           https://github.com/pypa/pip/issues/6906
+
+           No longer happening after the upstream removed .py suffix for
+           /usr/bin scripts
       <para>
         To reduce the time needed for loading Python scripts,
         <command>pip3 install</command> will compile the scripts with
@@ -110,7 +118,14 @@ done</userinput></screen>
         directory:
       </para>
 
-<screen role="root"><userinput>rm -rfv /usr/bin/__pycache__</userinput></screen>
+      <screen role="root"><userinput>rm -rfv /usr/bin/__pycache__</userinput></screen> -->
+
+      <!-- Don't try pytest.
+           The test suite isn't compatible with pytest.  -->
+      <para>
+        To test the installation, issue:
+        <command>test/alltests.py</command>.
+      </para>
     </sect3>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"

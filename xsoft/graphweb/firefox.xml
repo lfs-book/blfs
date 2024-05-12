@@ -6,12 +6,12 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "212e126b43e8fb72a7314f2c3256b79f">
-  <!ENTITY firefox-size          "485 MB">
+  <!ENTITY firefox-md5sum        "150ac3fe6200f01879148ef32c5dd16f">
+  <!ENTITY firefox-size          "484 MB">
 
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "6.1 GB (199 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "5.7 GB (199 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
@@ -145,8 +145,6 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="alsa-lib"/> if you edit the mozconfig;
         now deprecated by mozilla), in either case please read the
         Configuration Information,
-      <xref linkend="python311"/> (built after installing <xref linkend="sqlite"/>),
-      <!--<xref linkend="six"/>,-->
       <xref linkend="startup-notification"/>, and
       <xref linkend="unzip"/>
     </para>
@@ -209,11 +207,7 @@ tar: Exiting with failure status due to previous errors
 # to use geolocation web services, comment out this line
 ac_add_options --disable-necko-wifi
 
-# API Keys for geolocation APIs - necko-wifi (above) is required for MLS
-# Uncomment the following line if you wish to use Mozilla Location Service
-#ac_add_options --with-mozilla-api-keyfile=$PWD/mozilla-key
-
-# Uncomment the following line if you wish to use Google's geolocation API
+# Uncomment the following line if you wish to use Google's Geolocation API
 # (needed for use with saved maps with Google Maps)
 #ac_add_options --with-google-location-service-api-keyfile=$PWD/google-key
 
@@ -250,8 +244,7 @@ ac_add_options --enable-official-branding
 #ac_add_options --disable-install-strip
 
 # Disabling debug symbols makes the build much smaller and a little
-# faster. Comment this if you need to run a debugger. Note: This is
-# required for compilation on i686.
+# faster. Comment this if you need to run a debugger.
 ac_add_options --disable-debug-symbols
 <!-- With Firefox ESR 128 we'd replace the following part with
 "- -enable-elf-hack=relr", or remove it if relr becomes the default. -->
@@ -272,8 +265,10 @@ ac_add_options --disable-updater
 # increase the build time, for no obvious benefit.
 ac_add_options --disable-tests
 
-# This enables SIMD optimization in the shipped encoding_rs crate.
-ac_add_options --enable-rust-simd
+# The SIMD code relies on the unmaintained packed_simd crate which
+# fails to build with Rustc >= 1.78.0.  We may re-enable it once
+# Mozilla port the code to use std::simd and std::simd is stabilized.
+ac_add_options --disable-rust-simd
 
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
@@ -339,12 +334,11 @@ esac</userinput></screen>
     <note>
       <para>
         <!-- Taken from Arch Linux - an immensely helpful link - Thanks -->
-        The Google and Mozilla API Keys below are specific to LFS. If using
-        these instructions for another distro, or if you intend to distribute
+        The Google API Key below is specific to LFS. If using these
+        instructions for another distro, or if you intend to distribute
         binary copies of the software using these instructions, please obtain
-        your own keys following the instructions located at
-        <ulink url="https://www.chromium.org/developers/how-tos/api-keys"/> and
-        <ulink url="https://location.services.mozilla.com/api"/> respectively.
+        your own key following the instructions located at
+        <ulink url="https://www.chromium.org/developers/how-tos/api-keys"/>.
         <!-- BLFS Devs, register an account at Google with your
         @linuxfromscratch.org email address, and I'll make you an administrator
         for the 'Google APIs for LFS' project (where the API and OAuth keys
@@ -352,8 +346,7 @@ esac</userinput></screen>
       </para>
     </note>
 
-<screen><userinput>echo "AIzaSyDxKL42zsPjbke5O8_rPVpVrLrJ8aeE9rQ" > google-key
-echo "613364a7-9418-4c86-bcee-57e32fd70c23" > mozilla-key</userinput></screen>
+<screen><userinput>echo "AIzaSyDxKL42zsPjbke5O8_rPVpVrLrJ8aeE9rQ" > google-key</userinput></screen>
 
     <note>
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -373,14 +366,56 @@ echo "613364a7-9418-4c86-bcee-57e32fd70c23" > mozilla-key</userinput></screen>
 
 <screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;-ffmpeg_6-1.patch</userinput></screen>-->
 
+    <!-- https://github.com/rust-lang/rust-bindgen/pull/2689 -->
+    <para>
+      Adapt the shipped <application>rust-bindgen</application> copy for
+      LLVM-18 and later, and tell <command>cargo</command> we've modified
+      the code of <application>rust-bindgen</application> so the checksum
+      verification of this crate should be skipped:
+    </para>
+
+    <screen><userinput>sed -e "/match cursor.kind()/a                                    \
+        CXCursor_LinkageSpec => return Err(ParseError::Recurse)," \
+    -i third_party/rust/bindgen/ir/item.rs                        &amp;&amp;
+
+cat &gt;&gt; Cargo.toml &lt;&lt; EOF &amp;&amp;
+<literal>[patch.crates-io.bindgen_0_64_0]
+package = "bindgen"
+version = "0.64.0"
+path = "third_party/rust/bindgen"</literal>
+EOF
+
+sed -r '/name = "bindgen"/,+5 s/^source|^checksum/#&amp;/' \
+    -i Cargo.lock</userinput></screen>
+
+    <!-- https://hg.mozilla.org/mozilla-central/rev/ba6abbd36b49 -->
+    <para>
+      Adapt the WebRTC code to use 64-bit timestamp to fix a build
+      failure with Clang-18 and later:
+    </para>
+
+    <screen><userinput>sed 's/uint32_t timestamp/uint64_t timestamp/'                \
+    -i dom/media/gmp-plugin-openh264/gmp-fake-openh264.cpp    \
+       dom/media/gtest/TestGMPRemoveAndDelete.cpp             \
+       dom/media/webrtc/libwebrtcglue/WebrtcGmpVideoCodec.cpp &amp;&amp;
+
+sed '/mInputImageMap/s/uint32_t/uint64_t/' \
+    -i dom/media/webrtc/libwebrtcglue/WebrtcGmpVideoCodec.h</userinput></screen>
+
+    <para>
+      Remove several lines of Rust code only useful for ARM and failing to
+      compile with Rustc-1.78.0 or newer:
+    </para>
+
+    <screen><userinput>sed '/cfg_attr/,/)]/d' -i gfx/qcms/src/lib.rs</userinput></screen>
+
     <para>
       Now invoke the Python <command>mach</command> script to compile the package.
     </para>
 
 <screen><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
 export MOZBUILD_STATE_PATH=${PWD}/mozbuild          &amp;&amp;
-export PYTHON311=/opt/python3.11/bin/python3.11     &amp;&amp;
-$PYTHON311 ./mach build</userinput></screen>
+./mach build</userinput></screen>
 
     <para>
       The <filename>mozconfig</filename> above disables the tests because
@@ -398,16 +433,14 @@ $PYTHON311 ./mach build</userinput></screen>
     </para>
 
 <screen role="root"><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
-export PYTHON311=/opt/python3.11/bin/python3.11     &amp;&amp;
-$PYTHON311 ./mach install</userinput></screen>
+./mach install</userinput></screen>
 
     <para>
       Empty the environment variables which were set above:
     </para>
 
 <screen><userinput>unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE
-unset MOZBUILD_STATE_PATH
-unset PYTHON311</userinput></screen>
+unset MOZBUILD_STATE_PATH</userinput></screen>
 
   </sect2>
 

@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY mpv-download-http "https://github.com/mpv-player/mpv/archive/refs/tags/v&mpv-version;/mpv-&mpv-version;.tar.gz">
+  <!ENTITY mpv-download-http "https://github.com/mpv-player/mpv/archive/v&mpv-version;/mpv-&mpv-version;.tar.gz">
   <!ENTITY mpv-download-ftp  " ">
-  <!ENTITY mpv-md5sum        "54bd6864cc831f1fee6dee693a0421eb">
-  <!ENTITY mpv-size          "3.2 MB">
-  <!ENTITY mpv-buildsize     "25 MB">
-  <!ENTITY mpv-time          "0.2 SBU (Using parallelism=4)">
+  <!ENTITY mpv-md5sum        "7c1a400867e8930f037efc86c1f90a14">
+  <!ENTITY mpv-size          "3.3 MB">
+  <!ENTITY mpv-buildsize     "28 MB">
+  <!ENTITY mpv-time          "0.1 SBU (Using parallelism=4)">
 
 ]>
 
@@ -71,7 +71,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="alsa"/>,
+      <xref linkend="alsa-lib"/>,
       <xref linkend="ffmpeg"/>,
       <xref linkend="libass"/>,
       <xref linkend="libplacebo"/>,
@@ -119,6 +119,12 @@
 
   <sect2 role="installation">
     <title>Installation of mpv</title>
+
+      <para>
+        Add a fix to build with FFMpeg &gt; 7.0
+      </para>
+<screen><userinput>sed 's/AV_OPT_TYPE_CHANNEL_LAYOUT/AV_OPT_TYPE_CHLAYOUT/' \
+-i filters/f_lavfi.c</userinput></screen>
 
       <para>
         Install <application>mpv</application> by running the following

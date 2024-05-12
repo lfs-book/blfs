@@ -12,8 +12,8 @@
   <!ENTITY grub-efi-time          "0.4 SBU (on 64-bit LFS, using parallelism=4)">
 
   <!ENTITY unifont-download-http  "https://unifoundry.com/pub/unifont/unifont-&unifont-version;/font-builds/unifont-&unifont-version;.pcf.gz">
-  <!ENTITY unifont-md5sum         "72f95e7ecb47a4c7ed610babe6959ead">
-  <!ENTITY unifont-size           "1.3 MB">
+  <!ENTITY unifont-md5sum         "da47e9c7a2cec3b68a0fad5d2a341dcc">
+  <!ENTITY unifont-size           "1.4 MB">
 ]>
 
 <sect1 id="grub-efi" xreflabel="GRUB-&grub-version; for EFI">
@@ -120,10 +120,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="lvm2"/>
+      <xref linkend="lvm2"/> and
+      <xref linkend="fuse3"/>
     </para>
-
-
   </sect2>
 
   <sect2 role="installation">
@@ -191,11 +190,29 @@ make</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, if you've skip the LFS GRUB package, as the
+      <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
+<screen role="nodump"><userinput>make install &amp;&amp;
 mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions</userinput></screen>
+
+    <para>
+      If you've not skip LFS GRUB package, as the &root; user, only install
+      the components not installed from the LFS GRUB package instead:
+    </para>
+
+<screen role="root"><userinput>make DESTDIR=$PWD/dest install
+cp -av dest/usr/lib/grub/x86_64-efi -T /usr/lib/grub/x86_64-efi
+cp -av dest/usr/share/grub/*.{pf2,h}   /usr/share/grub
+cp -av dest/usr/bin/grub-mkfont        /usr/bin</userinput></screen>
+
+    <para>
+      If the optional dependencies are installed, also install the
+      <command>grub-mount</command> program:
+    </para>
+
+<screen role="nodump"><userinput>cp -av dest/usr/bin/grub-mount /usr/bin</userinput></screen>
 
   </sect2>
 
@@ -251,7 +268,57 @@ mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions</userin
   <sect2 role="content">
     <title>Contents</title>
 
-    <para>See the page for GRUB in LFS book.</para>
+    <para>
+      A list of the installed files, along with their short
+      descriptions can be found at
+      <ulink url="&lfs-root;/chapter08/grub.html#contents-gRUB"/>.
+    </para>
+
+    <para>
+      Listed below are the newly installed programs
+      along with short descriptions.
+    </para>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>grub-mkfont and grub-mount (optional)</seg>
+        <seg>/usr/lib/grub/x86_64-efi</seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="grub-mkfont">
+        <term><command>grub-mkfont</command></term>
+        <listitem>
+          <para>
+            converts common font file formats into PF2
+          </para>
+          <indexterm zone="grub-efi grub-mkfont">
+            <primary sortas="b-grub-mkfont">grub-mkfont</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="grub-mount">
+        <term><command>grub-mount</command></term>
+        <listitem>
+          <para>
+            is a debug tool for filesystem driver
+          </para>
+          <indexterm zone="grub-efi grub-mount">
+            <primary sortas="b-grub-mount">grub-mount</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
   </sect2>
 
 </sect1>

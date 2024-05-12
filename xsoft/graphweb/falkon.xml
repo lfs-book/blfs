@@ -4,19 +4,19 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY falkon-download-http "&kf5apps-download-http;/falkon-&kf5apps-version;.tar.xz">
+  <!ENTITY falkon-download-http "&kf6apps-download-http;/falkon-&kf6apps-version;.tar.xz">
   <!ENTITY falkon-download-ftp  " ">
-  <!ENTITY falkon-md5sum        "bac0775269c5961a66359e21dc96cf89">
+  <!ENTITY falkon-md5sum        "679f33b2b67ff0ca54bd80dcc6686115">
   <!ENTITY falkon-size          "2.5 MB">
-  <!ENTITY falkon-buildsize     "134 MB">
-  <!ENTITY falkon-time          "1.2 SBU (Using parallelism=4)">
+  <!ENTITY falkon-buildsize     "146 MB">
+  <!ENTITY falkon-time          "2.2 SBU (Using parallelism=4; add 0.3 SBU for tests)">
 ]>
 
-<sect1 id="falkon" xreflabel="falkon-&kf5apps-version;">
+<sect1 id="falkon" xreflabel="falkon-&kf6apps-version;">
   <?dbhtml filename="falkon.html"?>
 
 
-  <title>Falkon-&kf5apps-version;</title>
+  <title>Falkon-&kf6apps-version;</title>
 
   <indexterm zone="falkon">
     <primary sortas="a-falkon">falkon</primary>
@@ -37,21 +37,9 @@
       functionality).
     </para>
 
-    <warning>
-      <para>
-        Falkon relies on QtWebEngine. That uses a forked copy of chromium, and
-        is therefore vulnerable to many issues found there. The Qt developers
-        have always preferred to make releases at the same time as the rest of Qt
-        (rather than adding emergency fixes). Now that they are keen to move to
-        Qt6, the 5.15.3 and later Qt-5.15 releases are initially only available
-        to paying customers. QtWebEngine is something of an exception because of
-        its LGPL licence, but getting the git sources (with the forked chromium
-        submodule) to a point where they will successfully build on a current
-        BLFS system can take a lot of effort. Be aware that future fixes for
-        vulnerabilities might be very delayed, to the extent that you might wish
-        to consider using a different browser.
-      </para>
-    </warning>
+    <para>
+      Falkon relies on QtWebEngine. Please read the warning on that page.
+    </para>
 
     &lfs121_checked;
 
@@ -94,17 +82,17 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="extra-cmake-modules"/>,
-      <xref linkend="kf5-frameworks"/> (for karchive), and
+      <xref linkend="kf6-frameworks"/> (for karchive), and
       <xref linkend="qtwebengine"/>
     </para>
 
     <note>
       <para>
-        Strictly speaking, only karchive is required to build falkon,
-        but several other packages in KF5 can be used if they are present. To
-        build only karchive, download that package from the directory specified
-        in <xref linkend="kf5-frameworks"/> and use the build instructions on
-        that page changing the $KF5_PREFIX to /usr.
+        Strictly speaking, only karchive is required to build falkon, but
+        several other packages in <xref linkend="kf6-frameworks"/> can be used
+        if they are present. To build only karchive, download that package from
+        the directory specified in <xref linkend="kf6-frameworks"/> and use the
+        build instructions on that page changing the $KF6_PREFIX to /usr.
       </para>
     </note>
 
@@ -138,16 +126,21 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr \
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>. All
-      tests should pass. If any fail, the full results will be in
-      <filename>Testing/Temporary/LastTest.log</filename>.
+      Tests should be run after installation.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+ldconfig</userinput></screen>
+
+    <para>
+      To test the results, issue: <command>make test</command>. All
+      tests should pass. If any fail, the full results will be in
+      <filename>Testing/Temporary/LastTest.log</filename>.
+    </para>
 
     <note>
       <para>

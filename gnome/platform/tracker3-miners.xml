@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY tracker3-miners-download-http "&gnome-download-http;/tracker-miners/3.6/tracker-miners-&tracker3-miners-version;.tar.xz">
+  <!ENTITY tracker3-miners-download-http "&gnome-download-http;/tracker-miners/3.7/tracker-miners-&tracker3-miners-version;.tar.xz">
   <!ENTITY tracker3-miners-download-ftp  " ">
-  <!ENTITY tracker3-miners-md5sum        "36b1149a9b10ee3db3e3aa6d8a95c5dc">
-  <!ENTITY tracker3-miners-size          "7.2 MB">
-  <!ENTITY tracker3-miners-buildsize     "85 MB (with tests)">
+  <!ENTITY tracker3-miners-md5sum        "8c1b48f2fa57d888967de9b5ff348fc1">
+  <!ENTITY tracker3-miners-size          "4.3 MB">
+  <!ENTITY tracker3-miners-buildsize     "36 MB (with tests)">
   <!ENTITY tracker3-miners-time          "0.3 SBU (with parallelism=4; add as much as 1.0 SBU for tests, dependent on disk speed)">
 ]>
 
@@ -120,6 +120,22 @@
 
   </sect2>
 
+  <sect2 role="kernel" id="tracker3-miners-kernel">
+    <title>Kernel Configuration</title>
+
+    <para>
+      Enable the following options in the kernel configuration, then recompile
+      the kernel and reboot if necessary:
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="tracker3-miners-kernel.xml"/>
+
+    <indexterm zone="tracker3-miners tracker3-miners-kernel">
+      <primary sortas="d-traker-miners">tracker-miners</primary>
+    </indexterm>
+  </sect2>
+
   <sect2 role="installation">
     <title>Installation of Tracker-miners</title>
 
@@ -151,14 +167,6 @@
 -->
 
     <para>
-      First, fix some crashes introduced by gstreamer-1.22.9:
-      <!-- https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/252 and
-      https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/299 -->
-    </para>
-
-<screen><userinput remap="pre">sed -i '/ALLOW_RULE (shutdown);/a ALLOW_RULE (getsockopt);' src/libtracker-miners-common/tracker-seccomp.c</userinput></screen>
-
-    <para>
       Install <application>Tracker-miners</application> by running the following
       commands:
     </para>
@@ -184,8 +192,8 @@ meson setup --prefix=/usr                 \
 ninja</userinput></screen>
 
     <para>
-      <!-- Some tests fail in 3.6.1 due to seccomp sandbox changes.
-      See https://github.blog/2023-10-09-coordinated-disclosure-1-click-rce-on-gnome-cve-2023-43641/ -->
+      <!-- tiff-photo-1 fails due to
+      https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/341 -->
       To test the results, issue (adjust the individual test timeout to a
       value suitable for your machine, see the note above):
     </para>
@@ -230,7 +238,18 @@ rm -rf ~/tracker-tests</userinput></screen>
       <option>-Dseccomp=false</option>: This option disables the seccomp system
       call filter. On some architectures, such as i686 and ARM, the functions
       that tracker-miners uses are not guarded properly, and tracker-miners
-      will get killed with a SIGSYS as a result.
+      will get killed with a SIGSYS as a result.  Note that disabling
+      seccomp might cause the system compromised more severely in case a
+      security vulnerability in tracker-miners or its dependencies is
+      exploited.
+    </para>
+
+    <para>
+      <option>-Dlandlock=disabled</option>: This switch disables the
+      Landlock file access sandbox.  Use it if you don't want to build the
+      kernel with Landlock support.  Note that disabling Landlock might
+      cause the system compromised more severely in case a security
+      vulnerability in tracker-miners or its dependencies is exploited.
     </para>
 
     <para>
@@ -258,7 +277,14 @@ rm -rf ~/tracker-tests</userinput></screen>
 
       <seglistitem>
         <seg>
-          None
+          tracker3-daemon,
+          tracker3-extract,
+          tracker3-index,
+          tracker3-info,
+          tracker3-reset,
+          tracker3-search,
+          tracker3-status, and
+          tracker3-tag
         </seg>
         <seg>
           Several modules under /usr/lib/tracker-miners-3.0
@@ -270,6 +296,109 @@ rm -rf ~/tracker-tests</userinput></screen>
         </seg>
       </seglistitem>
     </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presnetation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="tracker3-daemon">
+        <term><command>tracker3-daemon</command></term>
+        <listitem>
+          <para>
+            starts, stops, restarts, and lists daemons responsible for indexing
+            content
+          </para>
+          <indexterm zone="tracker3-miners tracker3-daemon">
+            <primary sortas="b-tracker3-daemon">tracker3-daemon</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-extract">
+        <term><command>tracker3-extract</command></term>
+        <listitem>
+          <para>
+            extracts metadata from a file
+          </para>
+          <indexterm zone="tracker3-miners tracker3-extract">
+            <primary sortas="b-tracker3-extract">tracker3-extract</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-index">
+        <term><command>tracker3-index</command></term>
+        <listitem>
+          <para>
+            indexes content using the Tracker filesystem miner
+          </para>
+          <indexterm zone="tracker3-miners tracker3-index">
+            <primary sortas="b-tracker3-index">tracker3-index</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-info">
+        <term><command>tracker3-info</command></term>
+        <listitem>
+          <para>
+            retrieves all information available for a certain file
+          </para>
+          <indexterm zone="tracker3-miners tracker3-info">
+            <primary sortas="b-tracker3-info">tracker3-info</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-reset">
+        <term><command>tracker3-reset</command></term>
+        <listitem>
+          <para>
+            resets the Tracker index and configuration
+          </para>
+          <indexterm zone="tracker3-miners tracker3-reset">
+            <primary sortas="b-tracker3-reset">tracker3-reset</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-search">
+        <term><command>tracker3-search</command></term>
+        <listitem>
+          <para>
+            searches for content by type or across all types
+          </para>
+          <indexterm zone="tracker3-miners tracker3-search">
+            <primary sortas="b-tracker3-search">tracker3-search</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-status">
+        <term><command>tracker3-status</command></term>
+        <listitem>
+          <para>
+            provides status and statistics on data that has been indexed
+          </para>
+          <indexterm zone="tracker3-miners tracker3-status">
+            <primary sortas="b-tracker3-status">tracker3-status</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-tag">
+        <term><command>tracker3-tag</command></term>
+        <listitem>
+          <para>
+            adds, removes, and lists tags
+          </para>
+          <indexterm zone="tracker3-miners tracker3-tag">
+            <primary sortas="b-tracker3-tag">tracker3-tag</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+    </variablelist>
   </sect2>
 
 </sect1>

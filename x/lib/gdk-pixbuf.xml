@@ -7,10 +7,10 @@
   <!ENTITY gdk-pixbuf-download-http
            "&gnome-download-http;/gdk-pixbuf/2.42/gdk-pixbuf-&gdk-pixbuf-version;.tar.xz">
   <!ENTITY gdk-pixbuf-download-ftp  " ">
-  <!ENTITY gdk-pixbuf-md5sum        "4a62f339cb1424693fba9bb7ffef8150">
+  <!ENTITY gdk-pixbuf-md5sum        "b2ba2f594122001ac7f89e7d02560497">
   <!ENTITY gdk-pixbuf-size          "6.2 MB">
-  <!ENTITY gdk-pixbuf-buildsize     "36 MB (with tests)">
-  <!ENTITY gdk-pixbuf-time          "0.2 SBU (With tests; both using parallelism=4)">
+  <!ENTITY gdk-pixbuf-buildsize     "33 MB (with tests)">
+  <!ENTITY gdk-pixbuf-time          "0.1 SBU (With tests; both using parallelism=4)">
 ]>
 
 <sect1 id="gdk-pixbuf" xreflabel="gdk-pixbuf-&gdk-pixbuf-version;">
@@ -75,7 +75,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="glib2"/>,
+      <xref linkend="glib2"/> (GObject Introspection required for GNOME),
       <xref linkend="libjpeg"/>,
       <xref linkend="libpng"/>, and
       <xref linkend="shared-mime-info"/>
@@ -89,17 +89,14 @@
       <xref linkend="libtiff"/>
     </para>
 
-    <bridgehead renderas="sect4">Optional (Required if building GNOME)</bridgehead>
-    <para role="optional">
-      <xref linkend="gobject-introspection"/>
-    </para>
-
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gi-docgen"/>
       (to generate documentation),
       <xref role="runtime" linkend="libavif"/>
-      (runtime dependency, needed for loading AVIF images), and
+      (runtime dependency, needed for loading AVIF images),
+      <xref role="runtime" linkend="libjxl"/>
+      (runtime dependency, needed for loading JPEG XL images), and
       <xref role="runtime" linkend="webp-pixbuf-loader"/>
       (runtime dependency, needed for loading WebP images)
     </para>
@@ -108,6 +105,14 @@
 
   <sect2 role="installation">
     <title>Installation of Gdk Pixbuf</title>
+
+    <para>
+      Fix an issue causing the package fail to build with
+      <parameter>-Dothers=enabled</parameter>:
+    </para>
+
+<screen><userinput>sed 's/enabled_loaders_contains/enabled_loaders.contains/' \
+    -i tests/meson.build</userinput></screen>
 
     <para>
       Install <application>Gdk Pixbuf</application> by running the following
@@ -120,6 +125,7 @@ cd    build &amp;&amp;
 meson setup ..            \
       --prefix=/usr       \
       --buildtype=release \
+      -Dothers=enabled    \
       --wrap-mode=nofallback &amp;&amp;
 ninja</userinput></screen>
 
@@ -164,6 +170,11 @@ ninja</userinput></screen>
     <!-- gi-docgen can get installed without this, if deps exist -->
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-wrap-nofallback.xml"/>
+
+    <para>
+      <parameter>-Dothers=enabled</parameter>: Enable the loaders for various
+      image formats, for example BMP and XPM.
+    </para>
 
     <!-- with 2.42.9, docutils must be installed to generate man pages.
     Without this, you'll get the following output:

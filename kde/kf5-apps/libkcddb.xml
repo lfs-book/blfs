@@ -6,10 +6,10 @@
 
   <!ENTITY libkcddb-download-http "&kf5apps-download-http;/libkcddb-&kf5apps-version;.tar.xz">
   <!ENTITY libkcddb-download-ftp  " ">
-  <!ENTITY libkcddb-md5sum        "ae21a89d6c91edd4c62e1c391f6d0282">
+  <!ENTITY libkcddb-md5sum        "29438c22614fb4bd372c7cd326ce5853">
   <!ENTITY libkcddb-size          "444 KB">
-  <!ENTITY libkcddb-buildsize     "10 MB">
-  <!ENTITY libkcddb-time          "0.1 SBU (Using parallelism=4)">
+  <!ENTITY libkcddb-buildsize     "11 MB">
+  <!ENTITY libkcddb-time          "0.1 SBU">
 ]>
 
 <sect1 id="libkcddb" xreflabel="libkcddb-&kf5apps-version;">
@@ -70,7 +70,11 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="kf5-frameworks"/> and
+      <xref linkend="kf6-frameworks"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
       <xref linkend="libmusicbrainz5"/>
     </para>
 
@@ -87,9 +91,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=$KF5_PREFIX \
+cmake -DCMAKE_INSTALL_PREFIX=$KF6_PREFIX \
       -DCMAKE_BUILD_TYPE=Release         \
       -DBUILD_TESTING=OFF                \
+      -DQT_MAJOR_VERSION=6               \
       -Wno-dev ..                        &amp;&amp;
 make</userinput></screen>
 
@@ -117,13 +122,12 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          libKF5Cddb.so and
-          kcm_cddb.so
+          libKCddb6.so
         </seg>
         <seg>
-          $KF5_PREFIX/include/KF5/KCddb and
-          $KF5_PREFIX/lib/cmake/KF5Cddb
-          $KF5_PREFIX/share/doc/HTML/*/kcontrol
+          $KF6_PREFIX/include/KCddb6
+          $KF6_PREFIX/lib/cmake/KCddb6
+          $KF6_PREFIX/share/doc/HTML/*/kcontrol
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -134,7 +138,7 @@ make</userinput></screen>
       <?dbhtml list-presentation="table"?>
 
       <varlistentry id="libkcddb-lib">
-        <term><filename class="libraryfile">libkcddb.so</filename></term>
+        <term><filename class="libraryfile">libKCddb6.so</filename></term>
         <listitem>
           <para>
             contains functions used to retrieve audio CD meta data

@@ -7,24 +7,24 @@
   <!ENTITY libreoffice-dl "https://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "d82a556fa5aec1a5d08e0b11363ee936">
+  <!ENTITY libreoffice-core-md5sum        "df019f1cfa41c3dd80f06f865c752817">
   <!ENTITY libreoffice-core-size          "268 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "67e540e2306a7832042f2bd0dc929e79">
+  <!ENTITY libreoffice-dict-md5sum        "93aaa2a4c4bf127f1c8d0798059ba785">
   <!ENTITY libreoffice-dict-size          "52 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "543bfeb28fba6cbf6dbe36dc6e8451e1">
+  <!ENTITY libreoffice-help-md5sum        "53d85fcb604f44ecca9ce0a5b7260741">
   <!ENTITY libreoffice-help-size          "160 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum        "8a03a779d3defa7226c883767202d418">
-  <!ENTITY libreoffice-translations-size          "211 MB">
+  <!ENTITY libreoffice-translations-md5sum        "7a2c07b5170c4aae314330aefcd4e44e">
+  <!ENTITY libreoffice-translations-size          "210 MB">
 
   <!-- full size remeasured for 7.0.0.3 -->
 
-  <!ENTITY libreoffice-buildsize  "11 GB including the additional files if downloaded during the build (729 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
+  <!ENTITY libreoffice-buildsize  "8.2 GB including the additional files if downloaded during the build (729 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
 
  <!-- Editors: many updates to poppler will break LO using system poppler until
       somebody is able to provide a patch or sed.  In these cases, please mark
@@ -57,7 +57,7 @@
 
        For 7.5.4.2, I increased the parallelism to 8.  -bdubbs
   -->
-  <!ENTITY libreoffice-time "30 SBU with parallelism=8 (will vary due to download time)">
+  <!ENTITY libreoffice-time "34 SBU with parallelism=8 (will vary due to download time)">
 
 ]>
 
@@ -189,12 +189,6 @@
         </para>
       </listitem>
 -->
-      <listitem>
-        <para>
-          Required patch to fix building with libxml2-2.12.x:
-          <ulink url="&patch-root;/libreoffice-&libreoffice-dlversion;-consolidated_fixes-1.patch"/>
-        </para>
-      </listitem>
     </itemizedlist>
     <bridgehead renderas="sect3">LibreOffice Dependencies</bridgehead>
 
@@ -248,7 +242,7 @@
       <xref linkend="mesa"/>,
       <xref linkend="nss"/>,
       <xref linkend="openldap"/> (if connecting to an LDAP server),
-      <xref linkend="poppler"/>,
+      <xref linkend="poppler"/> (currentlly broken),
       <xref linkend="postgresql"/>,
       <xref linkend="redland"/>, and
       <xref linkend="unixodbc"/>
@@ -256,6 +250,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="abseil-cpp"/>,
       <xref linkend="avahi"/>,
       <xref linkend="bluez"/>,
       <xref linkend="dconf"/>,
@@ -264,12 +259,11 @@
       <xref linkend="evolution-data-server"/>,
       <xref linkend="gdb"/>,
       <xref linkend="gnutls"/>,
-      <xref linkend="kf5-frameworks"/>,
+      <xref linkend="kf6-frameworks"/>,
       <xref linkend="libpaper"/>,
       <xref linkend="mariadb"/> or <ulink url="https://www.mysql.com/">MySQL</ulink>,
       <xref linkend="mitkrb"/>,
       <xref linkend="nasm"/>,
-      &qt5-deps;,
       <xref linkend="qt6"/>,
       <xref linkend="sane"/>,
       <xref linkend="telepathy-glib"/>,
@@ -363,17 +357,18 @@ cd libreoffice-&libreoffice-dlversion;</userinput></screen>
 -->
 
     <para>
-      First, fix a build failure with libxml2 and a bug with linking to zlib:
+      First, fix a bug with linking to zlib:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-consolidated_fixes-1.patch</userinput></screen>
+<screen><userinput remap="pre">sed -i '/icuuc \\/a zlib\\' writerperfect/Library_wpftdraw.mk</userinput></screen>
 
+<!--
     <para>
       Next, fix a build failure with ICU-74+:
     </para>
 
 <screen><userinput>sed -e /LBCM/d -i i18npool/source/breakiterator/data/line.txt</userinput></screen>
-
+-->
     <para>
       If you have downloaded the dictionaries, help and translations tarballs,
       create symlinks to them from the source directory so they won't get
@@ -475,7 +470,6 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
              --with-system-gpgmepp       \
              --with-system-graphite      \
              --with-system-harfbuzz      \
-             --with-system-icu           \
              --with-system-jpeg          \
              --with-system-lcms2         \
              --with-system-libatomic_ops \
@@ -491,6 +485,21 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
              --with-system-libtiff       \
              --with-system-libwebp       \
              --with-system-zlib</userinput></screen>
+
+<!-- this one might be to be removed with one of the next
+     releases of LO (after 24.2.1.2) as it seems the issue
+     is known by upstream:
+     https://www.mail-archive.com/libreoffice@lists.freedesktop.org/msg336884.html
+
+     Removed from above: - -with-system-icu due to problem with version icu-75.1
+-->
+    <para>
+      Fix a misconfiguration when installing on 32-bit machines:
+    </para>
+<screen><userinput>if [ "$(uname -m)" == "i686" ]; then
+    sed -e "s/LFS_CFLAGS=$/&amp;-D_FILE_OFFSET_BITS=64/" -i config_host.mk
+fi</userinput></screen>
+
 <!--
     <para>
       The instructions below will only build the package without running
@@ -666,21 +675,17 @@ fi</userinput></screen>
     </para>
 
     <para>
+      <parameter>--with-system-icu</parameter>: Use the installed version of
+      icu. This version of libreoffice (24.2.3.2) is broken with icu-75.1.
+    </para>
+
+    <para>
       <parameter>--with-system-*</parameter>: These switches prevent
       <application>LibreOffice</application> from trying to compile its own
       versions of these dependencies. If you've not installed some of the
       dependencies, remove the corresponding switches.
     </para>
 
-<!--
-    <para>
-      <command>CPPFLAGS='-DU_USING_ICU_NAMESPACE=1' make ...</command>: <xref
-      linkend="icu"/> has removed an implicit namespace <quote>using</quote>
-      from its headers files. Setting <envar>U_USING_ICU_NAMESPACE</envar> to
-      1 allows to restore the former behavior, which is required for building
-      <application>libreoffice</application>.
-    </para>
--->
     <para>
       <command>make distro-pack-install</command>: This does a normal
       install, but if you add a DESTDIR environment variable it will also
@@ -767,7 +772,7 @@ fi</userinput></screen>
     <para>
       <!-- Brings in - -enable-qt5 as well. -->
       <option>--enable-kf5</option>: Builds with KDE/Plasma integration. If
-      &qt5-deps; and/or <xref linkend="kf5-frameworks"/> are not
+      &qt5-deps; and/or <xref linkend="kf6-frameworks"/> are not
       installed in <filename class="directory">/usr</filename>, the include
       and library directories must be specified in <envar>QT5INC</envar>,
       <envar>QT5LIB</envar>, <envar>KF5INC</envar>, and <envar>KF5LIB</envar>,
@@ -796,6 +801,13 @@ fi</userinput></screen>
       <envar>QT6LIB</envar> environment variables.
     </para>
 
+    <para>
+      <option>--with-system-abseil</option>: This switch enables using a system
+      version of the Abseil C++ libraries instead of the bundled copy. Add this
+      switch if <xref linkend="abseil-cpp"/> is installed and you wish to use
+      it instead of the bundled copy.
+    </para>
+
     <!-- For when we add KDE 6 to the book next cycle.
     <para>
       <!- - Brings in - -enable-qt5 as well. - ->
@@ -805,21 +817,6 @@ fi</userinput></screen>
       and library directories must be specified in <envar>QT6INC</envar>,
       <envar>QT6LIB</envar>, <envar>KF6INC</envar>, and <envar>KF6LIB</envar>,
       respectively.
-    </para>
-    -->
-
-    <!--
-    <para>
-      Currently broken by ICU68 (TRUE and FALSE need to be true and false) on
-      libe-book and perhaps elsewhere - commented explanation retained.  ken
-      <option>- -with-system-icu</option>: This command would use the system
-      version of <xref linkend="icu"/> which is normally considered to be a good
-      thing to do. However, one of the very minor packages pulled in by
-      <application>LibreOffice</application>, libfreehand-0.1.2, does not compile
-      with ICU-65.1 because of a missing semi-colon at the end of one line in one
-      of its files. Do not use this option unless you have separately installed a
-      patched or newer version of
-      <ulink url="https://wiki.documentfoundation.org/DLP/Libraries/libfreehand">libfreehand</ulink>.
     </para>
     -->
 

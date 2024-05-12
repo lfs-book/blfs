@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY seamonkey-download-http "&mozilla-http;/seamonkey/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
+  <!ENTITY seamonkey-download-http "https://archive.seamonkey-project.org/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
   <!ENTITY seamonkey-download-ftp  " ">
-  <!ENTITY seamonkey-md5sum        "6ac064816caa2c3fe6bc1f130bd9599b">
+  <!ENTITY seamonkey-md5sum        "266a86651348e21934707a7ccb3abef3">
   <!ENTITY seamonkey-size          "241 MB">
-  <!ENTITY seamonkey-buildsize     "4.2 GB (159 MB installed)">
-  <!ENTITY seamonkey-time          "11 SBU (with parallelism=4)">
+  <!ENTITY seamonkey-buildsize     "3.0 GB (148 MB installed)">
+  <!ENTITY seamonkey-time          "3.5 SBU (with parallelism=8)">
 ]>
 
 <sect1 id="seamonkey" xreflabel="seamonkey-&seamonkey-version;">
@@ -74,15 +74,16 @@
       </listitem>
     </itemizedlist>
 
-    <!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required patch:
-          <ulink url="&patch-root;/seamonkey-&seamonkey-version;-consolidated_fixes-1.patch"/>
+          Recommended patch (required for building with system ICU-75 or
+          newer):
+          <ulink url="&patch-root;/seamonkey-&seamonkey-version;-cxx17-1.patch"/>
         </para>
       </listitem>
+    <!--
       <listitem>
         <para>
           Required Python module:
@@ -93,8 +94,8 @@
           to rebuild its wheel package for the SeaMonkey build system.
         </para>
       </listitem>
-    </itemizedlist>
     -->
+    </itemizedlist>
 
     <note>
       <para>
@@ -207,8 +208,7 @@ ac_add_options --with-system-nss
 ac_add_options --with-system-webp
 
 # Disabling debug symbols makes the build much smaller and a little
-# faster. Comment this if you need to run a debugger. Note: This is
-# required for compilation on i686.
+# faster. Comment this if you need to run a debugger.
 ac_add_options --disable-debug-symbols
 <!-- With Firefox ESR 128 we'd replace the following part with
 "- -enable-elf-hack=relr", or remove it if relr becomes the default.
@@ -237,8 +237,9 @@ ac_add_options --disable-crashreporter
 ac_add_options --disable-updater
 ac_add_options --disable-tests
 
-# The Rust code for SIMD optimization is much more outdated than
-# Firefox and Thunderbird, so it does not build with recent Rustc.
+# The SIMD code relies on the unmaintained packed_simd crate which
+# fails to build with Rustc >= 1.78.0.  We may re-enable it once
+# Mozilla port the code to use std::simd and std::simd is stabilized.
 ac_add_options --disable-rust-simd
 
 ac_add_options --enable-strip
@@ -289,12 +290,16 @@ pip3 wheel - -no-build-isolation - -no-deps - -no-cache-dir       \
 
     <para>
       First, if you are building with system ICU, adapt the line break mapping
-      for ICU-74 and later:
+      for ICU-74 or later, and apply a patch to build this package with the
+      C++17 standard because the headers of ICU-75 or later require some
+      C++17 features:
     </para>
 
 <screen><userinput remap="pre">(for i in {43..47}; do
    sed '/ZWJ/s/$/,CLASS_CHARACTER/' -i intl/lwbrk/LineBreaker.cpp || exit $?
-done)</userinput></screen>
+done) &amp;&amp;
+
+patch -Np1 -i ../seamonkey-&seamonkey-version;-cxx17-1.patch</userinput></screen>
 
     <para>
       Next, fix a problem with the bundled 'distro' python module:

@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY tracker3-download-http
-           "&gnome-download-http;/tracker/3.6/tracker-&tracker3-version;.tar.xz">
+           "&gnome-download-http;/tracker/3.7/tracker-&tracker3-version;.tar.xz">
   <!ENTITY tracker3-download-ftp  " ">
-  <!ENTITY tracker3-md5sum        "7be27edcf56214277cdff6ebfd8cfbf0">
-  <!ENTITY tracker3-size          "2.4 MB">
-  <!ENTITY tracker3-buildsize     "51 MB (with tests)">
-  <!ENTITY tracker3-time          "0.6 SBU (with tests)">
+  <!ENTITY tracker3-md5sum        "65cd2945506b7303e9eea493d56431d8">
+  <!ENTITY tracker3-size          "1.7 MB">
+  <!ENTITY tracker3-buildsize     "58 MB (with tests)">
+  <!ENTITY tracker3-time          "0.4 SBU (with tests)">
 ]>
 
 <sect1 id="tracker3" xreflabel="Tracker-&tracker3-version;">
@@ -90,7 +90,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gobject-introspection"/>,
+      &gobject-introspection;,
       <xref linkend="icu"/>,
       <xref linkend="libsoup3"/>,
       <xref linkend="pygobject3"/>,
@@ -101,6 +101,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="asciidoc"/>,
+      <xref linkend="avahi"/>,
 <!--  It looks like not used even if docs=true,
       the pre-built doc is shipped in tarball and will be installed
       <xref linkend="gi-docgen"/>
@@ -125,6 +126,15 @@
 <screen><userinput>mv docs/reference/libtracker-sparql/doc/{Tracker-3.0,tracker-&tracker3-version;} &amp;&amp;
 sed '/docs_name/s/Tracker-3.0/tracker-&tracker3-version;/' \
     -i docs/reference/libtracker-sparql/meson.build</userinput></screen>
+
+    <!-- https://gitlab.gnome.org/GNOME/tracker/-/merge_requests/665
+    <para>
+      Adapt for a behavior change of SQLite 3.45.3:
+    </para>
+
+    <screen><userinput>sed 's/ROWID/\\"rdfs:Resource\\".ID/' \
+    -i src/libtracker-sparql/core/tracker-fts.c</userinput></screen>
+    -->
 
     <para>
       Install <application>Tracker</application> by running the following
@@ -206,7 +216,13 @@ ninja</userinput></screen>
 
       <seglistitem>
         <seg>
-          tracker3
+          tracker3,
+          tracker3-endpoint,
+          tracker3-export,
+          tracker3-help,
+          tracker3-import,
+          tracker3-sparql, and
+          tracker3-sql
         </seg>
         <seg>
           libtracker-sparql-3.0.so
@@ -233,6 +249,78 @@ ninja</userinput></screen>
           </para>
           <indexterm zone="tracker3 tracker3-prog">
             <primary sortas="b-tracker3">tracker3</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-endpoint">
+        <term><command>tracker3-endpoint</command></term>
+        <listitem>
+          <para>
+            creates a SPARQL endpoint
+          </para>
+          <indexterm zone="tracker3 tracker3-endpoint">
+            <primary sortas="b-tracker3-endpoint">tracker3-endpoint</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-export">
+        <term><command>tracker3-export</command></term>
+        <listitem>
+          <para>
+            exports all data from a Tracker database
+          </para>
+          <indexterm zone="tracker3 tracker3-export">
+            <primary sortas="b-tracker3-export">tracker3-export</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+       <varlistentry id="tracker3-help">
+        <term><command>tracker3-help</command></term>
+        <listitem>
+          <para>
+            shows manual pages related to Tracker
+          </para>
+          <indexterm zone="tracker3 tracker3-help">
+            <primary sortas="b-tracker3-help">tracker3-help</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-import">
+        <term><command>tracker3-import</command></term>
+        <listitem>
+          <para>
+            imports data into a Tracker database
+          </para>
+          <indexterm zone="tracker3 tracker3-import">
+            <primary sortas="b-tracker3-import">tracker3-import</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-sparql">
+        <term><command>tracker3-sparql</command></term>
+        <listitem>
+          <para>
+            uses SparQL to query a Tracker database
+          </para>
+          <indexterm zone="tracker3 tracker3-sparql">
+            <primary sortas="b-tracker3-sparql">tracker3-sparql</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="tracker3-sql">
+        <term><command>tracker3-sql</command></term>
+        <listitem>
+          <para>
+            uses SQL to query a Tracker database
+          </para>
+          <indexterm zone="tracker3 tracker3-sql">
+            <primary sortas="b-tracker3-sql">tracker3-sql</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -6,9 +6,9 @@
 
   <!ENTITY spidermonkey-download-http "&mozilla-http;/firefox/releases/&spidermonkey-version;esr/source/firefox-&spidermonkey-version;esr.source.tar.xz">
   <!ENTITY spidermonkey-download-ftp  " ">
-  <!ENTITY spidermonkey-md5sum        "212e126b43e8fb72a7314f2c3256b79f">
+  <!ENTITY spidermonkey-md5sum        "150ac3fe6200f01879148ef32c5dd16f">
   <!ENTITY spidermonkey-size          "484 MB">
-  <!ENTITY spidermonkey-buildsize     "3.7 GB (40 MB installed after removing 36MB static lib; add 34 MB for the main tests and 37 MB for the jit tests)">
+  <!ENTITY spidermonkey-buildsize     "3.6 GB (40 MB installed after removing 36MB static lib; add 34 MB for the main tests and 37 MB for the jit tests)">
   <!ENTITY spidermonkey-time          "1.9 SBU (with parallelism=4; add 1.1 SBU for the main tests and 3.7 SBU for the jit tests)">
 ]>
 
@@ -16,7 +16,7 @@
   <?dbhtml filename="spidermonkey.html"?>
 
 
-  <title>SpiderMonkey from Firefox-&spidermonkey-version;</title>
+  <title>SpiderMonkey from firefox-&spidermonkey-version;</title>
 
   <indexterm zone="spidermonkey">
     <primary sortas="a-spidermonkey">SpiderMonkey</primary>
@@ -84,8 +84,8 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="icu"/>,
-      <xref linkend="rust"/>,
-      <xref linkend="six"/>, and
+      <xref linkend="rust"/>, and
+      <!--<xref linkend="six"/>, and-->
       <xref linkend="which"/>
     </para>
 
@@ -149,7 +149,7 @@ tar: Exiting with failure status due to previous errors
       </para>
 
     </note>
-
+<!--
     <para>
       The building system ships several internal copies of the Python 3
       module <filename>six.py</filename>.  The shipped copies are too old
@@ -160,7 +160,7 @@ tar: Exiting with failure status due to previous errors
 <screen><userinput>for i in $(find -name six.py); do
   ln -sfv /usr/lib/python&python3-majorver;/site-packages/six.py $i;
 done</userinput></screen>
-
+-->
     <para>
       Install <application>SpiderMonkey</application> by running the following
       commands:
@@ -182,7 +182,6 @@ cd    obj &amp;&amp;
                     --disable-debug-symbols  \
                     --disable-jemalloc       \
                     --enable-readline        \
-                    --enable-rust-simd       \
                     --with-intl-api          \
                     --with-system-icu        \
                     --with-system-zlib       &amp;&amp;
@@ -194,7 +193,7 @@ make</userinput></screen>
       JSTESTS_EXTRA_ARGS="--timeout 300 --wpt=disabled"</command>.
       It's recommended to redirect the output into a log.
       <!-- recheck when ICU gets upgraded -->
-      Because we are building with system ICU, 42 tests
+      Because we are building with system ICU, 39 tests
       (out of a total of more than 50,000) are known to fail.
       The test suite is executed with all CPU cores available: even in a
       cgroup with less cores assigned, it still attempts to spawn as many
@@ -289,12 +288,12 @@ sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js&spidermonkey-major;-config</userinput></sc
       <parameter>--enable-readline</parameter>: This switch enables Readline
       support in the SpiderMonkey command line interface.
     </para>
-
+    <!--
     <para>
-      <parameter>--enable-rust-simd</parameter>: This switch enables SIMD
+      <parameter>- -enable-rust-simd</parameter>: This switch enables SIMD
       optimization in the shipped encoding_rs crate.
     </para>
-
+    -->
     <para>
       <parameter>--with-intl-api</parameter>: This enables the
       internationalization functions required by

@@ -12,6 +12,15 @@
   <title>Setting the PATH for TeX Live</title>
 
   <para>
+    Upstream prefers to install in <filename
+    class="directory">/usr/local</filename> but the BLFS editors regard that as
+    inconvenient, and think using <filename
+    class="directory">/opt/texlive</filename> is more appropriate. Originally
+    BLFS used a full binary install to bootstrap the source install, so the
+    same prefix is used for both.
+  </para>
+
+  <para>
     Before starting to build TeX Live, set up your PATH so
     that the system can properly find the files.  If you set up your login
     scripts as recommended in <xref linkend='postlfs-config-profile'/>, update
@@ -42,7 +51,6 @@ cat &gt; /etc/profile.d/texlive.sh &lt;&lt; EOF
 TEXLIVE_PREFIX=/opt/texlive/&texlive-year;
 export TEXLIVE_PREFIX
 
-pathappend \$TEXLIVE_PREFIX/texmf-dist/doc/man  MANPATH
 pathappend \$TEXLIVE_PREFIX/texmf-dist/doc/info INFOPATH
 pathappend \$TEXLIVE_PREFIX/bin/$TEXARCH
 
@@ -56,7 +64,7 @@ unset TEXARCH</userinput></screen>
 
   <note>
     <para>
-      The standard MANPATH and INFOPATH path are specified above to
+      The standard INFOPATH path are specified above to
       ensure they are included.  If they are already set in the boot script
       procedure, the pathappend function will ensure duplicates are
       removed, so including them here will do no harm.
