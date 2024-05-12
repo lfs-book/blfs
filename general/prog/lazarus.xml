@@ -7,7 +7,7 @@
   <!--
       NOTE:
       Whenever upgrading to another version of Lazarus,
-      update qt5pas.xml, too!
+      update qt5pas.xml and qt6pas.xml, too!
   -->
   <!ENTITY lazarus-download-http "https://downloads.sourceforge.net/project/lazarus/Lazarus Zip _ GZip/Lazarus &lazarus-version;/lazarus-&lazarus-version;-0.tar.gz">
   <!ENTITY lazarus-md5sum        "&lazarus-chksum;">
@@ -68,9 +68,8 @@
 
     <bridgehead renderas="sect3">Lazarus Dependencies</bridgehead>
     <para role="required">
-      <xref linkend="fpc"/>, and one of 
-      <xref linkend="qt5"/> and <xref linkend="qt5pas"/> for QT5 based IDE,
-      <xref linkend="qt6"/> and <xref linkend="qt6pas"/> for QT6 based IDE,
+      <xref linkend="fpc"/>, and
+      <xref linkend="qt6"/> plus <xref linkend="qt6pas"/> for QT6 based IDE,
       or
       <xref linkend="gtk3"/> for Gtk3 based IDE
     </para>
@@ -90,51 +89,51 @@
 <screen><userinput>make -j1 FPC=/usr/bin/fpc clean</userinput></screen>
 
 <!--
-  Looks like that even both versions (gtk3, qt5) can be on one machine
-  when the binaries 'lazarus' and 'startlazarus' are moved to
+  Looks like that even multible versions (gtk3, qt5, qt6) can be on
+  one machine at the same time when the binaries 'lazarus' and
+  'startlazarus' are moved to
+  
     lazarus      -> lazarus-gtk3
     startlazarus -> startlazarus-gtk3
+
   and after building the QT5 variant
+
     lazarus      -> lazarus-qt5
     startlazarus -> startlazarus-qt5
-  and than symlink lazarus/startlazarus to the desired ones.
-  (it needs to be analyzed more deeply)
 
-  Instructions are taken from ArchLinux and adopted to LFS
+  and than symlink lazarus/startlazarus to the desired ones.
 -->
     <para>
       If you want to build <application>Lazarus</application> with
       the gtk3 toolkit, build the package by running the following
-      commands, otherwise skip the following instructions and proceed
-      to the instructions to build the QT5 based variant below.
+      commands, otherwise skip the GTK instructions and proceed
+      to the instructions to build the QT based variant below.
     </para>
 
+    <para>Built GTK based IDE:</para>
 <screen><userinput>make -j1 FPC=/usr/bin/fpc LCL_PLATFORM=gtk3 bigide</userinput></screen>
 
     <para>
-      If the gtk3 variant has bee built, skip the QT5 and QT6 section and
-      proceed to the installation.
-      Otherwise <application>Lazarus</application> is to be built using
-      the QT5 library by running the following commands:
+      Now proceed to the installation (meaning skip the QT build below).
     </para>
 
+<!-- QT5 fades out of BLFS ...    
+    <para>Built Qt5 based IDE:</para>
 <screen><userinput>make -j1 FPC=/usr/bin/fpc LCL_PLATFORM=qt5 bigide</userinput></screen>
 
     <para>
       Now proceed to the installation.
     </para>
+-->
     
-    <para>
-      <application>Lazarus</application> can also be built using the
-      QT6 library. Build it in similar way:
-    </para>
+    <para>Built Qt6 based IDE:</para>
 <screen><userinput>make -j1 FPC=/usr/bin/fpc LCL_PLATFORM=qt6 bigide</userinput></screen>
 
     <para>
-      Likewise, a gtk2 variant can be built in similar way - just use
-      LCL_PLATFORM=gtk2 in the <code>make ... bigide</code> command. It
-      is not included here as gtk2 is quite outdated and no longer included
-      in the BLFS book.
+      Likewise, a gtk2 or a qt5 variant can be built in similar way - just use
+      LCL_PLATFORM=gtk2 resp. LCL_PLATFORM=qt5 in the <code>make ... bigide</code>
+      command. It is not included here as gtk2 and qt5 are outdated
+      and no longer included in the BLFS book.
     </para>
 
     <para>
