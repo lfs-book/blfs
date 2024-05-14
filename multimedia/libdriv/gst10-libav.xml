@@ -92,6 +92,17 @@
     <title>Installation of GStreamer Libav</title>
 
     <para>
+      First, fix some usage of deprecated APIs that causes a build failure:
+    </para>
+
+<screen><userinput remap="pre">sed -e '1375,1430d' \
+    -e '2058d'      \
+    -e '2105,2140d' \
+    -e '2217,2221d' \
+    -i ext/libav/gstavdemux.c &amp;&amp;
+sed -i '2122aif (!gst_element_register (plugin, type_name, rank, type)) {' ext/libav/gstavdemux.c</userinput></screen>
+
+    <para>
       Install <application>GStreamer Libav</application> by running the following
       commands:
     </para>
