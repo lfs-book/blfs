@@ -7,10 +7,10 @@
   <!ENTITY gcc-download-http  "&gnu-http;/gcc/gcc-&gcc-version;/gcc-&gcc-version;.tar.xz">
   <!ENTITY gcc-download-ftp   " ">
   <!-- Update this also on the grub-uefi page -->
-  <!ENTITY gcc-md5sum         "e0e48554cc6e4f261d55ddee9ab69075">
-  <!ENTITY gcc-size           "84 MB">
-  <!ENTITY gcc-buildsize      "13 GB (2.9 GB installed with all listed languages; add 1.5 GB for tests)">
-  <!ENTITY gcc-time           "13 SBU (add 29 SBU for tests; both with parallelism=8)">
+  <!ENTITY gcc-md5sum         "24195dca80ded5e0551b533f46a4481d">
+  <!ENTITY gcc-size           "88 MB">
+  <!ENTITY gcc-buildsize      "11 GB (3.4 GB installed with all listed languages; add 1.5 GB for tests)">
+  <!ENTITY gcc-time           "12 SBU (add 32 SBU for tests; both with parallelism=8)">
 ]>
 
 <sect1 id="gcc" xreflabel="GCC-&gcc-version;">
@@ -168,21 +168,31 @@ cd    build               &amp;&amp;
     --with-system-zlib    \
     --enable-default-pie  \
     --enable-default-ssp  \
+    --enable-host-pie     \
     --disable-fixincludes \
     --enable-languages=c,c++,fortran,go,objc,obj-c++,m2 &amp;&amp;
 make</userinput></screen>
 
-    <para>
+    <para>If running tests, as in LFS, remove/fix several known test failures:</para>
+
+<screen><userinput>sed -e '/cpython/d'               -i ../gcc/testsuite/gcc.dg/plugin/plugin.exp
+sed -e 's/no-pic /&amp;-no-pie /'     -i ../gcc/testsuite/gcc.target/i386/pr113689-1.c
+sed -e 's/300000/(1|300000)/'     -i ../libgomp/testsuite/libgomp.c-c++-common/pr109062.c
+sed -e 's/{ target nonpic } //' \
+    -e '/GOTPCREL/d'              -i ../gcc/testsuite/gcc.target/i386/fentryname3.c</userinput></screen>
+
+<para>
       If you have installed additional packages such as
       <application>valgrind</application> and <application>gdb</application>,
       the <application>gcc</application> part of the test suite will run more
       tests than in LFS. Some of those will report FAIL and others XPASS
-      (pass when expected to FAIL). As of gcc-13.2.0, about 65 FAIL occur
+      (pass when expected to FAIL). As of gcc-14.1.0, about 74 FAILs occur
       in the <quote>guality</quote> suite, as well as miscellaneous failures
       throughout the rest of the test suite.
-      If all the compilers above are built, there will be a little over 80
-      unexpected failures out of over 546,000 tests. To run the tests, issue:
+      If all the compilers above are built, there will be a little over 110
+      unexpected failures out of over 617,000 tests. To run the tests, issue:
     </para>
+
 
 <screen><userinput>ulimit -s 32768 &amp;&amp;
 make -k check</userinput></screen>
@@ -248,6 +258,13 @@ ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/&gcc-version;/liblto_plugin.so \
       <option>-fstack-protector-strong</option> option the default when
       compiling programs. <xref linkend="gSSP"/> is a technique preventing
       alteration of the program flow by corrupting the parameter stack.
+    </para>
+
+    <para>
+      <parameter>--enable-host-pie</parameter>: Makes the compiler 
+      executables PIE (Position Independent Executable). This can be used to 
+      enhance protection against ROP (Return Oriented Programming)  attacks, 
+      and can be viewed as part of a wider trend to harden binaries.
     </para>
 
     <para>
