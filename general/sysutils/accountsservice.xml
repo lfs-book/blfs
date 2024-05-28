@@ -143,8 +143,7 @@ meson setup ..            \
       --buildtype=release \
       -Dadmin_group=adm   \
       -Delogind=true      \
-      -Dsystemdsystemunitdir=no &amp;&amp;
-ninja</userinput></screen>
+      -Dsystemdsystemunitdir=no</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
@@ -152,8 +151,25 @@ cd    build &amp;&amp;
 meson setup ..            \
       --prefix=/usr       \
       --buildtype=release \
-      -Dadmin_group=adm   &amp;&amp;
-ninja</userinput></screen>
+      -Dadmin_group=adm</userinput></screen>
+
+    <!-- We have to do this after meson setup because mocklibc is extracted
+         from a tarball by the meson setup command.  -->
+    <para>
+      Now adapt the shipped mocklibc copy to allow building the test suite
+      with GCC 14 or later:
+    </para>
+
+<screen><userinput>grep 'print_indent'     ../subprojects/mocklibc-1.0/src/netgroup.c \
+     | sed 's/ {/;/' >> ../subprojects/mocklibc-1.0/src/netgroup.h &amp;&amp;
+sed -i '1i#include &lt;stdio.h&gt;'                                      \
+    ../subprojects/mocklibc-1.0/src/netgroup.h</userinput></screen>
+
+    <para>
+      Build the package:
+    </para>
+
+    <screen><userinput>ninja</userinput></screen>
 
     <para>
       To test the package, issue <command>ninja test</command>.
