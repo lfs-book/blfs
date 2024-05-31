@@ -6,8 +6,8 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "150ac3fe6200f01879148ef32c5dd16f">
-  <!ENTITY firefox-size          "484 MB">
+  <!ENTITY firefox-md5sum        "cfc09ff51934fe137046f481cd14d265">
+  <!ENTITY firefox-size          "483 MB">
 
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
@@ -281,7 +281,7 @@ ac_add_options --with-system-zlib
 # Sandboxing works well on x86_64 but might cause issues on other
 # platforms. If not on x86_64, e.g. i686, it is recommended to
 # uncomment the following switch.
-#ac_add_options --disable-sandbox
+if [ $(uname -m) != x86_64 ] &amp;&amp; ac_add_options --disable-sandbox
 
 # Using sandboxed wasm libraries has been moved to all builds instead
 # of only mozilla automation builds. It requires extra llvm packages
