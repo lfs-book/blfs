@@ -109,13 +109,18 @@
     <title>Installation of libquicktime</title>
 
     <para>
+      First fix an issue with gcc14:
+    </para>
+
+<screen><userinput>sed -i '/qtpng.h/a #include &lt;string.h&gt;' plugins/png/qtpng.c</userinput></screen>
+
+    <para>
       Install <application>libquicktime</application> by running the
       following commands:
     </para>
-    <!--
-<screen><userinput>patch -Np1 -i ../libquicktime-&libquicktime-version;-ffmpeg4-1.patch &amp;&amp;
-    -->
-<screen><userinput>./configure --prefix=/usr     \
+
+<screen><userinput>CFLAGS="-msse -msse2"         \
+./configure --prefix=/usr     \
             --enable-gpl      \
             --without-doxygen \
             --without-ffmpeg  \
