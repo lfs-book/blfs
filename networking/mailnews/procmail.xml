@@ -5,11 +5,11 @@
   %general-entities;
 
 <!--  <!ENTITY procmail-download-http "http://www.ring.gr.jp/archives/net/mail/procmail/procmail-&procmail-version;.tar.gz"> -->
-  <!ENTITY procmail-download-http "https://ftp.osuosl.org/pub/blfs/conglomeration/procmail/procmail-&procmail-version;.tar.gz">
+  <!ENTITY procmail-download-http "https://github.com/BuGlessRB/procmail/archive/refs/tags/v&procmail-version;/procmail-&procmail-version;.tar.gz">
   <!ENTITY procmail-download-ftp  " ">
-  <!ENTITY procmail-md5sum        "1678ea99b973eb77eda4ecf6acae53f1">
-  <!ENTITY procmail-size          "226 KB">
-  <!ENTITY procmail-buildsize     "1.7 MB">
+  <!ENTITY procmail-md5sum        "e38b8739e5c6400e3586c5fd9810c1e0">
+  <!ENTITY procmail-size          "296 KB">
+  <!ENTITY procmail-buildsize     "2.1 MB">
   <!ENTITY procmail-time          "less than 0.1 SBU">
 ]>
 
@@ -103,8 +103,7 @@
       commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role='root'><userinput>sed -i 's/getline/get_line/' src/*.[ch]                   &amp;&amp;
-patch -Np1 -i ../procmail-&procmail-version;-consolidated_fixes-1.patch &amp;&amp;
+<screen role='root'><userinput>patch -Np1 -i ../procmail-&procmail-version;-consolidated_fixes-1.patch &amp;&amp;
 
 make LOCKINGTEST=/tmp MANDIR=/usr/share/man install       &amp;&amp;
 make install-suid</userinput></screen>
@@ -114,11 +113,13 @@ make install-suid</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+<!--
     <para>
       <command>sed -i 's/getline/get_line/' src/*.[ch]</command>: This renames
       procmail's getline function to avoid conflict with the getline function
       from <application>glibc</application>.
     </para>
+-->
 
     <para>
       <command>make LOCKINGTEST=/tmp install</command>: This prevents

@@ -118,6 +118,12 @@
 -->
 
     <para>
+      First, fix building this package with gcc-14:
+    </para>
+
+<screen><userinput remap="pre">sed -i '1794 s/tp_value_array_free/(GDestroyNotify) tp_value_array_free/' telepathy-glib/protocol.c</userinput></screen>
+
+    <para>
       If you intend to run the tests, one of them defaults to invoking
       <filename>/usr/bin/python</filename> and fails if it is absent, causing
       the second batch of tests to not run - unlike the other tests which can be
