@@ -71,7 +71,8 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="glib2"/> (GObject Introspection recommended)
+      <xref linkend="glib2"/> (GObject Introspection recommended) and
+      <xref linkend="vala"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -81,7 +82,6 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="vala"/> (with Valadoc) and
       <ulink url="https://github.com/linux-test-project/lcov">LCOV</ulink>
     </para>
 
@@ -91,11 +91,18 @@
     <title>Installation of libgee</title>
 
     <para>
+      First, force the Vala code to be regenerated so that it is compatible
+      with gcc-14:
+    </para>
+
+<screen><userinput remap="pre">find . -name \*.vala -exec touch {} \;</userinput></screen>
+
+    <para>
       Install <application>libgee</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --enable-vala &amp;&amp;
 make</userinput></screen>
 
     <para>
