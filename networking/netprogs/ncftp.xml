@@ -105,20 +105,13 @@
       applications that utilize the shared library is subject to a different
       license.
     </para>
-<!--
-    <para>
-      First, fix an issue caused by a change in behavior in GCC-10:
-    </para>
-
-<screen><userinput remap="pre">sed -i 's/^Bookmark/extern Bookmark/' sh_util/gpshare.c</userinput></screen>
 
     <para>
-      Next, update the configure script to use modern C standards:
+      First, fix an issue with the configure script introduced by gcc-14:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../ncftp-&ncftp-version;-configure_fixes-1.patch &amp;&amp;
-autoreconf -fiv -I autoconf_local</userinput></screen>
--->
+<screen><userinput remap="pre">sed -i 's/def HAVE_STDLIB_H/ 1/;s/extern select/extern int select/' configure</userinput></screen>
+
     <para>
       To install <application>NcFTP</application> using the
       first (and optimal) method, run the following commands:
