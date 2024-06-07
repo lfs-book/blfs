@@ -137,6 +137,52 @@
       </itemizedlist>
     </para>
 
+    <note>
+      <para>
+        <emphasis role="bold">Choosing Mesa Drivers</emphasis>
+      </para>
+
+      <para>
+        In the instructions below, all the available drivers are built.  That
+        will almost always work.  However, it is not efficient.  Depending on
+        your video hardware, you probably need only specific drivers.
+      </para>
+
+      <para>
+        The first thing you need to know is which type of video device you
+        have.  In some cases it is built into the CPU.  In others is is a
+        separate PCI card.  In either case you can tell what video hardware you
+        have by running:
+      </para>
+
+      <para>
+        <command>lspci | grep VGA</command>
+      </para>
+
+      <para>
+        The video device is most likely one of three families: AMD, Intel, or
+        Nvidia.  See the Command Explanations for 'gallium-drivers' below to
+        see what options are available for your specific video hardware (or
+        emulated video hardware).  You should probably add the swrast option as
+        a backup driver.
+      </para>
+
+      <para>
+        For 'platforms' you can select x11 and/or wayland.  Note that in BLFS
+        currently only Gnome and KDE can use wayland.  If you are not going to 
+        use one of those desktop environments then you probably only want x11.
+      </para>
+
+      <para>
+        For 'vulkan-drivers' you may want to limit the selection to your
+        current hardware.  These drivers are used by some specific applications.
+        
+        For example, ffmpeg (including ffplay) will use Vulkan instead of
+        OpenGL for rendering video on the GPU. If you do not want to do this
+        you may or may not want to install them.
+      </para> 
+    </note>
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="libgcrypt"/>,
