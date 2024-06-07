@@ -176,30 +176,24 @@
 make</userinput></screen>
 
     <para>
-      <!-- I'm getting a test failure with empty $LANG:
-           "test test_curses failed"
-           "_curses.error: inswstr() returned ERR"
-           not sure why, but let's just work around it with LC_ALL.  
-  
-           For Python-3.12.0 all tests pass with only LANG=en_US.utf8.
-           Total tests: run=41,505 skipped=1,199
-           Total test files: run=477/483 skipped=12 resource_denied=6
+      Some tests are known to occasionally hang indefinitely.  So to test
+      the results, run the test suite but set a 2-minute time limit for each
+      test case:
+    </para>
 
-           For Python-3.12.1 all tests pass
-           Total tests: run=40,624 skipped=1,136
-           Total test files: run=486/489 skipped=24 resource_denied=3
+<screen remap='test'><userinput>make test TESTOPTS="--timeout 120"</userinput></screen>
 
-           For Python-3.12.2 all tests pass
-           Total tests: run=41,580 skipped=1,144
-           Total test files: run=485/488 skipped=23 resource_denied=3
+    <!-- For Python-3.12.3 all tests pass
+         Total tests: run=41,778 skipped=1,155
+         Total test files: run=485/488 skipped=24 resource_denied=3
+    -->
 
-           For Python-3.12.3 all tests pass
-           Total tests: run=41,778 skipped=1,155
-           Total test files: run=485/488 skipped=24 resource_denied=3
-      -->
-      To test the result, issue <command>LC_ALL=en_US.UTF-8
-      make test</command>.
-      Some tests may need an Internet connection.
+    <para>
+      For a relatively slow system you may need to increase the time
+      limit and 1 SBU (measured when building Binutils pass 1 with one CPU
+      core) should be enough.  Some tests are flaky, so the test suite will
+      automatically re-run failed tests.  If a test failed but then passed
+      when re-run, it should be considered as passed.
     </para>
 
     <para>
