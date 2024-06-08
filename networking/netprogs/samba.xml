@@ -181,7 +181,8 @@ PATH=$PWD/pyvenv/bin:$PATH                 \
     --without-ad-dc                        \
     --without-systemd                      \
     --with-system-mitkrb5                  \
-    --enable-selftest                      &amp;&amp;
+    --enable-selftest                      \
+    --disable-rpath-install                &amp;&amp;
 make</userinput></screen>
 
 <screen revision="systemd"><userinput>PYTHON=$PWD/pyvenv/bin/python3             \
@@ -194,7 +195,8 @@ make</userinput></screen>
     --enable-fhs                           \
     --without-ad-dc                        \
     --with-system-mitkrb5                  \
-    --enable-selftest                      &amp;&amp;
+    --enable-selftest                      \
+    --disable-rpath-install                &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -303,6 +305,18 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       building with the system version of Kerberos. This
       mitigates security vulnerabilities and reduces build time.
       Remove this if you do not have <xref linkend="mitkrb"/> installed.
+    </para>
+
+    <!-- Note that /usr/lib/samba is still in rpath and it's really
+         needed. -->
+    <para>
+      <parameter>--disable-rpath-install</parameter>: Removes
+      the library installation path from embedded shared library search
+      paths in the installed binary executable files and shared libraries.
+      When this package is installed into the standard location the library
+      installation path is <filename class='directory'>/usr/lib</filename>.
+      It's always searched by the dynamic linker, so there is no need to
+      embed it into installed files.
     </para>
 
     <para>
