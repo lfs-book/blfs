@@ -273,6 +273,14 @@ mv projects/compiler-rt-&llvm-version;.src projects/compiler-rt</userinput></scr
 <screen><userinput>grep -rl '#!.*python' | xargs sed -i '1s/python$/python3/'</userinput></screen>
 
     <para>
+      Ensure installing the <command>FileCheck</command> program which is
+      needed by the test suite of some packages (for example
+      <xref linkend='rust'/>):
+    </para>
+
+    <screen><userinput>sed 's/utility/tool/' -i utils/FileCheck/CMakeLists.txt</userinput></screen>
+
+    <para>
       Install <application>LLVM</application> by running the following
       commands:
     </para>
@@ -282,6 +290,7 @@ cd       build &amp;&amp;
 
 CC=gcc CXX=g++                              \
 cmake -DCMAKE_INSTALL_PREFIX=/usr           \
+      -DCMAKE_SKIP_INSTALL_RPATH=ON         \
       -DLLVM_ENABLE_FFI=ON                  \
       -DCMAKE_BUILD_TYPE=Release            \
       -DLLVM_BUILD_LLVM_DYLIB=ON            \
@@ -390,8 +399,7 @@ systemd-run --user --pty -d -G -p LimitCORE=0 ninja check-all</userinput></scree
       Now, as the &root; user:
     </para>
 
-<screen role="root"><userinput>ninja install &amp;&amp;
-cp bin/FileCheck /usr/bin</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 <!-- as of version 13.0.0, the install process seems to install the html
      documentation and the manual pages. The llvm html documentation
      is installed into /usr/share/doc/LLVM/llvm, while the clang html
@@ -423,6 +431,9 @@ rmdir -v --ignore-fail-on-non-empty /usr/share/doc/LLVM</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-skip-install-rpath.xml"/>
 
     <para>
       <parameter>-DLLVM_ENABLE_FFI=ON</parameter>: This switch allows
