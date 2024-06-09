@@ -133,9 +133,10 @@
     </para>
 
 <!-- <screen><userinput>patch -Np1 -i ../lm_sensors-&lm_sensors-version;-upstream_fixes-1.patch &amp;&amp; -->
-<screen><userinput>make PREFIX=/usr        \
-     BUILD_STATIC_LIB=0 \
-     MANDIR=/usr/share/man</userinput></screen>
+<screen><userinput>make PREFIX=/usr           \
+     BUILD_STATIC_LIB=0    \
+     MANDIR=/usr/share/man \
+     EXLDFLAGS=</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -161,6 +162,14 @@ cp -rv              README INSTALL doc/* \
       <parameter>BUILD_STATIC_LIB=0</parameter>: This parameter disables
       compiling and installing the static version of
       <filename class="libraryfile">libsensors</filename>.
+    </para>
+
+    <para>
+      <parameter>EXLDFLAGS=</parameter>: This parameter disables
+      hard coding library search paths (rpath) into the
+      binary executable files and shared libraries.  This package does not
+      need rpath for an installtion into the standard location, and rpath
+      may sometimes cause unwanted effects or even security issues.
     </para>
 
     <para>
