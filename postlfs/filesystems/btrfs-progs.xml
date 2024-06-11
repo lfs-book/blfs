@@ -6,10 +6,10 @@
 
   <!ENTITY btrfs-progs-download-http "&kernel-dl;/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v&btrfs-progs-version;.tar.xz">
   <!ENTITY btrfs-progs-download-ftp  " ">
-  <!ENTITY btrfs-progs-md5sum        "e22810ab7d616b5628b7912923ff127b">
+  <!ENTITY btrfs-progs-md5sum        "0eacc7c73c4f086fa10e4bb2fd3f6739">
   <!ENTITY btrfs-progs-size          "2.5 MB">
-  <!ENTITY btrfs-progs-buildsize     "62 MB (transient files created during tests need up to 10 GB)">
-  <!ENTITY btrfs-progs-time          "0.3 SBU (with parallelism=4; add 2.5 SBU for tests, up to 14 SBU on slow disks)">
+  <!ENTITY btrfs-progs-buildsize     "65 MB (transient files created during tests need up to 10 GB)">
+  <!ENTITY btrfs-progs-time          "0.3 SBU (with parallelism=4; add 3.6 SBU for tests, up to 14 SBU on slow disks)">
 ]>
 
 <sect1 id="btrfs-progs" xreflabel="btrfs-progs-&btrfs-progs-version;">
@@ -118,7 +118,9 @@
     <para>
       In addition to the above and to the options required for
       <xref linkend="lvm2"/>, the following
-      options must be enabled for running tests:
+      options must be set for running tests. The options marked
+      as empty should <emphasis>not</emphasis> be selected because they 
+      are for developers  and make some tests fail.
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -157,6 +159,14 @@ make</userinput></screen>
     </para>
 
 <screen remap="test"><userinput>make fssum</userinput></screen>
+
+    <para>
+      First, fix one test and disable another that is known to fail:
+    </para>
+
+<screen role="root" remap="test"><userinput>sed -i 's/ mount/&amp; -o nodiscard/' tests/misc-tests/004-shrink-fs/test.sh &amp;&amp;
+mv tests/misc-tests/041-subvolume-delete-during-send/test.sh \
+   tests/misc-tests/041-subvolume-delete-during-send/test.sh.skip</userinput></screen>
 
     <para>
       To test the results, issue (as the &root; user):
