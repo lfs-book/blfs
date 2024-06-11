@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY spirv-llvm-translator-download-http "https://github.com/KhronosGroup/SPIRV-LLVM-Translator/archive/v&spirv-llvm-translator-version;/SPIRV-LLVM-Translator-&spirv-llvm-translator-version;.tar.gz">
+  <!ENTITY spirv-llvm-translator-md5sum        "bdf8c56560b187e198f9e4139cdb79a2">
+  <!ENTITY spirv-llvm-translator-size          "1.6 MB">
+  <!ENTITY spirv-llvm-translator-buildsize     "42 MB">
+  <!ENTITY spirv-llvm-translator-time          "0.6 SBU (with parallelism=4)">
+]>
+
+<sect1 id="spirv-llvm-translator" xreflabel="SPIRV-LLVM-Translator-&spirv-llvm-translator-version;">
+  <?dbhtml filename="spirv-llvm-translator.html"?>
+
+  <title>SPIRV-LLVM-Translator-&spirv-llvm-translator-version;</title>
+
+  <indexterm zone="spirv-llvm-translator">
+    <primary sortas="a-spirv-llvm-translator">SPIRV-LLVM-Translator</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to SPIRV-LLVM-Translator</title>
+
+    <para>
+      The <application>SPIRV-LLVM-Translator</application> package contains a
+      library and utility for converting between LLVM IR and SPIR-V code.
+      This package currently only supports the OpenCL/Compute version of SPIR-V.
+    </para>
+
+    &lfs121_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&spirv-llvm-translator-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &spirv-llvm-translator-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &spirv-llvm-translator-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &spirv-llvm-translator-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &spirv-llvm-translator-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">SPIRV-LLVM-Translator Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="libxml2"/>,
+      <xref linkend="llvm"/>, and
+      <xref linkend="spirv-tools"/>
+    </para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of SPIRV-LLVM-Translator</title>
+
+    <para>
+      Install <application>SPIRV-LLVM-Translator</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr               \
+      -DCMAKE_BUILD_TYPE=Release                \
+      -DBUILD_SHARED_LIBS=ON                    \
+      -DCMAKE_SKIP_INSTALL_RPATH=ON             \
+      -DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE=/usr \
+      -G Ninja .. &amp;&amp;
+ninja</userinput></screen>
+
+    <!-- This package does come with a test suite, but needs an internal
+    utility from LLVM's source tree. Let's not mention it for now. -->
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now, as the &root; user:
+    </para>
+
+<screen role="root"><userinput>ninja install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>-DBUILD_SHARED_LIBS=ON</parameter>: This parameter forces
+      building shared versions of the libraries.
+    </para>
+
+    <para>
+      <parameter>-DCMAKE_SKIP_INSTALL_RPATH=ON</parameter>: This parameter
+      forces CMake to remove hardcoded library search paths when installing
+      a binary executable or library. This package does not need rpath once
+      it's installed into the standard location, and leaving it can cause
+      unexpected effects of security issues.
+    </para>
+    
+    <para>
+      <parameter>-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE=/usr</parameter>: This
+      parameter allows the build system to use the version of SPIRV-Headers
+      that was installed with SPIRV-Tools, instead of redownloading an
+      unncessary copy of the headers.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          llvm-spirv
+        </seg>
+        <seg>
+          libLLVMSPIRVLib.so
+        </seg>
+        <seg>
+          /usr/include/LLVMSPIRVLib
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="llvm-spirv">
+        <term><command>llvm-spirv</command></term>
+        <listitem>
+          <para>
+            converts between LLVM IR and SPIR-V code
+          </para>
+          <indexterm zone="spirv-llvm-translator llvm-spirv">
+            <primary sortas="b-llvm-spirv">llvm-spirv</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libLLVMSPIRVLib">
+        <term><filename class="libraryfile">libLLVMSPIRVLib.so</filename></term>
+        <listitem>
+          <para>
+            contains functions that convert between LLVM IR and SPIR-V code
+          </para>
+          <indexterm zone="spirv-llvm-translator libLLVMSPIRVLib">
+            <primary sortas="c-libLLVMSPIRVLib">libLLVMSPIRVLib.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+</sect1>
