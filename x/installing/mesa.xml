@@ -6,10 +6,10 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  " ">
-  <!ENTITY mesa-md5sum        "a19dd32c64e33de82119dfb37c2320f6">
-  <!ENTITY mesa-size          "20 MB">
-  <!ENTITY mesa-buildsize     "641 MB (with docs, add 263 MB for tests)">
-  <!ENTITY mesa-time          "2.7 SBU (with docs; add 0.6 SBU for tests; both with parallelism=4)">
+  <!ENTITY mesa-md5sum        "8415005045bfa3a423da5ef1a2303a42">
+  <!ENTITY mesa-size          "28 MB">
+  <!ENTITY mesa-buildsize     "1.2 GB (with docs, add 263 MB for tests)">
+  <!ENTITY mesa-time          "5.1 SBU (with docs; add 0.6 SBU for tests; both with parallelism=4)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
@@ -132,6 +132,18 @@
               <xref role="nodep" linkend='plasma-build'/>,
               GNOME, and recommended for 
               <xref role="nodep" linkend='gtk3'/>)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="libclc"/> and <xref linkend="ply"/> (required for
+            the Intel drivers)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="cbindgen"/> and <xref linkend="rust-bindgen"/>
+            (required for the swrast Vulkan driver and the Nouveau driver)
           </para>
         </listitem>
       </itemizedlist>
@@ -536,7 +548,10 @@ ninja</userinput></screen>
 
       <seglistitem>
         <seg>
-          glxgears and glxinfo
+          glxgears,
+          glxinfo,
+          mme_fermi_sim_hw_test, and
+          mme_tu104_sim_hw_test
         </seg>
         <seg>
           libEGL.so,
@@ -567,14 +582,14 @@ ninja</userinput></screen>
           radeonsi_drv_video.so,
           swrast_dri.so,
           virtio_gpu_dri.so,
-          virtio_gpu_drv_video.so, and
-          vmwgfx_dri.so
+          virtio_gpu_drv_video.so,
+          vmwgfx_dri.so, and
+          zink_dri.so
           <!-- End DRI Drivers -->
         </seg>
         <seg>
           <!-- Begin VDPAU drivers -->
           libvdpau_nouveau.so,
-          libvdpau_r300.so
           libvdpau_r600.so, and
           libvdpau_radeonsi.so
           libvdpau_virtio_gpu.so
@@ -584,7 +599,8 @@ ninja</userinput></screen>
         <seg>
           libvulkan_intel_hasvk.so,
           libvulkan_intel.so,
-          libvulkan_lvp.so, and
+          libvulkan_lvp.so,
+          libvulkan_nouveau.so, and
           libvulkan_radeon.so
         </seg>
         <seg>
