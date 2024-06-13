@@ -173,20 +173,20 @@
 <screen><userinput>mkdir build                         &amp;&amp;
 cd    build                         &amp;&amp;
 
-cmake  -DCMAKE_BUILD_TYPE=Release   \
-       -DCMAKE_INSTALL_PREFIX=/usr  \
-       -DTESTDATADIR=$PWD/testfiles \
-       -DENABLE_QT5=OFF             \
-       -DENABLE_UNSTABLE_API_ABI_HEADERS=ON \
-       ..                           &amp;&amp;
-make</userinput></screen>
+cmake -D CMAKE_BUILD_TYPE=Release   \
+      -D CMAKE_INSTALL_PREFIX=/usr  \
+      -D TESTDATADIR=$PWD/testfiles \
+      -D ENABLE_QT5=OFF             \
+      -D ENABLE_UNSTABLE_API_ABI_HEADERS=ON \
+      -G Ninja ..                   &amp;&amp;
+ninja</userinput></screen>
 
     <para>
       In order to run the test suite, some testcases are needed and can
       be obtained only from a git repository. The command to download
       them is:
 <command>git clone --depth 1 https://gitlab.freedesktop.org/poppler/test.git testfiles</command>.
-      Then issue: <command>LC_ALL=en_US.UTF-8 make test</command>.
+      Then issue: <command>LC_ALL=en_US.UTF-8 ninja test</command>.
       One subtest of check_qt6_signature_basics is known to fail.
     </para>
 
@@ -194,7 +194,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
     <para>
       To install the documentation, run the following commands as
@@ -219,7 +219,7 @@ cd poppler-data-&poppler-data-version;</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make prefix=/usr install</userinput></screen>
+<screen role="root"><userinput>ninja prefix=/usr install</userinput></screen>
 
   </sect2>
 
@@ -227,61 +227,61 @@ cd poppler-data-&poppler-data-version;</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-DCMAKE_BUILD_TYPE=Release</parameter>: This switch is used
+      <parameter>-D CMAKE_BUILD_TYPE=Release</parameter>: This switch is used
       to apply a higher level of compiler optimizations.
     </para>
 
     <para>
-      <parameter>-DTESTDATADIR=$PWD/testfiles</parameter>: Tells the test
+      <parameter>-D TESTDATADIR=$PWD/testfiles</parameter>: Tells the test
       programs where the auxiliary files are located.
     </para>
-<!--
+
     <para>
-      <parameter>-DENABLE_QT5=OFF</parameter>: This switch is needed to
+      <parameter>-D ENABLE_QT5=OFF</parameter>: This switch is needed to
       prevent an error when Qt5 is not installed. Remove it if you
-      have installed <xref linkend="qt6" role="nodep"/>.
+      have installed &qt5-deps;.
     </para>
--->
+
     <para>
-      <parameter>-DENABLE_UNSTABLE_API_ABI_HEADERS=ON</parameter>: Installs some old
+      <parameter>-D ENABLE_UNSTABLE_API_ABI_HEADERS=ON</parameter>: Installs some old
       <application>Xpdf</application> headers required by certain programs.
       <!--(e.g. <application>Inkscape</application>).-->
     </para>
 
     <para>
-      <option>-DENABLE_GTK_DOC=ON</option>: Use this parameter if
+      <option>-D ENABLE_GTK_DOC=ON</option>: Use this parameter if
       GTK-Doc <!--and Pygments--> is installed and you wish to rebuild and
       install the API documentation.
     </para>
 
     <para>
-      <option>-DENABLE_QT5=OFF</option>: Use this parameter if
-      &qt5-deps; is not installed. 
+      <option>-D ENABLE_QT6=OFF</option>: Use this parameter if
+      <xref linkend='qt6'/> is not installed.
     </para>
 
     <para>
-      <option>-DENABLE_BOOST=OFF</option>: Use this parameter if you have
+      <option>-D ENABLE_BOOST=OFF</option>: Use this parameter if you have
       not installed <application>boost</application> (the Splash backend for
       Qt5 recommends boost).
     </para>
 
     <para>
-      <option>-DENABLE_NSS3=OFF</option>: Use this parameter if you have
+      <option>-D ENABLE_NSS3=OFF</option>: Use this parameter if you have
       not installed <application>nss</application>.
     </para>
 
     <para>
-      <option>-DENABLE_GPGME=OFF</option>: Use this parameter if you have
+      <option>-D ENABLE_GPGME=OFF</option>: Use this parameter if you have
       not installed <application>gpgme</application>.
     </para>
 
     <para>
-      <option>-DENABLE_LIBTIFF=OFF</option>: Use this parameter if you have
+      <option>-D ENABLE_LIBTIFF=OFF</option>: Use this parameter if you have
       not installed <application>libtiff</application>.
     </para>
 
     <para>
-      <command>LC_ALL=en_US.UTF-8 make test</command>: Runs the test suite.
+      <command>LC_ALL=en_US.UTF-8 ninja test</command>: Runs the test suite.
       The environment variable LC_ALL=en_US.UTF-8 is only needed if the
       default locale does not include UTF-8.
     </para>
