@@ -7,17 +7,17 @@
   <!ENTITY audacious-download-http
            "https://distfiles.audacious-media-player.org/audacious-&audacious-version;.tar.bz2">
   <!ENTITY audacious-download-ftp         " ">
-  <!ENTITY audacious-md5sum               "751a002964907c3a8fc2f571ffc00ec7">
-  <!ENTITY audacious-size                 "620 KB">
-  <!ENTITY audacious-buildsize            "16 MB (with Qt5 and GTK3 support)">
-  <!ENTITY audacious-time                 "0.2 SBU (with Qt5 and GTK3 support)">
+  <!ENTITY audacious-md5sum               "812367242529db8ca0fb0fdb71ffc91f">
+  <!ENTITY audacious-size                 "624 KB">
+  <!ENTITY audacious-buildsize            "14 MB (with GTK support)">
+  <!ENTITY audacious-time                 "0.2 SBU (with GTK support)">
 
   <!ENTITY audacious-plugins-download
            "https://distfiles.audacious-media-player.org/audacious-plugins-&audacious-plugins-version;.tar.bz2">
-  <!ENTITY audacious-plugins-md5sum       "3e233d8219407218244e684e096236ec">
+  <!ENTITY audacious-plugins-md5sum       "0946f32277afc60ec12510bd09507016">
   <!ENTITY audacious-plugins-size         "1.7 MB">
-  <!ENTITY audacious-plugins-buildsize    "37 MB (with Qt5 and GTK3 support)">
-  <!ENTITY audacious-plugins-time         "1.4 SBU (with Qt5 and GTK3 support)">
+  <!ENTITY audacious-plugins-buildsize    "40 MB (with GTK support)">
+  <!ENTITY audacious-plugins-time         "2.0 SBU (with GTK support)">
 ]>
 
 <sect1 id="audacious" xreflabel="Audacious-&audacious-version;">
@@ -108,8 +108,7 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="gtk3"/> or
-      (<xref linkend="qt5"/> or
-       <xref role="nodep" linkend="qt5-components"/> with qtmultimedia)
+      <xref linkend="qt6"/> 
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -180,9 +179,9 @@ cd    build &amp;&amp;
 
 meson setup --prefix=/usr       \
             --buildtype=release \
-            -Dgtk3=true         \
-            -Dbuildstamp=BLFS   \
-            -Dlibarchive=true   \
+            -D gtk=true         \
+            -D buildstamp=BLFS  \
+            -D libarchive=true  \
             ..                  &amp;&amp;
 
 ninja</userinput></screen>
@@ -209,16 +208,13 @@ ninja</userinput></screen>
 <screen><userinput>tar -xf ../../audacious-plugins-&audacious-plugins-version;.tar.bz2 &amp;&amp;
 cd audacious-plugins-&audacious-plugins-version;                    &amp;&amp;
 
-sed -e '/libxml/a #include &lt;libxml/parser.h&gt;' \
-    -i src/scrobbler2/scrobbler.h             &amp;&amp;
-
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson setup           \
   --prefix=/usr       \
   --buildtype=release \
-  -Dgtk3=true         \
+  -D gtk=true         \
   ..                  &amp;&amp;
 
 ninja</userinput></screen>
@@ -236,27 +232,27 @@ ninja</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-Dbuildstamp=BLFS</parameter>: This switch appends
+      <parameter>-Di buildstamp=BLFS</parameter>: This switch appends
       the given text to the version string.
     </para>
 
     <para>
-      <parameter>-Dgtk3=true</parameter>: This option sets the default
+      <parameter>-D gtk=true</parameter>: This option enables GTK support for th
       graphical user interface.
     </para>
 
     <para>
-      <parameter>-Dlibarchive=true</parameter>: This adds libarchive support,
+      <parameter>-D qt=true</parameter>: This option enables Qt support for the
+      graphical user interface.
+    </para>
+
+    <para>
+      <parameter>-D libarchive=true</parameter>: This adds libarchive support,
       for reading compressed module sets or skins.
     </para>
 
     <para>
-      <command>sed -e '/libxml/a ...'</command>: This fixes building against
-      libxml-2.12.x.
-    </para>
-
-    <para>
-      <option>-Dvalgrind=true</option>: The option enables Valgrind analysis
+      <option>-D valgrind=true</option>: The option enables Valgrind analysis
       support.
     </para>
 
