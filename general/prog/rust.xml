@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "ce1c084daec811aac07951cc954e7809">
-  <!ENTITY rust-size          "152 MB">
+  <!ENTITY rust-md5sum        "1a00ff85d5fdb48ddbe534dcf1f6183f">
+  <!ENTITY rust-size          "155 MB">
   <!ENTITY rust-buildsize     "8.9 GB (298 MB installed); add 6.4 GB if running the tests">
   <!ENTITY rust-time          "6.7 SBU (including download time; add 6.2 SBU for tests, both using parallelism=8)">
 ]>
@@ -238,7 +238,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn us to do such a review.
-change-id = 121754
+change-id = 123711
 
 [llvm]
 # by default, rust will build for a myriad of architectures
@@ -350,13 +350,16 @@ python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></scre
          issue-21763.rs:
          https://github.com/rust-lang/rust/pull/115869, see my comment
 
-         regression-bad-location-list-67992.rs: rust bug or gdb bug ???? -->
+         regression-bad-location-list-67992.rs: rust bug or gdb bug ????
+
+         2024-06-14: Test result is clean with 1.79.0
     <para>
       Three tests, <filename>tests/ui/error-emitter/highlighting.rs</filename>,
       <filename>tests/ui/issues/issue-21763.rs</filename>, and
       <filename>tests/debuginfo/regression-bad-location-list-67992.rs</filename>,
       are known to fail.
-    </para>
+    </para> -->
+
 <!-- Let's just comment this out.  Nobody has tested on a system w/o
      FileCheck for a long time.
     <para>
@@ -366,7 +369,7 @@ python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></scre
     </para>
 -->
     <para>
-      As with all large test suites, other tests might fail on some machines -
+      As with all large test suites, some tests might fail on some machines -
       if the number of additional failures is low,
       check the log for 'failures:' and review lines above that, particularly the
       'stderr:' lines. Any mention of
@@ -385,9 +388,6 @@ python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></scre
 
     <para>
       Therefore, you should determine the number of failures.
-    </para>
-
-    <para>
       The number of tests which passed and failed can be found by running:
     </para>
 
