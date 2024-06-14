@@ -136,14 +136,19 @@
         </listitem>
         <listitem>
           <para>
-            <xref linkend="libclc"/> and <xref linkend="ply"/> (required for
-            the Intel drivers)
+            <xref linkend="libclc"/> (required for the Intel iris
+            gallium driver)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="ply"/> (required for the Intel vulkan driver)
           </para>
         </listitem>
         <listitem>
           <para>
             <xref linkend="cbindgen"/> and <xref linkend="rust-bindgen"/>
-            (required for the swrast Vulkan driver and the Nouveau driver)
+            (required for the Nouveau Vulkan driver)
           </para>
         </listitem>
       </itemizedlist>
@@ -164,16 +169,15 @@
         The first thing you need to know is which type of video device you
         have.  In some cases it is built into the CPU.  In others is is a
         separate PCI card.  In either case you can tell what video hardware you
-        have by running:
+        have by installing <xref linkend='pciutils'/> and running:
       </para>
 
-      <para>
-        <command>lspci | grep VGA</command>
-      </para>
+      <screen role='nodump'><userinput>lspci | grep VGA</userinput></screen>
 
       <para>
         The video device is most likely one of three families: AMD, Intel, or
-        Nvidia.  See the Command Explanations for 'gallium-drivers' below to
+        Nvidia.  See the Command Explanations for
+        <parameter>-D gallium-drivers=auto</parameter> below to
         see what options are available for your specific video hardware (or
         emulated video hardware).  You should probably add the swrast option as
         a backup driver.
@@ -192,6 +196,11 @@
         For example, ffmpeg (including ffplay) will use Vulkan instead of
         OpenGL for rendering video on the GPU. If you do not want to do this
         you may or may not want to install them.
+        See the Command Explanations for
+        <parameter>-D vulkan-drivers=auto</parameter> below to
+        see what options are available for your specific video hardware (or
+        emulated video hardware).  You should probably add the swrast option
+        as a backup driver unless you don't need Vulkan at all.
       </para> 
     </note>
 
@@ -380,7 +389,7 @@ ninja</userinput></screen>
 
     <para>
       To test the results, issue:
-      <command>meson configure -Dbuild-tests=true &amp;&amp; ninja test</command>.
+      <command>meson configure -D build-tests=true &amp;&amp; ninja test</command>.
     </para>
 <!-- All 88 tests passed for me for 22.3.3 [pierre]
      All 90 tests passed for me for 23.1.0 [bdubbs]
@@ -417,17 +426,17 @@ ninja</userinput></screen>
 
     <para>
       <anchor id='mesa-gallium-drivers' xreflabel='Mesa Gallium3D Drivers'/>
-      <parameter>-Dgallium-drivers=auto</parameter>: This parameter
+      <parameter>-D gallium-drivers=auto</parameter>: This parameter
       controls which Gallium3D drivers should be built:
 
       <itemizedlist spacing="compact">
         <listitem>
           <para>
             <literal>auto</literal> selects all Gallium3D drivers available
-            for x86. With a comma-separated list, only a subset of these 
+            for x86. With a comma-separated list, only a subset of these
             drivers will be built. If you precisely know which drivers you
-            need, you can build. for example.
-            <option>-Dgallium-drivers=radeonsi,iris,swrast</option>.
+            need, you can select them explicitly. for example.
+            <option>-D gallium-drivers=radeonsi,iris,swrast</option>.
           </para>
         </listitem>
         <listitem>
@@ -478,7 +487,7 @@ ninja</userinput></screen>
         <listitem>
           <para>
              <literal>iris</literal> (for Intel GPUs shipped with Broadwell 
-             or newer CPUs)
+             or newer CPUs, or as a dedicated PCIe card)
           </para>
         </listitem>
         <listitem>
@@ -494,17 +503,77 @@ ninja</userinput></screen>
              shipped with chipsets or Atom D/N 4xx/5xx CPUs)
           </para>
         </listitem>
+        <listitem>
+          <para>
+             <literal>zink</literal> (using Vulkan to implement OpenGL,
+             it's not very useful on x86 as at now but it may replace other
+             drivers for modern GPU models in the future)
+          </para>
+        </listitem>
       </itemizedlist>
     </para>
 
     <para>
-      <parameter>-Dplatforms=...</parameter>: This parameter
+      <parameter>-D vulkan-drivers=auto</parameter>: This parameter
+      controls which Gallium3D drivers should be built:
+
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <literal>auto</literal> selects all Vulkan drivers available
+            for x86. With a comma-separated list, only a subset of these
+            drivers will be built. If you precisely know which drivers you
+            need, you can select them explicitly. for example.
+            <option>-D gallium-drivers=amd,nouveau,swrast</option>.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>amd</literal> (for AMD Radeon HD 7730 or newer AMD GPUs)
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>intel</literal> (for Intel GPUs shipped with Skylake
+            or newer CPUs, or as a dedicated PCIe card)
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>intel_hasvk</literal> (for Intel GPUs shipped with
+            Ivy Bridge, Haswell, or Broadwell CPUs)
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>nouveau</literal> (for GTX 16XX, RTX 20XX, or
+            newer NVIDIA GPUs)
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>swrast</literal> (using CPU for 3D rasterisation.
+            Note that it's much slower than using a modern 3D-capable GPU,
+            so it should be only used if the GPU is not supported by other
+            drivers)
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      <parameter>-D platforms=...</parameter>: This parameter
       controls which windowing systems will be supported. Available
       linux platforms are x11 and wayland.
     </para>
 
     <para>
-      <parameter>-Dvulkan-drivers=auto</parameter>: This switch enables support
+      <parameter>-D vulkan-drivers=auto</parameter>: This switch enables support
       for the Vulkan graphics API. It automatically builds all graphics drivers
       that are available for Vulkan. If you wish to build specific drivers,
       valid options include 'amd', 'intel', 'intel_hasvk' (Haswell CPUs),
@@ -513,26 +582,26 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Dvalgrind=disabled</parameter>: This parameter disables
+      <parameter>-D valgrind=disabled</parameter>: This parameter disables
       the usage of Valgrind during the build process. Remove this parameter
       if you have Valgrind installed, and wish to check for memory leaks.
     </para>
 
     <para>
-      <parameter>-Dlibunwind=disabled</parameter>: This parameter disables
+      <parameter>-D libunwind=disabled</parameter>: This parameter disables
       the usage of libunwind.
     </para>
 
     <para>
-      <command>meson configure -Dbuild-tests=true</command>: This command will
-      reconfigure the build to set <option>-Dbuild-tests=true</option>, but
+      <command>meson configure -D build-tests=true</command>: This command will
+      reconfigure the build to set <option>-D build-tests=true</option>, but
       keep the other options specified in the <command>meson setup</command>
       command unchanged.  It allows <command>ninja test</command> to build and
       run unit tests.
     </para>
 
     <para>
-      <option>-Degl-native-platform="..."</option>: This parameter
+      <option>-D egl-native-platform="..."</option>: This parameter
       controls which Embedded Graphics Library support will be built. Available
       linux options are auto (default), x11, wayland, surfaceless, and drm.
     </para>
