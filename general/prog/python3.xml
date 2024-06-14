@@ -7,12 +7,13 @@
   <!ENTITY python3-download-http
            "https://www.python.org/ftp/python/&python3-version;/Python-&python3-version;.tar.xz">
   <!ENTITY python3-download-ftp  " ">
-  <!ENTITY python3-md5sum        "8defb33f0c37aa4bdd3a38ba52abde4e">
+  <!ENTITY python3-md5sum        "d68f25193eec491eb54bc2ea664a05bd">
   <!ENTITY python3-size          "20 MB">
-  <!ENTITY python3-buildsize     "335 MB (add 57 MB for tests)">
-  <!ENTITY python3-time          "2.2 SBU (add 1.0 SBU for tests; both using parallelism=4)">
+  <!ENTITY python3-buildsize     "336 MB (add 59 MB for tests)">
+  <!ENTITY python3-time          "2.3 SBU (add 1.5 SBU for tests; both using parallelism=4)">
   <!--
   Note: Size does not reflect docs that were installed in LFS.
+  Test time measured with 60 second timeout.
   -->
   <!ENTITY python3htmldoc-download-http
   "https://www.python.org/ftp/python/doc/&python3-version;/python-&python3-version;-docs-html.tar.bz2">
@@ -183,9 +184,14 @@ make</userinput></screen>
 
 <screen remap='test'><userinput>make test TESTOPTS="--timeout 120"</userinput></screen>
 
-    <!-- For Python-3.12.3 all tests pass
+    <!-- 
+         For Python-3.12.3 all tests pass
          Total tests: run=41,778 skipped=1,155
          Total test files: run=485/488 skipped=24 resource_denied=3
+
+         For Python-3.13.4 
+         Total tests: run=42,152 failures=6 skipped=1,234
+         Total test files: run=487/489 failed=4 skipped=17 resource_denied=6 rerun=4
     -->
 
     <para>
@@ -194,6 +200,11 @@ make</userinput></screen>
       core) should be enough.  Some tests are flaky, so the test suite will
       automatically re-run failed tests.  If a test failed but then passed
       when re-run, it should be considered as passed.
+    </para>
+
+    <para>
+      Of over 42,000 tests, the following are known to fail: test__xxsubinterpreters,
+      test_import, test_interpreters, and test_threading.
     </para>
 
     <para>
