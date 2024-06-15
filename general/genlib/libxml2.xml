@@ -73,6 +73,12 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
+          Required patch:
+          <ulink url="&patch-root;/libxml2-&libxml2-version;-upstream_fixes-1.patch"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
           Optional Test Suite:
           <ulink url="https://www.w3.org/XML/Test/xmlts&testsuite-version;.tar.gz"/> - This
           enables <command>make check</command> to do complete testing.
@@ -95,6 +101,17 @@
 
   <sect2 role="installation">
     <title>Installation of libxml2</title>
+
+    <para>
+      At first, fix one issue breaking the <option>--path</option> option
+      of <command>xmllint</command> and <command>xsltproc</command>
+      (from <xref linkend='libxslt'/>), and another issue breaking some
+      <literal>xpointer</literal> attributes in
+      <literal>xi:xinclude</literal> directives.  Both issue could break
+      generating man pages for some packages:
+    </para>
+
+    <screen><userinput>patch -Np1 -i ../libxml2-&libxml2-version;-upstream_fixes-1.patch</userinput></screen>
 
     <para>
       Install <application>libxml2</application> by running the following
