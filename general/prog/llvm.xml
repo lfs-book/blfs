@@ -210,12 +210,13 @@
       <xref linkend="pygments"/>,
       <xref linkend="PyYAML"/> (for tests),
       <xref linkend="rsync"/> (for tests),
-      <xref linkend="recommonmark"/> (for building documentation),
       <phrase revision="systemd"><xref linkend="systemd"/>
       (rebuilt with PAM, for tests),</phrase>
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>),
       <xref linkend="valgrind"/>,
       <xref linkend="zip"/>,
+      <ulink url="https://pypi.org/project/myst-parser">myst-parser</ulink>
+      (for building documentation),
       <ulink url="https://ocaml.org/">OCaml</ulink>,
       and <ulink url="https://github.com/Z3Prover/z3">Z3</ulink>
     </para>
@@ -303,9 +304,9 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr           \
       -DCLANG_CONFIG_FILE_SYSTEM_DIR=/etc/clang \
       -Wno-dev -G Ninja ..                  &amp;&amp;
 ninja</userinput></screen>
-
+<!-- Commented out because myst-parser is not in BLFS and we cannot test
     <para>
-      If you have installed <xref linkend="recommonmark"/> and its
+      If you have installed myst-parser and its
       dependencies, you can generate the html documentation and manual
       pages with the following commands:
     </para>
@@ -321,7 +322,7 @@ ninja docs-llvm-html  docs-llvm-man</userinput></screen>
     </para>
 
 <screen remap="doc"><userinput>ninja docs-clang-html docs-clang-man</userinput></screen>
-
+-->
     <!-- https://github.com/llvm/llvm-project/issues/39012 -->
     <para>
       If you wish to run the tests, remove a test case known to hang
@@ -404,7 +405,9 @@ systemd-run --user --pty -d -G -p LimitCORE=0 ninja check-all</userinput></scree
      documentation and the manual pages. The llvm html documentation
      is installed into /usr/share/doc/LLVM/llvm, while the clang html
      documentation is installed into /usr/share/doc/LLVM/clang. So we have
-     just to move it. -->
+     just to move it.
+
+     commented out because myst-parser is not in BLFS
     <para>
       If you have built the llvm documentation, it has been installed
       by the above command, but it needs to be moved. As the
@@ -414,7 +417,7 @@ systemd-run --user --pty -d -G -p LimitCORE=0 ninja check-all</userinput></scree
 <screen role="root"
         remap="doc"><userinput>install -v -d -m755 /usr/share/doc/llvm-&llvm-version;            &amp;&amp;
 mv -v /usr/share/doc/LLVM/llvm /usr/share/doc/llvm-&llvm-version; &amp;&amp;
-rmdir -v --ignore-fail-on-non-empty /usr/share/doc/LLVM</userinput></screen>
+rmdir -v - -ignore-fail-on-non-empty /usr/share/doc/LLVM</userinput></screen>
 
     <para>
       If you have built the clang documentation, it has been installed, but
@@ -425,8 +428,8 @@ rmdir -v --ignore-fail-on-non-empty /usr/share/doc/LLVM</userinput></screen>
 <screen role="root"
         remap="doc"><userinput>install -v -d -m755 /usr/share/doc/llvm-&llvm-version;             &amp;&amp;
 mv -v /usr/share/doc/LLVM/clang /usr/share/doc/llvm-&llvm-version; &amp;&amp;
-rmdir -v --ignore-fail-on-non-empty /usr/share/doc/LLVM</userinput></screen>
-
+rmdir -v - -ignore-fail-on-non-empty /usr/share/doc/LLVM</userinput></screen>
+-->
   </sect2>
 
   <sect2 role="commands">
@@ -605,7 +608,7 @@ done</userinput></screen>
           /usr/include/{clang,clang-c,llvm,llvm-c},
           /usr/lib/{clang,cmake/{clang,llvm},libear,libscanbuild},
           /usr/share/{clang,opt-viewer,scan-build,scan-view},
-          /usr/share/doc/llvm-&llvm-version;, and
+          <!--/usr/share/doc/llvm-&llvm-version;, -->and
           /etc/clang
         </seg>
       </seglistitem>
