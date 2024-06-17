@@ -7,9 +7,9 @@
   <!ENTITY numpy-download-http "https://files.pythonhosted.org/packages/source/n/numpy/numpy-&numpy-version;.tar.gz">
   <!ENTITY numpy-download-ftp  " ">
   <!ENTITY numpy-md5sum        "&numpy-md5sum;">
-  <!ENTITY numpy-size          "15 MB">
-  <!ENTITY numpy-buildsize     "91 MB (add 333 MB for tests)">
-  <!ENTITY numpy-time          "0.4 SBU (add 2.8 SBU for tests)">
+  <!ENTITY numpy-size          "17 MB">
+  <!ENTITY numpy-buildsize     "101 MB (add 48 MB for tests)">
+  <!ENTITY numpy-time          "0.6 SBU (add 1.1 SBU for tests)">
 ]>
 
   <sect2 id="numpy" xreflabel="NumPy-&numpy-version;">
@@ -112,19 +112,22 @@
         The installation can be tested with the following commands:
       </para>
 
-<screen remap="test"><userinput>python3 -m venv --system-site-packages testenv &amp;&amp;
+<screen remap="test"><userinput>
+mkdir -p test                                  &amp;&amp;
+cd       test                                  &amp;&amp;
+python3 -m venv --system-site-packages testenv &amp;&amp;
 source testenv/bin/activate                    &amp;&amp;
 pip3 install hypothesis                        &amp;&amp;
-python3 runtests.py<!-- no && because of a possible error -->
+<!-- no && because of a possible error -->
+python -c "import numpy, sys; sys.exit(numpy.test() is False)"
 deactivate</userinput></screen>
 
       <para>
-        Three tests, out of over 35000 tests, are known to fail.
+        Two tests, out of over 48000 tests, are known to fail.
         <!-- test_f2py2e.py::test_untitled_cli, 
              test_f2py2e.py::test_no_py312_distutils_fcompiler
-             test_public_api.py::test_all_modules_are_expected
-             3 failed, 35182 passed, 1835 skipped, 1306 deselected, 
-                          32 xfailed, 2 xpassed -->
+             2 failed, 45996 passed, 2349 skipped, 2785 deselected, 58 xfailed,
+                           5 xpassed in 120.86s (0:02:00) -->
       </para>
 
     </sect3>
