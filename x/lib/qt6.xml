@@ -9,10 +9,10 @@
 
   <!ENTITY qt6-download-http "&qt6-url;/qt-everywhere-src-&qt6-version;.tar.xz">
   <!ENTITY qt6-download-ftp  " ">
-  <!ENTITY qt6-md5sum        "dfe73333c2fa22582ad76a679f0ab1e1">
+  <!ENTITY qt6-md5sum        "06d35b47349c7c0a45710daad359e07b">
   <!ENTITY qt6-size          "892 MB">
-  <!ENTITY qt6-buildsize     "38 GB (376 MB installed)">
-  <!ENTITY qt6-time          "11 SBU (using parallelism=8)">
+  <!ENTITY qt6-buildsize     "37 GB (376 MB installed)">
+  <!ENTITY qt6-time          "12 SBU (using parallelism=8)">
 ]>
 
 <sect1 id="qt6" xreflabel="Qt-&qt6-version;">
@@ -33,9 +33,7 @@
       that is widely used for developing application software with a graphical
       user interface (GUI) (in which cases <application>Qt6</application> is
       classified as a widget toolkit), and also used for developing non-GUI
-      programs such as command-line tools and consoles for servers. <!--Two of the
-      major users of <application>Qt</application> are <application>KDE
-      Frameworks 5 (KF5)</application> and <application>LXQt</application>.-->
+      programs such as command-line tools and consoles for servers. 
     </para>
 
     &lfs121_checked;
@@ -73,29 +71,7 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Now that <application>Qt5</application> updates are restricted to
-          commercial customers, upstream patches for the various modules are
-          being curated at kde.
-          Patches for the modules required by packages in BLFS have been
-          aggregated for the non-modular Qt5 build we use.
-        </para>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/qt-everywhere-opensource-src-&qt6-version;-kf5-1.patch"/>
-        </para>
-        <para>
-          Details of the kde curation can be found at
-          <ulink url="https://dot.kde.org/2021/04/06/announcing-kdes-qt-5-patch-collection"/>
-          and <ulink url="https://community.kde.org/Qt5PatchCollection"/>.
-        </para>
-      </listitem>
-    </itemizedlist>
--->
+
     <bridgehead renderas="sect3">Qt6 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -332,11 +308,6 @@ ninja</userinput></screen>
 
     <para>
       Install images and create the menu entries for installed applications.
-      <!--The <envar>QT6BINDIR</envar> variable is used here to point to the
-      directory for the executable programs.  If you have changed the bindir
-      above, <envar>QT5BINDIR</envar> will need to be adjusted below.  Be sure
-      that the <envar>QT5BINDIR</envar> variable is defined in root's
-      environment and as the &root; user:-->
       Again as the &root; user:
     </para>
 
@@ -408,43 +379,10 @@ Type=Application
 Categories=Qt;Development;Debugger;</literal>
 EOF</userinput></screen>
 
-<!--
-    <para>
-      Some packages such as <xref linkend='vlc'/> look for certain
-      executables with a -qt6 suffix.  Run the following command as the
-      <systemitem class="username">root</systemitem> user
-      to create the necessary symlinks:
-    </para>
-
-<screen role="root"><userinput>for file in moc uic rcc qmake lconvert lrelease lupdate; do
-  ln -sfvn $QT5BINDIR/$file /usr/bin/$file-qt6
-done</userinput></screen>
--->
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-    <!--
-    <para>
-      <command>sed ...</command>: Allows using
-      <application>Python 3</application> instead of <application>Python
-      2</application>. This command destroys the build for QtWebEngine, so do
-      not use it if you remove the <parameter>-skip qtwebengine</parameter>
-      switch.
-    </para>
-
-    Ignored
-    <para>
-      <parameter>-confirm-license</parameter>: Accept license
-      without prompting user during configuration.
-    </para>
-
-    Ignored
-    <para>
-      <parameter>-opensource</parameter>: Install the opensource
-      version of <application>Qt</application>.
-    </para>
-    -->
     <para>
       <parameter>-nomake examples</parameter>: This switch
       disables building of the example programs included
@@ -520,27 +458,7 @@ done</userinput></screen>
 <screen role="root"><userinput>cat &gt; /etc/sudoers.d/qt &lt;&lt; "EOF"
 <literal>Defaults env_keep += QT6DIR</literal>
 EOF</userinput></screen>
-<!--
-      <bridgehead renderas="sect4">If you installed Qt5 in /usr</bridgehead>
 
-      <para>
-        If you installed <application>Qt5</application> in
-        <filename class="directory">/usr</filename>, create an
-        environment variable needed by certain packages.
-        As the <systemitem class="username">root</systemitem> user:
-      </para>
-
-<screen role="nodump"><userinput>cat &gt; /etc/profile.d/qt6.sh &lt;&lt; "EOF"
-<literal># Begin /etc/profile.d/qt6.sh
-
-QT5DIR=/usr
-export QT5DIR
-
-# End /etc/profile.d/qt6.sh</literal>
-EOF</userinput></screen>
-
-      <bridgehead renderas="sect4">If you did not install Qt5 in /usr</bridgehead>
-i-->
       <para>
         You now need to update the
         following configuration files so that <application>Qt6</application> is
@@ -782,11 +700,6 @@ EOF</userinput></screen>
           libQt6Xml.so
         </seg>
         <seg>
-          <!--/usr/include/qt6,
-          /usr/lib/qt6,
-          /usr/share/doc/qt6, and
-          /usr/share/qt6
-          OR-->
           /opt/qt6 and
           /opt/qt-&qt6-version;
         </seg>
