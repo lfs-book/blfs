@@ -304,23 +304,6 @@ ln -sfnv qt-&qt5-version; /opt/qt5</userinput></screen>
     <screen><userinput remap="pre">mkdir -pv qtbase/.git</userinput></screen>
 
     <para>
-      Add another fix for building with GCC-13:
-    </para>
-
-<screen><userinput>sed -e "/pragma once/a#include &lt;cstdint&gt;"                                      \
-    -i qtlocation/src/3rdparty/mapbox-gl-native/include/mbgl/util/geometry.hpp \
-       qtlocation/src/3rdparty/mapbox-gl-native/include/mbgl/util/string.hpp   \
-       qtlocation/src/3rdparty/mapbox-gl-native/src/mbgl/gl/stencil_mode.hpp</userinput></screen>
-
-    <para>
-      Add a fix for building with ICU-75:
-    </para>
-
-<screen><userinput>sed -e "/c++1z/s;^CONFIG;#CONFIG;" \
-    -e "s;c++14;c++17;"            \
-    -i qtlocation/src/3rdparty/mapbox-gl-native/mapbox-gl-native.pro</userinput></screen>
-
-    <para>
       Fix a security vulnerability in qtbase:
     </para>
 
@@ -341,6 +324,7 @@ ln -sfnv qt-&qt5-version; /opt/qt5</userinput></screen>
             -nomake examples                          \
             -no-rpath                                 \
             -syslog                                   \
+            -skip qtlocation                          \
             -skip qtwebengine                         &amp;&amp;
 make</userinput></screen>
 
@@ -355,6 +339,7 @@ make</userinput></screen>
             -nomake examples                          \
             -no-rpath                                 \
             -journald                                 \
+            -skip qtlocation                          \
             -skip qtwebengine                         &amp;&amp;
 make</userinput></screen>
 
@@ -516,6 +501,14 @@ done</userinput></screen>
     <para revision="systemd">
       <parameter>-journald</parameter>: This switch allows to send Qt messages
       to the <command>journald</command> logging system.
+    </para>
+
+    <para>
+      <parameter>-skip qtlocation</parameter>: This switch disables building
+      the Qt5 location module.  Some dependencies of this module are
+      shipped in the tarball but the copies are outdated, so these
+      dependencies won't build with <xref linkend='gcc'/> and
+      <xref linkend='icu'/>.  Nothing in BLFS needs this module.
     </para>
 
     <para>

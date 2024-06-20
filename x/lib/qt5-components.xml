@@ -124,7 +124,6 @@
       There are a few extra components needed for different packages in BLFS.
       These are
       <emphasis role="bold">qtimageformats</emphasis>,
-      <emphasis role="bold">qtlocation</emphasis>,
       <emphasis role="bold">qtwebchannel</emphasis>,
       <emphasis role="bold">qtdoc</emphasis>, and
       <emphasis role="bold">qtmultimedia</emphasis>.
@@ -138,25 +137,6 @@
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../qt-everywhere-opensource-src-&qt5-version;-kf5-1.patch</userinput></screen>
-
-    <para>
-      Next, if you are installing <emphasis role="bold">qtlocation</emphasis>,
-      fix the build with GCC-13:
-    </para>
-
-<screen><userinput>sed -e "/pragma once/a#include &lt;cstdint&gt;"                                      \
-    -i qtlocation/src/3rdparty/mapbox-gl-native/include/mbgl/util/geometry.hpp \
-       qtlocation/src/3rdparty/mapbox-gl-native/include/mbgl/util/string.hpp   \
-       qtlocation/src/3rdparty/mapbox-gl-native/src/mbgl/gl/stencil_mode.hpp</userinput></screen>
-
-    <para>
-      Next, if you are installing <emphasis role="bold">qtlocation</emphasis>,
-      fix the build with ICU-75:
-    </para>
-
-<screen><userinput>sed -e "/c++1z/s;^CONFIG;#CONFIG;" \
-    -e "s;c++14;c++17;"            \
-    -i qtlocation/src/3rdparty/mapbox-gl-native/native-gl-native.pro</userinput></screen>
 
     <para>
       Install each desired component by running the following commands:
