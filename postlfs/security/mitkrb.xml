@@ -85,6 +85,8 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="bind-utils"/>,
+      <xref linkend='cracklib'/> (<filename>/usr/share/dict/words</filename>
+      referred by some tests),
       <xref linkend="gnupg2"/> (to authenticate the package),
       <xref linkend="keyutils"/>,
       <xref linkend="openldap"/>,<!-- Seems so that mit has its own
@@ -125,11 +127,7 @@
     </para>
 
 <screen><userinput>cd src &amp;&amp;
-<!-- dejagnu is not used anymore for tests
-sed -i -e 's@\^u}@^u cols 300}@' tests/dejagnu/config/default.exp     &amp;&amp;
--->
-sed -i -e '/eq 0/{N;s/12 //}'    plugins/kdb/db2/libdb2/test/run.test &amp;&amp;
-<!--sed -i '/t_kadm5.py/d'           lib/kadm5/Makefile.in                &amp;&amp;-->
+sed -i -e '/eq 0/{N;s/12 //}' plugins/kdb/db2/libdb2/test/run.test &amp;&amp;
 
 ./configure --prefix=/usr            \
             --sysconfdir=/etc        \
@@ -177,6 +175,7 @@ cp -vfr ../doc -T /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <!-- https://krbdev.mit.edu/rt/Ticket/Display.html?id=9129 -->
     <para>
       The <command>sed</command> command removes a
       test that is known to fail.
