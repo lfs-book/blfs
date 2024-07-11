@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gimp-download-http "https://download.gimp.org/pub/gimp/v2.10/gimp-&gimp-version;.tar.bz2">
+  <!ENTITY gimp-download-http "https://anduin.linuxfromscratch.org/BLFS/gimp/gimp3-&gimp-version;.tar.xz">
   <!ENTITY gimp-download-ftp  " ">
-  <!ENTITY gimp-md5sum        "b5e37c9570a8ee723debe6d3728555ae">
-  <!ENTITY gimp-size          "31 MB">
-  <!ENTITY gimp-buildsize     "882 MB (197 MB installed, add 835 MB for tests)">
-  <!ENTITY gimp-time          "2.3 SBU (Using parallelism=4; add 0.7 SBU for tests)">
+  <!ENTITY gimp-md5sum        "9080dd305a66974d430f23761b9d0197">
+  <!ENTITY gimp-size          "639 MB">
+  <!ENTITY gimp-buildsize     "1.1 GB (197 MB installed)">
+  <!ENTITY gimp-time          "0.5 SBU (Using parallelism=28)">
 
   <!-- pro-tem, a pull of gimp-help, https://gitlab.gnome.org/GNOME/gimp-help.git
   git archive - -format=tar - -prefix=${DIRNAME}/ HEAD | xz >../${DIRNAME}.tar.xz -->
@@ -40,14 +40,14 @@
                                  for all languages">
 ]>
 
-<sect1 id="gimp" xreflabel="Gimp-&gimp-version;">
+<sect1 id="gimp" xreflabel="gimp-&gimp-version;">
   <?dbhtml filename="gimp.html" ?>
 
 
   <title>Gimp-&gimp-version;</title>
 
   <indexterm zone="gimp">
-    <primary sortas="a-Gimp">Gimp</primary>
+    <primary sortas="a-gimp">gimp</primary>
   </indexterm>
 
   <sect2 role="package">
@@ -56,7 +56,7 @@
     <para>
       The <application>Gimp</application> package contains
       the GNU Image Manipulation Program which is useful for
-      photo retouching, image composition and image authoring.
+      photo retouching, image composition, and image authoring.
     </para>
 
     &lfs121_checked;
@@ -105,6 +105,7 @@
       </para>
     </note>
 -->
+<!--
     <note>
       <para>
         The help files English version is complete, but large
@@ -140,25 +141,26 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">Gimp Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
+      <xref linkend="appstream-glib"/>,
       <xref linkend="gegl"/>,
       <xref linkend="gexiv2"/>,
       <xref linkend="glib-networking"/>,
-      <xref linkend="gtk2"/>,
+      <xref linkend="gtk3"/>,
       <xref linkend="harfbuzz"/>.
       <xref linkend="libjpeg"/>,
       <xref linkend="libmypaint"/>,
       <xref linkend="librsvg"/>,
       <xref linkend="libtiff"/>,
       <!-- en can be built without this -->
-      <xref linkend="libxml2"/> (to build the translated help files),
+<!--      <xref linkend="libxml2"/> (to build the translated help files),-->
       <xref linkend="lcms2"/>,
       <xref linkend="mypaint-brushes"/>,
-      <xref linkend="poppler"/> (including poppler-data) and
+      <xref linkend="poppler"/> (including poppler-data) and 
       <!-- some parts of Xorg appear to be required, as are deps it pulls in -->
       <xref linkend="x-window-system"/>
     </para>
@@ -186,7 +188,7 @@
       an <xref linkend="server-mail"/> (that provides a
       <command>sendmail</command> program),
       <xref linkend="gtk-doc"/>,
-      <ulink url="https://people.freedesktop.org/~hughsient/appstream-glib">appstream-glib</ulink>,
+<!--      <ulink url="https://people.freedesktop.org/~hughsient/appstream-glib">appstream-glib</ulink>,-->
       <ulink url="https://github.com/ianlancetaylor/libbacktrace">libbacktrace</ulink>,
       <ulink url="https://github.com/strukturag/libheif/">libheif</ulink> with
       <ulink url="https://github.com/strukturag/libde265/">libde265</ulink>
@@ -195,12 +197,7 @@
       <ulink url="https://www.openexr.com/">OpenEXR</ulink>
     </para>
 
-    <para>
-      When you have run configure, you will see that WebKit is not found -
-      that dependency is for the legacy webkit-1.0 which should never be used
-      on a modern system exposed to the internet.
-    </para>
-
+<!--
     <bridgehead renderas="sect4">Optional, for building the help system</bridgehead>
     <para role="optional">
       <ulink url="https://dblatex.sourceforge.net/">dblatex</ulink> (for PDF docs),
@@ -208,10 +205,7 @@
       <ulink url="https://pmt.sourceforge.net/pngcrush/">pngcrush</ulink>
       to optimize the png files, but see the note on the help download above
     </para>
-
-    <para condition="html" role="usernotes">Editor Notes:
-      <ulink url="&blfs-wiki;/gimp"/>
-    </para>
+-->
   </sect2>
 
   <sect2 role="installation">
@@ -222,34 +216,35 @@
       the following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --sysconfdir=/etc --disable-python &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir gimp-build &amp;&amp;
+cd    gimp-build &amp;&amp;
 
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+ninja</userinput></screen>
+
+<!--
     <para>
       To test the results (requires an X-Windowed terminal) issue:
-      <command>make check</command>.
-      <!-- km: in 2.10.16 no failures, 2 tests were skipped -->
+      <command>make check</command>.-->
+      <!-- km: in 2.10.16 no failures, 2 tests were skipped 
 
-    </para>
+    </para> -->
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem>
-      user:
+      Now, as the &root; user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/update-icons-and-desktop.xml"/>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
+<!--
   <sect2 role="installation">
     <title>Installation of Gimp-Help</title>
 
     <para>
       The <filename>gimp-help</filename> tarball contains images and English
-      text help for help files, together with translations. <!--
+      text help for help files, together with translations. --><!--
       The documentation generated by gimp-help-2.10.34 and online help have
       the same contents, so I comment this out. [pierre Nov. 2023]
       Because of the
@@ -258,18 +253,18 @@ make</userinput></screen>
       can open the latest XML files in your browser, or else you can manually
       open the html in your browser by going to <ulink
       url="https://docs.gimp.org/2.10/en/">https://docs.gimp.org/2.10/en</ulink>
-     (change the language code if desired).-->
-    </para>
+     (change the language code if desired).
+    </para>-->
 
-    <para>
-      <!--     If you nevertheless wish to install local copies of the help files to read
-      offline, u-->Unpack the <filename>gimp-help</filename> tarball
+    <!--<para>
+      If you nevertheless wish to install local copies of the help files to read
+      offline, u--><!--Unpack the <filename>gimp-help</filename> tarball
       and change into the root of the newly created source tree. Prepare for
       the build with the following command:
     </para>
 
 <screen><userinput>ALL_LINGUAS=&quot;ca cs da de en en_GB es fa fr hr ko lt nl nn pt pt_BR ro sl sv uk zh_CN&quot; \
-./configure --prefix=/usr</userinput></screen>
+./configure - -prefix=/usr</userinput></screen>
 
     <para>
       Remove from <envar>ALL_LINGUAS</envar> the codes for any languages which
@@ -291,9 +286,9 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install &amp;&amp;
 chown -R root:root /usr/share/gimp/2.0/help</userinput></screen>
-
+-->
+<!--
   </sect2>
-
   <sect2 role="commands" id="gimp-cmd-explanations">
     <title>Command Explanations</title>
 
@@ -304,7 +299,7 @@ chown -R root:root /usr/share/gimp/2.0/help</userinput></screen>
     </para>
 
     <para>
-      <parameter>--disable-python</parameter>: This option is necessary if
+      <parameter>- -disable-python</parameter>: This option is necessary if
       you have not installed <application>PyGTK</application>.
     </para>
 
@@ -414,7 +409,7 @@ chown -R root:root /usr/share/gimp/2.0/help</userinput></screen>
           <para>
             is a console program that behaves as if The
             <application>Gimp</application> was called with the
-            <option>--no-interface</option> command-line option
+            <option>- -no-interface</option> command-line option
           </para>
           <indexterm zone="gimp gimp-console-2.10">
             <primary sortas="b-gimp-console-2.10">gimp-console-2.10</primary>
@@ -565,5 +560,5 @@ chown -R root:root /usr/share/gimp/2.0/help</userinput></screen>
     </variablelist>
 
   </sect2>
-
+-->
 </sect1>
