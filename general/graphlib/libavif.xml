@@ -6,9 +6,9 @@
 
   <!ENTITY libavif-download-http "https://github.com/AOMediaCodec/libavif/archive/v&libavif-version;/libavif-&libavif-version;.tar.gz">
   <!ENTITY libavif-download-ftp  " ">
-  <!ENTITY libavif-md5sum        "8c786fd21f8757ace8cc011401e4d420">
-  <!ENTITY libavif-size          "11 MB">
-  <!ENTITY libavif-buildsize     "16 MB">
+  <!ENTITY libavif-md5sum        "cc9c6014b4c83a56e1714099b4892d7f">
+  <!ENTITY libavif-size          "13 MB">
+  <!ENTITY libavif-buildsize     "21 MB">
   <!ENTITY libavif-time          "less than 0.1 SBU">
 ]>
 
@@ -99,10 +99,11 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr \
-      -DCMAKE_BUILD_TYPE=Release  \
-      -DAVIF_CODEC_AOM=ON         \
-      -DAVIF_BUILD_GDK_PIXBUF=ON  \
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      -D AVIF_CODEC_AOM=SYSYEM     \
+      -D AVIF_BUILD_GDK_PIXBUF=ON  \
+      -D AVIF_LIBYUV=OFF           \
       -G Ninja .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -113,7 +114,7 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
@@ -131,31 +132,37 @@ ninja</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-DAVIF_CODEC_AOM=ON</parameter>: This switch enables using
+      <parameter>-D AVIF_CODEC_AOM=SYSTEM</parameter>: This switch enables using
       the AOM codec. This package is useless without at least one codec
       built in.
     </para>
 
     <para>
-      <parameter>-DAVIF_BUILD_GDK_PIXBUF=ON</parameter>: This switch builds
+      <parameter>-D AVIF_BUILD_GDK_PIXBUF=ON</parameter>: This switch builds
       the AVIF loader for applications which use gdk-pixbuf. Remove it if you
       have not installed <xref role="nodep" linkend="gdk-pixbuf"/>.
     </para>
 
     <para>
-      <option>-DAVIF_CODEC_DAV1D=ON</option>: Use this switch if you have
+      <option>-D AVIF_LIBYUV=OFF</option>: Use this switch if you have
+      not installed 
+      <ulink url="https://chromium.googlesource.com/libyuv/libyuv/">libyuv</ulink>.
+    </para>
+
+    <para>
+      <option>-D AVIF_CODEC_DAV1D=SYSTEM</option>: Use this switch if you have
       installed <ulink url="https://code.videolan.org/videolan/dav1d">libdav1d</ulink>
       and wish to use it as a codec.
     </para>
 
     <para>
-      <option>-DAVIF_CODEC_RAV1E=ON</option>: Use this switch if you have
+      <option>-D AVIF_CODEC_RAV1E=SYSTEM</option>: Use this switch if you have
       installed <ulink url="https://github.com/xiph/rav1e">rav1e</ulink> and
       wish to use it as a codec.
     </para>
 
     <para>
-      <option>-DAVIF_CODEC_SVT=ON</option>: Use this switch if you have
+      <option>-D AVIF_CODEC_SVT=YSTEM</option>: Use this switch if you have
       installed <ulink url="https://gitlab.com/AOMediaCodec/SVT-AV1">svt-av1</ulink>
       and wish to use it as a codec.
     </para>
