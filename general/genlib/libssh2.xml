@@ -102,12 +102,14 @@
 
     <para>
       If you want to test the package, exclude the tests requiring a static
-      library:
+      library, and remove the reference to an insecure algorithm removed
+      since OpenSSH 9.8:
     </para>
 
 <screen><userinput>sed -E '/^DOCKER_TEST/,/^SSHD_TEST/s/test_(auth_keyboard_info.* |hostkey |simple)/$(NOTHING)/' \
     -i tests/Makefile.inc &amp;&amp;
-autoreconf -fi</userinput></screen>
+autoreconf -fi &amp;&amp;
+sed 's/ssh-dss,//' -i tests/openssh_server/sshd_config</userinput></screen>
 
     <para>
       Install <application>libssh2</application> by running the following
