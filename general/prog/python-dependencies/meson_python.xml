@@ -78,14 +78,12 @@
 
       <bridgehead renderas="sect5">Optional (for testing)</bridgehead>
       <para role="optional">
+        <xref linkend="cython"/>,
         <xref linkend="git"/>,
         <xref linkend="pytest"/>,
         <xref linkend="python3"/> (rebuilt after installing
         <xref role="nodep" linkend="sqlite"/>),
         <ulink url="https://pypi.org/project/build/">build</ulink>,
-        <!-- <xref linkend="cython"/> when we update Cython -->
-        <ulink url="https://pypi.org/project/Cython/">Cython
-          &gt;= 3.0.3</ulink>,
         <!-- pytest-cov mentioned but it seems not really used unless
              running the "coverage" command explicitly -->
         and
@@ -111,15 +109,18 @@
 <screen role="root"><userinput>&install-wheel; meson_python</userinput></screen>
 
     <para>
-      To test the installation, make sure both <xref linkend='git'/> and
-      <xref linkend='pytest'/> are installed and <xref linkend='python3'/>
+      To test the installation, make sure <xref linkend='git'/>,
+      <xref linkend='patchelf'/>, and <xref linkend='pytest'/> are
+      installed, and <xref linkend='python3'/>
       has been rebuilt after installing <xref linkend='sqlite'/>, then
-      issue:
+      issue (<literal>HOME=</literal> prevents the
+      <filename>.gitconfig</filename> file in the home directory from
+      interfering the tests):
     </para>
 
 <screen remap="test"><userinput>python3 -m venv --system-site-packages testenv &amp;&amp;
 testenv/bin/pip3 install 'meson_python[test]'  &amp;&amp;
-testenv/bin/python -m pytest</userinput></screen>
+HOME= testenv/bin/python -m pytest</userinput></screen>
 
     <!-- https://github.com/mesonbuild/meson-python/issues/619 -->
     <para>
