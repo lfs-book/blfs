@@ -6,10 +6,10 @@
 
   <!ENTITY mercurial-download-http "https://www.mercurial-scm.org/release/mercurial-&mercurial-version;.tar.gz">
   <!ENTITY mercurial-download-ftp  " ">
-  <!ENTITY mercurial-md5sum        "fef80c5d5d995d8ce502f40aff345ab4">
+  <!ENTITY mercurial-md5sum        "4826ab69616e1d647b2ca9eb28bf9ade">
   <!ENTITY mercurial-size          "7.9 MB">
-  <!ENTITY mercurial-buildsize     "80 MB (with docs, add 1.6 GB for tests)">
-  <!ENTITY mercurial-time          "0.4 SBU (with docs; add 12 SBU for tests; both using parallelism=8)">
+  <!ENTITY mercurial-buildsize     "113 MB (with docs, add 1.5 GB for tests)">
+  <!ENTITY mercurial-time          "0.3 SBU (with docs; add 16 SBU for tests; both using parallelism=8)">
 ]>
 
 <sect1 id="mercurial" xreflabel="Mercurial-&mercurial-version;">
@@ -109,13 +109,18 @@
 <screen remap="doc"><userinput>make doc</userinput></screen>
 <!--
     The tests do not hang.  Better to just report what failed.
+
+    [renodr]: The tests do crash due to syntax errors and crash before they get
+    to the Python portion (which is where most of Mercurial is)
+-->
+
     <para>
       If you wish to run the tests, the rust tests must be removed as they are
       currently broken due to syntax errors. To do this, issue:
     </para>
 
 <screen><userinput>sed -i '138,142d' Makefile</userinput></screen>
--->
+
     <para>
       To run the test suite, issue:
     </para>
@@ -145,6 +150,7 @@
       # Ran 950 tests, 65 skipped, 1 failed. -pierre 8  Nov 23 (mercurial-6.5.3).
       # Ran 948 tests, 66 skipped, 0 failed. -renodr 22 Nov 23 (mercurial-6.6).
       # Ran 946 tests, 71 skipped, 2 failed. -bdubbs 20 Mar 24 (mercurial-6.7).
+      # Ran 966 tests, 58 skipped, 1 failed. -renodr 16 Mar 24 (mercurial-6.8).
       -->
     <para>
       In order to
