@@ -93,7 +93,6 @@
       <xref role='runtime' linkend="gst10-libav"/> (runtime),
       <xref linkend="icu"/>,
       <xref linkend="libexif"/>,
-      <xref linkend="libgrss"/>,
       <xref linkend="libgxps"/>,
       <xref linkend="libseccomp"/>,
       <xref linkend="poppler"/>, and
@@ -111,6 +110,7 @@
       <xref linkend="taglib"/>,
       <xref linkend="totem-pl-parser"/>,
       <ulink url="https://github.com/lipnitsk/libcue">libcue</ulink>,
+      <ulink url="https://gitlab.gnome.org/GNOME/libgrss">libgrss</ulink>,
       <ulink url="https://libiptcdata.sourceforge.net/">libitpcdata</ulink>,
       <ulink url="https://libosinfo.org">libosinfo</ulink>, and
       <ulink url="https://gitlab.gnome.org/GNOME/gupnp">gupnp</ulink>
@@ -174,6 +174,7 @@ cd    build &amp;&amp;
 meson setup --prefix=/usr       \
             --buildtype=release \
             -D man=false        \
+            -D miner_rss=false  \
             ..                  &amp;&amp;
 ninja</userinput></screen>
 
@@ -184,6 +185,7 @@ meson setup --prefix=/usr                  \
             --buildtype=release            \
             -D systemd_user_services=false \
             -D man=false                   \
+            -D miner_rss=false             \
             ..                             &amp;&amp;
 ninja</userinput></screen>
 
@@ -225,6 +227,12 @@ rm -rf ~/tracker-tests</userinput></screen>
       install the man pages.
     </para>
 
+    <para>
+      <parameter>-D miner_rss=false</parameter>: This switch prevents using
+      libgrss for indexing RSS feeds because libgrss is insecure and no longer
+      in BLFS.
+    </para>
+
     <para revision="sysv">
       <parameter>-D systemd_user_services=false</parameter>: This switch prevents
       the build process from installing systemd units since they are useless
@@ -247,11 +255,6 @@ rm -rf ~/tracker-tests</userinput></screen>
       kernel with Landlock support.  Note that disabling Landlock might
       cause the system compromised more severely in case a security
       vulnerability in tracker-miners or its dependencies is exploited.
-    </para>
-
-    <para>
-      <option>-D miner_rss=false</option>: Use this option if you have not
-      installed the recommended dependency libgrss.
     </para>
 
     <para>
