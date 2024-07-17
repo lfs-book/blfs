@@ -161,27 +161,27 @@ useradd -c "MySQL Server" -d /srv/mysql -g mysql -s /bin/false -u 40 mysql</user
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_BUILD_TYPE=Release                       \
-      -DCMAKE_INSTALL_PREFIX=/usr                      \
-      -DGRN_LOG_PATH=/var/log/groonga.log              \
-      -DINSTALL_DOCDIR=share/doc/mariadb-&mariadb-version;       \
-      -DINSTALL_DOCREADMEDIR=share/doc/mariadb-&mariadb-version; \
-      -DINSTALL_MANDIR=share/man                       \
-      -DINSTALL_MYSQLSHAREDIR=share/mysql              \
-      -DINSTALL_MYSQLTESTDIR=share/mysql/test          \
-      -DINSTALL_PAMDIR=lib/security                    \
-      -DINSTALL_PAMDATADIR=/etc/security               \
-      -DINSTALL_PLUGINDIR=lib/mysql/plugin             \
-      -DINSTALL_SBINDIR=sbin                           \
-      -DINSTALL_SCRIPTDIR=bin                          \
-      -DINSTALL_SQLBENCHDIR=share/mysql/bench          \
-      -DINSTALL_SUPPORTFILESDIR=share/mysql            \
-      -DMYSQL_DATADIR=/srv/mysql                       \
-      -DMYSQL_UNIX_ADDR=/run/mysqld/mysqld.sock        \
-      -DWITH_EXTRA_CHARSETS=complex                    \
-      -DWITH_EMBEDDED_SERVER=ON                        \
-      -DSKIP_TESTS=ON                                  \
-      -DTOKUDB_OK=0                                    \
+cmake -D CMAKE_BUILD_TYPE=Release                       \
+      -D CMAKE_INSTALL_PREFIX=/usr                      \
+      -D GRN_LOG_PATH=/var/log/groonga.log              \
+      -D INSTALL_DOCDIR=share/doc/mariadb-&mariadb-version;       \
+      -D INSTALL_DOCREADMEDIR=share/doc/mariadb-&mariadb-version; \
+      -D INSTALL_MANDIR=share/man                       \
+      -D INSTALL_MYSQLSHAREDIR=share/mysql              \
+      -D INSTALL_MYSQLTESTDIR=share/mysql/test          \
+      -D INSTALL_PAMDIR=lib/security                    \
+      -D INSTALL_PAMDATADIR=/etc/security               \
+      -D INSTALL_PLUGINDIR=lib/mysql/plugin             \
+      -D INSTALL_SBINDIR=sbin                           \
+      -D INSTALL_SCRIPTDIR=bin                          \
+      -D INSTALL_SQLBENCHDIR=share/mysql/bench          \
+      -D INSTALL_SUPPORTFILESDIR=share/mysql            \
+      -D MYSQL_DATADIR=/srv/mysql                       \
+      -D MYSQL_UNIX_ADDR=/run/mysqld/mysqld.sock        \
+      -D WITH_EXTRA_CHARSETS=complex                    \
+      -D WITH_EMBEDDED_SERVER=ON                        \
+      -D SKIP_TESTS=ON                                  \
+      -D TOKUDB_OK=0                                    \
       .. &amp;&amp;
 make</userinput></screen>
 
@@ -224,24 +224,24 @@ mv -v /usr/share/user_map.conf /etc/security</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-DWITH_EMBEDDED_SERVER=ON</parameter>: This switch enables
+      <parameter>-D WITH_EMBEDDED_SERVER=ON</parameter>: This switch enables
       compiling the embedded server library needed by certain applications,
       such as <application>Amarok</application>.
     </para>
 
     <para>
-      <parameter>-DWITH_EXTRA_CHARSETS=complex</parameter>: This switch enables
+      <parameter>-D WITH_EXTRA_CHARSETS=complex</parameter>: This switch enables
       support for the complex character sets.
     </para>
 
     <para>
-      <parameter>-DSKIP_TESTS=ON</parameter>: This switch disables
+      <parameter>-D SKIP_TESTS=ON</parameter>: This switch disables
       tests for MariaDB Connector/C which are not supported without
       additional setup.
     </para>
 
     <para>
-      <option>-DWITHOUT_SERVER=ON</option>: Use this
+      <option>-D WITHOUT_SERVER=ON</option>: Use this
       switch if you don't want the server and would like to build the client
       only.
     </para>
