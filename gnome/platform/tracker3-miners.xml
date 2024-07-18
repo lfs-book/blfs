@@ -66,7 +66,6 @@
       </listitem>
     </itemizedlist>
 
-<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -76,7 +75,6 @@
         </para>
       </listitem>
     </itemizedlist>
--->
 
     <bridgehead renderas="sect3">Tracker-miners Dependencies</bridgehead>
 
@@ -95,7 +93,6 @@
       <xref role='runtime' linkend="gst10-libav"/> (runtime),
       <xref linkend="icu"/>,
       <xref linkend="libexif"/>,
-      <xref linkend="libgrss"/>,
       <xref linkend="libgxps"/>,
       <xref linkend="libseccomp"/>,
       <xref linkend="poppler"/>, and
@@ -113,6 +110,7 @@
       <xref linkend="taglib"/>,
       <xref linkend="totem-pl-parser"/>,
       <ulink url="https://github.com/lipnitsk/libcue">libcue</ulink>,
+      <ulink url="https://gitlab.gnome.org/GNOME/libgrss">libgrss</ulink>,
       <ulink url="https://libiptcdata.sourceforge.net/">libitpcdata</ulink>,
       <ulink url="https://libosinfo.org">libosinfo</ulink>, and
       <ulink url="https://gitlab.gnome.org/GNOME/gupnp">gupnp</ulink>
@@ -157,14 +155,12 @@
 <screen remap="test"><userinput>sed -i s/120/<replaceable>200</replaceable>/ tests/functional-tests/meson.build</userinput></screen>
     </note>
 
-<!-- Applied in 3.6.2
     <para>
-      First, fix some problems with the recent tightening of the seccomp
-      sandbox:
+      First, fix one issue in the TIFF extractor and another issue in the
+      Landlock sandbox:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../tracker-miners-&tracker3-miners-version;-upstream_fixes-1.patch</userinput></screen>
--->
 
     <para>
       Install <application>Tracker-miners</application> by running the following
@@ -177,28 +173,37 @@ cd    build &amp;&amp;
 
 meson setup --prefix=/usr       \
             --buildtype=release \
-            -Dman=false         \
+            -D man=false        \
+            -D miner_rss=false  \
             ..                  &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr                 \
-            --buildtype=release           \
-            -Dsystemd_user_services=false \
-            -Dman=false                   \
-            ..                            &amp;&amp;
+meson setup --prefix=/usr                  \
+            --buildtype=release            \
+            -D systemd_user_services=false \
+            -D man=false                   \
+            -D miner_rss=false             \
+            ..                             &amp;&amp;
 ninja</userinput></screen>
 
+
     <para>
-      <!-- tiff-photo-1 fails due to
-      https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/341 -->
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+    <screen role="root"><userinput>ninja install</userinput></screen>
+
+    <para>
       To test the results, issue (adjust the individual test timeout to a
       value suitable for your machine, see the note above):
     </para>
 
-<screen remap="test"><userinput>dbus-run-session env TRACKER_TESTS_AWAIT_TIMEOUT=<replaceable>20</replaceable> ninja test &amp;&amp;
+<screen remap="test"><userinput>meson configure -D debug=true &amp;&amp;
+dbus-run-session env LC_ALL=C.UTF-8 TRACKER_TESTS_AWAIT_TIMEOUT=<replaceable>20</replaceable> \
+                 ninja test &amp;&amp;
 rm -rf ~/tracker-tests</userinput></screen>
 
     <note>
@@ -207,12 +212,6 @@ rm -rf ~/tracker-tests</userinput></screen>
         they have to be removed afterwards.
       </para>
     </note>
-
-    <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>ninja install</userinput></screen>
   </sect2>
 
   <sect2 role="commands">
@@ -222,20 +221,26 @@ rm -rf ~/tracker-tests</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dman=false</parameter>: This switch prevents the build process
+      <parameter>-D man=false</parameter>: This switch prevents the build process
       from generating man pages. Omit this switch if you have
       <xref linkend="asciidoc" role="nodep"/> installed and wish to generate and
       install the man pages.
     </para>
 
+    <para>
+      <parameter>-D miner_rss=false</parameter>: This switch prevents using
+      libgrss for indexing RSS feeds because libgrss is insecure and no longer
+      in BLFS.
+    </para>
+
     <para revision="sysv">
-      <parameter>-Dsystemd_user_services=false</parameter>: This switch prevents
+      <parameter>-D systemd_user_services=false</parameter>: This switch prevents
       the build process from installing systemd units since they are useless
       on SysV systems.
     </para>
 
     <para>
-      <option>-Dseccomp=false</option>: This option disables the seccomp system
+      <option>-D seccomp=false</option>: This option disables the seccomp system
       call filter. On some architectures, such as i686 and ARM, the functions
       that tracker-miners uses are not guarded properly, and tracker-miners
       will get killed with a SIGSYS as a result.  Note that disabling
@@ -245,7 +250,7 @@ rm -rf ~/tracker-tests</userinput></screen>
     </para>
 
     <para>
-      <option>-Dlandlock=disabled</option>: This switch disables the
+      <option>-D landlock=disabled</option>: This switch disables the
       Landlock file access sandbox.  Use it if you don't want to build the
       kernel with Landlock support.  Note that disabling Landlock might
       cause the system compromised more severely in case a security
@@ -253,12 +258,7 @@ rm -rf ~/tracker-tests</userinput></screen>
     </para>
 
     <para>
-      <option>-Dminer_rss=false</option>: Use this option if you have not
-      installed the recommended dependency libgrss.
-    </para>
-
-    <para>
-      <option>-Dbattery_detection=none</option>: Use this option if you have
+      <option>-D battery_detection=none</option>: Use this option if you have
       not installed the recommended dependency upower.  Do not use this
       option if your system has a battery (laptop battery or UPS), or
       tracker miners may waste the battery power and lifespan when the A/C

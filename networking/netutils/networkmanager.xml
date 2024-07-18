@@ -7,8 +7,8 @@
   <!ENTITY NetworkManager-download-http
 "&gnome-download-http;/NetworkManager/&NetworkManager-minor;/NetworkManager-&NetworkManager-version;.tar.xz">
   <!ENTITY NetworkManager-download-ftp  " ">
-  <!ENTITY NetworkManager-md5sum        "a03d302085a799ed76f4034198408062">
-  <!ENTITY NetworkManager-size          "5.7 MB">
+  <!ENTITY NetworkManager-md5sum        "418994d70bee71a502d9df92c70bca61">
+  <!ENTITY NetworkManager-size          "5.8 MB">
   <!ENTITY NetworkManager-buildsize     "299 MB (with tests and documentation)">
   <!ENTITY NetworkManager-time          "0.9 SBU (with tests, using parallelism=4)">
 ]>
@@ -112,8 +112,7 @@
       <xref linkend="gtk-doc"/>,
       <xref linkend="jansson"/>,
       <xref linkend="ModemManager"/>,
-      (<xref linkend="qt5"/> or
-       <xref role="node" linkend="qt5-components"/> with qtdoc) (for examples),
+      <xref linkend="qt5-components"/> with qtdoc) (for examples),
       <xref linkend="upower"/>,
       <xref linkend="valgrind"/>,
       <ulink url="https://thekelleys.org.uk/dnsmasq/doc.html">dnsmasq</ulink>,
@@ -162,7 +161,7 @@
     <title>Installation of NetworkManager</title>
 
     <para>
-      If <xref linkend="qt5"/> is installed and the Qt based
+      If <xref linkend="qt5-components"/> is installed and the Qt based
       examples are desired, fix two meson.build files:
     </para>
 
@@ -200,33 +199,33 @@ CXXFLAGS+="-O2 -fPIC"            \
 meson setup ..                   \
       --prefix=/usr              \
       --buildtype=release        \
-      -Dlibaudit=no              \
-      -Dnmtui=true               \
-      -Dovs=false                \
-      -Dppp=false                \
-      -Dselinux=false            \
-      -Dsession_tracking=elogind \
-      -Dmodem_manager=false      \
-      -Dsystemdsystemunitdir=no  \
-      -Dsystemd_journal=false    \
-      -Dqt=false                 &amp;&amp;
+      -D libaudit=no              \
+      -D nmtui=true               \
+      -D ovs=false                \
+      -D ppp=false                \
+      -D selinux=false            \
+      -D session_tracking=elogind \
+      -D modem_manager=false      \
+      -D systemdsystemunitdir=no  \
+      -D systemd_journal=false    \
+      -D qt=false                 &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
-cd    build    &amp;&amp;
+cd    build &amp;&amp;
 
 CXXFLAGS+="-O2 -fPIC"            \
 meson setup ..                   \
       --prefix=/usr              \
       --buildtype=release        \
-      -Dlibaudit=no              \
-      -Dnmtui=true               \
-      -Dovs=false                \
-      -Dppp=false                \
-      -Dselinux=false            \
-      -Dqt=false                 \
-      -Dsession_tracking=systemd \
-      -Dmodem_manager=false      &amp;&amp;
+      -D libaudit=no              \
+      -D nmtui=true               \
+      -D ovs=false                \
+      -D ppp=false                \
+      -D selinux=false            \
+      -D qt=false                 \
+      -D session_tracking=systemd \
+      -D modem_manager=false      &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -281,44 +280,44 @@ done</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <option>-Ddocs=true</option>: Use this switch to enable building
+      <option>-D docs=true</option>: Use this switch to enable building
       man pages and documentation if <xref linkend="gtk-doc"/> is installed.
     </para>
 
     <para>
-      <parameter>-Dnmtui=true</parameter>: This switch enables building
+      <parameter>-D nmtui=true</parameter>: This switch enables building
       <command>nmtui</command>.
     </para>
 
     <para revision="sysv">
-      <parameter>-Dsystemdsystemunitdir=no</parameter> and
-      <parameter>-Dsystemd_journal=false</parameter>: systemd is not
+      <parameter>-D systemdsystemunitdir=no</parameter> and
+      <parameter>-D systemd_journal=false</parameter>: systemd is not
       used for sysv init systems, so prevent installing units and using the
       systemd journal.
     </para>
 
     <para>
-      <parameter>-Dovs=false</parameter>: This switch disable the Open
+      <parameter>-D ovs=false</parameter>: This switch disable the Open
       vSwitch integration because it needs <xref linkend='jansson'/>.
       Remove it if you have <xref linkend='jansson'/> installed on your
       system.
     </para>
 
     <para>
-      <parameter>-Dmodem_manager=false</parameter>: This switch is required if
+      <parameter>-D modem_manager=false</parameter>: This switch is required if
       <application>ModemManager</application> is not installed. Omit this switch
       if you have built <application>ModemManager</application> and
       <application>mobile-broadband-provider-info</application>.
     </para>
 
     <para revision="sysv">
-      <parameter>-Dsession_tracking=elogind</parameter>: This switch
+      <parameter>-D session_tracking=elogind</parameter>: This switch
       is used to set <command>elogind</command> as the default
       program for session tracking.
     </para>
 
     <para revision="systemd">
-      <parameter>-Dsession_tracking=systemd</parameter>: This switch
+      <parameter>-D session_tracking=systemd</parameter>: This switch
       is used to set <command>systemd-logind</command> as the default
       program for session tracking.
     </para>
@@ -330,7 +329,7 @@ done</userinput></screen>
     </para>
 -->
     <para>
-      <parameter>-Dppp=false</parameter>: This switch disables
+      <parameter>-D ppp=false</parameter>: This switch disables
       <application>PPP</application> support in
       <application>NetworkManager</application> since the programs necessary
       for it are not installed. Remove this switch if you need PPP support and
@@ -338,32 +337,32 @@ done</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Dlibaudit=no</parameter> and
+      <parameter>-D libaudit=no</parameter> and
       <parameter>-Dselinux=false</parameter>: This switch disables support for
       libaudit and SELinux since they are not used in BLFS.
     </para>
 
     <para>
-      <parameter>-Dqt=false</parameter>: This switch disables the
+      <parameter>-D qt=false</parameter>: This switch disables the
       <application>Qt</application> examples. Omit if you have
       <application>Qt</application> available and wish to install the examples.
     </para>
 
     <para>
-      <option>-Dcrypto=gnutls</option>: Use this switch if you have GnuTLS
+      <option>-D crypto=gnutls</option>: Use this switch if you have GnuTLS
       installed and want to use it for certificate and key operations in
       NetworkManager, instead of using NSS (the default).
     </para>
 
     <para>
-      <option>-Dcrypto=null</option>: Use this switch if neither NSS nor
+      <option>-D crypto=null</option>: Use this switch if neither NSS nor
       GnuTLS is installed but you want to build NetworkManager anyway.  This
       switch will make NetworkManager lack some features (for example
       802.1X).
     </para>
 
     <para>
-      <option>-Dsuspend_resume=upower</option>: Use this switch if
+      <option>-D suspend_resume=upower</option>: Use this switch if
       you have <xref linkend='upower'/> installed and want to use it
       (instead of &logind;) for suspend and resume support.
     </para>

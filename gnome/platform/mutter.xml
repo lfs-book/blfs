@@ -6,7 +6,7 @@
 
   <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-46;/mutter-&mutter-version;.tar.xz">
   <!ENTITY mutter-download-ftp  " ">
-  <!ENTITY mutter-md5sum        "610b76a24ad65ffb6617b2dd74796ebe">
+  <!ENTITY mutter-md5sum        "e516b2863000a8561db13aaa6186711e">
   <!ENTITY mutter-size          "6.4 MB">
   <!ENTITY mutter-buildsize     "83 MB (with tests)">
   <!ENTITY mutter-time          "0.5 SBU (Using parallelism=4; add 1.4 SBU for tests)">
@@ -206,18 +206,11 @@ ninja</userinput></screen>
 
     <para>
       The tests require an active X or wayland session.
-      One test named
-      <!-- https://gitlab.gnome.org/GNOME/mutter/-/issues/2848 -->
-       <!--<filename>cogl-test-framebuffer-get-bits-gl3</filename> and-->
-      <!-- This needs a pipewire daemon running.  As at Aug 2023
-           the method to run a pipewire daemon is not in BLFS
-           (but in editor notes), so claim this a known failure.  -->
-      <filename>input-capture</filename> is known to fail.
-      <!-- As Xi noted in #18580, this test is flaky. -->
-      An additional test named
-      <filename>cogl-test-offscreen-texture-formats-gles2</filename> is known
-      to fail. <!-- https://gitlab.gnome.org/GNOME/mutter/-/issues/3343 -->
-      A few other tests may fail depending on the configuration.
+      Some tests are flaky (especially under a high system load) so if
+      a test fails you can try to re-run it alone with the
+      <command>meson test <replaceable>&lt;test name&gt;</replaceable></command>
+      command.
+      A few tests may fail depending on some system configuration.
       Don't make any mouse or keyboard input while the test suite is
       running or some tests may fail.
     </para>

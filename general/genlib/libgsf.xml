@@ -67,6 +67,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/libgsf-&libgsf-version;-upstream_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">libgsf Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -83,7 +93,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/> and
+      <xref linkend="gtk-doc"/>,
+      <xref linkend='p7zip'/> (for tests),
+      <xref linkend='unzip'/> (for tests), and
       <xref linkend="valgrind"/> (for tests)
     </para>
 
@@ -93,11 +105,18 @@
     <title>Installation of libgsf</title>
 
     <para>
+      First, fix building <application>libgsf</application> with libxml2-2.13:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../libgsf-&libgsf-version;-upstream_fixes-1.patch</userinput></screen>
+
+    <para>
       Install <application>libgsf</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>autoreconf                                 &amp;&amp;
+./configure --prefix=/usr --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>

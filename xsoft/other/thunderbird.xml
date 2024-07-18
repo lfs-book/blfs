@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.xz">
+  <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;esr/source/thunderbird-&thunderbird-version;esr.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "699134531dc31e9e7e62c47b82773508">
-  <!ENTITY thunderbird-size          "515 MB">
-  <!ENTITY thunderbird-buildsize     "6.1 GB (224 MB installed)">
-  <!ENTITY thunderbird-time          "12 SBU (on a 8-core machine)">
+  <!ENTITY thunderbird-md5sum        "f20899eb706a94076ac88dfe97cc7a88">
+  <!ENTITY thunderbird-size          "642 MB">
+  <!ENTITY thunderbird-buildsize     "7.8 GB (256 MB installed)">
+  <!ENTITY thunderbird-time          "16 SBU (on a 8-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
 
@@ -17,11 +17,11 @@
        -->
 ]>
 
-<sect1 id="thunderbird" xreflabel="Thunderbird-&thunderbird-version;">
+<sect1 id="thunderbird" xreflabel="Thunderbird-&thunderbird-version;esr">
   <?dbhtml filename="thunderbird.html" ?>
 
 
-  <title>Thunderbird-&thunderbird-version;</title>
+  <title>Thunderbird-&thunderbird-version;esr</title>
 
   <indexterm zone="thunderbird">
     <primary sortas="a-Thunderbird">Thunderbird</primary>
@@ -130,8 +130,9 @@
 
     <note>
       <para>
-        The build process for Thunderbird can use 8GB+ of RAM when linking.
-        Make sure that you have adequate swap or RAM before continuing.
+        The build process for Thunderbird can use 8 GB or more of RAM when
+        linking. Make sure that you have adequate swap or RAM before
+        continuing.
       </para>
     </note>
 
@@ -247,6 +248,7 @@ ac_add_options --without-wasm-sandboxed-libraries</literal>
 EOF</userinput></screen>
 
     <!-- https://github.com/rust-lang/rust-bindgen/pull/2689 -->
+<!--
     <para>
       Adapt the shipped <application>rust-bindgen</application> copy for
       LLVM-18 and later, and tell <command>cargo</command> we've modified
@@ -267,8 +269,10 @@ EOF
 
 sed -r '/name = "bindgen"/,+5 s/^source|^checksum/#&amp;/' \
     -i Cargo.lock</userinput></screen>
+-->
 
     <!-- https://hg.mozilla.org/mozilla-central/rev/ba6abbd36b49 -->
+<!--
     <para>
       Adapt the WebRTC code to use 64-bit timestamp to fix a build
       failure with Clang-18 and later:
@@ -288,6 +292,7 @@ sed '/mInputImageMap/s/uint32_t/uint64_t/' \
     </para>
 
     <screen><userinput>sed '/cfg_attr/,/)]/d' -i gfx/qcms/src/lib.rs</userinput></screen>
+-->
 
     <para>
       Now invoke the Python <command>mach</command> script to compile
@@ -300,7 +305,7 @@ sed '/mInputImageMap/s/uint32_t/uint64_t/' \
     </note>
 
 <screen><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
-export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
+export MOZBUILD_STATE_PATH=$(pwd)/mozbuild          &amp;&amp;
 ./mach build</userinput></screen>
 
     <para>
@@ -382,7 +387,7 @@ unset MOZBUILD_STATE_PATH</userinput></screen>
 
       <para>
         First, open the configuration dialog by opening the <quote>Edit</quote>
-        drop-down menu. Choose <quote>Preferences</quote> and then scroll down
+        drop-down menu. Choose <quote>Settings</quote> and then scroll down
         to the bottom of the page. Then, click the <quote>Config Editor</quote>
         button. Click on the <quote>I accept the risk!</quote> button.
         This will display a list of the configuration preferences and
@@ -397,13 +402,15 @@ unset MOZBUILD_STATE_PATH</userinput></screen>
         desired data into the fields when prompted.
       </para>
 
+ <!-- Doesn't seem to be present anymore in 128.0
       <para>
         The configuration preference item you need to check so that
         <application>Thunderbird</application> uses a specified browser is the
         <parameter>network.protocol-handler.app.http</parameter> which should be
         set to the path of the desired browser, e.g.
         <option>/usr/bin/firefox</option>.
-      </para>
+     </para>
+-->
 <!--  Bad URL
       <tip>
         <para>

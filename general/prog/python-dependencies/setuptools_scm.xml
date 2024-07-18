@@ -4,7 +4,7 @@
   <!ENTITY % general-entities SYSTEM "../../../general.ent">
   %general-entities;
 
-  <!ENTITY setuptools_scm-download-http "https://files.pythonhosted.org/packages/source/s/setuptools_scm/setuptools-scm-&setuptools_scm-version;.tar.gz">
+  <!ENTITY setuptools_scm-download-http "https://files.pythonhosted.org/packages/source/s/setuptools_scm/setuptools_scm-&setuptools_scm-version;.tar.gz">
   <!ENTITY setuptools_scm-download-ftp  " ">
   <!ENTITY setuptools_scm-md5sum        "&setuptools_scm-md5sum;">
   <!ENTITY setuptools_scm-size          "70 KB">
@@ -69,8 +69,7 @@
 
       <bridgehead renderas="sect5">Required</bridgehead>
       <para role="required">
-        <xref linkend="packaging"/> and
-        <xref linkend="typing_extensions"/>
+        <xref linkend="packaging"/>
       </para>
 
       <bridgehead renderas="sect5">Optional (for testing)</bridgehead>
@@ -99,19 +98,19 @@
 
     <para>
       To test the installation, make sure <xref linkend='pytest'/> is
-      installed and run:
+      installed and run (<literal>HOME=</literal> prevents the
+      <filename>.gitconfig</filename> file in the home directory from
+      interfering the tests):
     </para>
 
 <screen remap="test"><userinput>python3 -m venv --system-site-packages testenv &amp;&amp;
 testenv/bin/pip3 install build                 &amp;&amp;
-testenv/bin/python -m pytest</userinput></screen>
+HOME= testenv/bin/python -m pytest</userinput></screen>
 
     <para>
       If <xref linkend='git'/> and/or <xref linkend='mercurial'/> are not
       installed, the tests depending on the missing one(s) will be skipped.
       Some tests may invoke <xref linkend='sudo'/> and request a password.
-      Some tests may fail if your <application>git</application>
-      configuration is not the one expected by the test suite.
     </para>
 
     </sect3>

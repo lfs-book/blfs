@@ -85,15 +85,15 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr      \
-      -DCMAKE_BUILD_TYPE=Release       \
-      -DCMAKE_SKIP_INSTALL_RPATH=ON    \
-      -Dprotobuf_BUILD_TESTS=OFF       \
-      -Dprotobuf_ABSL_PROVIDER=package \
-      -Dprotobuf_BUILD_LIBUPB=OFF      \
-      -Dprotobuf_BUILD_SHARED_LIBS=ON  \
-      -Dutf8_range_ENABLE_INSTALL=OFF  \
-      -G Ninja ..                      &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr      \
+      -D CMAKE_BUILD_TYPE=Release       \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON    \
+      -D protobuf_BUILD_TESTS=OFF       \
+      -D protobuf_ABSL_PROVIDER=package \
+      -D protobuf_BUILD_LIBUPB=OFF      \
+      -D protobuf_BUILD_SHARED_LIBS=ON  \
+      -D utf8_range_ENABLE_INSTALL=OFF  \
+      -G Ninja ..                       &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -124,26 +124,26 @@ ninja install</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Dprotobuf_BUILD_TESTS=OFF</parameter>: This parameter prevents
+      <parameter>-D protobuf_BUILD_TESTS=OFF</parameter>: This parameter prevents
       the tests from being built because
       <ulink url="https://github.com/google/googletest">gtest</ulink> is not
       part of BLFS.
     </para>
 
     <para>
-      <parameter>-Dprotobuf_ABSL_PROVIDER=package</parameter>: This parameter
+      <parameter>-D protobuf_ABSL_PROVIDER=package</parameter>: This parameter
       allows the build system to use the system-installed copy of
       <xref linkend="abseil-cpp" role="nodep"/>.
     </para>
 
     <para>
-      <parameter>-Dprotobuf_BUILD_SHARED_LIBS=ON</parameter>: This parameter
+      <parameter>-D protobuf_BUILD_SHARED_LIBS=ON</parameter>: This parameter
       enables building shared versions of the libraries provided by this package
       instead of static versions.
     </para>
 
     <para>
-      <parameter>-Dutf8_range_ENABLE_INSTALL=OFF</parameter>: This parameter
+      <parameter>-D utf8_range_ENABLE_INSTALL=OFF</parameter>: This parameter
       disables installing the utf8_range static library.  The functions
       provided by this library and used by protobuf is already embedded into
       <filename class='libraryfile'>libprotobuf.so</filename>, so installing

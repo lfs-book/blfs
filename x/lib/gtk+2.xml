@@ -8,8 +8,8 @@
   <!ENTITY gtk2-download-ftp  " ">
   <!ENTITY gtk2-md5sum        "0118e98dbe0e4dab90ce475f9f0e6c0c">
   <!ENTITY gtk2-size          "12 MB">
-  <!ENTITY gtk2-buildsize     "285 MB">
-  <!ENTITY gtk2-time          "0.9 SBU (using parallelism=4; add 0.1 SBU for tests)">
+  <!ENTITY gtk2-buildsize     "354 MB">
+  <!ENTITY gtk2-time          "1.0 SBU (using parallelism=4; add less than 0.1 SBU for tests)">
 ]>
 
 <sect1 id="gtk2" xreflabel="GTK+-&gtk2-version;">
@@ -67,6 +67,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/gtk+-&gtk2-version;-consolidated_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">GTK+ 2 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -101,10 +111,9 @@
     </para>
 
 <screen><userinput>sed -e 's#l \(gtk-.*\).sgml#&amp; -o \1#' \
-    -i docs/{faq,tutorial}/Makefile.in      &amp;&amp;
-
-./configure --prefix=/usr --sysconfdir=/etc &amp;&amp;
-
+    -i docs/{faq,tutorial}/Makefile.in                  &amp;&amp;
+patch -p1 -i ../gtk+-&gtk2-version;-consolidated_fixes-1.patch &amp;&amp;
+./configure --prefix=/usr --sysconfdir=/etc             &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -147,6 +156,13 @@ make</userinput></screen>
       <filename>Makefile</filename>s. This <command>sed</command> fixes the
       <filename>Makefile</filename>s.
     </para>
+
+    <para>
+      <command>patch -p1 -i ../gtk+-&gtk2-version;-consolidated_fixes-1.patch ...</command>:
+      This patch allows the package to compile with gcc-14 and also prevents
+      loading modules from the current directory.
+    </para>
+
     <!-- This still seems to have problems with docbook-utils installed.
          However, since it's already been tagged, I'll leave it alone. -->
 <!--

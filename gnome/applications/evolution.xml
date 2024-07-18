@@ -8,7 +8,7 @@
 
   <!ENTITY evolution-download-http "&gnome-download-http;/evolution/&gnome-minor-52;/evolution-&evolution-version;.tar.xz">
   <!ENTITY evolution-download-ftp  " ">
-  <!ENTITY evolution-md5sum        "6aef419b93a3707be5103a3648c218b2">
+  <!ENTITY evolution-md5sum        "ed98f283fbdc577287f26ddff31b6e63">
   <!ENTITY evolution-size          "13 MB">
   <!ENTITY evolution-buildsize     "380 MB">
   <!ENTITY evolution-time          "1.0 SBU (Using parallelism=4)">
@@ -133,14 +133,14 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr \
-      -DSYSCONF_INSTALL_DIR=/etc  \
-      -DENABLE_INSTALLED_TESTS=ON \
-      -DENABLE_PST_IMPORT=OFF     \
-      -DENABLE_YTNEF=OFF          \
-      -DENABLE_CONTACT_MAPS=OFF   \
-      -DENABLE_MARKDOWN=OFF       \
-      -DENABLE_WEATHER=ON         \
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D SYSCONF_INSTALL_DIR=/etc  \
+      -D ENABLE_INSTALLED_TESTS=ON \
+      -D ENABLE_PST_IMPORT=OFF     \
+      -D ENABLE_YTNEF=OFF          \
+      -D ENABLE_CONTACT_MAPS=OFF   \
+      -D ENABLE_MARKDOWN=OFF       \
+      -D ENABLE_WEATHER=ON         \
       -G Ninja .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -160,25 +160,25 @@ ninja</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-DENABLE_YTNEF=OFF</parameter>: This switch is used to
+      <parameter>-D ENABLE_YTNEF=OFF</parameter>: This switch is used to
       disable the yTNEF library usage because
       <application>libytnef</application> is not part of BLFS.
     </para>
 
     <para>
-      <parameter>-DENABLE_PST_IMPORT=OFF</parameter>: This switch is
+      <parameter>-D ENABLE_PST_IMPORT=OFF</parameter>: This switch is
       used to disable the pst-import plugin because
       <application>libpst</application> is not part of BLFS.
     </para>
 
     <para>
-      <parameter>-DENABLE_CONTACT_MAPS=OFF</parameter>: This switch disables
+      <parameter>-D ENABLE_CONTACT_MAPS=OFF</parameter>: This switch disables
       building the Contact Maps plugin. Remove this switch if you have installed
       the necessary dependencies and wish to build the Contact Maps plugin.
     </para>
 
     <para>
-      <parameter>-DENABLE_MARKDOWN=OFF</parameter>: This switch allows
+      <parameter>-D ENABLE_MARKDOWN=OFF</parameter>: This switch allows
       building without
       <ulink url="https://github.com/commonmark/cmark">cmark</ulink>.
       Remove this switch if you need markdown support and you have
@@ -186,18 +186,18 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <parameter>-DENABLE_WEATHER=ON</parameter>: This switch allows
+      <parameter>-D ENABLE_WEATHER=ON</parameter>: This switch allows
       building against <xref linkend="libgweather"/>.
     </para>
 
     <para>
-      <option>-DWITH_HELP=OFF</option>: This switch disables building the
+      <option>-D WITH_HELP=OFF</option>: This switch disables building the
       manual of this package.  Use this switch if you have not installed
       <xref linkend='itstool'/>.
     </para>
 
     <para>
-      <option>-DWITH_OPENLDAP=OFF</option>: Use this switch if you
+      <option>-D WITH_OPENLDAP=OFF</option>: Use this switch if you
       have not installed <xref linkend='openldap'/>.
     </para>
 

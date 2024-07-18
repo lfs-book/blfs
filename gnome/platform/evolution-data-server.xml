@@ -7,7 +7,7 @@
   <!ENTITY evolution-data-server-download-http
            "&gnome-download-http;/evolution-data-server/&gnome-minor-52;/evolution-data-server-&evolution-data-server-version;.tar.xz">
   <!ENTITY evolution-data-server-download-ftp  " ">
-  <!ENTITY evolution-data-server-md5sum        "35ab9c0ee5bca3ebac74828341308503">
+  <!ENTITY evolution-data-server-md5sum        "344e5f5756f86b5595a5c5a83d09eb06">
   <!ENTITY evolution-data-server-size          "4.8 MB">
   <!ENTITY evolution-data-server-buildsize     "181 MB (with tests)">
   <!ENTITY evolution-data-server-time          "0.7 SBU (using parallelism=4)">
@@ -131,32 +131,32 @@ xreflabel="evolution-data-server-&evolution-data-server-version;">
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr    \
-      -DSYSCONF_INSTALL_DIR=/etc     \
-      -DENABLE_VALA_BINDINGS=ON      \
-      -DENABLE_INSTALLED_TESTS=ON    \
-      -DWITH_OPENLDAP=OFF            \
-      -DWITH_KRB5=OFF                \
-      -DENABLE_INTROSPECTION=ON      \
-      -DENABLE_GTK_DOC=OFF           \
-      -DWITH_LIBDB=OFF               \
-      -DWITH_SYSTEMDUSERUNITDIR=no   \
-      -Wno-dev -G Ninja ..           &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr    \
+      -D SYSCONF_INSTALL_DIR=/etc     \
+      -D ENABLE_VALA_BINDINGS=ON      \
+      -D ENABLE_INSTALLED_TESTS=ON    \
+      -D WITH_OPENLDAP=OFF            \
+      -D WITH_KRB5=OFF                \
+      -D ENABLE_INTROSPECTION=ON      \
+      -D ENABLE_GTK_DOC=OFF           \
+      -D WITH_LIBDB=OFF               \
+      -D WITH_SYSTEMDUSERUNITDIR=no   \
+      -W no-dev -G Ninja ..           &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr    \
-      -DSYSCONF_INSTALL_DIR=/etc     \
-      -DENABLE_VALA_BINDINGS=ON      \
-      -DENABLE_INSTALLED_TESTS=ON    \
-      -DWITH_OPENLDAP=OFF            \
-      -DWITH_KRB5=OFF                \
-      -DENABLE_INTROSPECTION=ON      \
-      -DENABLE_GTK_DOC=OFF           \
-      -DWITH_LIBDB=OFF               \
-      -Wno-dev -G Ninja ..           &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr    \
+      -D SYSCONF_INSTALL_DIR=/etc     \
+      -D ENABLE_VALA_BINDINGS=ON      \
+      -D ENABLE_INSTALLED_TESTS=ON    \
+      -D WITH_OPENLDAP=OFF            \
+      -D WITH_KRB5=OFF                \
+      -D ENABLE_INTROSPECTION=ON      \
+      -D ENABLE_GTK_DOC=OFF           \
+      -D WITH_LIBDB=OFF               \
+      -W no-dev -G Ninja ..           &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -179,32 +179,32 @@ ninja</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-DENABLE_VALA_BINDINGS=ON</parameter>: This switch
+      <parameter>-D ENABLE_VALA_BINDINGS=ON</parameter>: This switch
       enables building the Vala bindings. Remove it if you don't
       have <xref linkend="vala"/> installed.
     </para>
 
     <para>
-      <parameter>-DENABLE_GTK_DOC=OFF</parameter>: This switch
+      <parameter>-D ENABLE_GTK_DOC=OFF</parameter>: This switch
       disables building the API documentation. It is broken for
       this package due to the use of a long deprecated gtk-doc program
       that is no longer available.
     </para>
 
     <para>
-      <parameter>-DWITH_LIBDB=OFF</parameter>: This switch allows building
+      <parameter>-D WITH_LIBDB=OFF</parameter>: This switch allows building
       this package without &berkeley-db;.  <!--This package only uses
       &berkeley-db; to import data from very outdated releases.-->
       <xref linkend="sqlite"/> is used for normal operation.
     </para>
 
     <para>
-      <option>-DENABLE_OAUTH2_WEBKITGTK4=OFF</option>: Use this switch if
+      <option>-D ENABLE_OAUTH2_WEBKITGTK4=OFF</option>: Use this switch if
       you did not build <xref linkend="webkitgtk" role="nodep"/> with GTK-4.
     </para>
 
     <para revision="sysv">
-      <parameter>-DWITH_SYSTEMDUSERUNITDIR=no</parameter>: This switch
+      <parameter>-D WITH_SYSTEMDUSERUNITDIR=no</parameter>: This switch
       disables installing the systemd units, which are not used for a Sysv
       build.
     </para>
