@@ -226,10 +226,6 @@ ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-webp
 
-# Unlike with thunderbird, although using the gold linker can
-# save four megabytes in the installed file it does not make
-# the build faster.
-
 # The libdav1d library (av1 decoder) requires nasm. Uncomment this
 # if nasm has not been installed. Do not uncomment this if you have
 # ffmpeg installed.
@@ -246,14 +242,6 @@ ac_add_options --enable-official-branding
 # Disabling debug symbols makes the build much smaller and a little
 # faster. Comment this if you need to run a debugger.
 ac_add_options --disable-debug-symbols
-<!-- With Firefox ESR 128 we'd replace the following part with
-"- -enable-elf-hack=relr", or remove it if relr becomes the default. -->
-# The elf-hack is reported to cause failed installs (after successful builds)
-# on some machines. It is supposed to improve startup time and it shrinks
-# libxul.so by a few MB.  With recent Binutils releases the linker already
-# supports a much safer and generic way for this.
-ac_add_options --disable-elf-hack
-export LDFLAGS="$LDFLAGS -Wl,-z,pack-relative-relocs"
 
 # The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
