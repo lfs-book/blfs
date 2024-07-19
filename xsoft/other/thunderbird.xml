@@ -78,7 +78,6 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="cbindgen"/>,
-      <xref linkend="dbus-glib"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="llvm"/> including clang, <!-- used by default if found -->
       <xref linkend="nodejs"/>,
@@ -205,13 +204,6 @@ ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-webp
-<!-- With Thunderbird ESR 128 we'd replace the following part with
-"- -enable-elf-hack=relr", or remove it if relr becomes the default. -->
-# on some machines. It is supposed to improve startup time and it shrinks
-# libxul.so by a few MB.  With recent Binutils releases the linker already
-# supports a much safer and generic way for this.
-ac_add_options --disable-elf-hack
-export LDFLAGS="$LDFLAGS -Wl,-z,pack-relative-relocs"
 
 # The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
@@ -223,10 +215,8 @@ ac_add_options --disable-debug
 ac_add_options --disable-debug-symbols
 ac_add_options --disable-tests
 
-# The SIMD code relies on the unmaintained packed_simd crate which
-# fails to build with Rustc >= 1.78.0.  We may re-enable it once
-# Mozilla port the code to use std::simd and std::simd is stabilized.
-ac_add_options --disable-rust-simd
+# This enables SIMD optimization in the shipped encoding_rs crate.
+ac_add_options --enable-rust-simd
 
 ac_add_options --enable-strip
 ac_add_options --enable-install-strip
