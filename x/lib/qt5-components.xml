@@ -9,10 +9,10 @@
 
   <!ENTITY qt5-download-http "&qt5-url;/qt-everywhere-opensource-src-&qt5-version;.tar.xz">
   <!ENTITY qt5-download-ftp  " ">
-  <!ENTITY qt5-md5sum        "3fb1cd4f763f5d50d491508b7b99fb77">
+  <!ENTITY qt5-md5sum        "0265e7988790d8845441558130d59311">
   <!ENTITY qt5-size          "630 MB">
-  <!ENTITY qt5-buildsize     "8.5 GB (154 MB installed)">
-  <!ENTITY qt5-time          "7.4 SBU (using parallelism=4)">
+  <!ENTITY qt5-buildsize     "9.0 GB (154 MB installed)">
+  <!ENTITY qt5-time          "7.5 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="qt5-components" xreflabel="qt-components-&qt5-version;">
@@ -101,12 +101,6 @@
           Details of the kde curation can be found at
           <ulink url="https://dot.kde.org/2021/04/06/announcing-kdes-qt-5-patch-collection"/>
           and <ulink url="https://community.kde.org/Qt5PatchCollection"/>.
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/qt-everywhere-opensource-src-&qt5-version;-security_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -259,12 +253,6 @@ ln -sfnv qt-&qt5-version; /opt/qt5</userinput></screen>
     <screen><userinput remap="pre">mkdir -pv qtbase/.git</userinput></screen>
 
     <para>
-      Fix a security vulnerability in qtbase:
-    </para>
-
-<screen><userinput>patch -Np1 -i ../qt-everywhere-opensource-src-&qt5-version;-security_fix-1.patch</userinput></screen>
-
-    <para>
       At this point we want to set up skipping most components.  Do that with:
     </para>
 
@@ -297,8 +285,7 @@ sed -i -r '/base|tools|x11extras|svg|declarative|wayland/d' tempconf</userinput>
             -nomake examples     \
             -no-rpath            \
             -syslog              \
-            $(cat tempconf)      \
-            &amp;&amp;
+            $(cat tempconf)      &amp;&amp;
 make</userinput></screen>
 
 <screen revision="systemd"><userinput>./configure -prefix $QT5PREFIX   \
@@ -312,8 +299,7 @@ make</userinput></screen>
             -nomake examples     \
             -no-rpath            \
             -journald            \
-            $(cat tempconf)      \
-            &amp;&amp;
+            $(cat tempconf)      &amp;&amp;
 make</userinput></screen>
 
     <para>
