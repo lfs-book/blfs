@@ -6,10 +6,10 @@
 
   <!ENTITY v4l-download-http "https://www.linuxtv.org/downloads/v4l-utils/v4l-utils-&v4l-utils-version;.tar.xz">
   <!ENTITY v4l-download-ftp  " ">
-  <!ENTITY v4l-md5sum        "a3565a8ccc427dcce52845c2b8880c28">
+  <!ENTITY v4l-md5sum        "9551b13e088a8b00a7706863ec68f198">
   <!ENTITY v4l-size          "1.2 MB">
-  <!ENTITY v4l-buildsize     "32 MB">
-  <!ENTITY v4l-time          "1.1 SBU (using parallelism=4)">
+  <!ENTITY v4l-buildsize     "34 MB">
+  <!ENTITY v4l-time          "0.4 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="v4l-utils" xreflabel="v4l-utils-&v4l-utils-version;">
@@ -89,7 +89,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="doxygen"/>,
-      &qt5-deps; (for qv4l2 and qvidcap),
+      <xref linkend="qt6"/> (for qv4l2 and qvidcap),
       <xref linkend="sdl2"/>,
       both <xref linkend="llvm"/> (with Clang and target BPF)
       and <ulink url='https://github.com/libbpf/libbpf'>libbpf</ulink>
@@ -106,7 +106,7 @@
       <para>
         If you've installed both LLVM and libbpf (not in BLFS), either
         enable the BPF target (via
-        <option>-DLLVM_TARGETS_TO_BUILD=</option>) building LLVM, or disable
+        <option>-D LLVM_TARGETS_TO_BUILD=</option>) building LLVM, or disable
         the infrared remote control decoders based on BPF:
       </para>
 
@@ -122,11 +122,15 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr           \
-            -D doxygen-doc=disabled \
-            -D gconv=disabled       \
-            --buildtype=release     .. &amp;&amp;
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      -D doxygen-doc=disabled &amp;&amp;
 ninja</userinput></screen>
+
+    <!-- I don't think this is needed any more 
+      -D gconv=disabled
+    -->
 
     <para>
       This package does not come with a test suite.
@@ -148,7 +152,7 @@ do
 done</userinput></screen>
 
   </sect2>
-
+<!--
   <sect2 role="commands">
     <title>Command Explanations</title>
 
@@ -158,7 +162,7 @@ done</userinput></screen>
     </para>
 
   </sect2>
-
+-->
 
   <sect2 role="content">
     <title>Contents</title>
