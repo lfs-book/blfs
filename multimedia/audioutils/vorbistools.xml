@@ -28,7 +28,7 @@
     <para>
       The <application>Vorbis Tools</application> package contains
       command-line tools useful for encoding, playing or editing
-      files using the Ogg CODEC.
+      files using the Ogg codec.
     </para>
 
     &lfs121_checked;
@@ -94,19 +94,23 @@
     <title>Installation of Vorbis Tools</title>
 
     <para>
-      First, apply a sed to fix a gcc-14 issues:
+      First, apply a sed to fix a gcc-14 issue:
     </para>
 
 <screen><userinput remap="pre">sed -i '/i18n.h/i #include "utf8.h"' ogginfo/codec_skeleton.c</userinput></screen>
+
+    <para>
+      Next, apply a sed to fix a security vulnerability in 'oggenc':
+    </para>
+
+<screen><userinput remap="pre">sed -i 's/start+1,/start + strspn(start, PATH_SEPS),/' oggenc/platform.c</userinput></screen>
 
     <para>
       Install <application>Vorbis Tools</application> by running the
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr \
-            --enable-vcut \
-            --without-curl &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --enable-vcut &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -129,11 +133,13 @@ make</userinput></screen>
       the <command>vcut</command> program is built as it is not by default.
     </para>
 
+<!--
     <para>
-      <parameter>--without-curl</parameter>: This parameter disables HTTP
+      <parameter>- -without-curl</parameter>: This parameter disables HTTP
       streaming in <command>ogg123</command>. Remove this parameter if you have
       <application>cURL</application> installed.
     </para>
+-->
 
  </sect2>
 
@@ -187,7 +193,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          ogg123, oggdec, oggenc, ogginfo, vcut and vorbiscomment
+          ogg123, oggdec, oggenc, ogginfo, vcut, and vorbiscomment
         </seg>
         <seg>
           None
