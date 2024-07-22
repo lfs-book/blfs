@@ -7,8 +7,8 @@
   <!ENTITY numpy-download-http "https://files.pythonhosted.org/packages/source/n/numpy/numpy-&numpy-version;.tar.gz">
   <!ENTITY numpy-download-ftp  " ">
   <!ENTITY numpy-md5sum        "&numpy-md5sum;">
-  <!ENTITY numpy-size          "17 MB">
-  <!ENTITY numpy-buildsize     "101 MB (add 48 MB for tests)">
+  <!ENTITY numpy-size          "18 MB">
+  <!ENTITY numpy-buildsize     "104 MB (add 48 MB for tests)">
   <!ENTITY numpy-time          "0.6 SBU (add 1.1 SBU for tests)">
 ]>
 
@@ -117,16 +117,24 @@ cd       test                                  &amp;&amp;
 python3 -m venv --system-site-packages testenv &amp;&amp;
 source testenv/bin/activate                    &amp;&amp;
 pip3 install hypothesis                        &amp;&amp;
-<!-- no && because of a possible error -->
 python -c "import numpy, sys; sys.exit(numpy.test() is False)"
 deactivate</userinput></screen>
+
+<!-- no && for actual test because of a possible error -->
 
       <para>
         Two tests, out of over 48000 tests, are known to fail.
         <!-- test_f2py2e.py::test_untitled_cli, 
              test_f2py2e.py::test_no_py312_distutils_fcompiler
              2 failed, 45996 passed, 2349 skipped, 2785 deselected, 58 xfailed,
-                           5 xpassed in 120.86s (0:02:00) -->
+                           5 xpassed in 120.86s (0:02:00) 
+
+             For 2.0.1 (bdubbs):
+             FAILED ../f2py/tests/test_f2py2e.py::test_untitled_cli 
+             FAILED ../f2py/tests/test_f2py2e.py::test_no_py312_distutils_fcompiler
+             2 failed, 46029 passed, 2349 skipped, 2789 deselected, 58 xfailed, 
+                           5 xpassed in 119.77s (0:01:59)
+        -->
       </para>
 
     </sect3>
