@@ -7,8 +7,8 @@
   <!ENTITY bind-download-http "https://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.xz">
   <!ENTITY bind-download-ftp  " ">
   <!ENTITY bind-md5sum        "&bind-md5;">
-  <!ENTITY bind-size          "5.3 MB">
-  <!ENTITY bind-buildsize     "210 MB (21 MB installed)">
+  <!ENTITY bind-size          "5.5 MB">
+  <!ENTITY bind-buildsize     "138 MB (22 MB installed)">
   <!ENTITY bind-time          "0.5 SBU (with parallelism=4; about 40 minutes somewhat processor independent, to run the complete test suite)">
 ]>
 
@@ -81,6 +81,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
+      <xref linkend="liburcu"/> and
       <xref linkend="libuv"/>
     </para>
 
@@ -106,15 +107,6 @@
       <ulink url="&w3m-url;">w3m</ulink>
     </para>
 
-    <bridgehead renderas="sect4">Optional database backends</bridgehead>
-    <para role="optional">
-      <xref linkend="mariadb"/> or <ulink url="https://www.mysql.com/">MySQL</ulink>,
-      <xref linkend="openldap"/>,
-      <xref linkend="postgresql"/>, 
-      <xref linkend="unixodbc"/>, and
-      &berkeley-db;
-    </para>
-
     <bridgehead renderas="sect4">Optional (to run the test suite)</bridgehead>
     <para role="optional">
       <xref linkend="perl-net-dns"/>
@@ -128,16 +120,6 @@
 
   <sect2 role="installation">
     <title>Installation of BIND</title>
-
-<!--
-    <para>
-      To ensure <application>BIND</application> will build dnssec-keymgr,
-      install a python module as the <systemitem
-      class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>pip3 install ply</userinput></screen>
--->
 
     <note>
       <para>
@@ -179,12 +161,20 @@ make</userinput></screen>
       The test suite may indicate some skipped tests depending on
       what configuration options are used. Some tests are marked
       <quote>UNTESTED</quote> or do even fail if <xref linkend="perl-net-dns"/>
-      is not installed. Two tests, <filename>resolver</filename> and
-      <filename>dispatch</filename>, are known to fail.
+      is not installed. One test, <filename>dnssec</filename>, is known to fail.
+      The tests require the
+      <ulink url="https://hypothesis.readthedocs.org/">hypothesis</ulink>
+      python module, which is not in BLFS. To work around this, the instructions
+      below create a Python virtual environment and then install the module
+      in there before running the tests.
       To run the tests, as an unprivileged user, execute:
     </para>
 
-<screen remap="test"><userinput>make -k check</userinput></screen>
+<screen remap="test"><userinput>python3 -m venv --system-site-packages testenv &amp;&amp;
+source testenv/bin/activate                    &amp;&amp;
+pip3 install hypothesis                        &amp;&amp;
+make -k check                                  &amp;&amp;
+deactivate</userinput></screen>
 
     <para>
       Again as <systemitem class="username">root</systemitem>, clean up the
@@ -226,14 +216,6 @@ install doc/dnssec-guide/* /usr/share/doc/bind-&bind-version;/dnssec-guide</user
       <filename class='directory'>/usr/etc</filename>.
     </para>
 
-    <!-- Seems to be removed in 9.18.0
-    <para>
-      <parameter>- -with-libtool</parameter>: This parameter forces the
-      building of dynamic libraries and links the installed binaries to these
-      libraries.
-    </para>
-    -->
-
     <para>
       <option>--with-libidn2</option>: This parameter enables
       the IDNA2008 (Internationalized Domain Names in Applications)
@@ -246,18 +228,13 @@ install doc/dnssec-guide/* /usr/share/doc/bind-&bind-version;/dnssec-guide</user
       useful on servers which receive a large number of queries.
     </para>
 
+<!-- Removed in 9.20.0 (and support has been in LFS for years)
     <para>
-      <option>--disable-linux-caps</option>: BIND can also be built without
+      <option>- -disable-linux-caps</option>: BIND can also be built without
       capability support by using this option, at the cost of some loss of
       security.
     </para>
-
-    <para>
-      <option>--with-dlz-{mysql,bdb,filesystem,ldap,odbc,stub}</option>: Use
-      one (or more) of those options to add Dynamically Loadable Zones support.
-      For more information refer to <ulink
-      url="https://bind-dlz.sourceforge.net/">bind-dlz.sourceforge.net</ulink>.
-    </para>
+-->
 
     <para>
       <option>--disable-doh</option>: Use this option if you do not have
@@ -608,16 +585,15 @@ dig www.&lfs-domainname;</userinput></screen>
 
         <seg>arpaname, ddns-confgen, delv, dig, dnssec-cds,
         dnssec-dsfromkey, dnssec-importkey, dnssec-keyfromlabel, dnssec-keygen,
-        dnssec-revoke, dnssec-settime, dnssec-signzone,
+        dnssec-ksr, dnssec-revoke, dnssec-settime, dnssec-signzone,
         dnssec-verify, host, mdig, named, named-checkconf,
         named-checkzone, named-compilezone, named-journalprint,
         named-nzd2nzf, named-rrchecker, nsec3hash, nslookup, nsupdate, rndc,
         rndc-confgen, and tsig-keygen (symlink)</seg>
 
-        <seg>libbind9.so, libdns.so, libirs.so, libisc.so, libisccc.so,
-        libisccfg.so, and libns.so</seg>
+        <seg>libdns.so, libisc.so, libisccc.so, libisccfg.so, and libns.so</seg>
 
-        <seg>/usr/include/{bind9,dns,dst,irs,isc,isccc,isccfg,ns},
+        <seg>/usr/include/{dns,dst,irs,isc,isccc,isccfg,ns},
         /usr/lib/bind,
         and /srv/named</seg>
       </seglistitem>
@@ -736,6 +712,18 @@ dig www.&lfs-domainname;</userinput></screen>
           </para>
           <indexterm zone="bind dnssec-keymgr">
             <primary sortas="b-dnssec-keymgr">dnssec-keymgr</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="dnssec-ksr">
+        <term><command>dnssec-ksr</command></term>
+        <listitem>
+          <para>
+            creates signed key response (SKR) files for offline KSK setups
+          </para>
+          <indexterm zone="bind dnssec-ksr">
+            <primary sortas="b-dnssec-ksr">dnssec-ksr</primary>
           </indexterm>
         </listitem>
       </varlistentry>
