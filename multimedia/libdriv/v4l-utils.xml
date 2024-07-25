@@ -125,12 +125,9 @@ cd    build &amp;&amp;
 meson setup ..            \
       --prefix=/usr       \
       --buildtype=release \
+      -D gconv=disabled   \
       -D doxygen-doc=disabled &amp;&amp;
 ninja</userinput></screen>
-
-    <!-- I don't think this is needed any more 
-      -D gconv=disabled
-    -->
 
     <para>
       This package does not come with a test suite.
@@ -152,17 +149,34 @@ do
 done</userinput></screen>
 
   </sect2>
-<!--
+
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <!-- Please do NOT touch this unless you've tried a DESTDIR installation
+         and you really understand what will be going on:
+
+         Without this option the package will overwrite
+         /usr/lib/gconv/gconv-modules which is a part of the **Glibc**
+         installation and break iconv (both the command iconv(1) and the
+         Glibc function iconv(3)).  Then some BLFS packages will FTBFS or
+         fail a dozen of tests etc.
+
+         Already reported as https://lore.kernel.org/linux-media/3ffb1568a9ff6c0b6f5424de3a0fafb24e7b3ac0.camel@xry111.site/.
+
+         Debian and Gentoo also have -D gconv=disabled.  Fedora manually
+         moves the gconv-modules file in a DESTDIR installation.  IMO it's
+         completely stupid to have an installation conflicting with Glibc in
+         the default configuration, but they just completely ignore my
+         report and rely on the distro maintainers to resolve the issue,
+         even without mentioning the conflict in README.md, nor INSTALL.md.
+         This is the worst upstream behavior I've ever seen.  -->
     <para>
       <parameter>-D gconv=disabled</parameter>: This switch disables
       the erroneous installation of gconv-modules that would break glibc.
     </para>
 
   </sect2>
--->
 
   <sect2 role="content">
     <title>Contents</title>
