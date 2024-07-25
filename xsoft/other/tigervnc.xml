@@ -6,10 +6,10 @@
 
   <!ENTITY tigervnc-download-http "https://github.com/TigerVNC/tigervnc/archive/v&tigervnc-version;/tigervnc-&tigervnc-version;.tar.gz">
   <!ENTITY tigervnc-download-ftp  " ">
-  <!ENTITY tigervnc-md5sum        "3a794e3a063443e07250de8e99e2e05a">
-  <!ENTITY tigervnc-size          "1.8 MB">
-  <!ENTITY tigervnc-buildsize     "97 MB">
-  <!ENTITY tigervnc-time          "0.4 SBU (Using parallelism=4)">
+  <!ENTITY tigervnc-md5sum        "402c2ec1f38bd0fb4ad7d93631dc1502">
+  <!ENTITY tigervnc-size          "2.0 MB">
+  <!ENTITY tigervnc-buildsize     "101 MB">
+  <!ENTITY tigervnc-time          "0.5 SBU (Using parallelism=4)">
   <!--<!ENTITY tigervnc-xorg-version  "21.1.12">-->
 ]>
 
@@ -79,7 +79,6 @@
       </listitem>
     </itemizedlist>
 
-<!-- Commented out since we're tracking the same xorg-server right now
     <note>
       <para>
         The version of <application>Xorg</application> may eventually be a few
@@ -87,7 +86,6 @@
         for this package.
       </para>
     </note>
--->
 
     <itemizedlist spacing="compact">
       <listitem>
@@ -166,14 +164,14 @@ tar -xf ../xorg-server-&xorg-server-version;.tar.xz \
     --strip-components=1              \
     -C unix/xserver                   &amp;&amp;
 ( cd unix/xserver &amp;&amp;
-  patch -Np1 -i ../xserver21.1.1.patch ) &amp;&amp;
+  patch -Np1 -i ../xserver21.patch ) &amp;&amp;
 
 # Build viewer
 cmake -G "Unix Makefiles"          \
       -D CMAKE_INSTALL_PREFIX=/usr \
       -D CMAKE_BUILD_TYPE=Release  \
       -D INSTALL_SYSTEMD_UNITS=OFF \
-      -W no-dev . &amp;&amp;
+      -W no-dev .                  &amp;&amp;
 make &amp;&amp;
 
 # Build server
@@ -235,6 +233,7 @@ popd</userinput></screen>
 
 <screen role="root"><userinput>#Install viewer
 make install &amp;&amp;
+mv  /usr/share/doc/tigervnc /usr/share/doc/tigervnc-&tigervnc-version;
 
 #Install server
 ( cd unix/xserver/hw/vnc &amp;&amp; make install ) &amp;&amp;
@@ -247,27 +246,6 @@ make install &amp;&amp;
 
 <screen role="root" revision="sysv"><userinput>sed -i 's/pam_systemd.so/pam_elogind.so/' /etc/pam.d/tigervnc</userinput></screen>
 
-<!-- These are installed as part of 'make install' for the client.
-    <para>
-      Finally, create a menu entry.  As the
-      <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>cat &gt; /usr/share/applications/vncviewer.desktop &lt;&lt; "EOF"
-<literal>[Desktop Entry]
-Type=Application
-Name=TigerVNC Viewer
-Comment=VNC client
-Exec=/usr/bin/vncviewer
-Icon=tigervnc
-Terminal=false
-StartupNotify=false
-Categories=Network;RemoteAccess;</literal>
-EOF
-
-install -vm644 media/icons/tigervnc_24.png /usr/share/pixmaps &amp;&amp;
-ln -sfv tigervnc_24.png /usr/share/pixmaps/tigervnc.png</userinput></screen>
--->
   </sect2>
 
   <sect2 role="commands">
