@@ -238,7 +238,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn us to do such a review.
-change-id = 123711
+change-id = 125535
 
 [llvm]
 # by default, rust will build for a myriad of architectures
@@ -334,25 +334,16 @@ python3 x.py build</userinput></screen>
     </para>
 
 <screen remap="test"><userinput>SSL_CERT_DIR=/etc/ssl/certs \
-python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
+python3 x.py test --verbose --no-fail-fast --keep-stage-std=1 | \
+    tee rustc-testlog</userinput></screen>
 
-    <!-- highlighting.rs:
-         may be fixed by
-         https://github.com/rust-lang/rust/pull/124398 ?
-         it seems harmless anyway
-
-         issue-21763.rs:
-         https://github.com/rust-lang/rust/pull/115869, see my comment
-
-         regression-bad-location-list-67992.rs: rust bug or gdb bug ????
-
-         2024-06-14: Test result is clean with 1.79.0
+    <!-- Both "unused import: `std::io::BufRead`"
+         Test suite internal issues and the unused imports are removed in
+         https://github.com/rust-lang/rust/pull/126097.  -->
     <para>
-      Three tests, <filename>tests/ui/error-emitter/highlighting.rs</filename>,
-      <filename>tests/ui/issues/issue-21763.rs</filename>, and
-      <filename>tests/debuginfo/regression-bad-location-list-67992.rs</filename>,
-      are known to fail.
-    </para> -->
+      Two tests named <filename>tests/run-make/print-cfg</filename> and
+      <filename>tests/run-make/print-to-output</filename> are known to fail.
+    </para>
 
 <!-- Let's just comment this out.  Nobody has tested on a system w/o
      FileCheck for a long time.
@@ -415,7 +406,14 @@ python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></scre
     </note>
 
 <screen role='root'><userinput>python3 x.py install rustc std &amp;&amp;
-python3 x.py install --stage=1 cargo clippy rustfmt</userinput></screen>
+install -vm755 \
+  build/host/stage1-tools/*/*/{cargo{,-clippy,-fmt},clippy-driver,rustfmt} \
+  /opt/rustc-&rust-version;/bin &amp;&amp;</userinput>
+install -vDm644 \
+  src/tools/cargo/src/etc/_cargo \
+  /opt/rustc-&rust-version;/share/zsh/site-functions/_cargo &amp;&amp;
+install -vm644 src/tools/cargo/src/etc/man/* \
+  /opt/rustc-1.80.0/share/man/man1</screen>
 
     <para>
       Still as the &root; user, fix the installation of documentations
@@ -536,11 +534,26 @@ ln -sfv /opt/rustc/share/zsh/site-functions/_cargo \
       will not stop at the first error.
     </para>
 
-    <!-- https://github.com/rust-lang/rust/issues/94147 -->
     <para>
-      <parameter>--stage=1</parameter>: this switch works around an issue
+      <parameter>--keep-stage-std 1</parameter>: this switch prevents
+      <command>x.py test</command> from rebuilding the entire package for
+      some unknown reason.
+    </para>
+
+    <!-- https://github.com/rust-lang/rust/issues/94147
+         Do a manual installation for these 5 binaries for 1.80.0, the
+         build system insists to rebuild them even with this.
+    <para>
+      <parameter>- -stage=1</parameter>: this switch works around an issue
       causing some Rustc components unnecessarily rebuilt running
       <command>python3 x.py install</command>.
+    </para>-->
+
+    <para>
+      <command>install ... /opt/rustc-&rust-version;/...</command>:
+      these commands explicitly installs some Rust components.  They are
+      used instead of relying on <command>x.py install</command> because the
+      latter would rebuild these components for some unknown reason.
     </para>
 
   </sect2>
