@@ -86,6 +86,8 @@
       <ulink url="https://gitlab.com/AOMediaCodec/SVT-AV1">svt-av1</ulink>
     </para>
 
+    &test-use-internet;
+
   </sect2>
 
   <sect2 role="installation">
@@ -108,10 +110,14 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr \
 ninja</userinput></screen>
 
     <para>
-      This package does come with a test suite, but it requires
-      <ulink url="https://github.com/google/googletest">gtest</ulink>, which
-      is not part of BLFS.
+      To test the package (note that it will cause the building system to
+      download a copy of
+      <ulink url="https://github.com/google/googletest">gtest</ulink> and
+      build the test suite with the copy), issue:
     </para>
+
+<screen remap='test'><userinput>cmake .. -D AVIF_GTEST=LOCAL -D AVIF_BUILD_TESTS=ON &amp;&amp;
+ninja &amp;&amp; ninja test</userinput></screen>
 
     <para>
       Now, as the &root; user:
