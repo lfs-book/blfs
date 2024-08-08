@@ -239,7 +239,30 @@
       Install the server by running the following commands:
     </para>
 
-<screen><userinput>mkdir build &amp;&amp;
+    <!-- To editors: Ironically -D systemd_logind=true shows up only for
+         **sysv** revision.  No it's not a bug.  It's used to make the
+         building system error out when dbus is not installed and emphasis
+         that we don't support a configuration lacking a recommended
+         dependency.  On systemd dbus is installed in LFS.  Despite the
+         naming, it controls elogind support as well.
+
+         It's harmless to have this option for systemd revision as well
+         but I cannot figure out how to write it up in the Explanations
+         section for systemd revision, so just omit it for systemd
+         revision.  -->
+
+<screen revision='sysv'><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup ..               \
+      --prefix=$XORG_PREFIX  \
+      --localstatedir=/var   \
+      -D glamor=true         \
+      -D systemd_logind=true \
+      -D xkb_output_dir=/var/lib/xkb &amp;&amp;
+ninja</userinput></screen>
+
+<screen revision='systemd'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson setup ..              \
@@ -282,19 +305,18 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
       which replaces the traditional Device Dependent X (DDX) drivers.
     </para>
 
+    <para revision='sysv'>
+      <option>-D systemd_logind=true</option>:
+      This switch makes the building system error out if
+      <xref linkend='dbus'/> is not installed.  The BLFS editors discourage
+      building this package without <xref linkend='dbus'/> installed.
+    </para>
+
     <para>
       <option>-D suid_wrapper=true</option>: Builds the suid-root
       wrapper for legacy DDX driver support on rootless xserver systems.
     </para>
-<!-- commented out because this option defaults to auto
-    <para>
-      <option>-Dsystemd_logind=false</option>:
-      This switch disables <phrase revision="systemd">systemd-logind</phrase>
-      <phrase revision="sysv">elogind</phrase> integration, allowing Xorg Server
-      to work without having the <phrase revision="systemd">systemd</phrase>
-      <phrase revision="elogind">elogind</phrase> PAM module configured.
-    </para>
--->
+
     <para revision="sysv">
       <command>cat &gt;&gt; /etc/sysconfig/createfiles...</command>: This
       command creates the <filename class="directory">/tmp/.ICE-unix</filename>
