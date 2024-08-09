@@ -189,6 +189,16 @@ useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
 <screen revision="sysv"><userinput>sed -i '/systemd_sysusers_dir/s/^/#/' meson.build</userinput></screen>
 
     <para>
+      Adapt this package to allow building with SpiderMonkey from
+      Firefox-128.1.0 or later (this has no effect but does no harm if
+      building with <xref linkend='duktape'/>):
+    </para>
+
+    <screen><userinput>sed '/mozjs/s/115/128/' -i meson.build &amp;&amp;
+sed 's/? report->filename/&amp;.c_str()/' \
+    -i src/polkitbackend/polkitbackendjsauthority.cpp</userinput></screen>
+
+    <para>
       Install <application>Polkit</application> by running the following
       commands:
     </para>
