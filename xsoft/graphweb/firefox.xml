@@ -288,6 +288,15 @@ unset MOZ_TELEMETRY_REPORTING
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir</literal>
 EOF</userinput></screen>
 
+    <!-- https://phabricator.services.mozilla.com/D219025 -->
+    <para>
+      Adapt two files for compatibility with cbindgen-0.27.0 or later:
+    </para>
+
+    <screen><userinput>sed 's/input.try/&amp;_parse/' \
+    -i servo/components/style_traits/values.rs &amp;&amp;
+sed '0,/"Keyframe"/{//d}' -i servo/ports/geckolib/cbindgen.toml</userinput></screen>
+
     <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1859752
          https://hg.mozilla.org/try/rev/d5f3b0c4f08a -->
     <para>
