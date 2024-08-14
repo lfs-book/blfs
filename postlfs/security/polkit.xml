@@ -117,7 +117,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gtk-doc"/>,
-      <xref linkend="python-dbusmock"/>, and
+      <xref linkend="python-dbusmock"/> (required for tests), and
       <xref linkend="spidermonkey"/> (can be used in place of duktape)
     </para>
 
@@ -213,19 +213,6 @@ meson setup ..                    \
       -D session_tracking=elogind \
       -D tests=true</userinput></screen>
 
-    <!-- We have to do this after meson setup because mocklibc is extracted
-         from a tarball by the meson setup command.  Also note that
-         test/mocklibc is useless and patching it won't work.  -->
-    <para>
-      Now adapt the shipped mocklibc copy to allow building the test suite
-      with GCC 14 or later:
-    </para>
-
-<screen><userinput>grep 'print_indent'             ../subprojects/mocklibc-1.0/src/netgroup.c \
-     | sed 's/ {/;/' >>         ../subprojects/mocklibc-1.0/src/netgroup.h &amp;&amp;
-
-sed -i '1 i #include &lt;stdio.h&gt;' ../subprojects/mocklibc-1.0/src/netgroup.h</userinput></screen>
-
     <para>
       Build the package:
     </para>
@@ -267,18 +254,6 @@ sed -i '1 i #include &lt;stdio.h&gt;' ../subprojects/mocklibc-1.0/src/netgroup.h
       <xref linkend='duktape'/> JavaScript engine.
     </para>
 
-    <!--
-    <para revision="sysv">
-      <parameter>- -disable-libsystemd-login</parameter>: This switch forces
-      polkit to build with elogind support (if available) rather than
-      systemd-logind.
-    </para>
-
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
-    -->
-
     <para>
       <option>-D os_type=lfs</option>: Use this switch if you did not create
       the <filename>/etc/lfs-release</filename> file or distribution auto
@@ -292,11 +267,6 @@ sed -i '1 i #include &lt;stdio.h&gt;' ../subprojects/mocklibc-1.0/src/netgroup.h
       <application>Linux PAM</application> Authentication framework. Use it
       if you have not installed <application>Linux PAM</application>.
     </para>
-
-    <!--
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-    href="../../xincludes/gtk-doc-rebuild.xml"/>
-    -->
 
     <para>
       <option>-D introspection=false</option>: Use this option if you are certain
