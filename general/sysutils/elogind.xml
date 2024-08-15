@@ -141,14 +141,14 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                              \
-      --prefix=/usr                         \
-      --buildtype=release                   \
-      -Dman=auto                            \
-      -Ddocdir=/usr/share/doc/elogind-&elogind-version; \
-      -Dcgroup-controller=elogind           \
-      -Ddev-kvm-mode=0660                   \
-      -Ddbuspolicydir=/etc/dbus-1/system.d &amp;&amp;
+meson setup ..                               \
+      --prefix=/usr                          \
+      --buildtype=release                    \
+      -D man=auto                            \
+      -D docdir=/usr/share/doc/elogind-&elogind-version; \
+      -D cgroup-controller=elogind           \
+      -D dev-kvm-mode=0660                   \
+      -D dbuspolicydir=/etc/dbus-1/system.d &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -199,12 +199,12 @@ ln -sfvn elogind /usr/include/systemd</userinput></screen>
     </para>
     -->
     <para>
-      <parameter>-Ddocdir=/usr/share/doc/elogind-&elogind-version;</parameter>:
+      <parameter>-D docdir=/usr/share/doc/elogind-&elogind-version;</parameter>:
       This is needed to install documentation in a versioned directory.
     </para>
 
     <para>
-      <parameter>-Dcgroup-controller=elogind</parameter>: This switch is
+      <parameter>-D cgroup-controller=elogind</parameter>: This switch is
       necessary to build this package when the kernel is not built with
       <option>CONFIG_CGROUPS</option> enabled.  Note that
       <application>elogind</application> strictly needs
@@ -213,34 +213,34 @@ ln -sfvn elogind /usr/include/systemd</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Ddbuspolicydir=/etc/dbus-1/system.d</parameter>: This switch
+      <parameter>-D dbuspolicydir=/etc/dbus-1/system.d</parameter>: This switch
       sets the location of the <application>D-Bus</application> policy
       directory.
     </para>
 
     <para>
-      <parameter>-Ddev-kvm-mode=0660</parameter>: The LFS udev rule sets the
+      <parameter>-D dev-kvm-mode=0660</parameter>: The LFS udev rule sets the
       mode of <filename class='devicefile'>/dev/kvm</filename> to 0660.
       This option ensures the elogind udev rules consistent with the LFS
       configuration.
     </para>
 
     <para>
-      <parameter>-Dman=auto</parameter>: The default value of this switch is
+      <parameter>-D man=auto</parameter>: The default value of this switch is
       <emphasis>false</emphasis>. Setting it to <emphasis>auto</emphasis>
       allows building and installing the man pages if the recommended
       dependencies are installed.
     </para>
 
     <para>
-      <option>-Dhtml=auto</option>: The default value of this switch is
+      <option>-D html=auto</option>: The default value of this switch is
       <emphasis>false</emphasis>. Setting it to <emphasis>auto</emphasis>
       allows building and installing the html documentation if the recommended
       dependencies are installed.
     </para>
 
     <para>
-      <option>-Ddefault-kill-user-processes=false</option>: Determines whether
+      <option>-D default-kill-user-processes=false</option>: Determines whether
       the processes of a user should be killed when the user logs out. The
       default is <emphasis>true</emphasis>, but this defeats the traditional
       use of <command>screen</command> or <command>tmux</command>. This can

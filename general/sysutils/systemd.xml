@@ -184,26 +184,26 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                \
-      --prefix=/usr           \
-      --buildtype=release     \
-      -Ddefault-dnssec=no     \
-      -Dfirstboot=false       \
-      -Dinstall-tests=false   \
-      -Dldconfig=false        \
-      -Dman=auto              \
-      -Dsysusers=false        \
-      -Drpmmacrosdir=no       \
-      -Dhomed=disabled        \
-      -Duserdb=false          \
-      -Dmode=release          \
-      -Dpam=enabled           \
-      -Dpamconfdir=/etc/pam.d \
-      -Ddev-kvm-mode=0660     \
-      -Dnobody-group=nogroup  \
-      -Dsysupdate=disabled    \
-      -Dukify=disabled        \
-      -Ddocdir=/usr/share/doc/systemd-&systemd-version; &amp;&amp;
+meson setup ..                 \
+      --prefix=/usr            \
+      --buildtype=release      \
+      -D default-dnssec=no     \
+      -D firstboot=false       \
+      -D install-tests=false   \
+      -D ldconfig=false        \
+      -D man=auto              \
+      -D sysusers=false        \
+      -D rpmmacrosdir=no       \
+      -D homed=disabled        \
+      -D userdb=false          \
+      -D mode=release          \
+      -D pam=enabled           \
+      -D pamconfdir=/etc/pam.d \
+      -D dev-kvm-mode=0660     \
+      -D nobody-group=nogroup  \
+      -D sysupdate=disabled    \
+      -D ukify=disabled        \
+      -D docdir=/usr/share/doc/systemd-&systemd-version; &amp;&amp;
 
 ninja</userinput></screen>
 <!-- Regarding homed and userdb, see the note below in Command Explanations-->
@@ -240,19 +240,19 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dpamconfdir=/etc/pam.d</parameter>: Forces the PAM files to
+      <parameter>-D pamconfdir=/etc/pam.d</parameter>: Forces the PAM files to
       be installed in /etc/pam.d rather than /usr/lib/pam.d.
     </para>
 
     <para>
-      <parameter>-Duserdb=false</parameter>: Removes a daemon that does not
+      <parameter>-D userdb=false</parameter>: Removes a daemon that does not
       offer any use under a BLFS configuration. If you wish to enable the
       <application>userdbd</application> daemon, replace "false" with "true"
       in the above meson command.
     </para>
 
     <para>
-      <parameter>-Dhomed=disabled</parameter>: Removes a daemon that does not offer
+      <parameter>-D homed=disabled</parameter>: Removes a daemon that does not offer
       any use under a traditional BLFS configuration, especially using accounts
       created with useradd. To enable systemd-homed, first ensure that you have
       <xref linkend="cryptsetup"/> and <xref linkend="libpwquality"/> installed,
@@ -261,7 +261,7 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Dukify=disabled</parameter>: Removes a script for
+      <parameter>-D ukify=disabled</parameter>: Removes a script for
       combining a kernel, an initramfs, and a kernel command line etc.
       into an UEFI application which can be loaded by the UEFI firmware
       to start the embedded Linux kernel.  It's not needed for booting a

@@ -124,13 +124,13 @@
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                  \
-      --prefix=/usr             \
-      --buildtype=release       \
-      -Dgtk-doc=false           \
-      -Dman=false               \
-      -Dsystemdsystemunitdir=no \
-      -Dudevrulesdir=/usr/lib/udev/rules.d &amp;&amp;
+meson setup ..                   \
+      --prefix=/usr              \
+      --buildtype=release        \
+      -D gtk-doc=false           \
+      -D man=false               \
+      -D systemdsystemunitdir=no \
+      -D udevrulesdir=/usr/lib/udev/rules.d &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build                         &amp;&amp;
@@ -138,8 +138,8 @@ cd    build                         &amp;&amp;
 meson setup ..            \
       --prefix=/usr       \
       --buildtype=release \
-      -Dgtk-doc=false     \
-      -Dman=false         &amp;&amp;
+      -D gtk-doc=false    \
+      -D man=false        &amp;&amp;
 ninja</userinput></screen>
 
     <!-- On my system with LANG=zh_CN.UTF-8, one test attempted to compare
@@ -187,25 +187,25 @@ ninja</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-Dgtk-doc=false</parameter>: Prevents building the
+      <parameter>-D gtk-doc=false</parameter>: Prevents building the
       documentation. Remove this if you have <application>GTK-Doc</application>
       installed and wish to build the documentation.
     </para>
 
     <para>
-      <parameter>-Dman=false</parameter>: Prevents building the
+      <parameter>-D man=false</parameter>: Prevents building the
       manual pages. Remove this if you have <xref linkend='libxslt'/> and
       <xref linkend='docbook-xsl'/> installed and wish to build the manual
       pages.
     </para>
 
     <para revision="sysv">
-      <parameter>-Dsystemdsystemunitdir=no</parameter>: Removes
+      <parameter>-D systemdsystemunitdir=no</parameter>: Removes
       the dependency on <application>systemd</application>.
     </para>
 
     <para revision="sysv">
-      <parameter>-Dudevrulesdir=/usr/lib/udev/rules.d</parameter>: Tells
+      <parameter>-D udevrulesdir=/usr/lib/udev/rules.d</parameter>: Tells
       the build system where to install <application>udev</application>
       rules because the information is missing in
       <filename>/usr/lib/pkgconfig/libudev.pc</filename>
