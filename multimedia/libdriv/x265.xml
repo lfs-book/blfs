@@ -4,10 +4,10 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY x265-download-http "&sources-anduin-http;/x265/x265-&x265-version;.tar.xz">
+  <!ENTITY x265-download-http "https://bitbucket.org/multicoreware/x265_git/downloads/x265_&x265-version;.tar.gz">
   <!ENTITY x265-download-ftp  " ">
-  <!ENTITY x265-md5sum        "2be74eaa6ea24c0dba797fa5cea9d1d4">
-  <!ENTITY x265-size          "1.0 MB">
+  <!ENTITY x265-md5sum        "99997ecc8ee4d3575ba7715c759ad3bb">
+  <!ENTITY x265-size          "1.6 MB">
   <!ENTITY x265-buildsize     "45 MB">
   <!ENTITY x265-time          "0.5 SBU (using parallelism=4)">
 ]>
@@ -98,7 +98,6 @@
 cd    bld &amp;&amp;
 
 cmake -D CMAKE_INSTALL_PREFIX=/usr \
-      -D GIT_ARCHETYPE=1           \
       -W no-dev ../source          &amp;&amp;
 make</userinput></screen>
 
@@ -118,12 +117,14 @@ rm -vf /usr/lib/libx265.a </userinput></screen>
   <sect2 role="commands">
       <title>Command Explanations</title>
 
+ <!--
       <para>
         <parameter>-D GIT_ARCHETYPE=1</parameter>: Upstream no longer provides
         releases. BLFS is using a git snapshot, but if the builder has not
         installed <application>git</application> the build will not install
         the shared library or the pkgconfig file without this switch.
       </para>
+-->
 
       <para>
         <parameter>-Wno-dev</parameter>: This switch is used to suppress warnings
