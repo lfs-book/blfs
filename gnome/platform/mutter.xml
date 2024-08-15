@@ -132,11 +132,11 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr              \
-            --buildtype=release        \
-            -Dtests=false              \
-            -Dprofiler=false           \
-            ..                         &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -D tests=false      \
+            -D profiler=false   \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
 <!--
@@ -172,9 +172,9 @@ ninja</userinput></screen>
       installed from either <xref linkend='xorg-server'/> or <xref
       linkend='xwayland'/>.
 
-      You should also replace <parameter>-Dtests=false</parameter> in the
+      You should also replace <parameter>-D tests=false</parameter> in the
       <command>meson</command> command, with
-      <parameter>-Dtests=true -Dclutter_tests=false</parameter>.  The test
+      <parameter>-D tests=true -D clutter_tests=false</parameter>.  The test
       suite requires the mutter schema to be installed on the system, so it is
       better to run the tests after installing the package.
     </para>
@@ -224,12 +224,12 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dtests=false</parameter>: Prevents building the tests,
+      <parameter>-D tests=false</parameter>: Prevents building the tests,
       and removes a hard requirement on <command>xvfb-run</command>.
     </para>
 
     <para>
-      <parameter>-Dprofiler=false</parameter>: Allow building this package
+      <parameter>-D profiler=false</parameter>: Allow building this package
       without <application>Sysprof</application>.  Remove this option if
       you've installed <application>Sysprof</application> and want to
       analysis the rendering performance of
@@ -237,7 +237,7 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <option>-Dtests=true -Dclutter_tests=false</option>: Building all the
+      <option>-D tests=true -D clutter_tests=false</option>: Building all the
       tests but the tests for the shipped <application>Clutter</application>
       library.  The <application>Clutter</application> tests are known to
       fail with <parameter>--buildtype=release</parameter>.
