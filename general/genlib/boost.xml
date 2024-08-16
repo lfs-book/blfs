@@ -73,17 +73,16 @@
         </para>
       </listitem>
     </itemizedlist>
-    <!--
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Recommended patch, required to build <xref linkend="libreoffice"/>:
-          <ulink url="&patch-root;/boost-&boost-version;-gcc_10-1.patch"/>
+          Required patch:
+          <ulink url="&patch-root;/boost-&boost-version;-upstream_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
-    -->
 
     <bridgehead renderas="sect3">Boost Dependencies</bridgehead>
 
@@ -94,7 +93,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="icu"/> and
+      <xref linkend="icu"/>,
+      <xref linkend="numpy"/>, and
       <ulink url="https://www.open-mpi.org/">Open MPI</ulink>
     </para>
 
@@ -105,6 +105,24 @@
 
   <sect2 role="installation">
     <title>Installation of Boost</title>
+
+    <para>
+      First, fix a problem with Boost and <xref linkend="numpy"/> that causes
+      the build to fail:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../boost-&boost-version;-upstream_fixes-1.patch</userinput></screen>
+
+    <para>
+      Next, fix a build issue which occurs in the stacktrace library. This
+      issue is specific to i686 systems.
+    </para>
+
+<screen><userinput remap="pre">case $(uname -m) in
+   i?86)
+      sed -e "s/defined(__MINGW32__)/&amp; || defined(__i386__)/" \
+          -i ./libs/stacktrace/src/exception_headers.h ;;
+esac</userinput></screen>
 
     <para>
       This package can be built with several jobs running in parallel. In
