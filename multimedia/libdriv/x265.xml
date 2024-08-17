@@ -105,15 +105,37 @@ make</userinput></screen>
       This package does not come with a test suite.
     </para>
 
+    <!-- To editors: hard coded versions "209", "212", and "3.6" are not a
+         bug.  This <important> block should be removed when we update x265
+         to 3.7 (or 4.0 or whatever new version).  The problem only happens
+         when we downgrade libx265.so, upgrading is OK (as long as following
+         the LFS package management page).  -->
+    <important>
+      <para>
+        If downgrading from the bleeding-edge x265-20240812 (it had been
+        mistakenly used in the BLFS development book for several days),
+        remove the shared library from x265-20240812 as the &root; user:
+      </para>
+
+      <screen role='root'><userinput>rm -fv /usr/lib/libx265.so.212</userinput></screen>
+
+      <para>
+        This is for preventing <command>ldconfig</command> from recreating
+        the symlink <filename>libx265.so</filename> with the target
+        <filename>/usr/lib/libx265.so.212</filename> which seems to be
+        <quote>a newer version</quote> of <filename>libx265.so.209</filename>
+        from x265-3.6.
+      </para>
+    </important>
+
     <para>
       To install the package, first remove any old library versions.
       After installation, remove a static library.
       As the &root; user:
     </para>
 
-<screen role="root"><userinput>rm -vf /usr/lib/libx265* &amp;&amp;
-make install             &amp;&amp;
-rm -vf /usr/lib/libx265.a </userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+rm -vf /usr/lib/libx265.a</userinput></screen>
 
   </sect2>
 
