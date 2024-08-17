@@ -6,9 +6,9 @@
 
   <!ENTITY librsvg-download-http "&gnome-download-http;/librsvg/&librsvg-minor;/librsvg-&librsvg-version;.tar.xz">
   <!ENTITY librsvg-download-ftp  " ">
-  <!ENTITY librsvg-md5sum        "fcb9dd667d76564a52ac7f52264c57db">
+  <!ENTITY librsvg-md5sum        "8f954b5c25ffff602b4e62813c98c8c9">
   <!ENTITY librsvg-size          "5.9 MB">
-  <!ENTITY librsvg-buildsize     "728 MB (17 MB installed), add 545 MB for tests">
+  <!ENTITY librsvg-buildsize     "723 MB (17 MB installed), add 545 MB for tests">
   <!ENTITY librsvg-time          "0.7 SBU (add 0.7 SBU for tests; both using parallelism=4)">
 ]>
 
@@ -111,6 +111,10 @@ make</userinput></screen>
     <!-- With some locales (zh_CN.UTF-8) 31 tests fail.  With LC_ALL=C only
          one failure.
          https://gitlab.gnome.org/GNOME/librsvg/-/issues/1021 -->
+
+    <!-- Be sure to unset GLIB_LOG_LEVEL.  If set, it interferes with the 
+         tests. -->
+
     <para>
       To test the results, issue:
     </para>
@@ -118,9 +122,8 @@ make</userinput></screen>
     <screen remap='test'><userinput>cargo update --precise 0.3.36 time &amp;&amp;
 LC_ALL=C make check -k</userinput></screen>
 
-    <!-- https://gitlab.gnome.org/GNOME/librsvg/-/issues/1085 -->
     <para>
-      One test named <literal>bugs_bug749415_svg</literal> is known to fail.
+      All 68 tests shold pass.
     </para>
 
     <para>
