@@ -79,9 +79,13 @@
 -->
     <bridgehead renderas="sect3">libarchive Dependencies</bridgehead>
 
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="libxml2"/>
+    </para>
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="libxml2"/>,
       <xref linkend="lzo"/>, 
       <xref linkend="nettle"/>, and
       <xref linkend="pcre2"/>
@@ -96,7 +100,7 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --disable-static --without-expat &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -117,11 +121,19 @@ make</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 
+    <!-- https://github.com/libarchive/libarchive/issues/2146 -->
     <para>
-      <option>--without-xml2</option>: This switch sets expat for xar archive
+      <parameter>--without-expat</parameter>: This switch disables using
+      expat for xar format support.  Due to a bug the xar reader will loop
+      infinitely if expat is used.  The upstream prefers libxml2 for xar
+      support anyway.
+    </para>
+<!--
+    <para>
+      <option>- -without-xml2</option>: This switch sets expat for xar archive
       format support instead of preferred libxml2 if both packages are installed.
     </para>
-
+-->
     <para>
       <option>--without-nettle</option>: This switch sets OpenSSL for crypto
       support instead of preferred Nettle if both packages are installed.
