@@ -78,17 +78,17 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required patch for building with <xref linkend="apr"/>:
+          Required patch:
           <ulink url="&patch-root;/subversion-&subversion-version;-apr_1.7.0_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
--->
+
     <bridgehead renderas="sect3">Subversion Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -162,12 +162,19 @@
 <screen><userinput remap="pre">grep -rl '^#!.*python$' | xargs sed -i '1s/python/&amp;3/'</userinput></screen>
 
     <para>
-      Next, adapt the Ruby bindings to ruby-3.2 and later:
+      Next, fix building this package with GCC 14:
     </para>
 
-    <screen><userinput remap="pre">sed -e 's/File.exists?/File.exist?/'               \
-    -i subversion/bindings/swig/ruby/svn/util.rb   \
-       subversion/bindings/swig/ruby/test/test_wc.rb</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../subversion-&subversion-version;-upstream_fixes-1.patch</userinput></screen>
+
+    <para>
+      After modifying the SWIG bindings like we did with the patch, the build
+      system must be regenerated so the bindings pick up the changes:
+    </para>
+
+<screen><userinput remap="pre"> touch build/generator/swig/*.py &amp;&amp;
+mv -v build-outputs.mk{,.old}   &amp;&amp;
+./autogen.sh --release</userinput></screen>
 
     <para>
       Install <application>Subversion</application> by running the following
