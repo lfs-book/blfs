@@ -126,6 +126,25 @@
 <screen><userinput>export XORG_CONFIG="--prefix=$XORG_PREFIX --sysconfdir=/etc \
     --localstatedir=/var --disable-static"</userinput></screen>
 
+    <note>
+      <para>
+        We will use <envar>$XORG_CONFIG</envar> in the instructions for
+        many packages belonging to or related to Xorg.  These instructions
+        won't work properly with the default behavior of
+        <xref linkend='zsh'/>.  So if you are using <xref linkend='zsh'/> as
+        the interactive shell and building a package for which the
+        instruction uses this variable, make <xref linkend='zsh'/> behavior
+        expanding <envar>$XORG_CONFIG</envar> same as bash:
+      </para>
+
+      <screen role='nodump'><userinput>set -o shwordsplit</userinput></screen>
+
+      <para>
+        If you want to make this setting persistent, add this command into
+        the zsh startup file.
+      </para>
+    </note>
+
     <para>
       Create an <filename>/etc/profile.d/xorg.sh</filename> configuration
       file containing these variables as the
