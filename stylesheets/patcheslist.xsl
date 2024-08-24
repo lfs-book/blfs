@@ -56,7 +56,7 @@ exit</xsl:text>
   <xsl:template match="//text()"/>
 
   <xsl:template match="//ulink">
-      <!-- Match only local patches links and skip duplicated URLs splitted for PDF output-->
+      <!-- Match only local patches links and skip duplicated URLs split for PDF output-->
     <xsl:if test="contains(@url, '.patch') and contains(@url, '&patch-root;')
             and not(ancestor-or-self::*/@condition = 'pdf')">
       <xsl:variable name="patch.name" select="substring-after(@url, '&patch-root;')"/>

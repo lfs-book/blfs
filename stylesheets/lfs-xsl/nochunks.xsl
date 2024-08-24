@@ -83,7 +83,7 @@
   </xsl:template>
 
     <!-- The CSS Stylesheet:
-           Note: there is some diferences with lfs.css code releated
+           Note: there is some differences with lfs.css code related
                  to h* values, admonitions and no navigational code. -->
     <!-- The original template is in {docbook-xsl}/xhtml/docbook.xsl -->
   <xsl:template name='user.head.content'>
