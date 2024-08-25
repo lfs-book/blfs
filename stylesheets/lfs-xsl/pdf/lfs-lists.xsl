@@ -39,7 +39,7 @@
   <xsl:param name="variablelist.max.termlength">35</xsl:param>
 
     <!-- varlistentry mode block:
-           Addibg a bullet, left alignment, and @kepp-*.* attributes
+           Adding a bullet, left alignment, and @keep-*.* attributes
            for packages and patches list. -->
     <!-- The original template is in {docbook-xsl}/fo/list.xsl -->
   <xsl:template match="varlistentry" mode="vl.as.blocks">
