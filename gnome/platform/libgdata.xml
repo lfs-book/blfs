@@ -87,9 +87,10 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/> (for documentation),
-      <xref linkend="liboauth"/> (for OAuth v1 support), and
-      <xref linkend="uhttpmock"/> (required for tests)
+      <xref linkend="gtk-doc"/> (for documentation), and
+      <xref linkend="liboauth"/> (for OAuth v1 support) <!-- and
+      <xref linkend="uhttpmock"/> (required for tests)-->
+      <!-- uhttpmock is commented out until libgdata is ported to soup3 -->
     </para>
 
   </sect2>
@@ -112,6 +113,7 @@ meson setup --prefix=/usr               \
             ..                          &amp;&amp;
 ninja</userinput></screen>
 
+<!--
     <para>
       If you wish to run the test suite, make sure
       <xref linkend="uhttpmock"/> is installed and remove
@@ -119,6 +121,15 @@ ninja</userinput></screen>
       <command>meson</command> command line.  To test the results,
       issue: <command>ninja test</command>. Note that
       the tests need network access.
+    </para>
+ -->
+
+<!-- Tests requires uhttpmock, but they are only compatible with a version that
+     uses libsoup2. Without this version, all of the tests fail due to mixing
+     symbols from libsoup3 and libsoup2 in the same program. -->
+
+    <para>
+      This package does not come with a functional test suite.
     </para>
 
     <para>
