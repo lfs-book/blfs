@@ -149,9 +149,13 @@
 
 mv /usr/share/lazarus/docs /usr/share/doc/lazarus
 
+<!-- move /usr/share/lazarus to appear as /usr/lib/lazarus -->
 mv /usr/share/lazarus /usr/lib/
-for L in $(find /usr/bin -type l); do
-    ln -svf "$(readlink $L | sed 's@/share/@/lib/@')" "$L"
+for L in laz{arus-ide,build} startlazarus; do
+    ln -svf ../lib/lazarus/$L /usr/bin/$L
+done
+for L in lazres lrstolfm updatepofiles; do
+    ln -svf ../lib/lazarus/tools/$L /usr/bin/$L
 done
 
 sed -e 's|\(Categories\).*|\1=IDE;Development;|' \
