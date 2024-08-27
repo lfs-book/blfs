@@ -6,9 +6,9 @@
 
   <!ENTITY libei-download-http "https://gitlab.freedesktop.org/libinput/libei/-/archive/&libei-version;/libei-&libei-version;.tar.gz">
   <!ENTITY libei-download-ftp  " ">
-  <!ENTITY libei-md5sum        "39d18e5c56834d0b3e62b1e2af41a7a5">
+  <!ENTITY libei-md5sum        "aeaffcb5afb5ad0bb9981eb93c4cd610">
   <!ENTITY libei-size          "228 KB">
-  <!ENTITY libei-buildsize     "5.2 MB">
+  <!ENTITY libei-buildsize     "5.4 MB">
   <!ENTITY libei-time          "less than 0.1 SBU">
 ]>
 
@@ -29,7 +29,7 @@
       for handling emulated inputs. It is primarily aimed at the Wayland stack.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,8 +77,9 @@
       <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
       <xref linkend="libevdev"/>,
       <xref linkend="libxkbcommon"/>,
-      <xref linkend="libxml2"/>, and
-      <ulink url="https://github.com/nemequ/munit">munit</ulink>
+      <xref linkend="libxml2"/>,
+      <ulink url="https://github.com/nemequ/munit">munit</ulink>, and
+      <ulink url="https://pypi.org/project/structlog/">structlog</ulink>
     </para>
   </sect2>
 
@@ -93,17 +94,19 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr --buildtype=release -Dtests=disabled .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release -D tests=disabled &amp;&amp;
 ninja</userinput></screen>
 
     <para>
       This package does come with a test suite, but it requires an external
-      dependency. If you have
-      <ulink url="https://github.com/nemequ/munit">munit</ulink> installed and
-      wish to run the test suite, run the following commands:
+      dependency. If you have both
+      <ulink url="https://github.com/nemequ/munit">munit</ulink> and
+      <ulink url="https://pypi.org/project/structlog/">structlog</ulink>
+      installed, and you wish to run the test suite, run the following
+      commands:
     </para>
 
-<screen remap="test"><userinput>meson configure -Dtests=enabled .. &amp;&amp;
+<screen remap="test"><userinput>meson configure -D tests=enabled .. &amp;&amp;
 ninja test</userinput></screen>
 
     <para>
@@ -121,7 +124,7 @@ ninja test</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dtests=disabled</parameter>: This switch avoids a dependency
+      <parameter>-D tests=disabled</parameter>: This switch avoids a dependency
       on <ulink url="https://github.com/nemequ/munit">munit</ulink>. Remove this
       switch if you have <application>munit</application> installed and wish to
       run the test suite.

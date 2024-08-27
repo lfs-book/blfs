@@ -30,7 +30,7 @@
       ASCII Art.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -96,12 +96,30 @@
     -i src/aax.c</userinput></screen>
 
     <para>
-      Fix an overuse of some ncurses internal data structure to allow
+      Fix an overuse of some ncurses internal data structures to allow
       building this package with ncurses-6.5 or later:
     </para>
 
     <screen><userinput>sed 's/stdscr->_max\([xy]\) + 1/getmax\1(stdscr)/' \
     -i src/aacurses.c</userinput></screen>
+
+    <para>
+      To allow building this package with GCC-14 or later, add some missing
+      <literal>#include</literal> directives and fix a bad
+      <literal>return</literal> statement to make the code C99-compatible.
+      Then regenerate the <command>configure</command> script to ensure
+      the C code for probing system features is C99-compatible as well:
+    </para>
+
+<screen><userinput>sed -i '1i#include &lt;stdlib.h&gt;'                            \
+    src/aa{fire,info,lib,linuxkbd,savefont,test,regist}.c &amp;&amp;
+sed -i '1i#include &lt;string.h&gt;'                            \
+    src/aa{kbdreg,moureg,test,regist}.c                   &amp;&amp;
+sed -i '/X11_KBDDRIVER/a#include &lt;X11/Xutil.h&gt;'           \
+    src/aaxkbd.c                                          &amp;&amp;
+sed -i '/rawmode_init/,/^}/s/return;/return 0;/'          \
+    src/aalinuxkbd.c                                      &amp;&amp;
+autoconf</userinput></screen>
 
     <para>
       Install <application>AAlib</application> by running the following

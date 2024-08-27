@@ -6,9 +6,9 @@
 
   <!ENTITY libwacom-download-http "https://github.com/linuxwacom/libwacom/releases/download/libwacom-&libwacom-version;/libwacom-&libwacom-version;.tar.xz">
   <!ENTITY libwacom-download-ftp  " ">
-  <!ENTITY libwacom-md5sum        "fa489522c2b5f014360f44a3e38a30f8">
-  <!ENTITY libwacom-size          "116 KB">
-  <!ENTITY libwacom-buildsize     "3.6 MB (with tests)">
+  <!ENTITY libwacom-md5sum        "7005d961cc44995d8c04d586fa060c63">
+  <!ENTITY libwacom-size          "152 KB">
+  <!ENTITY libwacom-buildsize     "7.9 MB (with tests)">
   <!ENTITY libwacom-time          "less than 0.1 SBU (with tests)">
 ]>
 
@@ -27,10 +27,11 @@
 
     <para>
       The <application>libwacom</application> package contains a library used
-      to identify wacom tablets and their model-specific features.
+      to identify graphics tablets from Wacom or various other vendors and
+      their model-specific features.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,6 +71,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
+      <xref linkend="libevdev"/> and
       <xref linkend="libgudev"/>
     </para>
 
@@ -113,15 +115,25 @@ cd    build &amp;&amp;
 meson setup ..            \
       --prefix=/usr       \
       --buildtype=release \
-      -Dtests=disabled    &amp;&amp;
+      -D tests=disabled    &amp;&amp;
 ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>ninja test</command>.
       To run additional tests, install
       <xref linkend="pytest"/>, python-libevdev, and pyudev, then remove
-      the "-Dtests=disabled" option from the meson line above.
+      the "-D tests=disabled" option from the meson line above.
     </para>
+
+    <!-- The duplicated match is causing many mutter test failures if
+         unfixed. It also prevents running any of the utilities -->
+    <para>
+      If upgrading from a previous version of libwacom, remove the old
+      device database installation to prevent a potential duplicated match
+      of devices in case some old database files are not overwritten:
+    </para>
+
+    <screen role="root"><userinput>rm -rf /usr/share/libwacom</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -138,7 +150,7 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dtests=disabled</parameter>: This parameter disables some of
+      <parameter>-D tests=disabled</parameter>: This parameter disables some of
       the more advanced tests because they require <xref linkend="pytest"/> and
       other two Python modules beyond the scope of BLFS to work properly.
     </para>

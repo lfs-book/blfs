@@ -9,7 +9,7 @@
   <!ENTITY libical-md5sum        "cc790ea49701df0335d42b89d57c04bc">
   <!ENTITY libical-size          "888 KB">
   <!ENTITY libical-buildsize     "24 MB (with tests)">
-  <!ENTITY libical-time          "0.1 SBU (iusing parallelism=4; with tests)">
+  <!ENTITY libical-time          "0.1 SBU (using parallelism=4; with tests)">
 <!-- run at -j1 because it fails at -j4 -->
 ]>
 
@@ -31,7 +31,7 @@
       of the iCalendar protocols and data formats.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
 
@@ -96,6 +96,14 @@
   <sect2 role="installation">
     <title>Installation of libical</title>
 
+    <!-- https://github.com/libical/libical/pull/690 -->
+    <para>
+      If <xref linkend='icu'/> is installed, fix an incompatibility
+      with ICU 75 or later:
+    </para>
+
+    <screen><userinput>sed -i '/getKeywordValuesForLocale/s/NULL/""/' src/libical/icalrecur.c</userinput></screen>
+
     <para>
       Install <application>libical</application> by running the
       following commands:
@@ -124,18 +132,18 @@ make</userinput></screen>
       If you have <xref linkend="doxygen"/>, <xref linkend="graphviz"/>,
       and <xref linkend="gtk-doc"/>
       installed and wish to build the API documentation,  you should
-      remove the <parameter>-DICAL_BUILD_DOCS=false</parameter> switch
+      remove the <parameter>-D ICAL_BUILD_DOCS=false</parameter> switch
       and issue:
     </para>
 
 <screen remap="doc"><userinput>make docs</userinput></screen>
 
+    <!-- https://github.com/libical/libical/pull/684
+         It looks like an ICU bug but I've not got time to investigate
+         carefully.  -->
     <para>
       To test the results, issue: <command>make test</command>.
-      <!-- One test, timezones, is known to fail on SysV systems. -->
-      <!-- On systemd, we symlink the current timezone to
-           /etc/localtime, which is what libical expects.
-           This is now done on SysV as well.-->
+      One test named <literal>icalrecurtest-r</literal> is known to fail.
     </para>
 
     <para>

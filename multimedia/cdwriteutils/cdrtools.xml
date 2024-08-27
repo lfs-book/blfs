@@ -31,7 +31,7 @@
       (burning) CDs, DVDs, and Blu-ray discs.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -93,8 +93,17 @@
       commands:
     </para>
 
-<screen><userinput>export GMAKE_NOWARN=true &amp;&amp;
-make -j1 INS_BASE=/usr DEFINSUSR=root DEFINSGRP=root</userinput></screen>
+<screen><userinput>sed -i 's|/opt/schily|/usr|g'           DEFAULTS/Defaults.linux &amp;&amp;
+sed -i 's|DEFINSGRP=.*|DEFINSGRP=root|' DEFAULTS/Defaults.linux &amp;&amp;
+sed -i 's|INSDIR=\s*sbin|INSDIR=bin|'   rscsi/Makefile          &amp;&amp;
+
+export GMAKE_NOWARN=true &amp;&amp;
+export CFLAGS="$CFLAGS -std=gnu89 -fno-strict-aliasing" &amp;&amp;
+
+make -j1 INS_BASE=/usr  \
+         DEFINSUSR=root \
+         DEFINSGRP=root \
+         VERSION_OS="LinuxFromScratch"</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -104,8 +113,14 @@ make -j1 INS_BASE=/usr DEFINSUSR=root DEFINSGRP=root</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>export GMAKE_NOWARN=true &amp;&amp;
-make INS_BASE=/usr MANSUFF_LIB=3cdr DEFINSUSR=root DEFINSGRP=root install &amp;&amp;
+<screen role="root"><userinput>GMAKE_NOWARN=true &amp;&amp;
+
+make INS_BASE=/usr    \
+     DEFINSUSR=root   \
+     DEFINSGRP=root   \
+     MANSUFF_LIB=3cdr \
+     install          &amp;&amp;
+
 install -v -m755 -d /usr/share/doc/cdrtools-&cdrtools-version; &amp;&amp;
 install -v -m644 README.* READMEs/* ABOUT doc/*.ps \
                     /usr/share/doc/cdrtools-&cdrtools-version;</userinput></screen>

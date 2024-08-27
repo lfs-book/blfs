@@ -6,10 +6,10 @@
 
   <!ENTITY libaom-download-http "https://storage.googleapis.com/aom-releases/libaom-&libaom-version;.tar.gz">
   <!ENTITY libaom-download-ftp  " ">
-  <!ENTITY libaom-md5sum        "895519bf46cda7a25da7e80f3a3b66b2">
+  <!ENTITY libaom-md5sum        "f31b72e81dd177396e3553576f6515ef">
   <!ENTITY libaom-size          "5.3 MB">
-  <!ENTITY libaom-buildsize     "103 MB (add 1.0 GB for tests)">
-  <!ENTITY libaom-time          "0.9 SBU (with parallelism=4, add 187 SBU for tests)">
+  <!ENTITY libaom-buildsize     "104 MB (add 1.0 GB for tests)">
+  <!ENTITY libaom-time          "1.0 SBU (with parallelism=4, add 187 SBU for tests)">
 ]>
 
 <!-- Tests not run for version 3.6.1. -->
@@ -34,7 +34,7 @@
       the internet.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -98,10 +98,10 @@
 <screen><userinput>mkdir aom-build &amp;&amp;
 cd    aom-build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr \
-      -DCMAKE_BUILD_TYPE=Release  \
-      -DBUILD_SHARED_LIBS=1       \
-      -DENABLE_DOCS=no            \
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      -D BUILD_SHARED_LIBS=1       \
+      -D ENABLE_DOCS=no            \
       -G Ninja .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -123,18 +123,18 @@ rm -v /usr/lib/libaom.a</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-DBUILD_SHARED_LIBS=1</parameter>: This switch builds shared
+      <parameter>-D BUILD_SHARED_LIBS=1</parameter>: This switch builds shared
       versions of the libraries.
     </para>
 
     <para>
-      <parameter>-DENABLE_DOCS=no</parameter>: This switch disables building
+      <parameter>-D ENABLE_DOCS=no</parameter>: This switch disables building
       the documentation because it fails due to an incompatibility with the
       latest version of <xref role="nodep" linkend="doxygen"/>.
     </para>
 
     <para>
-      <option>-DENABLE_NASM=yes</option>: Use this switch if you have both
+      <option>-D ENABLE_NASM=yes</option>: Use this switch if you have both
       <xref linkend="yasm"/> and
       <xref role="nodep" linkend="nasm"/> installed and wish to use
       nasm instead of yasm.

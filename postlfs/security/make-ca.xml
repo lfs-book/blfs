@@ -6,12 +6,12 @@
 
   <!ENTITY certhost              "https://hg.mozilla.org/">
   <!ENTITY certpath              "/lib/ckfw/builtins/certdata.txt">
-  <!ENTITY make-ca-buildsize     "6.9 MB (with all runtime deps)">
+  <!ENTITY make-ca-buildsize     "164 KB (with all runtime deps)">
   <!ENTITY make-ca-time          "0.1 SBU (with all runtime deps)">
 
-  <!ENTITY make-ca-download      "https://github.com/lfs-book/make-ca/releases/download/v&make-ca-version;/make-ca-&make-ca-version;.tar.xz">
-  <!ENTITY make-ca-size          "32 KB">
-  <!ENTITY make-ca-md5sum        "04bd86fe2eb299788439c3466782ce45">
+  <!ENTITY make-ca-download      "https://github.com/lfs-book/make-ca/archive/v&make-ca-version;/make-ca-&make-ca-version;.tar.gz">
+  <!ENTITY make-ca-size          "40 KB">
+  <!ENTITY make-ca-md5sum        "e99d2985ead0037caedb765fd66b33f0">
 ]>
 
 <sect1 id="make-ca" xreflabel="make-ca-&make-ca-version;">
@@ -48,7 +48,7 @@
         url="https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/policy/">here</ulink>.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -307,7 +307,7 @@ openssl x509 -in class3.crt -text -fingerprint -setalias "CAcert Class 3 root" \
     <title>Using make-ca with Python3</title>
 
     <para>
-      When <application>Python3</application> was installed in LFS it included
+      When <application>Python3</application> was installed in LFS, it included
       the <application>pip3</application> module with vendored certificates
       from the <application>Certifi</application> module. That was necessary,
       but it means that whenever <command>pip3</command> is used it can reference
@@ -331,7 +331,7 @@ openssl x509 -in class3.crt -text -fingerprint -setalias "CAcert Class 3 root" \
     </para>
 
     <para>
-      To use the system certificates in <application>Python3</application> you
+      To use the system certificates in <application>Python3</application>, you
       should set <envar>_PIP_STANDALONE_CERT</envar> to point to them, e.g for
       the <application>bash</application> shell:
     </para>
@@ -343,15 +343,15 @@ openssl x509 -in class3.crt -text -fingerprint -setalias "CAcert Class 3 root" \
         If you have created virtual environments, for example when testing modules,
         and those include the <application>Requests</application> and
         <application>Certifi</application> modules in <filename
-        class="directory">~/.local/lib/python3.11/</filename> then those local
-        modules will be used instead of the system certificates unless you
-        remove the local modules.
+        class="directory">~/.local/lib/python&python3-majorver;/</filename>,
+        then those local modules will be used instead of the system certificates
+        unless you remove the local modules.
       </para>
     </warning>
 
     <para>
       To use the system certificates in <application>Python3</application> with
-      the BLFS profiles add the following variable to your system or personal
+      the BLFS profiles, add the following variable to your system or personal
       profiles:
     </para>
 

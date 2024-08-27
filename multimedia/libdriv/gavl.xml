@@ -34,7 +34,7 @@
       application.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,13 +89,20 @@
     <title>Installation of Gavl</title>
 
     <para>
-      Install <application>Gavl</application> by running the
+      First, fix an issue with gcc-14 and later:
+    </para>
+
+<screen><userinput>sed -i "/stdio/a #include &lt;string.h&gt;" src/fill_test.c</userinput></screen>
+
+    <para>
+      Now, install <application>Gavl</application> by running the
       following commands:
     </para>
 
-<screen><userinput>LIBS=-lm                      \
-./configure --prefix=/usr     \
-            --without-doxygen \
+<screen><userinput>LIBS=-lm                         \
+./configure --prefix=/usr        \
+            --without-doxygen    \
+            --with-cpuflags=none \
             --docdir=/usr/share/doc/gavl-&gavl-version; &amp;&amp;
 make</userinput></screen>
 
@@ -123,6 +130,11 @@ make</userinput></screen>
       <parameter>--without-doxygen</parameter>: This switch disables use of
       Doxygen. Omit if Doxygen is installed and you wish to build the API
       documentation.
+    </para>
+
+    <para>
+      <parameter>--with-cpuflags=none</parameter>: This switch fixes a problem
+      identifying capabilities of the system architecture.
     </para>
 
   </sect2>

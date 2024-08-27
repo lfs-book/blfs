@@ -6,9 +6,9 @@
 
   <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "3563da3ffc17f3f2b37572c15f37a0b4">
+  <!ENTITY samba-md5sum        "a366c985dd1b988ff1fda902876f3241">
   <!ENTITY samba-size          "41 MB">
-  <!ENTITY samba-buildsize     "615 MB (add 64 MB for quicktest)">
+  <!ENTITY samba-buildsize     "590 MB (add 64 MB for quicktest)">
   <!ENTITY samba-time          "2.1 SBU (using parallelism=4; add 0.4 SBU for quicktest)">
 ]>
 
@@ -34,7 +34,7 @@
       nameserver (which among other things provides LAN browsing support).
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -181,7 +181,8 @@ PATH=$PWD/pyvenv/bin:$PATH                 \
     --without-ad-dc                        \
     --without-systemd                      \
     --with-system-mitkrb5                  \
-    --enable-selftest                      &amp;&amp;
+    --enable-selftest                      \
+    --disable-rpath-install                &amp;&amp;
 make</userinput></screen>
 
 <screen revision="systemd"><userinput>PYTHON=$PWD/pyvenv/bin/python3             \
@@ -194,7 +195,8 @@ make</userinput></screen>
     --enable-fhs                           \
     --without-ad-dc                        \
     --with-system-mitkrb5                  \
-    --enable-selftest                      &amp;&amp;
+    --enable-selftest                      \
+    --disable-rpath-install                &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -285,7 +287,7 @@ install -v -m755    examples/LDAP/{get*,ol*} \
 
     <para revision="sysv">
       <option>--with-shared-modules='!vfs_snapper'</option>: Disable
-      the vfs_snapper module if you want to build samba without <application>dbus</application> support, for setups without graphical user intefaces.
+      the vfs_snapper module if you want to build samba without <application>dbus</application> support, for setups without graphical user interfaces.
     </para>
 
     <para>
@@ -303,6 +305,18 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       building with the system version of Kerberos. This
       mitigates security vulnerabilities and reduces build time.
       Remove this if you do not have <xref linkend="mitkrb"/> installed.
+    </para>
+
+    <!-- Note that /usr/lib/samba is still in rpath and it's really
+         needed. -->
+    <para>
+      <parameter>--disable-rpath-install</parameter>: Removes
+      the library installation path from embedded shared library search
+      paths in the installed binary executable files and shared libraries.
+      When this package is installed into the standard location the library
+      installation path is <filename class='directory'>/usr/lib</filename>.
+      It's always searched by the dynamic linker, so there is no need to
+      embed it into installed files.
     </para>
 
     <para>
@@ -407,12 +421,12 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
         <para>
           The values in this example specify that the computer belongs to a
           Windows workgroup named
-          <quote><replaceable>WORKGROUP</replaceable></quote>, uses the
-          <quote><replaceable>cp850</replaceable></quote> character set on the
+          <literal><replaceable>WORKGROUP</replaceable></literal>, uses the
+          <literal><replaceable>cp850</replaceable></literal> character set on the
           wire when talking to MS-DOS and MS Windows 9x, and that the filenames
-          are stored in the <quote><replaceable>ISO-8859-1</replaceable></quote>
+          are stored in the <literal><replaceable>ISO-8859-1</replaceable></literal>
           encoding on the disk. Adjust these values appropriately for your
-          installation. The <quote>unix charset</quote> value must be the same
+          installation. The <literal>unix charset</literal> value must be the same
           as the output of <command>locale charmap</command> when executed with
           the <envar>LANG</envar> variable set to your preferred locale,
           otherwise the <command>ls</command> command may not display correct

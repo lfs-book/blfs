@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;/source/thunderbird-&thunderbird-version;.source.tar.xz">
+  <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;esr/source/thunderbird-&thunderbird-version;esr.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "27a4fa01ed76c106afda4aa59d94eca3">
-  <!ENTITY thunderbird-size          "508 MB">
-  <!ENTITY thunderbird-buildsize     "6.5 GB (229 MB installed)">
-  <!ENTITY thunderbird-time          "12 SBU (on a 8-core machine)">
+  <!ENTITY thunderbird-md5sum        "77dedc2267784055d1bdc27916660177">
+  <!ENTITY thunderbird-size          "646 MB">
+  <!ENTITY thunderbird-buildsize     "7.8 GB (256 MB installed)">
+  <!ENTITY thunderbird-time          "16 SBU (on a 8-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
 
@@ -17,11 +17,11 @@
        -->
 ]>
 
-<sect1 id="thunderbird" xreflabel="Thunderbird-&thunderbird-version;">
+<sect1 id="thunderbird" xreflabel="Thunderbird-&thunderbird-version;esr">
   <?dbhtml filename="thunderbird.html" ?>
 
 
-  <title>Thunderbird-&thunderbird-version;</title>
+  <title>Thunderbird-&thunderbird-version;esr</title>
 
   <indexterm zone="thunderbird">
     <primary sortas="a-Thunderbird">Thunderbird</primary>
@@ -78,12 +78,12 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="cbindgen"/>,
-      <xref linkend="dbus-glib"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="llvm"/> including clang, <!-- used by default if found -->
       <xref linkend="nodejs"/>,
       <xref linkend="pulseaudio"/> (or <xref linkend="alsa-lib"/> if you edit
       the mozconfig; although it is now deprecated by mozilla),
+      <xref linkend="python3"/> (rebuilt with the sqlite module),
       <xref linkend="startup-notification"/>, and
       <xref linkend="unzip"/>
       <!--<xref linkend="yasm"/>-->
@@ -129,8 +129,9 @@
 
     <note>
       <para>
-        The build process for Thunderbird can use 8GB+ of RAM when linking.
-        Make sure that you have adequate swap or RAM before continuing.
+        The build process for Thunderbird can use 8 GB or more of RAM when
+        linking. Make sure that you have adequate swap or RAM before
+        continuing.
       </para>
     </note>
 
@@ -203,13 +204,6 @@ ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-webp
-<!-- With Thunderbird ESR 128 we'd replace the following part with
-"- -enable-elf-hack=relr", or remove it if relr becomes the default. -->
-# on some machines. It is supposed to improve startup time and it shrinks
-# libxul.so by a few MB.  With recent Binutils releases the linker already
-# supports a much safer and generic way for this.
-ac_add_options --disable-elf-hack
-export LDFLAGS="$LDFLAGS -Wl,-z,pack-relative-relocs"
 
 # The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
@@ -221,10 +215,8 @@ ac_add_options --disable-debug
 ac_add_options --disable-debug-symbols
 ac_add_options --disable-tests
 
-# The SIMD code relies on the unmaintained packed_simd crate which
-# fails to build with Rustc >= 1.78.0.  We may re-enable it once
-# Mozilla port the code to use std::simd and std::simd is stabilized.
-ac_add_options --disable-rust-simd
+# This enables SIMD optimization in the shipped encoding_rs crate.
+ac_add_options --enable-rust-simd
 
 ac_add_options --enable-strip
 ac_add_options --enable-install-strip
@@ -245,48 +237,14 @@ ac_add_options --with-system-zlib
 ac_add_options --without-wasm-sandboxed-libraries</literal>
 EOF</userinput></screen>
 
-    <!-- https://github.com/rust-lang/rust-bindgen/pull/2689 -->
+    <!-- https://phabricator.services.mozilla.com/D219025 -->
     <para>
-      Adapt the shipped <application>rust-bindgen</application> copy for
-      LLVM-18 and later, and tell <command>cargo</command> we've modified
-      the code of <application>rust-bindgen</application> so the checksum
-      verification of this crate should be skipped:
+      Adapt two files for compatibility with cbindgen-0.27.0 or later:
     </para>
 
-    <screen><userinput>sed -e "/match cursor.kind()/a                                    \
-        CXCursor_LinkageSpec => return Err(ParseError::Recurse)," \
-    -i third_party/rust/bindgen/ir/item.rs                        &amp;&amp;
-
-cat &gt;&gt; Cargo.toml &lt;&lt; EOF &amp;&amp;
-<literal>[patch.crates-io.bindgen_0_64_0]
-package = "bindgen"
-version = "0.64.0"
-path = "third_party/rust/bindgen"</literal>
-EOF
-
-sed -r '/name = "bindgen"/,+5 s/^source|^checksum/#&amp;/' \
-    -i Cargo.lock</userinput></screen>
-
-    <!-- https://hg.mozilla.org/mozilla-central/rev/ba6abbd36b49 -->
-    <para>
-      Adapt the WebRTC code to use 64-bit timestamp to fix a build
-      failure with Clang-18 and later:
-    </para>
-
-    <screen><userinput>sed 's/uint32_t timestamp/uint64_t timestamp/'                \
-    -i dom/media/gmp-plugin-openh264/gmp-fake-openh264.cpp    \
-       dom/media/gtest/TestGMPRemoveAndDelete.cpp             \
-       dom/media/webrtc/libwebrtcglue/WebrtcGmpVideoCodec.cpp &amp;&amp;
-
-sed '/mInputImageMap/s/uint32_t/uint64_t/' \
-    -i dom/media/webrtc/libwebrtcglue/WebrtcGmpVideoCodec.h</userinput></screen>
-
-    <para>
-      Remove several lines of Rust code only useful for ARM and failing to
-      compile with Rustc-1.78.0 or newer:
-    </para>
-
-    <screen><userinput>sed '/cfg_attr/,/)]/d' -i gfx/qcms/src/lib.rs</userinput></screen>
+    <screen><userinput>sed 's/input.try/&amp;_parse/' \
+    -i servo/components/style_traits/values.rs &amp;&amp;
+sed '0,/"Keyframe"/{//d}' -i servo/ports/geckolib/cbindgen.toml</userinput></screen>
 
     <para>
       Now invoke the Python <command>mach</command> script to compile
@@ -299,7 +257,7 @@ sed '/mInputImageMap/s/uint32_t/uint64_t/' \
     </note>
 
 <screen><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
-export MOZBUILD_STATE_PATH=./mozbuild               &amp;&amp;
+export MOZBUILD_STATE_PATH=$(pwd)/mozbuild          &amp;&amp;
 ./mach build</userinput></screen>
 
     <para>
@@ -381,7 +339,7 @@ unset MOZBUILD_STATE_PATH</userinput></screen>
 
       <para>
         First, open the configuration dialog by opening the <quote>Edit</quote>
-        drop-down menu. Choose <quote>Preferences</quote> and then scroll down
+        drop-down menu. Choose <quote>Settings</quote> and then scroll down
         to the bottom of the page. Then, click the <quote>Config Editor</quote>
         button. Click on the <quote>I accept the risk!</quote> button.
         This will display a list of the configuration preferences and
@@ -396,13 +354,15 @@ unset MOZBUILD_STATE_PATH</userinput></screen>
         desired data into the fields when prompted.
       </para>
 
+ <!-- Doesn't seem to be present anymore in 128.0
       <para>
         The configuration preference item you need to check so that
         <application>Thunderbird</application> uses a specified browser is the
         <parameter>network.protocol-handler.app.http</parameter> which should be
         set to the path of the desired browser, e.g.
         <option>/usr/bin/firefox</option>.
-      </para>
+     </para>
+-->
 <!--  Bad URL
       <tip>
         <para>

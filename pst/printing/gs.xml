@@ -9,10 +9,10 @@
   <!ENTITY gs-download-http
   "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs&gs-packver;/ghostscript-&gs-dl-version;.tar.xz">
   <!ENTITY gs-download-ftp  " ">
-  <!ENTITY gs-md5sum        "44e8ae7e2ce5bb0e5e2ba1134b51d043">
+  <!ENTITY gs-md5sum        "248294abc5aee3ca8161012853d73b52">
   <!ENTITY gs-size          "65 MB">
-  <!ENTITY gs-buildsize     "383 MB (with fonts and libgs.so)">
-  <!ENTITY gs-time          "1.4 SBU (Using parallelism=4; with libgs.so)">
+  <!ENTITY gs-buildsize     "291 MB (with fonts and libgs.so)">
+  <!ENTITY gs-time          "1.2 SBU (Using parallelism=4; with libgs.so)">
 
   <!ENTITY gs-standard-fonts-download
   "&sourceforge-dl;/gs-fonts/ghostscript-fonts-std-8.11.tar.gz">
@@ -44,7 +44,7 @@
       targets. It is a mandatory part of the cups printing stack.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -144,8 +144,8 @@
       <xref linkend="cups"/> (required for building the <quote>cups</quote>
       device backend, which is needed by
       <application>cups-filters</application>),
-      <xref linkend="fontconfig"/> (required, if you are installing any
-      suggested font),
+      <xref linkend="fontconfig"/> (required if you are installing any of the
+      suggested fonts),
       <xref linkend="freetype2"/>,
       <xref linkend="lcms2"/>,
       <xref linkend="libjpeg"/>,
@@ -205,6 +205,14 @@
 <screen><userinput remap="pre">patch -Np1 -i ../ghostscript-&gs-version;-upstream_fix-1.patch</userinput></screen>
 -->
     <para>
+      Fix building this package with gcc-14 and libidn:
+    </para>
+
+<screen><userinput remap="pre">sed -e '186 s/NewPassword =/*NewPassword =/' \
+    -e '187 s/NewLen =/*NewLen =/'           \
+    -i pdf/pdf_sec.c</userinput></screen>
+
+    <para>
       Compile <application>Ghostscript</application>:
     </para>
 
@@ -244,10 +252,10 @@ make</userinput></screen>
 <screen role="root"><userinput>make install</userinput></screen>
 
     <para>
-      If you want the shared library too:
+      If you built the shared library, install it with:
     </para>
 
-<screen role="root"><userinput>make soinstall &amp;&amp;
+<screen role="root"><userinput>make soinstall                                     &amp;&amp;
 install -v -m644 base/*.h /usr/include/ghostscript &amp;&amp;
 ln -sfvn ghostscript /usr/include/ps</userinput></screen>
 
@@ -257,7 +265,7 @@ ln -sfvn ghostscript /usr/include/ps</userinput></screen>
 <!-- Starting with 9.23, the install does not seem to copy the examples any more -->
 
 <screen role="root"><userinput>mv -v /usr/share/doc/ghostscript/&gs-version; /usr/share/doc/ghostscript-&gs-version; &amp;&amp;
-rmdir /usr/share/doc/ghostscript &amp;&amp;
+rmdir /usr/share/doc/ghostscript                                            &amp;&amp;
 cp -r examples/ -T /usr/share/ghostscript/&gs-version;/examples</userinput></screen>
 
     <para>
@@ -275,7 +283,7 @@ fc-cache -v /usr/share/ghostscript/fonts/</userinput></screen>
     <para>
       You can now test the rendering of various postscript and pdf files from the
       <filename class="directory">/usr/share/ghostscript/&gs-version;/examples
-      </filename>. To do this, run the following command (in a X Windows display):
+      </filename>. To do this, run the following command (in a X11 session):
     </para>
 
 <screen remap="test"><userinput>gs -q -dBATCH /usr/share/ghostscript/&gs-version;/examples/tiger.eps</userinput></screen>
@@ -313,13 +321,13 @@ fc-cache -v /usr/share/ghostscript/fonts/</userinput></screen>
     </para>
 
     <para>
-        <command>mv -v /usr/share/doc/ghostscript/&gs-version;
-        /usr/share/doc/ghostscript-&gs-version;</command>: This moves the
-        documentation where it is expected to be found.
+      <command>mv -v /usr/share/doc/ghostscript/&gs-version;
+      /usr/share/doc/ghostscript-&gs-version;</command>: This moves the
+      documentation to where it is expected to be found.
     </para>
 
     <para>
-      <option>--disable-cups</option>: this option will save a tiny amount of
+      <option>--disable-cups</option>: This option will save a tiny amount of
       space by not linking <command>gs</command> and <filename>libgs.so</filename>
       to the <xref linkend="cups"/> libraries if you have installed those.
     </para>

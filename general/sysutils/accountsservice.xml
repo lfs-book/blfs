@@ -36,7 +36,7 @@
       <ulink role='man' url='&man;userdel.8'>userdel(8)</ulink> commands.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -138,13 +138,12 @@
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..            \
-      --prefix=/usr       \
-      --buildtype=release \
-      -Dadmin_group=adm   \
-      -Delogind=true      \
-      -Dsystemdsystemunitdir=no &amp;&amp;
-ninja</userinput></screen>
+meson setup ..             \
+      --prefix=/usr        \
+      --buildtype=release  \
+      -D admin_group=adm   \
+      -D elogind=true      \
+      -D systemdsystemunitdir=no</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
@@ -152,8 +151,25 @@ cd    build &amp;&amp;
 meson setup ..            \
       --prefix=/usr       \
       --buildtype=release \
-      -Dadmin_group=adm   &amp;&amp;
-ninja</userinput></screen>
+      -D admin_group=adm</userinput></screen>
+
+    <!-- We have to do this after meson setup because mocklibc is extracted
+         from a tarball by the meson setup command.  -->
+    <para>
+      Now adapt the shipped mocklibc copy to allow building the test suite
+      with GCC 14 or later:
+    </para>
+
+<screen><userinput>grep 'print_indent'     ../subprojects/mocklibc-1.0/src/netgroup.c \
+     | sed 's/ {/;/' >> ../subprojects/mocklibc-1.0/src/netgroup.h &amp;&amp;
+sed -i '1i#include &lt;stdio.h&gt;'                                      \
+    ../subprojects/mocklibc-1.0/src/netgroup.h</userinput></screen>
+
+    <para>
+      Build the package:
+    </para>
+
+    <screen><userinput>ninja</userinput></screen>
 
     <para>
       To test the package, issue <command>ninja test</command>.
@@ -174,23 +190,23 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dadmin_group=adm</parameter>: This switch sets
+      <parameter>-D admin_group=adm</parameter>: This switch sets
       the group for administrator accounts.
     </para>
 
     <para>
-      <option>-Ddocbook=true</option>: This switch enables building
+      <option>-D docbook=true</option>: This switch enables building
       the D-Bus interface API documentation (needs <xref linkend="xmlto"/>).
     </para>
 
     <para>
-      <option>-Dgtk_doc=true</option>: This switch enables building
+      <option>-D gtk_doc=true</option>: This switch enables building
       the libaccountsservice API documentation (needs
       <xref linkend="gtk-doc"/>).
     </para>
 
     <para>
-      <option>-Dvapi=false</option>: This switch disables building
+      <option>-D vapi=false</option>: This switch disables building
       the vala bindings. Use it if you have not installed
       <xref linkend="vala"/>.
     </para>

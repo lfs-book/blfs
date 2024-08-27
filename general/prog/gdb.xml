@@ -6,10 +6,10 @@
 
   <!ENTITY gdb-download-http "&gnu-http;/gdb/gdb-&gdb-version;.tar.xz">
   <!ENTITY gdb-download-ftp  " ">
-  <!ENTITY gdb-md5sum        "4452f575d09f94276cb0a1e95ecff856">
+  <!ENTITY gdb-md5sum        "494e3beaac44e66367c3e443a4414529">
   <!ENTITY gdb-size          "23 MB">
-  <!ENTITY gdb-buildsize     "964 MB (add 805 MB for docs; add 654 MB for tests)">
-  <!ENTITY gdb-time          "1.8 SBU (add 0.4 SBU for docs; add 15 SBU for tests; all using parallelism=4)">
+  <!ENTITY gdb-buildsize     "806 MB (add 1.0 GB for docs; add 720 MB for tests)">
+  <!ENTITY gdb-time          "0.9 SBU (add 0.4 SBU for docs; see below for tests; all using parallelism=8)">
 ]>
 
 <sect1 id="gdb" xreflabel="GDB-&gdb-version;">
@@ -34,7 +34,7 @@
       stripped.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -133,19 +133,41 @@ make</userinput></screen>
 <screen remap="doc"><userinput>make -C gdb/doc doxy</userinput></screen>
 
     <para>
-      To test the results, issue:
+      Running the tests is not recommended.  The results vary a lot depending
+      on the system architecture and what optional dependencies are installed
+      and what version of gcc is being used.  On one system tested, there were
+      140 unexpected failures (out of over 108,000 tests) and on another system
+      there were "only" 32 unexpected failures.  The time to run the tests
+      varies from approximately 6 SBU to over 15 SBU when using -j8.  This depends 
+      on number of tests that time out as will as other factors.  
+    </para>
+
+    <tip>
+      <para>
+         With a plain <command>make check</command>, there are many warning
+         messages about a missing global configuration file.  These can be
+         avoided by running <command>touch global.exp</command> and prepending
+         the <command>make check</command> command with
+         <command>DEJAGNU=$PWD/global.exp</command>.  In addition the tests can
+         be speeded up considerably by using the <command>make</command> option
+         "-j&lt;N&gt;" where &lt;N&gt; is the number of cores on your system.
+      </para>
+    </tip>
+
+    <para>
+      To test the results anyway, issue:
     </para>
 
 <screen remap="test"><userinput>pushd gdb/testsuite &amp;&amp;
 make  site.exp      &amp;&amp;
-echo  "set gdb_test_timeout 120" &gt;&gt; site.exp &amp;&amp;
-runtest
+echo  "set gdb_test_timeout 30" &gt;&gt; site.exp &amp;&amp;
+make check 2&gt;1 | tee gdb-check.log
 popd</userinput></screen>
 
     <para>
       See <emphasis>gdb/testsuite/README</emphasis> and <ulink
       url="https://sourceware.org/gdb/wiki/TestingGDB">TestingGDB</ulink>.
-      There are many problems with the test suite:
+      There are many additional problems with the test suite:
     </para>
 
     <itemizedlist>
@@ -197,8 +219,9 @@ or this
         </para>
       </listitem>
 -->
-      <listitem>
+<!--      <listitem>
         <para>
+-->
 <!-- for gdb-11.1, gcc-11.2 - pierre
           A test run of the test suite had about 1700 unexpected failures
           (out of over 80000 tests). Over 1370 of the failures were related
@@ -213,7 +236,7 @@ or this
           A test run of the test suite had 183 unexpected failures
           out of over 105000 tests. -->
 <!-- for gdb-14.1, gcc 13.2.0 - rahul -->
-          A test run of the test suite had 51 unexpected failures
+<!--          A test run of the test suite had 51 unexpected failures
           out of the over 106000 tests.
         </para>
       </listitem>
@@ -224,7 +247,7 @@ or this
           SSH.
         </para>
       </listitem>
-
+-->
       <listitem>
         <para>
           On some AMD-based systems, over 200 additional tests

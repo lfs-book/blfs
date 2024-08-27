@@ -5,10 +5,10 @@
   %general-entities;
 
   <!ENTITY libjxl-download-http "https://github.com/libjxl/libjxl/archive/v&libjxl-version;/libjxl-&libjxl-version;.tar.gz">
-  <!ENTITY libjxl-md5sum        "e383b622cb2caef4dfcc8047f5a0fe72">
+  <!ENTITY libjxl-md5sum        "0fd3db8956a41d13b5e8eac4fe61d8d3">
   <!ENTITY libjxl-size          "1.8 MB">
-  <!ENTITY libjxl-buildsize     "53 MB">
-  <!ENTITY libjxl-time          "0.8 SBU (with parallelism=4)">
+  <!ENTITY libjxl-buildsize     "42 MB">
+  <!ENTITY libjxl-time          "0.6 SBU (with parallelism=4)">
 
 ]>
 
@@ -29,7 +29,7 @@
       implementation of the JPEG XL image format.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -82,11 +82,14 @@
     <para role="optional">
       <xref linkend="doxygen"/> and <xref linkend="graphviz"/>
       (for documentation),
-      <xref linkend="gimp"/> (for the plugin),
+      <!--<xref linkend="gimp"/> (for the plugin),-->
       <xref linkend="java"/> (for the JAR),
       <xref linkend="libavif"/>,
       <xref linkend="libwebp"/>,
-      <ulink url="https://www.openexr.com/">OpenEXR</ulink>
+      <ulink url="https://github.com/google/googletest">gtest</ulink>,
+      <ulink url="https://www.openexr.com/">OpenEXR</ulink>,
+      <ulink url="https://github.com/webmproject/sjpeg">sjpeg</ulink>, and
+      <ulink url="https://skia.googlesource.com/skcms/">skcms</ulink>
     </para>
 
   </sect2>
@@ -138,7 +141,7 @@ gdk-pixbuf-query-loaders --update-cache</userinput></screen>
     </para>
 
     <para>
-      <parameter>-DBUILD_TESTING=OFF</parameter>: This parameter disables the
+      <parameter>-D BUILD_TESTING=OFF</parameter>: This parameter disables the
       tests because they require
       <ulink url="https://github.com/google/googletest">gtest</ulink>, which
       is not in BLFS. If you wish to run the tests and have
@@ -147,31 +150,31 @@ gdk-pixbuf-query-loaders --update-cache</userinput></screen>
     </para>
 
     <para>
-      <parameter>-DBUILD_SHARED_LIBS=ON</parameter>: This parameter enables
+      <parameter>-D BUILD_SHARED_LIBS=ON</parameter>: This parameter enables
       building shared versions of the libraries instead of static ones.
     </para>
     
     <para>
-      <parameter>-DJPEGXL_ENABLE_SKCMS=OFF</parameter>: This parameter disables
+      <parameter>-D JPEGXL_ENABLE_SKCMS=OFF</parameter>: This parameter disables
       building support for Skia's <application>skcms</application> since it is
       not necessary for BLFS purposes and requires
       <ulink url="https://skia.googlesource.com/skcms/">skcms</ulink>.
     </para>
     
     <para>
-      <parameter>-DJPEGXL_ENABLE_SJPEG=OFF</parameter>: This parameter disables
+      <parameter>-D JPEGXL_ENABLE_SJPEG=OFF</parameter>: This parameter disables
       support for SimpleJPEG since it is not necessary for BLFS purposes and
       requires <ulink url="https://github.com/webmproject/sjpeg">sjpeg</ulink>.
     </para>
     
     <para>
-      <parameter>-DJPEGXL_ENABLE_PLUGINS=ON</parameter>: This parameter enables
-      Plugin support, which creates plugins for <xref linkend="gimp"/> and 
-      <xref linkend="gdk-pixbuf"/> if those packages are installed.
+      <parameter>-D JPEGXL_ENABLE_PLUGINS=ON</parameter>: This parameter enables
+      Plugin support, which creates plugins for <!--<xref linkend="gimp"/> and-->
+      <xref linkend="gdk-pixbuf"/> if the package is installed.
     </para>
 
     <para>
-      <parameter>-DJPEGXL_INSTALL_JARDIR=/usr/share/java</parameter>: This
+      <parameter>-D JPEGXL_INSTALL_JARDIR=/usr/share/java</parameter>: This
       parameter places the JAR file for JPEG XL support in the correct 
       directory if <xref linkend="java"/> is installed.
     </para>
@@ -199,7 +202,7 @@ gdk-pixbuf-query-loaders --update-cache</userinput></screen>
           libjxl_extras_codec.so,
           libjxl_jni.so,
           libjxl_threads.so, and
-          libpixbufloader-jxl.so (in /usr/lib/gdk-pixbuf-2.0/2.10.0/loaders),
+          libpixbufloader-jxl.so (in /usr/lib/gdk-pixbuf-2.0/2.10.0/loaders)
         </seg>
         <seg>
           /usr/include/jxl

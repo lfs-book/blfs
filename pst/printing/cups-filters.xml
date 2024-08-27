@@ -7,9 +7,9 @@
   <!ENTITY cups-filters-download-http
   "https://github.com/OpenPrinting/cups-filters/releases/download/&cups-filters-version;/cups-filters-&cups-filters-version;.tar.xz">
   <!ENTITY cups-filters-download-ftp  " ">
-  <!ENTITY cups-filters-md5sum        "1d9ac8b601ea5e25a42767856a48c4d7">
-  <!ENTITY cups-filters-size          "437 KB">
-  <!ENTITY cups-filters-buildsize     "9.1 MB">
+  <!ENTITY cups-filters-md5sum        "b40d0f135af414666e1c3917983a1bb3">
+  <!ENTITY cups-filters-size          "440 KB">
+  <!ENTITY cups-filters-buildsize     "9.0 MB">
   <!ENTITY cups-filters-time          "less than 0.1 SBU (Using parallelism=4)">
 ]>
 
@@ -32,7 +32,7 @@
       filter functions for cups-2.x. It should not be needed for cups-3.x.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,12 +75,13 @@
       <xref linkend="libcupsfilters"/> and
       <xref linkend="libppd"/>
     </para>
-<!--
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="avahi"/>
+
+    <bridgehead renderas="sect4">Optional (runtime)</bridgehead>
+    <para role="optional">
+      <xref role="runtime" linkend="cups-browsed"/> (if you need Network
+      Discovery capabilities)
     </para>
--->
+
   </sect2>
 
   <sect2 role="installation">
@@ -93,7 +94,6 @@
 
 <screen><userinput>./configure --prefix=/usr                   \
             --disable-static                \
-            --disable-avahi                 \
             --docdir=/usr/share/doc/cups-filters-&cups-filters-version; &amp;&amp;
 make</userinput></screen>
 
@@ -114,22 +114,6 @@ make</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
-
-    <para>
-      <parameter>--disable-avahi</parameter>: This switch should be
-      given even <application>Avahi</application> is installed. This is needed
-      due to a flaw in the configure script of
-      <application>CUPS Filters</application>, where it will bail out if
-      <application>Avahi</application> is not installed. Note though that Avahi
-      is not used by this package.
-    </para>
-
-    <!--
-    <para>
-      <option>- -enable-ijs</option>: This switch will allow the pdftoijs
-      filter, for sending PDFs to an HP InkJet Server, to be built.
-    </para>
-    -->
 
   </sect2>
 

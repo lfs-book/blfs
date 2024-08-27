@@ -38,7 +38,7 @@
       performance at the cost of energy usage.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,16 +78,16 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="polkit"/>, 
+      <xref linkend="polkit"/>,
       <xref linkend="pygobject3"/>, and
-      <xref linkend="upower"/>, 
+      <xref linkend="upower"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gtk-doc"/>,
       The rest are for the tests,
-      <xref linkend="python-dbusmock"/>, 
+      <xref linkend="python-dbusmock"/>,
       <xref linkend="umockdev"/>,
       <ulink url="https://github.com/PyCQA/isort">isort</ulink>, and
       <ulink url="https://github.com/PyCQA/mccabe">mccabe</ulink>
@@ -126,12 +126,12 @@
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd build &amp;&amp;
 
-meson setup                       \
-      --prefix=/usr               \
-      --buildtype=release         \
-      -Dgtk_doc=false             \
-      -Dtests=false               \
-      -Dsystemdsystemunitdir=/tmp \
+meson setup                        \
+      --prefix=/usr                \
+      --buildtype=release          \
+      -D gtk_doc=false             \
+      -D tests=false               \
+      -D systemdsystemunitdir=/tmp \
       .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -139,11 +139,11 @@ ninja</userinput></screen>
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd build &amp;&amp;
 
-meson setup               \
-      --prefix=/usr       \
-      --buildtype=release \
-      -Dgtk_doc=false     \
-      -Dtests=false       \
+meson setup                \
+      --prefix=/usr        \
+      --buildtype=release  \
+      -D gtk_doc=false     \
+      -D tests=false       \
       .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -167,7 +167,7 @@ ninja</userinput></screen>
 </screen>
 
     <para revision="sysv">
-      Create a directory required for persistant power states 
+      Create a directory required for persistent power states
       after reboot:
     </para>
 
@@ -182,20 +182,20 @@ ninja</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-Dgtk_doc=false</parameter>: Prevents building the
+      <parameter>-D gtk_doc=false</parameter>: Prevents building the
       documentation. Remove this if you have <application>GTK-Doc</application>
       installed and wish to build the documentation.
     </para>
 
     <para>
-      <parameter>-Dtests=false</parameter>: Prevents building the
+      <parameter>-D tests=false</parameter>: Prevents building the
       tests because they cannot be run within the boundaries of 
       BLFS.  Remove this if you have installed the external dependencies
       and wish to run the tests.
     </para>
 
     <para revision="sysv">
-      <parameter>-Dsystemdsystemunitdir=/tmp</parameter>: Removes
+      <parameter>-D systemdsystemunitdir=/tmp</parameter>: Removes
       the dependency on <application>systemd</application>.
     </para>
 

@@ -6,10 +6,10 @@
 
   <!ENTITY alsa-lib-download-http "&alsa-download-http;/lib/alsa-lib-&alsa-lib-version;.tar.bz2">
   <!ENTITY alsa-lib-download-ftp  " ">
-  <!ENTITY alsa-lib-md5sum        "1c5870770047b6a520d18a43f49e42ea">
+  <!ENTITY alsa-lib-md5sum        "97bbf3cca911c1701fe9fe115c32b03d">
   <!ENTITY alsa-lib-size          "1.1 MB">
   <!ENTITY alsa-lib-buildsize     "46 MB (with tests and docs)">
-  <!ENTITY alsa-lib-time          "0.3 SBU (with tests and docs)">
+  <!ENTITY alsa-lib-time          "0.2 SBU (with tests and docs)">
 ]>
 
 <sect1 id="alsa-lib" xreflabel="alsa-lib-&alsa-lib-version;">
@@ -32,7 +32,7 @@
       interface.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -67,17 +67,17 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required patch:
-          <ulink url="&patch-root;/alsa-lib-&alsa-lib-version;-upstream_fixes-1.patch"/>
+          Recommended file:
+          <ulink url="https://www.alsa-project.org/files/pub/lib/alsa-ucm-conf-&alsa-lib-version;.tar.bz2"/>
         </para>
       </listitem>
     </itemizedlist>
--->
+
     <bridgehead renderas="sect3">ALSA Library Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Recommended (Runtime)</bridgehead>
@@ -97,9 +97,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="doxygen"/>,
-      <xref linkend="python2"/>, and
-      <ulink url="https://www.alsa-project.org/files/pub/lib/alsa-ucm-conf-&alsa-lib-version;.tar.bz2">alsa-ucm-conf</ulink>
+      <xref linkend="doxygen"/> and
+      &python2;
     </para>
 
   </sect2>
@@ -161,10 +160,11 @@ make</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user, install the package and recommended configuration files:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>make install &amp;&amp;
+tar -C /usr/share/alsa --strip-components=1 -xf ../alsa-ucm-conf-&alsa-lib-version;.tar.bz2</userinput></screen>
 
     <para>
       To install the API documentation, run the following command as

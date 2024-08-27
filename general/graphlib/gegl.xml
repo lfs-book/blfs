@@ -30,7 +30,7 @@
       image processing format.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,7 +90,7 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       &gobject-introspection;,
-      <xref linkend="graphviz"/> (build with pango),
+      <xref linkend="graphviz"/> (build with pango and libpng),
       <!-- EDITORS NOTE: Graphviz is required for the gegl:introspect
       function. Without this function, GIMP will not start. You'll get the
       following error:
@@ -110,7 +110,7 @@
     <para role="optional">
       <xref linkend="asciidoc"/>,
       <xref linkend="cairo"/>,
-      <xref linkend="ffmpeg"/>,
+      <xref linkend="ffmpeg"/> (currently broken),
       <xref linkend="gdk-pixbuf"/>,
       <xref linkend="gexiv2"/>,
       <xref linkend="gtk-doc"/>,
@@ -118,6 +118,7 @@
       <xref linkend="lcms2"/>,
       <xref linkend="libraw"/>,
       <xref linkend="librsvg"/>,
+      <xref linkend="libspiro"/>,
       <xref linkend="libtiff"/>,
       <xref linkend="libwebp"/>,
       <xref linkend="pango"/>,
@@ -126,7 +127,6 @@
       <xref linkend="sdl2"/>,
       <xref linkend="v4l-utils"/>,
       <xref linkend="vala"/>,
-      <xref linkend="libspiro"/>,
       <ulink url="https://luajit.org/luajit.html">LuaJIT</ulink>,
       <ulink url="https://lensfun.github.io/">lensfun</ulink>,
       <ulink url="https://luajit.org/luajit.html">LuaJIT</ulink>,
@@ -147,9 +147,9 @@
     <title>Installation of gegl</title>
 
     <para>
-      If installing over a previous version of <application>gegl</application>,
-      one module needs to be removed.  As the <systemitem class="username">root</systemitem>
-      user, run:
+      If you are installing over a previous version of
+      <application>gegl</application>, one of the modules will need to be removed.
+      As the &root; user, run the following command to remove it:
     </para>
 
 <screen role="root"><userinput>rm -f /usr/lib/gegl-0.4/vector-fill.so</userinput></screen>
@@ -161,15 +161,15 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr --buildtype=release -Dlibav=disabled .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release -D libav=disabled .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
       To run the tests, issue: <command>ninja test</command>. <!--This should
       indicate no failures, but will skip many tests depending on optional
-      dependencies installed on the system.--> 7 tests in the
+      dependencies installed on the system. 7 tests in the
       <filename>gegl:ff-load-save</filename> portion of the test suite are
-      known to fail due to incompatibilities with ffmpeg-6.0.
+      known to fail due to incompatibilities with ffmpeg-6.0.-->
     </para>
 
     <para>
@@ -183,11 +183,13 @@ ninja</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <option>-Ddocs=true</option>: Build and
-      install documentation (requires <xref linkend="gtk-doc"/>).
+      <parameter>-D libav=disabled</parameter>: This switch disables building
+      support for ffmpeg because the latest version causes the build to fail.
+    </para>
 
-      <option>-Dlibav=disabled</option>: Disable FFMpeg support
-      as the build fails with <xref linkend="ffmpeg"/>.
+    <para>
+      <option>-D docs=true</option>: Use this switch to build and install the
+      documentation (requires <xref linkend="gtk-doc"/>).
     </para>
 
   </sect2>
@@ -224,7 +226,7 @@ ninja</userinput></screen>
         <term><command>gegl</command></term>
         <listitem>
           <para>
-            is a commandline tool for working with the XML data model
+            is a commandline tool for interfacing with the gegl library
           </para>
           <indexterm zone="gegl gegl-prog">
             <primary sortas="b-gegl">gegl</primary>

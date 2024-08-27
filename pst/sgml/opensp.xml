@@ -32,7 +32,7 @@
       documents.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,6 +68,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing='compact'>
+      <listitem>
+        <para>
+          Required patch: <ulink
+          url="&patch-root;/OpenSP-&opensp-version;-gcc14-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">OpenSP Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -91,9 +101,10 @@
       commands:
     </para>
 
-<screen><userinput>sed -i 's/32,/253,/' lib/Syntax.cxx &amp;&amp;
+<screen><userinput>patch -Np1 -i ../OpenSP-&opensp-version;-gcc14-1.patch          &amp;&amp;
+sed -i 's/32,/253,/' lib/Syntax.cxx                  &amp;&amp;
 sed -i 's/LITLEN          240 /LITLEN          8092/' \
-    unicode/{gensyntax.pl,unicode.syn} &amp;&amp;
+    unicode/{gensyntax.pl,unicode.syn}               &amp;&amp;
 
 ./configure --prefix=/usr                              \
             --disable-static                           \

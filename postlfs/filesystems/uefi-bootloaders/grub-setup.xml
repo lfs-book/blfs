@@ -144,10 +144,10 @@ Syncing disks.</literal></screen>
 
     <para>
       Now the USB flash drive can be used as an emergency boot disk on any x86-64
-      UEFI platform.  It will boot the system and show the GRUB shell.  Then you
+      UEFI platform.  To learn how to select this flash drive as the boot
+      device, read the manual of your motherboard or laptop.
+      It will boot the system and show the GRUB shell.  Then you
       can type commands to boot your operating system from the hard drive.
-      To learn how to select the boot device, read the manual of your
-      motherboard or laptop.
     </para>
 
   </sect2>
@@ -179,7 +179,7 @@ Syncing disks.</literal></screen>
       In that case, install <xref linkend='dosfstools'/> first.  Then create
       a new partition, make a
       <systemitem class="filesystem">vfat</systemitem> file system on it,
-      and set the partition type to <quote>EFI system</quote>.  See the
+      and set the partition type to <quote>EFI system.</quote>  See the
       instructions for the emergency boot device above as a reference.
     </para>
 
@@ -304,7 +304,7 @@ Syncing disks.</literal></screen>
     <para>
       If you've followed the instructions in this section and set up a minimal boot
       configuration, now skip ahead to
-      <quote>Creating the GRUB Configuration File</quote>.
+      <quote>Creating the GRUB Configuration File.</quote>
     </para>
   </sect2>
 
@@ -438,7 +438,8 @@ insmod part_gpt
 insmod ext2
 set root=(hd0,2)
 
-insmod all_video
+insmod efi_gop<!-- to editors: do not use all_video which -->
+insmod efi_uga<!-- breaks Linux simpledrm driver in QEMU -->
 if loadfont /boot/grub/fonts/unicode.pf2; then
   terminal_output gfxterm
 fi

@@ -33,7 +33,7 @@
       NSIS, NTFS, RAR, RPM, SquashFS, UDF, VHD, WIM, XAR, Z, and Zstd formats.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,15 +69,15 @@
       </listitem>
     </itemizedlist>
 
-<!-- Applied in 17.03
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing='compact'>
       <listitem>
-        <para>Required patch: <ulink
-        url="&patch-root;/p7zip-&p7zip-version;-consolidated_fixes-1.patch"/></para>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/p7zip-&p7zip-version;-consolidated_fixes-1.patch"/>
+        </para>
       </listitem>
     </itemizedlist>
--->
 
     <bridgehead renderas="sect3">p7zip Dependencies</bridgehead>
 
@@ -92,26 +92,18 @@
   <sect2 role="installation">
     <title>Installation of p7zip</title>
 
-<!-- Applied in 17.03
     <para>
-      First, update the package for gcc10 and some security issues:
+      First, fix several security vulnerabilities:
     </para>
 
 <screen><userinput>patch -Np1 -i ../p7zip-&p7zip-version;-consolidated_fixes-1.patch</userinput></screen>
--->
 
     <para>
-      First, prevent <application>p7zip</application> from installing
+      Next, prevent <application>p7zip</application> from installing
       compressed manual pages:
     </para>
 
 <screen><userinput remap="pre">sed '/^gzip/d' -i install.sh</userinput></screen>
-
-    <para>
-      Next, fix a security vulnerability:
-    </para>
-
-<screen><userinput remap="pre">sed -i '160a if(_buffer == nullptr || _size == _pos) return E_FAIL;' CPP/7zip/Common/StreamObjects.cpp</userinput></screen>
 
     <para>
       Install <application>p7zip</application> by running the following

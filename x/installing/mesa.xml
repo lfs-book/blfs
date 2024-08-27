@@ -6,10 +6,10 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  " ">
-  <!ENTITY mesa-md5sum        "d0462ef35f316f800ee43a3780a2e8ac">
-  <!ENTITY mesa-size          "20 MB">
-  <!ENTITY mesa-buildsize     "641 MB (with docs, add 263 MB for tests)">
-  <!ENTITY mesa-time          "2.7 SBU (with docs; add 0.6 SBU for tests; both with parallelism=4)">
+  <!ENTITY mesa-md5sum        "0f4de2192e63b438637b98937ac85a10">
+  <!ENTITY mesa-size          "28 MB">
+  <!ENTITY mesa-buildsize     "825 MB (with docs, add 496 MB for tests)">
+  <!ENTITY mesa-time          "4.1 SBU (with docs; add 1.4 SBU for tests; both with parallelism=4)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
@@ -36,7 +36,7 @@
       </para>
     </note>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -98,25 +98,116 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
 
-      <xref linkend="glslang"/> (required for Vulkan support),
-
-      <xref role="first" linkend="libva"/> (to provide VA-API support for some
-      gallium drivers, note that there is a circular dependency. You must
-      build <application>libva</application> first without EGL and GLX support,
-      install this package, and rebuild <application>libva</application>),
-
-      <xref linkend="libvdpau"/> (to build VDPAU drivers),
-
-      <xref linkend="llvm"/> (required for the r300, r600, and radeonsi
-      drivers, and the LLVMpipe software rasterizer which can make the
-      swrast driver much faster),
-
-      <xref linkend="wayland-protocols"/> (required for
-        <xref role="nodep" linkend='plasma-build'/>,
-        GNOME, and recommended for <xref role="nodep" linkend='gtk3'/>), and
-
-      <xref linkend="vulkan-loader"/> (required for Vulkan support)
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <xref linkend="glslang"/> (required for Vulkan support)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="libva"/> (to provide VA-API support for some
+            gallium drivers. Note that there is a circular dependency. 
+            You must build <application>libva</application> first without 
+            mesa's EGL and GLX support, install this package, and rebuild 
+            <application>libva</application>)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="libvdpau"/> (to build VDPAU drivers)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="llvm"/> (required for the r300, r600, and radeonsi
+            drivers, and the LLVMpipe software rasterizer which can make the
+            swrast driver much faster)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="wayland-protocols"/> (required for
+              <xref role="nodep" linkend='plasma-build'/>,
+              GNOME, and recommended for 
+              <xref role="nodep" linkend='gtk3'/>)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="libclc"/> (required for the Intel iris
+            gallium driver)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="vulkan-loader"/> (required for the Zink
+            gallium driver)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="ply"/> (required for the Intel vulkan driver)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <xref linkend="cbindgen"/> and <xref linkend="rust-bindgen"/>
+            (required for the Nouveau Vulkan driver)
+          </para>
+        </listitem>
+      </itemizedlist>
     </para>
+
+    <note>
+      <para>
+        <emphasis role="bold">Choosing Mesa Drivers</emphasis>
+      </para>
+
+      <para>
+        In the instructions below, all the available drivers are built.  That
+        will almost always work.  However, it is not efficient.  Depending on
+        your video hardware, you probably need only specific drivers.
+      </para>
+
+      <para>
+        The first thing you need to know is which type of video device you
+        have.  In some cases it is built into the CPU.  In others it is a
+        separate PCI card.  In either case you can tell what video hardware you
+        have by installing <xref linkend='pciutils'/> and running:
+      </para>
+
+      <screen role='nodump'><userinput>lspci | grep VGA</userinput></screen>
+
+      <para>
+        The video device is most likely one of three families: AMD, Intel, or
+        Nvidia.  See the Command Explanations for
+        <parameter>-D gallium-drivers=auto</parameter> below to
+        see what options are available for your specific video hardware (or
+        emulated video hardware).  You should probably add the swrast option as
+        a backup driver.
+      </para>
+
+      <para>
+        For 'platforms' you can select x11 and/or wayland.  Note that in BLFS
+        currently only Gnome and KDE can use wayland.  If you are not going to 
+        use one of those desktop environments then you probably only want x11.
+      </para>
+
+      <para>
+        For 'vulkan-drivers' you may want to limit the selection to your
+        current hardware.  These drivers are used by some specific applications.
+        
+        For example, ffmpeg (including ffplay) will use Vulkan instead of
+        OpenGL for rendering video on the GPU. If you do not want to do this
+        you may or may not want to install them.
+        See the Command Explanations for
+        <parameter>-D vulkan-drivers=auto</parameter> below to
+        see what options are available for your specific video hardware (or
+        emulated video hardware).  You should probably add the swrast option
+        as a backup driver unless you don't need Vulkan at all.
+      </para> 
+    </note>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
@@ -149,6 +240,9 @@
       </para>
     </note>
 -->
+
+    &build-use-internet;
+
   </sect2>
 
   <sect2 role="kernel" id="mesa-kernel"
@@ -287,21 +381,20 @@ DRI_DRIVERS="i965,nouveau"</userinput></screen>
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup                   \
-      --prefix=$XORG_PREFIX   \
-      --buildtype=release     \
-      -Dplatforms=x11,wayland \
-      -Dgallium-drivers=auto  \
-      -Dvulkan-drivers=auto   \
-      -Dvalgrind=disabled     \
-      -Dlibunwind=disabled    \
-      ..                      &amp;&amp;
+meson setup ..                 \
+      --prefix=$XORG_PREFIX    \
+      --buildtype=release      \
+      -D platforms=x11,wayland \
+      -D gallium-drivers=auto  \
+      -D vulkan-drivers=auto   \
+      -D valgrind=disabled     \
+      -D libunwind=disabled    &amp;&amp;
 
 ninja</userinput></screen>
 
     <para>
       To test the results, issue:
-      <command>meson configure -Dbuild-tests=true &amp;&amp; ninja test</command>.
+      <command>meson configure -D build-tests=true &amp;&amp; ninja test</command>.
     </para>
 <!-- All 88 tests passed for me for 22.3.3 [pierre]
      All 90 tests passed for me for 23.1.0 [bdubbs]
@@ -333,83 +426,186 @@ ninja</userinput></screen>
       <parameter>--buildtype=release</parameter>: This switch ensures a
       fully-optimized build, and disables debug assertions which will
       severely slow down the libraries in certain use-cases. Without this
-      switch, build sizes can span into the 2GB range.
+      switch, build sizes can span into the 2 GB range.
     </para>
 
     <para>
       <anchor id='mesa-gallium-drivers' xreflabel='Mesa Gallium3D Drivers'/>
-      <parameter>-Dgallium-drivers=auto</parameter>: This parameter
-      controls which Gallium3D drivers should be built.
-      <literal>auto</literal> selects all Gallium3D drivers available
-      for x86: <literal>r300</literal> (for ATI Radeon 9000 or Radeon X
-      series), <literal>r600</literal> (for AMD/ATI Radeon HD 2000-6000
-      series), <literal>radeonsi</literal> (for AMD Radeon HD 7000 or newer
-      AMD GPU models), <literal>nouveau</literal>
-      (for Supported NVIDIA GPUs, they are listed as all
-      <quote>3D features</quote> either <quote>DONE</quote> or
-      <quote>N/A</quote> in <ulink
-      url='https://nouveau.freedesktop.org/FeatureMatrix.html'>the Nouveau
-      status page</ulink>), <literal>virgl</literal> (for QEMU virtual GPU
-      with <application>virglrender</application> support; note that BLFS
-      <xref linkend='qemu'/> is not built with
-      <application>virglrender</application>), <literal>svga</literal>
-      (for VMWare virtual GPU), <literal>swrast</literal> (using CPU for 3D
-      rasterisation; note that it's much slower than using a modern
-      3D-capable GPU, so it should be only used if the GPU is not supported
-      by other drivers), <literal>iris</literal> (for Intel GPUs shipped
-      with Broadwell or newer CPUs), <literal>crocus</literal> (for Intel
-      GMA 3000, X3000 series, 4000 series, or X4000 series GPUs shipped with
-      chipsets, or Intel HD GPUs shipped with pre-Broadwell CPUs),
-      <literal>i915</literal> (for Intel GMA 900, 950, 3100, or 3150 GPUs
-      shipped with chipsets or Atom D/N 4xx/5xx CPUs).  You may replace
-      <literal>auto</literal> with a comma-separated list to build only
-      a subset of these drivers if you precisely know which drivers you
-      need, for example
-      <option>-Dgallium-drivers=radeonsi,iris,swrast</option>.
+      <parameter>-D gallium-drivers=auto</parameter>: This parameter
+      controls which Gallium3D drivers should be built:
+
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <literal>auto</literal> selects all Gallium3D drivers available
+            for x86. With a comma-separated list, only a subset of these
+            drivers will be built. If you precisely know which drivers you
+            need, you can select them explicitly. For example,
+            <option>-D gallium-drivers=radeonsi,iris,swrast</option>.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>r300</literal> (for ATI Radeon 9000 or Radeon X series) 
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>r600</literal> (for AMD/ATI Radeon HD 2000-6000 series)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>radeonsi</literal> (for AMD Radeon HD 7000 or newer AMD GPU models) 
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>nouveau</literal> (for supported NVIDIA GPUs, they are
+             listed as all <quote>3D features</quote> either <quote>DONE</quote> or
+             <quote>N/A</quote> in 
+             <ulink url='https://nouveau.freedesktop.org/FeatureMatrix.html'>the Nouveau
+             status page</ulink>)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>virgl</literal> (for a QEMU virtual GPU
+             with <application>virglrender</application> support; note that BLFS
+             <xref linkend='qemu'/> is not built with
+             <application>virglrender</application>) 
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>svga</literal> (for a VMWare virtual GPU)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>swrast</literal> (using CPU for 3D
+             rasterization. Note that it's much slower than using a modern
+             3D-capable GPU, so it should be only used if the GPU is not supported
+             by other drivers), 
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>iris</literal> (for Intel GPUs shipped with Broadwell 
+             or newer CPUs, or as a dedicated PCIe card)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>crocus</literal> (for Intel GMA 3000, X3000 series, 
+             4000 series, or X4000 series GPUs shipped with chipsets, 
+             or Intel HD GPUs shipped with pre-Broadwell CPUs)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>i915</literal> (for Intel GMA 900, 950, 3100, or 3150 GPUs
+             shipped with chipsets or Atom D/N 4xx/5xx CPUs)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>zink</literal> (using Vulkan to implement OpenGL,
+             it's not very useful on x86 as at now but it may replace other
+             drivers for modern GPU models in the future)
+          </para>
+        </listitem>
+      </itemizedlist>
     </para>
-<!--
-    <para>
-      <parameter>-Dosmesa=true</parameter>: This switch enables building
-      the <filename class="libraryfile">libOSMesa</filename> library and
-      provides Gallium3D support in it. It requires the swrast gallium driver.
-    </para>
--->
 
     <para>
-      <parameter>-Dplatforms=...</parameter>: This parameter
+      <parameter>-D vulkan-drivers=auto</parameter>: This parameter
+      controls which Vulkan drivers should be built:
+
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <literal>auto</literal> selects all Vulkan drivers available
+            for x86. With a comma-separated list, only a subset of these
+            drivers will be built. If you precisely know which drivers you
+            need, you can select them explicitly. For example,
+            <option>-D vulkan-drivers=amd,nouveau,swrast</option>.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>amd</literal> (for AMD Radeon HD 7730 or newer AMD GPUs)
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>intel</literal> (for Intel GPUs shipped with Skylake
+            or newer CPUs, or as a dedicated PCIe card)
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>intel_hasvk</literal> (for Intel GPUs shipped with
+            Ivy Bridge, Haswell, or Broadwell CPUs)
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>nouveau</literal> (for GTX 16XX, RTX 20XX, or
+            newer NVIDIA GPUs)
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>swrast</literal> (for using the CPU for 3D rasterization)
+            Note that it's much slower than using a modern 3D-capable GPU,
+            so it should be only used if the GPU is not supported by other
+            drivers.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <literal>""</literal> (empty list, use
+            <option>-D vulkan-drivers=""</option> if you've not installed and
+            you don't plan to install <xref linkend='vulkan-loader'/>)
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <para>
+      <parameter>-D platforms=...</parameter>: This parameter
       controls which windowing systems will be supported. Available
       linux platforms are x11 and wayland.
     </para>
 
     <para>
-      <parameter>-Dvulkan-drivers=auto</parameter>: This switch enables support
-      for the Vulkan graphics API. It automatically builds all graphics drivers
-      that are available for Vulkan. If you wish to build specific drivers,
-      valid options include 'amd', 'intel', 'intel_hasvk', and 'swrast'. If you
-      do not want Vulkan support, change 'auto' to "".
-    </para>
-
-    <para>
-      <parameter>-Dvalgrind=disabled</parameter>: This parameter disables
+      <parameter>-D valgrind=disabled</parameter>: This parameter disables
       the usage of Valgrind during the build process. Remove this parameter
       if you have Valgrind installed, and wish to check for memory leaks.
     </para>
 
     <para>
-      <parameter>-Dlibunwind=disabled</parameter>: This parameter disables
+      <parameter>-D libunwind=disabled</parameter>: This parameter disables
       the usage of libunwind.
     </para>
 
     <para>
-      <command>meson configure -Dbuild-tests=true</command>: This command will
-      reconfigure the build to set <option>-Dbuild-tests=true</option>, but
+      <command>meson configure -D build-tests=true</command>: This command will
+      reconfigure the build to set <option>-D build-tests=true</option>, but
       keep the other options specified in the <command>meson setup</command>
       command unchanged.  It allows <command>ninja test</command> to build and
       run unit tests.
     </para>
 
     <para>
-      <option>-Degl-native-platform="..."</option>: This parameter
+      <option>-D egl-native-platform="..."</option>: This parameter
       controls which Embedded Graphics Library support will be built. Available
       linux options are auto (default), x11, wayland, surfaceless, and drm.
     </para>
@@ -429,7 +625,10 @@ ninja</userinput></screen>
 
       <seglistitem>
         <seg>
-          glxgears and glxinfo
+          glxgears,
+          glxinfo,
+          mme_fermi_sim_hw_test, and
+          mme_tu104_sim_hw_test
         </seg>
         <seg>
           libEGL.so,
@@ -460,14 +659,14 @@ ninja</userinput></screen>
           radeonsi_drv_video.so,
           swrast_dri.so,
           virtio_gpu_dri.so,
-          virtio_gpu_drv_video.so, and
-          vmwgfx_dri.so
+          virtio_gpu_drv_video.so,
+          vmwgfx_dri.so, and
+          zink_dri.so
           <!-- End DRI Drivers -->
         </seg>
         <seg>
           <!-- Begin VDPAU drivers -->
           libvdpau_nouveau.so,
-          libvdpau_r300.so
           libvdpau_r600.so, and
           libvdpau_radeonsi.so
           libvdpau_virtio_gpu.so
@@ -477,7 +676,8 @@ ninja</userinput></screen>
         <seg>
           libvulkan_intel_hasvk.so,
           libvulkan_intel.so,
-          libvulkan_lvp.so, and
+          libvulkan_lvp.so,
+          libvulkan_nouveau.so, and
           libvulkan_radeon.so
         </seg>
         <seg>

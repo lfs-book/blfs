@@ -6,10 +6,10 @@
 
   <!ENTITY glib2-download-http "&gnome-download-http;/glib/&glib2-minor;/glib-&glib2-version;.tar.xz">
   <!ENTITY glib2-download-ftp  " ">
-  <!ENTITY glib2-md5sum        "3a51e2803ecd22c2dadcd07d9475ebe3">
+  <!ENTITY glib2-md5sum        "4334211338220a165350d1c4a1597b0e">
   <!ENTITY glib2-size          "5.3 MB">
-  <!ENTITY glib2-buildsize     "130 MB (add 20 MB for tests)">
-  <!ENTITY glib2-time          "0.8 SBU (add 0.5 SBU for tests; both using parallelism=4)">
+  <!ENTITY glib2-buildsize     "189 MB (add 22 MB for tests)">
+  <!ENTITY glib2-time          "0.9 SBU (add 0.4 SBU for tests; both using parallelism=4)">
 
   <!ENTITY gobject-introspection-download-http
     "&gnome-download-http;/gobject-introspection/1.80/gobject-introspection-&gobject-introspection-version;.tar.xz">
@@ -37,7 +37,7 @@
       event loop, threads, dynamic loading and an object system.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -148,7 +148,7 @@
       Quoted directly from the <filename>INSTALL</filename> file:
       <quote>Some of the mimetype-related functionality in GIO requires the
       <command>update-mime-database</command> and
-      <command>update-desktop-database</command> utilities</quote>,
+      <command>update-desktop-database</command> utilities,</quote>
       which are part of
       <xref role="runtime" linkend="shared-mime-info"/> and
       <xref role="runtime" linkend="desktop-file-utils"/>, respectively.
@@ -207,11 +207,11 @@ fi</userinput></screen>
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                 \
-      --prefix=/usr            \
-      --buildtype=release      \
-      -Dintrospection=disabled \
-      -Dman-pages=enabled      &amp;&amp;
+meson setup ..                  \
+      --prefix=/usr             \
+      --buildtype=release       \
+      -D introspection=disabled \
+      -D man-pages=enabled      &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -258,7 +258,7 @@ ninja -C gi-build</userinput></screen>
       Now generate the introspection data:
     </para>
 
-    <screen><userinput>meson configure -Dintrospection=enabled &amp;&amp;
+    <screen><userinput>meson configure -D introspection=enabled &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -268,7 +268,7 @@ ninja</userinput></screen>
 
     <screen remap='doc'><userinput>sed 's/glib-2.0/glib-&glib2-version;/'        \
     -i ../docs/reference/meson.build &amp;&amp;
-meson configure -Ddocumentation=true &amp;&amp;
+meson configure -D documentation=true &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -292,6 +292,14 @@ ninja</userinput></screen>
       </para>
     </warning>
 
+    <note>
+      <para>
+        If you have installed the glib-skip_warnings-1.patch and have 
+        the environment variable GLIB_LOG_LEVEL set, unset it before running 
+        the tests.  It will cause several tests to fail.
+      </para>
+    </note>
+
     <para>
       To test the results, after having installed the packages, issue:
       <command>LC_ALL=C ninja test</command> as a non-&root; user.
@@ -305,7 +313,7 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Dman-pages=enabled</parameter>: This switch causes the
+      <parameter>-D man-pages=enabled</parameter>: This switch causes the
       build to create and install the package man pages.
     </para>
 

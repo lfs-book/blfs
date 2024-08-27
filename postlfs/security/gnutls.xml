@@ -6,10 +6,10 @@
 
   <!ENTITY gnutls-download-http "&gnupg-http;/gnutls/v3.8/gnutls-&gnutls-version;.tar.xz">
   <!ENTITY gnutls-download-ftp  " ">
-  <!ENTITY gnutls-md5sum        "74b468201ef7e9035f78d44c3f0906c4">
-  <!ENTITY gnutls-size          "6.2 MB">
-  <!ENTITY gnutls-buildsize     "147 MB (add 114 MB for tests)">
-  <!ENTITY gnutls-time          "0.6 SBU (add 1.4 SBU for tests; both using parallelism=8)">
+  <!ENTITY gnutls-md5sum        "46777802233eb7203d47a8b8880c8c90">
+  <!ENTITY gnutls-size          "6.4 MB">
+  <!ENTITY gnutls-buildsize     "154 MB (add 115 MB for tests)">
+  <!ENTITY gnutls-time          "0.5 SBU (add 1.5 SBU for tests; both using parallelism=8)">
 ]>
 
 <sect1 id="gnutls" xreflabel="GnuTLS-&gnutls-version;">
@@ -53,7 +53,7 @@
       extension, and X.509 and OpenPGP certificate handling.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -88,6 +88,13 @@
         </para>
       </listitem>
     </itemizedlist>
+
+    <note>
+      <para>
+        When extracting this package tarball, it expands to the gnutls-3.8.7
+        directory, instead of the expected gnutls-3.8.7.1 directory.
+      </para>
+    </note>
 
     <bridgehead renderas="sect3">GnuTLS Dependencies</bridgehead>
 
@@ -124,7 +131,7 @@
 
     <note><para>
  <!-- Note that if you do not install <xref linkend="libtasn1"/>, an older
-       3.8.0 includes minitasn1 4.19 which is currnet at the moment. ken -->
+       3.8.0 includes minitasn1 4.19 which is current at the moment. ken -->
       Note that if you do not install <xref linkend="libtasn1"/>, a
       version shipped in the <application>GnuTLS</application> tarball will be
       used instead.
@@ -154,12 +161,13 @@ make</userinput></screen>
      install time. -->
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      One test hangs the test procedure.  Disable it:
+      <command>sed '/ocsp-must-staple-connection/d' -i tests/Makefile</command>.
+      To test the results, now issue: <command>make check</command>.
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem>
-      user:
+      Now, install the package as the &root; user:
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
@@ -208,6 +216,10 @@ make</userinput></screen>
       installed <xref linkend="libunistring"/>.
     </para>
 
+    <para>
+      <option>--disable-dsa</option>: completely disables DSA algorithm support.
+    </para>
+
   </sect2>
 
   <sect2 role="content">
@@ -220,18 +232,24 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          certtool, danetool, gnutls-cli, gnutls-cli-debug,
-          gnutls-serv, ocsptool, p11tool, psktool, and srptool
+          certtool,
+          danetool,
+          gnutls-cli,
+          gnutls-cli-debug,
+          gnutls-serv,
+          ocsptool,
+          p11tool,
+          psktool, and
+          srptool
         </seg>
         <seg>
-          libgnutls.so, libgnutls-dane.so, libgnutlsxx.so,
-          libgnutls-openssl.so (optional), and
-          /usr/lib/guile/3.0/extensions/guile-gnutls-v-2.so
+          libgnutls.so,
+          libgnutls-dane.so,
+          libgnutlsxx.so, and
+          libgnutls-openssl.so (optional)
         </seg>
         <seg>
-          /usr/include/gnutls,
-          /usr/lib/guile/3.0/site-ccache/gnutls,
-          /usr/share/guile/site/3.0/gnutls, and
+          /usr/include/gnutls and
           /usr/share/doc/gnutls-&gnutls-version;
         </seg>
       </seglistitem>

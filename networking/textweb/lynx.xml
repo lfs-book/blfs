@@ -6,10 +6,10 @@
 
   <!ENTITY lynx-download-http "https://invisible-mirror.net/archives/lynx/tarballs/lynx&lynx-version;.tar.bz2">
   <!ENTITY lynx-download-ftp  " ">
-  <!ENTITY lynx-md5sum        "4c35ce8c73cf539d020c5c17f91ff1e1">
+  <!ENTITY lynx-md5sum        "3ce01505e82626ca4d7291d7e649c4c9">
   <!ENTITY lynx-size          "2.7 MB">
   <!ENTITY lynx-buildsize     "25 MB">
-  <!ENTITY lynx-time          "0.3 SBU">
+  <!ENTITY lynx-time          "0.4 SBU">
 ]>
 
 <sect1 id="lynx" xreflabel="Lynx-&lynx-version;">
@@ -29,7 +29,7 @@
       <application>Lynx</application> is a text based web browser.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -99,11 +99,14 @@ make</userinput></screen>
       This package does not come with a test suite.
     </para>
 
+    <!-- note that chgrp needed if building as a non-root user and then
+         install via sudo or su -->
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role='root'><userinput>make install-full</userinput></screen>
+<screen role='root'><userinput>make install-full
+chgrp -v -R root /usr/share/doc/lynx-&lynx-version;/lynx_doc</userinput></screen>
 
   </sect2>
 
@@ -254,12 +257,12 @@ make</userinput></screen>
       <para>
         <application>Lynx</application> handles the following values of
         the DEFAULT_EDITOR option specially by adding cursor-positioning
-        arguments: <quote>emacs</quote>, <quote>jed</quote>,
-        <quote>jmacs</quote>, <quote>joe</quote>, <quote>jove</quote>,
-        <quote>jpico</quote>, <quote>jstar</quote>, <quote>nano</quote>,
-        <quote>pico</quote>, <quote>rjoe</quote>, <quote>vi</quote> (but not
-        <quote>vim</quote>: in order to position the cursor in
-        <xref linkend="vim"/>, set this option to <quote>vi</quote>).
+        arguments: <literal>emacs</literal>, <literal>jed</literal>,
+        <literal>jmacs</literal>, <literal>joe</literal>, <literal>jove</literal>,
+        <literal>jpico</literal>, <literal>jstar</literal>, <literal>nano</literal>,
+        <literal>pico</literal>, <literal>rjoe</literal>, <literal>vi</literal> (but not
+        <literal>vim</literal>: in order to position the cursor in
+        <xref linkend="vim"/>, set this option to <literal>vi</literal>).
       </para>
 
       <para>

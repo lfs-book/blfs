@@ -32,7 +32,7 @@
       and use when no users are logged in.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -118,9 +118,9 @@
     <title>Installation of Colord</title>
 
     <para>
-      First, fix a misuse of sqlite API causing a test failure and potential
-      runtime crash<phrase revision='systemd'> and an over-strict systemd
-      hardening setting causing the systemd service fail to start</phrase>:
+      First, fix a misuse of the sqlite API causing a test failure and potential
+      runtime crash<phrase revision='systemd'>, as well as an overly-strict
+      systemd hardening setting causing the systemd service to fail to start</phrase>:
     </para>
 
 <screen><userinput>patch -Np1 -i ../colord-&colord-version;-upstream_fixes-1.patch</userinput></screen>
@@ -143,33 +143,33 @@ useradd -c "Color Daemon Owner" -d /var/lib/colord -u 71 \
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                 \
-      --prefix=/usr            \
-      --buildtype=release      \
-      -Ddaemon_user=colord     \
-      -Dvapi=true              \
-      -Dsystemd=false          \
-      -Dlibcolordcompat=true   \
-      -Dargyllcms_sensor=false \
-      -Dbash_completion=false  \
-      -Ddocs=false             \
-      -Dman=false              &amp;&amp;
+meson setup ..                  \
+      --prefix=/usr             \
+      --buildtype=release       \
+      -D daemon_user=colord     \
+      -D vapi=true              \
+      -D systemd=false          \
+      -D libcolordcompat=true   \
+      -D argyllcms_sensor=false \
+      -D bash_completion=false  \
+      -D docs=false             \
+      -D man=false              &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                 \
-      --prefix=/usr            \
-      --buildtype=release      \
-      -Ddaemon_user=colord     \
-      -Dvapi=true              \
-      -Dsystemd=true           \
-      -Dlibcolordcompat=true   \
-      -Dargyllcms_sensor=false \
-      -Dbash_completion=false  \
-      -Ddocs=false             \
-      -Dman=false              &amp;&amp;
+meson setup ..                  \
+      --prefix=/usr             \
+      --buildtype=release       \
+      -D daemon_user=colord     \
+      -D vapi=true              \
+      -D systemd=true           \
+      -D libcolordcompat=true   \
+      -D argyllcms_sensor=false \
+      -D bash_completion=false  \
+      -D docs=false             \
+      -D man=false              &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -194,53 +194,53 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-Ddaemon_user=colord</parameter>: This switch is used
+      <parameter>-D daemon_user=colord</parameter>: This switch is used
       so the colord daemon will run as an unprivileged user instead of the
       <systemitem class="username">root</systemitem> user.
     </para>
 
     <para>
-      <parameter>-Dvapi=true</parameter>: This switch enables building
+      <parameter>-D vapi=true</parameter>: This switch enables building
       the <application>Vala</application> bindings. Remove if you don't have
       <xref linkend="vala"/> installed.
     </para>
 
     <para revision="sysv">
-      <parameter>-Dsystemd=false</parameter>: This switch disables
+      <parameter>-D systemd=false</parameter>: This switch disables
       support for <application>systemd</application> login in Colord
       applications.
     </para>
 
     <para revision="systemd">
-      <parameter>-Dsystemd=true</parameter>: This switch enables
+      <parameter>-D systemd=true</parameter>: This switch enables
       installation of the <application>systemd</application> service.
     </para>
 
     <para>
-      <parameter>-Dlibcolordcompat=true</parameter>: This switch enables
+      <parameter>-D libcolordcompat=true</parameter>: This switch enables
       building a compatibility library for older packages that use
       <application>Colord</application>.
     </para>
 
     <para>
-      <parameter>-Dargyllcms_sensor=false</parameter>: This switch
+      <parameter>-D argyllcms_sensor=false</parameter>: This switch
       disables the ArgLLCMS sensor driver. Omit if you have
       <ulink url="https://www.argyllcms.com/">ArgyllCMS</ulink> installed
       and wish to use it.
     </para>
 
     <para>
-      <parameter>-Dbash_completion=false</parameter>: This switch
+      <parameter>-D bash_completion=false</parameter>: This switch
       disables Bash Completion support for Colord applications.
     </para>
 
     <para>
-      <parameter>-Ddocs=false</parameter>: This switch disables building
+      <parameter>-D docs=false</parameter>: This switch disables building
       of documentation. Omit if you have <xref linkend="gtk-doc"/> available.
     </para>
 
     <para>
-      <parameter>-Dman=false</parameter>: This switch disables building
+      <parameter>-D man=false</parameter>: This switch disables building
       of man pages. Omit if you have <xref linkend="docbook-utils"/>
       available. Namespaced versions of the docbook-xsl stylesheets
       are also required.

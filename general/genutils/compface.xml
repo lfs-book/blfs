@@ -31,7 +31,7 @@
       thumbnails of email authors in a mail header.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,6 +73,20 @@
     <title>Installation of Compface</title>
 
     <para>
+      First, fix the configure script so that it's C99 compatible:
+    </para>
+
+<screen><userinput remap="pre">autoreconf</userinput></screen>
+
+    <para>
+      Next, fix a build failure that occurs with GCC 14:
+    </para>
+
+<screen><userinput remap="pre">sed -e '/compface.h/a #include &lt;unistd.h&gt;' \
+    -i cmain.c                             \
+    -i uncmain.c</userinput></screen>
+
+    <para>
       Install <application>Compface</application> by running the
       following commands:
     </para>
@@ -103,7 +117,7 @@ install -m755 -v xbm2xface.pl /usr/bin</userinput></screen>
 
       <seglistitem>
         <seg>compface, uncompface and xbm2xface.pl</seg>
-        <seg>libcompface.{so,a}</seg>
+        <seg>libcompface.a</seg>
         <seg>None</seg>
       </seglistitem>
     </segmentedlist>
@@ -152,14 +166,14 @@ install -m755 -v xbm2xface.pl /usr/bin</userinput></screen>
       </varlistentry>
 
       <varlistentry id="libcompface">
-        <term><filename class="libraryfile">libcompface.{so,a}</filename></term>
+        <term><filename class="libraryfile">libcompface.a</filename></term>
         <listitem>
           <para>
             allows the compression and decompression algorithms to be
             used in other programs such as MTAs
           </para>
           <indexterm zone="compface libcompface">
-            <primary sortas="c-libcompface">libcompface.{so,a}</primary>
+            <primary sortas="c-libcompface">libcompface.a</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -6,9 +6,9 @@
 
   <!ENTITY vlc-download-http "https://download.videolan.org/vlc/&vlc-version;/vlc-&vlc-version;.tar.xz">
   <!ENTITY vlc-download-ftp  " ">
-  <!ENTITY vlc-md5sum        "e8337fcd2df92f3901dad091fb85f545">
+  <!ENTITY vlc-md5sum        "cde72f38943c685a1a39acc82da2339f">
   <!ENTITY vlc-size          "24 MB">
-  <!ENTITY vlc-buildsize     "726 MB">
+  <!ENTITY vlc-buildsize     "746 MB">
   <!ENTITY vlc-time          "1.9 SBU (using parallelism=4; with tests)">
 ]>
 
@@ -34,7 +34,7 @@
       through the network.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,6 +76,18 @@
         <para>
           Required patch:
           <ulink url="&patch-root;/vlc-&vlc-version;-taglib-1.patch"/>
+        </para>
+      </listitem>
+<!--      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/vlc-&vlc-version;-gcc14-1.patch"/>
+        </para>
+      </listitem> -->
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/vlc-&vlc-version;-fedora_ffmpeg7-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -238,10 +250,11 @@
     <title>Installation of VLC</title>
 
     <para>
-      First, add a correction for problems of taglib-2.0 and later:
+      First, add corrections for problems of taglib-2.0 and ffmpeg-7 and later:
     </para>
 
-<screen><userinput>patch -Np1 -i ../vlc-&vlc-version;-taglib-1.patch</userinput></screen>
+<screen><userinput>patch -Np1 -i ../vlc-&vlc-version;-taglib-1.patch         &amp;&amp;
+patch -Np1 -i ../vlc-&vlc-version;-fedora_ffmpeg7-1.patch</userinput></screen>
 
     <para>
       If you wish to add support for lua extensions, enforce the use of <application>lua52</application>:

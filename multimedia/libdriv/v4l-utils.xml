@@ -6,10 +6,10 @@
 
   <!ENTITY v4l-download-http "https://www.linuxtv.org/downloads/v4l-utils/v4l-utils-&v4l-utils-version;.tar.xz">
   <!ENTITY v4l-download-ftp  " ">
-  <!ENTITY v4l-md5sum        "a3565a8ccc427dcce52845c2b8880c28">
+  <!ENTITY v4l-md5sum        "6716de513a1fd2e1edb404a46a455855">
   <!ENTITY v4l-size          "1.2 MB">
-  <!ENTITY v4l-buildsize     "32 MB">
-  <!ENTITY v4l-time          "1.1 SBU (using parallelism=4)">
+  <!ENTITY v4l-buildsize     "34 MB">
+  <!ENTITY v4l-time          "0.4 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="v4l-utils" xreflabel="v4l-utils-&v4l-utils-version;">
@@ -31,7 +31,7 @@
       available from most webcams (libv4l), and providing tools to test V4L devices.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -82,14 +82,14 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="alsa-lib"/>,
-      <xref linkend="glu"/>,
-      <xref linkend="libjpeg"/>, and
-      &qt5-deps;
+      <xref linkend="glu"/>, and
+      <xref linkend="libjpeg"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="doxygen"/>,
+      <xref linkend="qt6"/> (for qv4l2 and qvidcap),
       <xref linkend="sdl2"/>,
       both <xref linkend="llvm"/> (with Clang and target BPF)
       and <ulink url='https://github.com/libbpf/libbpf'>libbpf</ulink>
@@ -106,13 +106,12 @@
       <para>
         If you've installed both LLVM and libbpf (not in BLFS), either
         enable the BPF target (via
-        <option>-DLLVM_TARGETS_TO_BUILD=</option>) building LLVM, or disable
+        <option>-D LLVM_TARGETS_TO_BUILD=</option>) building LLVM, or disable
         the infrared remote control decoders based on BPF:
       </para>
 
       <!-- not "nodump" because it's harmless for BLFS anyway -->
-      <screen><userinput>sed '/^ir_bpf_enabled/s/=.*/= false/' \
-    -i utils/keytable/meson.build</userinput></screen>
+      <screen><userinput>sed -i '/^ir_bpf_enabled/s/=.*/= false/' utils/keytable/meson.build</userinput></screen>
     </note>
 
     <para>
@@ -123,12 +122,12 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr          \
-            -Ddoxygen-doc=disabled \
-            -Dgconv=disabled       \
-            --buildtype=release    .. &amp;&amp;
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      -D gconv=disabled   \
+      -D doxygen-doc=disabled &amp;&amp;
 ninja</userinput></screen>
-
 
     <para>
       This package does not come with a test suite.
@@ -149,19 +148,35 @@ do
    cp -v contrib/test/$prog /usr/bin
 done</userinput></screen>
 
-
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <!-- Please do NOT touch this unless you've tried a DESTDIR installation
+         and you really understand what will be going on:
+
+         Without this option the package will overwrite
+         /usr/lib/gconv/gconv-modules which is a part of the **Glibc**
+         installation and break iconv (both the command iconv(1) and the
+         Glibc function iconv(3)).  Then some BLFS packages will FTBFS or
+         fail a dozen of tests etc.
+
+         Already reported as https://lore.kernel.org/linux-media/3ffb1568a9ff6c0b6f5424de3a0fafb24e7b3ac0.camel@xry111.site/.
+
+         Debian and Gentoo also have -D gconv=disabled.  Fedora manually
+         moves the gconv-modules file in a DESTDIR installation.  IMO it's
+         completely stupid to have an installation conflicting with Glibc in
+         the default configuration, but they just completely ignore my
+         report and rely on the distro maintainers to resolve the issue,
+         even without mentioning the conflict in README.md, nor INSTALL.md.
+         This is the worst upstream behavior I've ever seen.  -->
     <para>
-      <parameter>-Dgconv=disabled</parameter>: This switch disables
+      <parameter>-D gconv=disabled</parameter>: This switch disables
       the erroneous installation of gconv-modules that would break glibc.
     </para>
 
   </sect2>
-
 
   <sect2 role="content">
     <title>Contents</title>

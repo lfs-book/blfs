@@ -6,16 +6,16 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "150ac3fe6200f01879148ef32c5dd16f">
-  <!ENTITY firefox-size          "484 MB">
+  <!ENTITY firefox-md5sum        "efbf349f0b7442fc6f2995bef4d32785">
+  <!ENTITY firefox-size          "536 MB">
 
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "5.7 GB (199 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "6.7 GB (223 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
-  <!ENTITY firefox-time          "12 SBU using -j8, without tests">
+  <!ENTITY firefox-time          "15 SBU using -j8, without tests">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
@@ -135,7 +135,6 @@ tar: Exiting with failure status due to previous errors
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="cbindgen"/>,
-      <xref linkend="dbus-glib"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="libnotify"/>,
       <xref linkend="llvm"/> (with clang, used for bindgen even if using gcc),
@@ -145,6 +144,7 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="alsa-lib"/> if you edit the mozconfig;
         now deprecated by mozilla), in either case please read the
         Configuration Information,
+      <xref linkend="python3"/> (after installing <xref linkend="sqlite"/>), 
       <xref linkend="startup-notification"/>, and
       <xref linkend="unzip"/>
     </para>
@@ -172,6 +172,7 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="curl"/>,
       <xref linkend="doxygen"/>,
       <xref role="runtime" linkend="ffmpeg"/> (runtime, to play mov, mp3 or mp4 files),
+      <xref role="runtime" linkend="geoclue2"/> (runtime),
       <xref linkend="liboauth"/>,
       <xref role="runtime" linkend="pciutils"/> (runtime),
       <xref linkend="valgrind"/>,
@@ -207,9 +208,13 @@ tar: Exiting with failure status due to previous errors
 # to use geolocation web services, comment out this line
 ac_add_options --disable-necko-wifi
 
-# Uncomment the following line if you wish to use Google's Geolocation API
-# (needed for use with saved maps with Google Maps)
-#ac_add_options --with-google-location-service-api-keyfile=$PWD/google-key
+# Comment out the following line if you wish not to use Google's Location
+# Service (GLS).  Note that if Geoclue is installed and configured to use
+# GLS (as the BLFS instruction does), Firefox can access GLS via Geoclue
+# anyway.  On the other hand if Geoclue is not installed (or not properly
+# configured) and this line is commented out, the website requiring a
+# location service will not function properly.
+ac_add_options --with-google-location-service-api-keyfile=$PWD/google-key
 
 # startup-notification is required since firefox-78
 
@@ -225,10 +230,6 @@ ac_add_options --with-system-libvpx
 ac_add_options --with-system-nspr
 ac_add_options --with-system-nss
 ac_add_options --with-system-webp
-
-# Unlike with thunderbird, although using the gold linker can
-# save four megabytes in the installed file it does not make
-# the build faster.
 
 # The libdav1d library (av1 decoder) requires nasm. Uncomment this
 # if nasm has not been installed. Do not uncomment this if you have
@@ -246,14 +247,6 @@ ac_add_options --enable-official-branding
 # Disabling debug symbols makes the build much smaller and a little
 # faster. Comment this if you need to run a debugger.
 ac_add_options --disable-debug-symbols
-<!-- With Firefox ESR 128 we'd replace the following part with
-"- -enable-elf-hack=relr", or remove it if relr becomes the default. -->
-# The elf-hack is reported to cause failed installs (after successful builds)
-# on some machines. It is supposed to improve startup time and it shrinks
-# libxul.so by a few MB.  With recent Binutils releases the linker already
-# supports a much safer and generic way for this.
-ac_add_options --disable-elf-hack
-export LDFLAGS="$LDFLAGS -Wl,-z,pack-relative-relocs"
 
 # The BLFS editors recommend not changing anything below this line:
 ac_add_options --prefix=/usr
@@ -265,10 +258,8 @@ ac_add_options --disable-updater
 # increase the build time, for no obvious benefit.
 ac_add_options --disable-tests
 
-# The SIMD code relies on the unmaintained packed_simd crate which
-# fails to build with Rustc >= 1.78.0.  We may re-enable it once
-# Mozilla port the code to use std::simd and std::simd is stabilized.
-ac_add_options --disable-rust-simd
+# This enables SIMD optimization in the shipped encoding_rs crate.
+ac_add_options --enable-rust-simd
 
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
@@ -278,9 +269,8 @@ ac_add_options --with-system-png
 ac_add_options --with-system-zlib
 
 # Sandboxing works well on x86_64 but might cause issues on other
-# platforms. If not on x86_64, e.g. i686, it is recommended to
-# uncomment the following switch.
-#ac_add_options --disable-sandbox
+# platforms, e.g. i686.
+[ $(uname -m) != x86_64 ] &amp;&amp; ac_add_options --disable-sandbox
 
 # Using sandboxed wasm libraries has been moved to all builds instead
 # of only mozilla automation builds. It requires extra llvm packages
@@ -297,6 +287,15 @@ unset MOZ_TELEMETRY_REPORTING
 
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir</literal>
 EOF</userinput></screen>
+
+    <!-- https://phabricator.services.mozilla.com/D219025 -->
+    <para>
+      Adapt two files for compatibility with cbindgen-0.27.0 or later:
+    </para>
+
+    <screen><userinput>sed 's/input.try/&amp;_parse/' \
+    -i servo/components/style_traits/values.rs &amp;&amp;
+sed '0,/"Keyframe"/{//d}' -i servo/ports/geckolib/cbindgen.toml</userinput></screen>
 
     <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1859752
          https://hg.mozilla.org/try/rev/d5f3b0c4f08a -->
@@ -367,6 +366,7 @@ esac</userinput></screen>
 <screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;-ffmpeg_6-1.patch</userinput></screen>-->
 
     <!-- https://github.com/rust-lang/rust-bindgen/pull/2689 -->
+<!--
     <para>
       Adapt the shipped <application>rust-bindgen</application> copy for
       LLVM-18 and later, and tell <command>cargo</command> we've modified
@@ -387,8 +387,10 @@ EOF
 
 sed -r '/name = "bindgen"/,+5 s/^source|^checksum/#&amp;/' \
     -i Cargo.lock</userinput></screen>
+-->
 
     <!-- https://hg.mozilla.org/mozilla-central/rev/ba6abbd36b49 -->
+<!--
     <para>
       Adapt the WebRTC code to use 64-bit timestamp to fix a build
       failure with Clang-18 and later:
@@ -408,6 +410,7 @@ sed '/mInputImageMap/s/uint32_t/uint64_t/' \
     </para>
 
     <screen><userinput>sed '/cfg_attr/,/)]/d' -i gfx/qcms/src/lib.rs</userinput></screen>
+-->
 
     <para>
       Now invoke the Python <command>mach</command> script to compile the package.

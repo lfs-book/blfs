@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "ce1c084daec811aac07951cc954e7809">
-  <!ENTITY rust-size          "152 MB">
+  <!ENTITY rust-md5sum        "0b00381728b6c005e95194f7e44cff33">
+  <!ENTITY rust-size          "191 MB">
   <!ENTITY rust-buildsize     "8.9 GB (298 MB installed); add 6.4 GB if running the tests">
   <!ENTITY rust-time          "6.7 SBU (including download time; add 6.2 SBU for tests, both using parallelism=8)">
 ]>
@@ -84,7 +84,7 @@
     <para>
       The current version of rust's num_cpus crate now recognizes that cgroups
       can be used to restrict which processors it is allowed to use. So if your
-      machine lacks DRAM (typically, less than 2GB DRAM per core) that might be
+      machine lacks DRAM (typically, less than 2 GB DRAM per core) that might be
       an alternative to taking CPUs offline.
       Read <xref linkend='build-in-cgroup'/> for how to use a cgroup.
     </para>
@@ -109,7 +109,7 @@
       </para>
     </note>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -172,7 +172,7 @@
     <para role="recommended">
       <xref linkend="libssh2"/>,
       <xref linkend="llvm"/>
-      (built with -DLLVM_LINK_LLVM_DYLIB=ON so that rust can link to
+      (built with -D LLVM_LINK_LLVM_DYLIB=ON so that rust can link to
       system LLVM instead of building its shipped version), and
       <xref linkend="sqlite"/>
     </para>
@@ -202,31 +202,6 @@
 
   <sect2 role="installation">
     <title>Installation of Rust</title>
-
-    <note>
-      <para>
-        Currently the rust compiler produces SSE2 instructions for 32-bit x86,
-        causing the generated code to be broken on 32-bit systems without a
-        SSE2-capable processor.  All x86 processor models released after
-        2004 should be SSE2-capable.  Run
-        <command>lscpu | grep sse2</command> as a test.  If it outputs
-        anything, your CPU is SSE2-capable and OK.  Otherwise you may try
-        to build this package <emphasis>on a SSE2-capable system</emphasis>
-        with the following fix applied:
-      </para>
-
-      <!-- computeroutput used deliberately to stop anyone from copying
-           blindly -->
-<screen role="nodump"><computeroutput>sed 's@pentium4@pentiumpro@' -i \
-    compiler/rustc_target/src/spec/i686_unknown_linux_gnu.rs</computeroutput></screen>
-
-      <para>
-        And copy the resulting
-        <filename class="directory">/opt/rustc-&rust-version;</filename>
-        to the system without SSE2 capability. But this change is still
-        under upstream review and not tested by BLFS editors.
-      </para>
-    </note>
 
     <para>
       To install into the
@@ -263,7 +238,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn us to do such a review.
-change-id = 121754
+change-id = 125535
 
 [llvm]
 # by default, rust will build for a myriad of architectures
@@ -298,12 +273,6 @@ docdir = "share/doc/rustc-&rust-version;"
 channel = "stable"
 description = "for BLFS &version;"
 
-# BLFS used to not install the FileCheck executable from llvm,
-# so disabled codegen tests.  The assembly tests rely on FileCheck
-# and cannot easily be disabled, so those will anyway fail if
-# FileCheck has not been installed.
-#codegen-tests = false
-
 # Enable the same optimizations as the official upstream build.
 lto = "thin"
 codegen-units = 1
@@ -322,9 +291,9 @@ EOF</userinput></screen>
     <note>
       <para>
         The <command>python3 x.py</command> commands may output a warning
-        message complaining <quote><computeroutput>no codegen-backends
+        message complaining <computeroutput>no codegen-backends
         config matched the requested path to build a codegen
-        backend</computeroutput></quote>.  And the provided
+        backend</computeroutput>.  And the provided
         <quote>suggestion</quote> (<computeroutput>add backend to
         codegen-backends in config.toml</computeroutput>) will not silence
         it.  This warning is <ulink
@@ -365,23 +334,19 @@ python3 x.py build</userinput></screen>
     </para>
 
 <screen remap="test"><userinput>SSL_CERT_DIR=/etc/ssl/certs \
-python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
+python3 x.py test --verbose --no-fail-fast --keep-stage-std=1 | \
+    tee rustc-testlog</userinput></screen>
 
-    <!-- highlighting.rs:
-         may be fixed by
-         https://github.com/rust-lang/rust/pull/124398 ?
-         it seems harmless anyway
-
-         issue-21763.rs:
-         https://github.com/rust-lang/rust/pull/115869, see my comment
-
-         regression-bad-location-list-67992.rs: rust bug or gdb bug ???? -->
+    <!-- Both "unused import: `std::io::BufRead`"
+         Test suite internal issues and the unused imports are removed in
+         https://github.com/rust-lang/rust/pull/126097.  -->
     <para>
-      Three tests, <filename>tests/ui/error-emitter/highlighting.rs</filename>,
-      <filename>tests/ui/issues/issue-21763.rs</filename>, and
-      <filename>tests/debuginfo/regression-bad-location-list-67992.rs</filename>,
-      are known to fail.
+      Three tests named <filename>tests/run-make/print-cfg</filename>,
+      <filename>tests/run-make/print-to-output</filename>, and
+      <literal>core::config::tests::download_ci_llvm</literal> are known to
+      fail.
     </para>
+
 <!-- Let's just comment this out.  Nobody has tested on a system w/o
      FileCheck for a long time.
     <para>
@@ -391,7 +356,7 @@ python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></scre
     </para>
 -->
     <para>
-      As with all large test suites, other tests might fail on some machines -
+      As with all large test suites, some tests might fail on some machines -
       if the number of additional failures is low,
       check the log for 'failures:' and review lines above that, particularly the
       'stderr:' lines. Any mention of
@@ -410,9 +375,6 @@ python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></scre
 
     <para>
       Therefore, you should determine the number of failures.
-    </para>
-
-    <para>
       The number of tests which passed and failed can be found by running:
     </para>
 
@@ -446,10 +408,17 @@ python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></scre
     </note>
 
 <screen role='root'><userinput>python3 x.py install rustc std &amp;&amp;
-python3 x.py install --stage=1 cargo clippy rustfmt</userinput></screen>
+install -vm755 \
+  build/host/stage1-tools/*/*/{cargo{,-clippy,-fmt},clippy-driver,rustfmt} \
+  /opt/rustc-&rust-version;/bin &amp;&amp;</userinput>
+install -vDm644 \
+  src/tools/cargo/src/etc/_cargo \
+  /opt/rustc-&rust-version;/share/zsh/site-functions/_cargo &amp;&amp;
+install -vm644 src/tools/cargo/src/etc/man/* \
+  /opt/rustc-&rust-version;/share/man/man1</screen>
 
     <para>
-      Still as the &root; user, fix the installation of documentations
+      Still as the &root; user, fix the installation of documentation
       and symlink a <application>Zsh</application>
       completion file into the correct location:
     </para>
@@ -567,11 +536,26 @@ ln -sfv /opt/rustc/share/zsh/site-functions/_cargo \
       will not stop at the first error.
     </para>
 
-    <!-- https://github.com/rust-lang/rust/issues/94147 -->
     <para>
-      <parameter>--stage=1</parameter>: this switch works around an issue
+      <parameter>--keep-stage-std 1</parameter>: this switch prevents
+      <command>x.py test</command> from rebuilding the entire package for
+      some unknown reason.
+    </para>
+
+    <!-- https://github.com/rust-lang/rust/issues/94147
+         Do a manual installation for these 5 binaries for 1.80.0, the
+         build system insists to rebuild them even with this.
+    <para>
+      <parameter>- -stage=1</parameter>: this switch works around an issue
       causing some Rustc components unnecessarily rebuilt running
       <command>python3 x.py install</command>.
+    </para>-->
+
+    <para>
+      <command>install ... /opt/rustc-&rust-version;/...</command>:
+      these commands explicitly install some Rust components.  They are
+      used instead of relying on <command>x.py install</command> because the
+      latter would rebuild these components for some unknown reason.
     </para>
 
   </sect2>

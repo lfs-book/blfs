@@ -6,10 +6,10 @@
 
   <!ENTITY graphviz-download-http "https://gitlab.com/graphviz/graphviz/-/archive/&graphviz-version;/graphviz-&graphviz-version;.tar.bz2">
   <!ENTITY graphviz-download-ftp  " ">
-  <!ENTITY graphviz-md5sum        "cbc948bb249ff4a26cd3f0ef35938a98">
-  <!ENTITY graphviz-size          "26 MB">
-  <!ENTITY graphviz-buildsize     "203 MB">
-  <!ENTITY graphviz-time          "0.6 SBU (using parallelism=4)">
+  <!ENTITY graphviz-md5sum        "2c3ed90a06a2496c67b12ef3d5f93c5a">
+  <!ENTITY graphviz-size          "25 MB">
+  <!ENTITY graphviz-buildsize     "217 MB">
+  <!ENTITY graphviz-time          "0.7 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="graphviz" xreflabel="Graphviz-&graphviz-version;">
@@ -34,7 +34,7 @@
       tools, libraries, and language bindings.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -74,19 +74,19 @@
 
     <note>
       <para>
-        <application>Graphviz</application> basic usage does not need any
+        Basic usage of <application>Graphviz</application> does not require any
         libraries out of what is found in the LFS book. Its <quote>core</quote>
-        rendering engine allows to generate several graphic formats, such as
+        rendering engine is able to generate several graphic formats, such as
         Postscript, SVG, VML, .fig, and Tk. Those formats can be converted
-        to almost any other format using for example tools from
+        to almost any other format using tools from packages such as
         <xref role="nodep" linkend="imagemagick"/>. The dependencies below add
         the ability to generate graph images in bitmap format, to display the
         graph image on screen, to edit a graph by viewing the resulting image
         directly, or to view large graphs. Since
         <application>Graphviz</application> is a dependency
-        of several other packages in this book, it is suggested to first build
-        it without any dependencies, then to rebuild it when you have built
-        enough packages to suit your needs.
+        of several other packages in this book, it is suggested that you first
+        build it without any dependencies, and then rebuild it when you have
+        built enough packages to suit your needs.
       </para>
     </note>
 
@@ -97,15 +97,13 @@
       <xref linkend="xorg7-lib"/>,
       <xref linkend="fontconfig"/>, and
       <xref linkend="libpng"/>, to generate images in bitmap SVG, postscript,
-      PNG, and PDF formats, or displaying the image on screen. The PNG
+      PNG, and PDF formats, or to display the image on screen. The PNG
       output is required for building <xref role="nodep" linkend="gegl"/>
     </para>
 
     <para role="optional">
-      Adding
-      <xref linkend="gtk2"/> with
-      <xref linkend="libjpeg"/> adds support for JPEG, BMP, TIF, and ICO
-      formats, and allows displaying the image in a GTK+ window
+      Adding &gtk2; with <xref linkend="libjpeg"/> adds support for JPEG, BMP,
+      TIF, and ICO formats, and allows displaying the image in a GTK+ window
     </para>
 
     <para role="optional">
@@ -124,8 +122,8 @@
       <ulink url="https://www.freedesktop.org/wiki/Software/glitz">glitz</ulink>
     </para>
 
-    <bridgehead renderas="sect4">Optional, to load graphic images that may be
-    displayed inside the nodes of a graph</bridgehead>
+    <bridgehead renderas="sect4">Optional (to load graphics that may be
+    displayed inside the nodes of a graph)</bridgehead>
 
     <para role="optional">
       <filename class="libraryfile">libgs.so</filename> from
@@ -134,7 +132,7 @@
       <xref linkend="poppler"/>
     </para>
 
-    <bridgehead renderas="sect4">Optional, to build more tools</bridgehead>
+    <bridgehead renderas="sect4">Optional (to build more tools)</bridgehead>
 
     <para role="optional">
       <xref linkend="freeglut"/> (with 
@@ -143,10 +141,10 @@
       the <command>smyrna</command> large graph viewer, which is
       considered experimental), and
       &qt5-deps; (for building the <command>gvedit</command>
-      graph editor.)
+      graph editor)
     </para>
 
-    <bridgehead renderas="sect4">Optional (To Build Language Bindings)</bridgehead>
+    <bridgehead renderas="sect4">Optional (to build language bindings)</bridgehead>
     <para role="optional">
       <xref linkend="swig"/> (<application>SWIG</application> must be
       installed or no bindings will be built),
@@ -181,6 +179,8 @@
     <title>Installation of Graphviz</title>
 
     <!-- https://gitlab.com/graphviz/graphviz/-/merge_requests/3739 -->
+    
+    <!-- Removed in #20047 update to 12.0.0
     <para>
       Remove a duplicated declaration causing some <xref linkend='vala'/>
       tests to fail:
@@ -188,7 +188,7 @@
 
     <screen><userinput>awk -i inplace '/aghtmlstr/ &amp;&amp; ++f == 2 {getline} 1' \
     lib/cgraph/cgraph.h</userinput></screen>
-
+    -->
     <para>
       Install <application>Graphviz</application> by running the following
       commands:
@@ -236,6 +236,7 @@
       <command>sed ... configure.ac</command>: This command is needed to
       avoid installing files in /usr/lib64.
     </para>
+
     <para>
       <option>--with-javaincludedir="$JAVA_HOME/include
                                    -I$JAVA_HOME/include/linux"</option>:
@@ -389,7 +390,7 @@
         <term><command>cluster</command></term>
         <listitem>
           <para>
-            takes a graph in DOT format as input, finds node clusters
+            takes a graph in DOT format as input, finds node clusters,
             and then augments the graph with this information
           </para>
           <indexterm zone="graphviz cluster">

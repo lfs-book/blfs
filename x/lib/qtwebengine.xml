@@ -6,10 +6,10 @@
 
   <!ENTITY qtwebengine-download-http "https://download.qt.io/official_releases/qt/&qtwebengine-major;/&qtwebengine-version;/submodules/qtwebengine-everywhere-src-&qtwebengine-version;.tar.xz">
   <!ENTITY qtwebengine-download-ftp  " ">
-  <!ENTITY qtwebengine-md5sum        "d2a509bd4dc6bbf1272217292546cfce">
+  <!ENTITY qtwebengine-md5sum        "650bacb77f1fa3d4843e0667df07a1b8">
   <!ENTITY qtwebengine-size          "525 MB">
-  <!ENTITY qtwebengine-buildsize     "8.5 GB (319 MB installed)">
-  <!ENTITY qtwebengine-time          "60 SBU (Using parallelism=8)">
+  <!ENTITY qtwebengine-buildsize     "8.7 GB (335 MB installed)">
+  <!ENTITY qtwebengine-time          "40 SBU (Using parallelism=8)">
 ]>
 
 <sect1 id="qtwebengine" xreflabel="qtwebengine-&qtwebengine-version;">
@@ -114,46 +114,27 @@
       </listitem>
     </itemizedlist>
 
-<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch:
-          <!\-\- keep links for releases and git versions as a reminder
+          <!-- keep links for releases and git versions as a reminder
                that the tarball names names differ
-          <ulink url="&patch-root;/qtwebengine-everywhere-src-&qtwebengine-version;-ICU68-2.patch"/> \-\->
-
-          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-5.15.7-1.patch"/>
-        </para>
-      </listitem>
+          <ulink url="&patch-root;/qtwebengine-everywhere-src-&qtwebengine-version;-ICU68-2.patch"/>-->
+          <!--<ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-5.15.7-1.patch"/>-->
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-build_fixes-2.patch"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-ffmpeg5_fixes-1.patch"/>
-        </para>
-      </listitem>
-  
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-icu_73-1.patch"/>
+          <ulink url="&patch-root;/qtwebengine-&qtwebengine-version;-ffmpeg7_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
--->
+
 
     <bridgehead renderas="sect3">qtwebengine Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
 
     <para role="required">
+      <xref linkend="cups"/>,
       <xref linkend="html5lib"/>,
       <xref linkend="nodejs"/>,
       <xref linkend="nss"/>,
@@ -195,19 +176,32 @@
 
   <sect2 role="installation">
     <title>Installation of qtwebengine</title>
+
+    <para>
+     First, adapt the bundled copy of Chromium to the latest version of ffmpeg:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -d src/3rdparty/chromium &lt; ../qtwebengine-&qtwebengine-version;-ffmpeg7_fixes-1.patch</userinput></screen>
+
+    <para>
+      Next, fix a build failure that occurs because the BLFS build of ffmpeg
+      does not use OpenH264:
+    </para>
+
+<screen><userinput remap="pre">sed -e '189 s/=/&amp; false/' \
+    -e '190 d'            \
+    -i.orig src/3rdparty/chromium/third_party/webrtc/webrtc.gni</userinput></screen>
+
     <para>
       Install <application>qtwebengine</application> by running the following
       commands:
     </para>
 
-
-<!-- Note to whoever is updating this next, test to see if it FTBFS/Runtime Errors with 
-system FFMpeg, I can't get it to work on 6.7.0 and FFMpeg 7.0 [rahul] -->
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 cmake -D CMAKE_MESSAGE_LOG_LEVEL=STATUS             \
-      -D QT_FEATURE_webengine_system_ffmpeg=OFF     \
+      -D QT_FEATURE_webengine_system_ffmpeg=ON      \
       -D QT_FEATURE_webengine_system_icu=ON         \
       -D QT_FEATURE_webengine_system_libevent=ON    \
       -D QT_FEATURE_webengine_proprietary_codecs=ON \

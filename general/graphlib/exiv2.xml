@@ -6,9 +6,9 @@
 
   <!ENTITY exiv2-download-http "https://github.com/Exiv2/exiv2/archive/v&exiv2-version;/exiv2-&exiv2-version;.tar.gz">
   <!ENTITY exiv2-download-ftp  " ">
-  <!ENTITY exiv2-md5sum        "75a8766216a15ad104f09ab4a0eab7ca">
-  <!ENTITY exiv2-size          "43 MB">
-  <!ENTITY exiv2-buildsize     "127 MB (with tests)">
+  <!ENTITY exiv2-md5sum        "9944863400a43e79583b790f710b86c2">
+  <!ENTITY exiv2-size          "44 MB">
+  <!ENTITY exiv2-buildsize     "133 MB (with tests)">
   <!ENTITY exiv2-time          "0.3 SBU (Using parallelism=4, with tests)">
 ]>
 
@@ -26,11 +26,11 @@
     <title>Introduction to Exiv2</title>
 
     <para>
-      <application>Exiv2</application> is a C++ library and a command
+      <application>Exiv2</application> contains a C++ library and a command
       line utility for managing image and video metadata.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -123,59 +123,63 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr  \
-      -DCMAKE_BUILD_TYPE=Release   \
-      -DEXIV2_ENABLE_VIDEO=yes     \
-      -DEXIV2_ENABLE_WEBREADY=yes  \
-      -DEXIV2_ENABLE_CURL=yes      \
-      -DEXIV2_BUILD_SAMPLES=no     \
-      -G "Unix Makefiles" .. &amp;&amp;
-make</userinput></screen>
+cmake -D CMAKE_INSTALL_PREFIX=/usr   \
+      -D CMAKE_BUILD_TYPE=Release    \
+      -D EXIV2_ENABLE_VIDEO=yes      \
+      -D EXIV2_ENABLE_WEBREADY=yes   \
+      -D EXIV2_ENABLE_CURL=yes       \
+      -D EXIV2_BUILD_SAMPLES=no      \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON \
+      -G Ninja ..                    &amp;&amp;
+ninja</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>
+      To test the results, issue: <command>ninja test</command>.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-skip-install-rpath.xml"/>
+
     <para>
-      <parameter>-DEXIV2_ENABLE_VIDEO=yes</parameter>:
+      <parameter>-D EXIV2_ENABLE_VIDEO=yes</parameter>:
       This switch enables managing video metadata.
     </para>
 
     <para>
-      <parameter>-DEXIV2_ENABLE_WEBREADY=yes</parameter>:
+      <parameter>-D EXIV2_ENABLE_WEBREADY=yes</parameter>:
       This switch enables managing web image metadata.
     </para>
 
     <para>
-      <parameter>-DEXIV2_BUILD_SAMPLES=no</parameter>:
+      <parameter>-D EXIV2_BUILD_SAMPLES=no</parameter>:
       This switch is necessary to suppress building and installing
       sample programs.  If the sample programs are built, 34 additional
       programs are installed in /usr/bin.
     </para>
 
     <para>
-      <parameter>-DEXIV2_ENABLE_CURL=yes</parameter>:
+      <parameter>-D EXIV2_ENABLE_CURL=yes</parameter>:
       This switch is necessary to enable network/http capabilities.
     </para>
 
     <para>
-      <option>-DEXIV2_ENABLE_INIH=no</option>:
+      <option>-D EXIV2_ENABLE_INIH=no</option>:
       Use this switch if you have not installed <xref linkend="inih"/>.
     </para>
 
     <para>
-      <option>-DEXIV2_ENABLE_BROTLI=no</option>:
+      <option>-D EXIV2_ENABLE_BROTLI=no</option>:
       Use this switch if you have not installed <xref linkend="brotli"/>.
     </para>
 

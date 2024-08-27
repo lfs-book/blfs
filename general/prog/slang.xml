@@ -32,7 +32,7 @@
       such as display/screen management, keyboard input and keymaps.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,10 +89,10 @@
 <screen><userinput>./configure --prefix=/usr \
             --sysconfdir=/etc \
             --with-readline=gnu &amp;&amp;
-make -j1</userinput></screen>
+make -j1 RPATH=</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      To test the results, issue: <command>LC_ALL=C make check</command>.
     </para>
 
     <para>
@@ -101,7 +101,7 @@ make -j1</userinput></screen>
 
 <screen role='root'><userinput>make install_doc_dir=/usr/share/doc/slang-&slang-version;   \
      SLSH_DOC_DIR=/usr/share/doc/slang-&slang-version;/slsh \
-     install</userinput></screen>
+     RPATH= install</userinput></screen>
   </sect2>
 
   <sect2 role="commands">
@@ -114,10 +114,18 @@ make -j1</userinput></screen>
     </para>
 
     <para>
-      <command>make install_doc_dir=/usr/share/doc/slang-&slang-version;
-      SLSH_DOC_DIR=/usr/share/doc/slang-&slang-version;/slsh install</command>:
-      This command installs this package with a versioned documentation
-      installation directory.
+      <parameter>RPATH=</parameter>: This overridden <command>make</command>
+      variable prevents hard coding library search paths (rpath) into the
+      binary executable files and shared libraries.  This package does not
+      need rpath for an installation into the standard location, and rpath may
+      sometimes cause unwanted effects or even security issues.
+    </para>
+
+    <para>
+      <parameter>install_doc_dir=/usr/share/doc/slang-&slang-version;
+      SLSH_DOC_DIR=/usr/share/doc/slang-&slang-version;/slsh</parameter>:
+      These overridden <command>make</command> variables ensure installing
+      this package with a versioned documentation installation directory.
     </para>
 
   </sect2>

@@ -8,15 +8,16 @@
            "https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/openssh-&openssh-version;.tar.gz">
   <!ENTITY openssh-download-ftp  " ">
   <!ENTITY openssh-md5sum        "&openssh-md5sum;">
-  <!ENTITY openssh-size          "1.7 MB">
-  <!ENTITY openssh-buildsize     "45 MB (add 22 MB for tests)">
-  <!ENTITY openssh-time          "0.2 SBU (Using parallelism=4;
+  <!ENTITY openssh-size          "1.8 MB">
+  <!ENTITY openssh-buildsize     "44 MB (add 22 MB for tests)">
+  <!ENTITY openssh-time          "0.3 SBU (Using parallelism=4;
                                   running the tests takes about 20 minutes,
                                   irrespective of processor speed)">
 ]>
 
   <!-- make check: real 18m13.005s;  9.2p1  3 Feb 2023 -->
   <!-- make check: real 18m08.654s;  9.3p1 17 Mar 2023 -->
+  <!-- make check: real 18m25.324s;  9.8p1  1 Jul 2024 -->
 
 <sect1 id="openssh" xreflabel="OpenSSH-&openssh-version;">
   <?dbhtml filename="openssh.html"?>
@@ -39,7 +40,7 @@
       <command>rcp</command> respectively.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -384,6 +385,15 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <filename>sshd.service</filename> unit included in the
         <xref linkend="systemd-units"/> package.
       </para>
+
+      <note>
+        <para>
+          Changing the setting of <option>ListenAddress</option> in
+          <filename>/etc/sshd/sshd_config</filename> is unsupported with
+          the BLFS sshd <phrase revision='sysv'>bootscript</phrase><phrase
+          revision='systemd'>systemd unit</phrase>.
+        </para>
+      </note>
 
       <indexterm zone="openssh openssh-init">
         <primary sortas="f-sshd">sshd</primary>

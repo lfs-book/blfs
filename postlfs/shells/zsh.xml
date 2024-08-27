@@ -33,7 +33,7 @@
       <application>ksh</application> but includes many enhancements.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -98,6 +98,23 @@
 <screen><userinput>sed -e 's/set_from_init_file/texinfo_&amp;/' \
     -i Doc/Makefile.in</userinput></screen>
 
+    <!-- https://github.com/zsh-users/zsh/commit/4c89849c9817
+         https://github.com/zsh-users/zsh/commit/ab4d62eb975a -->
+    <para>
+      Some programs shipped in the building system for detecting system
+      features use pre-C99 syntax rejected by GCC-14.1 or later.  Fix them
+      up or Zsh would be wrongly configured and fail to build:
+    </para>
+
+<screen><userinput>sed -e 's/^main/int &amp;/'      \
+    -e 's/exit(/return(/'    \
+    -i aczsh.m4 configure.ac &amp;&amp;
+
+sed -e 's/test = /&amp;(char**)/' \
+    -i configure.ac           &amp;&amp;
+
+autoconf</userinput></screen>
+
     <para>
       The documentation files contain references to zsh configuration
       files in <filename class='directory'>/etc</filename>, but we'll
@@ -108,7 +125,8 @@
       the references manually:
     </para>
 
-<screen><userinput>sed 's|/etc/z|/etc/zsh/z|g' -i Doc/*.*</userinput></screen>
+<screen><userinput>sed -e 's|/etc/z|/etc/zsh/z|g' \
+    -i Doc/*.*</userinput></screen>
 
 <!--    <note>
       <para>

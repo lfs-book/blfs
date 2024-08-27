@@ -207,7 +207,7 @@ tar -xvf filename.tar.bz2</userinput></screen>
     (Simultaneous MultiThreading, also known as
     <quote>Hyper-Threading</quote>) so each P core can run two threads
     simultaneously and the Linux kernel will treat each P core as two
-    logical cores.  As the result, there are 32 logical cores in total.
+    logical cores.  As a result, there are 32 logical cores in total.
     To utilize all these logical cores running <command>make</command>, we
     can set an environment variable to tell <command>make</command> to
     run 32 jobs simultaneously:</para>
@@ -333,6 +333,7 @@ tar -xvf filename.tar.bz2</userinput></screen>
 cat &gt; /etc/systemd/system/user@.service.d/delegate.conf &lt;&lt; EOF &amp;&amp;
 <literal>[Service]
 Delegate=memory cpuset</literal>
+EOF
 systemctl daemon-reload</userinput></screen>
 
     <para revision='systemd'>
@@ -419,16 +420,16 @@ EOF</userinput></screen>
       specify <literal>0,2,4,6</literal> instead of <literal>0-3</literal>.
       Note that the other CPU models may use a different mapping scheme.
       If you are not sure about the mapping between the logical cores
-      and the physical cores, run <command>grep -E '^processor|^core'
-      /proc/cpuinfo</command> which will output logical core IDs in the
-      <computeroutput>processor</computeroutput> lines, and physical core
-      IDs in the <computeroutput>core id</computeroutput> lines.
+      and the physical cores, run the <command>lscpu --extended</command>
+      command which will output logical core IDs in the
+      <computeroutput>CPU</computeroutput> column, and physical core
+      IDs in the <computeroutput>CORE</computeroutput> column.
     </para>
 
     <para>
       When the <command>nproc</command> or <command>ninja</command> command
       runs in a cgroup, it will use the number of logical cores assigned to
-      the cgroup as the <quote>system logical core count</quote>.  For
+      the cgroup as the <quote>system logical core count.</quote>  For
       example, in a cgroup with logical cores 0-3 assigned,
       <command>nproc</command> will print
       <computeroutput>4</computeroutput>, and <command>ninja</command>
@@ -587,7 +588,8 @@ chmod 755 blfs-yes-test1</userinput></screen>
     output and then provide a <keycap>y</keycap> to a prompt. This technique
     could be used in instances when otherwise you would have to page through
     the output of a file (such as a license agreement) and then answer the
-    question of <quote>do you accept the above?</quote>. For this example,
+    question of <computeroutput>do you accept the above?</computeroutput>.
+    For this example,
     another short <application>Bash</application> script is required:</para>
 
 <screen><userinput>cat &gt; blfs-yes-test2 &lt;&lt; "EOF"
@@ -640,13 +642,13 @@ chmod 755 blfs-yes-test2</userinput></screen>
         <para><emphasis>Required</emphasis> means that the target package
         cannot be correctly built without the dependency having first been
         installed, except if the dependency is said to be
-        <quote>runtime</quote>, which means the target package can be built but
+        <quote>runtime</quote> which means the target package can be built but
         cannot function without it.</para>
         <para>
           Note that a target package can start to <quote>function</quote>
           in many subtle ways: an installed configuration file can make the
           init system, cron daemon, or bus daemon to run a program
-          automatically; another package using the target package as an
+          automatically; another package using the target package as a
           dependency can run a program from the target package in the
           building system; and the configuration sections in the BLFS book
           may also run a program from a just installed package.  So if
@@ -659,12 +661,12 @@ chmod 755 blfs-yes-test2</userinput></screen>
       <listitem>
         <para><emphasis>Recommended</emphasis> means that BLFS strongly
         suggests this package is installed first (except if said to be
-        <quote>runtime</quote>, see below) for a clean and trouble-free
+        <quote>runtime,</quote> see below) for a clean and trouble-free
         build, that won't have issues either during the build process, or at
         run-time.  The instructions in the book assume these packages are
         installed.  Some changes or workarounds may be required if these
         packages are not installed. If a recommended dependency is said
-        to be <quote>runtime</quote>, it means that BLFS strongly suggests
+        to be <quote>runtime,</quote> it means that BLFS strongly suggests
         that this dependency is installed before using the package, for
         getting full functionality.</para>
       </listitem>
@@ -672,12 +674,12 @@ chmod 755 blfs-yes-test2</userinput></screen>
         <para><emphasis>Optional</emphasis> means that this package might be
         installed for added functionality. Often BLFS will describe the
         dependency to explain the added functionality that will result.
-        An optional dependency may be automatically pick up by the target
-        package if the dependency is installed, but another some optional
-        dependency may also need additional configuration options to enable
-        them when the target package is built.  Such additional options are
+        Some optional dependencies are automatically picked up by the target
+        package if the dependency is installed, while others
+        also need additional configuration options to be enabled
+        when the target package is built.  Such additional options are
         often documented in the BLFS book.  If an optional dependency is
-        said to be <quote>runtime</quote>, it means you may install
+        said to be <quote>runtime,</quote> it means you may install
         the dependency after installing the target package to support some
         optional features of the target package if you need these
         features.</para>
@@ -756,7 +758,7 @@ chmod 755 blfs-yes-test2</userinput></screen>
       <listitem>
         <para>
           The packages using the meson build system can accept
-          <parameter>-Dstrip=true</parameter> when running
+          <parameter>-D strip=true</parameter> when running
           <command>meson</command>.  If you've forgot to add this option
           running the <command>meson</command>, you can also run
           <command>meson install --strip</command> instead of
@@ -925,7 +927,7 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
       specific standard for C or C++ (<option>-std=c++17</option> for
       example).  But one thing which has now come to light is that
       programmers might include debug assertions in their code, expecting
-      them to be disabled in releases by using <option>-DNDEBUG</option>.
+      them to be disabled in releases by using <option>-D NDEBUG</option>.
       Specifically, if <xref linkend="mesa"/> is built with these
       assertions enabled, some activities such as loading levels of games
       can take extremely long times, even on high-class video cards.
@@ -992,7 +994,7 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
         is that this is not set and no flags are generated. Any
         <envar>CFLAGS</envar> or <envar>CXXFLAGS</envar> in the environment
         will be used. If the programmer has coded any debug assertions,
-        those will be enabled unless -DNDEBUG is used. The following
+        those will be enabled unless -D NDEBUG is used. The following
         CMAKE_BUILD_TYPE values will generate the flags shown, and these
         will come <emphasis>after</emphasis> any flags in the environment
         and therefore take precedence.
@@ -1010,13 +1012,13 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
               <entry>Debug</entry><entry><option>-g</option></entry>
             </row>
             <row>
-              <entry>Release</entry><entry><option>-O3 -DNDEBUG</option></entry>
+              <entry>Release</entry><entry><option>-O3 -D NDEBUG</option></entry>
             </row>
             <row>
-              <entry>RelWithDebInfo</entry><entry><option>-O2 -g -DNDEBUG</option></entry>
+              <entry>RelWithDebInfo</entry><entry><option>-O2 -g -D NDEBUG</option></entry>
             </row>
             <row>
-              <entry>MinSizeRel</entry><entry><option>-Os -DNDEBUG</option></entry>
+              <entry>MinSizeRel</entry><entry><option>-Os -D NDEBUG</option></entry>
             </row>
           </tbody>
         </tgroup>
@@ -1057,7 +1059,7 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
         configure</command>, e.g. to set an option:
       </para>
 
-<screen><userinput>meson configure -D&lt;some_option&gt;=true</userinput></screen>
+<screen><userinput>meson configure -D &lt;some_option&gt;=true</userinput></screen>
 
       <para>
         If you do that, the file <filename>meson-private/cmd_line.txt</filename>
@@ -1072,24 +1074,24 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
 
       <itemizedlist>
         <listitem>
-          <para>plain : no added flags. This is for distributors to supply their
+          <para>plain: no added flags. This is for distributors to supply their
           own <envar>CFLAGS</envar>, <envar>CXXFLAGS</envar> and
           <envar>LDFLAGS</envar>. There is no obvious reason to use
           this in BLFS.</para>
         </listitem>
         <listitem>
-          <para>debug : <option>-g</option> - this is the default if
+          <para>debug: <option>-g</option> - this is the default if
           nothing is specified in either <filename>meson.build</filename>
           or the command line. However it results large and slow binaries,
           so we should override it in BLFS.</para>
         </listitem>
         <listitem>
-          <para>debugoptimized : <option>-O2 -g</option> - this is the
+          <para>debugoptimized: <option>-O2 -g</option> - this is the
           default specified in <filename>meson.build</filename> of some
           packages.</para>
         </listitem>
         <listitem>
-          <para>release : <option>-O3</option> (occasionally a package will
+          <para>release: <option>-O3</option> (occasionally a package will
           force <option>-O2</option> here) - this is the buildtype we use
           for most packages with Meson build system in BLFS.</para>
         </listitem>
@@ -1100,10 +1102,10 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
            true, false, if-release.  Some packages sets it to if-release
            so we mistakenly believed if-release had been the default.  -->
       <para>
-        The <option>-DNDEBUG</option> flag is implied by the release
+        The <option>-D NDEBUG</option> flag is implied by the release
         buildtype for some packages (for example <xref linkend='mesa'/>).
         It can also be provided explicitly by passing
-        <option>-Db_ndebug=true</option>.
+        <option>-D b_ndebug=true</option>.
       </para>
 
       <para>
@@ -1133,7 +1135,7 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
         <option>-O</option> (the abbreviation of
         <option>-Copt-level=2</option>) or <option>-Copt-level=3</option>
         otherwise it will do an unoptimized compile and run
-        <emphasis>much</emphasis> slower.  If are compiling the program
+        <emphasis>much</emphasis> slower.  If you are compiling the program
         for debugging it, replace the <option>-O</option> or
         <option>-Copt-level=</option> options with <option>-g</option> to
         produce an unoptimized program with debug info.
@@ -1196,7 +1198,7 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
         you cannot move the binaries to an incompatible machine - this can
         also apply to newer machines, not just to older machines. For
         example programs compiled for <literal>amdfam10</literal> run on
-        old Phenoms, Kaveris, and Ryzens : but programs compiled for a
+        old Phenoms, Kaveris, and Ryzens, but programs compiled for a
         Kaveri will not run on a Ryzen because certain op-codes are not
         present.  Similarly, if you build for a Haswell not everything will
         run on a SandyBridge.
@@ -1318,10 +1320,10 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
         For hardening options which are reasonably cheap, there is some
         discussion in the 'tuning' link above (occasionally, one or more
         of these options might be inappropriate for a package). These
-        options are <option>-D_FORTIFY_SOURCE=2</option>
-        (or <option>-D_FORTIFY_SOURCE=3</option> which is more secure but
+        options are <option>-D _FORTIFY_SOURCE=2</option>
+        (or <option>-D _FORTIFY_SOURCE=3</option> which is more secure but
         with a larger performance overhead) and
-        (for C++) <option>-D_GLIBCXX_ASSERTIONS</option>. On modern
+        (for C++) <option>-D _GLIBCXX_ASSERTIONS</option>. On modern
         machines these should only have a little impact on how fast things
         run, and often they will not be noticeable.
       </para>

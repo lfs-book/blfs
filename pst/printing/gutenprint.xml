@@ -10,7 +10,7 @@
   <!ENTITY gutenprint-size          "5.1 MB">
   <!ENTITY gutenprint-buildsize     "59 MB (without tests)">
   <!ENTITY gutenprint-time          "0.4 SBU (without tests)">
-  <!-- Tests add 75 SBU and 13GB to the equation - updated info in the tests below -->
+  <!-- Tests add 75 SBU and 13 GB to the equation - updated info in the tests below -->
 ]>
 
 <sect1 id="gutenprint" xreflabel="Gutenprint-&gutenprint-version;">
@@ -30,9 +30,9 @@
       The <application>Gutenprint</application> (formerly
       <application>Gimp-Print</application>) package contains high
       quality drivers for many brands and models of printers for use with
-      <xref linkend="cups"/>
-      and the
-      <application>GIMP-2.0</application>. See a list of supported printers at
+      <xref linkend="cups"/>.
+      <!--and the
+      <application>GIMP-2.0</application>.--> See a list of supported printers at
       <ulink url="https://gutenprint.sourceforge.net/p_Supported_Printers.php"/>.
     </para>
 
@@ -78,8 +78,8 @@
     so that we can use gutenprint's driver to print photos there -->
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="cups"/> and
-      <xref linkend="gimp"/>
+      <xref linkend="cups"/><!-- and
+      <xref linkend="gimp"/>-->
     </para>
 
     <bridgehead renderas="sect4">Recommended (at runtime)</bridgehead>
@@ -147,7 +147,10 @@
 <screen><userinput>sed -i 's|$(PACKAGE)/doc|doc/$(PACKAGE)-$(VERSION)|' \
        {,doc/,doc/developer/}Makefile.in &amp;&amp;
 
-./configure --prefix=/usr --disable-static &amp;&amp;
+./configure --prefix=/usr                 \
+            --disable-static              \
+            --without-gimp2               \
+            --without-gimp2-as-gutenprint &amp;&amp;
 make</userinput></screen>
 
     <!-- this is supposed to discourage you from running the tests if you upgrade
@@ -188,6 +191,11 @@ install -v -m644    doc/gutenprintui2/html/* \
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <parameter>--without-gimp2</parameter>: This switch disables support
+      for GIMP because it has not been updated to support GIMP3 yet.
+    </para>
 
   </sect2>
 

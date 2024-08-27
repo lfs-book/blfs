@@ -7,10 +7,10 @@
   <!ENTITY gnome-shell-download-http
            "&gnome-download-http;/gnome-shell/&gnome-46;/gnome-shell-&gnome-shell-version;.tar.xz">
   <!ENTITY gnome-shell-download-ftp  " ">
-  <!ENTITY gnome-shell-md5sum        "56c2bf53f35792430ff0acd08ddb4047">
-  <!ENTITY gnome-shell-size          "1.9 MB">
-  <!ENTITY gnome-shell-buildsize     "61 MB (with tests)">
-  <!ENTITY gnome-shell-time          "0.2 SBU (Using parallelism=4; with tests)">
+  <!ENTITY gnome-shell-md5sum        "44b69588f138be1e70fbe307eff3346f">
+  <!ENTITY gnome-shell-size          "2.0 MB">
+  <!ENTITY gnome-shell-buildsize     "62 MB (with tests)">
+  <!ENTITY gnome-shell-time          "0.3 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="gnome-shell" xreflabel="gnome-shell-&gnome-shell-version;">
@@ -109,12 +109,12 @@
       <xref role="runtime" linkend="gnome-backgrounds"/>,
       <xref role="runtime" linkend="gnome-control-center"/>,
       <xref role="runtime" linkend="gnome-menus"/>,
-      <xref role="runtime" linkend="libgweather"/>,
       <phrase revision="sysv">and</phrase>
+      <xref role="runtime" linkend="libgweather"/>
+      <phrase revision="systemd">, and</phrase>
       <phrase revision="systemd">
-        <xref role='runtime' linkend="systemd"/>, and
+        <xref role='runtime' linkend="systemd"/>
       </phrase>
-      <xref role="runtime" linkend="telepathy-mission-control"/>
     </para>
 
     <bridgehead renderas="sect4"
@@ -128,6 +128,15 @@
   <sect2 role="installation">
     <title>Installation of GNOME Shell</title>
 
+<!--
+    <para>
+      First, fix a regression that appears when using glib-2.80.2 or later:
+    </para>
+
+<screen><userinput remap="pre">sed -i 's/gnome.ScreenCast.Stream/gnome.Mutter.Screencast/' \
+        js/dbusServices/screencast/screencastService.js</userinput></screen>
+-->
+
     <para>
       Install <application>GNOME Shell</application> by running the
       following commands:
@@ -138,8 +147,8 @@ cd    build &amp;&amp;
 
 meson setup --prefix=/usr       \
             --buildtype=release \
-            -Dsystemd=false     \
-            -Dtests=false       \
+            -D systemd=false    \
+            -D tests=false      \
             ..                  &amp;&amp;
 ninja</userinput></screen>
 
@@ -148,13 +157,13 @@ cd    build &amp;&amp;
 
 meson setup --prefix=/usr       \
             --buildtype=release \
-            -Dtests=false       \
+            -D tests=false      \
             ..                  &amp;&amp;
 ninja</userinput></screen>
 
     <para>
       To test the results, you need to remove the
-      <parameter>-Dtests=false</parameter> switch, and to have <xref
+      <parameter>-D tests=false</parameter> switch, and to have <xref
       linkend="mutter"/> compiled and installed with tests also.
 
       To run the tests, issue: <command>ninja test</command>. You must be
@@ -199,18 +208,18 @@ ninja</userinput></screen>
 -->
 
     <para revision="sysv">
-      <parameter>-Dsystemd=false</parameter>: Prevents installing systemd
+      <parameter>-D systemd=false</parameter>: Prevents installing systemd
       files, which are not needed in this version of BLFS.
     </para>
 
     <para>
-      <parameter>-Dtests=false</parameter>: Remove this switch if you want
+      <parameter>-D tests=false</parameter>: Remove this switch if you want
       to build the tests. But then <command>meson</command> will fail if
       <xref linkend="mutter"/> tests are not installed.
     </para>
 
     <para>
-      <option>-Dextensions_tool=false</option>: This switch allows building
+      <option>-D extensions_tool=false</option>: This switch allows building
       this package without <xref linkend='gnome-autoar'/> installed.
     </para>
 

@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!-- found by looking at souce of https://gitlab.gnome.org/GNOME/gucharmap/-/tags
+  <!-- found by looking at source of https://gitlab.gnome.org/GNOME/gucharmap/-/tags
    in seamonkey, finding the .tar.bz2 and putting the gitlab.gnome.org prefix
    onto it -->
   <!ENTITY gucharmap-download-http "https://gitlab.gnome.org/GNOME/gucharmap/-/archive/&gucharmap-version;/gucharmap-&gucharmap-version;.tar.bz2">
   <!ENTITY gucharmap-download-ftp  " ">
-  <!ENTITY gucharmap-md5sum        "f446e71d8791f0911e14e5cee2a365b7">
+  <!ENTITY gucharmap-md5sum        "f50222e790637b951ae6a798d71b3f40">
   <!ENTITY gucharmap-size          "1.4 MB">
   <!ENTITY gucharmap-buildsize     "74 MB">
   <!ENTITY gucharmap-time          "0.1 SBU">
@@ -36,7 +36,7 @@
       only know by its Unicode name or code point.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -109,7 +109,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="&appstream-glib-url;">appstream-glib</ulink> and
+      <xref linkend="appstream-glib"/> and
       <xref linkend="gtk-doc"/>
     </para>
 
@@ -142,8 +142,8 @@ popd                          &amp;&amp;
 meson setup --prefix=/usr       \
             --strip             \
             --buildtype=release \
-            -Ducd_path=./ucd    \
-            -Ddocs=false        \
+            -D ucd_path=./ucd   \
+            -D docs=false       \
             ..                  &amp;&amp;
 ninja</userinput></screen>
 
@@ -170,7 +170,7 @@ ninja install</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Ducd_path=./ucd</parameter>: This points to where the extracted
+      <parameter>-D ucd_path=./ucd</parameter>: This points to where the extracted
       main Unicode data files, and the zipped Unihan archive can be found.
     </para>
 
@@ -182,18 +182,18 @@ ninja install</userinput></screen>
     </para>
 
     <para>
-      <parameter>-Ddocs=false</parameter>: This allows the package to build even
+      <parameter>-D docs=false</parameter>: This allows the package to build even
       if <application>gtk-doc</application> has not been installed. Remove this
       if you have installed that and wish to build the documentation.
     </para>
 
     <para>
-      <option>-Dgir=false</option>: Use this if you have not installed
+      <option>-D gir=false</option>: Use this if you have not installed
       &gobject-introspection;.
     </para>
 
     <para>
-      <option>-Dvapi=false</option>: Use this if you have not installed
+      <option>-D vapi=false</option>: Use this if you have not installed
       <xref linkend="vala"/>.
     </para>
 

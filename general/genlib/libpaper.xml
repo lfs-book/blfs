@@ -30,7 +30,7 @@
       actions based on a system or user-specified paper size.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,12 +79,18 @@
 <screen><userinput>./configure --prefix=/usr        \
             --sysconfdir=/etc    \
             --disable-static     \
-            --enable-relocatable \
             --docdir=/usr/share/doc/libpaper-&libpaper-version; &amp;&amp;
 make</userinput></screen>
 
+    <!-- All tests "PASS" but the log just contains:
+         "sysconfdir does not start with prefix, cannot run test!"
     <para>
       To test the results, issue: <command>make check</command>.
+    </para> -->
+
+    <para>
+      The test suite of this package does not work with a configuration
+      using the standard installation location.
     </para>
 
     <para>
@@ -100,12 +106,12 @@ make</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
-
+    <!--
     <para>
-      <parameter>--enable-relocatable</parameter>:
+      <parameter>- -enable-relocatable</parameter>:
       This switch is needed to run the tests.
     </para>
-
+    -->
   </sect2>
 
   <sect2 role="configuration">
@@ -135,7 +141,7 @@ echo "a4" &gt; ~/.config/papersize</userinput></screen>
 
       <para>
         You may use a different paper size, such as
-        <quote><literal>letter</literal></quote>.
+        <literal>letter</literal>.
       </para>
 
     </sect3>
