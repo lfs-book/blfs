@@ -1332,22 +1332,49 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
       </para>
 
       <para>
-        The main distros use much more, such as
-        <option>-Wl,-z,now</option> (disabling lazy binding to enhance
-        <option>-Wl,-z,relro</option>, so the <emphasis>entire</emphasis>
-        GOT can be made immutable), <option>-fstack-clash-protection</option>
-        (preventing the attacker from using an unchecked offset from a heap
-        address to modify the stack),
-        <option>-fcf-protection=full</option>
-        (utilizing Intel and AMD CET technology to limit the target
-        addresses of control-flow transfer instructions; to make it really
-        effective the entire system must be built with this option, Glibc
-        must be built with <option>--enable-cet</option>, and the system
-        must run on Intel Tiger Lake or newer, or AMD Zen 3 or newer),
-        and <option>-ftrivial-auto-var-init=zero</option> (initializing
-        some variables by filling zero bytes if they are otherwise
-        uninitialized).
+        The main distros use much more, such as:
       </para>
+
+      <itemizedlist>
+        <listitem>
+          <para>
+            <option>-Wl,-z,now</option>: disables lazy binding to enhance
+            <option>-Wl,-z,relro</option>, so the
+            <emphasis>entire</emphasis> GOT can be made immutable.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <option>-fstack-clash-protection</option>: prevents the attacker
+            from using an offset large enough and not adequately checked to
+            jump over the stack guard page placed by the kernel and the
+            stack canary placed by
+            <option>-fstack-protector=strong</option>, and modify the stack
+            from a heap address, or vice versa.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <option>-ftrivial-auto-var-init=zero</option>: initializes
+            some variables by filling zero bytes if they are not
+            initialized by other means.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <option>-fcf-protection=full</option>: utilizes Intel and AMD
+            CET technology to limit the target addresses of control-flow
+            transfer instructions.  To make it really effective for a
+            package, all packages providing a shared library for the
+            package to use must be built with this option, as well as that
+            package itself, Glibc must be configured with the
+            <option>--enable-cet</option> option enabled, and the system
+            must run on Intel Tiger Lake or newer, or AMD Zen 3 or newer.
+            If the criteria is not met the program compiled with this
+            option will still run, but not really protected by CET.
+          </para>
+        </listitem>
+      </itemizedlist>
 
       <para>
         In GCC 14, the option <option>-fhardened</option> is a shorthand
