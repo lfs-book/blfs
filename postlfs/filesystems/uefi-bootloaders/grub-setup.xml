@@ -463,10 +463,14 @@ menuentry "Firmware Setup" {
     </para>
 
     <para>
-      The <command>insmod all_video</command> directive loads various
-      modules for video support.  It's needed to initialize the EFI
-      framebuffer for the kernel to print messages correctly before the
-      kernel GPU driver initialization.
+      The <command>insmod efi_gop</command> and
+      <command>insmod efi_uga</command> directives load two modules for
+      EFI-based video support.  On most systems the
+      <literal>efi_gop</literal> module is enough.  The
+      <literal>efi_uga</literal> module is only useful for legacy systems,
+      but it's harmless to load it anyway.  The video support is needed for
+      the <command>terminal_output gfxterm</command> directive to really
+      work.
     </para>
 
     <para>
