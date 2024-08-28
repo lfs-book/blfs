@@ -1311,9 +1311,12 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
         forward a part of its spirit by enabling PIE
         (<option>-fPIE -pie</option>) and SSP
         (<option>-fstack-protector-strong</option>) as the defaults
-        for GCC and clang.  What is being covered here is different - first
-        you have to make sure that the package is indeed using your added
-        flags and not over-riding them.
+        for GCC and clang.  And, the linkers (<command>ld.bfd</command>
+        and <command>ld.gold</command>) have also enabled
+        <option>-Wl,-z,relro</option> (making a part of the GOT immutable)
+        by default since Binutils 2.27. What is being covered here is
+        different - first you have to make sure that the package is indeed
+        using your added flags and not over-riding them.
       </para>
 
       <para>
@@ -1329,8 +1332,32 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
       </para>
 
       <para>
-        The main distros use much more, such as RELRO (Relocation Read Only)
-        and perhaps <option>-fstack-clash-protection</option>. You may also
+        The main distros use much more, such as
+        <option>-Wl,-z,now</option> (disabling lazy binding to enhance
+        <option>-Wl,-z,relro</option>, so the <emphasis>entrie</emphasis>
+        GOT can be made immutable), <option>-fstack-clash-protection</option>
+        (preventing the attacker from using an unchecked offset from a heap
+        address to modify the stack),
+        <option>-fcf-protection=full</option>
+        (utilizing Intel and AMD CET technology to limit the target
+        addresses of control-flow transfer instructions; to make it really
+        effective the entire system must be built with this option, Glibc
+        must be built with <option>--enable-cet</option>, and the system
+        must run on Intel Tiger Lake or newer, or AMD Zen 3 or newer),
+        and <option>-ftrivial-auto-var-init=zero</option> (initializing
+        some variables by filling zero bytes if they are otherwise
+        uninitialized).
+      </para>
+
+      <para>
+        In GCC 14, the option <option>-fhardened</option> is a shorthand
+        to enable all the hardening options mentioned above.  It sets
+        <option>-D _FORTIFY_SOURCE=3</option> instead of
+        <option>-D _FORTIFY_SOURCE=2</option>.
+      </para>
+
+      <para>
+        You may also
         encounter the so-called <quote>userspace retpoline</quote>
         (<option>-mindirect-branch=thunk</option> etc.) which
         is the equivalent of the spectre mitigations applied to the linux
