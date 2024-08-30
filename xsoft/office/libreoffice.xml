@@ -7,24 +7,24 @@
   <!ENTITY libreoffice-dl "https://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "54f582e82b049f4fbfdc3073551cfea5">
+  <!ENTITY libreoffice-core-md5sum        "230fb890c1fc32b8e7186a96d4e9c12a">
   <!ENTITY libreoffice-core-size          "267 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "9d4e91ede414eddc91d4023cce7f1d56">
-  <!ENTITY libreoffice-dict-size          "52 MB">
+  <!ENTITY libreoffice-dict-md5sum        "aabc278e0393220c39cb72a98e56abec">
+  <!ENTITY libreoffice-dict-size          "56 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "24f7dd6a164230cec5335db62d7350e3">
+  <!ENTITY libreoffice-help-md5sum        "f5b9ae5cc8572f01a6ae66704ce790bf">
   <!ENTITY libreoffice-help-size          "160 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum        "86208eb27c1bd4f61d44e58abae61f59">
-  <!ENTITY libreoffice-translations-size          "210 MB">
+  <!ENTITY libreoffice-translations-md5sum        "d86da685bce6182f77fc4002ad8d9f8f">
+  <!ENTITY libreoffice-translations-size          "212 MB">
 
   <!-- full size remeasured for 7.0.0.3 -->
 
-  <!ENTITY libreoffice-buildsize  "8.2 GB including the additional files if downloaded during the build (732 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
+  <!ENTITY libreoffice-buildsize  "11 GB including the additional files if downloaded during the build (775 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
 
  <!-- Editors: many updates to poppler will break LO using system poppler until
       somebody is able to provide a patch or sed.  In these cases, please mark
@@ -57,7 +57,7 @@
 
        For 7.5.4.2, I increased the parallelism to 8.  -bdubbs
   -->
-  <!ENTITY libreoffice-time "34 SBU with parallelism=8 (will vary due to download time)">
+  <!ENTITY libreoffice-time "32 SBU with parallelism=8 (will vary due to download time)">
 
 ]>
 
@@ -184,7 +184,7 @@
       <listitem>
         <para>
           Required patch to fix building with <xref linkend="boost"/>:
-          <ulink url="&patch-root;/libreoffice-&libreoffice-dlversion;-boost_fixes-2.patch"/>
+          <ulink url="&patch-root;/libreoffice-&libreoffice-dlversion;-boost_fixes-1.patch"/>
         </para>
       </listitem>
 
@@ -454,6 +454,7 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
              --without-system-dicts      \
              --disable-dconf             \
              --disable-odk               \
+             --disable-mariadb-sdbc      \
              --enable-release-build=yes  \
              --enable-python=system      \
              --with-jdk-home=/opt/jdk    \
@@ -480,21 +481,17 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
              --with-system-redland       \
              --with-system-libtiff       \
              --with-system-libwebp       \
+             --with-system-icu           \
              --with-system-zlib</userinput></screen>
 
-<!-- this one might be to be removed with one of the next
-     releases of LO (after 24.2.1.2) as it seems the issue
-     is known by upstream:
-     https://www.mail-archive.com/libreoffice@lists.freedesktop.org/msg336884.html
-
-     Removed from above: - -with-system-icu due to problem with version icu-75.1
--->
+<!--
     <para>
       Fix a misconfiguration when installing on 32-bit machines:
     </para>
 <screen><userinput>if [ "$(uname -m)" == "i686" ]; then
     sed -e "s/LFS_CFLAGS=$/&amp;-D_FILE_OFFSET_BITS=64/" -i config_host.mk
 fi</userinput></screen>
+-->
 
 <!--
     <para>
@@ -656,6 +653,15 @@ fi</userinput></screen>
     </para>
 
     <para>
+      <parameter>--disable-mariadb-sdbc</parameter>: This switch disables the
+      MariaDB SDBC connector for Libreoffice Base. Leaving it enabled results
+      in a build failure because of a problem linking to
+      <xref linkend="mitkrb"/>.
+      <!-- Please check this in 24.8.1.x since MariaDB's connector was
+           updated in the 24.8 branch shortly after 24.8.0.3 was released.-->
+    </para>
+
+    <para>
       <parameter>--enable-release-build=yes</parameter>: This switch enables a
       Release Build.  <application>LibreOffice</application> can be built as a
       Release Build or as a Developer Build, because their default installation
@@ -671,8 +677,8 @@ fi</userinput></screen>
     </para>
 
     <para>
-      <parameter>--with-system-icu</parameter>: Use the installed version of
-      icu. This version of libreoffice (24.2.3.2) is broken with icu-75.1.
+      <parameter>--with-system-icu</parameter>: This switch tells the build
+      system to use the system installed version of ICU.
     </para>
 
     <para>
@@ -731,16 +737,6 @@ fi</userinput></screen>
       instead of skia.
     </para>
 
-<!-- This needs KF5, and has not been ported to KF6. However, enable-kf6 brings
-     in a new VCL plugin so that it works properly in Plasma 6, so it's not
-     needed.
-    <para>
-      <option>- -enable-gtk3-kde5</option>: This switch allows the Visual Class
-      Library, which is responsible for widgets, to be built with KF5 file
-      dialogs if GTK+-3, Qt5 and Plasma are all available.
-    </para>
--->
-
     <para>
       <option>--enable-lto</option>: This switch will enable Link Time
       Optimization, which results in slightly smaller libraries (about 40 MB).
@@ -769,31 +765,11 @@ fi</userinput></screen>
       versions.
     </para>
 
-<!-- We no longer carry KDE 5, so let's only cover KDE 6.
-    <para>
-      <option>- -enable-kf5</option>: Builds with KDE/Plasma integration. If
-      &qt5-deps; and/or <xref linkend="kf6-frameworks"/> are not
-      installed in <filename class="directory">/usr</filename>, the include
-      and library directories must be specified in <envar>QT5INC</envar>,
-      <envar>QT5LIB</envar>, <envar>KF5INC</envar>, and <envar>KF5LIB</envar>,
-      respectively.
-    </para>
--->
     <para>
       <option>--enable-evolution2</option>: Enables support for Evolution
       address books through Evolution Data Server. Note that Evolution Data
       Server must be installed for this feature to function.
     </para>
-
-<!-- Let's not encourage the use of Qt5 since LXQt and Plasma now use Qt6.
-    <para>
-      <option>- -enable-qt5</option>: This switch enables support for integration
-      with Qt5 and the Qt5 theming engine. If &qt5-deps; is not installed in
-      <filename class="directory">/usr</filename>, the include and library
-      directories must be specified in the <envar>QT5INC</envar> and
-      <envar>QT5LIB</envar> environment variables.
-    </para>
--->
 
     <para>
       <option>--enable-qt6</option>: This switch enables support for integration
