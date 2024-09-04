@@ -212,7 +212,8 @@ meson setup ..                  \
       --buildtype=release       \
       -D introspection=disabled \
       -D glib_debug=disabled    \
-      -D man-pages=enabled      &amp;&amp;
+      -D man-pages=enabled      \
+      -D sysprof=disabled       &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -292,7 +293,7 @@ ninja</userinput></screen>
         <filename class='directory'>/usr</filename> hierarchy.
       </para>
     </warning>
-
+    <!-- I cannot reproduce these issues.
     <note>
       <para>
         If you have installed the glib-skip_warnings-1.patch and have 
@@ -307,7 +308,7 @@ ninja</userinput></screen>
         fail.  
       </para>
     </note>
-
+    -->
     <para>
       To test the results, after having installed the packages, issue:
       <command>LC_ALL=C ninja test</command> as a non-&root; user.
@@ -327,7 +328,16 @@ ninja</userinput></screen>
 
     <para>
       <parameter>-D glib_debug=disabled</parameter>: This switch causes the
-      build to not include debugging information in the built programs and libraries..
+      build to not include some expensive checks for debugging in the built
+      programs and libraries.
+    </para>
+
+    <para>
+      <parameter>-D sysprof=disabled</parameter>: This switch disables the
+      tracing support for sysprof.  Remove this option if you want the
+      tracing support.  Note that if sysprof is not installed, removing
+      this option will cause the building system to download a sysprof copy
+      from the Internet.
     </para>
 
   </sect2>
