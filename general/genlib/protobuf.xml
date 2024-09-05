@@ -5,9 +5,9 @@
   %general-entities;
 
   <!ENTITY protobuf-download-http "https://github.com/protocolbuffers/protobuf/releases/download/v&protobuf-version;/protobuf-&protobuf-version;.tar.gz">
-  <!ENTITY protobuf-md5sum        "d8e0175333201370faa8d1ea8477f77a">
-  <!ENTITY protobuf-size          "8.7 MB">
-  <!ENTITY protobuf-buildsize     "123 MB">
+  <!ENTITY protobuf-md5sum        "9db90d4ada7418ad5534212cd1ba5093">
+  <!ENTITY protobuf-size          "8.8 MB">
+  <!ENTITY protobuf-buildsize     "124 MB">
   <!ENTITY protobuf-time          "1.0 SBU (with parallelism=4)">
 ]>
 
@@ -92,7 +92,6 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr      \
       -D protobuf_ABSL_PROVIDER=package \
       -D protobuf_BUILD_LIBUPB=OFF      \
       -D protobuf_BUILD_SHARED_LIBS=ON  \
-      -D utf8_range_ENABLE_INSTALL=OFF  \
       -G Ninja ..                       &amp;&amp;
 ninja</userinput></screen>
 
@@ -106,8 +105,7 @@ ninja</userinput></screen>
       Now, as the &root; user:
     </para>
 
-<screen role="root"><userinput>sed 's/utf8_range//' -i *.pc &amp;&amp;
-ninja install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -116,12 +114,6 @@ ninja install</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/cmake-skip-install-rpath.xml"/>
-
-    <para>
-      <command>sed 's/utf8_range//' -i *.pc</command>: This command removes a
-      leftover reference to libutf8_range from the pkg-config files installed
-      by this package.
-    </para>
 
     <para>
       <parameter>-D protobuf_BUILD_TESTS=OFF</parameter>: This parameter prevents
@@ -140,14 +132,6 @@ ninja install</userinput></screen>
       <parameter>-D protobuf_BUILD_SHARED_LIBS=ON</parameter>: This parameter
       enables building shared versions of the libraries provided by this package
       instead of static versions.
-    </para>
-
-    <para>
-      <parameter>-D utf8_range_ENABLE_INSTALL=OFF</parameter>: This parameter
-      disables installing the utf8_range static library.  The functions
-      provided by this library and used by protobuf is already embedded into
-      <filename class='libraryfile'>libprotobuf.so</filename>, so installing
-      a full copy of the static library is just wasting the disk space.
     </para>
 
   </sect2>
