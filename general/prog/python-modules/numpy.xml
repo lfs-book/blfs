@@ -8,8 +8,8 @@
   <!ENTITY numpy-download-ftp  " ">
   <!ENTITY numpy-md5sum        "&numpy-md5sum;">
   <!ENTITY numpy-size          "18 MB">
-  <!ENTITY numpy-buildsize     "104 MB (add 48 MB for tests)">
-  <!ENTITY numpy-time          "0.6 SBU (add 1.1 SBU for tests)">
+  <!ENTITY numpy-buildsize     "105 MB (add 19 MB for tests)">
+  <!ENTITY numpy-time          "0.4 SBU (add 1.1 SBU for tests)">
 ]>
 
   <sect2 id="numpy" xreflabel="NumPy-&numpy-version;">
@@ -100,7 +100,7 @@
 
       <para> Build the module: </para>
 
-<screen><userinput>pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir -Csetup-args=-Dallow-noblas=true $PWD</userinput></screen>
+<screen><userinput>pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir -C setup-args=-Dallow-noblas=true $PWD</userinput></screen>
 
       <para>
         Now, as the <systemitem class="username">root</systemitem> user:
@@ -117,7 +117,7 @@ cd       test                                  &amp;&amp;
 python3 -m venv --system-site-packages testenv &amp;&amp;
 source testenv/bin/activate                    &amp;&amp;
 pip3 install hypothesis                        &amp;&amp;
-python -c "import numpy, sys; sys.exit(numpy.test() is False)"
+python3 -c "import numpy, sys; sys.exit(numpy.test() is False)"
 deactivate</userinput></screen>
 
 <!-- no && for actual test because of a possible error -->
