@@ -121,9 +121,8 @@
         </listitem>
         <listitem>
           <para>
-            <xref linkend="llvm"/> (required for the r300, r600, and radeonsi
-            drivers, and the LLVMpipe software rasterizer which can make the
-            swrast driver much faster)
+            <xref linkend="llvm"/> (required for the llvmpipe, r300, r600,
+            and radeonsi drivers)
           </para>
         </listitem>
         <listitem>
@@ -185,8 +184,8 @@
         Nvidia.  See the Command Explanations for
         <parameter>-D gallium-drivers=auto</parameter> below to
         see what options are available for your specific video hardware (or
-        emulated video hardware).  You should probably add the swrast option as
-        a backup driver.
+        emulated video hardware).  You should probably add the softpipe or
+        llvmpipe option as a backup driver.
       </para>
 
       <para>
@@ -442,7 +441,7 @@ ninja</userinput></screen>
             for x86. With a comma-separated list, only a subset of these
             drivers will be built. If you precisely know which drivers you
             need, you can select them explicitly. For example,
-            <option>-D gallium-drivers=radeonsi,iris,swrast</option>.
+            <option>-D gallium-drivers=radeonsi,iris,llvmpipe</option>.
           </para>
         </listitem>
         <listitem>
@@ -484,10 +483,17 @@ ninja</userinput></screen>
         </listitem>
         <listitem>
           <para>
-             <literal>swrast</literal> (using CPU for 3D
+             <literal>llvmpipe</literal> (using CPU for 3D
              rasterization. Note that it's much slower than using a modern
              3D-capable GPU, so it should be only used if the GPU is not supported
-             by other drivers), 
+             by other drivers)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>softpipe</literal> (also using CPU for 3D
+             rasterization, but slower than llvmpipe. There's no much reason
+             to use it unless LLVM is not available)
           </para>
         </listitem>
         <listitem>
@@ -619,7 +625,8 @@ ninja</userinput></screen>
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle><!-- in /usr/lib -->
-      <segtitle>Installed DRI Drivers</segtitle><!-- in /usr/lib/dri -->
+      <segtitle>Installed DRI Driver Stubs</segtitle><!-- in /usr/lib/dri -->
+      <segtitle>Installed VA-API Drivers</segtitle><!-- in /usr/lib/dri -->
       <segtitle>Installed VDPAU Drivers</segtitle><!-- in /usr/lib/vdpau -->
       <segtitle>Installed Vulkan Drivers</segtitle><!-- in /usr/lib -->
       <segtitle>Installed Directories</segtitle>
@@ -637,33 +644,34 @@ ninja</userinput></screen>
           libGLESv1_CM.so,
           libGLESv2.so,
           libgbm.so,
-          libglapi.so, and
+          libglapi.so,
+          libgallium-&mesa-version;.so, and
           libxatracker.so
         </seg>
         <seg>
-          <!-- d3dadapter9.so (optional)
-               I guess this is useless today, Wine applications use Vulkan
-               through libvkd3d, and new games with native Linux support
-               likely uses Vulkan directly.  -->
-          <!-- Begin gallium DRI drivers (*_dri.so) and VA-API drivers
-               (*_drv_video.so): this is the full set -->
+          <!-- Begin DRI driver stubs -->
+          libdril_dri.so and symlinks to it:
           crocus_dri.so,
           i915_dri.so,
           iris_dri.so,
           kms_swrast_dri.so,
           nouveau_dri.so,
-          nouveau_drv_video.so,
           r300_dri.so,
           r600_dri.so,
           r600_drv_video.so,
           radeonsi_dri.so,
-          radeonsi_drv_video.so,
           swrast_dri.so,
           virtio_gpu_dri.so,
-          virtio_gpu_drv_video.so,
           vmwgfx_dri.so, and
           zink_dri.so
-          <!-- End DRI Drivers -->
+          <!-- End DRI driver stubs -->
+        </seg>
+        <seg>
+          <!-- Begin VA-API drivers -->
+          nouveau_drv_video.so,
+          radeonsi_drv_video.so,
+          virtio_gpu_drv_video.so,
+          <!-- End VA-API drivers -->
         </seg>
         <seg>
           <!-- Begin VDPAU drivers -->
@@ -721,6 +729,16 @@ ninja</userinput></screen>
           <indexterm zone="mesa glxinfo">
             <primary sortas="b-glxinfo">glxinfo</primary>
           </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libdril_dri">
+        <term><filename class='libraryfile'>libdril_dri.so</filename></term>
+        <listitem>
+          <para>
+            is a stub allowing Xorg server to co-operate with the Gallium3D
+            drivers
+          </para>
         </listitem>
       </varlistentry>
 
@@ -783,6 +801,15 @@ ninja</userinput></screen>
           <indexterm zone="mesa libGL">
             <primary sortas="c-libGL">libGL.so</primary>
           </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libgallium">
+        <term><filename class='libraryfile'>libgallium-&mesa-version;.so</filename></term>
+        <listitem>
+          <para>
+            contains all the Gallium3D drivers
+          </para>
         </listitem>
       </varlistentry>
 
