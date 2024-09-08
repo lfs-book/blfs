@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "0b00381728b6c005e95194f7e44cff33">
-  <!ENTITY rust-size          "191 MB">
+  <!ENTITY rust-md5sum        "4f202568150660f369de3afbfb410970">
+  <!ENTITY rust-size          "207 MB">
   <!ENTITY rust-buildsize     "8.9 GB (298 MB installed); add 6.4 GB if running the tests">
   <!ENTITY rust-time          "6.7 SBU (including download time; add 6.2 SBU for tests, both using parallelism=8)">
 ]>
@@ -238,7 +238,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn us to do such a review.
-change-id = 125535
+change-id = 127866
 
 [llvm]
 # by default, rust will build for a myriad of architectures
@@ -287,7 +287,7 @@ llvm-config = "/usr/bin/llvm-config"
 # dumped to the screen when config.toml is parsed.
 llvm-config = "/usr/bin/llvm-config"</literal>
 EOF</userinput></screen>
-
+<!-- It seems gone in 1.81.0 but not confirmed upstream
     <note>
       <para>
         The <command>python3 x.py</command> commands may output a warning
@@ -301,6 +301,25 @@ EOF</userinput></screen>
         and it should be ignored.
       </para>
     </note>
+-->
+    <!-- https://github.com/rust-lang/rust/issues/128493
+         https://github.com/rust-lang/rust/issues/130018
+         https://github.com/rust-lang/rust/pull/130034 -->
+    <para>
+      Now remove some tests triggering a full rebuild of the Rust standard
+      library and compiler, remove a special case for supporting the
+      <command>cargo</command> test suite (that we don't run because it's
+      expected running in a Rustc git repository) but triggering a rebuild
+      of <command>cargo</command> when running
+      <command>python3 x.py install</command>, and prevent building one
+      component useless for BLFS:
+    </para>
+
+    <screen><userinput>sed '/MirOpt/d' -i src/bootstrap/src/core/builder.rs               &amp;&amp;
+sed 's/!path.ends_with("cargo")/true/'                             \
+    -i src/bootstrap/src/core/build_steps/tool.rs                  &amp;&amp;
+sed 's/^.*build_wasm.*$/#[allow(unreachable_code)]&amp;return false;/' \
+    -i src/bootstrap/src/lib.rs</userinput></screen>
 
     <para>
       Compile <application>Rust</application> by running the following
@@ -333,17 +352,16 @@ python3 x.py build</userinput></screen>
       To run the tests (again using all available CPUs) issue:
     </para>
 
-<screen remap="test"><userinput>SSL_CERT_DIR=/etc/ssl/certs \
-python3 x.py test --verbose --no-fail-fast --keep-stage-std=1 | \
-    tee rustc-testlog</userinput></screen>
+<screen remap="test"><userinput>python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
 
-    <!-- Both "unused import: `std::io::BufRead`"
-         Test suite internal issues and the unused imports are removed in
-         https://github.com/rust-lang/rust/pull/126097.  -->
     <para>
-      Three tests named <filename>tests/run-make/print-cfg</filename>,
-      <filename>tests/run-make/print-to-output</filename>, and
-      <literal>core::config::tests::download_ci_llvm</literal> are known to
+      Four tests in the
+      <filename class='directory'>tests/run-make</filename> directory are
+      known to fail because they need targets not enabled
+      in the BLFS <xref linkend='llvm'/> configuration (nor the
+      <literal>llvm.targets</literal> in <filename>config.toml</filename>,
+      in case building with the shipped LLVM).  And, one test named
+      <literal>core::config::tests::download_ci_llvm</literal> is known to
       fail.
     </para>
 
@@ -408,14 +426,7 @@ python3 x.py test --verbose --no-fail-fast --keep-stage-std=1 | \
     </note>
 
 <screen role='root'><userinput>python3 x.py install rustc std &amp;&amp;
-install -vm755 \
-  build/host/stage1-tools/*/*/{cargo{,-clippy,-fmt},clippy-driver,rustfmt} \
-  /opt/rustc-&rust-version;/bin &amp;&amp;</userinput>
-install -vDm644 \
-  src/tools/cargo/src/etc/_cargo \
-  /opt/rustc-&rust-version;/share/zsh/site-functions/_cargo &amp;&amp;
-install -vm644 src/tools/cargo/src/etc/man/* \
-  /opt/rustc-&rust-version;/share/man/man1</screen>
+python3 x.py install --stage=1 cargo clippy rustfmt</userinput></screen>
 
     <para>
       Still as the &root; user, fix the installation of documentation
@@ -519,13 +530,6 @@ ln -sfv /opt/rustc/share/zsh/site-functions/_cargo \
       since one person reported needing this, keep it commented for the moment.
     </para>-->
 
-    <!-- https://github.com/alexcrichton/openssl-probe/issues/25 -->
-    <para>
-      <envar>SSL_CERT_DIR=/etc/ssl/certs</envar>: Work around an issue
-      causing test failures with the CA certificate store layout used by
-      <xref linkend='make-ca'/>.
-    </para>
-
     <para>
       <parameter>--verbose</parameter>: this switch can sometimes provide more
       information about a test which fails.
@@ -536,26 +540,11 @@ ln -sfv /opt/rustc/share/zsh/site-functions/_cargo \
       will not stop at the first error.
     </para>
 
+    <!-- https://github.com/rust-lang/rust/issues/94147 -->
     <para>
-      <parameter>--keep-stage-std 1</parameter>: this switch prevents
-      <command>x.py test</command> from rebuilding the entire package for
-      some unknown reason.
-    </para>
-
-    <!-- https://github.com/rust-lang/rust/issues/94147
-         Do a manual installation for these 5 binaries for 1.80.0, the
-         build system insists to rebuild them even with this.
-    <para>
-      <parameter>- -stage=1</parameter>: this switch works around an issue
+      <parameter>--stage=1</parameter>: this switch works around an issue
       causing some Rustc components unnecessarily rebuilt running
       <command>python3 x.py install</command>.
-    </para>-->
-
-    <para>
-      <command>install ... /opt/rustc-&rust-version;/...</command>:
-      these commands explicitly install some Rust components.  They are
-      used instead of relying on <command>x.py install</command> because the
-      latter would rebuild these components for some unknown reason.
     </para>
 
   </sect2>
