@@ -100,6 +100,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="avahi"/> (for some tests),
       <xref linkend="colord"/>,
       <xref linkend="cups"/>,
       <xref linkend="docutils"/>,
@@ -110,7 +111,9 @@
       <xref linkend="libcloudproviders"/>,
       <xref linkend="sassc"/>,
       <xref linkend="tracker3"/>,
-      <ulink url="https://github.com/OpenPrinting/cpdb-libs">cpdb</ulink>, and
+      <ulink url="https://github.com/OpenPrinting/cpdb-libs">cpdb</ulink>
+      <ulink url="https://pypi.org/project/pydbus/">pydbus</ulink>
+      (for some tests), and
       <ulink url="&sysprof-url;">sysprof</ulink>
     </para>
 
@@ -145,21 +148,47 @@ meson configure -D documentation=true                            &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      To run the tests, issue: <command>dbus-run-session meson test --setup
-      x11</command>. If you are in a Wayland session, replace x11 with wayland.
+      To run the tests, issue:
+    </para>
+
+    <screen remap='test'><userinput>LIBGL_ALWAYS_SOFTWARE=1 \
+dbus-run-session meson test --setup x11 --no-suite needs-dmabuf
+9</userinput></screen>
+
+    <para>
+      If you are in a Wayland session, replace the two occurences of
+      <literal>x11</literal> with <literal>wayland</literal>.
       
-      Nine tests are known to fail if
+      One test is known to fail if
       <ulink url="https://gitlab.gnome.org/GNOME/cantarell-fonts">Cantrell fonts</ulink>
-      are not installed. 
+      are not installed.
+
+      About a dozen of tests are known to fail with minor (mostly invisible)
+      differences between the render output and the shipped reference image.
+      Issue
+      <command>grep 'not ok' meson-logs/testlog-x11.txt -B3</command>
+      (use <filename>testlog-wayland.txt</filename> if testing in a Wayland
+      session) to list them and the image files showing the render output,
+      the reference output, and the differences.  You may take a look at
+      those images to ensure the differences are insignificant.
+
+      Two <literal>headless</literal> tests are known to fail without the
+      external dependency pydbus installed.
       
       Many tests will fail if <filename>~/.config/gtk-4.0/settings.ini</filename> 
       exists and the gtk-modules line is not commented out.
+
+      Several other tests may fail for unknown reason.
       
       On systems with NVIDIA graphics cards, the tests may take significantly
       longer than the above test time.
-
+      <!--
       On some systems as many as 212 tests may fail (out of over 6100) for 
       unknown reasons.
+
+      I hope this is gone with LIBGL_ALWAYS_SOFTWARE and -\-no-suite dmabuf.
+      If not please restore them.  - xry111
+      -->
     </para>
 <!-- [pierre]: 4.6.0, wayland:   727 OK; 2 Expected Fail;   1 Fail; 1  Skipped
      [bdubbs]: 4.6.3, x11,       724 OK, 2 Expected Fail,  12 Fail, 1  Skipped
@@ -189,6 +218,14 @@ ninja</userinput></screen>
                above on X11 in IceWM
      [bdubbs]: 4.16.0, x11,     5896 OK, 0 Expected Fail, 212 Fail, 16 Skipped, 0 Timeout
                above on X11 in XFCE.  Over ssh there were 24 Timeouts
+     [xry111]: 4.16.1, x11,     6121 OK, 0 Expected Fail, 14 Fail, 16 Skipped, 0 Timeout
+               above on X11 (Xwayland) in GNOME
+     [xry111]: 4.16.1, wayland, 6120 OK, 0 Expected Fail, 15 Fail, 16 Skipped, 0 Timeout
+               above on wayland in GNOME
+     [xry111]: 4.16.1, x11,     6119 OK, 0 Expected Fail, 16 Fail, 16 Skipped, 0 Timeout
+               above on X11 (Xwayland) in Weston
+     [xry111]: 4.16.1, x11,     6106 OK, 0 Expected Fail, 18 Fail, 25 Skipped, 2 Timeout
+               above on wayland in Weston
 -->
 
     <para>
@@ -253,6 +290,19 @@ ninja</userinput></screen>
       on Wayland-based graphical environments.
     </para>
 
+    <para>
+      <envar>LIBGL_ALWAYS_SOFTWARE=1</envar>: Force the test suite to use
+      the softpipe or llvmpipe driver from Mesa.  The test suite is so
+      sensitive that the minor differences caused by a different Mesa
+      driver can trigger test failures.
+    </para>
+
+    <para>
+      <parameter>--no-suite dmabuf</parameter>: Disable the tests requiring
+      <filename class='devicefile'>/dev/udmabuf</filename>.  This file does
+      not exist if the feature is not enabled in the kernel configuration,
+      and even if it exists it cannot be accessed as unprivileged users.
+    </para>
   </sect2>
 
   <sect2 role="configuration">
