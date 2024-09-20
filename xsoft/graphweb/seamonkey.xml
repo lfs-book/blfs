@@ -301,6 +301,16 @@ done) &amp;&amp;
 
 patch -Np1 -i ../seamonkey-&seamonkey-version;-cxx17-1.patch</userinput></screen>
 
+    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1894423 -->
+    <para>
+      Next, remove a hunk of unused code violating the C++ standard.
+      Clang has started to reject it even though it's unused since the
+      19.1.0 release:
+    </para>
+
+<screen><userinput>sed '/ExclusiveData(ExclusiveData&amp;&amp;/,/^ *}/d' \
+    -i js/src/threading/ExclusiveData.h</userinput></screen>
+
     <para>
       Next, fix a problem with the bundled 'distro' python module:
     </para>
