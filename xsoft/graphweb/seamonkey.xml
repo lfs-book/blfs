@@ -6,10 +6,10 @@
 
   <!ENTITY seamonkey-download-http "https://archive.seamonkey-project.org/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
   <!ENTITY seamonkey-download-ftp  " ">
-  <!ENTITY seamonkey-md5sum        "266a86651348e21934707a7ccb3abef3">
-  <!ENTITY seamonkey-size          "241 MB">
-  <!ENTITY seamonkey-buildsize     "3.0 GB (148 MB installed)">
-  <!ENTITY seamonkey-time          "3.5 SBU (with parallelism=8)">
+  <!ENTITY seamonkey-md5sum        "0fbfbd69ab1ceb417528419324551510">
+  <!ENTITY seamonkey-size          "238 MB">
+  <!ENTITY seamonkey-buildsize     "4.5 GB (149 MB installed)">
+  <!ENTITY seamonkey-time          "6.9 SBU (with parallelism=8)">
 ]>
 
 <sect1 id="seamonkey" xreflabel="seamonkey-&seamonkey-version;">
@@ -109,7 +109,6 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <!--xref linkend="autoconf213"/-->
       <xref linkend="cbindgen"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="nodejs"/>,
@@ -130,15 +129,8 @@
       <xref linkend="nspr"/>,
       <xref linkend="nss"/>, and
       <xref linkend="pulseaudio"/>
-      <!-- <xref linkend="sqlite"/> system version no longer supported -->
     </para>
-<!--
-    <bridgehead renderas="sect4">Optional</bridgehead>
-    <para role="optional">
-      <xref linkend="sqlite"/> (not recommended due to potential
-      security concerns)
-    </para>
--->
+
     <note>
       <para>
         If you don't install recommended dependencies, then internal copies of
@@ -265,29 +257,6 @@ EOF</userinput></screen>
        href="../../xincludes/mozshm.xml"/>
     </note>
 
-<!-- Restore when no longer using Python 3.11. We may want to restore the patch
-     at that point as well, which includes the 'distro' and 'ICU' changes. -renodr
-    <para>
-      First, fix several problems that occur with Python-3.12 and ICU-74.
-      If you are not using ICU-74 and Python-3.12, do not apply this patch.
-    </para>
-
-<screen><userinput>patch -Np1 -i ../seamonkey-&seamonkey-version;-consolidated_fixes-1.patch</userinput></screen>
-
-    <para>
-      Next, if you are using Python-3.12, reinstall the setuptools package for
-      Seamonkey, and update it's vendored copy of pip:
-    </para>
-
-<screen><userinput>ln -sv /usr/lib/python&python3-majorver;/ensurepip/_bundled/pip-*.whl \
-       third_party/python/virtualenv/virtualenv_support &amp;&amp;
-
-tar xf ../setuptools-&setuptools-version;.tar.gz                             &amp;&amp;
-pip3 wheel - -no-build-isolation - -no-deps - -no-cache-dir       \
-           $PWD/setuptools-&setuptools-version;                              \
-           -w third_party/python/virtualenv/virtualenv_support</userinput></screen>
--->
-
     <para>
       First, if you are building with system ICU, adapt the line break mapping
       for ICU-74 or later, and apply a patch to build this package with the
@@ -325,7 +294,7 @@ patch -Np1 -i ../seamonkey-&seamonkey-version;-cxx17-1.patch</userinput></screen
     </para>
 
 <screen><userinput>export PATH_PY311=/opt/python3.11/bin:$PATH &amp;&amp;
-PATH=$PATH_PY311 AUTOCONF=true ./mach build</userinput></screen>
+PATH=$PATH_PY311 AUTOCONF=true MACH_USE_SYSTEM_PYTHON=1 ./mach build</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -348,7 +317,7 @@ PATH=$PATH_PY311 AUTOCONF=true ./mach build</userinput></screen>
       </para>
     </note>
 
-<screen role="root"><userinput>PATH=$PATH_PY311 ./mach install &amp;&amp;
+<screen role="root"><userinput>PATH=$PATH_PY311 MACH_USE_SYSTEM_PYTHON=1 ./mach install &amp;&amp;
 chown -R 0:0 /usr/lib/seamonkey &amp;&amp;
 
 cp -v $(find -name seamonkey.1 | head -n1) /usr/share/man/man1</userinput></screen>
