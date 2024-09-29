@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY cargoc-download-http "https://github.com/lu-zero/cargo-c/archive/v&cargo-c-version;/cargo-c-&cargo-c-version;.tar.gz">
+  <!ENTITY cargoc-download-ftp  " ">
+  <!ENTITY cargoc-md5sum        "6146712827673079129551b12e6ce312">
+  <!ENTITY cargoc-size          "32 KB">
+  <!ENTITY cargoc-buildsize     "722 MB">
+  <!ENTITY cargoc-time          "0.5 SBU">
+
+  <!ENTITY Cargo.lock-md5sum    "10765b0a906b6e28373a8e162b80dc82">
+]>
+
+<sect1 id="cargo-c" xreflabel="cargo-c-&cargo-c-version;">
+  <?dbhtml filename="cargo-c.html"?>
+
+
+  <title>cargo-c-&cargo-c-version;</title>
+
+  <indexterm zone="cargo-c">
+    <primary sortas="a-cargo-c">cargo-c</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to GNOME Weather</title>
+
+    <para>
+      The <application>cargo-c</application> package creates a cargo 
+      subcommand to build and install C-ABI compatibile dynamic and 
+      static libraries.
+    </para>
+
+    &lfs122_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&cargoc-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&cargoc-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &cargoc-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &cargoc-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &cargoc-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &cargoc-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required download: <ulink url="https://github.com/lu-zero/cargo-c/releases/download/v&cargo-c-version;/Cargo.lock"/>
+        </para>
+        <para>
+          Cargo.lock md5sum: &Cargo.lock-md5sum;
+        </para>
+      </listitem>
+
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">cargo-c Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="curl"/>
+    </para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of cargo.c</title>
+
+    <para>
+      Install <application>cargo.c</application> by running the following
+      commands:
+    </para>
+
+<screen><userinput>cp -v ../Cargo.lock . &amp;&amp;
+
+[ ! -e /usr/include/libssh2.h ] || export LIBSSH2_SYS_USE_PKG_CONFIG=1    &amp;&amp;
+[ ! -e /usr/include/sqlite3.h ] || export LIBSQLITE3_SYS_USE_PKG_CONFIG=1 &amp;&amp;
+
+cargo build --release</userinput></screen>
+
+    <para>
+      To test the results, issue: <command>cargo test --release</command>.
+    </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -vm755 target/release/cargo-{capi,cbuild,cinstall,ctest} /usr/bin/</userinput></screen>
+
+  </sect2>
+<!--
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
+  </sect2>
+-->
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          cargo-capi,
+          cargo-cbuild,
+          cargo-cinstall, and
+          cargo-ctest
+        </seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          None
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>
