@@ -69,6 +69,8 @@
       </listitem>
     </itemizedlist>
 
+    <!-- Moved to an explicit curl command.  See the note below the
+         curl command for reason.
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -80,28 +82,58 @@
         </para>
       </listitem>
 
-    </itemizedlist>
+    </itemizedlist>-->
 
     <bridgehead renderas="sect3">cargo-c Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="curl"/>
+      <xref linkend="rust"/>
     </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="libssh2"/> and
+      <xref linkend="sqlite"/>
+    </para>
+
+    &build-use-internet;
 
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of cargo.c</title>
+    <title>Installation of cargo-c</title>
 
     <para>
-      Install <application>cargo.c</application> by running the following
+      At first, download a file to ensure <command>cargo</command> to
+      use the dependency versions specified by the upstream developers
+      when this cargo-c version (&cargo-c-version;) was released.
+      Otherwise the latest versions of the dependencies would be used and
+      they might cause breakages:
+    </para>
+
+    <screen><userinput>curl -LO https://github.com/lu-zero/cargo-c/releases/download/v&cargo-c-version;/Cargo.lock</userinput></screen>
+
+    <note>
+      <para>
+        Normally we would put such a download into an
+        <quote>Additional Download</quote> section.  But in this case we
+        cannot tell the package name and version from the file name
+        <filename>Cargo.lock</filename>, so it's better not to put the
+        ambigiously-named file outside the
+        <filename class='directory'>cargo-c-&cargo-c-version;</filename>
+        directory.  We use <command>curl</command> here because the
+        <xref linkend='curl'/> package should have been installed
+        as a required dependency of <xref linkend='rust'/>.
+      </para>
+    </note>
+
+    <para>
+      Install <application>cargo-c</application> by running the following
       commands:
     </para>
 
-<screen><userinput>cp -v ../Cargo.lock . &amp;&amp;
-
-[ ! -e /usr/include/libssh2.h ] || export LIBSSH2_SYS_USE_PKG_CONFIG=1    &amp;&amp;
+<screen><userinput>[ ! -e /usr/include/libssh2.h ] || export LIBSSH2_SYS_USE_PKG_CONFIG=1    &amp;&amp;
 [ ! -e /usr/include/sqlite3.h ] || export LIBSQLITE3_SYS_USE_PKG_CONFIG=1 &amp;&amp;
 
 cargo build --release</userinput></screen>
