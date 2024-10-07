@@ -6,7 +6,7 @@
 
   <!ENTITY unbound-download-http "https://nlnetlabs.nl/downloads/unbound/unbound-&unbound-version;.tar.gz">
   <!ENTITY unbound-download-ftp  " ">
-  <!ENTITY unbound-md5sum        "fb7cc7922064bf122941b9f135052d00">
+  <!ENTITY unbound-md5sum        "94fee452f4f7c3aad166d65533931c0f">
   <!ENTITY unbound-size          "6.3 MB">
   <!ENTITY unbound-buildsize     "148 MB (with docs; add 11 MB for tests)">
   <!ENTITY unbound-time          "0.3 SBU (Using parallelism=4; with docs; add 0.3 SBU for tests)">
@@ -84,11 +84,11 @@
       <xref linkend="libevent"/>,
       <xref linkend="nettle"/>,
       <xref linkend="protobuf-c"/> (for dnstap),
-      &python2;,
       <xref linkend="sphinx"/> (for Python bindings documentation),
       <xref linkend="swig"/> (for Python bindings),
-      <xref linkend="doxygen"/> (for html documentation), and
-      <ulink url="https://dnstap.info/">dnstap</ulink>
+      <xref linkend="doxygen"/> (for html documentation),
+      <ulink url="https://dnstap.info/">dnstap</ulink>, and
+      &python2;
     </para>
 
   </sect2>
@@ -153,13 +153,15 @@ install -v -m644 doc/html/* /usr/share/doc/unbound-&unbound-version;</userinput>
       href="../../xincludes/static-libraries.xml"/>
 
     <para>
-      <option>--with-libevent</option>: This option enables libevent support
-      allowing use of large outgoing port ranges.
+      <option>--with-libevent</option>: This option enables libevent support,
+      which allows for the use of large outgoing port ranges.
     </para>
 
     <para>
-      <option>--with-pyunbound</option>: This option enables building of the Python
-      bindings.
+      <option>--with-pyunbound</option>: This option enables building the Python
+      bindings. If you want to build the bindings, you also need to pass the
+      <envar>PYTHON_VERSION=&python3-majorver;</envar> environment variable to
+      configure.
     </para>
 
   </sect2>
@@ -287,7 +289,7 @@ install -v -m644 doc/html/* /usr/share/doc/unbound-&unbound-version;</userinput>
         <term><command>unbound-anchor</command></term>
         <listitem>
           <para>
-            performs setup or update of the root trust anchor for DNSSEC
+            initializes or updates the root trust anchor for DNSSEC
             validation
           </para>
           <indexterm zone="unbound unbound-anchor">
