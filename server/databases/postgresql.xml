@@ -124,8 +124,7 @@ useradd -c "PostgreSQL Server" -g postgres -d /srv/pgsql/data \
 
 <screen><userinput>sed -i '/DEFAULT_PGSOCKET_DIR/s@/tmp@/run/postgresql@' src/include/pg_config_manual.h &amp;&amp;
 
-./configure --prefix=/usr          \
-            --enable-thread-safety \
+./configure --prefix=/usr \
             --docdir=/usr/share/doc/postgresql-&postgresql-version; &amp;&amp;
 make</userinput></screen>
 
@@ -286,12 +285,14 @@ chown -Rv postgres:postgres /srv/pgsql /run/postgresql</userinput></screen>
       <filename class="directory">/run/postgresql</filename>.
     </para>
 
+ <!-- Removed in 17.0
     <para>
-      <parameter>--enable-thread-safety</parameter>: This switch makes the
+      <parameter>- -enable-thread-safety</parameter>: This switch makes the
       client libraries thread-safe by allowing concurrent threads in
       <filename class="libraryfile">libpq</filename> and ECPG programs to
       safely control their private connection handles.
     </para>
+-->
 
     <para>
       <option>--with-openssl</option>: builds the package  with support for
