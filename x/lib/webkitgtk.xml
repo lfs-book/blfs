@@ -6,10 +6,10 @@
 
   <!ENTITY webkitgtk-download-http "https://webkitgtk.org/releases/webkitgtk-&webkitgtk-version;.tar.xz">
   <!ENTITY webkitgtk-download-ftp  " ">
-  <!ENTITY webkitgtk-md5sum        "fd031b34f22c09f91e97cca3a7dbc426">
-  <!ENTITY webkitgtk-size          "34 MB">
-  <!ENTITY webkitgtk-buildsize     "1.2 GB (159 MB installed, add 154 MB for GTK-4)">
-  <!ENTITY webkitgtk-time          "23 SBU (for GTK-3, using parallelism=8, add 22 SBU for GTK-4)">
+  <!ENTITY webkitgtk-md5sum        "126f51432eb59d6c307c70858f5459c9">
+  <!ENTITY webkitgtk-size          "41 MB">
+  <!ENTITY webkitgtk-buildsize     "1.4 GB (163 MB installed, add 157 MB for GTK-4)">
+  <!ENTITY webkitgtk-time          "32 SBU (for GTK-3, using parallelism=8, add 32 SBU for GTK-4)">
 
   <!ENTITY libbacktrace
     "<ulink url='https://github.com/ianlancetaylor/libbacktrace'>libbacktrace</ulink>">
@@ -129,9 +129,9 @@
       <xref linkend="woff2"/>,
       <ulink url="https://ccache.dev/">ccache</ulink>,
       <ulink url="https://sourceforge.net/projects/hunspell/files/Hyphen/">Hyphen</ulink>,
-      &libbacktrace;, and
-      <!--<ulink url="https://github.com/libjxl/libjxl">libjxl</ulink>, and-->
-      <ulink url="https://gnome.pages.gitlab.gnome.org/libmanette/">libmanette</ulink>
+      &libbacktrace;,
+      <ulink url="https://gnome.pages.gitlab.gnome.org/libmanette/">libmanette</ulink>, and
+      <ulink url="&sysprof-url;">sysprof</ulink>
     </para>
 
   </sect2>
@@ -172,42 +172,44 @@
 <screen revision="systemd"><userinput>mkdir -vp build &amp;&amp;
 cd        build &amp;&amp;
 
-cmake -D CMAKE_BUILD_TYPE=Release     \
-      -D CMAKE_INSTALL_PREFIX=/usr    \
-      -D CMAKE_SKIP_INSTALL_RPATH=ON  \
-      -D PORT=GTK                     \
-      -D LIB_INSTALL_DIR=/usr/lib     \
-      -D USE_LIBBACKTRACE=OFF         \
-      -D USE_LIBHYPHEN=OFF            \
-      -D ENABLE_GAMEPAD=OFF           \
-      -D ENABLE_MINIBROWSER=ON        \
-      -D ENABLE_DOCUMENTATION=OFF     \
-      -D ENABLE_WEBDRIVER=OFF         \
-      -D USE_WOFF2=OFF                \
-      -D USE_GTK4=OFF                 \
-      -D ENABLE_BUBBLEWRAP_SANDBOX=ON \
-      -W no-dev -G Ninja ..           &amp;&amp;
+cmake -D CMAKE_BUILD_TYPE=Release      \
+      -D CMAKE_INSTALL_PREFIX=/usr     \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON   \
+      -D PORT=GTK                      \
+      -D LIB_INSTALL_DIR=/usr/lib      \
+      -D USE_LIBBACKTRACE=OFF          \
+      -D USE_LIBHYPHEN=OFF             \
+      -D ENABLE_GAMEPAD=OFF            \
+      -D ENABLE_MINIBROWSER=ON         \
+      -D ENABLE_DOCUMENTATION=OFF      \
+      -D ENABLE_WEBDRIVER=OFF          \
+      -D USE_WOFF2=OFF                 \
+      -D USE_GTK4=OFF                  \
+      -D ENABLE_BUBBLEWRAP_SANDBOX=ON  \
+      -D USE_SYSTEM_SYSPROF_CAPTURE=NO \
+      -W no-dev -G Ninja ..            &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>mkdir -vp build &amp;&amp;
 cd        build &amp;&amp;
 
-cmake -D CMAKE_BUILD_TYPE=Release     \
-      -D CMAKE_INSTALL_PREFIX=/usr    \
-      -D CMAKE_SKIP_INSTALL_RPATH=ON  \
-      -D PORT=GTK                     \
-      -D LIB_INSTALL_DIR=/usr/lib     \
-      -D USE_LIBBACKTRACE=OFF         \
-      -D USE_LIBHYPHEN=OFF            \
-      -D ENABLE_GAMEPAD=OFF           \
-      -D ENABLE_MINIBROWSER=ON        \
-      -D ENABLE_DOCUMENTATION=OFF     \
-      -D ENABLE_WEBDRIVER=OFF         \
-      -D USE_WOFF2=OFF                \
-      -D USE_GTK4=OFF                 \
-      -D ENABLE_JOURNALD_LOG=OFF      \
-      -D ENABLE_BUBBLEWRAP_SANDBOX=ON \
-      -W no-dev -G Ninja ..           &amp;&amp;
+cmake -D CMAKE_BUILD_TYPE=Release      \
+      -D CMAKE_INSTALL_PREFIX=/usr     \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON   \
+      -D PORT=GTK                      \
+      -D LIB_INSTALL_DIR=/usr/lib      \
+      -D USE_LIBBACKTRACE=OFF          \
+      -D USE_LIBHYPHEN=OFF             \
+      -D ENABLE_GAMEPAD=OFF            \
+      -D ENABLE_MINIBROWSER=ON         \
+      -D ENABLE_DOCUMENTATION=OFF      \
+      -D ENABLE_WEBDRIVER=OFF          \
+      -D USE_WOFF2=OFF                 \
+      -D USE_GTK4=OFF                  \
+      -D ENABLE_JOURNALD_LOG=OFF       \
+      -D ENABLE_BUBBLEWRAP_SANDBOX=ON  \
+      -D USE_SYSTEM_SYSPROF_CAPTURE=NO \
+      -W no-dev -G Ninja ..            &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -230,39 +232,41 @@ ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>rm -rf * .[^.]* &amp;&amp;
 
-cmake -D CMAKE_BUILD_TYPE=Release     \
-      -D CMAKE_INSTALL_PREFIX=/usr    \
-      -D CMAKE_SKIP_INSTALL_RPATH=ON  \
-      -D PORT=GTK                     \
-      -D LIB_INSTALL_DIR=/usr/lib     \
-      -D USE_LIBBACKTRACE=OFF         \
-      -D USE_LIBHYPHEN=OFF            \
-      -D ENABLE_GAMEPAD=OFF           \
-      -D ENABLE_MINIBROWSER=ON        \
-      -D ENABLE_DOCUMENTATION=OFF     \
-      -D USE_WOFF2=OFF                \
-      -D USE_GTK4=ON                  \
-      -D ENABLE_BUBBLEWRAP_SANDBOX=ON \
-      -W no-dev -G Ninja ..           &amp;&amp;
+cmake -D CMAKE_BUILD_TYPE=Release         \
+      -D CMAKE_INSTALL_PREFIX=/usr        \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON      \
+      -D PORT=GTK                         \
+      -D LIB_INSTALL_DIR=/usr/lib         \
+      -D USE_LIBBACKTRACE=OFF             \
+      -D USE_LIBHYPHEN=OFF                \
+      -D ENABLE_GAMEPAD=OFF               \
+      -D ENABLE_MINIBROWSER=ON            \
+      -D ENABLE_DOCUMENTATION=OFF         \
+      -D USE_WOFF2=OFF                    \
+      -D USE_GTK4=ON                      \
+      -D ENABLE_BUBBLEWRAP_SANDBOX=ON     \
+      -D ENABLE_SYSTEM_SYSPROF_CAPTURE=NO \
+      -W no-dev -G Ninja ..               &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="sysv"><userinput>rm -rf * .[^.]* &amp;&amp;
 
-cmake -D CMAKE_BUILD_TYPE=Release     \
-      -D CMAKE_INSTALL_PREFIX=/usr    \
-      -D CMAKE_SKIP_INSTALL_RPATH=ON  \
-      -D PORT=GTK                     \
-      -D LIB_INSTALL_DIR=/usr/lib     \
-      -D USE_LIBBACKTRACE=OFF         \
-      -D USE_LIBHYPHEN=OFF            \
-      -D ENABLE_GAMEPAD=OFF           \
-      -D ENABLE_MINIBROWSER=ON        \
-      -D ENABLE_DOCUMENTATION=OFF     \
-      -D USE_WOFF2=OFF                \
-      -D USE_GTK4=ON                  \
-      -D ENABLE_JOURNALD_LOG=OFF      \
-      -D ENABLE_BUBBLEWRAP_SANDBOX=ON \
-      -W no-dev -G Ninja ..           &amp;&amp;
+cmake -D CMAKE_BUILD_TYPE=Release      \
+      -D CMAKE_INSTALL_PREFIX=/usr     \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON   \
+      -D PORT=GTK                      \
+      -D LIB_INSTALL_DIR=/usr/lib      \
+      -D USE_LIBBACKTRACE=OFF          \
+      -D USE_LIBHYPHEN=OFF             \
+      -D ENABLE_GAMEPAD=OFF            \
+      -D ENABLE_MINIBROWSER=ON         \
+      -D ENABLE_DOCUMENTATION=OFF      \
+      -D USE_WOFF2=OFF                 \
+      -D USE_GTK4=ON                   \
+      -D ENABLE_JOURNALD_LOG=OFF       \
+      -D ENABLE_BUBBLEWRAP_SANDBOX=ON  \
+      -D USE_SYSTEM_SYSPROF_CAPTURE=NO \
+      -W no-dev -G Ninja ..             &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -362,6 +366,11 @@ cp -rv ../Documentation/* /usr/share/gtk-doc/html</userinput></screen>
       <parameter>-D ENABLE_JOURNALD_LOG=OFF</parameter>: This switch disables using the
       systemd journal for logging errors and debugging information since it
       is not available on SysV systems.
+    </para>
+
+    <para>
+      <parameter>-D USE_SYSTEM_SYSPROF_CAPTURE=NO</parameter>: This switch
+      disables a hard dependency on <ulink url="&sysprof-url;">sysprof</ulink>.
     </para>
 
     <para>
