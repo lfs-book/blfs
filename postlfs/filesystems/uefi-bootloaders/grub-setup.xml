@@ -3,6 +3,8 @@
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../../general.ent">
   %general-entities;
+
+  <!ENTITY lfs-kernel-ver "6.10.5-lfs-12.2">
 ]>
 
 <sect1 id="grub-setup" xreflabel="Using GRUB to Set Up the Boot Process with UEFI">
@@ -444,8 +446,8 @@ if loadfont /boot/grub/fonts/unicode.pf2; then
   terminal_output gfxterm
 fi
 
-menuentry "GNU/Linux, Linux 6.7.4-lfs-12.1"  {
-  linux   /boot/vmlinuz-6.7.4-lfs-12.1 root=/dev/sda2 ro
+menuentry "GNU/Linux, Linux &lfs-kernel-ver;" {
+  linux   /boot/vmlinuz-&lfs-kernel-ver; root=/dev/sda2 ro
 }
 
 menuentry "Firmware Setup" {
@@ -458,15 +460,19 @@ menuentry "Firmware Setup" {
       book</ulink> for the basic knowledge about the
       <filename>grub.cfg</filename> file.
       <literal>(hd0,2)</literal>, <literal>sda2</literal>, and
-      <literal>6.4.10-lfs-12.0</literal> must match your
+      <literal>&lfs-kernel-ver;</literal> must match your
       configuration.
     </para>
 
     <para>
-      The <command>insmod all_video</command> directive loads various
-      modules for video support.  It's needed to initialize the EFI
-      framebuffer for the kernel to print messages correctly before the
-      kernel GPU driver initialization.
+      The <command>insmod efi_gop</command> and
+      <command>insmod efi_uga</command> directives load two modules for
+      EFI-based video support.  On most systems the
+      <literal>efi_gop</literal> module is enough.  The
+      <literal>efi_uga</literal> module is only useful for legacy systems,
+      but it's harmless to load it anyway.  The video support is needed for
+      the <command>terminal_output gfxterm</command> directive to really
+      work.
     </para>
 
     <para>

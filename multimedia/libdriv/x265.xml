@@ -98,6 +98,7 @@
 cd    bld &amp;&amp;
 
 cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D GIT_ARCHETYPE=1           \
       -W no-dev ../source          &amp;&amp;
 make</userinput></screen>
 
@@ -145,6 +146,15 @@ rm -vf /usr/lib/libx265.a</userinput></screen>
       <para>
         <parameter>-W no-dev</parameter>: This switch is used to suppress warnings
         intended for the package developers.
+      </para>
+
+      <para>
+        <parameter>-D GIT_ARCHETYPE=1</parameter>: This switch is needed
+        because the build system will not generate a pkg-config file or install
+        a shared library unless <xref linkend="git"/> is installed. Git isn't
+        required for anything else in this package, so this switch is used to
+        work around it for users who do not want to install Git as a build
+        dependency.
       </para>
 
       <para>

@@ -6,10 +6,10 @@
 
   <!ENTITY apache-ant-download-http "https://archive.apache.org/dist/ant/source/apache-ant-&apache-ant-version;-src.tar.xz">
   <!ENTITY apache-ant-download-ftp  " ">
-  <!ENTITY apache-ant-md5sum        "055843219f487edb3a6db554ad1355ef">
+  <!ENTITY apache-ant-md5sum        "778c68be3787dfebc249de45598f63b2">
   <!ENTITY apache-ant-size          "3.6 MB">
-  <!ENTITY apache-ant-buildsize     "195 MB">
-  <!ENTITY apache-ant-time          "0.3 SBU (excluding download time)">
+  <!ENTITY apache-ant-buildsize     "196 MB">
+  <!ENTITY apache-ant-time          "0.2 SBU (excluding download time)">
 ]>
 
 <sect1 id="apache-ant" xreflabel="apache-ant-&apache-ant-version;">
@@ -129,30 +129,23 @@
 
 <screen><userinput>./bootstrap.sh</userinput></screen>
 
-<!-- No longer needed in 1.10.14.
-    <para>
-      Now fix a problem when the next command tries to download a file from
-      a problem site:
-    </para>
-
-<screen><userinput>sed -e 's|ftp.software.ibm.com|anduin.linuxfromscratch.org|' \
-    -e 's|software/awdtools/netrexx|BLFS/apache-ant|'        \
-    -i fetch.xml </userinput></screen>
--->
-
     <para>
       Download the runtime dependencies using the
       <filename>fetch.xml</filename> ant build script:
     </para>
 
-<screen><userinput>bootstrap/bin/ant -f fetch.xml -D dest=optional</userinput></screen>
+<!-- A spsce betweem -D and dest makes the build fail. -->
+
+<screen><userinput>bootstrap/bin/ant -f fetch.xml -Ddest=optional</userinput></screen>
 
     <para>
       Build <application>Apache Ant</application> by running the following
       command:
     </para>
 
-<screen><userinput>./build.sh -D dist.dir=$PWD/ant-&apache-ant-version; dist</userinput></screen>
+<!-- A spsce betweem -D and dest here passes, but leave it out for consistency. -->
+
+<screen><userinput>./build.sh -Ddist.dir=$PWD/ant-&apache-ant-version; dist</userinput></screen>
 
     <para>
       Install, as the <systemitem class="username">root</systemitem> user:
@@ -168,14 +161,14 @@ ln -sfv ant-&apache-ant-version; /opt/ant</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>bootstrap/bin/ant -f fetch.xml -D dest=optional</command>:
+      <command>bootstrap/bin/ant -f fetch.xml -Ddest=optional</command>:
       Downloads the missing dependencies to the user's home directory, and
       copies them into the source tree (in the <filename>lib/optional</filename>
       directory, where <command>ant</command> picks them up at build time).
     </para>
 
     <para>
-      <command>./build.sh -D dist.dir=$PWD/ant-&apache-ant-version;
+      <command>./build.sh -Ddist.dir=$PWD/ant-&apache-ant-version;
       dist</command>: This command builds, tests, then installs the package
       into a temporary directory.
     </para>

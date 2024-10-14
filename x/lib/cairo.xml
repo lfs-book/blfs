@@ -6,10 +6,10 @@
 
   <!ENTITY cairo-download-http "https://www.cairographics.org/releases/cairo-&cairo-version;.tar.xz">
   <!ENTITY cairo-download-ftp  " ">
-  <!ENTITY cairo-md5sum        "3f0685fbadc530606f965b9645bb51d9">
-  <!ENTITY cairo-size          "32 MB">
-  <!ENTITY cairo-buildsize     "98 MB">
-  <!ENTITY cairo-time          "0.3 SBU (Using parallelism=4)">
+  <!ENTITY cairo-md5sum        "5ad67c707edd0003f1b91c8bbc0005c1">
+  <!ENTITY cairo-size          "31 MB">
+  <!ENTITY cairo-buildsize     "93 MB">
+  <!ENTITY cairo-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="cairo" xreflabel="Cairo-&cairo-version;">
@@ -79,6 +79,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/cairo-&cairo-version;-upstream_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Cairo Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -97,19 +107,15 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gs"/>,
-      <xref linkend="gtk3"/>,
       <xref linkend="gtk-doc"/>,
       <xref linkend="libdrm"/>,
       <xref linkend="librsvg"/>,
       <xref linkend="libxml2"/>,
       <xref linkend="lzo"/>,
-      <xref linkend="mesa"/>,
       <xref linkend="poppler"/>,
       <xref linkend="valgrind"/>,
-      &gtk2;,
-      <ulink url="https://github.com/rillian/jbig2dec/">jbig2dec</ulink>,
-      <ulink url="https://www.freedesktop.org/wiki/Software/libspectre/">libspectre</ulink>, and
-      <ulink url="https://skia.org/">Skia</ulink>
+      &gtk2;, and
+      <ulink url="https://www.freedesktop.org/wiki/Software/libspectre/">libspectre</ulink>
     </para>
 
     <note>
@@ -124,6 +130,12 @@
 
   <sect2 role="installation">
     <title>Installation of Cairo</title>
+
+    <para>
+      First, fix a bug that causes problems with printing PDF files:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../cairo-&cairo-version;-upstream_fixes-1.patch</userinput></screen>
 
     <para>
       Install <application>Cairo</application> by running the following

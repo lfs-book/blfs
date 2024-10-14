@@ -6,15 +6,15 @@
 
   <!ENTITY glib2-download-http "&gnome-download-http;/glib/&glib2-minor;/glib-&glib2-version;.tar.xz">
   <!ENTITY glib2-download-ftp  " ">
-  <!ENTITY glib2-md5sum        "4334211338220a165350d1c4a1597b0e">
+  <!ENTITY glib2-md5sum        "d101f1acab6805d4d6d3104e9634b8e3">
   <!ENTITY glib2-size          "5.3 MB">
-  <!ENTITY glib2-buildsize     "189 MB (add 22 MB for tests)">
-  <!ENTITY glib2-time          "0.9 SBU (add 0.4 SBU for tests; both using parallelism=4)">
+  <!ENTITY glib2-buildsize     "197 MB (add 22 MB for tests)">
+  <!ENTITY glib2-time          "0.7 SBU (add 0.4 SBU for tests; both using parallelism=4)">
 
   <!ENTITY gobject-introspection-download-http
-    "&gnome-download-http;/gobject-introspection/1.80/gobject-introspection-&gobject-introspection-version;.tar.xz">
-  <!ENTITY gobject-introspection-md5sum        "ef1496a7a7abfcd31d25b3459ea86ebb">
-  <!ENTITY gobject-introspection-size          "1.0 MB">
+    "&gnome-download-http;/gobject-introspection/1.82/gobject-introspection-&gobject-introspection-version;.tar.xz">
+  <!ENTITY gobject-introspection-md5sum        "50beb465bc81f33395b5e0e3bbe364ec">
+  <!ENTITY gobject-introspection-size          "1.1 MB">
 ]>
 
 <sect1 id="glib2" xreflabel="GLib-&glib2-version;">
@@ -109,12 +109,12 @@
     </itemizedlist>
 
     <bridgehead renderas="sect3">GLib Dependencies</bridgehead>
-
+<!--
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend='packaging'/>
     </para>
-
+-->
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend='docutils'/>,
@@ -211,7 +211,9 @@ meson setup ..                  \
       --prefix=/usr             \
       --buildtype=release       \
       -D introspection=disabled \
-      -D man-pages=enabled      &amp;&amp;
+      -D glib_debug=disabled    \
+      -D man-pages=enabled      \
+      -D sysprof=disabled       &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -291,7 +293,7 @@ ninja</userinput></screen>
         <filename class='directory'>/usr</filename> hierarchy.
       </para>
     </warning>
-
+    <!-- I cannot reproduce these issues.
     <note>
       <para>
         If you have installed the glib-skip_warnings-1.patch and have 
@@ -300,6 +302,13 @@ ninja</userinput></screen>
       </para>
     </note>
 
+    <note>
+      <para>
+        If you have used the -D glib_debug=disabled option, 17 tests will 
+        fail.  
+      </para>
+    </note>
+    -->
     <para>
       To test the results, after having installed the packages, issue:
       <command>LC_ALL=C ninja test</command> as a non-&root; user.
@@ -315,6 +324,20 @@ ninja</userinput></screen>
     <para>
       <parameter>-D man-pages=enabled</parameter>: This switch causes the
       build to create and install the package man pages.
+    </para>
+
+    <para>
+      <parameter>-D glib_debug=disabled</parameter>: This switch causes the
+      build to not include some expensive checks for debugging in the built
+      programs and libraries.
+    </para>
+
+    <para>
+      <parameter>-D sysprof=disabled</parameter>: This switch disables the
+      tracing support for sysprof.  Remove this option if you want the
+      tracing support.  Note that if sysprof is not installed, removing
+      this option will cause the build system to download a copy of sysprof
+      from the Internet.
     </para>
 
   </sect2>

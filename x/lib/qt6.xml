@@ -9,10 +9,10 @@
 
   <!ENTITY qt6-download-http "&qt6-url;/qt-everywhere-src-&qt6-version;.tar.xz">
   <!ENTITY qt6-download-ftp  " ">
-  <!ENTITY qt6-md5sum        "06d35b47349c7c0a45710daad359e07b">
-  <!ENTITY qt6-size          "892 MB">
-  <!ENTITY qt6-buildsize     "37 GB (376 MB installed)">
-  <!ENTITY qt6-time          "12 SBU (using parallelism=8)">
+  <!ENTITY qt6-md5sum        "ce8676e8302d82c7e80ae0f1a316c132">
+  <!ENTITY qt6-size          "949 MB">
+  <!ENTITY qt6-buildsize     "44 GB (423 MB installed)">
+  <!ENTITY qt6-time          "13 SBU (using parallelism=8)">
 ]>
 
 <sect1 id="qt6" xreflabel="Qt-&qt6-version;">
@@ -151,8 +151,7 @@
     <para>
       The BLFS editors recommend installing <application>Qt6</application> in a
       directory other than <filename class="directory">/usr</filename>, i.e.
-      <filename class="directory">/opt/qt6</filename>.  This is needed
-      to avoid conflicts with Qt5. To do this, set the
+      <filename class="directory">/opt/qt6</filename>. To do this, set the
       following environment variable:
     </para>
 
@@ -227,23 +226,7 @@ ln -sfnv qt-&qt6-version; /opt/qt6</userinput></screen>
       <para>
         The BLFS editors do not recommend installing <application>Qt6</application>
         into the /usr hierarchy because it becomes difficult to find
-        components and to update to a new version.  There are also some programs
-        that conflict with those installed by Qt5.
-        <!--If you do want to install
-        <application>Qt5</application> in /usr, the directories need to
-        be specified explicitly.  In this case, set QT5PREFIX=/usr and add
-        the following to the configure arguments below:
-      </para>
-
-<screen role="nodump"><userinput>            -archdatadir    /usr/lib/qt6                \
-            -bindir         /usr/bin                    \
-            -plugindir      /usr/lib/qt6/plugins        \
-            -importdir      /usr/lib/qt6/imports        \
-            -headerdir      /usr/include/qt6            \
-            -datadir        /usr/share/qt6              \
-            -docdir         /usr/share/doc/qt6          \
-            -translationdir /usr/share/qt6/translations \
-            -examplesdir    /usr/share/doc/qt6/examples</userinput></screen>-->
+        components and to update to a new version.
       </para>
     </note>
 
@@ -271,7 +254,7 @@ fi</userinput></screen>
             -skip qt3d              \
             -skip qtquick3dphysics  \
             -skip qtwebengine       \
-            -W no-dev               &amp;&amp;
+            -no-feature-clang       &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>./configure -prefix $QT6PREFIX      \
@@ -285,7 +268,7 @@ ninja</userinput></screen>
             -skip qt3d              \
             -skip qtquick3dphysics  \
             -skip qtwebengine       \
-            -W no-dev               &amp;&amp;
+            -no-feature-clang       &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -434,6 +417,15 @@ EOF</userinput></screen>
       building the Qt Quick 3D Physics submodule. On 32-bit systems, this will
       cause the build process to fail with an inlining error in Qt6's bundled
       copy of the PhysX SDK.
+    </para>
+
+    <!-- https://wiki.linuxfromscratch.org/blfs/ticket/20435 -->
+    <para>
+      <parameter>-no-feature-clang</parameter>: This switch prevents Qt
+      from using <systemitem class='library'>libclang</systemitem>.  As
+      Qt isn't adapted yet for Clang 19.1.0 or later, using
+      <systemitem class='library'>libclang</systemitem> will cause a build
+      failure.
     </para>
 
 <!-- Auto

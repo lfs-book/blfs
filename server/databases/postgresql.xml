@@ -6,10 +6,10 @@
 
   <!ENTITY postgresql-download-http "https://ftp.postgresql.org/pub/source/v&postgresql-version;/postgresql-&postgresql-version;.tar.bz2">
   <!ENTITY postgresql-download-ftp  " ">
-  <!ENTITY postgresql-md5sum        "bdcc1e350b473c13d132d190c0c18499">
-  <!ENTITY postgresql-size          "24 MB">
-  <!ENTITY postgresql-buildsize     "225 MB (add 43 MB for tests)">
-  <!ENTITY postgresql-time          "0.8 SBU (with parallelism=4, add 0.2 SBU for tests)">
+  <!ENTITY postgresql-md5sum        "97601aa2d849252d51c1022960b0abfa">
+  <!ENTITY postgresql-size          "20 MB">
+  <!ENTITY postgresql-buildsize     "247 MB (add 86 MB for tests)">
+  <!ENTITY postgresql-time          "0.8 SBU (with parallelism=4, add 0.1 SBU for tests)">
 ]>
 
 <sect1 id="postgresql" xreflabel="PostgreSQL-&postgresql-version;">
@@ -31,7 +31,7 @@
       from the Berkeley Postgres database management system.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -124,8 +124,7 @@ useradd -c "PostgreSQL Server" -g postgres -d /srv/pgsql/data \
 
 <screen><userinput>sed -i '/DEFAULT_PGSOCKET_DIR/s@/tmp@/run/postgresql@' src/include/pg_config_manual.h &amp;&amp;
 
-./configure --prefix=/usr          \
-            --enable-thread-safety \
+./configure --prefix=/usr \
             --docdir=/usr/share/doc/postgresql-&postgresql-version; &amp;&amp;
 make</userinput></screen>
 
@@ -286,12 +285,14 @@ chown -Rv postgres:postgres /srv/pgsql /run/postgresql</userinput></screen>
       <filename class="directory">/run/postgresql</filename>.
     </para>
 
+ <!-- Removed in 17.0
     <para>
-      <parameter>--enable-thread-safety</parameter>: This switch makes the
+      <parameter>- -enable-thread-safety</parameter>: This switch makes the
       client libraries thread-safe by allowing concurrent threads in
       <filename class="libraryfile">libpq</filename> and ECPG programs to
       safely control their private connection handles.
     </para>
+-->
 
     <para>
       <option>--with-openssl</option>: builds the package  with support for

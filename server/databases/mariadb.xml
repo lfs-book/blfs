@@ -7,10 +7,10 @@
 
   <!ENTITY mariadb-download-http "https://downloads.mariadb.org/interstitial/mariadb-&mariadb-version;/source/mariadb-&mariadb-version;.tar.gz">
   <!ENTITY mariadb-download-ftp  " ">
-  <!ENTITY mariadb-md5sum        "ba7abfae7947893c5a5343180808b0cb">
-  <!ENTITY mariadb-size          "96 MB">
-  <!ENTITY mariadb-buildsize     "1.9 GB (415 MB installed)">
-  <!ENTITY mariadb-time          "4.8 SBU (with parallelism=8, add 0.3 SBU for tests)">
+  <!ENTITY mariadb-md5sum        "c19f97dc1ea3165fb282a8384155dc0a">
+  <!ENTITY mariadb-size          "103 MB">
+  <!ENTITY mariadb-buildsize     "2.1 GB (741 MB installed)">
+  <!ENTITY mariadb-time          "3.3 SBU (with parallelism=8, add 0.5 SBU for tests)">
 ]>
 
 <sect1 id="mariadb" xreflabel="MariaDB-&mariadb-version;">
@@ -32,7 +32,7 @@
       database management system.
     </para>
 
-    &lfs121_checked;
+    &lfs122_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,9 +70,9 @@
 
     <note>
       <para>
-        The installed size of MariaDB is 725 MB, but this can be
-        reduced by about 265 MB, if desired, by removing the <filename
-        class="directory">/usr/share/mysql/test</filename>
+        The installed size of MariaDB is 741 MB, but this can be
+        reduced by about 263 MB, if desired, by removing the <filename
+        class="directory">/usr/share/mariadb/test</filename>
         directory after installation.
       </para>
     </note>
@@ -120,10 +120,8 @@
       <ulink url="https://www.mruby.org/">mruby</ulink>,
       <ulink url="https://mariadb.com/kb/en/myrocks/">MyRocks</ulink>,
       <ulink url="https://github.com/google/snappy">Snappy</ulink>, and
-      <!--<ulink url="https://mariadb.com/kb/en/mariadb/tokudb/">TokuDB</ulink>, and-->
       <ulink url="https://zeromq.org/">ZeroMQ</ulink>
     </para>
-
 
   </sect2>
 
@@ -144,15 +142,9 @@
       user and group:
     </para>
 
-<screen role="root"><userinput>groupadd -g 40 mysql &amp;&amp;
-useradd -c "MySQL Server" -d /srv/mysql -g mysql -s /bin/false -u 40 mysql</userinput></screen>
-<!--
-    <para>
-      Fix a stack smashing error introduced by openssl-3:
-    </para>
+<screen role="root"><userinput>groupadd -g 40 mariadb &amp;&amp;
+useradd -c "MariaDB Server" -d /srv/mariadb -g mariadb -s /bin/false -u 40 mariadb</userinput></screen>
 
-<screen><userinput remap="pre">patch -Np1 -i ../mariadb-&mariadb-version;-openssl3_fix-1.patch</userinput></screen>
--->
     <para>
       Install <application>MariaDB</application> by running the
       following commands:
@@ -164,20 +156,20 @@ cd    build &amp;&amp;
 cmake -D CMAKE_BUILD_TYPE=Release                       \
       -D CMAKE_INSTALL_PREFIX=/usr                      \
       -D GRN_LOG_PATH=/var/log/groonga.log              \
-      -D INSTALL_DOCDIR=share/doc/mariadb-&mariadb-version;       \
-      -D INSTALL_DOCREADMEDIR=share/doc/mariadb-&mariadb-version; \
+      -D INSTALL_DOCDIR=share/doc/mariadb-&mariadb-version;        \
+      -D INSTALL_DOCREADMEDIR=share/doc/mariadb-&mariadb-version;  \
       -D INSTALL_MANDIR=share/man                       \
-      -D INSTALL_MYSQLSHAREDIR=share/mysql              \
-      -D INSTALL_MYSQLTESTDIR=share/mysql/test          \
+      -D INSTALL_MYSQLSHAREDIR=share/mariadb            \
+      -D INSTALL_MYSQLTESTDIR=share/mariadb/test        \
       -D INSTALL_PAMDIR=lib/security                    \
       -D INSTALL_PAMDATADIR=/etc/security               \
-      -D INSTALL_PLUGINDIR=lib/mysql/plugin             \
+      -D INSTALL_PLUGINDIR=lib/mariadb/plugin           \
       -D INSTALL_SBINDIR=sbin                           \
       -D INSTALL_SCRIPTDIR=bin                          \
-      -D INSTALL_SQLBENCHDIR=share/mysql/bench          \
-      -D INSTALL_SUPPORTFILESDIR=share/mysql            \
-      -D MYSQL_DATADIR=/srv/mysql                       \
-      -D MYSQL_UNIX_ADDR=/run/mysqld/mysqld.sock        \
+      -D INSTALL_SQLBENCHDIR=share/mariadb/bench        \
+      -D INSTALL_SUPPORTFILESDIR=share/mariadb          \
+      -D MYSQL_DATADIR=/srv/mariadb                     \
+      -D MYSQL_UNIX_ADDR=/run/mariadb/mariadb.sock      \
       -D WITH_EXTRA_CHARSETS=complex                    \
       -D WITH_EMBEDDED_SERVER=ON                        \
       -D SKIP_TESTS=ON                                  \
@@ -187,7 +179,7 @@ make</userinput></screen>
 
     <para>
       To test the results, issue: <command>make test</command>.
-      One test, test-connect, is known to fail.
+      Two tests, my_tzinfo and test-connect, are known to fail.
     </para>
 
     <note><para>
@@ -261,7 +253,7 @@ mv -v /usr/share/user_map.conf /etc/security</userinput></screen>
       <title>Config Files</title>
 
       <para>
-        <filename>/etc/mysql/my.cnf</filename> and
+        <filename>/etc/mariadb/my.cnf</filename> and
         <filename>~/.my.cnf</filename>
       </para>
 
@@ -270,7 +262,7 @@ mv -v /usr/share/user_map.conf /etc/security</userinput></screen>
       </indexterm>
 
       <indexterm zone="mariadb mariadb-config">
-        <primary sortas="e-etc-mysql-my.cnf">/etc/mysql/my.cnf</primary>
+        <primary sortas="e-etc-mariadb-my.cnf">/etc/mariadb/my.cnf</primary>
       </indexterm>
 
     </sect3>
@@ -279,26 +271,26 @@ mv -v /usr/share/user_map.conf /etc/security</userinput></screen>
       <title>Configuration Information</title>
 
       <para>
-        Create a basic <filename>/etc/mysql/my.cnf</filename>
+        Create a basic <filename>/etc/mariadb/my.cnf</filename>
         file using the following command as the <systemitem
         class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>install -v -dm 755 /etc/mysql &amp;&amp;
-cat &gt; /etc/mysql/my.cnf &lt;&lt; "EOF"
-<literal># Begin /etc/mysql/my.cnf
+<screen role="root"><userinput>install -v -dm 755 /etc/mariadb &amp;&amp;
+cat &gt; /etc/mariadb/my.cnf &lt;&lt; "EOF"
+<literal># Begin /etc/mariadb/my.cnf
 
 # The following options will be passed to all MySQL clients
 [client]
 #password       = your_password
 port            = 3306
-socket          = /run/mysqld/mysqld.sock
+socket          = /run/mariadb/mariadb.sock
 
 # The MySQL server
-[mysqld]
+[mariadb]
 port            = 3306
-socket          = /run/mysqld/mysqld.sock
-datadir         = /srv/mysql
+socket          = /run/mariadb/mariadb.sock
+datadir         = /srv/mariadb
 skip-external-locking
 key_buffer_size = 16M
 max_allowed_packet = 1M
@@ -317,25 +309,23 @@ server-id       = 1
 #bdb_max_lock = 10000
 
 # InnoDB tables are now used by default
-innodb_data_home_dir = /srv/mysql
-innodb_log_group_home_dir = /srv/mysql
+innodb_data_home_dir = /srv/mariadb
+innodb_log_group_home_dir = /srv/mariadb
 # All the innodb_xxx values below are the default ones:
 innodb_data_file_path = ibdata1:12M:autoextend
 # You can set .._buffer_pool_size up to 50 - 80 %
 # of RAM but beware of setting memory usage too high
-innodb_buffer_pool_size = 128M<!--
-This variable has been removed in version 10.2.2:
-innodb_additional_mem_pool_size = 2M-->
+innodb_buffer_pool_size = 128M
 innodb_log_file_size = 48M
 innodb_log_buffer_size = 16M
 innodb_flush_log_at_trx_commit = 1
 innodb_lock_wait_timeout = 50
 
-[mysqldump]
+[mariadbdump]
 quick
 max_allowed_packet = 16M
 
-[mysql]
+[mariadb]
 no-auto-rehash
 # Remove the next comment character if you are not familiar with SQL
 #safe-updates
@@ -352,10 +342,10 @@ sort_buffer_size = 20M
 read_buffer = 2M
 write_buffer = 2M
 
-[mysqlhotcopy]
+[mariadbhotcopy]
 interactive-timeout
 
-# End /etc/mysql/my.cnf</literal>
+# End /etc/mariadb/my.cnf</literal>
 EOF</userinput></screen>
 
       <para>
@@ -364,8 +354,8 @@ EOF</userinput></screen>
         class="username">root</systemitem> user):
       </para>
 
-<screen role="root"><userinput>mysql_install_db --basedir=/usr --datadir=/srv/mysql --user=mysql &amp;&amp;
-chown -R mysql:mysql /srv/mysql</userinput></screen>
+<screen role="root"><userinput>mariadb-install-db --basedir=/usr --datadir=/srv/mariadb --user=mariadb &amp;&amp;
+chown -R mariadb:mariadb /srv/mariadb</userinput></screen>
 
       <para>
         Further configuration requires that the
@@ -374,8 +364,8 @@ chown -R mysql:mysql /srv/mysql</userinput></screen>
         class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>install -v -m755 -o mysql -g mysql -d /run/mysqld &amp;&amp;
-mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
+<screen role="root"><userinput>install -v -m755 -o mariadb -g mariadb -d /run/mariadb &amp;&amp;
+mariadbd-safe --user=mariadb 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
 
       <para>
         A default installation does not set up a password for the
@@ -383,7 +373,7 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
         class="username">root</systemitem> user to set one.
       </para>
 
-<screen role="root"><userinput>mysqladmin -u root password</userinput></screen>
+<screen role="root"><userinput>mariadb-admin -u root password</userinput></screen>
 
       <para>
         Configuration of the server is now finished. Shut the server
@@ -391,7 +381,7 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
         class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>mysqladmin -p shutdown</userinput></screen>
+<screen role="root"><userinput>mariadb-admin -p shutdown</userinput></screen>
 
     </sect3>
 
@@ -401,9 +391,9 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
 
       <para>
         Install the
-        <phrase revision="sysv"><filename>/etc/rc.d/init.d/mysql</filename> init
+        <phrase revision="sysv"><filename>/etc/rc.d/init.d/mariadb</filename> init
         script</phrase>
-        <phrase revision="systemd"><filename>mysqld.service</filename>
+        <phrase revision="systemd"><filename>mariadb.service</filename>
         unit</phrase> included in the
         <xref linkend="bootscripts" revision="sysv"/>
         <xref linkend="systemd-units" revision="systemd"/> package as
@@ -412,12 +402,12 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
       </para>
 
       <indexterm zone="mariadb mariadb-init">
-        <primary sortas="f-mysql">mysql</primary>
+        <primary sortas="f-mariadb">mariadb</primary>
       </indexterm>
 
-<screen role="root" revision="sysv"><userinput>make install-mysql</userinput></screen>
+<screen role="root" revision="sysv"><userinput>make install-mariadb</userinput></screen>
 
-<screen role="root" revision="systemd"><userinput>make install-mysqld</userinput></screen>
+<screen role="root" revision="systemd"><userinput>make install-mariadb</userinput></screen>
 
       <note>
         <para>
@@ -462,15 +452,25 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
           wsrep_sst_mariabackup, wsrep_sst_mysqldump, and wsrep_sst_rsync
         </seg>
         <seg>
-          libmariadbclient.a, libmariadb.so, libmariadbd.so, libmysqlclient.a,
-          libmysqlclient_r.a (symbolic links to libmariadbclient.a),
-          libmysqld.{so,a}, libmysqlservices.a,
-          and several under /usr/lib/mysql/plugin/
+          libmariadb.a (symlink to libmariadbclient.a),
+          libmariadb.so (symlink to libmariadb.so.3),
+          libmariadbclient.a,
+          libmariadbd.a,
+          libmariadbd.so (symlink to libmariadbd.so.19), 
+          libmariadbd.so.19,
+          libmariadb.so.3,
+          libmysqlclient.a (symlink to libmariadbclient.a),
+          libmysqlclient.so (symlink to libmariadb.so.3),
+          libmysqlclient_r.a (symlink to libmariadbclient.a),
+          libmysqlclient_r.so (symlink to libmariadbclient.a),
+          libmysqld.a (symlink to libmariadbd.a),
+          libmysqld.so (symlink to libmariadbd.so.19),
+          libmysqlservices.a, and
+          about 70 modules under /usr/lib/mysql/plugin/
         </seg>
         <seg>
-          /etc/mysql,
           /usr/{include,lib,share}/mysql,
-          /usr/share/groonga{-normalizer-mysql}, and
+          /usr/share/groonga{,-normalizer-mysql}, and
           /usr/share/doc/mariadb-&mariadb-version;
         </seg>
       </seglistitem>
@@ -702,7 +702,7 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
         <listitem>
           <para>
             is used for testing aspects of the MySQL client API that cannot be
-            tested using mysqltest and its test language
+            tested using mariadb-test and its test language
           </para>
           <indexterm zone="mariadb mariadb-client-test-mariadb">
             <primary sortas="b-mariadb-client-test-mariadb">mariadb-client-test</primary>
@@ -751,7 +751,7 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
         <term><command>mariadbd-multi</command></term>
         <listitem>
           <para>
-            is designed to manage several mysqld processes that listen for
+            is designed to manage several mariadb processes that listen for
             connections on different Unix socket files and TCP/IP ports
           </para>
           <indexterm zone="mariadb mariadbd-multi-mariadb">
@@ -764,7 +764,7 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
         <term><command>mariadbd-safe</command></term>
         <listitem>
           <para>
-             is the recommended way to start a mysqld server on Unix
+             is the recommended way to start a mariadb server on Unix
              and NetWare
           </para>
           <indexterm zone="mariadb mariadbd-safe-mariadb">
@@ -980,8 +980,8 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
         <term><command>mariadb-test-embedded</command></term>
         <listitem>
           <para>
-            is similar to the <command>mysqltest</command> command but is built
-            with support for the libmysqld embedded server
+            is similar to the <command>mariadb-test</command> command but is built
+            with support for the libmariadbd embedded server
           </para>
           <indexterm zone="mariadb mariadb-test-embedded-mariadb">
             <primary sortas="b-mariadb-test-embedded-mariadb">mariadb-test-embedded</primary>
@@ -993,7 +993,7 @@ mysqld_safe --user=mysql 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen>
         <term><command>mariadb-tzinfo-to-sql</command></term>
         <listitem>
           <para>
-            loads the time zone tables in the mysql database
+            loads the time zone tables in the mariadb database
           </para>
           <indexterm zone="mariadb mariadb-tzinfo-to-sql-mariadb">
             <primary sortas="b-mariadb-tzinfo-to-sql-mariadb">mariadb-tzinfo-to-sql</primary>

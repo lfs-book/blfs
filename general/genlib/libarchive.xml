@@ -6,10 +6,10 @@
 
   <!ENTITY libarchive-download-http "https://github.com/libarchive/libarchive/releases/download/v&libarchive-version;/libarchive-&libarchive-version;.tar.xz">
   <!ENTITY libarchive-download-ftp  " ">
-  <!ENTITY libarchive-md5sum        "1bab4c1b443ecf4f23ff9881665e680a">
+  <!ENTITY libarchive-md5sum        "bb53692eefc96a73ca5322a54ab52b48">
   <!ENTITY libarchive-size          "5.2 MB">
-  <!ENTITY libarchive-buildsize     "42 MB (add 32 MB for tests)">
-  <!ENTITY libarchive-time          "0.4 SBU (add 0.6 SBU for tests)">
+  <!ENTITY libarchive-buildsize     "43 MB (add 32 MB for tests)">
+  <!ENTITY libarchive-time          "0.3 SBU (add 0.8 SBU for tests)">
 ]>
 
 <sect1 id="libarchive" xreflabel="libarchive-&libarchive-version;">
@@ -79,13 +79,9 @@
 -->
     <bridgehead renderas="sect3">libarchive Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="libxml2"/>
-    </para>
-
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="libxml2"/>,
       <xref linkend="lzo"/>, 
       <xref linkend="nettle"/>, and
       <xref linkend="pcre2"/>
@@ -100,7 +96,7 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static --without-expat &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -121,22 +117,14 @@ make</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
 
-    <!-- https://github.com/libarchive/libarchive/issues/2146 -->
     <para>
-      <parameter>--without-expat</parameter>: This switch disables using
-      expat for xar format support.  Due to a bug the xar reader will loop
-      infinitely if expat is used.  The upstream prefers libxml2 for xar
-      support anyway.
-    </para>
-<!--
-    <para>
-      <option>- -without-xml2</option>: This switch sets expat for xar archive
+      <option>--without-xml2</option>: This switch sets expat for xar archive
       format support instead of preferred libxml2 if both packages are installed.
     </para>
--->
+
     <para>
-      <option>--without-nettle</option>: This switch sets OpenSSL for crypto
-      support instead of preferred Nettle if both packages are installed.
+      <option>--with-nettle</option>: This switch sets Nettle for crypto
+      support instead of OpenSSL.
     </para>
 
   </sect2>

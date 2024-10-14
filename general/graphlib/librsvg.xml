@@ -6,10 +6,10 @@
 
   <!ENTITY librsvg-download-http "&gnome-download-http;/librsvg/&librsvg-minor;/librsvg-&librsvg-version;.tar.xz">
   <!ENTITY librsvg-download-ftp  " ">
-  <!ENTITY librsvg-md5sum        "8f954b5c25ffff602b4e62813c98c8c9">
-  <!ENTITY librsvg-size          "5.9 MB">
-  <!ENTITY librsvg-buildsize     "723 MB (17 MB installed), add 545 MB for tests">
-  <!ENTITY librsvg-time          "0.7 SBU (add 0.7 SBU for tests; both using parallelism=4)">
+  <!ENTITY librsvg-md5sum        "7f4ddb27f5fbede01bf4e12eb4c682c0">
+  <!ENTITY librsvg-size          "5.8 MB">
+  <!ENTITY librsvg-buildsize     "1.2 GB (16 MB installed), add 491 MB for tests">
+  <!ENTITY librsvg-time          "0.6 SBU (add 0.4 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="librsvg" xreflabel="librsvg-&librsvg-version;">
@@ -72,6 +72,7 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="cairo"/>,
+      <xref linkend="cargo-c"/>,
       <xref linkend="gdk-pixbuf"/>,
       <xref linkend="pango"/>, and
       <xref linkend="rust"/>
@@ -102,36 +103,34 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr    \
-            --enable-vala    \
-            --disable-static \
-            --docdir=/usr/share/doc/librsvg-&librsvg-version; &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
 
-    <!-- With some locales (zh_CN.UTF-8) 31 tests fail.  With LC_ALL=C only
-         one failure.
-         https://gitlab.gnome.org/GNOME/librsvg/-/issues/1021 -->
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+meson compile</userinput></screen>                                    
 
     <!-- Be sure to unset GLIB_LOG_LEVEL.  If set, it interferes with the 
-         tests. -->
+         tests. 
+
+         With 2.59.1 one test of 5 fails.
+     -->
 
     <para>
       To test the results, issue:
     </para>
 
-    <screen remap='test'><userinput>cargo update --precise 0.3.36 time &amp;&amp;
-LC_ALL=C make check -k</userinput></screen>
+    <screen remap='test'><userinput>meson test --print-errorlogs --no-rebuild</userinput></screen>
 
     <para>
-      All 68 tests should pass.
+      One test, C API tests, is known to fail.
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
-<screen role="root"><userinput>make DOC_INSTALL_DIR='$(docdir)' install</userinput></screen>
-
+<screen role="root"><userinput>meson install --no-rebuild </userinput></screen>
+<!--
     <note>
       <para>
         If you installed the package on to your system using a
@@ -140,17 +139,17 @@ LC_ALL=C make check -k</userinput></screen>
         command as the <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>gdk-pixbuf-query-loaders --update-cache</userinput></screen>
+<screen role="root"><userinput>gdk-pixbuf-query-loaders - -update-cache</userinput></screen>
     </note>
-
+-->
 
   </sect2>
-
+<!--
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
-      <parameter>--enable-vala</parameter>: This switch enables
+      <parameter>- -enable-vala</parameter>: This switch enables
       building of the Vala bindings. Remove this switch if you don't have
       <xref linkend="vala"/> installed.
     </para>
@@ -165,25 +164,25 @@ LC_ALL=C make check -k</userinput></screen>
     </para>
 
     <para>
-      <command>cargo update --precise=0.3.36 time</command>: This updates
+      <command>cargo update - -precise=0.3.36 time</command>: This updates
       the <filename>Cargo.lock</filename> file to refer to version 0.3.36
       of the time crate for the test suite.  Originally it refers to
       version 0.3.34, which fails to build with Rustc-1.80.0 or later.
     </para>
 
     <para>
-      <option>--disable-introspection</option>: Use this switch if you have
+      <option>- -disable-introspection</option>: Use this switch if you have
       not installed <application>Gobject Introspection</application>.
     </para>
 
     <para>
-      <option>--disable-gtk-doc</option>: This switch prevents building
+      <option>- -disable-gtk-doc</option>: This switch prevents building
       the API documentation, even if <xref linkend="gi-docgen"/> (despite
       the name of the option) is available.
     </para>
 
   </sect2>
-
+-->
   <sect2 role="content">
     <title>Contents</title>
 
@@ -203,8 +202,6 @@ LC_ALL=C make check -k</userinput></screen>
         <seg>
           /usr/include/librsvg-2.0 and
           /usr/share/doc/librsvg-&librsvg-version;
-<!--      /usr/share/gtk-doc/html/rsvg-2.0 not built with
-               current instructions (needs gi-docgen)-->
         </seg>
       </seglistitem>
     </segmentedlist>

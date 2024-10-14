@@ -6,10 +6,10 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  " ">
-  <!ENTITY mesa-md5sum        "0f4de2192e63b438637b98937ac85a10">
+  <!ENTITY mesa-md5sum        "e3a195842c5cfbfb7234ed45f70af787">
   <!ENTITY mesa-size          "28 MB">
-  <!ENTITY mesa-buildsize     "825 MB (with docs, add 496 MB for tests)">
-  <!ENTITY mesa-time          "4.1 SBU (with docs; add 1.4 SBU for tests; both with parallelism=4)">
+  <!ENTITY mesa-buildsize     "959 MB (with docs, add 538 MB for tests)">
+  <!ENTITY mesa-time          "3.0 SBU (with docs; add 1.0 SBU for tests; both with parallelism=4)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
@@ -78,7 +78,7 @@
       <listitem>
         <para>
           Recommended patch:
-          <ulink url="&patch-root;/mesa-add_xdemos-2.patch"/>
+          <ulink url="&patch-root;/mesa-add_xdemos-3.patch"/>
           (installs 2 demo programs for testing Mesa - not needed if you
           install the <ulink url="https://archive.mesa3d.org/demos/">
           mesa-demos</ulink> package)
@@ -91,8 +91,9 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="xorg7-lib"/>,
-      <xref linkend="libdrm"/>, and
-      <xref linkend="Mako"/>
+      <xref linkend="libdrm"/>,
+      <xref linkend="Mako"/>, and
+      <xref linkend="PyYAML"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -120,9 +121,8 @@
         </listitem>
         <listitem>
           <para>
-            <xref linkend="llvm"/> (required for the r300, r600, and radeonsi
-            drivers, and the LLVMpipe software rasterizer which can make the
-            swrast driver much faster)
+            <xref linkend="llvm"/> (required for the llvmpipe, r300, r600,
+            and radeonsi drivers)
           </para>
         </listitem>
         <listitem>
@@ -184,8 +184,8 @@
         Nvidia.  See the Command Explanations for
         <parameter>-D gallium-drivers=auto</parameter> below to
         see what options are available for your specific video hardware (or
-        emulated video hardware).  You should probably add the swrast option as
-        a backup driver.
+        emulated video hardware).  You should probably add the softpipe or
+        llvmpipe option as a backup driver.
       </para>
 
       <para>
@@ -290,8 +290,13 @@
       </para>
 
       <para>
-        For <literal>swrast</literal>, <option>CONFIG_DRM_VGEM</option>
-        is not strictly needed but recommended as an optimization.
+        For <literal>llvmpipe</literal> or <literal>softpipe</literal>,
+        <option>CONFIG_DRM_VGEM</option> is required or X clients may fail
+        to start with a cryptic message <computeroutput>Error: couldn't get
+        an RGB, Double-buffered visual</computeroutput>.  Strictly speaking,
+        it can be compiled as a module.  But the module will not be loaded
+        automatically, so it's more convenient to build it as a part of the
+        kernel image.
       </para>
     </note>
     <indexterm zone="mesa mesa-kernel">
@@ -308,7 +313,7 @@
     </para>
 
 <!--<screen><userinput>patch -Np1 -i ../mesa-&mesa-version;-add_xdemos-1.patch</userinput></screen>-->
-<screen><userinput>patch -Np1 -i ../mesa-add_xdemos-2.patch</userinput></screen>
+<screen><userinput>patch -Np1 -i ../mesa-add_xdemos-3.patch</userinput></screen>
 
    <!-- Note that freedreno, vc4, and virgl all need special support from
         libdrm - renodr
@@ -441,7 +446,7 @@ ninja</userinput></screen>
             for x86. With a comma-separated list, only a subset of these
             drivers will be built. If you precisely know which drivers you
             need, you can select them explicitly. For example,
-            <option>-D gallium-drivers=radeonsi,iris,swrast</option>.
+            <option>-D gallium-drivers=radeonsi,iris,llvmpipe</option>.
           </para>
         </listitem>
         <listitem>
@@ -483,10 +488,17 @@ ninja</userinput></screen>
         </listitem>
         <listitem>
           <para>
-             <literal>swrast</literal> (using CPU for 3D
+             <literal>llvmpipe</literal> (using CPU for 3D
              rasterization. Note that it's much slower than using a modern
              3D-capable GPU, so it should be only used if the GPU is not supported
-             by other drivers), 
+             by other drivers)
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+             <literal>softpipe</literal> (also using CPU for 3D
+             rasterization, but slower than llvmpipe. There is not much reason
+             to use it unless LLVM is not available)
           </para>
         </listitem>
         <listitem>
@@ -618,7 +630,8 @@ ninja</userinput></screen>
     <segmentedlist>
       <segtitle>Installed Programs</segtitle>
       <segtitle>Installed Libraries</segtitle><!-- in /usr/lib -->
-      <segtitle>Installed DRI Drivers</segtitle><!-- in /usr/lib/dri -->
+      <segtitle>Installed DRI Driver Stubs</segtitle><!-- in /usr/lib/dri -->
+      <segtitle>Installed VA-API Drivers</segtitle><!-- in /usr/lib/dri -->
       <segtitle>Installed VDPAU Drivers</segtitle><!-- in /usr/lib/vdpau -->
       <segtitle>Installed Vulkan Drivers</segtitle><!-- in /usr/lib -->
       <segtitle>Installed Directories</segtitle>
@@ -636,39 +649,40 @@ ninja</userinput></screen>
           libGLESv1_CM.so,
           libGLESv2.so,
           libgbm.so,
-          libglapi.so, and
+          libglapi.so,
+          libgallium-&mesa-version;.so, and
           libxatracker.so
         </seg>
         <seg>
-          <!-- d3dadapter9.so (optional)
-               I guess this is useless today, Wine applications use Vulkan
-               through libvkd3d, and new games with native Linux support
-               likely uses Vulkan directly.  -->
-          <!-- Begin gallium DRI drivers (*_dri.so) and VA-API drivers
-               (*_drv_video.so): this is the full set -->
+          <!-- Begin DRI driver stubs -->
+          libdril_dri.so and symlinks to it:
           crocus_dri.so,
           i915_dri.so,
           iris_dri.so,
           kms_swrast_dri.so,
           nouveau_dri.so,
-          nouveau_drv_video.so,
           r300_dri.so,
           r600_dri.so,
           r600_drv_video.so,
           radeonsi_dri.so,
-          radeonsi_drv_video.so,
           swrast_dri.so,
           virtio_gpu_dri.so,
-          virtio_gpu_drv_video.so,
           vmwgfx_dri.so, and
           zink_dri.so
-          <!-- End DRI Drivers -->
+          <!-- End DRI driver stubs -->
+        </seg>
+        <seg>
+          <!-- Begin VA-API drivers -->
+          nouveau_drv_video.so,
+          radeonsi_drv_video.so, and
+          virtio_gpu_drv_video.so,
+          <!-- End VA-API drivers -->
         </seg>
         <seg>
           <!-- Begin VDPAU drivers -->
           libvdpau_nouveau.so,
-          libvdpau_r600.so, and
-          libvdpau_radeonsi.so
+          libvdpau_r600.so,
+          libvdpau_radeonsi.so, and
           libvdpau_virtio_gpu.so
           <!-- End VDPAU drivers -->
           (Many of these drivers are hard-linked).
@@ -720,6 +734,16 @@ ninja</userinput></screen>
           <indexterm zone="mesa glxinfo">
             <primary sortas="b-glxinfo">glxinfo</primary>
           </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libdril_dri">
+        <term><filename class='libraryfile'>libdril_dri.so</filename></term>
+        <listitem>
+          <para>
+            is a stub allowing Xorg server to co-operate with the Gallium3D
+            drivers
+          </para>
         </listitem>
       </varlistentry>
 
@@ -782,6 +806,15 @@ ninja</userinput></screen>
           <indexterm zone="mesa libGL">
             <primary sortas="c-libGL">libGL.so</primary>
           </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libgallium">
+        <term><filename class='libraryfile'>libgallium-&mesa-version;.so</filename></term>
+        <listitem>
+          <para>
+            contains all the Gallium3D drivers
+          </para>
         </listitem>
       </varlistentry>
 

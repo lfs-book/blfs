@@ -27,7 +27,7 @@
     and QML. They implement the KDE Display Environment (Plasma).
   </para>
 
-  &lfs121_checked;
+  &lfs122_checked;
 
   <para>
     The instructions below build all of the Plasma packages in one
@@ -260,8 +260,23 @@ EOF</userinput></screen>
           </listitem>
           <listitem>
             <para>
-              The plasma-browser-integration and krdp-6.1.4.tar.xz packages are
-              only used by plasma-meta which is not installed by BLFS.
+              The plasma-browser-integration package is designed to implement
+              browser integration for Plasma into Mozilla Firefox and Google
+              Chrome. The package does build, but is only useful if you want
+              these browsers to be integrated into the shell in a way that lets
+              you see (and control) downloads from Plasma's notifications area,
+              as well as allowing you to search browser history in the KDE
+              Runner. Note that you must also install a browser extension for
+              this to work. For more details, see
+              <ulink url="https://community.kde.org/Plasma/Browser_Integration">
+              the KDE Plasma wiki page about browser integration.</ulink>
+            </para>
+          </listitem>
+          <listitem>
+            <para>
+              The krdp package is used to allow an RDP server to be run while
+              using Plasma. This feature requires the 2.x version of FreeRDP,
+              which is not in BLFS.
             </para>
           </listitem>
           <listitem>
@@ -270,7 +285,7 @@ EOF</userinput></screen>
             </para>
           </listitem>
           <listitem>
-            <para>:
+            <para>
               The plasma-mobile package provides phone functionality for Plasma.
             </para>
           </listitem>
@@ -314,7 +329,6 @@ EOF</userinput></screen>
     file=$(echo $line | cut -d" " -f2)
 
     pkg=$(echo $file|sed 's|^.*/||')          # Remove directory
-    packagedir=$(echo $pkg|sed 's|\.tar.*||') # Package directory
 
     tar -xf $file
     pushd $packagedir
