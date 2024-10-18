@@ -107,29 +107,26 @@
 cd    build &amp;&amp;
 
 meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
-meson compile</userinput></screen>                                    
+ninja</userinput></screen>
 
     <!-- Be sure to unset GLIB_LOG_LEVEL.  If set, it interferes with the 
          tests. 
 
-         With 2.59.1 one test of 5 fails.
+         With 2.59.1 one test of 5 fails. (I cannot see any failures here,
+         but using rustc-1.82.0.)
      -->
 
     <para>
       To test the results, issue:
     </para>
 
-    <screen remap='test'><userinput>meson test --print-errorlogs --no-rebuild</userinput></screen>
-
-    <para>
-      One test, C API tests, is known to fail.
-    </para>
+    <screen remap='test'><userinput>ninja test</userinput></screen>
 
     <para>
       Now, as the &root; user:
     </para>
 
-<screen role="root"><userinput>meson install --no-rebuild </userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 <!--
     <note>
       <para>
