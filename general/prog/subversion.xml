@@ -79,16 +79,6 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/subversion-&subversion-version;-upstream_fixes-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">Subversion Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -103,17 +93,6 @@
       <xref linkend="swig"/> (for regenerating the build system)
     </para>
 
-<!-- support for berkeley db is deprecated since 1.8
-    <note>
-      <para>
-        If you require the <application>Berkeley DB</application> back-end hooks
-        in <application>Subversion</application> to build or support BDB based
-        repositories, you must have <application>APR-util</application> linked to
-        the <application>Berkeley DB</application> library.
-      </para>
-    </note>
--->
-
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="apache"/>,
@@ -123,12 +102,9 @@
       <xref linkend="doxygen"/> (for generating HTML documentation),
       <xref linkend="gnome-keyring"/>,
       <xref linkend="libsecret"/>,
-<!--      <xref linkend="kdelibs"/> (for <ulink url="http://utils.kde.org/projects/kwalletmanager/">KWallet</ulink> support), -->
       <xref linkend="py3c"/> (for the python bindings, and tests),
       <xref linkend="python3"/> (with sqlite support for the tests),
-      <xref linkend="ruby"/>,
-      <!--<xref linkend="swig"/> (for building Perl, Python and Ruby bindings),-->
-      and
+      <xref linkend="ruby"/>, and
       <ulink url="https://git.netsurf-browser.org/libutf8proc.git/">UTF8proc</ulink>
     </para>
 
@@ -145,37 +121,6 @@
 
   <sect2 role="installation">
     <title>Installation of Subversion</title>
-<!--
-      <note>
-        <para>
-          This package may fail during the make phase when using multiple
-          processors.  If this occurs try continuing with
-          <emphasis>make -j1</emphasis> or redo the entire build process with
-          fresh sources using <emphasis>-j1</emphasis>.
-        </para>
-      </note>
--->
-
-    <para>
-      First, adapt some Python scripts to use python3:
-    </para>
-
-<screen><userinput remap="pre">grep -rl '^#!.*python$' | xargs sed -i '1s/python/&amp;3/'</userinput></screen>
-
-    <para>
-      Next, fix building this package with GCC 14:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../subversion-&subversion-version;-upstream_fixes-1.patch</userinput></screen>
-
-    <para>
-      After modifying the SWIG bindings like we did with the patch, the build
-      system must be regenerated so the bindings pick up the changes:
-    </para>
-
-<screen><userinput remap="pre">touch build/generator/swig/*.py &amp;&amp;
-mv -v build-outputs.mk{,.old}   &amp;&amp;
-./autogen.sh --release</userinput></screen>
 
     <para>
       Install <application>Subversion</application> by running the following
@@ -207,6 +152,7 @@ make</userinput></screen>
       included in <xref linkend="apache-ant"/> and must be downloaded
       separately. To build the Java bindings, issue the following command:
     </para>
+
     <para>
       <screen><command>make -j1 javahl</command></screen>
     </para>
@@ -216,13 +162,12 @@ make</userinput></screen>
       <application>Python</application>, or <application>Ruby</application>
       bindings, issue any of the following command:
     </para>
-    <para>
-      <screen><command>make swig-pl</command> # for <application>Perl</application>
+
+<screen><command>make swig-pl</command> # for <application>Perl</application>
 <command>make swig-py \
      swig_pydir=/usr/lib/python&python3-majorver;/site-packages/libsvn \
      swig_pydir_extra=/usr/lib/python&python3-majorver;/site-packages/svn</command> # for <application>Python</application>
 <command>make swig-rb</command> # for <application>Ruby</application></screen>
-    </para>
 
     <para>
       To test the results, issue: <command>make check</command>. Four tests in
