@@ -85,7 +85,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/>,
+      <xref linkend="gi-docgen"/>,
       <xref linkend="mitkrb"/>, and
       <xref linkend="valgrind"/>
       <!-- <ulink url="https://gitlab.com/accounts-sso/libaccounts-glib">libaccounts-glib</ulink>, and
@@ -124,10 +124,21 @@ cd    build &amp;&amp;
 meson setup                                            \
       --prefix=/usr                                    \
       --buildtype=release                              \
+      -D documentation=false                           \
       -D kerberos=false                                \
       -D google_client_secret=5ntt6GbbkjnTVXx-MSxbmx5e \
       -D google_client_id=595013732528-llk8trb03f0ldpqq6nprjp1s79596646.apps.googleusercontent.com \
       .. &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you've installed <xref linkend='gi-docgen'/> and you wish to
+      build and install the API documentation of this package, issue:
+    </para>
+
+<screen remap='doc'><userinput>meson configure -D documentation=true &amp;&amp;
+sed "s/project_name()/&amp; + '-' + meson.project_version()/" \
+    -i ../doc/meson.build &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -151,12 +162,6 @@ ninja</userinput></screen>
     <para>
       <parameter>-D google_*</parameter>: These switches set the
       BLFS OAuth ID and secret for Google services.
-    </para>
-
-    <para>
-      <option>-D gtk_doc=true</option>: Use this switch if you have
-      <xref linkend="gtk-doc" role="nodep"/> installed and you wish to generate
-      the API documentation.
     </para>
 
     <para>
