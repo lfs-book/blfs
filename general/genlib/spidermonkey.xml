@@ -188,22 +188,43 @@ cd    obj &amp;&amp;
 make</userinput></screen>
 
     <para>
+      If running the test suite, adapt it to be compatible with Python
+      3.13.0 or newer:
+    </para>
+
+    <screen remap='test'><userinput>sed 's/pipes/shlex/' -i ../js/src/tests/lib/results.py</userinput></screen>
+
+    <para>
       To run the SpiderMonkey test suite, issue:
-      <command>make -C js/src check-jstests
-      JSTESTS_EXTRA_ARGS="--timeout 300 --wpt=disabled"</command>.
-      It's recommended to redirect the output into a log.
-      <!-- recheck when ICU gets upgraded -->
+    </para>
+
+    <screen remap='test'><userinput>make -C js/src check-jstests \
+     JSTESTS_EXTRA_ARGS="--timeout 300 --wpt=disabled" | tee jstest.log</userinput></screen>
+
+    <para>
       Because we are building with system ICU, 45 tests
       (out of a total of more than 50,000) are known to fail.
+      The list of failed tests can be extracted via
+      <command>grep 'UNEXPECTED-FAIL' jstest.log</command>.
+      Pass the <option>-c</option> option to <command>grep</command> if
+      you only want the total number of failed tests.
+    </para>
+
+    <para>
       The test suite is executed with all CPU cores available: even in a
       cgroup with less cores assigned, it still attempts to spawn as many
       testing jobs as the number of <emphasis>all</emphasis> cores in the
       system; fortunately the kernel still won't run these jobs on cores
       not assigned to the cgroup so the CPU usage is still controlled.
     </para>
+
     <para>
-      To run the JIT test suite, issue: <command>make -C js/src
-      check-jit-test JITTEST_EXTRA_ARGS="--timeout 300"</command>.
+      To run the JIT test suite, issue:
+    </para>
+
+    <screen remap='test'><userinput>make -C js/src check-jit-test JSTESTS_EXTRA_ARGS="--timeout 300"</userinput></screen>
+
+    <para>
       Like the SpiderMonkey test suite, the number of test jobs is same as
       the number of all CPU cores in the system even if a cgroup is used. To
       make things worse, there are six tests which will use 3 GB each
@@ -214,9 +235,8 @@ make</userinput></screen>
       <option>-jN</option> after <option>--timeout 300</option> with N
       replaced by the number of parallel test jobs you want to start.  For
       example, if you have 16 GB system memory available and 8 CPU cores,
-      issue <command>make -C js/src check-jit-test
-      JITTEST_EXTRA_ARGS="--timeout=300 -j5"</command> to run the test with
-      5 parallel jobs so the memory usage won't exceed 15 GB.
+      use <option>JITTEST_EXTRA_ARGS="--timeout=300 -j5"</option> to run the
+      test suite with 5 parallel jobs so the memory usage won't exceed 15 GB.
       <!-- TL;DR: DO NOT REMOVE MEMORY USAGE NOTE W/O MY CONFIRMATION!
 
            "six tests": bug1782468-ptrdiff-veclen.js, it's ran with 6
