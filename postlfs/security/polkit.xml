@@ -155,7 +155,8 @@
     <title>Kernel Configuration</title>
 
     <para>
-      Some tests need user namespace.  If running the test suite, enable it:
+      Some tests need user namespace support.  If you are going to run the test
+      suite, enable the support and recompile the kernel if necessary:
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -180,12 +181,6 @@
 useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
         -g polkitd -s /bin/false polkitd</userinput></screen>
 
-    <para revision='sysv'>
-      First fix a build problem for sysV based systems:
-    </para>
-
-<screen revision="sysv"><userinput>sed -i '/systemd_sysusers_dir/s/^/#/' meson.build</userinput></screen>
-
     <para>
       Install <application>Polkit</application> by running the following
       commands:
@@ -204,11 +199,12 @@ meson setup ..                   \
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                    \
-      --prefix=/usr               \
-      --buildtype=release         \
-      -D man=true                 \
-      -D session_tracking=elogind \
+meson setup ..                     \
+      --prefix=/usr                \
+      --buildtype=release          \
+      -D man=true                  \
+      -D session_tracking=elogind  \
+      -D systemdsystemunitdir=/tmp \
       -D tests=true</userinput></screen>
 
     <para>
@@ -226,10 +222,17 @@ meson setup ..                    \
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
+
+    <para revision="sysv">
+      Remove some files that aren't useful on a SysV system as the &root; user:
+    </para>
+
+<screen role="root" revision="sysv"><userinput>rm -v /tmp/*.service                 &amp;&amp;
+rm -rf /usr/lib/{sysusers,tmpfiles}.d </userinput></screen>
 
   </sect2>
 
