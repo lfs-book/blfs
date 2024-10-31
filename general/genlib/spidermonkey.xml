@@ -148,18 +148,14 @@ tar: Exiting with failure status due to previous errors
       </para>
 
     </note>
-<!--
+
     <para>
-      The building system ships several internal copies of the Python 3
-      module <filename>six.py</filename>.  The shipped copies are too old
-      to work well with Python 3.12 or later.  Replace them with the
-      symlinks to <xref linkend='six'/> already installed on the system:
+      If you are using ICU-76.1 or later, adapt the build system to use the
+      correct library:
     </para>
 
-<screen><userinput>for i in $(find -name six.py); do
-  ln -sfv /usr/lib/python&python3-majorver;/site-packages/six.py $i;
-done</userinput></screen>
--->
+<screen><userinput remap="pre">sed -i 's/icu-i18n/icu-uc &amp;/' js/moz.configure</userinput></screen>
+
     <para>
       Install <application>SpiderMonkey</application> by running the following
       commands:
@@ -188,7 +184,7 @@ cd    obj &amp;&amp;
 make</userinput></screen>
 
     <para>
-      If running the test suite, adapt it to be compatible with Python
+      If you wish to run the test suite, adapt it to be compatible with Python
       3.13.0 or newer:
     </para>
 
