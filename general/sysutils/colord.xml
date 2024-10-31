@@ -104,7 +104,9 @@
     <para role="optional">
       <xref linkend="gnome-desktop"/> and
       <xref linkend="colord-gtk"/> (to build the example tools),
-      <xref linkend="docbook-utils"/>,
+      <xref linkend="docbook5"/>,
+      <xref linkend="docbook-xsl-ns"/>, and
+      <xref linkend="libxslt"/> (to build the man pages),
       <xref linkend="gtk-doc"/>,
       <xref linkend="libxslt"/>,
       <xref linkend="sane"/>,
@@ -170,6 +172,17 @@ meson setup ..                  \
       -D bash_completion=false  \
       -D docs=false             \
       -D man=false              &amp;&amp;
+ninja</userinput></screen>
+
+    <!-- See https://github.com/hughsie/colord/pull/175 for the sed -->
+    <para>
+      If both <xref linkend='docbook5'/>, <xref linkend='docbook-xsl-ns'/>,
+      and <xref linkend='libxslt'/> are installed, build the man pages:
+    </para>
+
+    <screen role='nodump'><userinput>sed '/class="manual"/i&lt;refmiscinfo class="source"&gt;Colord&lt;/refmiscinfo&gt;' \
+    -i ../man/*.xml &amp;&amp;
+meson configure -D man=true &amp;&amp;
 ninja</userinput></screen>
 
     <para>
