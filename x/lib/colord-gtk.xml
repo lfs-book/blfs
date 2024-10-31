@@ -84,7 +84,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="docbook-utils"/> and
+      <xref linkend="docbook5"/>,
+      <xref linkend="docbook-xsl-ns"/>,
+      <xref linkend="libxslt"/> (to build the man page), and
       <xref linkend="gtk-doc"/>
     </para>
 
@@ -114,6 +116,18 @@ meson setup --prefix=/usr       \
             -D docs=false       \
             -D man=false        \
             ..                  &amp;&amp;
+ninja</userinput></screen>
+
+    <!-- See https://github.com/hughsie/colord-gtk/pull/31 for the sed -->
+    <para>
+      If <xref linkend='docbook5'/>, <xref linkend='docbook-xsl-ns'/>,
+      and <xref linkend='libxslt'/> are installed, build the man page:
+    </para>
+
+    <screen role='nodump'><userinput>sed '/class="manual"/i \
+     &lt;refmiscinfo class="source"&gt;colord-gtk&lt;/refmiscinfo&gt;' \
+    -i ../man/*.xml &amp;&amp;
+meson configure -D man=true &amp;&amp;
 ninja</userinput></screen>
 
     <para>
