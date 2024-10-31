@@ -71,7 +71,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+    <!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
     <title>Optional Documentation</title>
@@ -91,7 +91,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+    -->
     <bridgehead renderas="sect3">Linux PAM Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -103,19 +103,16 @@
       <ulink url="https://github.com/linux-audit/audit-userspace">libaudit</ulink>, and
       <ulink url="https://github.com/openSUSE/libeconf">libeconf</ulink>
     </para>
-<!-- With 1.70, building the doc requires the namespaced version of
-     docbook-xsl, which is beyond BLFS.
 
-    <bridgehead renderas="sect4">Optional (To build the Documentation)</bridgehead>
+    <bridgehead renderas="sect4">Optional (To build the Documentation and Man Pages)</bridgehead>
     <para role="optional">
-      <xref linkend="DocBook"/>,
-      <xref linkend="docbook-xsl"/>,
-      <xref linkend="fop"/>,
-      <xref linkend="libxslt"/> and either
-      <xref linkend="elinks"/> or
-      <ulink url="&w3m-url;">W3m</ulink>
+      <xref linkend="docbook5"/>,
+      <xref linkend="docbook-xsl-ns"/>,
+      <xref linkend="fop"/> (for the PDF format),
+      <xref linkend="libxslt"/>, and
+      <xref linkend='lynx'/> (for the plain text format)
     </para>
--->
+
     <note>
       <para role="required">
         <xref role="runtime" linkend="shadow"/>
@@ -161,6 +158,20 @@
     <title>Installation of Linux PAM</title>
 
     <para>
+      If you've installed <xref linkend='docbook5'/>,
+      <xref linkend='docbook-xsl-ns'/>, <xref linkend='libxslt'/>, and
+      <xref linkend='lynx'/> and you wish to generate the plain text format
+      of the documentations, modify <filename>meson.build</filename> to
+      use <xref linkend='lynx'/> instead of W3m or Elinks those BLFS does
+      not provide:
+    </para>
+
+    <screen><userinput>sed -e "s/'elinks'/'lynx'/"                       \
+    -e "s/'-no-numbering', '-no-references'/      \
+          '-force-html', '-nonumbers', '-stdin'/" \
+    -i meson.build</userinput></screen>
+
+    <para>
       Compile and link <application>Linux PAM</application> by
       running the following commands:
     </para>
@@ -171,7 +182,7 @@ cd    build &amp;&amp;
 meson setup ..        \
   --prefix=/usr       \
   --buildtype=release \
-  -D docs=disabled    &amp;&amp;
+  -D docdir=/usr/share/doc/Linux-PAM-&linux-pam-version; &amp;&amp;
 
 ninja</userinput></screen>
 
@@ -239,12 +250,12 @@ chmod -v 4755 /usr/sbin/unix_chkpwd</userinput></screen>
     <para revision="sysv">Now remove an unneeded directory as &root;:</para>
 
 <screen role="root" revision="sysv"><userinput>rm -rf /usr/lib/systemd</userinput></screen>    
-
+<!--
     <para>If you downloaded the optional documentation, again as the 
     &root; user:</para>
 
 <screen role="root"><userinput>tar -C / -xvf ../../Linux-PAM-&linux-pam-docs-version;-docs.tar.xz</userinput></screen>
-
+-->
   </sect2>
 <!--
   <sect2 role="commands">
