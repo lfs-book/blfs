@@ -135,9 +135,16 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr    \
+<screen><userinput>autoreconf &amp;&amp;
+
+CPPFLAGS+=' -I /usr/include/python3.13' \
+./configure --prefix=/usr    \
             --disable-static \
             --with-default-dict=/usr/lib/cracklib/pw_dict &amp;&amp;
+
+sed -e 's/makeSuite/TestLoader().loadTestsFromTestCase/' \
+    -i ./python/test_cracklib.py                          &amp;&amp;
+
 make</userinput></screen>
 
     <para>
@@ -174,6 +181,12 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
 
 <screen remap="test"><userinput>make test</userinput></screen>
 
+    <para>
+      If desired, test the Python module with:
+    </para>
+
+<screen remap="test"><userinput>python3 -c 'import cracklib; cracklib.test()'</userinput></screen>
+
     <important>
       <para>
         If you are installing <application>CrackLib</application> after
@@ -193,6 +206,18 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
     <title>Command Explanations</title>
 
     <para>
+      <command>autoreconf</command>: This command resets the configuration
+      to recognize <application>Python-3.13</application>.
+    </para>
+
+    <para>
+      <envar>CPPFLAGS+=' -I /usr/include/python3.13'</envar>: 
+      This environment variable is needed to
+      allow the package to find the <application>Python-3.13</application> 
+      include files.
+    </para>
+
+    <para>
       <parameter>--with-default-dict=/usr/lib/cracklib/pw_dict</parameter>:
       This parameter forces the installation of the
       <application>CrackLib</application> dictionary to the
@@ -201,6 +226,12 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <command>sed ... ./python/test_cracklib.py</command>: This command 
+      uodates the build procedure for the Python module for 
+      <application>Python-3.13</application> and later..
+    </para>
 
     <para>
       <command>install -v -m644 -D ...</command>: This command creates the
@@ -246,9 +277,9 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
         <seg>cracklib-check, cracklib-format, cracklib-packer,
         cracklib-unpacker, cracklib-update, and create-cracklib-dict</seg>
 
-        <seg>libcrack.so</seg>
+        <seg>libcrack.so and _cracklib.so (Python module)</seg>
 
-        <seg>/usr/lib/cracklib, /usr/share/dict and /usr/share/cracklib</seg>
+        <seg>/usr/lib/cracklib, /usr/share/dict, and /usr/share/cracklib</seg>
       </seglistitem>
     </segmentedlist>
 
