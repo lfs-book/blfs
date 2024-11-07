@@ -6,10 +6,10 @@
 
   <!ENTITY gpgme-download-http "&gnupg-http;/gpgme/gpgme-&gpgme-version;.tar.bz2">
   <!ENTITY gpgme-download-ftp  " ">
-  <!ENTITY gpgme-md5sum        "01a8c05b409847e87daf0543e91f8c37">
+  <!ENTITY gpgme-md5sum        "b1089097da4cd0520e3fee850f5fcbff">
   <!ENTITY gpgme-size          "1.8 MB">
-  <!ENTITY gpgme-buildsize     "260 MB (with tests)">
-  <!ENTITY gpgme-time          "1.0 SBU (with all bindings and tests; with parallelism=4)">
+  <!ENTITY gpgme-buildsize     "334 MB (with tests)">
+  <!ENTITY gpgme-time          "1.1 SBU (with all bindings and tests; with parallelism=4)">
 ]>
 
 <sect1 id="gpgme" xreflabel="GPGME-&gpgme-version;">
@@ -130,27 +130,11 @@ fi</userinput></screen>
 
     <para>
       To test the results, you should have <xref linkend="gnupg2"/> installed
-      and remove the <option>--disable-gpg-test</option> above. If
-      <xref linkend='swig'/> is installed, it's necessary to adapt the
-      test suite to use the Python 3 binding just built as a wheel as well.
+      and remove the <option>--disable-gpg-test</option> above. 
       Issue:
     </para>
 
-<screen remap='test'><userinput>if swig -version > /dev/null; then
-  python3 -m venv testenv                                              &amp;&amp;
-  testenv/bin/pip3 install --no-index --find-links=dist --no-cache-dir \
-                           gpg                                         &amp;&amp;
-  sed '/PYTHON/s#run-tests.py#&amp; --python-libdir=/dev/null#'            \
-      -i lang/python/tests/Makefile
-fi &amp;&amp;
-
-make -k check PYTHONS= PYTHON=$PWD/testenv/bin/python3</userinput></screen>
-
-    <!-- https://dev.gnupg.org/T6778 -->
-    <para>
-      One test named <filename>t-quick-key-manipulation.py</filename> is
-      known to fail.
-    </para>
+<screen remap='test'><userinput>make -k check PYTHONS= PYTHON=$PWD/testenv/bin/python3</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
