@@ -332,9 +332,10 @@ EOF</userinput></screen>
     file=$(echo $line | cut -d" " -f2)
 
     pkg=$(echo $file|sed 's|^.*/||')          # Remove directory
+    srcdir=$(echo $pkg |sed 's|\.tar.*||')    # Source directory
 
     tar -xf $file
-    pushd $packagedir
+    pushd $srcdir
 <!--
        # Fix some build issues when generating some configuration files
        case $name in
