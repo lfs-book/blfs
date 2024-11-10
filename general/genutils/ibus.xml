@@ -6,10 +6,10 @@
 
   <!ENTITY ibus-download-http "https://github.com/ibus/ibus/archive/&ibus-version;/ibus-&ibus-version;.tar.gz">
   <!ENTITY ibus-download-ftp  " ">
-  <!ENTITY ibus-md5sum        "a7facee0030e0e6adb41ecfd94be9e61">
+  <!ENTITY ibus-md5sum        "3d685af1010d871bb858dc8a8aabb5c4">
   <!ENTITY ibus-size          "1.5 MB">
-  <!ENTITY ibus-buildsize     "55 MB (add 3 MB for tests)">
-  <!ENTITY ibus-time          "0.4 SBU (Using parallelism=4; add 0.8 SBU for tests)">
+  <!ENTITY ibus-buildsize     "55 MB (add 1 MB for tests)">
+  <!ENTITY ibus-time          "0.3 SBU (Using parallelism=4; add 1.0 SBU for tests)">
 <!-- Since UCD.zip can be used by gucharmap too, let's use the same version:
      This prevents version mismatches, since UCD.zip filename is not versioned.
 -->
@@ -119,13 +119,6 @@
   <sect2 role="installation">
     <title>Installation of ibus</title>
 
-<!--
-    <para>
-      If the optional Unicode Character Database was downloaded, install it
-      now as the <systemitem class="username">root</systemitem> user:
-    </para>
--->
-
     <para>
       First, install the Unicode Character Database as the &root; user:
     </para>
@@ -133,14 +126,6 @@
 <screen role="root"><userinput>mkdir -p               /usr/share/unicode/ucd &amp;&amp;
 unzip -o ../UCD.zip -d /usr/share/unicode/ucd</userinput></screen>
 
-<!--
-    <note>
-      <para>
-        Be sure to also remove the - -disable-unicode-dict in
-        the configure step below.
-      </para>
-    </note>
--->
     <para>
       Fix an issue with deprecated schema entries:
     </para>
@@ -193,7 +178,8 @@ make</userinput></screen>
            in a Mutter wayland session.  DO NOT REMOVE UNLESS TESTED
            IN WAYLAND.  -->
       The test named ibus-keypress will fail if running in a Wayland
-      session.
+      session. The xkb-latin-layouts test is also known to fail on 
+      some systems.
     </para>
 
     <para>
