@@ -137,6 +137,12 @@ useradd -c "Dovecot login user" -d /dev/null -u 43 \
 <screen><userinput remap="pre">patch -Np1 -i ../dovecot-&dovecot-version;-openssl3_fixes-1.patch</userinput></screen>
 
     <para>
+      Now, fix the package to build with icu-76.1 or later:
+    </para>
+
+<screen><userinput remap="pre">sed -i 's/\bPKG_CONFIG --libs "icu-i18n\b/&amp; icu-uc/' configure </userinput></screen>
+
+    <para>
       Next, apply a patch to fix a security vulnerability:
     </para>
 
