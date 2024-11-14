@@ -42,6 +42,25 @@
     <literal>Tag</literal> table.
   </para>
 
+  <important>
+    <para>
+      <anchor id='linux-firmware-symlink'
+              xreflabel='create the symlink and download its target'/>
+      Note that some required firmware files (and directories) are actually
+      symlinks to other files (or directories).  Those symlinks are not
+      stored in the Git repository, instead they are documented in the
+      <filename>WHENCE</filename> file.  Each line beginning with
+      <literal>Link:</literal> describes a symlink.  If you are downloading
+      an item you need and it's such a symlink (or in a directory which is
+      such a symlink), you need to create the symlink manually and download
+      the target.  On the other hand, if you want all the firmware files,
+      use the <command>./copy-firmware.sh /usr/lib/firmware</command>
+      command which will copy the firmware files and create all the
+      symlinks in the <filename>WHENCE</filename> file, instead of a plain
+      copy command like <command>cp -r * /usr/lib/firmware/</command>.
+    </para>
+  </important>
+
   <para>
     For some other firmware, particularly for Intel microcode and certain
     wifi devices, the needed firmware is not available in the above repository.
@@ -580,6 +599,10 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/amdgpu</userinput></screen>
         <filename class="directory">nvidia/</filename> directory of
         linux-firmware, copy it to
         <filename class="directory">/lib/firmware/nouveau</filename>.
+        Note that the required firmware file may be a symlink
+        (for example, the GSP firmware for RTX 4060 is just a symlink to the
+        GSP firmware directory for RTX 4090) and you'll need to
+        <xref linkend='linux-firmware-symlink'/>.
       </para>
       <para>
         If the firmware has not been made available in linux-firmware,
