@@ -13,14 +13,17 @@
   <title>About Firmware</title>
 
   <indexterm zone="postlfs-firmware">
-    <primary sortas="e-lib-firmware">/lib/firmware</primary>
+    <primary sortas="e-usr-lib-firmware">/usr/lib/firmware</primary>
   </indexterm>
 
   <para>
     On some recent PCs it can be necessary, or desirable, to load firmware
-    to make them work at their best. There is a directory, <filename
-    class="directory">/lib/firmware</filename>, where the kernel or kernel
-    drivers look for firmware images.
+    to make them work at their best. The kernel or kernel
+    drivers look for firmware images in <filename>/lib/firmware</filename>.
+    But in LFS <filename>/lib</filename> is a symlink to
+    <filename>usr/lib</filename>, so the directory containing the firmware
+    files is actually
+    <filename class='directory'>/usr/lib/firmware</filename>.
   </para>
 
   <para>
@@ -414,11 +417,11 @@ cd initrd</userinput></screen>
         If you are already booting with an initrd (see <xref
         linkend="initramfs"/>), you should run <command>mkinitramfs</command>
         again after putting the appropriate blob or container into <filename
-          class="directory">/lib/firmware</filename>. More precisely, put an
+          class="directory">/usr/lib/firmware</filename>. More precisely, put an
         intel blob in a <filename
-          class="directory">/lib/firmware/intel-ucode</filename> directory
+          class="directory">/usr/lib/firmware/intel-ucode</filename> directory
         or an AMD container in a <filename
-          class="directory">/lib/firmware/amd-ucode</filename> directory before
+          class="directory">/usr/lib/firmware/amd-ucode</filename> directory before
         running <command>mkinitramfs</command>.
         Alternatively, you can have both initrd on the same line, such as
         <userinput>initrd /microcode.img /other-initrd.img</userinput> (adapt
@@ -513,8 +516,8 @@ cd initrd</userinput></screen>
         download the required blobs then install them:
       </para>
 
-<screen><userinput>mkdir -pv /lib/firmware/radeon
-cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/radeon</userinput></screen>
+<screen><userinput>mkdir -pv /usr/lib/firmware/radeon
+cp -v &lt;YOUR_BLOBS&gt; /usr/lib/firmware/radeon</userinput></screen>
 
     <para>
       Building the kernel amdgpu driver as a module is recommended because
@@ -559,8 +562,8 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/radeon</userinput></screen>
       raven_ta.bin).
     </para>
 
-<screen><userinput>mkdir -pv /lib/firmware/amdgpu
-cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/amdgpu</userinput></screen>
+<screen><userinput>mkdir -pv /usr/lib/firmware/amdgpu
+cp -v &lt;YOUR_BLOBS&gt; /usr/lib/firmware/amdgpu</userinput></screen>
 
     <para>
       If disk space is not a problem, you could install all the current amdgpu
@@ -598,7 +601,7 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/amdgpu</userinput></screen>
         If the necessary firmware is available in the
         <filename class="directory">nvidia/</filename> directory of
         linux-firmware, copy it to
-        <filename class="directory">/lib/firmware/nouveau</filename>.
+        <filename class="directory">/usr/lib/firmware/nouveau</filename>.
         Note that the required firmware file may be a symlink
         (for example, the GSP firmware for RTX 4060 is just a symlink to the
         GSP firmware directory for RTX 4090) and you'll need to
@@ -614,8 +617,8 @@ cp -v &lt;YOUR_BLOBS&gt; /lib/firmware/amdgpu</userinput></screen>
 wget https://us.download.nvidia.com/XFree86/Linux-x86/340.32/NVIDIA-Linux-x86-340.32.run
 sh NVIDIA-Linux-x86-340.32.run --extract-only
 python3 extract_firmware.py
-mkdir -p /lib/firmware/nouveau
-cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
+mkdir -p /usr/lib/firmware/nouveau
+cp -d nv* vuc-* /usr/lib/firmware/nouveau/</userinput></screen>
 
     </sect3>
   </sect2>
@@ -625,11 +628,13 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
 
     <para>
       The kernel likes to load firmware for some network drivers, particularly
-      those from Realtek (the /lib/linux-firmware/rtl_nic/) directory, but
+      those from Realtek (the
+      <filename class='directory'>/usr/lib/linux-firmware/rtl_nic/</filename>
+      directory), but
       they generally appear to work without it. Therefore, you can boot the
       kernel, check dmesg for messages about this missing firmware, and if
       necessary download the firmware and put it in the specified directory in
-      <filename class="directory">/lib/firmware</filename> so that it will
+      <filename class="directory">/usr/lib/firmware</filename> so that it will
       be found on subsequent boots. Note that with current kernels this
       works whether or not the driver is compiled in or built as a module,
       there is no need to build this firmware into the kernel.
@@ -657,7 +662,7 @@ cp -d nv* vuc-* /lib/firmware/nouveau/</userinput></screen>
       <ulink url = 'https://kernel.org/pub/software/network/wireless-regdb/'/>.
       To install it, simply extract <filename>regulatory.db</filename> and
       <filename>regulatory.db.p7s</filename> from the tarball into
-      <filename class="directory">/lib/firmware</filename>. Note that either
+      <filename class="directory">/usr/lib/firmware</filename>. Note that either
       the <option>cfg80211</option> driver needs to be selected as a module
       for the <filename>regulatory.*</filename>
       files to be loaded, or those files need to be included as firmware into
@@ -741,7 +746,7 @@ cp -av -T --no-preserve=ownership sof-tplg \
       <xref linkend='initramfs'/> for details) including the firmware files.
       If you don't want to use either methods, you may include the firmware
       files in the kernel image itself.  Install the needed firmware files
-      into <filename class='directory'>/lib/firmware</filename> first, then
+      into <filename class='directory'>/usr/lib/firmware</filename> first, then
       set the following kernel configuration and rebuild the kernel:
     </para>
 
@@ -752,12 +757,12 @@ cp -av -T --no-preserve=ownership sof-tplg \
       Replace <replaceable>xx/aa.bin xx/bb.bin</replaceable>
       with a whitespace-separated list of paths to the needed firmware
       files, relative to
-      <filename class='directory'>/lib/firmware</filename>.  A method
+      <filename class='directory'>/usr/lib/firmware</filename>.  A method
       easier than manually typing the list (it may be long) is running the
       following command:
     </para>
 
-    <screen><userinput>echo CONFIG_EXTRA_FIRMWARE='"'$({ cd /lib/firmware; echo <replaceable>amdgpu/*</replaceable> })'"' &gt;&gt; .config
+    <screen><userinput>echo CONFIG_EXTRA_FIRMWARE='"'$({ cd /usr/lib/firmware; echo <replaceable>amdgpu/*</replaceable> })'"' &gt;&gt; .config
 make oldconfig</userinput></screen>
 
     <para>
