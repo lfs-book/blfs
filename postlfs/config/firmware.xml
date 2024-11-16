@@ -575,31 +575,44 @@ cp -v &lt;YOUR_BLOBS&gt; /usr/lib/firmware/amdgpu</userinput></screen>
       <title>Firmware for NVIDIA video chips</title>
 
       <para>
-        NVIDIA has released basic signed firmware for recent graphics chips,
-        but significantly after the chips and its own binary drivers were first
-        available. For other chips it has been necessary to extract the firmware
-        from the binary driver.
-      </para>
-      <para>
-        For more exact information about which chips need extracted firmware, see
-        <ulink url=
-          "https://nouveau.freedesktop.org/VideoAcceleration.html"/>.
+        Some NVIDIA GPUs from Kepler onwards (including all NVIDIA
+        GeForce RTX GPUs and GTX 9xx series onwards) require firmware
+        signed by NVIDIA to work.  For the Nouveau driver, NVIDIA has
+        released the signed firmware files in the
+        <filename class="directory">nvidia/</filename> directory of
+        linux-firmware.  Read
+        <ulink url='https://nouveau.freedesktop.org/CodeNames.html'>the
+        CodeNames page of the Nouveau wiki</ulink> to figure out the code
+        name of your NVIDIA GPU (for example, the code name of GeForce RTX
+        4060 Ti is AD106).  The directory for the firmware files you need
+        is named as the result converting the code name to lower case
+        (<filename class='directory'>ad106</filename> for the example).
+        The directory (or some of its contents) may be actually a symlink to
+        another directory (or some files in another directory) and you'll
+        then need to <xref linkend='linux-firmware-symlink'/> yourself
+        (for example, <filename class='directory'>ad106</filename>
+        is a symlink to <filename class='directory'>ad102</filename>).
       </para>
 
       <para>
-        If the necessary firmware is available in the
-        <filename class="directory">nvidia/</filename> directory of
-        linux-firmware, copy it to
-        <filename class="directory">/usr/lib/firmware/nouveau</filename>.
-        Note that the required firmware file may be a symlink
-        (for example, the GSP firmware for RTX 4060 is just a symlink to the
-        GSP firmware directory for RTX 4090) and you'll need to
-        <xref linkend='linux-firmware-symlink'/>.
+        If you can find the directory for your GPU in neither the
+        linux-firmware tree nor the <filename>WHENCE</filename> file
+        (as a symlink), it means either your GPU does not need any
+        firmware, or it's newer than Ada Lovelace (RTX 40xx series) and
+        the firmware for it isn't released yet (as at late 2024).
       </para>
+
       <para>
-        If the firmware has not been made available in linux-firmware,
-        for the old chips mentioned in the nouveau wiki link above
-        run the following commands:
+        For the NVIDIA GPUs from Tesla to Kepler, the Nouveau driver
+        requires some extra firmware to support video decoding acceleration.
+        These firmware files are not released by NVIDIA but they can be
+        extracted from the NVIDIA binary driver.
+        For more exact information about which chips need extracted
+        firmware, see
+        <ulink url=
+          "https://nouveau.freedesktop.org/VideoAcceleration.html">the
+        the VideoAcceleration of the Nouveau wiki</ulink>.
+        To extract and install these firmware files, issue:
       </para>
 
 <screen><userinput>wget https://anduin.linuxfromscratch.org/BLFS/nvidia-firmware/extract_firmware.py
