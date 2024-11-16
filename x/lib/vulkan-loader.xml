@@ -81,6 +81,13 @@
       <xref linkend="mesa"/> (for Vulkan drivers)
     </para>
 
+    <bridgehead renderas="sect4">Optional (for testing)</bridgehead>
+    <para role="optional">
+      <xref linkend="git"/>
+    </para>
+
+    &test-use-internet;
+
   </sect2>
 
   <sect2 role="installation">
@@ -109,10 +116,14 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr   \
 ninja</userinput></screen>
 
     <para>
-      This package does not come with a working test suite.
-      <!-- To run the tests, we need to follow a complex process to download a
-      customized copy of googletest.-->
+      To run the test suite, issue (note that the command will use
+      <xref linkend='git'/> to download a copy of GoogleTest for building
+      the test suite):
     </para>
+
+<screen remap='test'><userinput>cmake -D BUILD_TESTS=ON -D UPDATE_DEPS=ON .. &amp;&amp;
+ninja &amp;&amp;
+ninja test</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
