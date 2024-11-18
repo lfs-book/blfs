@@ -7,24 +7,24 @@
   <!ENTITY libreoffice-dl "https://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "b1e07cb05896a4468c178b432a5224ea">
-  <!ENTITY libreoffice-core-size          "267 MB">
+  <!ENTITY libreoffice-core-md5sum        "ff89c67ce6a49c966abbb2ac3ae8e26c">
+  <!ENTITY libreoffice-core-size          "268 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "0f5a693ad9e8c02491c62588ddb8697a">
+  <!ENTITY libreoffice-dict-md5sum        "ef20793b957741042d6eed7700b3a55f">
   <!ENTITY libreoffice-dict-size          "56 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "4872c4a2b7e7f782f586d22effc1ceba">
+  <!ENTITY libreoffice-help-md5sum        "9e9454ed0c228b4366f88892d99fa1e2">
   <!ENTITY libreoffice-help-size          "160 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum        "399180ccb44ca0042368d062741ee987">
-  <!ENTITY libreoffice-translations-size          "212 MB">
+  <!ENTITY libreoffice-translations-md5sum        "bd5007cf910c0e4c5c7a99f084ed4c8d">
+  <!ENTITY libreoffice-translations-size          "216 MB">
 
   <!-- full size remeasured for 7.0.0.3 -->
 
-  <!ENTITY libreoffice-buildsize  "11 GB including the additional files if downloaded during the build (772 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
+  <!ENTITY libreoffice-buildsize  "7.8 GB including the additional files if downloaded during the build (702 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
 
  <!-- Editors: many updates to poppler will break LO using system poppler until
       somebody is able to provide a patch or sed.  In these cases, please mark
@@ -336,22 +336,24 @@ cd libreoffice-&libreoffice-dlversion;</userinput></screen>
 <!-- keep a commented instruction if no patches are currently required -->
 
     <para>
-      First, fix build failures introduced by the latest Boost version:
+      First, fix build failures introduced by the latest Boost, icu, and poppler packages:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-boost_fixes-1.patch</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-boost_fixes-1.patch &amp;&amp;
+patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-icu76_fixes-1.patch &amp;&amp;
+patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-poppler_24.10-1.patch</userinput></screen>
 
     <para>
-      Next, fix a bug with linking to zlib:
+      Next, fix a bug with linking to zlib, 
+      fix a bug that prevents the install from failing, and 
+      prevent compression of man pages:
     </para>
 
-<screen><userinput remap="pre">sed -i '/icuuc \\/a zlib\\' writerperfect/Library_wpftdraw.mk</userinput></screen>
-
-    <para>
-      Next, fix a build failure with ICU-76+:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-icu76_fixes-1.patch</userinput></screen>
+<screen><userinput remap="pre">sed -i '/icuuc \\/a zlib\\'           writerperfect/Library_wpftdraw.mk &amp;&amp;
+sed -i "/distro-install-file-lists/d" Makefile.in                       &amp;&amp;
+sed -e "/gzip -f/d"   \
+    -e "s|.1.gz|.1|g" \
+    -i bin/distro-install-desktop-integration</userinput></screen>
 
     <para>
       If you have downloaded the dictionaries, help and translations tarballs,
@@ -426,13 +428,7 @@ esac</userinput></screen>
     system version, please keep it around commented out, so that it can be
     remembered to test it with higher versions of libreoffice. -->
 
-<screen><userinput>sed -e "/gzip -f/d"   \
-    -e "s|.1.gz|.1|g" \
-    -i bin/distro-install-desktop-integration &amp;&amp;
-
-sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
-
-./autogen.sh --prefix=$LO_PREFIX         \
+<screen><userinput>./autogen.sh --prefix=$LO_PREFIX         \
              --sysconfdir=/etc           \
              --with-vendor=BLFS          \
              --with-lang='fr en-GB'      \
@@ -442,7 +438,6 @@ sed -e "/distro-install-file-lists/d" -i Makefile.in &amp;&amp;
              --without-system-dicts      \
              --disable-dconf             \
              --disable-odk               \
-             --disable-mariadb-sdbc      \
              --enable-release-build=yes  \
              --enable-python=system      \
              --with-jdk-home=/opt/jdk    \
@@ -562,12 +557,12 @@ fi</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
+<!--
     <para>
       <command>sed -e ...</command>: The first sed prevents compression of the
       manual pages and the second one prevents the install from failing.
     </para>
-
+-->
     <para>
       <parameter>--with-vendor=BLFS</parameter>: This switch sets BLFS as
       the vendor which is mentioned when you click "About" from the Help menu
@@ -640,14 +635,17 @@ fi</userinput></screen>
       <application>LibreOffice</application> based application.
     </para>
 
+      <!-- Please check this in 24.8.1.x since MariaDB's connector was
+           updated in the 24.8 branch shortly after 24.8.0.3 was released.
+           At version 24.8.3.2 removing this switch did not cause a 
+           failure.
     <para>
-      <parameter>--disable-mariadb-sdbc</parameter>: This switch disables the
+      <parameter>- -disable-mariadb-sdbc</parameter>: This switch disables the
       MariaDB SDBC connector for Libreoffice Base. Leaving it enabled results
       in a build failure because of a problem linking to
       <xref linkend="mitkrb"/>.
-      <!-- Please check this in 24.8.1.x since MariaDB's connector was
-           updated in the 24.8 branch shortly after 24.8.0.3 was released.-->
     </para>
+    -->
 
     <para>
       <parameter>--enable-release-build=yes</parameter>: This switch enables a
