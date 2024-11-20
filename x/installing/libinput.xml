@@ -4,16 +4,16 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY libinput-version "1.26.2">
+  <!ENTITY libinput-version "1.27.0">
 
 <!--  <!ENTITY libinput-download-http "https://www.freedesktop.org/software/libinput/libinput-&libinput-version;.tar.xz">-->
   <!ENTITY libinput-download-http "https://gitlab.freedesktop.org/libinput/libinput/-/archive/&libinput-version;/libinput-&libinput-version;.tar.gz"
 >
   <!ENTITY libinput-download-ftp  " ">
-  <!ENTITY libinput-md5sum        "65bfce1b15c7b2375d4df4f390a9233f">
-  <!ENTITY libinput-size          "1.0 MB">
-  <!ENTITY libinput-buildsize     "11 MB (add 23 MB for documentation and 9.6 MB for tests)">
-  <!ENTITY libinput-time          "0.1 SBU (add 0.1 SBU for documentation and 4.9 SBU for tests)">
+  <!ENTITY libinput-md5sum        "aa0f5da110bf51715b8899548e7e43c2">
+  <!ENTITY libinput-size          "1.1 MB">
+  <!ENTITY libinput-buildsize     "14 MB (add 21 MB for documentation and 6 MB for tests)">
+  <!ENTITY libinput-time          "0.1 SBU (add 0.1 SBU for documentation and 0.2 SBU for tests)">
 ]>
 
   <sect2 id="libinput" xreflabel="libinput-&libinput-version;">
@@ -88,8 +88,12 @@
         <xref linkend="gtk3"/> (to build the GUI event viewer),
         <xref linkend="libunwind"/> (required for tests),
         <xref linkend="libwacom"/>,
-        <xref linkend="sphinx"/> (required to build documentation), and
-        <xref linkend="pyparsing"/> (for one non-root test)
+        <xref linkend="doxygen"/>,
+        <xref linkend="graphviz"/>,
+        <xref linkend="recommonmark"/>, and
+        <xref linkend="sphinx_rtd_theme"/> (required to build documentation),
+        <xref linkend="pyparsing"/> (for one non-root test), and
+        <xref linkend="pytest"/> (for another non-root test)
       </para>
 
     </sect3>
@@ -99,14 +103,14 @@
 
       <para>
         Although libinput works with the same kernel configuration used by <xref
-        linkend="libevdev"/>, its extensive test suite requires the presence of
+        linkend="libevdev"/>, its test suite requires the presence of
         <filename>/dev/uinput</filename>  (as well as both <xref linkend="valgrind"/>
         and <xref linkend="libunwind"/>).
       </para>
 
       <para>
-        If you wish to run the full tests, enable the following option in the kernel
-        configuration and recompile the kernel if necessary:
+        If you wish to run the standard test suite, enable the following option
+        in the kernel configuration and recompile the kernel if necessary:
       </para>
 
       <!-- Yes, "libevdev" is not a typo.  libinput test suite needs the
@@ -119,6 +123,9 @@
         runs.
       </para>
 
+<!-- This part doesn't appear to be necessary as libinput overhauled their test
+     suite system in 1.27.0 and above. Commenting it out. - Zeckma -->
+<!--
       <para>
         On an Xorg system you will also need to prevent the events generated
         during the test suite from interfering with your desktop.  Copy the
@@ -127,6 +134,7 @@
         and restart X. For further information see
         <ulink url="https://wayland.freedesktop.org/libinput/doc/&libinput-version;/test-suite.html">libinput test suite</ulink>.
       </para>
+-->
 
       <indexterm zone="libinput libinput-kernel">
         <primary sortas="d-libinput">libinput</primary>
@@ -155,16 +163,16 @@ ninja</userinput></screen>
 
       <note>
         <para>
-          If you want to run the full tests, remove -D tests from the
+          If you want to run the standard test suite, remove -D tests from the
           <command>meson</command> command above. Please read "kernel
           configuration for running the libinput test suite" (above).
         </para>
 
         <para>
-          If you have enabled the full tests, you can run the main tests
-          <emphasis>as the root user</emphasis> by executing:
-          <command>ninja test</command>. A very large number of tests will
-          be run. One test fails on wayland.
+          If you have enabled the standard test suite, you can run the main
+          tests <emphasis>as the root user</emphasis> by executing:
+          <command>ninja test</command>. There are 6 tests and all should
+          pass if you installed the optional dependencies.
         </para>
       </note>
 
@@ -204,8 +212,9 @@ cp -rv Documentation/* /usr/share/doc/libinput-&libinput-version;/html</userinpu
       <para>
         <parameter>-D tests=false</parameter>: This switch disables compilation of
         the main tests.  Even with the tests defined as false, you can still run
-        the first four minor tests, as a regular user, but one will be skipped if
-        <xref linkend="pyparsing"/> is not installed.
+        the first six minor tests as a regular user, but one will be skipped if
+        <xref linkend="pyparsing"/> is not installed, and another one if
+        <xref linkend="pytest"/> is not installed.
       </para>
 
       <para>
