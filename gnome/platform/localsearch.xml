@@ -188,22 +188,20 @@ meson setup --prefix=/usr                  \
             ..                             &amp;&amp;
 ninja</userinput></screen>
 
+    <para>
+      To test the results, issue (adjust the individual test timeout to a
+      value suitable for your machine, see the note above):
+    </para>
+
+<screen remap="test"><userinput>dbus-run-session env LC_ALL=C.UTF-8 TRACKER_TESTS_AWAIT_TIMEOUT=<replaceable>20</replaceable> \
+                 ninja test &amp;&amp;
+rm -rf ~/tracker-tests</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
     <screen role="root"><userinput>ninja install</userinput></screen>
-
-    <para>
-      To test the results, issue (adjust the individual test timeout to a
-      value suitable for your machine, see the note above):
-    </para>
-
-<screen remap="test"><userinput>meson configure -D debug=true &amp;&amp;
-dbus-run-session env LC_ALL=C.UTF-8 TRACKER_TESTS_AWAIT_TIMEOUT=<replaceable>20</replaceable> \
-                 ninja test &amp;&amp;
-rm -rf ~/tracker-tests</userinput></screen>
 
     <note>
       <para>
