@@ -121,7 +121,9 @@ ninja</userinput></screen>
       the test suite):
     </para>
 
-<screen remap='test'><userinput>cmake -D BUILD_TESTS=ON -D UPDATE_DEPS=ON .. &amp;&amp;
+<screen remap='test'><userinput>sed "s/'git', 'clone'/&amp;, '--depth=1', '-b', self.commit/" \
+    -i ../scripts/update_deps.py &amp;&amp;
+cmake -D BUILD_TESTS=ON -D UPDATE_DEPS=ON .. &amp;&amp;
 ninja &amp;&amp;
 ninja test</userinput></screen>
 
