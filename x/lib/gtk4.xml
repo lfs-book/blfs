@@ -151,8 +151,8 @@ ninja</userinput></screen>
       To run the tests, issue:
     </para>
 
-    <screen remap='test'><userinput>LIBGL_ALWAYS_SOFTWARE=1 \
-dbus-run-session meson test --setup x11 --no-suite needs-udmabuf</userinput></screen>
+    <screen remap='test'><userinput>env -u{GALLIUM_DRIVER,MESA_LOADER_DRIVER_OVERRIDE} LIBGL_ALWAYS_SOFTWARE=1 \
+dbus-run-session meson test --setup x11 --no-suite={headless,needs-udmabuf}</userinput></screen>
 
     <para>
       If you are in a Wayland session, replace the one occurrence of
@@ -171,9 +171,6 @@ dbus-run-session meson test --setup x11 --no-suite needs-udmabuf</userinput></sc
       the reference output, and the differences.  You may take a look at
       those images to ensure the differences are insignificant.
 
-      Two <literal>headless</literal> tests are known to fail without the
-      external dependency pydbus installed.
-      
       Many tests will fail if <filename>~/.config/gtk-4.0/settings.ini</filename> 
       exists and the gtk-modules line is not commented out.
 
@@ -304,10 +301,19 @@ dbus-run-session meson test --setup x11 --no-suite needs-udmabuf</userinput></sc
     </para>
 
     <para>
-      <parameter>--no-suite needs-udmabuf</parameter>: Disable the tests requiring
-      <filename class='devicefile'>/dev/udmabuf</filename>.  This file does
-      not exist if the feature is not enabled in the kernel configuration,
-      and even if it exists it cannot be accessed as unprivileged users.
+      <parameter>-u{GALLIUM_DRIVER,MESA_LOADER_DRIVER_OVERRIDE}</parameter>:
+      Unset variables those <envar>LIBGL_ALWAYS_SOFTWARE=1</envar> may
+      conflict with.
+    </para>
+
+    <para>
+      <parameter>--no-suite={headless,needs-udmabuf}</parameter>: Disable
+      the tests requiring the external dependency pydbus, and the tests
+      requiring the device node
+      <filename class='devicefile'>/dev/udmabuf</filename>.
+      The device node not exist if the feature is not enabled in the kernel
+      configuration, and even if it exists it cannot be accessed as
+      unprivileged users.
     </para>
   </sect2>
 
