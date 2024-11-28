@@ -86,10 +86,11 @@ exit</xsl:text>
         <xsl:when test="contains($patch.name, 'junit')">
           <xsl:text>/junit</xsl:text>
         </xsl:when>
-          <!-- x265 -->
+          <!-- x265 No longer needed
         <xsl:when test="contains($patch.name, 'x265')">
           <xsl:text>/x265</xsl:text>
         </xsl:when>
+-->
           <!-- node -->
         <xsl:when test="contains($patch.name, 'node')">
           <xsl:text>/node</xsl:text>
