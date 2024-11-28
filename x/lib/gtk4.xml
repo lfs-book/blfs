@@ -151,8 +151,11 @@ ninja</userinput></screen>
       To run the tests, issue:
     </para>
 
-    <screen remap='test'><userinput>env -u{GALLIUM_DRIVER,MESA_LOADER_DRIVER_OVERRIDE} LIBGL_ALWAYS_SOFTWARE=1 \
-dbus-run-session meson test --setup x11 --no-suite={headless,needs-udmabuf}</userinput></screen>
+    <screen remap='test'><userinput>
+env -u{GALLIUM_DRIVER,MESA_LOADER_DRIVER_OVERRIDE}          \
+    LIBGL_ALWAYS_SOFTWARE=1 VK_LOADER_DRIVERS_SELECT='lvp*' \
+    dbus-run-session meson test --setup x11                 \
+                                --no-suite={headless,needs-udmabuf}</userinput></screen>
 
     <para>
       If you are in a Wayland session, replace the one occurrence of
@@ -294,10 +297,12 @@ dbus-run-session meson test --setup x11 --no-suite={headless,needs-udmabuf}</use
     </para>
 
     <para>
-      <envar>LIBGL_ALWAYS_SOFTWARE=1</envar>: Force the test suite to use
-      the softpipe or llvmpipe driver from Mesa.  The test suite is so
-      sensitive that the minor differences caused by a different Mesa
-      driver can trigger test failures.
+      <envar>LIBGL_ALWAYS_SOFTWARE=1</envar>
+      and <envar>VK_LOADER_DRIVERS_SELECT='lvp*'</envar>: Force the test
+      suite to use the softpipe or llvmpipe Gallium driver and the lavapipe
+      Vulkan driver from Mesa.  The test suite is so sensitive that the
+      minor differences caused by a different Mesa driver can trigger test
+      failures.
     </para>
 
     <para>
