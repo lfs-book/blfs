@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "8d6a14f1c8d0ab03dffbc81f7a839aa7">
-  <!ENTITY rust-size          "210 MB">
+  <!ENTITY rust-md5sum        "cd5e72ac6b19f17788bb864aa0926761">
+  <!ENTITY rust-size          "338 MB">
   <!ENTITY rust-buildsize     "8.9 GB (298 MB installed); add 6.4 GB if running the tests">
   <!ENTITY rust-time          "6.7 SBU (including download time; add 6.2 SBU for tests, both using parallelism=8)">
 ]>
@@ -238,14 +238,19 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn us to do such a review.
-change-id = 129295
+change-id = 131075
 
 [llvm]
-# by default, rust will build for a myriad of architectures
-targets = "X86"
-
 # When using system llvm prefer shared libraries
 link-shared = true
+
+# Do not download pre-built LLVM, instead either use the system
+# LLVM or build LLVM from the shipped source.
+download-ci-llvm = false
+
+# If building the shipped LLVM source, only enable the x86 target
+# instead of all the targets supported by LLVM.
+targets = "X86"
 
 [build]
 # omit docs to save time and space (default is to build them)
@@ -302,26 +307,13 @@ EOF</userinput></screen>
       </para>
     </note>
 -->
-    <!-- https://github.com/rust-lang/rust/issues/128493
-         https://github.com/rust-lang/rust/issues/130018 will be fixed 1.83
-         https://github.com/rust-lang/rust/pull/130034   will be fixed 1.83 -->
+    <!-- https://github.com/rust-lang/rust/issues/128493 -->
     <para>
       Now remove some tests triggering a full rebuild of the Rust standard
-      library and compiler, remove a special case for supporting the
-      <command>cargo</command> test suite (that we don't run because it's
-      expected to be running in a Rustc git repository) but triggering a rebuild
-      of <command>cargo</command> when running
-      <command>python3 x.py install</command>, and prevent building one
-      component useless for BLFS:
+      library and compiler:
     </para>
 
-    <screen><userinput>sed '/MirOpt/d' -i src/bootstrap/src/core/builder.rs &amp;&amp;
-
-sed 's/!path.ends_with("cargo")/true/' \
-    -i src/bootstrap/src/core/build_steps/tool.rs &amp;&amp;
-
-sed 's/^.*build_wasm.*$/#[allow(unreachable_code)]&amp;return false;/' \
-    -i src/bootstrap/src/lib.rs</userinput></screen>
+    <screen><userinput>sed '/MirOpt/d' -i src/bootstrap/src/core/builder.rs</userinput></screen>
 
     <para>
       Compile <application>Rust</application> by running the following
@@ -354,18 +346,10 @@ python3 x.py build</userinput></screen>
 
 <screen remap="test"><userinput>python3 x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
 
+    <!-- https://github.com/rust-lang/rust/pull/131461 -->
     <para>
-      Four tests in the
-      <filename class='directory'>tests/run-make</filename> directory are
-      known to fail because they need targets not enabled
-      in the BLFS <xref linkend='llvm'/> configuration (nor the
-      <literal>llvm.targets</literal> in <filename>config.toml</filename>,
-      in case building with the shipped LLVM).  One test named
-      <literal>core::config::tests::download_ci_llvm</literal> is known to
-      fail.  And, one test named <filename>121444.rs</filename> is known
-      to fail with LLVM 19.1 or newer because a crash is fixed with the new
-      LLVM but the Rustc test harness does not have the concept of
-      unexpected passes.
+      One test named <literal>ci_rustc_if_unchanged_logic</literal>
+      is known to fail.
     </para>
 
 <!-- Let's just comment this out.  Nobody has tested on a system w/o
