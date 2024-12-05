@@ -6,8 +6,8 @@
 
   <!ENTITY gpgme-download-http "&gnupg-http;/gpgme/gpgme-&gpgme-version;.tar.bz2">
   <!ENTITY gpgme-download-ftp  " ">
-  <!ENTITY gpgme-md5sum        "b1089097da4cd0520e3fee850f5fcbff">
-  <!ENTITY gpgme-size          "1.8 MB">
+  <!ENTITY gpgme-md5sum        "ebba23b77af98c2f2a3565c9ee701b04">
+  <!ENTITY gpgme-size          "1.9 MB">
   <!ENTITY gpgme-buildsize     "334 MB (with tests)">
   <!ENTITY gpgme-time          "1.1 SBU (with all bindings and tests; with parallelism=4)">
 ]>
@@ -104,6 +104,18 @@
     <title>Installation of GPGME</title>
 
     <para>
+      At first, allow the build system to detect Python-&python3-majorver;.
+      Also prevent the build system from attaching the
+      <literal>-unknown</literal> suffix to the version string when it's
+      regenerated out of a Git
+      repository.  Then regenerate the build system;
+    </para>
+
+    <screen><userinput>sed 's/\[3.12\]/&amp;,[&python3-majorver;]/' -i configure.ac &amp;&amp;
+sed 's/-unknown//' -i autogen.sh           &amp;&amp;
+autoconf</userinput></screen>
+
+    <para>
       Install <application>GPGME</application> by running the following
       commands:
     </para>
@@ -134,7 +146,16 @@ fi</userinput></screen>
       Issue:
     </para>
 
-<screen remap='test'><userinput>make -k check PYTHONS= PYTHON=$PWD/testenv/bin/python3</userinput></screen>
+<screen remap='test'><userinput>if swig -version > /dev/null; then
+  python3 -m venv testenv                                              &amp;&amp;
+  testenv/bin/pip3 install --no-index --find-links=dist --no-cache-dir \
+                           gpg                                         &amp;&amp;
+  sed '/PYTHON/s#run-tests.py#&amp; --python-libdir=/dev/null#'            \
+      -i lang/python/tests/Makefile
+fi &amp;&amp;
+
+make -k check PYTHONS= PYTHON=$PWD/testenv/bin/python3</userinput></screen>
+
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
