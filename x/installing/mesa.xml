@@ -6,10 +6,10 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  " ">
-  <!ENTITY mesa-md5sum        "c245ce6fe6ef8db7b5e62eb754c54449">
-  <!ENTITY mesa-size          "29 MB">
-  <!ENTITY mesa-buildsize     "1.1 GB (with docs, add 541 MB for tests)">
-  <!ENTITY mesa-time          "3.5 SBU (with docs; add 1.2 SBU for tests; both with parallelism=4)">
+  <!ENTITY mesa-md5sum        "ab0c9a102e6713fca2b8c955b368fe57">
+  <!ENTITY mesa-size          "30 MB">
+  <!ENTITY mesa-buildsize     "1.3 GB (with docs, add 569 MB for tests)">
+  <!ENTITY mesa-time          "4.7 SBU (with docs; add 1.5 SBU for tests; both with parallelism=4)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
@@ -78,10 +78,19 @@
       <listitem>
         <para>
           Recommended patch:
-          <ulink url="&patch-root;/mesa-add_xdemos-3.patch"/>
+          <ulink url="&patch-root;/mesa-add_xdemos-4.patch"/>
           (installs 2 demo programs for testing Mesa - not needed if you
           install the <ulink url="https://archive.mesa3d.org/demos/">
           mesa-demos</ulink> package)
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Recommended patch:
+          <ulink url="&patch-root;/mesa-&mesa-version;-seizure_prevention-1.patch"/>
+          (prevents severe flashing when using
+          <application>Firefox</application> and
+          <application>Thunderbird</application> with the Zink gallium driver)
         </para>
       </listitem>
     </itemizedlist>
@@ -314,7 +323,14 @@
     </para>
 
 <!--<screen><userinput>patch -Np1 -i ../mesa-&mesa-version;-add_xdemos-1.patch</userinput></screen>-->
-<screen><userinput>patch -Np1 -i ../mesa-add_xdemos-3.patch</userinput></screen>
+<screen><userinput>patch -Np1 -i ../mesa-add_xdemos-4.patch</userinput></screen>
+
+    <para>
+      If you have downloaded the seizure prevention patch, apply it by running
+      the following command:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../mesa-&mesa-version;-seizure_prevention-1.patch</userinput></screen>
 
    <!-- Note that freedreno, vc4, and virgl all need special support from
         libdrm - renodr
@@ -415,6 +431,7 @@ ninja</userinput></screen>
      All 90 tests passed for me for 23.1.0 [bdubbs]
      89 Tests passed for me, 1 timeout on 23.1.8 [rahul]
      All 98 tests passed for me for 23.3.1 [bdubbs]
+     All 106 tests passed for me for 24.3.1 [zeckma]
 -->
 
     <para>
@@ -637,6 +654,12 @@ ninja</userinput></screen>
       linux options are auto (default), x11, wayland, surfaceless, and drm.
     </para>
 
+    <para>
+      <option>-D legacy-x11="..."</option> This parameter controls which legacy
+      X11 features get built-in support. Available linux options are none
+      (default) and dri2. These features are rarely needed anymore.
+    </para>
+
   </sect2>
 
   <sect2 role="content">
@@ -670,6 +693,7 @@ ninja</userinput></screen>
         </seg>
         <seg>
           <!-- Begin DRI driver stubs -->
+          dri_gbm.so,
           libdril_dri.so and symlinks to it:
           crocus_dri.so,
           i915_dri.so,
@@ -712,7 +736,7 @@ ninja</userinput></screen>
         <seg>
           <!-- $XORG_PREFIX/include/GL is installed by xorg-protos -->
           $XORG_PREFIX/{include/{EGL,GLES,GLES2,GLES3,KHR},
-          $XORG_PREFIX/lib/{dri,vdpau}},
+          $XORG_PREFIX/lib/{dri,gbm,vdpau}},
           $XORG_PREFIX/share/drirc.d (contains workarounds for various applications,
           particularly browsers and games),
           $XORG_PREFIX/share/vulkan,
@@ -749,6 +773,15 @@ ninja</userinput></screen>
           <indexterm zone="mesa glxinfo">
             <primary sortas="b-glxinfo">glxinfo</primary>
           </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="dri_gbm">
+        <term><filename class='libraryfile'>dri_gbm.so</filename></term>
+        <listitem>
+          <para>
+            is a stub providing the Graphics Buffer Manager DRI backend
+          </para>
         </listitem>
       </varlistentry>
 
