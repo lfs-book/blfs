@@ -88,16 +88,16 @@
   <sect2 role="installation">
     <title>Installation of ALSA Utilities</title>
 
-<!-- Fixed in 1.2.10
+
     <para>
-      This package provides its own implementation of
-      <literal>strlcpy</literal> and <literal>strlcat</literal> functions.
-      But they are provided by Glibc-2.38 now, so we need to remove the
-      custom implementation to avoid a conflict with the Glibc header:
+      First correct a problem in the distributed udev rules:
     </para>
 
-    <screen><userinput>echo '' > alsactl/init_sysdeps.c</userinput></screen>
--->
+<screen><userinput>sed -e 's/acp-pdm-dmic/acp-dmic-codec/'                   \
+    -e '/LABEL="alsa_restore_go"/s/go/std/'               \
+    -e '/^ENV.ALSA_CARD_NUMBER/i LABEL="alsa_restore_go"' \
+    -i alsactl/90-alsa-restore.rules.in</userinput></screen>
+
 
     <para>
       Install <application>ALSA Utilities</application> by
