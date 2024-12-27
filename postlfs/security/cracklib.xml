@@ -8,7 +8,7 @@
 
   <!ENTITY cracklib-download-http "&cracklib-url;/v&cracklib-version;/cracklib-&cracklib-version;.tar.xz">
   <!ENTITY cracklib-download-ftp  " ">
-  <!ENTITY cracklib-md5sum        "a99e0aef4c677df7063624690b634988">
+  <!ENTITY cracklib-md5sum        "e8ea2b86de774fc09fdd0f2829680b19">
   <!ENTITY cracklib-size          "456 KB">
   <!ENTITY cracklib-buildsize     "5.0 MB">
   <!ENTITY cracklib-time          "less than 0.1 SBU">
@@ -135,15 +135,10 @@
       commands:
     </para>
 
-<screen><userinput>autoreconf &amp;&amp;
-
-CPPFLAGS+=' -I /usr/include/python3.13' \
-./configure --prefix=/usr    \
-            --disable-static \
+<screen><userinput>CPPFLAGS+=' -I /usr/include/python3.13' \
+./configure --prefix=/usr               \
+            --disable-static            \
             --with-default-dict=/usr/lib/cracklib/pw_dict &amp;&amp;
-
-sed -e 's/makeSuite/TestLoader().loadTestsFromTestCase/' \
-    -i ./python/test_cracklib.py                          &amp;&amp;
 
 make</userinput></screen>
 
@@ -202,12 +197,12 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
+<!--
     <para>
       <command>autoreconf</command>: This command resets the configuration
       to recognize <application>Python-3.13</application>.
     </para>
-
+-->
     <para>
       <envar>CPPFLAGS+=' -I /usr/include/python3.13'</envar>: 
       This environment variable is needed to
