@@ -183,6 +183,17 @@ chmod -v      4750       /usr/libexec/dbus-daemon-launch-helper</userinput></scr
 
 <screen role="root" revision="sysv"><userinput>ln -sfv /var/lib/dbus/machine-id /etc</userinput></screen>
 
+    <para>
+      Finally, still as the &root; user, rename the documentation directory
+      (it only exists if the optional dependencies are satisfied for at
+      least one documentation format) to make it versioned:
+    </para>
+
+<screen role='root'><userinput>if [ -e /usr/share/doc/dbus ]; then
+  rm -rf /usr/share/doc/dbus-&dbus-version;    &amp;&amp;
+  mv -v  /usr/share/doc/dbus{,-&dbus-version;}
+fi</userinput></screen>
+
     <!-- Without dbus-python and pygobject3, only 39 tests are run and
          11 out of 39 are skipped.  With dbus-python and pygobject3
          installed, 238 tests are run and 37 out of 238 are skipped.  -->
