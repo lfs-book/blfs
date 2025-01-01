@@ -138,7 +138,11 @@ not ok 2 test-autolaunch
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr --buildtype=release --wrap-mode=nofallback .. &amp;&amp;
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            --wrap-mode=nofallback \</userinput><userinput revision='sysv'>
+            -D systemd=disabled    \</userinput><userinput>
+            .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -223,9 +227,11 @@ ninja test</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-wrap-nofallback.xml"/>
 
-    <para>
-      <parameter>--with-system-socket=/run/dbus/system_bus_socket</parameter>:
-      This parameter specifies the location of the system bus socket.
+    <para revision='sysv'>
+      <parameter>-D systemd=disabled</parameter>: Don't install systemd
+      support files even if
+      <systemitem class='library'>libsystemd</systemitem> exists (i.e.
+      the <xref linkend='elogind'/> package is installed).
     </para>
 
     <para>
