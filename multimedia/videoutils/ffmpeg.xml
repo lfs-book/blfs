@@ -80,6 +80,10 @@
           Required patch:
           <ulink url="&patch-root;/ffmpeg-&ffmpeg-version;-chromium_method-1.patch"/>
         </para>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/ffmpeg-&ffmpeg-version;-texinfo_fix-1.patch"/>
+        </para>
       </listitem>
     </itemizedlist>
 
@@ -177,11 +181,17 @@
 <screen><userinput remap="pre">patch -Np1 -i ../ffmpeg-&ffmpeg-version;-chromium_method-1.patch</userinput></screen>
 
     <para>
-      Now fix an issue with the latest version of <xref linkend="x265"/>:
+      Next, fix an issue caused by the latest version of <xref linkend="x265"/>:
     </para>
 
 <screen><userinput remap="pre">sed -e 's/X265_BUILD >= 210/(&amp;) \&amp;\&amp; (X265_BUILD &lt; 213)/' \
     -i libavcodec/libx265.c</userinput></screen>
+
+    <para>
+      Next, fix an issue caused by Texinfo 7.2:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../ffmpeg-&ffmpeg-version;-texinfo_fix-1.patch</userinput></screen>
 
     <para>
       Install <application>FFmpeg</application> by running the following
