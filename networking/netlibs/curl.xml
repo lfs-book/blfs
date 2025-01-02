@@ -6,10 +6,10 @@
 
   <!ENTITY curl-download-http "https://curl.se/download/curl-&curl-version;.tar.xz">
   <!ENTITY curl-download-ftp  " ">
-  <!ENTITY curl-md5sum        "49dd886ac84ed3de693464f78f1ee926">
+  <!ENTITY curl-md5sum        "25e65a5156ca4928060b61cb051813db">
   <!ENTITY curl-size          "2.6 MB">
-  <!ENTITY curl-buildsize     "46 MB (add 18 MB for tests)">
-  <!ENTITY curl-time          "0.2 SBU (with parallelism=4; add 4.9 SBU for tests (without valgrind, add 17 SBU with valgrind))">
+  <!ENTITY curl-buildsize     "52 MB (add 15 MB for tests)">
+  <!ENTITY curl-time          "0.2 SBU (with parallelism=4; add 4.9 SBU for tests (without valgrind, add 14 SBU with valgrind))">
 ]>
 
 <sect1 id="curl" xreflabel="cURL-&curl-version;">
@@ -144,6 +144,14 @@
 
   <sect2 role="installation">
     <title>Installation of cURL</title>
+
+    <para>
+      First, fix a regression that causes crashes in some applications due to
+      issues with eventfd:
+      <!-- https://github.com/curl/curl/issues/15725 -->
+    </para>
+
+<screen><userinput remap="pre">sed -i '198,200d' lib/asyn-thread.c</userinput></screen>
 
     <para>
       Install <application>cURL</application> by running the following
