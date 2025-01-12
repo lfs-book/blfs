@@ -6,13 +6,13 @@
 
   <!ENTITY opencv-download-http     "https://github.com/opencv/opencv/archive/&opencv-version;/opencv-&opencv-version;.tar.gz">
   <!ENTITY opencv-download-ftp      " ">
-  <!ENTITY opencv-md5sum            "adaf23e87339e6df6d50d68001138ccc">
+  <!ENTITY opencv-md5sum            "f35fbd46350cc677af13e198805b58f7">
   <!ENTITY opencv-size              "91 MB">
-  <!ENTITY opencv-buildsize         "698 MB (with opencv-contrib)">
-  <!ENTITY opencv-time              "3.0 SBU (using parallelism=8)">
+  <!ENTITY opencv-buildsize         "832 MB (with opencv-contrib)">
+  <!ENTITY opencv-time              "3.6 SBU (using parallelism=8)">
 
   <!ENTITY opencv-contrib-download "https://github.com/opencv/opencv_contrib/archive/&opencv-version;/opencv_contrib-&opencv-contrib-version;.tar.gz">
-  <!ENTITY opencv-contrib-md5sum   "5a4bc09177b74813c72648c117783dba">
+  <!ENTITY opencv-contrib-md5sum   "7dd4bc67eb67faff96ce71745a5e3abe">
   <!ENTITY opencv-contrib-size     "53 MB">
 ]>
 
@@ -169,6 +169,7 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr      \
       -D ENABLE_PRECOMPILED_HEADERS=OFF \
       -D CMAKE_SKIP_INSTALL_RPATH=ON    \
       -D BUILD_WITH_DEBUG_INFO=OFF      \
+      -D OPENCV_GENERATE_PKGCONFIG=ON   \
       -W no-dev  ..                     &amp;&amp;
 make</userinput></screen>
 
@@ -191,18 +192,26 @@ make</userinput></screen>
       href="../../xincludes/cmake-skip-install-rpath.xml"/>
 
     <para>
-      <parameter>-D WITH_XINE=ON</parameter>: This option instructs the make
+      <parameter>-D WITH_XINE=ON</parameter>: This switch instructs the make
       procedure to use <xref linkend="xine-lib"/>.
     </para>
 
     <para>
-      <parameter>-D ENABLE_PRECOMPILED_HEADERS=OFF</parameter>: This option
+      <parameter>-D ENABLE_PRECOMPILED_HEADERS=OFF</parameter>: This switch
       is needed for compatibility with gcc-6.1 and later.
     </para>
 
     <para>
+      <parameter>-D OPENCV_GENERATE_PKGCONFIG=ON</parameter>: This switch tells
+      the build system to generate a pkg-config file for other packages to
+      detect and link to the libraries installed by this package.
+    </para>
+
+    <para>
       <option>-D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib-&opencv-version;/modules</option>:
-      instructs the build system to build additional modules.
+      instructs the build system to build additional modules. Some packages in
+      BLFS (such as <xref linkend="gst-plugins-bad" role="nodep"/> need these
+      modules to build components that use OpenCV.
     </para>
 
   </sect2>
