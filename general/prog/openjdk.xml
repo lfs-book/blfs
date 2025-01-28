@@ -10,16 +10,16 @@
 
   <!ENTITY anduin-download           "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;">
 
-  <!ENTITY ojdk-md5sum               "c71d665970872a0571d97b23f8867531">
-  <!ENTITY ojdk-size                 "111 MB">
+  <!ENTITY ojdk-md5sum               "31ff1e9a086626610591efdff44cb7b3">
+  <!ENTITY ojdk-size                 "112 MB">
 
   <!ENTITY jtreg-version             "7.3.1+1">
   <!ENTITY jtreg-download            "&anduin-download;/jtreg-&jtreg-version;.tar.gz">
   <!ENTITY jtreg-md5sum              "0038551ecaf37d0cd99832217f79e56d">
   <!ENTITY jtreg-size                "9.0 MB">
 
-  <!ENTITY ojdk-bdsize               "3.7 GB (add 642 MB for tests)">
-  <!ENTITY ojdk-time                 "5.0 SBU with 4 jobs (add 34 SBU for tests with 4 jobs)">
+  <!ENTITY ojdk-bdsize               "3.7 GB (add 515 MB for tests)">
+  <!ENTITY ojdk-time                 "4.8 SBU with 4 jobs (add 33 SBU for tests with 4 jobs)">
 ]>
 
 <sect1 id="openjdk" xreflabel="OpenJDK-&openjdk-version;">
@@ -252,6 +252,7 @@
 
 <screen><userinput>unset JAVA_HOME                             &amp;&amp;
 unset CLASSPATH                             &amp;&amp;
+unset MAKEFLAGS                             &amp;&amp;
 bash configure --enable-unlimited-crypto    \
                --disable-warnings-as-errors \
                --with-stdc++lib=dynamic     \
@@ -262,9 +263,10 @@ bash configure --enable-unlimited-crypto    \
                --with-libjpeg=system        \
                --with-libpng=system         \
                --with-zlib=system           \
-               --with-version-build="&openjdk-build;"    \
+               --with-version-build="&openjdk-build;"     \
                --with-version-pre=""        \
                --with-version-opt=""        \
+               --with-jobs=<replaceable>$(nproc)</replaceable>         \
                --with-cacerts-file=/etc/pki/tls/java/cacerts &amp;&amp;
 make images</userinput></screen>
 
@@ -333,6 +335,9 @@ unset JT_JAVA</userinput></screen>
          23.0.1+11:
          for x86_64: passed: 6,859; failed: 84; error: 15
          for i686:   passed: 6,790; failed: 81; error: 16
+         23.0.2+7:
+         for x86_64: passed: 6,863; failed: 84; error: 15
+         for i686:   passed: 6,794; failed: 81; error: 16
     -->
 
     <para>
@@ -436,7 +441,7 @@ EOF</userinput></screen>
     </para>
 
     <para>
-      <option>--with-jobs=<replaceable>&lt;X&gt;</replaceable></option>:
+      <parameter>--with-jobs=<replaceable>$(nproc)</replaceable></parameter>:
       The <parameter>-j</parameter> passed to make does not work with make as
       invoked here. By default, the build system will use the number of
       CPUs - 1.
