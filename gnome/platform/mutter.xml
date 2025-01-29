@@ -108,8 +108,13 @@
       <!-- sorted as "d" instead of "p" -->
       <xref linkend="python-dbusmock"/> (required for tests),
       <!--<xref linkend="sysprof"/>,-->
-      <xref linkend="xorg-server"/> (for X11 sessions), and
-      <ulink url="&sysprof-url;">sysprof</ulink>
+      <xref linkend="xorg-server"/> (for X11 sessions),
+      <ulink url="&sysprof-url;">sysprof</ulink>,
+      <command>Xvfb</command> (from <xref linkend='xorg-server'/> or
+      <xref linkend='xwayland'/>),
+      <ulink url="&sources-anduin-http;/mutter/xvfb-run">xvfb-run</ulink>,
+      and <ulink url='https://gitlab.gnome.org/GNOME/zenity'>zenity</ulink>
+      (the X11 tests would only run with all of the last three)
     </para>
 
     <!-- NOTE: Mutter compiles shipped Cogl and Clutter for it's own
@@ -132,11 +137,11 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr       \
-            --buildtype=release \
-            -D tests=disabled   \
-            -D profiler=false   \
-            ..                  &amp;&amp;
+meson setup --prefix=/usr          \
+            --buildtype=release    \
+            -D clutter_tests=false \
+            -D profiler=false      \
+            ..                     &amp;&amp;
 ninja</userinput></screen>
 
 <!--
@@ -159,27 +164,9 @@ ninja</userinput></screen>
     -->
 
     <para>
-      The test suite requires an
-      external program called <command>xvfb-run</command>.  If you wish to run
-      the tests, you should download and install it before running
-      <command>meson</command>.
-
-      You can obtain it from <ulink
-      url="&sources-anduin-http;/mutter/xvfb-run">xvfb-run</ulink>, and install
-      it with executable permissions in <filename
-      class="directory">/usr/bin</filename>.  <command>xvfb-run</command> needs
-      <command>Xvfb</command> at runtime, and <command>Xvfb</command> can be
-      installed from either <xref linkend='xorg-server'/> or <xref
-      linkend='xwayland'/>.
-
-      You should also replace <parameter>-D tests=disabled</parameter> in the
-      <command>meson</command> command, with
-      <parameter>-D tests=enabled -D clutter_tests=false</parameter>.  The test
+      The test
       suite requires the mutter schema to be installed on the system, so it is
       better to run the tests after installing the package.
-    </para>
-
-    <para>
       You can also test basic functions of <application>Mutter</application>
       following <xref linkend='mutter-starting' role=','/> after installing it.
     </para>
@@ -189,14 +176,6 @@ ninja</userinput></screen>
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
-
-    <para>
-      If you wish to run the tests, remove the reference to
-      <application>Zenity</application> which is not a part of BLFS
-      from one test:
-    </para>
-
-<screen role='test'><userinput>sed 's/zenity --[a-z]*/gtk4-demo/' -i ../src/tests/x11-test.sh</userinput></screen>
 
     <para>
       Now run the test suite:
@@ -224,8 +203,11 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
-      <parameter>-D tests=disabled</parameter>: Prevents building the tests,
-      and removes a hard requirement on <command>xvfb-run</command>.
+      <parameter>-D clutter_tests=false</parameter>: Disable
+      the tests for the shipped
+      <application>Clutter</application> library. The
+      <application>Clutter</application> tests are known to
+      fail with <parameter>--buildtype=release</parameter>.
     </para>
 
     <para>
@@ -233,14 +215,6 @@ ninja</userinput></screen>
       without <application>Sysprof</application>.  Remove this option if
       you've installed <application>Sysprof</application> and want to
       analyze the rendering performance of <application>Mutter</application>.
-    </para>
-
-    <para>
-      <option>-D tests=enabled -D clutter_tests=false</option>: This builds all
-      of the tests except for the tests for the shipped
-      <application>Clutter</application> library. The
-      <application>Clutter</application> tests are known to
-      fail with <parameter>--buildtype=release</parameter>.
     </para>
 
     <para>
@@ -301,7 +275,7 @@ ninja</userinput></screen>
           mutter
         </seg>
         <seg>
-          libmutter-15.so and libmutter-test-15.so (optional)
+          libmutter-15.so and libmutter-test-15.so
         </seg>
         <seg>
           /usr/{lib,include,libexec/installed-tests,share/{,installed-tests}}/mutter-15
