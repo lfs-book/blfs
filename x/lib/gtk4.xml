@@ -159,21 +159,11 @@ ninja</userinput></screen>
       If you are in a Wayland session, replace the one occurrence of
       <literal>x11</literal> with <literal>wayland</literal>.
       
-      One test is known to fail if
-      <ulink url="https://gitlab.gnome.org/GNOME/cantarell-fonts">Cantrell fonts</ulink>
-      are not installed.
-
-      About a dozen of tests are known to fail with minor (mostly invisible)
-      differences between the render output and the shipped reference image.
-      Issue
-      <command>grep 'not ok' meson-logs/testlog-x11.txt -B3</command>
-      (use <filename>testlog-wayland.txt</filename> if testing in a Wayland
-      session) to list them and the image files showing the render output,
-      the reference output, and the differences.  You may take a look at
-      those images to ensure the differences are insignificant.
-
       Many tests will fail if <filename>~/.config/gtk-4.0/settings.ini</filename> 
       exists and the gtk-modules line is not commented out.
+
+      <!-- https://gitlab.gnome.org/GNOME/gtk/-/issues/7271 -->
+      7 tests are known to fail with libpng-1.6.45 or newer.
 
       Several other tests may fail for unknown reason.
       
@@ -187,33 +177,7 @@ ninja</userinput></screen>
       If not please restore them.  - xry111
       -->
     </para>
-<!-- [pierre]: 4.6.0, wayland:   727 OK; 2 Expected Fail;   1 Fail; 1  Skipped
-     [bdubbs]: 4.6.3, x11,       724 OK, 2 Expected Fail,  12 Fail, 1  Skipped
-     [pierre]: 4.6.6, wayland,   738 OK, 2 Expected Fail,   1 Fail, 1  Skipped
-     [pierre]: 4.6.7, wayland,   737 OK, 2 Expected Fail,   1 Fail, 1  Skipped, 1 Timeout
-     [bdubbs]: 4.6.7, x11,       758 OK, 2 Expected Fail,   9 Fail, 1  Skipped, 1 Timeout
-     [pierre]: 4.8.1, wayland,   765 OK, 2 Expected Fail,   2 Fail, 1  Skipped
-     [bdubbs]: 4.8.2, x11,       753 OK, 2 Expected Fail,  14 Fail, 1  Skipped
-     [pierre]: 4.8.3, wayland,   760 OK, 2 Expected Fail,   5 Fail, 3  Skipped
-     [bdubbs]: 4.10.0, x11,      701 OK, 0 Expected Fail,  15 Fail, 1  Skipped, 2 Timeout
-               above over ssh
-     [bdubbs]: 4.10.0, x11,      712 OK, 0 Expected Fail,   6 Fail, 1  Skipped, 0 Timeout
-               above on native x11
-     [bdubbs]: 4.12.0, x11,     1453 OK, 0 Expected Fail,   9 Fail, 5  Skipped, 0 Timeout
-               above on native x11
-     [bdubbs]: 4.12.1, x11,     1455 OK, 0 Expected Fail,   7 Fail, 5  Skipped, 0 Timeout
-               above on native x11
-     [renodr]: 4.12.4, x11,     1535 OK, 0 Expected Fail,   8 Fail, 5  Skipped, 0 Timeout
-               above on native X11
-     [rahul]:  4.14.1, wayland, 4174 OK, 0 Expected Fail,  81 Fail, 2  Skipped, 0 Timeout
-               above on native wayland (Plasma 6)
-     [renodr]: 4.14.2, wayland, 4211 OK, 0 Expected Fail,  43 Fail, 2  Skipped, 0 Timeout
-               above on wayland in GNOME
-     [renodr]: 4.14.3, wayland, 4250 OK, 0 Expected Fail,  42 Fail, 2  Skipped, 0 Timeout
-               above on wayland in GNOME
-     [renodr]: 4.14.5, x11,     4252 OK, 0 Expected Fail,  37 Fail, 13 Skipped, 0 Timeout
-               above on X11 in IceWM
-     [bdubbs]: 4.16.0, x11,     5896 OK, 0 Expected Fail, 212 Fail, 16 Skipped, 0 Timeout
+<!-- [bdubbs]: 4.16.0, x11,     5896 OK, 0 Expected Fail, 212 Fail, 16 Skipped, 0 Timeout
                above on X11 in XFCE.  Over ssh there were 24 Timeouts
      [xry111]: 4.16.1, x11,     6121 OK, 0 Expected Fail, 14 Fail, 16 Skipped, 0 Timeout
                above on X11 (Xwayland) in GNOME
@@ -230,6 +194,10 @@ ninja</userinput></screen>
                Over ssh there were 28 Timeouts.
      [zeckma]: 4.16.7, wayland, 5991 OK, 0 Expected Fail, 190 Fail, 2 Skipped, 1 Timeout
                above on wayland in Hyprland
+     [xry111]: 4.16.12, wayland,     6201 OK, 0 Expected Fail, 8 Fail, 2 Skipped
+               above on wayland in Weston
+     [xry111]: 4.16.12, wayland,     6186 OK, 0 Expected Fail, 9 Fail, 16 Skipped
+               above on X11 (Xwayland) in Weston
 -->
 
     <para>
