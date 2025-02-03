@@ -137,11 +137,11 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr          \
-            --buildtype=release    \
-            -D clutter_tests=false \
-            -D profiler=false      \
-            ..                     &amp;&amp;
+meson setup --prefix=/usr       \
+            --buildtype=release \
+            -D tests=false      \
+            -D profiler=false   \
+            ..                  &amp;&amp;
 ninja</userinput></screen>
 
 <!--
@@ -164,24 +164,12 @@ ninja</userinput></screen>
     -->
 
     <para>
-      The test
-      suite requires the mutter schema to be installed on the system, so it is
-      better to run the tests after installing the package.
-      You can also test basic functions of <application>Mutter</application>
-      following <xref linkend='mutter-starting' role=','/> after installing it.
+      If you want to run the test suite, ensure
+      <xref linkend='python-dbusmock'/> is installed and issue:
     </para>
 
-    <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
-    </para>
-
-<screen role="root"><userinput>ninja install</userinput></screen>
-
-    <para>
-      Now run the test suite:
-    </para>
-
-<screen role='test'><userinput>ninja test</userinput></screen>
+<screen role='test'><userinput>meson configure -D tests=true -D clutter_tests=false &amp;&amp;
+ninja test</userinput></screen>
 
     <para>
       The tests require an active X or wayland session.
@@ -192,7 +180,16 @@ ninja</userinput></screen>
       A few tests may fail depending on some system configuration.
       Don't make any mouse or keyboard input while the test suite is
       running or some tests may fail.
+      You can also test basic functions of <application>Mutter</application>
+      following <xref linkend='mutter-starting' role=','/> after installing
+      it.
     </para>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -201,6 +198,13 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <para>
+      <parameter>-D tests=false</parameter>: Allow building the package
+      without <xref linkend='python-dbusmock'/> installed.  It'll be
+      overridden with <command>meson configure</command> if running the
+      test suite.
+    </para>
 
     <para>
       <parameter>-D clutter_tests=false</parameter>: Disable
@@ -275,7 +279,7 @@ ninja</userinput></screen>
           mutter
         </seg>
         <seg>
-          libmutter-15.so and libmutter-test-15.so
+          libmutter-15.so and libmutter-test-15.so (optional)
         </seg>
         <seg>
           /usr/{lib,include,libexec/installed-tests,share/{,installed-tests}}/mutter-15
@@ -319,7 +323,7 @@ ninja</userinput></screen>
           <para>
             contains the <application>Mutter</application> test suite API
             functions; this library is only installed if the test suite of
-            this package is enabled and it is needed by
+            this package is run and it is needed by the
             <application>gnome-shell</application> test suite
           </para>
           <indexterm zone="mutter libmutter-test">
