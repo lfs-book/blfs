@@ -219,20 +219,21 @@ make</userinput></screen>
       in the 'timezone.js' suite are known to fail due to ICU-76.
     </para>
 
-    <screen remap='test'><userinput>make -C js/src check-jit-test JSTESTS_EXTRA_ARGS="--timeout 300"</userinput></screen>
+    <screen remap='test'><userinput>make -C js/src check-jit-test</userinput></screen>
 
     <para>
       Like the SpiderMonkey test suite, the number of test jobs is same as
       the number of all CPU cores in the system even if a cgroup is used. To
-      make things worse, there are six tests which will use 4 GB each
-      of system memory, so the peak memory usage may be up to 24 GB if the
-      number of cores is six or more.  Running the JIT test suite without
+      make things worse, some test cases can use up to 4 GB
+      of system memory, so the peak memory usage may be very large if your
+      CPU have multiple cores.  Running the JIT test suite without
       enough memory may invoke the kernel OOM killer and cause stability
       issues.  If you don't have enough system memory available, append
-      <option>-jN</option> after <option>--timeout 300</option> with N
-      replaced by the number of parallel test jobs you want to start.  For
-      example, if you have 15 GB system memory available and 8 CPU cores,
-      use <option>JITTEST_EXTRA_ARGS="--timeout=300 -j3"</option> to run the
+      <option>JITTEST_EXTRA_ARGS=-j<replaceable>N</replaceable></option> to
+      the command and replace <replaceable>N</replaceable> with the number
+      of test jobs your available system memory can hold.  For example, if
+      you have 15 GB system memory available and 4 CPU cores,
+      append <option>JITTEST_EXTRA_ARGS=-j3</option> to run the
       test suite with 3 parallel jobs so the memory usage won't exceed 12 GB.
       <!-- TL;DR: DO NOT REMOVE MEMORY USAGE NOTE W/O MY CONFIRMATION!
 
