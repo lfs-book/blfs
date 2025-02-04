@@ -224,20 +224,20 @@ make</userinput></screen>
     <para>
       Like the SpiderMonkey test suite, the number of test jobs is same as
       the number of all CPU cores in the system even if a cgroup is used. To
-      make things worse, there are six tests which will use 3 GB each
-      of system memory, so the peak memory usage may be up to 18 GB if the
+      make things worse, there are six tests which will use 4 GB each
+      of system memory, so the peak memory usage may be up to 24 GB if the
       number of cores is six or more.  Running the JIT test suite without
       enough memory may invoke the kernel OOM killer and cause stability
       issues.  If you don't have enough system memory available, append
       <option>-jN</option> after <option>--timeout 300</option> with N
       replaced by the number of parallel test jobs you want to start.  For
-      example, if you have 16 GB system memory available and 8 CPU cores,
-      use <option>JITTEST_EXTRA_ARGS="--timeout=300 -j5"</option> to run the
-      test suite with 5 parallel jobs so the memory usage won't exceed 15 GB.
+      example, if you have 15 GB system memory available and 8 CPU cores,
+      use <option>JITTEST_EXTRA_ARGS="--timeout=300 -j3"</option> to run the
+      test suite with 3 parallel jobs so the memory usage won't exceed 12 GB.
       <!-- TL;DR: DO NOT REMOVE MEMORY USAGE NOTE W/O MY CONFIRMATION!
 
-           "six tests": bug1782468-ptrdiff-veclen.js, it's ran with 6
-           different configurations.
+           "six tests": large-arraybuffers/arraybuffer-transfer.js, it's ran
+           with 6 different configurations.
 
            "may": this is stochasitic (like all parallelization issue),
            don't remove the note about memory usage simply because "I cannot
