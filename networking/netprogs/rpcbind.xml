@@ -67,16 +67,6 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/rpcbind-&rpcbind-version;-vulnerability_fixes-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">rpcbind Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -119,18 +109,14 @@ useradd -c "RPC Bind Daemon Owner" -d /dev/null -g rpc \
      just run bindir=/usr/sbin to get rpcinfo in /usr/sbin, and leave sbindir=
      alone. -renodr -->
 
-<screen revision="sysv"><userinput>patch -Np1 -i ../rpcbind-&rpcbind-version;-vulnerability_fixes-1.patch &amp;&amp;
-
-./configure --prefix=/usr                                  \
+<screen revision="sysv"><userinput>./configure --prefix=/usr                                  \
             --bindir=/usr/sbin                             \
             --with-rpcuser=root                            \
             --enable-warmstarts                            \
             --without-systemdsystemunitdir                 &amp;&amp;
 make</userinput></screen>
 
-<screen revision="systemd"><userinput>patch -Np1 -i ../rpcbind-&rpcbind-version;-vulnerability_fixes-1.patch &amp;&amp;
-
-./configure --prefix=/usr       \
+<screen revision="systemd"><userinput>./configure --prefix=/usr       \
             --bindir=/usr/sbin  \
             --enable-warmstarts \
             --with-rpcuser=rpc  &amp;&amp;
