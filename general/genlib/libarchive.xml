@@ -109,6 +109,29 @@ make</userinput></screen>
 
 <screen role="root"><userinput>make install</userinput></screen>
 
+    <para>
+      Still as the &root; user, create a symlink so we can use
+      <command>bsdunzip</command> as <command>unzip</command>, instead
+      of relying on the unmaintained Unzip package:
+    </para>
+
+<screen role="root"><userinput>ln -sfv bsdunzip /usr/bin/unzip</userinput></screen>
+
+    <note>
+      <para>
+        As discussed in <xref linkend='locale-wrong-filename-encoding'/>,
+        if the Zip archive to be extracted contains any file with a name
+        containing any non-Latin characters, you need to manually specify
+        the encoding of those characters or they will be turned into
+        unreadable sequences in the extracted file name.  For example, if a
+        Zip archive created with WinZip, <filename>archive.zip</filename>,
+        contains a file named with Simplified Chinese characters, the
+        encoding should be CP936 and the <parameter>-I cp936</parameter>
+        option should be used.  I.e. the command to extract the archive
+        should be <command>unzip -I cp936 archive.zip</command>.
+      </para>
+    </note>
+
   </sect2>
 
   <sect2 role="commands">

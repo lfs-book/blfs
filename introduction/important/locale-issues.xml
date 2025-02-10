@@ -132,14 +132,16 @@
     "@locale" value. <application>Glib2</application> based programs that
     don't respect that environment variable are buggy.</para>
 
-    <para>The <xref linkend="zip"/> and <xref linkend="unzip"/> have this
-    problem because they hard-code the expected filename encoding.
-    <application>UnZip</application> contains a hard-coded conversion table
-    between the CP850 (DOS) and ISO-8859-1 (UNIX) encodings and uses this table
-    when extracting archives created under DOS or Microsoft Windows. However,
-    this assumption only works for those in the US and not for anyone using a
-    UTF-8 locale. Non-ASCII characters will be mangled in the extracted
-    filenames.</para>
+    <para>The <filename class='extension'>.zip</filename> format has this
+    problem because it does not save the encoding for the names of the
+    archived files.  When <command>unzip</command> (actually, a symlink to
+    <command>bsdunzip</command> from <xref linkend='libarchive'/>) extracts
+    it, by default the names are assumed to be encoded as CP850, the Windows
+    code page for Western European languages.  But the names may be actually
+    encoded in a different way if it contains non-Latin characters (for
+    example, CP936 for Simplified Chinese).  Then without manually
+    specifying the encoding, those non-Latin characters will be turned into
+    unreadable sequences by <command>bsdunzip</command>.</para>
 
     <!--<para>On the other hand,
     <application>Nautilus CD Burner</application> checks names of
