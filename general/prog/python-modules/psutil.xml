@@ -7,8 +7,8 @@
   <!ENTITY psutil-download-http "&pymodules-dl;/p/psutil/psutil-&psutil-version;.tar.gz">
   <!ENTITY psutil-download-ftp  " ">
   <!ENTITY psutil-md5sum        "&psutil-md5sum;">
-  <!ENTITY psutil-size          "500 KB">
-  <!ENTITY psutil-buildsize     "4.3 MB">
+  <!ENTITY psutil-size          "488 KB">
+  <!ENTITY psutil-buildsize     "4.2 MB">
   <!ENTITY psutil-time          "less than 0.1 SBU">
 ]>
 
@@ -74,7 +74,8 @@
 
       <bridgehead renderas="sect5">Optional (for testing)</bridgehead>
       <para role="optional">
-        <xref linkend="pytest"/>
+        <xref linkend="pytest"/> and 
+        <ulink url="https://pypi.org/project/pyinfo/">pypinfo</ulink>
       </para>
     </sect3>
 
@@ -100,14 +101,19 @@
       <para>
         Two tests, <literal>TestSystemAPIs::test_disk_usage</literal> and
         <literal>TestNetAPIs::test_net_if_addrs</literal>, are known to fail.
-        And, one test named
+        
+        One test named
         <literal>TestAvailProcessAPIs::test_io_counters</literal>
         is known to fail if the kernel does not have
         <option>CONFIG_TASK_IO_ACCOUNTING</option> enabled.
+
         <literal>TestScripts.test_who</literal> is known to fail if the
         login manager does not write into <filename>/run/utmp</filename>
         (note that due to the potential year 2037 problem, Shadow has
         already stopped writing into it).
+
+        <literal>TestInternalScripts::test_import_all</literal> is known 
+        to fail if the external module pyinfo is not installed.
       </para>
 
     </sect3>
