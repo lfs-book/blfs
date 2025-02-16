@@ -191,8 +191,12 @@ make</userinput></screen>
 
     <para>
       The test suite can be run in parallel mode. To run the test suite, issue:
-      <command>make test -k |&amp; tee test.log</command>.  If some test
-      fails, the list of failed tests can be shown via
+      <command>GIT_UNZIP=nonexist make test -k |&amp; tee test.log</command>.
+      The <envar>GIT_UNZIP</envar> setting prevents the test suite from
+      using <command>unzip</command>, we need it because in BLFS
+      <command>unzip</command> is a symlink to <command>bsdunzip</command>
+      which does not satisfy the assumption of some tests cases.  If any
+      test case fails, the list of failed tests can be shown via
       <command>grep '^not ok' test.log | grep -v TODO</command>.
       <!-- It looks like I'd misdiagnosed the issue.  -->
       <!--phrase revision='systemd'>One test named <literal>start and stop
