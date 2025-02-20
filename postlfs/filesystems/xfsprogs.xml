@@ -6,10 +6,10 @@
 
   <!ENTITY xfsprogs-download-http "&kernel-dl;/linux/utils/fs/xfs/xfsprogs/xfsprogs-&xfsprogs-version;.tar.xz">
   <!ENTITY xfsprogs-download-ftp  " ">
-  <!ENTITY xfsprogs-md5sum        "c2f1ddf241f2ce7ea2669de595a4f766">
+  <!ENTITY xfsprogs-md5sum        "42b00213982d16c6df3fc17a0706b773">
   <!ENTITY xfsprogs-size          "1.4 MB">
-  <!ENTITY xfsprogs-buildsize     "64 MB">
-  <!ENTITY xfsprogs-time          "0.3 SBU (Using parallelism=4)">
+  <!ENTITY xfsprogs-buildsize     "99 MB">
+  <!ENTITY xfsprogs-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="xfsprogs" xreflabel="xfsprogs-&xfsprogs-version;">
@@ -30,7 +30,7 @@
       administration and debugging tools for the XFS file system.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -112,9 +112,10 @@
       commands:
     </para>
 
- <screen><userinput>make DEBUG=-DNDEBUG     \
+<screen><userinput>make DEBUG=-DNDEBUG     \
      INSTALL_USER=root  \
-     INSTALL_GROUP=root</userinput></screen>
+     INSTALL_GROUP=root \
+     LOCAL_CONFIGURE_OPTIONS="--localstatedir=/var"</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -146,6 +147,12 @@ rm -rfv /usr/lib/libhandle.{a,la}</userinput></screen>
     </para>
 
     <para>
+      <parameter>LOCAL_CONFIGURE_OPTIONS="--localstatedir=/var"</parameter>:
+      This sets the state directory to /var, preventing /usr/var from being
+      created.
+    </para>
+
+    <para>
       <option>OPTIMIZER="..."</option>: Adding this parameter to
       the end of the <command>make</command> command overrides the
       default optimization settings.
@@ -165,8 +172,8 @@ rm -rfv /usr/lib/libhandle.{a,la}</userinput></screen>
         <seg>fsck.xfs, mkfs.xfs, xfs_admin, xfs_bmap, xfs_copy, xfs_db,
         xfs_estimate, xfs_freeze, xfs_fsr, xfs_growfs, xfs_info, xfs_io,
         xfs_logprint, xfs_mdrestore, xfs_metadump, xfs_mkfile, xfs_ncheck,
-        xfs_quota, xfs_repair, xfs_rtcp, xfs_scrub, xfs_scrub_all,
-        and xfs_spaceman</seg>
+        xfs_property, xfs_protofile, xfs_quota, xfs_repair, xfs_rtcp,
+        xfs_scrub, xfs_scrub_all, and xfs_spaceman</seg>
         <seg>libhandle.so</seg>
         <seg>/usr/include/xfs,
         /usr/lib/xfsprogs,
@@ -391,6 +398,30 @@ rm -rfv /usr/lib/libhandle.{a,la}</userinput></screen>
           </para>
           <indexterm zone="xfsprogs xfs_ncheck">
             <primary sortas="b-xfs_ncheck">xfs_ncheck</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xfs_property">
+        <term><command>xfs_property</command></term>
+        <listitem>
+          <para>
+            examines and edits properties about a XFS filesystem
+          </para>
+          <indexterm zone="xfsprogs xfs_property">
+            <primary sortas="b-xfs_property">xfs_property</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xfs_protofile">
+        <term><command>xfs_protofile</command></term>
+        <listitem>
+          <para>
+            creates a protofile for use with <command>mkfs.xfs</command>
+          </para>
+          <indexterm zone="xfsprogs xfs_protofile">
+            <primary sortas="b-xfs_protofile">xfs_protofile</primary>
           </indexterm>
         </listitem>
       </varlistentry>
