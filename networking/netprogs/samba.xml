@@ -6,7 +6,7 @@
 
   <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "8ac48b021d559ba8ba4ba13862c59296">
+  <!ENTITY samba-md5sum        "6d0b330364e05fed58cc63fbb43037fe">
   <!ENTITY samba-size          "41 MB">
   <!ENTITY samba-buildsize     "683 MB (add 64 MB for quicktest)">
   <!ENTITY samba-time          "2.1 SBU (using parallelism=4; add 0.4 SBU for quicktest)">
@@ -70,6 +70,15 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch (Required for running the test suite):
+          <ulink url="&patch-root;/samba-&samba-version;-testsuite_linux_6_13-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
     <bridgehead renderas="sect3">Samba Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -158,11 +167,14 @@
 
     <para>
       To support the test suite, set up a Python virtual environment
-      for some Python modules out of the scope of BLFS:
+      for some Python modules out of the scope of BLFS, and fix an issue
+      in the test framework causing all tests to fail on Linux kernel
+      6.13 or newer:
     </para>
 
 <screen><userinput remap="pre">python3 -m venv pyvenv &amp;&amp;
-./pyvenv/bin/pip3 install cryptography pyasn1 iso8601</userinput></screen>
+./pyvenv/bin/pip3 install cryptography pyasn1 iso8601 &amp;&amp;
+patch -Np1 -i ../samba-&samba-version;-testsuite_linux_6_13-1.patch</userinput></screen>
 
     <para>
       Install <application>Samba</application> by running the following
