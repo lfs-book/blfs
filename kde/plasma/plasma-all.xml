@@ -335,11 +335,11 @@ EOF</userinput></screen>
     if $(echo $line | grep -E -q '^ *$|^#' ); then continue; fi
     file=$(echo $line | cut -d" " -f2)
 
-    pkg=$(echo $file|sed 's|^.*/||')          # Remove directory
-    srcdir=$(echo $pkg |sed 's|\.tar.*||')    # Source directory
+    pkg=$(echo $file|sed 's|^.*/||')           # Remove directory
+    packagedir=$(echo $pkg |sed 's|\.tar.*||') # Source directory
 
     tar -xf $file
-    pushd $srcdir
+    pushd $packagedir
 <!--
        # Fix some build issues when generating some configuration files
        case $name in
