@@ -25,7 +25,7 @@
   </para>
 
   <sect2 id="grub-video">
-    <title>Setting a smaller screen size in grub</title>
+    <title>Setting a smaller screen resolution in grub</title>
 
     <indexterm zone="postlfs-console-fonts grub-video">
       <primary sortas="e-boot-grub-grub-cfg">/boot/grub/grub.cfg</primary>
@@ -35,17 +35,52 @@
       Modern screens often have a lot more pixels than the screens used in the
       past. If your screen is 1600 pixels wide, an 8x16 font will give you 200
       columns of text - unless your monitor is enormous, the text will be tiny.
-      One of the ways to work around this is to tell grub to use a smaller size,
-      such as 1024x768 or 800x600 or even 640x480. Even if your screen does not
-      have a 4:3 aspect ratio, this should work.
+      One of the ways to work around this is to tell GRUB and the kernel to
+      use a smaller resolution, such as 1024x768 or 800x600 or even 640x480.
+      Even if your screen does not have a 4:3 aspect ratio, this should work.
     </para>
 
     <para>
-      To try this, you can reboot and edit grub's command-line to insert a
-      'video=' parameter between the 'root=/dev/sdXn' and 'ro', for example
-      <literal>root=/dev/sda2 video=1024x768 ro</literal> based on the
-      example in LFS section 10.4.4 :
-      <ulink url="&lfs-root;/chapter10/grub.html"/>.
+      If you've followed the LFS book to configure your kernel with
+      SimpleDRM enabled and the kernel driver dedicated for your GPU
+      (for example i915 or AMDGPU) is built as a kernel module, before the
+      dedicated driver is loaded, the SimpleDRM driver will be used for
+      displaying.  The SimpleDRM driver itself cannot change the resolution,
+      so you need to tell GRUB to set the suitable resolution before loading
+      the kernel by modifying the
+      <literal>set gfxpayload=1024x768x32</literal> line in
+      <ulink url="&lfs-root;/chapter10/grub.html">the
+      <filename>grub.cfg</filename> file</ulink>.
+    </para>
+
+    <para>
+      When the dedicated GPU driver starts to work (once the kernel or the
+      module is loaded depending on if you've built it as a part of the
+      kernel image or a module), it takes the display control away from the
+      SimpleDRM driver and changes the display resolution.  To make it use
+      the resolution you want, again edit the <filename>grub.cfg</filename>
+      file to insert a <literal>video=</literal> parameter into the kernel
+      command line, for example
+      <literal>root=/dev/sda2 video=DP-1:800x600 ro</literal>.
+      Note that it's necessary to explicitly specify the output name like
+      <literal>DP-1</literal> here: a <literal>video=</literal> parameter
+      without an output name is only recognized by GRUB (as a deprecated
+      alias of <literal>set gfxpayload=</literal>) and completely ignored
+      by the kernel. The content of
+      <filename class='directory'>/sys/class/drm/</filename> can be helpful
+      for figuring out the output name, for example the
+      <filename class='directory'>card1-DP-1</filename> subdirectory
+      indicates an output named <literal>DP-1</literal>.  To align the
+      output name with your monitor, install the
+      <ulink url='&sources-anduin-http;/edid-decode.tar.gz'>edid-decode</ulink>
+      <!-- TODO: it'll be a part of v4l-utils-1.30,
+           update the text when upgrading v4l-utils -->
+      utility and run the <command>edid-decode
+      /sys/class/drm/card<replaceable>&lt;card
+      ID&gt;</replaceable>-<replaceable>&lt;output
+      name&gt;</replaceable>/edid</command> command to show the info
+      (including the model name and the supported resolutions) about the
+      the monitor connected on the output.
     </para>
 
     <para>
