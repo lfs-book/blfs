@@ -102,7 +102,7 @@
     <title>Installation of xfsprogs</title>
 
     <para>
-      First, adapt the configure script to ICU-76::
+      First, adapt the configure script to ICU-76:
     </para>
 
 <screen><userinput remap="pre">sed -i 's/icu-i18n/icu-uc &amp;/' configure</userinput></screen>
@@ -112,7 +112,10 @@
       commands:
     </para>
 
-<screen><userinput>make DEBUG=-DNDEBUG     \
+<screen><userinput>case "$(uname -m)" in
+  i?86) sed -e "s/static long filesize/static off_t filesize/" -i mkfs/proto.c ;;
+esac &amp;&amp;
+make DEBUG=-DNDEBUG     \
      INSTALL_USER=root  \
      INSTALL_GROUP=root \
      LOCAL_CONFIGURE_OPTIONS="--localstatedir=/var"</userinput></screen>
@@ -134,6 +137,13 @@ rm -rfv /usr/lib/libhandle.{a,la}</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <parameter>sed ... static long filesize...</parameter>: That
+      sed fixes an issue which appears when building on 32 bit systems,
+      only. There is a mismatch in prototype and function header which
+      results in error on that architecture.
+    </para>
 
     <para>
       <parameter>DEBUG=-DNDEBUG</parameter>: Turns off debugging
