@@ -7,7 +7,7 @@
   <!ENTITY spidermonkey-download-http "&mozilla-http;/firefox/releases/&spidermonkey-version;esr/source/firefox-&spidermonkey-version;esr.source.tar.xz">
   <!ENTITY spidermonkey-download-ftp  " ">
   <!-- size and md5sum are in packages.ent -->
-  <!ENTITY spidermonkey-buildsize     "3.6 GB (40 MB installed after removing 36 MB static lib; add 34 MB for the main tests and 37 MB for the jit tests)">
+  <!ENTITY spidermonkey-buildsize     "4.4 GB (49 MB installed after removing 36 MB static lib; add 34 MB for the main tests and 37 MB for the jit tests)">
   <!ENTITY spidermonkey-time          "1.9 SBU (with parallelism=4; add 1.1 SBU for the main tests and 3.7 SBU for the jit tests)">
 ]>
 
@@ -183,12 +183,14 @@ cd    obj &amp;&amp;
                     --with-system-zlib       &amp;&amp;
 make</userinput></screen>
 
+<!-- No longer needed with 128.8.0
     <para>
       If you wish to run the test suite, adapt it to be compatible with Python
       3.13.0 or newer:
     </para>
 
     <screen remap='test'><userinput>sed 's/pipes/shlex/' -i ../js/src/tests/lib/results.py</userinput></screen>
+-->
 
     <para>
       To run the SpiderMonkey test suite, issue:
@@ -198,7 +200,7 @@ make</userinput></screen>
      JSTESTS_EXTRA_ARGS="--timeout 300 --wpt=disabled" | tee jstest.log</userinput></screen>
 
     <para>
-      Because we are building with system ICU, 155 tests
+      Because we are building with system ICU, 151 tests
       (out of a total of more than 50,000) are known to fail.
       The list of failed tests can be extracted via
       <command>grep 'UNEXPECTED-FAIL' jstest.log</command>.
@@ -215,8 +217,7 @@ make</userinput></screen>
     </para>
 
     <para>
-      To run the JIT test suite, issue the following command. Note that 6 tests
-      in the 'timezone.js' suite are known to fail due to ICU-76.
+      To run the JIT test suite, issue the following command:
     </para>
 
     <screen remap='test'><userinput>make -C js/src check-jit-test</userinput></screen>

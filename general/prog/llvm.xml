@@ -341,10 +341,13 @@ ninja docs-llvm-html  docs-llvm-man</userinput></screen>
     <para>
       If you wish to run the test suite and you've downloaded compiler-rt,
       work around an issue causing test failures when building LLVM with
-      GCC and <parameter>-D CLANG_CONFIG_FILE_SYSTEM_DIR</parameter>:
+      GCC and <parameter>-D CLANG_CONFIG_FILE_SYSTEM_DIR</parameter> and
+      prevent some test suite from using <command>ld.gold</command> that
+      the LFS Binutils package no longer provides:
     </para>
 
     <screen remap="test"><userinput>sed -e 's/config.has_no_default_config_flag/True/' \
+    -e 's/"-fuse-ld=gold"//'                       \
     -i ../projects/compiler-rt/test/lit.common.cfg.py</userinput></screen>
 
     <!-- The excessive core dump made my system irresponsive.  -->
@@ -396,6 +399,10 @@ systemd-run --user --pty -d -G -p LimitCORE=0 ninja check-all</userinput></scree
       </phrase>
       read <xref linkend='build-in-cgroup'/> for details) to limit the
       number of logical cores for running the tests.
+
+      23 cfi tests are known to fail because their assumption about the
+      linker is not true with the BFD linker and we've had to stop them
+      from using the removed Gold linker.
 
       One test named <filename>Linux/clone_setns.cpp</filename> will fail
       if <option>CONFIG_USER_NS</option> is not enabled in kernel
