@@ -4,7 +4,7 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gedit-dependencies-download-http "https://gitlab.gnome.org/World/gedit/">
+  <!ENTITY gedit-dependencies-download-http "See below">
   <!ENTITY gedit-dependencies-download-ftp  " ">
   <!ENTITY gedit-download-http "&gnome-download-http;/gedit/&gedit-major-version;/">
   <!ENTITY gedit-download-ftp  " ">
@@ -125,6 +125,7 @@
 &libgedit-gfls-md5sum;  libgedit-gfls/-/archive/&libgedit-gfls-version;/libgedit-gfls-&libgedit-gfls-version;.tar.bz2
 &libgedit-tepl-md5sum;  libgedit-tepl/-/archive/&libgedit-tepl-version;/libgedit-tepl-&libgedit-tepl-version;.tar.bz2</literal>
 EOF
+
 cat &gt; gedit-&gedit-version;.md5 &lt;&lt; "EOF"
 <literal>&gedit-md5sum;  gedit-&gedit-version;.tar.xz</literal>
 EOF</userinput></screen>
@@ -135,15 +136,19 @@ EOF</userinput></screen>
     </para>
 
 <screen><userinput>mkdir gedit-pkgs &amp;&amp;
-cd gedit-pkgs &amp;&amp;
+cd    gedit-pkgs &amp;&amp;
+
 grep -v '^#' ../gedit-dependencies-&gedit-version;.md5 | awk '{print $2}' | wget -i- -c \
-    -B &gedit-dependencies-download-http; &amp;&amp;
+     -B &gedit-dependencies-download-http; &amp;&amp;
+
 grep -v '^#' ../gedit-&gedit-version;.md5 | awk '{print $2}' | wget -i- -c \
-    -B &gedit-download-http; &amp;&amp;
+     -B &gedit-download-http; &amp;&amp;
+
 while read -r md5 file; do
     package=$(basename "$file")
     echo "$md5  $package"
 done &lt; ../gedit-dependencies-&gedit-version;.md5 | md5sum -c &amp;&amp;
+
 md5sum -c ../gedit-&gedit-version;.md5</userinput></screen>
 
   </sect2>
@@ -183,20 +188,25 @@ md5sum -c ../gedit-&gedit-version;.md5</userinput></screen>
 
 <screen><userinput>for package in $(grep -v '^#' ../gedit{-dependencies,}-&gedit-version;.md5 | awk '{print $2}')
 do
-package=$(basename "$package")
-packagedir=${package%.tar.?z*}
-echo "Building $packagedir"
-  tar -xf $package
-  pushd "$packagedir"
-  cd build
-  meson setup --prefix=/usr       \
-              --buildtype=release \
-              -D gtk_doc=false    \
-              ..
-  ninja
-  #ninja test 2>&amp;1 | tee ../../$packagedir-ninja_test.log
-  as_root ninja install
-  popd
+  package=$(basename "$package")
+  packagedir=${package%.tar.?z*}
+
+  echo "Building $packagedir"
+    tar -xf $package
+    pushd $packagedir
+      cd build
+
+      meson setup ..            \
+            --prefix=/usr       \
+            --buildtype=release \
+            -D gtk_doc=false 
+      ninja
+
+      #ninja test 2>&amp;1 | tee ../../$packagedir-ninja_test.log
+  
+      as_root ninja install
+    popd
+
   rm -rf $packagedir
   as_root /sbin/ldconfig
 done</userinput></screen>
