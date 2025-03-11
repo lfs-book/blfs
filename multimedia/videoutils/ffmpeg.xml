@@ -6,9 +6,9 @@
 
   <!ENTITY ffmpeg-download-http "https://ffmpeg.org/releases/ffmpeg-&ffmpeg-version;.tar.xz">
   <!ENTITY ffmpeg-download-ftp  " ">
-  <!ENTITY ffmpeg-md5sum        "623aa63a72139a82ccb99cd6ee477b94">
+  <!ENTITY ffmpeg-md5sum        "26f2bd7d20c6c616f31d7130c88d7250">
   <!ENTITY ffmpeg-size          "11 MB">
-  <!ENTITY ffmpeg-buildsize     "205 MB (add 1.5 GB for the FATE suite/tests, add 869 MB for documentation)">
+  <!ENTITY ffmpeg-buildsize     "205 MB (add 1.7 GB for the FATE suite/tests, add 869 MB for documentation)">
   <!ENTITY ffmpeg-time          "1.2 SBU (using parallelism=4; add 3.2 SBU (with THREADS=4) to run the FATE suite after sample files are downloaded; add 0.2 SBU for doxygen docs)">
 ]>
 
@@ -79,12 +79,6 @@
         <para>
           Required patch:
           <ulink url="&patch-root;/ffmpeg-&ffmpeg-version;-chromium_method-1.patch"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/ffmpeg-&ffmpeg-version;-texinfo_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -181,19 +175,6 @@
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../ffmpeg-&ffmpeg-version;-chromium_method-1.patch</userinput></screen>
-
-    <para>
-      Next, fix an issue caused by the latest version of <xref linkend="x265"/>:
-    </para>
-
-<screen><userinput remap="pre">sed -e 's/X265_BUILD >= 210/(&amp;) \&amp;\&amp; (X265_BUILD &lt; 213)/' \
-    -i libavcodec/libx265.c</userinput></screen>
-
-    <para>
-      Next, fix an issue caused by Texinfo 7.2:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../ffmpeg-&ffmpeg-version;-texinfo_fix-1.patch</userinput></screen>
 
     <para>
       Install <application>FFmpeg</application> by running the following
