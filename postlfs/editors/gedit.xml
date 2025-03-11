@@ -152,13 +152,7 @@ while read -r line; do
 
   wget $url 2&gt;/dev/null
 
-  calc_md5=$(md5sum $filename | cut -d" " -f1) 
-
-  if [ "$calc_md5" = "$md5" ]; then
-    echo "$filename md5sum OK"
-  else
-    echo "$filename md5sum incorrect"
-  fi
+  echo "$md5 $filename" | md5sum -c
 
 done &lt; ../gedit-data.md5</userinput></screen>
 
