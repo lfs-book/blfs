@@ -60,6 +60,17 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <!-- This will no longer be required after 1.5.2 -->
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/protobuf-c-&protobuf-c-version;-upstream-protobuf-30.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Protobuf-c Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -74,15 +85,26 @@
 
   </sect2>
 
+
+
   <sect2 role="installation">
     <title>Installation of Protobuf-c</title>
+
+
+    <para>
+      First, apply a patch from upstream that fixes the build with <xref linkend="protobuf"/>
+      30.0+
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../protobuf-c-&protobuf-c-version;-upstream-protobuf-30.patch</userinput></screen>
 
     <para>
       Install <application>Protobuf-c</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>autoreconf -fi
+./configure --prefix=/usr --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>
