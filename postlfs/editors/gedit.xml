@@ -4,27 +4,38 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gedit-dependencies-download-http "https://gitlab.gnome.org/World/gedit/">
-  <!ENTITY gedit-dependencies-download-ftp  " ">
-  <!ENTITY gedit-download-http "&gnome-download-http;/gedit/&gedit-major-version;/">
-  <!ENTITY gedit-download-ftp  " ">
-  <!ENTITY gedit-size          "4.2 MB">
+  <!ENTITY gedit-lib-root "https://gitlab.gnome.org/World/gedit">
+
+  <!ENTITY gedit-download-http "&gnome-download-http;/gedit/&gedit-major-version;/gedit-&gedit-version;.tar.xz">
+  <!ENTITY gedit-md5sum        "1aa72a59d51be4597490220af3ad0421">
+  <!ENTITY gedit-size          "2.7 MB">
   <!ENTITY gedit-buildsize     "112 MB (with tests)">
   <!ENTITY gedit-time          "0.3 SBU (using parallelism=4; with tests)">
 
-  <!ENTITY libgedit-amtk-version          "5.9.1">
-  <!ENTITY libgedit-amtk-md5sum           "8559a3e694f4e06b7f320d7f29562ef0">
+  <!ENTITY am-ver "&libgedit-amtk-version;">
+  <!ENTITY am-name "libgedit-amtk">
+  <!ENTITY libgedit-amtk-download         "&gedit-lib-root;/&am-name;/-/archive/&am-ver;/&am-name;-&am-ver;.tar.bz2">
+  <!ENTITY libgedit-amtk-md5sum  "8559a3e694f4e06b7f320d7f29562ef0">
+  <!ENTITY libgedit-amtk-size    "59 KB">
 
-  <!ENTITY libgedit-gtksourceview-version "299.5.0">
-  <!ENTITY libgedit-gtksourceview-md5sum  "bb16dc84f8fb5acf05eb3c19f00f7724">
+  <!ENTITY gt-ver "&libgedit-gtksourceview-version;">
+  <!ENTITY gt-name "libgedit-gtksourceview">
+  <!ENTITY libgedit-gtksourceview-download "&gedit-lib-root;/&gt-name;/-/archive/&gt-ver;/&gt-name;-&gt-ver;.tar.bz2">
+  <!ENTITY libgedit-gtksourceview-md5sum   "bb16dc84f8fb5acf05eb3c19f00f7724">
+  <!ENTITY libgedit-gtksourceview-size     "666 KB">
 
-  <!ENTITY libgedit-gfls-version          "0.3.0">
+  <!ENTITY gf-ver "&libgedit-gfls-version;">
+  <!ENTITY gf-name "libgedit-gfls">
+  <!ENTITY libgedit-gfls-download         "&gedit-lib-root;/&gf-name;/-/archive/&gf-ver;/&gf-name;-&gf-ver;.tar.bz2">
   <!ENTITY libgedit-gfls-md5sum           "763a7260ef1f139ea2a314a34080610e">
+  <!ENTITY libgedit-gfls-size             "30 KB">
 
-  <!ENTITY libgedit-tepl-version          "6.13.0">
+  <!ENTITY te-ver "&libgedit-tepl-version;">
+  <!ENTITY te-name "libgedit-tepl">
+  <!ENTITY libgedit-tepl-download         "&gedit-lib-root;/&te-name;/-/archive/&te-ver;/&te-name;-&te-ver;.tar.bz2">
   <!ENTITY libgedit-tepl-md5sum           "9d96b099416064e20b37fec855c00faf">
+  <!ENTITY libgedit-tepl-md5sum           "184 KB">
 
-  <!ENTITY gedit-md5sum                   "1aa72a59d51be4597490220af3ad0421">
 ]>
 
 <sect1 id="gedit" xreflabel="Gedit-&gedit-version;">
@@ -53,7 +64,7 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Download (HTTP): See below
+          Download (HTTP): <ulink url="&gedit-download-http;"/>
         </para>
       </listitem>
       <listitem>
@@ -69,6 +80,59 @@
       <listitem>
         <para>
           Estimated build time: &gedit-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+
+    <para>
+      <application>Gedit</application> requires several libraries:
+    </para>
+
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Libgedit-amtk: <ulink url="&libgedit-amtk-download;"/>
+        </para>
+        <para>
+          Libgedit-amtk MD5 sum: &libgedit-amtk-md5sum;
+        </para>
+        <para>
+          Libgedit-amtk size: &libgedit-amtk-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Libgedit-gtksourceview: <ulink url="&libgedit-gtksourceview-download;"/>
+        </para>
+        <para>
+          Libgedit-gtksourceview MD5 sum: &libgedit-gtksourceview-md5sum;
+        </para>
+        <para>
+          Libgedit-gtksourceview size: &libgedit-gtksourceview-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Libgedit-gfls: <ulink url="&libgedit-gfls-download;"/>
+        </para>
+        <para>
+          Libgedit-gfls MD5 sum: &libgedit-gfls-md5sum;
+        </para>
+        <para>
+          Libgedit-gfls size: &libgedit-gfls-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Libgedit-tepl: <ulink url="&libgedit-tepl-download;"/>
+        </para>
+        <para>
+          Libgedit-tepl MD5 sum: &libgedit-tepl-md5sum;
+        </para>
+        <para>
+          Libgedit-tepl size: &libgedit-gfls-size;
         </para>
       </listitem>
     </itemizedlist>
@@ -90,10 +154,8 @@
     <para role="recommended">
       <xref linkend="gspell"/>,
       <xref role="runtime" linkend="gvfs"/> (runtime),
-      <xref linkend="iso-codes"/>,
-      <xref linkend="pygobject3"/> (<application>Python3</application> module), and
-      <xref linkend="wget"/> (required if using the book instructions to
-      download the packages)
+      <xref linkend="iso-codes"/>, and
+      <xref linkend="pygobject3"/> (<application>Python3</application> module)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -105,7 +167,7 @@
     </para>
 
   </sect2>
-
+  <!--
   <sect2>
     <title>Downloading Gedit</title>
 
@@ -117,7 +179,7 @@
     </para>
 
 <screen><userinput>cat &gt; gedit-data.md5 &lt;&lt; "EOF"
-<literal># md5sum                         base-name     version 
+<literal># md5sum                         base-name     version
 &libgedit-amtk-md5sum; amtk          &libgedit-amtk-version;
 &libgedit-gtksourceview-md5sum; gtksourceview &libgedit-gtksourceview-version;
 &libgedit-gfls-md5sum; gfls          &libgedit-gfls-version;
@@ -159,9 +221,15 @@ while read -r line; do
 done &lt; ../gedit-data.md5</userinput></screen>
 
   </sect2>
-
+  -->
   <sect2 role="installation">
     <title>Installation of Gedit</title>
+
+    <para>
+      The first task is to install the needed libraries. Since all the
+      packages have the same build instructions, they can be built in
+      one go using a loop.
+    </para>
 
     &as_root;
 
@@ -171,11 +239,11 @@ done &lt; ../gedit-data.md5</userinput></screen>
       after all the packages are installed, you can come back to the
       corresponding directory and run <command>ninja test</command>, or do
       individual builds, running the tests for each of the packages.
-      Alternatively, you can uncomment the line #<command>ninja test
+      Alternatively, you can uncomment the line <command>#ninja test
       ...</command>, and at the end, check the test results with:
     </para>
 
-<screen><userinput>grep -A9 summary *ninja_test.log</userinput></screen>
+<screen remap="test"><userinput>grep -A9 summary *test.log</userinput></screen>
 
     <para>
       <application>Libgedit-amtk's</application> test-action-map test is known
@@ -186,33 +254,37 @@ done &lt; ../gedit-data.md5</userinput></screen>
       First, start a subshell that will exit on error:
     </para>
 
-<screen><userinput>bash -e</userinput></screen>
+<screen role="nodump"><userinput>bash -e</userinput></screen>
 
     <para>
       The order of builds is important.
-      Install <application>Gedit</application> and its dependencies by running
+      Install <application>Gedit</application> dependencies by running
       the following commands:
     </para>
 
-<screen><userinput>for package in *amtk* *gtk* *gfls* *tepl* gedit*
+<screen><userinput>for package in \
+&am-name;-&am-ver;.tar.bz2 \
+&gt-name;-&gt-ver;.tar.bz2 \
+&gf-name;-&gf-ver;.tar.bz2 \
+&te-name;-&te-ver;.tar.bz2
 do
-  packagedir=${package%.tar.?z*}
+  packagedir=${package%.tar*}
 
   echo "Building $packagedir"
-    tar -xf $package
-    pushd $packagedir
-      cd build
+  tar -xf ../$package
+  pushd $packagedir
+    cd build
 
-      meson setup ..            \
-            --prefix=/usr       \
-            --buildtype=release \
-            -D gtk_doc=false 
-      ninja
+    meson setup ..            \
+          --prefix=/usr       \
+          --buildtype=release \
+          -D gtk_doc=false
+    ninja
 
-      #ninja test 2>&amp;1 | tee ../../$packagedir-ninja_test.log
-  
-      as_root ninja install
-    popd
+    #ninja test 2>&amp;1 | tee ../../$packagedir-test.log
+
+    as_root ninja install
+  popd
 
   rm -rf $packagedir
 done</userinput></screen>
@@ -221,7 +293,30 @@ done</userinput></screen>
       Finally, exit the shell that was started earlier:
     </para>
 
-<screen><userinput>exit</userinput></screen>
+<screen role="nodump"><userinput>exit</userinput></screen>
+
+    <para>
+      Now install <application>gedit</application> itself by running the
+      following commands:
+    </para>
+
+<screen><userinput>cd build &amp;&amp;
+
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      -D gtk_doc=false    &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      To test the results, run <command>ninja test</command>.
+    </para>
+
+    <para>
+      Now as the &root; user:
+    </para>
+
+<screen role="root"><userinput>ninja install</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gsettings-destdir.xml"/>
