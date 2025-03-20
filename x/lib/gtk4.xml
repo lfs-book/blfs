@@ -6,10 +6,10 @@
 
   <!ENTITY gtk4-download-http "&gnome-download-http;/gtk/&gtk4-minor;/gtk-&gtk4-version;.tar.xz">
   <!ENTITY gtk4-download-ftp  " ">
-  <!ENTITY gtk4-md5sum        "0f2b154a0b05e4ca94a05aaeb7e1f3fb">
-  <!ENTITY gtk4-size          "18 MB">
-  <!ENTITY gtk4-buildsize     "1.1 GB (with docs; add 157 MB for tests)">
-  <!ENTITY gtk4-time          "1.7 SBU (using parallelism=4; with docs; add 1.1 SBU for tests or 3.7 SBU for NVIDIA)">
+  <!ENTITY gtk4-md5sum        "33ec5858e6119cb43172e92890cbbdc2">
+  <!ENTITY gtk4-size          "17 MB">
+  <!ENTITY gtk4-buildsize     "2.0 GB (with docs; add 132 MB for tests)">
+  <!ENTITY gtk4-time          "1.1 SBU (using parallelism=4; with docs; add 0.8 SBU for tests or 3.7 SBU for NVIDIA)">
 ]>
 
 <sect1 id="gtk4" xreflabel="GTK-&gtk4-version;">
@@ -65,6 +65,7 @@
       </listitem>
     </itemizedlist>
 
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -75,6 +76,7 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">GTK 4 Dependencies</bridgehead>
 
@@ -121,6 +123,7 @@
       <xref linkend="libcloudproviders"/>,
       <xref linkend="sassc"/>,
       <xref linkend="tinysparql"/>,
+      <ulink url="https://github.com/AccessKit/accesskit-c">accesskit-c</ulink>,
       <ulink url="https://github.com/OpenPrinting/cpdb-libs">cpdb</ulink>,
       <ulink url="https://pypi.org/project/pydbus/">pydbus</ulink>
       (for some tests), and
@@ -132,12 +135,14 @@
   <sect2 role="installation">
     <title>Installation of GTK 4</title>
 
+<!--
     <para>
       Fix the PNG colorspace deserialization breakage with libpng-1.6.45
       or later:
     </para>
 
     <screen><userinput>patch -Np1 -i ../gtk-&gtk4-version;-libpng_1_6_45-1.patch</userinput></screen>
+-->
 
     <para>
       Install <application>GTK 4</application> by running the following
@@ -213,6 +218,8 @@ ninja</userinput></screen>
                above on wayland in Weston
      [xry111]: 4.16.12, wayland,     6186 OK, 0 Expected Fail, 9 Fail, 16 Skipped
                above on X11 (Xwayland) in Weston
+     [renodr]: 4.18.2, X11,    5047 OK, 0 Expected Fail, 5 Fail, 16 Skipped
+               above on X11 in XFCE
 -->
 
     <para>
@@ -379,11 +386,14 @@ EOF</userinput></screen>
           gtk4-demo,
           gtk4-demo-application,
           gtk4-encode-symbolic-svg,
-          gtk4-icon-browser,
+          <!--gtk4-icon-browser,-->
+          gtk4-image-tool,
           gtk4-launch,
           gtk4-node-editor,
+          gtk4-path-editor,
           gtk4-print-editor,
           gtk4-query-settings,
+          gtk4-rendernode-tool,
           gtk4-update-icon-cache, and
           gtk4-widget-factory
         </seg>
@@ -467,6 +477,7 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
+ <!-- Not seen in 4.18.2
       <varlistentry id="gtk4-icon-browser">
         <term><command>gtk4-icon-browser</command></term>
         <listitem>
@@ -477,6 +488,21 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="gtk4 gtk4-icon-browser">
             <primary sortas="b-gtk4-icon-browser">gtk4-icon-browser</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+-->
+
+      <varlistentry id="gtk4-image-tool">
+        <term><command>gtk4-image-tool</command></term>
+        <listitem>
+          <para>
+            performs various operations on images, including comparisons,
+            conversions, listing information on the images, relabeling the
+            images, and showing the images
+          </para>
+          <indexterm zone="gtk4 gtk4-image-tool">
+            <primary sortas="b-gtk4-image-tool">gtk4-image-tool</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -509,6 +535,20 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="gtk4-path-tool">
+        <term><command>gtk4-path-tool</command></term>
+        <listitem>
+          <para>
+            performs various tasks on paths, including decompositions,
+            reversals, restrictions, rendering, displaying the path, and
+            listing information about the paths
+          </para>
+          <indexterm zone="gtk4 gtk4-path-tool">
+            <primary sortas="b-gtk4-path-tool">gtk4-path-tool</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="gtk4-print-editor">
         <term><command>gtk4-print-editor</command></term>
         <listitem>
@@ -530,6 +570,20 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="gtk4 gtk4-query-settings">
             <primary sortas="b-gtk4-query-settings">gtk4-query-settings</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gtk4-rendernode-tool">
+        <term><command>gtk4-rendernode-tool</command></term>
+        <listitem>
+          <para>
+            performs various tasks on GTK render nodes, including benchmarks,
+            comparisions, extracting data URLs, displaying information about
+            the nodes, displaying the nodes, and taking screenshots of nodes
+          </para>
+          <indexterm zone="gtk4 gtk4-rendernode-tool">
+            <primary sortas="b-gtk4-rendernode-tool">gtk4-rendernode-tool</primary>
           </indexterm>
         </listitem>
       </varlistentry>
