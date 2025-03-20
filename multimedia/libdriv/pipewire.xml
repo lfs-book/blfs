@@ -133,15 +133,15 @@
   <sect2 role="installation">
     <title>Installation of Pipewire</title>
 
-<!--
-    <para>
-      If building <xref linkend='snapshot'/>, apply a patch to fix an issue
-      causing <xref linkend='snapshot'/> fail to play stream from some
-      cameras:
+    <!-- Upstream MR #2308 -->
+    <para revision='systemd'>
+      If building <xref linkend='snapshot'/>, fix an issue
+      causing <xref linkend='snapshot'/> fails to detect any camera after
+      a user logged out and then logged in again:
     </para>
 
-    <screen><userinput>patch -Np1 -i ../pipewire-&pipewire-version;-upstream_fix-1.patch</userinput></screen>
--->
+    <screen revision='systemd'><userinput>sed '/^Requires=pipewire.socket$/s/$/ dbus.service/' \
+    -i src/daemon/systemd/system/pipewire.service.in</userinput></screen>
 
     <para>
       Install <application>pipewire</application> by running the following
