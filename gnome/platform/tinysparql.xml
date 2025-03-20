@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY tinysparql-download-http
-           "&gnome-download-http;/tinysparql/3.8/tinysparql-&tinysparql-version;.tar.xz">
+           "&gnome-download-http;/tinysparql/3.9/tinysparql-&tinysparql-version;.tar.xz">
   <!ENTITY tinysparql-download-ftp  " ">
-  <!ENTITY tinysparql-md5sum        "9c3ab085fe15b55acfd956c039819a00">
+  <!ENTITY tinysparql-md5sum        "9b5a0e4b2f8baeb19f7f57eaf08eee47">
   <!ENTITY tinysparql-size          "2.0 MB">
-  <!ENTITY tinysparql-buildsize     "53 MB (with tests)">
+  <!ENTITY tinysparql-buildsize     "62 MB (with tests)">
   <!ENTITY tinysparql-time          "0.4 SBU (with tests)">
 ]>
 
@@ -93,8 +93,9 @@
       the pre-built doc is shipped in tarball and will be installed
       <xref linkend="gi-docgen"/>
 -->
-      <xref linkend="graphviz"/>, and
-      <ulink url="https://github.com/scop/bash-completion/">bash-completion</ulink>
+      <xref linkend="graphviz"/>,
+      <ulink url="https://github.com/scop/bash-completion/">bash-completion</ulink>, and
+      <ulink url="https://snowballstem.org/">libstemmer</ulink>
     </para>
 
   </sect2>
@@ -116,9 +117,9 @@
       Fix the location to install the documentation into:
     </para>
 
-<screen><userinput>mv docs/reference/libtracker-sparql/doc/{Tsparql-3.0,tinysparql-&tinysparql-version;} &amp;&amp;
-sed '/docs_name/s/Tsparql-3.0/tinysparql-&tinysparql-version;/' \
-    -i docs/reference/libtracker-sparql/meson.build</userinput></screen>
+<screen><userinput>sed -e "s/'generate'/&amp;, '--no-namespace-dir'/"         \
+    -e "/--output-dir/s/@OUTPUT@/&amp;\/tinysparql-&tinysparql-version;/" \
+    -i docs/reference/meson.build</userinput></screen>
 
     <para>
       Install <application>Tinysparql</application> by running the following
@@ -152,7 +153,7 @@ ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>meson configure -D debug=true
-      &amp;&amp; LC_ALL=C ninja test</command>.
+      &amp;&amp; LC_ALL=C.UTF-8 ninja test</command>.
       The test suite should be run from a graphical session. One test is known
       to fail due to the manual pages not being generated.
     </para>
