@@ -82,15 +82,15 @@
       <xref linkend="openssh"/>
     </para>
 
-<!-- Meson doesn't mention any of these
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <ulink url="https://people.redhat.com/sgrubb/libcap-ng/">libcap-ng</ulink>
+<!-- Meson doesn't mention any of these
       <xref linkend="gnupg2"/>,
       <xref linkend="valgrind"/>,
       <ulink url="https://github.com/linux-test-project/lcov">LCOV</ulink>, and
-      <ulink url="https://people.redhat.com/sgrubb/libcap-ng/">libcap-ng</ulink>
-    </para>
 -->
+    </para>
 
   </sect2>
 
@@ -102,7 +102,19 @@
       following commands:
     </para>
 
-<screen><userinput>sed -i 's:"/desktop:"/org:' schema/*.xml &amp;&amp;
+<screen revision='sysv'><userinput>sed -i 's:"/desktop:"/org:' schema/*.xml &amp;&amp;
+
+mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      -D systemd=disabled \
+      -D ssh-agent=true   &amp;&amp;
+ninja</userinput></screen>
+
+<screen revision='systemd'><userinput>sed -i 's:"/desktop:"/org:' schema/*.xml &amp;&amp;
 
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
@@ -131,9 +143,15 @@ ninja</userinput></screen>
       deprecated entry in the schema template.
     </para>
 
+    <para revision="sysv">
+      <parameter>-D systemd=disabled</parameter>: This switch prevents
+      a failure due to the build system requiring
+      <application>systemd</application> by default.
+    </para>
+
     <para>
       <parameter>-D ssh-agent=true</parameter>: This switch enables the SSH
-      agent built in to gnome-keyring instead of the one in GCR. This is done
+      agent built into gnome-keyring instead of the one in GCR. This is done
       due to bugs in gcr which cause the agent to not work correctly.
       <!--https://bugzilla.redhat.com/show_bug.cgi?id=2250704-->
     </para>
