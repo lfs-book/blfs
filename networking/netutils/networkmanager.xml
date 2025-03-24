@@ -466,6 +466,20 @@ EOF</userinput></screen>
           removed, and the interface brought down prior to starting
           <application>Network Manager</application>.
         </para>
+       
+        <para revision="sysv">
+          The easiest way to do this is to remove S20network from
+          <filename>/etc/rc.d/rc3.d/</filename> and <filename>/etc/rc.d/rc5.d/</filename>.
+        </para>
+
+        <para revision="sysv">
+          Also, if using <xref linkend="dhcpcd"/>, be careful about timing issues if
+          setting up network applications such as ntpd, nfs, or sshd. It takes 
+          several seconds for dhcpcd to initialize the network interface and if
+          these applications start before the network interface is completely 
+          initialized, these applications may have to be started manually.
+        </para>
+
       </note>
 
       <indexterm zone="NetworkManager NetworkManager-init">
@@ -475,22 +489,7 @@ EOF</userinput></screen>
 <screen role="root" revision="sysv"><userinput>make install-networkmanager</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl enable NetworkManager</userinput></screen>
-<!-- The below instruction is obsolete. NetworkManager-wait-online is now
-     enabled by default when enabling NetworkManager. -->
-<!--
-      <para revision="systemd">
-        <application>NetworkManager</application> also ships a systemd unit
-        called <filename>NetworkManager-wait-online.service</filename> which
-        can be used to prevent services that require network connectivity
-        from starting until <application>NetworkManager</application> has
-        established the connection. To enable it, run the following command
-        as the <systemitem class="username">root</systemitem> user:
-      </para>
 
-<screen role="root" revision="systemd"><userinput>systemctl enable NetworkManager-wait-online</userinput></screen>
-   -->
-      <!-- As such, let's now provide instructions on how to disable that
-           behavior, for those who wish to do so. -->
       <para revision="systemd">
         Starting in version 1.11.2 of <application>NetworkManager</application>,
         a systemd unit named <filename>NetworkManager-wait-online.service</filename>
