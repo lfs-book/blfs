@@ -145,6 +145,7 @@ cd    build &amp;&amp;
 
 cmake -D CMAKE_BUILD_TYPE=Release                       \
       -D CMAKE_INSTALL_PREFIX=/usr                      \
+      -D CMAKE_POLICY_VERSION_MINIMUM=3.5               \
       -D GRN_LOG_PATH=/var/log/groonga.log              \
       -D INSTALL_DOCDIR=share/doc/mariadb-&mariadb-version;        \
       -D INSTALL_DOCREADMEDIR=share/doc/mariadb-&mariadb-version;  \
@@ -164,6 +165,7 @@ cmake -D CMAKE_BUILD_TYPE=Release                       \
       -D WITH_EMBEDDED_SERVER=ON                        \
       -D SKIP_TESTS=ON                                  \
       -D TOKUDB_OK=0                                    \
+      -W no-dev                                         \
       .. &amp;&amp;
 make</userinput></screen>
 
@@ -206,6 +208,13 @@ mv -v /usr/share/user_map.conf /etc/security</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
+      <parameter>-D CMAKE_POLICY_VERSION_MINIMUM=3.5</parameter>: This switch
+      allows <application>MariaDB</application> to build with CMake 4.0 and
+      later by working around some removed features.
+      <!-- https://jira.mariadb.org/browse/MDEV-36422 -->
+    </para>
+
+    <para>
       <parameter>-D WITH_EMBEDDED_SERVER=ON</parameter>: This switch enables
       compiling the embedded server library needed by certain applications,
       such as <application>Amarok</application>.
@@ -226,6 +235,11 @@ mv -v /usr/share/user_map.conf /etc/security</userinput></screen>
       <option>-D WITHOUT_SERVER=ON</option>: Use this
       switch if you don't want the server and would like to build the client
       only.
+    </para>
+
+    <para>
+      <parameter>-W no-dev</parameter>: This switch turns off some warnings
+      that are only useful for developers.
     </para>
 
     <note><para>
