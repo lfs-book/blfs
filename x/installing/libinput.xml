@@ -92,8 +92,10 @@
         <xref linkend="graphviz"/>,
         <xref linkend="recommonmark"/>, and
         <xref linkend="sphinx_rtd_theme"/> (required to build documentation),
-        <xref linkend="pyparsing"/> (for one non-root test), and
-        <xref linkend="pytest"/> (for another non-root test)
+        <xref linkend="pyparsing"/> (for one non-root test),
+        <xref linkend="pytest"/> (for another non-root test), and
+        <ulink url='https://libcheck.github.io/check/'>check</ulink>
+        (for another non-root test)
       </para>
 
     </sect3>
@@ -161,23 +163,13 @@ meson setup ..                  \
       -D udev-dir=/usr/lib/udev &amp;&amp;
 ninja</userinput></screen>
 
-      <note>
-        <para>
-          If you want to run the standard test suite, remove -D tests from the
-          <command>meson</command> command above. Please read <quote>Kernel
-          Configuration for Running the Libinput Test Suite</quote> (above).
-        </para>
-
-        <para>
-          If you have decided the run the standard test suite, you can run the
-          tests <emphasis>as the root user</emphasis> by executing:
-          <command>ninja test</command>. There are over 30 tests and all should
-          pass if you installed the optional dependencies. However, you can run
-          6 minor tests as the regular user by running the same command,
-          although you will not need to remove the -D tests parameter. The
-          test measurements are based off of those tests alone.
-        </para>
-      </note>
+      <para>
+        To test the package, issue: <command>meson configure -D tests=true
+        &amp;&amp; ninja test</command>.
+        Many tests are skipped unless running the test suite as the
+        &root; user.  To run those tests, as the &root; user issue:
+        <command>meson test --suite=root</command>.
+      </para>
 
       <para>
         Now, as the <systemitem class="username">root</systemitem> user:
