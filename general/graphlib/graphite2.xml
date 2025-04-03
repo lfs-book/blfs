@@ -129,6 +129,18 @@
 
 <screen><userinput>sed -i '/cmptest/d' tests/CMakeLists.txt</userinput></screen>
 
+<!-- https://github.com/silnrsi/graphite/pull/92 with modifications for
+     preventing the usage of PythonInterp and removing warnings by using a
+     newer version of CMake as the minimum. -->
+    <para>
+      Fix building this package with CMake 4.0 by updating it's syntax to
+      conform to newer versions of CMake:
+    </para>
+
+<screen><userinput remap="pre">sed -i '/cmake_policy(SET CMP0012 NEW)/d' CMakeLists.txt &amp;&amp;
+sed -i 's/PythonInterp/Python3/' CMakeLists.txt          &amp;&amp;
+find . -name CMakeLists.txt | xargs sed -i 's/VERSION 2.8.0 FATAL_ERROR/VERSION 4.0.0/'</userinput></screen>
+
     <para>
       Install <application>Graphite2</application> by running the following
       commands:
