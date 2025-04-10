@@ -245,12 +245,14 @@ ln -sfnv qt-&qt6-version; /opt/qt6</userinput></screen>
 <screen><userinput>patch -Np1 -i ../qt-everywhere-src-&qt6-version;-protobuf_30-1.patch</userinput></screen>
 
     <para>
-      Disable a conflicting declaration on i686 systems:
+      Disable a conflicting declaration on i686 systems and fix a build error
+      due to SIMD intrinsics in QtMultimedia:
     </para>
 
 <screen><userinput>if [ "$(uname -m)" == "i686" ]; then
     sed -e "/^#elif defined(Q_CC_GNU_ONLY)/s/.*/&amp; \&amp;\&amp; 0/" \
-        -i qtbase/src/corelib/global/qtypes.h
+         -i qtbase/src/corelib/global/qtypes.h &amp;&amp;
+    export CFLAGS+="-DDISABLE_SIMD -DPFFFT_SIMD_DISABLE"
 fi</userinput></screen>
 
     <para>
