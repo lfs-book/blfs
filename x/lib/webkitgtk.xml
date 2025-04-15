@@ -6,10 +6,10 @@
 
   <!ENTITY webkitgtk-download-http "https://webkitgtk.org/releases/webkitgtk-&webkitgtk-version;.tar.xz">
   <!ENTITY webkitgtk-download-ftp  " ">
-  <!ENTITY webkitgtk-md5sum        "a140f819d85111dd67e103850532187f">
+  <!ENTITY webkitgtk-md5sum        "dce4acd27a743eb4be03ab4a7cd8353f">
   <!ENTITY webkitgtk-size          "42 MB">
   <!ENTITY webkitgtk-buildsize     "1.5 GB (182 MB installed, add 177 MB for GTK-4)">
-  <!ENTITY webkitgtk-time          "23 SBU (for GTK-3, using parallelism=8, add 23 SBU for GTK-4)">
+  <!ENTITY webkitgtk-time          "24 SBU (for GTK-3, using parallelism=8, add 24 SBU for GTK-4)">
 
   <!ENTITY libbacktrace
     "<ulink url='https://github.com/ianlancetaylor/libbacktrace'>libbacktrace</ulink>">
@@ -71,6 +71,7 @@
       </listitem>
     </itemizedlist>
 
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -80,6 +81,7 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">WebKitGTK Dependencies</bridgehead>
 
@@ -152,15 +154,16 @@
         same system. We give build instructions for both cases below, but
         the only difference is the setting of <command>-D USE_GTK4</command>
       </para>
+
+      <para>
+        If you are building this package on a 32-bit system, or a 64-bit system
+        with less than 16GB of memory, you must add the
+        <command>-D CMAKE_CXX_FLAGS_RELEASE="-O2 -DNDEBUG"</command> option to
+        the CMake line to prevent build failures relating to running out of
+        memory. Performance will be impacted slightly, but not at a level where
+        it is noticable during normal usage.
+      </para>
     </important>
-
-    <!-- already merged upstream -->
-    <para>
-      First, fix a build failure that occurs due to gstreamer not being built
-      with debugging support enabled:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../webkitgtk-&webkitgtk-version;-build_fix-1.patch</userinput></screen>
 
     <para>
       If you want to install the GTK+-3 version of
