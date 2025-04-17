@@ -274,10 +274,28 @@
       </para>
 
       <para>
+        For the GPUs supported by the Iris Gallium3D driver, with
+        <option>CONFIG_DRM_I915</option> enabled and
+        <option>CONFIG_DRM_XE_FORCE_PROBE</option> set to
+        the string <literal>*</literal>, the i915 driver will be used
+        if it supports the GPU, and the Xe driver will be used if it
+        supports the GPU but the i915 driver does not.  If you are sure
+        your GPU is supported by the i915 driver, you can disable the
+        Xe driver to save some build time.  If your GPU is supported
+        by both drivers and you want to use the Xe driver, you can disable
+        the i915 driver, or make the i915 driver deny your GPU via the
+        <option>CONFIG_DRM_I915_FORCE_PROBE</option> option, for example
+        setting it to <literal>!7d55</literal> would make i915 deny the
+        Meteor Lake integrated GPU (of which the PCI ID is
+        <literal>8086:7d55</literal>), leaving it for the Xe driver.
+      </para>
+
+      <para>
         <option>CONFIG_DRM_RADEON</option>,
         <option>CONFIG_DRM_AMDGPU</option>,
-        <option>CONFIG_DRM_NOUVEAU</option>, and
-        <option>CONFIG_DRM_I915</option> may require firmware.
+        <option>CONFIG_DRM_NOUVEAU</option>,
+        <option>CONFIG_DRM_I915</option>,
+        and <option>CONFIG_DRM_XE</option> may require firmware.
         See <xref linkend='postlfs-firmware'/> for details.
       </para>
 
