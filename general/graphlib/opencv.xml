@@ -6,13 +6,13 @@
 
   <!ENTITY opencv-download-http     "https://github.com/opencv/opencv/archive/&opencv-version;/opencv-&opencv-version;.tar.gz">
   <!ENTITY opencv-download-ftp      " ">
-  <!ENTITY opencv-md5sum            "adaf23e87339e6df6d50d68001138ccc">
+  <!ENTITY opencv-md5sum            "f35fbd46350cc677af13e198805b58f7">
   <!ENTITY opencv-size              "91 MB">
-  <!ENTITY opencv-buildsize         "698 MB (with opencv-contrib)">
-  <!ENTITY opencv-time              "3.0 SBU (using parallelism=8)">
+  <!ENTITY opencv-buildsize         "832 MB (with opencv-contrib)">
+  <!ENTITY opencv-time              "3.6 SBU (using parallelism=8)">
 
-  <!ENTITY opencv-contrib-download "https://github.com/opencv/opencv_contrib/archive/&opencv-version;/opencv_contrib-&opencv-contrib-version;.tar.gz">
-  <!ENTITY opencv-contrib-md5sum   "5a4bc09177b74813c72648c117783dba">
+  <!ENTITY opencv-contrib-download "https://github.com/opencv/opencv_contrib/archive/&opencv-contrib-version;/opencv_contrib-&opencv-contrib-version;.tar.gz">
+  <!ENTITY opencv-contrib-md5sum   "7dd4bc67eb67faff96ce71745a5e3abe">
   <!ENTITY opencv-contrib-size     "53 MB">
 ]>
 
@@ -34,7 +34,7 @@
       mainly aimed at real-time computer vision.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -103,7 +103,7 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="cmake"/> and
-      <xref linkend="unzip"/>
+      <xref linkend="libarchive"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -152,6 +152,17 @@
 
 <screen><userinput>tar -xf ../opencv_contrib-&opencv-contrib-version;.tar.gz</userinput></screen>
 
+    <!-- Editors: This is needed because CMake gets run again once during the
+         build process to generate the pkg-config file, and it will fail even
+         when the CMake option gets passed to the main CMake because those
+         options aren't inherited by the instance of CMake called during
+         the build process. -->
+    <para>
+      Fix a build problem that occurs with CMake 4.0:
+    </para>
+
+<screen><userinput remap="pre">sed -i 's/VERSION 2.8.12.2/VERSION 4.0.0/' cmake/OpenCVGenPkgconfig.cmake</userinput></screen>
+
     <para>
       Install <application>opencv</application> by running the following
       commands:
@@ -160,16 +171,18 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr      \
-      -D CMAKE_BUILD_TYPE=Release       \
-      -D ENABLE_CXX11=ON                \
-      -D BUILD_PERF_TESTS=OFF           \
-      -D WITH_XINE=ON                   \
-      -D BUILD_TESTS=OFF                \
-      -D ENABLE_PRECOMPILED_HEADERS=OFF \
-      -D CMAKE_SKIP_INSTALL_RPATH=ON    \
-      -D BUILD_WITH_DEBUG_INFO=OFF      \
-      -W no-dev  ..                     &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+      -D CMAKE_BUILD_TYPE=Release         \
+      -D ENABLE_CXX11=ON                  \
+      -D BUILD_PERF_TESTS=OFF             \
+      -D WITH_XINE=ON                     \
+      -D BUILD_TESTS=OFF                  \
+      -D ENABLE_PRECOMPILED_HEADERS=OFF   \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON      \
+      -D BUILD_WITH_DEBUG_INFO=OFF        \
+      -D OPENCV_GENERATE_PKGCONFIG=ON     \
+      -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+      -W no-dev  ..                       &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -188,21 +201,32 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-policy-version.xml"/>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/cmake-skip-install-rpath.xml"/>
 
     <para>
-      <parameter>-D WITH_XINE=ON</parameter>: This option instructs the make
+      <parameter>-D WITH_XINE=ON</parameter>: This switch instructs the make
       procedure to use <xref linkend="xine-lib"/>.
     </para>
 
     <para>
-      <parameter>-D ENABLE_PRECOMPILED_HEADERS=OFF</parameter>: This option
+      <parameter>-D ENABLE_PRECOMPILED_HEADERS=OFF</parameter>: This switch
       is needed for compatibility with gcc-6.1 and later.
     </para>
 
     <para>
+      <parameter>-D OPENCV_GENERATE_PKGCONFIG=ON</parameter>: This switch tells
+      the build system to generate a pkg-config file for other packages to
+      detect and link to the libraries installed by this package.
+    </para>
+
+    <para>
       <option>-D OPENCV_EXTRA_MODULES_PATH=../opencv_contrib-&opencv-version;/modules</option>:
-      instructs the build system to build additional modules.
+      instructs the build system to build additional modules. Some packages in
+      BLFS (such as <xref linkend="gst10-plugins-bad" role="nodep"/>) need these
+      modules to build components that use OpenCV.
     </para>
 
   </sect2>

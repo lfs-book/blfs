@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY gnome-shell-download-http
-           "&gnome-download-http;/gnome-shell/&gnome-46;/gnome-shell-&gnome-shell-version;.tar.xz">
+           "&gnome-download-http;/gnome-shell/&gnome-48;/gnome-shell-&gnome-shell-version;.tar.xz">
   <!ENTITY gnome-shell-download-ftp  " ">
-  <!ENTITY gnome-shell-md5sum        "44b69588f138be1e70fbe307eff3346f">
-  <!ENTITY gnome-shell-size          "2.0 MB">
-  <!ENTITY gnome-shell-buildsize     "62 MB (with tests)">
-  <!ENTITY gnome-shell-time          "0.3 SBU (Using parallelism=4; with tests)">
+  <!ENTITY gnome-shell-md5sum        "c6c144bfb1c9c386f9b1a219cc5562ac">
+  <!ENTITY gnome-shell-size          "2.1 MB">
+  <!ENTITY gnome-shell-buildsize     "74 MB (with tests)">
+  <!ENTITY gnome-shell-time          "0.1 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="gnome-shell" xreflabel="gnome-shell-&gnome-shell-version;">
@@ -31,7 +31,7 @@
       the <application>GNOME</application> Desktop environment.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,8 +77,7 @@
       <xref linkend="gnome-desktop"/>,
       <xref linkend="ibus"/>,
       <xref linkend="mutter"/>,
-      <xref linkend="polkit"/>,
-      <xref linkend="sassc"/>, and
+      <xref linkend="polkit"/>, and
       <xref linkend="startup-notification"/>
     </para>
 
@@ -106,9 +105,7 @@
         <xref role='runtime' linkend="elogind"/>,
       </phrase>
       <xref role="runtime" linkend="gdm"/>,
-      <xref role="runtime" linkend="gnome-backgrounds"/>,
       <xref role="runtime" linkend="gnome-control-center"/>,
-      <xref role="runtime" linkend="gnome-menus"/>,
       <phrase revision="sysv">and</phrase>
       <xref role="runtime" linkend="libgweather"/>
       <phrase revision="systemd">, and</phrase>
@@ -117,25 +114,16 @@
       </phrase>
     </para>
 
-    <bridgehead renderas="sect4"
-                revision="sysv">Recommended Runtime Dependency</bridgehead>
-    <para role="recommended" revision="sysv">
-      <xref linkend="blocaled" role="runtime"/>
+    <bridgehead renderas="sect4">Recommended Runtime Dependencies</bridgehead>
+    <para role="recommended">
+      <phrase revision='sysv'><xref linkend="blocaled" role="runtime"/>
+      and </phrase><xref role="runtime" linkend="gnome-menus"/>
     </para>
 
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of GNOME Shell</title>
-
-<!--
-    <para>
-      First, fix a regression that appears when using glib-2.80.2 or later:
-    </para>
-
-<screen><userinput remap="pre">sed -i 's/gnome.ScreenCast.Stream/gnome.Mutter.Screencast/' \
-        js/dbusServices/screencast/screencastService.js</userinput></screen>
--->
 
     <para>
       Install <application>GNOME Shell</application> by running the
@@ -162,11 +150,9 @@ meson setup --prefix=/usr       \
 ninja</userinput></screen>
 
     <para>
-      To test the results, you need to remove the
-      <parameter>-D tests=false</parameter> switch, and to have <xref
-      linkend="mutter"/> compiled and installed with tests also.
-
-      To run the tests, issue: <command>ninja test</command>. You must be
+      To run the tests, ensure <application>Mutter</application> is installed
+      after running its test suite, and issue: <command>meson configure -D
+      tests=true &amp;&amp; ninja test</command>. You must be
       running an X session to run the tests. Some will fail if <xref
       linkend="gdm"/> is not installed. <phrase revision="sysv">Several
       more tests may fail in the Sysv environment.</phrase>
@@ -210,12 +196,6 @@ ninja</userinput></screen>
     <para revision="sysv">
       <parameter>-D systemd=false</parameter>: Prevents installing systemd
       files, which are not needed in this version of BLFS.
-    </para>
-
-    <para>
-      <parameter>-D tests=false</parameter>: Remove this switch if you want
-      to build the tests. However, <command>meson</command> will fail if the
-      <xref linkend="mutter"/> tests are not installed.
     </para>
 
     <para>

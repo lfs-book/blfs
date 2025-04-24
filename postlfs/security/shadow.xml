@@ -6,9 +6,9 @@
 
   <!ENTITY shadow-download-http "https://github.com/shadow-maint/shadow/releases/download/&shadow-version;/shadow-&shadow-version;.tar.xz">
   <!ENTITY shadow-download-ftp  " ">
-  <!ENTITY shadow-md5sum        "eb70bad3316d08f0d3bb3d4bbeccb3b4">
-  <!ENTITY shadow-size          "2.1 MB">
-  <!ENTITY shadow-buildsize     "100 MB">
+  <!ENTITY shadow-md5sum        "469666ea82c203ce5b0116d26b3793a9">
+  <!ENTITY shadow-size          "2.2 MB">
+  <!ENTITY shadow-buildsize     "103 MB">
   <!ENTITY shadow-time          "0.2 SBU">
 ]>
 
@@ -28,16 +28,13 @@
     <para>
       <application>Shadow</application> was indeed installed in LFS and there is
       no reason to reinstall it unless you installed
-      <application>CrackLib</application> or
       <application>Linux-PAM</application> after your LFS system was completed.
-      If you have installed <application>CrackLib</application> after LFS, then
-      reinstalling <application>Shadow</application> will enable strong password
-      support. If you have installed <application>Linux-PAM</application>,
+      With <application>Linux-PAM</application> installed,
       reinstalling <application>Shadow</application> will allow programs such as
       <command>login</command> and <command>su</command> to utilize PAM.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,8 +84,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="linux-pam"/> or
-      <xref role="nodep" linkend="cracklib"/>
+      <xref linkend="linux-pam"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -109,19 +105,8 @@
         <application>Shadow</application> is being reinstalled to support the
         <application>Linux-PAM</application> installation.
       </para>
-
-      <para>
-        If you are reinstalling <application>Shadow</application> to provide
-        strong password support using the <application>CrackLib</application>
-        library without using <application>Linux-PAM</application>, ensure you
-        add the <parameter>--with-libcrack</parameter> parameter to the
-        <command>configure</command> script below and also issue the following
-        command:
-      </para>
-
-<screen role="nodump"><userinput>sed -i 's@DICTPATH.*@DICTPATH\t/lib/cracklib/pw_dict@' etc/login.defs</userinput></screen>
     </important>
-
+<!--
     <warning>
       <para>
         If reinstalling shadow for a version update, be sure to 
@@ -130,7 +115,7 @@
         <filename class="directory">/etc/pam.d/</filename>.
       </para>
     </warning>
-
+-->
     <para>
       Reinstall <application>Shadow</application> by running the following
       commands:
@@ -267,11 +252,7 @@ make</userinput></screen>
       <para>
         The rest of this page is devoted to configuring
         <application>Shadow</application> to work properly with
-        <application>Linux-PAM</application>. If you do not have
-        <application>Linux-PAM</application> installed, and you reinstalled
-        <application>Shadow</application> to support strong passwords via the
-        <application>CrackLib</application> library, no further configuration is
-        required.
+        <application>Linux-PAM</application>.
       </para>
     </note>
 
@@ -320,9 +301,8 @@ make</userinput></screen>
 
       <itemizedlist spacing="compact">
         <listitem>
-          <!-- Old URL redirects to here. -->
           <para>
-            <ulink url="https://deer-run.com/users/hal/linux_passwords_pam.html"/>
+            <ulink url="http://web.archive.org/web/20240812102759/https://deer-run.com/users/hal/linux_passwords_pam.html"/>
           </para>
         </listitem>
       </itemizedlist>
@@ -357,7 +337,6 @@ for FUNCTION in FAIL_DELAY               \
                 FTMP_FILE NOLOGINS_FILE  \
                 ENV_HZ PASS_MIN_LEN      \
                 SU_WHEEL_ONLY            \
-                CRACKLIB_DICTPATH        \
                 PASS_CHANGE_TRIES        \
                 PASS_ALWAYS_WARN         \
                 CHFN_AUTH ENCRYPT_METHOD \

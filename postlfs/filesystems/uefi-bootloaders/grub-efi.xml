@@ -35,7 +35,7 @@
       is not enabled for GRUB built in LFS.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,7 +83,7 @@
     </itemizedlist>
     -->
     <itemizedlist spacing="compact">
-      <title>Unicode font data used to display GRUB menu</title>
+      <title>Optional Unicode font data for the GRUB menu</title>
       <listitem>
         <para>
           Download (HTTP): <ulink url="&unifont-download-http;"/>
@@ -101,27 +101,25 @@
       </listitem>
     </itemizedlist>
 
-    <itemizedlist spacing="compact">
-      <title>GCC (only needed if building on 32-bit LFS)</title>
-      <listitem>
-        <para>
-          Refer to <xref linkend='gcc'/> page for download info.
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">GRUB Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref role="runtime" linkend="efibootmgr"/> (runtime) and
-      <xref linkend="freetype2"/>
+      <xref role="runtime" linkend="efibootmgr"/> (runtime)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="lvm2"/> and
-      <xref linkend="fuse3"/>
+      <xref linkend="freetype2"/>,
+      <xref linkend="fuse3"/>, and
+      <xref linkend="lvm2"/>
+    </para>
+
+    <para role="nodep">
+      If you are building GRUB for a 32-bit LFS system to boot it on a
+      64-bit UEFI firmware, rebuild <xref linkend="gcc"/> with the
+      <parameter>--enable-targets=all</parameter> switch appended to
+      the <command>../configure</command> command.
     </para>
   </sect2>
 
@@ -130,7 +128,9 @@
 
     <para>
       First, install font data as the
-      <systemitem class="username">root</systemitem> user:
+      <systemitem class="username">root</systemitem> user
+      if you've downloaded it and you've installed the optional
+      dependency <xref linkend='freetype2'/>:
     </para>
 
 <screen role="root"><userinput>mkdir -pv /usr/share/fonts/unifont &amp;&amp;
@@ -153,24 +153,6 @@ gunzip -c ../unifont-&unifont-version;.pcf.gz > /usr/share/fonts/unifont/unifont
 
     <screen><userinput>echo <literal>depends bli part_gpt</literal> > grub-core/extra_deps.lst</userinput></screen>
 
-    <para>If you are running a 32-bit LFS, prepare a 64-bit compiler:</para>
-
-<!-- 'literal' is used deliberately to show this is only for 32-bit LFS -->
-<screen><userinput>case $(uname -m) in i?86 )
-    <literal>tar xf ../gcc-&gcc-version;.tar.xz
-    mkdir gcc-&gcc-version;/build
-    pushd gcc-&gcc-version;/build
-        ../configure --prefix=$PWD/../../x86_64-gcc \
-                     --target=x86_64-linux-gnu      \
-                     --with-system-zlib             \
-                     --enable-languages=c,c++       \
-                     --with-ld=/usr/bin/ld
-        make all-gcc
-        make install-gcc
-    popd
-    export TARGET_CC=$PWD/x86_64-gcc/bin/x86_64-linux-gnu-gcc</literal>
-esac</userinput></screen>
-
     <para>
       Build <application>GRUB</application> with the following commands:
     </para>
@@ -178,11 +160,9 @@ esac</userinput></screen>
 <screen><userinput>./configure --prefix=/usr        \
             --sysconfdir=/etc    \
             --disable-efiemu     \
-            --enable-grub-mkfont \
             --with-platform=efi  \
             --target=x86_64      \
             --disable-werror     &amp;&amp;
-unset TARGET_CC &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -191,7 +171,8 @@ make</userinput></screen>
 
     <para>
       Now, if you've skipped the LFS GRUB package, as the
-      <systemitem class="username">root</systemitem> user:
+      <systemitem class="username">root</systemitem> user install GRUB
+      and skip the remaining instructions in this section:
     </para>
 
 <screen role="nodump"><userinput>make install &amp;&amp;
@@ -202,25 +183,34 @@ mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions</userin
       the components not installed from the LFS GRUB package instead:
     </para>
 
-<screen role="root"><userinput>make DESTDIR=$PWD/dest install
-cp -av dest/usr/lib/grub/x86_64-efi -T /usr/lib/grub/x86_64-efi
-cp -av dest/usr/share/grub/*.{pf2,h}   /usr/share/grub
-cp -av dest/usr/bin/grub-mkfont        /usr/bin</userinput></screen>
+    <screen role="root"><userinput>make -C grub-core install</userinput></screen>
 
     <para>
-      If the optional dependencies are installed, also install the
-      <command>grub-mount</command> program:
+      If you've installed the optional font data and
+      <xref linkend='freetype2'/>, install the
+      <command>grub-mkfont</command> program and the font data files
+      (without the font data files GRUB can still function normally,
+      but the boot menu will be displayed using a coarse font or in a
+      smaller region on the screen).
     </para>
 
-<screen role="nodump"><userinput>cp -av dest/usr/bin/grub-mount /usr/bin</userinput></screen>
+<screen role="nodump"><userinput>install -vm755 grub-mkfont /usr/bin/ &amp;&amp;
+install -vm644 ascii.h widthspec.h *.pf2 /usr/share/grub/</userinput></screen>
+
+    <para>
+      If both <xref linkend='fuse3'/> and <xref linkend='lvm2'/> are
+      installed, also install the <command>grub-mount</command> program:
+    </para>
+
+<screen role="nodump"><userinput>install -vm755 grub-mount /usr/bin/</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
+<!--
     <para>
-      <parameter>--enable-grub-mkfont</parameter>: Build the tool named
+      <parameter>- -enable-grub-mkfont</parameter>: Build the tool named
       <command>grub-mkfont</command> to generate the font file for the boot
       loader from the font data we've installed.
     </para>
@@ -233,7 +223,7 @@ cp -av dest/usr/bin/grub-mkfont        /usr/bin</userinput></screen>
       any font for the boot loader.  The GRUB boot menu will be displayed
       using a coarse font or in a smaller region on the screen.</para>
     </warning>
-
+-->
     <para>
       <parameter>--with-platform=efi</parameter>: Ensures building GRUB with
       EFI enabled.

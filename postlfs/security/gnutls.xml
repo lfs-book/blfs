@@ -6,10 +6,10 @@
 
   <!ENTITY gnutls-download-http "&gnupg-http;/gnutls/v3.8/gnutls-&gnutls-version;.tar.xz">
   <!ENTITY gnutls-download-ftp  " ">
-  <!ENTITY gnutls-md5sum        "46777802233eb7203d47a8b8880c8c90">
-  <!ENTITY gnutls-size          "6.4 MB">
-  <!ENTITY gnutls-buildsize     "154 MB (add 115 MB for tests)">
-  <!ENTITY gnutls-time          "0.5 SBU (add 1.5 SBU for tests; both using parallelism=8)">
+  <!ENTITY gnutls-md5sum        "33f4c800c20af2983c45223a803da865">
+  <!ENTITY gnutls-size          "6.5 MB">
+  <!ENTITY gnutls-buildsize     "178 MB (add 111 MB for tests)">
+  <!ENTITY gnutls-time          "0.6 SBU (add 1.4 SBU for tests; both using parallelism=8)">
 ]>
 
 <sect1 id="gnutls" xreflabel="GnuTLS-&gnutls-version;">
@@ -53,7 +53,7 @@
       extension, and X.509 and OpenPGP certificate handling.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,12 +89,15 @@
       </listitem>
     </itemizedlist>
 
+<!-- Hopefully we won't need this again, but it is the second time this has
+     happened, so let's keep it commented out.
     <note>
       <para>
         When extracting this package tarball, it expands to the gnutls-3.8.7
         directory, instead of the expected gnutls-3.8.7.1 directory.
       </para>
     </note>
+-->
 
     <bridgehead renderas="sect3">GnuTLS Dependencies</bridgehead>
 
@@ -125,7 +128,9 @@
       <xref linkend="valgrind"/> (used during the test suite),
       <ulink url="&gnu-http;/autogen/">autogen</ulink>,
       <ulink url="https://cmocka.org/">cmocka</ulink> and
-      <ulink url="https://ftp.debian.org/debian/pool/main/d/datefudge/">datefudge</ulink> (used during the test suite if the DANE library is built), and
+      <ulink url="https://ftp.debian.org/debian/pool/main/d/datefudge/">datefudge</ulink> (used during the test suite if the DANE library is built),
+      <ulink url="https://github.com/smuellerDD/leancrypto">leancrypto</ulink>,
+      <ulink url="https://github.com/open-quantum-safe/liboqs">liboqs</ulink>, and
       <ulink url="&sourceforge-dl;/trousers/">Trousers</ulink> (Trusted Platform Module support)
     </para>
 
@@ -161,8 +166,6 @@ make</userinput></screen>
      install time. -->
 
     <para>
-      One test hangs the test procedure.  Disable it:
-      <command>sed '/ocsp-must-staple-connection/d' -i tests/Makefile</command>.
       To test the results, now issue: <command>make check</command>.
     </para>
 
@@ -206,18 +209,19 @@ make</userinput></screen>
     </para>
 
     <para>
-      <option>--without-p11-kit</option>: use this switch if you have not
-      installed <application>p11-kit</application>.
+      <option>--without-p11-kit</option>: Use this switch if you have not
+      installed <xref linkend="p11-kit"/>.
     </para>
 
     <para>
-      <option>--with-included-unistring</option>: uses the bundled version of
-      libunistring, instead of the system one. Use this switch if you have not
-      installed <xref linkend="libunistring"/>.
+      <option>--with-included-unistring</option>: This switch uses the bundled
+      version of libunistring, instead of the system one. Use this switch if
+      you have not installed <xref linkend="libunistring"/>.
     </para>
 
     <para>
-      <option>--disable-dsa</option>: completely disables DSA algorithm support.
+      <option>--disable-dsa</option>: This switch completely disables DSA
+      algorithm support.
     </para>
 
   </sect2>

@@ -7,10 +7,10 @@
   <!ENTITY libsoup3-download-http
            "&gnome-download-http;/libsoup/&libsoup3-minor;/libsoup-&libsoup3-version;.tar.xz">
   <!ENTITY libsoup3-download-ftp  " ">
-  <!ENTITY libsoup3-md5sum        "a63ea04a9686e9e4470b127ffe1eb96b">
+  <!ENTITY libsoup3-md5sum        "181a474d783492e3f5f7cbfb047bcecd">
   <!ENTITY libsoup3-size          "1.5 MB">
-  <!ENTITY libsoup3-buildsize     "38 MB (with tests)">
-  <!ENTITY libsoup3-time          "0.3 SBU (Using parallelism=4; with tests)">
+  <!ENTITY libsoup3-buildsize     "31 MB (with tests)">
+  <!ENTITY libsoup3-time          "0.4 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="libsoup3" xreflabel="libsoup-&libsoup3-version;">
@@ -33,7 +33,7 @@
       it also has an asynchronous API for use in threaded applications.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -123,9 +123,6 @@ cd    build &amp;&amp;
 
 meson setup --prefix=/usr          \
             --buildtype=release    \
-            -D vapi=enabled        \
-            -D gssapi=disabled     \
-            -D sysprof=disabled    \
             --wrap-mode=nofallback \
             ..                     &amp;&amp;
 ninja</userinput></screen>
@@ -152,31 +149,12 @@ ninja</userinput></screen>
       href="../../xincludes/meson-wrap-nofallback.xml"/>
 
     <para>
-      <option>-D vapi=disabled</option>: Use this if you have not installed
-      <application>Vala</application>, e.g. because you are not building
-      <application>GNOME</application>.
-    </para>
-
-    <para>
       <option>-D docs=enabled</option>: If <xref linkend='gi-docgen'/> is
       installed, the API documentation will be built and installed no matter
       if this option is used or not.  This option causes the
       <command>meson</command> command to fail if
       <xref linkend='gi-docgen'/> is not installed.
     </para>
-
-    <para>
-      <parameter>-D gssapi=disabled</parameter>: libsoup3 defaults to building 
-      with GSSAPI support, which requires Kerberos (as does the test suite).
-    </para>
-
-    <para>
-      <parameter>-D sysprof=disabled</parameter>: libsoup3 will automatically
-      download a git version of <ulink url="&sysprof-url;">sysprof</ulink> if
-      git is available or use the installed version if it is present on the
-      system. If you need profiling, remove this option.
-    </para>
-
   </sect2>
 
   <sect2 role="content">

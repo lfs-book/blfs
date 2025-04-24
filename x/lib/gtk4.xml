@@ -6,10 +6,10 @@
 
   <!ENTITY gtk4-download-http "&gnome-download-http;/gtk/&gtk4-minor;/gtk-&gtk4-version;.tar.xz">
   <!ENTITY gtk4-download-ftp  " ">
-  <!ENTITY gtk4-md5sum        "5796b6edd167706aa91865c653413bfe">
-  <!ENTITY gtk4-size          "18 MB">
-  <!ENTITY gtk4-buildsize     "914 MB (with docs; add 143 MB for tests)">
-  <!ENTITY gtk4-time          "1.4 SBU (using parallelism=4; with docs; add 1.7 SBU for tests)">
+  <!ENTITY gtk4-md5sum        "33df21caa24671bbf315b53065c78055">
+  <!ENTITY gtk4-size          "17 MB">
+  <!ENTITY gtk4-buildsize     "890 MB (with docs; add 132 MB for tests)">
+  <!ENTITY gtk4-time          "1.4 SBU (using parallelism=4; with docs; add 3.6 SBU for tests)">
 ]>
 
 <sect1 id="gtk4" xreflabel="GTK-&gtk4-version;">
@@ -29,7 +29,7 @@
       creating graphical user interfaces for applications.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -65,6 +65,19 @@
       </listitem>
     </itemizedlist>
 
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Recommended patch (for fixing PNG colorspace deserialization
+          breakage with libpng-1.6.45 or later): <ulink
+          url="&patch-root;/gtk-&gtk4-version;-libpng_1_6_45-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+-->
+
     <bridgehead renderas="sect3">GTK 4 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -82,7 +95,8 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="adwaita-icon-theme"/> (default for some gtk4 settings keys),
+      <xref role='runtime' linkend="adwaita-icon-theme"/> (runtime,
+      default for some gtk4 settings keys),
       <xref linkend="gst10-plugins-bad"/>,
       <xref linkend="glslc"/>,
       <xref role='runtime' linkend="gst10-plugins-good"/> (runtime,
@@ -94,8 +108,7 @@
 
     <bridgehead renderas="sect4">Recommended (Required if building GNOME)</bridgehead>
     <para role="recommended">
-      &gobject-introspection; and
-      <xref linkend="vulkan-loader"/>,
+      &gobject-introspection;
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -110,7 +123,8 @@
         highlighting of demo source code),
       <xref linkend="libcloudproviders"/>,
       <xref linkend="sassc"/>,
-      <xref linkend="tracker3"/>,
+      <xref linkend="tinysparql"/>,
+      <ulink url="https://github.com/AccessKit/accesskit-c">accesskit-c</ulink>,
       <ulink url="https://github.com/OpenPrinting/cpdb-libs">cpdb</ulink>,
       <ulink url="https://pypi.org/project/pydbus/">pydbus</ulink>
       (for some tests), and
@@ -121,6 +135,15 @@
 
   <sect2 role="installation">
     <title>Installation of GTK 4</title>
+
+<!--
+    <para>
+      Fix the PNG colorspace deserialization breakage with libpng-1.6.45
+      or later:
+    </para>
+
+    <screen><userinput>patch -Np1 -i ../gtk-&gtk4-version;-libpng_1_6_45-1.patch</userinput></screen>
+-->
 
     <para>
       Install <application>GTK 4</application> by running the following
@@ -151,36 +174,22 @@ ninja</userinput></screen>
       To run the tests, issue:
     </para>
 
-    <screen remap='test'><userinput>LIBGL_ALWAYS_SOFTWARE=1 \
-dbus-run-session meson test --setup x11 --no-suite needs-udmabuf</userinput></screen>
+    <screen remap='test'><userinput>env -u{GALLIUM_DRIVER,MESA_LOADER_DRIVER_OVERRIDE}          \
+    LIBGL_ALWAYS_SOFTWARE=1 VK_LOADER_DRIVERS_SELECT='lvp*' \
+    dbus-run-session meson test --setup x11                 \
+                                --no-suite={headless,needs-udmabuf}</userinput></screen>
 
     <para>
-      If you are in a Wayland session, replace the two occurrences of
+      If you are in a Wayland session, replace the one occurrence of
       <literal>x11</literal> with <literal>wayland</literal>.
-      
-      One test is known to fail if
-      <ulink url="https://gitlab.gnome.org/GNOME/cantarell-fonts">Cantrell fonts</ulink>
-      are not installed.
-
-      About a dozen of tests are known to fail with minor (mostly invisible)
-      differences between the render output and the shipped reference image.
-      Issue
-      <command>grep 'not ok' meson-logs/testlog-x11.txt -B3</command>
-      (use <filename>testlog-wayland.txt</filename> if testing in a Wayland
-      session) to list them and the image files showing the render output,
-      the reference output, and the differences.  You may take a look at
-      those images to ensure the differences are insignificant.
-
-      Two <literal>headless</literal> tests are known to fail without the
-      external dependency pydbus installed.
       
       Many tests will fail if <filename>~/.config/gtk-4.0/settings.ini</filename> 
       exists and the gtk-modules line is not commented out.
 
-      Several other tests may fail for unknown reason.
+      Several other tests may fail for unknown reasons.
       
       On systems with NVIDIA graphics cards, the tests may take significantly
-      longer than the above test time.
+      longer.
       <!--
       On some systems as many as 212 tests may fail (out of over 6100) for 
       unknown reasons.
@@ -189,33 +198,7 @@ dbus-run-session meson test --setup x11 --no-suite needs-udmabuf</userinput></sc
       If not please restore them.  - xry111
       -->
     </para>
-<!-- [pierre]: 4.6.0, wayland:   727 OK; 2 Expected Fail;   1 Fail; 1  Skipped
-     [bdubbs]: 4.6.3, x11,       724 OK, 2 Expected Fail,  12 Fail, 1  Skipped
-     [pierre]: 4.6.6, wayland,   738 OK, 2 Expected Fail,   1 Fail, 1  Skipped
-     [pierre]: 4.6.7, wayland,   737 OK, 2 Expected Fail,   1 Fail, 1  Skipped, 1 Timeout
-     [bdubbs]: 4.6.7, x11,       758 OK, 2 Expected Fail,   9 Fail, 1  Skipped, 1 Timeout
-     [pierre]: 4.8.1, wayland,   765 OK, 2 Expected Fail,   2 Fail, 1  Skipped
-     [bdubbs]: 4.8.2, x11,       753 OK, 2 Expected Fail,  14 Fail, 1  Skipped
-     [pierre]: 4.8.3, wayland,   760 OK, 2 Expected Fail,   5 Fail, 3  Skipped
-     [bdubbs]: 4.10.0, x11,      701 OK, 0 Expected Fail,  15 Fail, 1  Skipped, 2 Timeout
-               above over ssh
-     [bdubbs]: 4.10.0, x11,      712 OK, 0 Expected Fail,   6 Fail, 1  Skipped, 0 Timeout
-               above on native x11
-     [bdubbs]: 4.12.0, x11,     1453 OK, 0 Expected Fail,   9 Fail, 5  Skipped, 0 Timeout
-               above on native x11
-     [bdubbs]: 4.12.1, x11,     1455 OK, 0 Expected Fail,   7 Fail, 5  Skipped, 0 Timeout
-               above on native x11
-     [renodr]: 4.12.4, x11,     1535 OK, 0 Expected Fail,   8 Fail, 5  Skipped, 0 Timeout
-               above on native X11
-     [rahul]:  4.14.1, wayland, 4174 OK, 0 Expected Fail,  81 Fail, 2  Skipped, 0 Timeout
-               above on native wayland (Plasma 6)
-     [renodr]: 4.14.2, wayland, 4211 OK, 0 Expected Fail,  43 Fail, 2  Skipped, 0 Timeout
-               above on wayland in GNOME
-     [renodr]: 4.14.3, wayland, 4250 OK, 0 Expected Fail,  42 Fail, 2  Skipped, 0 Timeout
-               above on wayland in GNOME
-     [renodr]: 4.14.5, x11,     4252 OK, 0 Expected Fail,  37 Fail, 13 Skipped, 0 Timeout
-               above on X11 in IceWM
-     [bdubbs]: 4.16.0, x11,     5896 OK, 0 Expected Fail, 212 Fail, 16 Skipped, 0 Timeout
+<!-- [bdubbs]: 4.16.0, x11,     5896 OK, 0 Expected Fail, 212 Fail, 16 Skipped, 0 Timeout
                above on X11 in XFCE.  Over ssh there were 24 Timeouts
      [xry111]: 4.16.1, x11,     6121 OK, 0 Expected Fail, 14 Fail, 16 Skipped, 0 Timeout
                above on X11 (Xwayland) in GNOME
@@ -228,6 +211,18 @@ dbus-run-session meson test --setup x11 --no-suite needs-udmabuf</userinput></sc
      [bdubbs]: 4.16.1, x11,     5909 OK, 0 Expected Fail, 203 Fail, 16 Skipped, 26 Timeout
                Over ssh there were 26 Timeouts.
                On a direct xfce run (same system) I now get 204 fail and 10 Timeouts. 
+     [bdubbs]: 4.16.5, x11,     5940 OK, 0 Expected Fail, 197 Fail, 16 Skipped, 0 Timeout
+               Over ssh there were 28 Timeouts.
+     [zeckma]: 4.16.7, wayland, 5991 OK, 0 Expected Fail, 190 Fail, 2 Skipped, 1 Timeout
+               above on wayland in Hyprland
+     [xry111]: 4.16.12, wayland,     6201 OK, 0 Expected Fail, 8 Fail, 2 Skipped
+               above on wayland in Weston
+     [xry111]: 4.16.12, wayland,     6186 OK, 0 Expected Fail, 9 Fail, 16 Skipped
+               above on X11 (Xwayland) in Weston
+     [renodr]: 4.18.2, X11,    5047 OK, 0 Expected Fail, 5 Fail, 16 Skipped
+               above on X11 in XFCE
+     [bdubbs]: gtk-4.18.4 there were 7 failures and 16 skipped out of of 5117 tests. 
+               There were 8 timeouts of 30 seconds. Running over ssh.
 -->
 
     <para>
@@ -262,7 +257,7 @@ dbus-run-session meson test --setup x11 --no-suite needs-udmabuf</userinput></sc
 
     <para>
       <option>-D tracker=enabled</option>: Use this switch if you have
-      <xref linkend="tracker3"/> installed and wish to use search functionality
+      <xref linkend="tinysparql"/> installed and wish to use search functionality
       when running a file chooser.
     </para>
 
@@ -293,17 +288,28 @@ dbus-run-session meson test --setup x11 --no-suite needs-udmabuf</userinput></sc
     </para>
 
     <para>
-      <envar>LIBGL_ALWAYS_SOFTWARE=1</envar>: Force the test suite to use
-      the softpipe or llvmpipe driver from Mesa.  The test suite is so
-      sensitive that the minor differences caused by a different Mesa
-      driver can trigger test failures.
+      <envar>LIBGL_ALWAYS_SOFTWARE=1</envar>
+      and <envar>VK_LOADER_DRIVERS_SELECT='lvp*'</envar>: Force the test
+      suite to use the softpipe or llvmpipe Gallium driver and the lavapipe
+      Vulkan driver from Mesa.  The test suite is so sensitive that the
+      minor differences caused by a different Mesa driver can trigger test
+      failures.
     </para>
 
     <para>
-      <parameter>--no-suite needs-udmabuf</parameter>: Disable the tests requiring
-      <filename class='devicefile'>/dev/udmabuf</filename>.  This file does
-      not exist if the feature is not enabled in the kernel configuration,
-      and even if it exists it cannot be accessed as unprivileged users.
+      <command>env -u{GALLIUM_DRIVER,MESA_LOADER_DRIVER_OVERRIDE}</command>:
+      Unset variables which may conflict with 
+      <envar>LIBGL_ALWAYS_SOFTWARE=1</envar>.
+    </para>
+
+    <para>
+      <parameter>--no-suite={headless,needs-udmabuf}</parameter>: Disable
+      the tests requiring the external dependency pydbus, and the tests
+      requiring the device node
+      <filename class='devicefile'>/dev/udmabuf</filename>.
+      The device node does not exist if the feature is not enabled in the
+      kernel configuration<phrase revision='sysv'>, and even if it exists it
+      cannot be accessed as unprivileged users</phrase>.
     </para>
   </sect2>
 
@@ -361,8 +367,8 @@ EOF</userinput></screen>
        <para>
          There are many settings keys, some with default values. You can find
          them at <ulink
-         url="https://developer.gnome.org/gtk4/stable/GtkSettings.html">Settings:
-         GTK 4 Reference Manual</ulink>.
+	 url="https://docs.gtk.org/gtk4/class.Settings.html#properties">
+	   Settings: GTK 4 Reference Manual</ulink>.
        </para>
 
     </sect3>
@@ -383,11 +389,14 @@ EOF</userinput></screen>
           gtk4-demo,
           gtk4-demo-application,
           gtk4-encode-symbolic-svg,
-          gtk4-icon-browser,
+          <!--gtk4-icon-browser,-->
+          gtk4-image-tool,
           gtk4-launch,
           gtk4-node-editor,
+          gtk4-path-editor,
           gtk4-print-editor,
           gtk4-query-settings,
+          gtk4-rendernode-tool,
           gtk4-update-icon-cache, and
           gtk4-widget-factory
         </seg>
@@ -471,6 +480,7 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
+ <!-- Not seen in 4.18.2
       <varlistentry id="gtk4-icon-browser">
         <term><command>gtk4-icon-browser</command></term>
         <listitem>
@@ -481,6 +491,21 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="gtk4 gtk4-icon-browser">
             <primary sortas="b-gtk4-icon-browser">gtk4-icon-browser</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+-->
+
+      <varlistentry id="gtk4-image-tool">
+        <term><command>gtk4-image-tool</command></term>
+        <listitem>
+          <para>
+            performs various operations on images, including comparisons,
+            conversions, listing information on the images, relabeling the
+            images, and showing the images
+          </para>
+          <indexterm zone="gtk4 gtk4-image-tool">
+            <primary sortas="b-gtk4-image-tool">gtk4-image-tool</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -513,6 +538,20 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="gtk4-path-tool">
+        <term><command>gtk4-path-tool</command></term>
+        <listitem>
+          <para>
+            performs various tasks on paths, including decompositions,
+            reversals, restrictions, rendering, displaying the path, and
+            listing information about the paths
+          </para>
+          <indexterm zone="gtk4 gtk4-path-tool">
+            <primary sortas="b-gtk4-path-tool">gtk4-path-tool</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="gtk4-print-editor">
         <term><command>gtk4-print-editor</command></term>
         <listitem>
@@ -534,6 +573,20 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="gtk4 gtk4-query-settings">
             <primary sortas="b-gtk4-query-settings">gtk4-query-settings</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="gtk4-rendernode-tool">
+        <term><command>gtk4-rendernode-tool</command></term>
+        <listitem>
+          <para>
+            performs various tasks on GTK render nodes, including benchmarks,
+            comparisons, extracting data URLs, displaying information about
+            the nodes, displaying the nodes, and taking screenshots of nodes
+          </para>
+          <indexterm zone="gtk4 gtk4-rendernode-tool">
+            <primary sortas="b-gtk4-rendernode-tool">gtk4-rendernode-tool</primary>
           </indexterm>
         </listitem>
       </varlistentry>

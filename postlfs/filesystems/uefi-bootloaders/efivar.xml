@@ -10,6 +10,7 @@
   <!ENTITY efivar-size          "456 KB">
   <!ENTITY efivar-buildsize     "21 MB">
   <!ENTITY efivar-time          "less than 0.1 SBU">
+  <!ENTITY mandoc "<ulink url='https://mandoc.bsd.lv/'>mandoc</ulink>">
 ]>
 
 <sect1 id="efivar" xreflabel="efivar-&efivar-version;">
@@ -30,7 +31,7 @@
       libraries to manipulate EFI variables.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,9 +79,10 @@
 -->
     <bridgehead renderas="sect3">efivar Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="mandoc"/>
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      &mandoc; (for the man page of
+      <command>efisecdb</command>)
     </para>
 
   </sect2>
@@ -101,7 +103,7 @@
       Build <application>efivar</application> with the following commands:
     </para>
 
-<screen><userinput>make</userinput></screen>
+<screen><userinput>make ENABLE_DOCS=0</userinput></screen>
 
     <para>
       The test suite of this package is dangerous.  Running it may trigger
@@ -113,7 +115,18 @@
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install LIBDIR=/usr/lib</userinput></screen>
+<screen role="root"><userinput>make install ENABLE_DOCS=0 LIBDIR=/usr/lib</userinput></screen>
+
+    <para>
+      To avoid a hard dependency on &mandoc; we used
+      <parameter>ENABLE_DOCS=0</parameter>, but it causes all the man pages
+      skipped from the installation even though most of them actually
+      does not need &mandoc;.  Still as the &root; user,
+      install these man pages:
+    </para>
+
+<screen role="root"><userinput>install -vm644 docs/efivar.1 /usr/share/man/man1 &amp;&amp;
+install -vm644 docs/*.3      /usr/share/man/man3</userinput></screen>
 
   </sect2>
 
@@ -121,18 +134,16 @@
     <title>Command Explanations</title>
 
     <para>
+      <parameter>ENABLE_DOCS=0</parameter>: Disable the generation of man
+      pages, in order to allow building this package without
+      &mandoc; installed.
+    </para>
+
+    <para>
       <parameter>LIBDIR=/usr/lib</parameter>:
       This option overrides the default library directory of the package
       (<filename class="directory">/usr/lib64</filename>, which is not used
       by LFS).
-    </para>
-
-    <para>
-      <option>ENABLE_DOCS=0</option>: Disable the generation of man pages.
-      Append this option after the <command>make</command> and
-      <command>make install</command> commands if you don't need the man
-      pages to allow building this package without <xref linkend='mandoc'/>
-      installed.
     </para>
 
   </sect2>

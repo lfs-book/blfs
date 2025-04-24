@@ -6,9 +6,9 @@
 
   <!ENTITY vulkan-loader-download-http "https://github.com/KhronosGroup/Vulkan-Loader/archive/v&vulkan-loader-version;/Vulkan-Loader-&vulkan-loader-version;.tar.gz">
   <!ENTITY vulkan-loader-download-ftp  " ">
-  <!ENTITY vulkan-loader-md5sum        "49f162079d24476740f71f135f955871">
-  <!ENTITY vulkan-loader-size          "1.6 MB">
-  <!ENTITY vulkan-loader-buildsize     "9.3 MB">
+  <!ENTITY vulkan-loader-md5sum        "31c073cd0a87557bfa4dda7571acb6d1">
+  <!ENTITY vulkan-loader-size          "1.7 MB">
+  <!ENTITY vulkan-loader-buildsize     "11 MB">
   <!ENTITY vulkan-loader-time          "less than 0.1 SBU">
 ]>
 
@@ -30,7 +30,7 @@
       drivers for Vulkan.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -71,15 +71,26 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="cmake"/>,
-      <xref linkend="vulkan-headers"/>,
-      <xref linkend="wayland"/>, and
+      <xref linkend="vulkan-headers"/>, and
       <xref linkend="xorg7-lib"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="wayland"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended (Runtime)</bridgehead>
     <para role="runtime">
       <xref linkend="mesa"/> (for Vulkan drivers)
     </para>
+
+    <bridgehead renderas="sect4">Optional (for testing)</bridgehead>
+    <para role="optional">
+      <xref linkend="git"/>
+    </para>
+
+    &test-use-internet;
 
   </sect2>
 
@@ -109,10 +120,16 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr   \
 ninja</userinput></screen>
 
     <para>
-      This package does not come with a working test suite.
-      <!-- To run the tests, we need to follow a complex process to download a
-      customized copy of googletest.-->
+      To run the test suite, issue (note that the command will use
+      <xref linkend='git'/> to download a copy of GoogleTest for building
+      the test suite):
     </para>
+
+<screen remap='test'><userinput>sed "s/'git', 'clone'/&amp;, '--depth=1', '-b', self.commit/" \
+    -i ../scripts/update_deps.py &amp;&amp;
+cmake -D BUILD_TESTS=ON -D UPDATE_DEPS=ON .. &amp;&amp;
+ninja &amp;&amp;
+ninja test</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -127,6 +144,12 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/cmake-skip-install-rpath.xml"/>
+
+    <para>
+      <option>-D BUILD_WSI_WAYLAND_SUPPORT=OFF</option>: This option allows
+      building without <xref linkend="wayland"/> support.
+    </para>
+
   </sect2>
 
   <sect2 role="content">

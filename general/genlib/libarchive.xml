@@ -6,7 +6,7 @@
 
   <!ENTITY libarchive-download-http "https://github.com/libarchive/libarchive/releases/download/v&libarchive-version;/libarchive-&libarchive-version;.tar.xz">
   <!ENTITY libarchive-download-ftp  " ">
-  <!ENTITY libarchive-md5sum        "bb53692eefc96a73ca5322a54ab52b48">
+  <!ENTITY libarchive-md5sum        "e378aeb163d8c81745665dddd81116ef">
   <!ENTITY libarchive-size          "5.2 MB">
   <!ENTITY libarchive-buildsize     "43 MB (add 32 MB for tests)">
   <!ENTITY libarchive-time          "0.3 SBU (add 0.8 SBU for tests)">
@@ -30,7 +30,7 @@
       interface for reading/writing various compression formats.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -100,7 +100,7 @@
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>LC_ALL=C.UTF-8 make check</command>.
+      To test the results, issue: <command>make check</command>.
     </para>
 
     <para>
@@ -108,6 +108,29 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+    <para>
+      Still as the &root; user, create a symlink so we can use
+      <command>bsdunzip</command> as <command>unzip</command>, instead
+      of relying on the unmaintained Unzip package:
+    </para>
+
+<screen role="root"><userinput>ln -sfv bsdunzip /usr/bin/unzip</userinput></screen>
+
+    <note>
+      <para>
+        As discussed in <xref linkend='locale-wrong-filename-encoding'/>,
+        if the Zip archive to be extracted contains any file with a name
+        containing any non-Latin characters, you need to manually specify
+        the encoding of those characters or they will be turned into
+        unreadable sequences in the extracted file name.  For example, if a
+        Zip archive created with WinZip, <filename>archive.zip</filename>,
+        contains a file named with Simplified Chinese characters, the
+        encoding should be CP936 and the <parameter>-I cp936</parameter>
+        option should be used.  I.e. the command to extract the archive
+        should be <command>unzip -I cp936 archive.zip</command>.
+      </para>
+    </note>
 
   </sect2>
 

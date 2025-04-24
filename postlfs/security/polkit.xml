@@ -6,10 +6,10 @@
 
   <!ENTITY polkit-download-http "https://github.com/polkit-org/polkit/archive/&polkit-version;/polkit-&polkit-version;.tar.gz">
   <!ENTITY polkit-download-ftp  " ">
-  <!ENTITY polkit-md5sum        "8e9f2377fc7b4010bd29b97d2e288b4f">
-  <!ENTITY polkit-size          "444 KB">
-  <!ENTITY polkit-buildsize     "7.2 MB (with tests)">
-  <!ENTITY polkit-time          "0.3 SBU (with tests; using parallelism=4)">
+  <!ENTITY polkit-md5sum        "db4ce0a42d5bf8002061f8e34ee9bdd0">
+  <!ENTITY polkit-size          "448 KB">
+  <!ENTITY polkit-buildsize     "7.4 MB (with tests)">
+  <!ENTITY polkit-time          "0.2 SBU (with tests; using parallelism=4)">
 ]>
 
 <sect1 id="polkit" xreflabel="Polkit-&polkit-version;">
@@ -31,7 +31,7 @@
       communicate with privileged processes.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -155,7 +155,8 @@
     <title>Kernel Configuration</title>
 
     <para>
-      Some tests need user namespace.  If running the test suite, enable it:
+      Some tests need user namespace support.  If you are going to run the test
+      suite, enable the support and recompile the kernel if necessary:
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -180,12 +181,6 @@
 useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
         -g polkitd -s /bin/false polkitd</userinput></screen>
 
-    <para revision='sysv'>
-      First fix a build problem for sysV based systems:
-    </para>
-
-<screen revision="sysv"><userinput>sed -i '/systemd_sysusers_dir/s/^/#/' meson.build</userinput></screen>
-
     <para>
       Install <application>Polkit</application> by running the following
       commands:
@@ -204,11 +199,12 @@ meson setup ..                   \
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                    \
-      --prefix=/usr               \
-      --buildtype=release         \
-      -D man=true                 \
-      -D session_tracking=elogind \
+meson setup ..                     \
+      --prefix=/usr                \
+      --buildtype=release          \
+      -D man=true                  \
+      -D session_tracking=elogind  \
+      -D systemdsystemunitdir=/tmp \
       -D tests=true</userinput></screen>
 
     <para>
@@ -226,10 +222,17 @@ meson setup ..                    \
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
+
+    <para revision="sysv">
+      Remove some files that aren't useful on a SysV system as the &root; user:
+    </para>
+
+<screen role="root" revision="sysv"><userinput>rm -v /tmp/*.service                 &amp;&amp;
+rm -rf /usr/lib/{sysusers,tmpfiles}.d </userinput></screen>
 
   </sect2>
 
@@ -294,7 +297,7 @@ meson setup ..                    \
       <seglistitem>
         <seg>
           pkaction, pkcheck, <!--pk-example-frobnicate,--> pkexec,
-          pkttyagent, and polkitd
+          pkttyagent, and polkitd <!-- in /usr/lib/polkit-1 -->
         </seg>
         <seg>
           libpolkit-agent-1.so and

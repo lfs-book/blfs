@@ -6,9 +6,9 @@
 
   <!ENTITY wireplumber-download-http "https://gitlab.freedesktop.org/pipewire/wireplumber/-/archive/&wireplumber-version;/wireplumber-&wireplumber-version;.tar.bz2">
   <!ENTITY wireplumber-download-ftp  " ">
-  <!ENTITY wireplumber-md5sum        "044a94903b020eeb8247510e394cd3f3">
-  <!ENTITY wireplumber-size          "408 KB">
-  <!ENTITY wireplumber-buildsize     "90 MB (with tests)">
+  <!ENTITY wireplumber-md5sum        "a2cbfe6885da8dcbeacbba05f62bcf67">
+  <!ENTITY wireplumber-size          "412 KB">
+  <!ENTITY wireplumber-buildsize     "89 MB (with tests)">
   <!ENTITY wireplumber-time          "0.3 SBU (with tests)">
 ]>
 
@@ -29,7 +29,7 @@
       policy manager for <application>Pipewire</application>.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -112,10 +112,17 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
+
+    <para>
+      Finally, rename the documentation directory to a versioned directory as
+      the &root; user:
+    </para>
+
+<screen role="root"><userinput>mv -v /usr/share/doc/wireplumber{,-&wireplumber-version;}</userinput></screen>
 
   </sect2>
 
@@ -140,21 +147,36 @@ ninja</userinput></screen>
     <sect3><title>Configuration Information</title>
 
       <para>
-        In order for Wireplumber to be used by Pipewire, Wireplumber must be
-        configured to start when a desktop environment is started.
+        In order for Wireplumber to be used by Pipewire, Wireplumber and
+        Pipewire must be configured to start when a desktop environment is
+        started.
       </para>
 
+      <para>
+        Pipewire now provides it's own Pulseaudio server implementation, which
+        causes runtime conflicts with the server provided by Pulseaudio itself.
+        This generally presents itself by applications hanging or malfunctioning
+        when trying to play or record audio and video. First, prevent
+        Pulseaudio from starting it's own server implementation by running the
+        following commands as the &root; user:
+      </para>
+
+<screen role="root"><userinput>rm -vf /etc/xdg/autostart/pulseaudio.desktop         &amp;&amp;
+rm -vf /etc/xdg/Xwayland-session.d/00-pulseaudio-x11 &amp;&amp;
+sed -e '$a autospawn = no' -i /etc/pulse/client.conf</userinput></screen>
+
       <para revision="systemd">
-        To configure Wireplumber to start when a desktop environment is
-        started, run the following commands as the &root; user to enable the
+        Next, configure Wireplumber to start when a desktop environment is
+        started. Run the following commands as the &root; user to enable the
         systemd user units:
       </para>
 
-<screen role="root" revision="systemd"><userinput>systemctl enable --global pipewire.socket &amp;&amp;
+<screen role="root" revision="systemd"><userinput>systemctl enable --global pipewire.socket       &amp;&amp;
+systemctl enable --global pipewire-pulse.socket &amp;&amp;
 systemctl enable --global wireplumber</userinput></screen>
 
       <para revision="sysv">
-        First, create a shell script that will start Wireplumber and Pipewire
+        Next, create a shell script that will start Wireplumber and Pipewire
         in the correct order as the &root; user:
       </para>
 
@@ -162,14 +184,31 @@ systemctl enable --global wireplumber</userinput></screen>
 <literal>#!/bin/sh
 # Begin /usr/bin/pipewire-launcher.sh
 
+# First, kill any previous instances of pipewire, wireplumber, or pipewire-pulse
+# that are running. Multiple instances of the daemon can not be run at the same
+# time, and this helps prevent possible errors if a user logs out or logs in
+# too fast, and restores audio if Pipewire hangs and needs to be reset.
+
+pkill -u ${USER} -fx /usr/bin/pipewire-pulse
+pkill -u ${USER} -fx /usr/bin/wireplumber
+pkill -u ${USER} -fx /usr/bin/pipewire
+
 # Start Pipewire first.
 exec /usr/bin/pipewire &amp;
 
-# Wait for a second for Pipewire to launch.
-sleep 1
+# Next, we need to wait until pipewire is up before starting wireplumber.
+# This prevents a possible race condition where pipewire takes too long
+# to start, as some users have run into.
+while [ $(pgrep -f /usr/bin/pipewire) = "" ]; do
+   sleep 1
+done
 
 # Start Wireplumber now that Pipewire has been started.
 exec /usr/bin/wireplumber &amp;
+
+# Start the Pulseaudio server included with Pipewire.
+exec /usr/bin/pipewire-pulse &amp;
+
 # End /usr/bin/pipewire-launcher.sh</literal>
 EOF</userinput></screen>
 
@@ -223,8 +262,9 @@ EOF</userinput></screen>
         </seg>
         <seg>
           /usr/include/wireplumber-0.5,
-          /usr/lib/wireplumber-0.5, and
-          /usr/share/wireplumber
+          /usr/lib/wireplumber-0.5,
+          /usr/share/wireplumber, and
+          /usr/share/doc/wireplumber-&wireplumber-version;
         </seg>
       </seglistitem>
     </segmentedlist>

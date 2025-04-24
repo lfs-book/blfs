@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY nautilus-download-http
-           "&gnome-download-http;/nautilus/&gnome-46;/nautilus-&nautilus-version;.tar.xz">
+           "&gnome-download-http;/nautilus/&gnome-48;/nautilus-&nautilus-version;.tar.xz">
   <!ENTITY nautilus-download-ftp  " ">
-  <!ENTITY nautilus-md5sum        "88acd6bd9c5d01fb02c8827222c07bc5">
+  <!ENTITY nautilus-md5sum        "25a894475b4afbcaf41e599f637ff40a">
   <!ENTITY nautilus-size          "3.1 MB">
-  <!ENTITY nautilus-buildsize     "88 MB (with tests)">
+  <!ENTITY nautilus-buildsize     "105 MB (with tests)">
   <!ENTITY nautilus-time          "0.5 SBU (with tests, both using parallelism=4)">
 ]>
 
@@ -31,7 +31,7 @@
       <application>GNOME</application> file manager.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,7 +79,7 @@
       <xref linkend="libnotify"/>,
       <xref linkend="libportal"/>,
       <xref linkend="libseccomp"/>, and
-      <xref linkend="tracker3"/>
+      <xref linkend="tinysparql"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -92,7 +92,7 @@
       <xref linkend="libexif"/>
     </para>
 
-    <bridgehead renderas="sect4">Optional</bridgehead>
+    <bridgehead renderas="sect4">Optional (for generating documentation)</bridgehead>
     <para role="optional">
       <xref linkend="gi-docgen"/>
     </para>
@@ -110,21 +110,6 @@
     <title>Installation of Nautilus</title>
 
     <para>
-      Fix the location to install the API documentation:
-    </para>
-
-<screen><userinput>sed "/docdir =/s@\$@ / 'nautilus-&nautilus-version;'@" -i meson.build</userinput></screen>
-
-<!--
-    <para>
-      Fix an inverted test that may lead to crashes, and also prevents
-      building with GCC-13:
-    </para>
-
-<screen><userinput>sed "/assert (basename ==/s/==/!=/" -i src/nautilus-file-operations.c</userinput></screen>
--->
-
-    <para>
       Install <application>Nautilus</application> by running the following
       commands:
     </para>
@@ -134,16 +119,24 @@ cd    build &amp;&amp;
 
 meson setup --prefix=/usr       \
             --buildtype=release \
-            -D selinux=false    \
-            -D packagekit=false \
             ..                  &amp;&amp;
 
 ninja</userinput></screen>
 
     <para>
+      If you have <xref linkend='gi-docgen'/> installed and you wish to
+      generate and install the API documentation, issue the following
+      commands:
+    </para>
+
+<screen remap='doc'><userinput>sed "/docdir =/s@\$@ / 'nautilus-&nautilus-version;'@" -i ../meson.build &amp;&amp;
+meson configure -D docs=true &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
       To test the results, issue: <command>ninja test</command>. The tests
       need to be run in a graphical environment.  One test is known to fail
-      if <xref linkend='tracker3-miners'/> is not installed. One test is also
+      if <xref linkend="localsearch"/> is not installed. One test is also
       known to timeout if the user running the tests has a large home directory.
     </para>
 
@@ -163,16 +156,6 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
-
-    <para>
-      <parameter>-D selinux=false</parameter>: This switch disables the use
-      of selinux which isn't supported by BLFS.
-    </para>
-
-    <para>
-      <parameter>-D packagekit=false</parameter>: This switch disables the use
-      of PackageKit which isn't suitable for BLFS.
-    </para>
 
     <para>
       <option>-D cloudproviders=false</option>: Use this switch if you do not
@@ -198,7 +181,7 @@ ninja</userinput></screen>
         </seg>
         <seg>
           /usr/{include,lib,share}/nautilus and
-          /usr/share/gtk-doc/html/libnautilus-extension (optional)
+          /usr/share/doc/nautilus-&nautilus-version; (optional)
         </seg>
       </seglistitem>
     </segmentedlist>

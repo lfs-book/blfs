@@ -5,10 +5,10 @@
   %general-entities;
 
   <!ENTITY dtc-download-http "https://kernel.org/pub/software/utils/dtc/dtc-&dtc-version;.tar.xz">
-  <!ENTITY dtc-md5sum        "8dc1c58c84ca19f825f6939801b44c52">
+  <!ENTITY dtc-md5sum        "0f193be84172556027da22d4fe3464e0">
   <!ENTITY dtc-size          "168 KB">
-  <!ENTITY dtc-buildsize     "15 MB">
-  <!ENTITY dtc-time          "0.3 SBU">
+  <!ENTITY dtc-buildsize     "13 MB (with tests)">
+  <!ENTITY dtc-time          "0.2 SBU (with tests)">
 ]>
 
 <!-- Try to keep the indentation used in this file-->
@@ -32,7 +32,7 @@
       in the binary format.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,12 +90,8 @@ meson setup --prefix=/usr         \
 ninja</userinput></screen>
 
     <para>
-      To test the results, issue: <command>meson test -v</command>.
-      <!-- https://github.com/dgibson/dtc/commit/32174a66efa4 -->
-      <!--
-      Two tests named <filename>cell-overflow.dts</filename> and
-      <filename>cell-overflow-results.dts</filename> are known to fail.
-      -->
+      To test the results, issue: <command>CC='gcc -Wl,-z,noexecstack'
+      meson test -v</command>.
     </para>
 
     <para>
@@ -132,8 +128,8 @@ popd</userinput></screen>
       <xref linkend='swig'/> and you wish to install the Python 3 bindings
       of this package, build the Python 3 module:
     </para>
- 
-<screen role="nodump"><userinput>&build-wheel-cmd; ..</userinput></screen>
+
+    <screen role="nodump"><userinput>&build-wheel-cmd; ..</userinput></screen>
 
     <para>
       As the &root; user, install the Python 3 module:
@@ -154,6 +150,23 @@ popd</userinput></screen>
       (running <command>setup.py</command> directly).  We will build the
       Python 3 binding with the <command>pip3 wheel</command> command
       separately if wanted.
+    </para>
+
+    <!-- https://github.com/dgibson/dtc/issues/163 -->
+    <para>
+      <envar>CC='gcc -Wl,-z,noexecstack'</envar>: This variable prevents
+      marking the shared libraries in the test suite as requiring executable
+      stack.  Glibc 2.41 or later has stopped allowing
+      <function>dlopen</function>ing such a shared library so the test
+      suite would fail.  But those shared libraries don't really need an
+      executable stack, so we can use
+      <parameter>-Wl,-z,noexecstack</parameter> to fix up the test suite.
+      It's needed in the <envar>CC</envar> environment for the
+      <command>meson test</command> because those shared libraries are built
+      by a test script instead of the
+      <command>meson</command>/<command>ninja</command> building system,
+      and the test script does not recognize other <quote>common</quote>
+      environment variables like <envar>LDFLAGS</envar>.
     </para>
 
   </sect2>

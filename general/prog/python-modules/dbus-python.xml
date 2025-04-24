@@ -4,11 +4,11 @@
    <!ENTITY % general-entities SYSTEM "../../../general.ent">
   %general-entities;
 
-  <!ENTITY dbus-python-download-http "https://dbus.freedesktop.org/releases/dbus-python/dbus-python-&dbus-python-version;.tar.gz">
+  <!ENTITY dbus-python-download-http "https://dbus.freedesktop.org/releases/dbus-python/dbus-python-&dbus-python-version;.tar.xz">
   <!ENTITY dbus-python-download-ftp  " ">
-  <!ENTITY dbus-python-md5sum        "33be8a4a766e1c7c9a377b8f934ce21a">
-  <!ENTITY dbus-python-size          "592 KB">
-  <!ENTITY dbus-python-buildsize     "4.0 MB" >
+  <!ENTITY dbus-python-md5sum        "edca335d1c80f338e3255455eb876b72">
+  <!ENTITY dbus-python-size          "168 KB">
+  <!ENTITY dbus-python-buildsize     "1.7 MB" >
   <!ENTITY dbus-python-time          "less than 0.1 SBU">
   <!ENTITY dbus-python-egg-info      "&python3-site;/dbus_python-&dbus-python-version;.egg-info">
 ]>
@@ -30,7 +30,7 @@
         <application>D-Bus</application> API interface.
       </para>
 
-      &lfs122_checked;
+      &lfs123_checked;
 
       <bridgehead renderas="sect4">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -75,14 +75,11 @@
         <xref linkend="meson_python"/>, and
         <xref linkend="patchelf"/>
       </para>
-<!--  no tests available yet
+
       <bridgehead renderas="sect5">Optional</bridgehead>
       <para role="optional">
-        <xref linkend="pygobject3"/> and
-        <ulink url="https://pypi.python.org/pypi/tap.py/">tap.py</ulink>
-        (required for some tests)
+        <xref linkend="pygobject3"/> (for tests)
       </para>
--->
 <!--  how to build the doc?
       <bridgehead renderas="sect5">
        Optional (Required to build the API and HTML Documentation)</bridgehead>
@@ -102,14 +99,15 @@
 &build-wheel;
 
       <para>
-        This package does not come with a test suite.
-      </para>
-
-      <para>
         Now install the module as the &root; user:
       </para>
 
 <screen role="root"><userinput>&install-wheel; dbus-python</userinput></screen>
+
+      <para>
+        To test the result, issue:
+        <command>DBUS_TOP_SRCDIR=$PWD PYTHON=python3 test/run-test.sh</command>.
+      </para>
 
     </sect3>
 

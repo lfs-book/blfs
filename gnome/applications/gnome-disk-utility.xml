@@ -31,7 +31,7 @@
       applications used for dealing with storage devices.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -95,7 +95,13 @@
       following commands:
     </para>
 
-<screen><userinput>mkdir build &amp;&amp;
+<screen revision="sysv"><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup --prefix=/usr --buildtype=release -Dlogind=libelogind .. &amp;&amp;
+ninja</userinput></screen>
+
+<screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
@@ -110,6 +116,18 @@ ninja</userinput></screen>
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
+
+  </sect2>
+
+   <sect2 role="commands" revision="sysv">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>-Dlogind=libelogind</parameter>: Tells the build system that
+      the library used for the <application>login</application> service is
+      <filename class="libraryfile">libelogind.so</filename> instead of
+      <filename class="libraryfile">libsystemd.so</filename>.
+    </para>
 
   </sect2>
 

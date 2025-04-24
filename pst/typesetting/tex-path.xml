@@ -45,16 +45,17 @@
    <para>Now, create the texlive.sh script as the &root; user:</para>
 
 <screen role="root"><userinput>TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/')
+TEXLIVE_PREFIX=/opt/texlive/&texlive-year;
 
 cat &gt; /etc/profile.d/texlive.sh &lt;&lt; EOF
 <literal># Begin texlive setup
 TEXLIVE_PREFIX=/opt/texlive/&texlive-year;
 export TEXLIVE_PREFIX
 
-pathappend \$TEXLIVE_PREFIX/texmf-dist/doc/info INFOPATH
-pathappend \$TEXLIVE_PREFIX/bin/$TEXARCH
+pathappend $TEXLIVE_PREFIX/texmf-dist/doc/info INFOPATH
+pathappend $TEXLIVE_PREFIX/bin/$TEXARCH
 
-TEXMFCNF=\$TEXLIVE_PREFIX/texmf-dist/web2c
+TEXMFCNF=$TEXLIVE_PREFIX/texmf-dist/web2c
 export TEXMFCNF
 
 # End texlive setup</literal>
@@ -62,6 +63,7 @@ EOF
 
 unset TEXARCH</userinput></screen>
 
+<!--
   <note>
     <para>
       The backslashes before the dollar signs in the script above are to
@@ -69,6 +71,7 @@ unset TEXARCH</userinput></screen>
       appear in the actual script.
     </para>
   </note>
+-->
 
   <para>
     The new paths can be immediately activated by running:

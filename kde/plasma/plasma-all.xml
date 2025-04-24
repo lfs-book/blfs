@@ -7,9 +7,9 @@
   <!ENTITY plasma-download-http "https://download.kde.org/stable/plasma/&plasma-version;">
   <!ENTITY plasma-download-ftp  " ">
   <!ENTITY plasma-md5sum        "See Below">
-  <!ENTITY plasma-size          "220 MB">
-  <!ENTITY plasma-buildsize     "1.0 GB (444 MB installed)">
-  <!ENTITY plasma-time          "14 SBU (using parallelism=8)">
+  <!ENTITY plasma-size          "250 MB">
+  <!ENTITY plasma-buildsize     "2.2 GB (495 MB installed)">
+  <!ENTITY plasma-time          "15 SBU (using parallelism=8)">
 ]>
 
 <sect1 id="plasma-build" xreflabel="Plasma-&plasma-version;">
@@ -27,7 +27,7 @@
     and QML. They implement the KDE Display Environment (Plasma).
   </para>
 
-  &lfs122_checked;
+  &lfs123_checked;
 
   <para>
     The instructions below build all of the Plasma packages in one
@@ -73,6 +73,7 @@
   <bridgehead renderas="sect4">Required</bridgehead>
   <para role="required">
     <xref linkend="boost"/>,
+    <xref linkend="ffmpeg"/>,
     <xref linkend="gtk3"/>,
     <xref linkend="kf6-frameworks"/>,
     <xref linkend="kirigami-addons"/>,
@@ -83,6 +84,8 @@
     <xref linkend="libxcvt"/>,
     <xref linkend="libxkbcommon"/>,
     <xref linkend="mesa"/> built with <xref linkend="wayland"/>,
+    <xref linkend="opencv"/>,
+    <xref linkend="phonon"/>,
     <xref linkend="pipewire"/>,
     <xref linkend="pulseaudio-qt"/>,
     <xref linkend="qca"/>,
@@ -99,6 +102,8 @@
     <xref linkend="libcanberra"/>,
     <xref linkend="libinput"/>,
     <xref linkend="libpcap"/>,
+    <xref linkend="libwacom"/> and
+    <xref linkend="xorg-wacom-driver"/> (for wacomtablet),
     <xref linkend="linux-pam"/>,
     <xref linkend="lm_sensors"/>,
     <xref linkend="oxygen-icons"/>, 
@@ -116,6 +121,7 @@
   <para role="recommended">
     <xref role="runtime" linkend="accountsservice"/>,
     <xref role="runtime" linkend="breeze-icons"/>,
+    <xref role="runtime" linkend="kio-extras"/>,
     <xref role="runtime" linkend="smartmontools"/>,
     <xref role="runtime" linkend="xdg-desktop-portal"/>, and
     <xref role="runtime" linkend="xwayland"/>
@@ -127,7 +133,6 @@
     <xref linkend="glu"/>,
     <xref linkend='ibus'/>,
     <xref linkend='qtwebengine'/>,
-    <xref linkend="xorg-synaptics-driver"/>,
     <ulink url="https://www.kdevelop.org/">KDevPlatform</ulink>,
     <ulink url="https://gpsd.gitlab.io/gpsd/">libgps</ulink>,
     <ulink url="https://github.com/libhybris/libhybris">libhybris</ulink>,
@@ -155,6 +160,16 @@ The options used here are:
   -A '*.xz'     just get the *.xz files
   -np           don't get parent directories</literal></screen>
 
+     <important>
+       <para>
+         There is one downloaded file, spectacle-6.3.2.1.tar.xz, that
+         is mislabeled. When extracted the top level directory does 
+         not match the tarball name. We need to make that file consistent now:
+       </para>
+
+<screen><userinput>mv spectacle-6.3.2.1.tar.xz spectacle-6.3.2.tar.xz</userinput></screen>
+     </important>
+
    </sect2>
 
   <sect2>
@@ -166,70 +181,74 @@ The options used here are:
     </para>
 
 <screen><userinput>cat &gt; plasma-&plasma-version;.md5 &lt;&lt; "EOF"
-<literal>be3516c192fcdbed07454de4b379f5db  kdecoration-6.1.4.tar.xz
-dfd2bd982b5ab4daa5a3545e54cf9cb3  libkscreen-6.1.4.tar.xz
-c05c1623be161c149a61ac3db0ce5382  libksysguard-6.1.4.tar.xz
-7035691a6f63b28f389d76002afc3da8  breeze-6.1.4.tar.xz
-9d82aff77358f55069020a408987c111  breeze-gtk-6.1.4.tar.xz
-2e3a5220acf76e2c0edf9701978e802b  layer-shell-qt-6.1.4.tar.xz
-250385889199481e81b979bd0dd51669  plasma-activities-6.1.4.tar.xz
-d6686b711c1e52c0de7c75b66c9dc6e3  libplasma-6.1.4.tar.xz
-98101a610670cfae5779bc9940d8561f  kscreenlocker-6.1.4.tar.xz
-ca7bf1418903745c65dcbf7583299ceb  kinfocenter-6.1.4.tar.xz
-4c4b58890f3bf7bf1b1d99e89f9271a8  kglobalacceld-6.1.4.tar.xz
-d297f096ac9492262b8274a024618bd3  kwayland-6.1.4.tar.xz
-2d4516080f370a6cf40351266277b010  kwin-6.1.4.tar.xz
-131d3250d9124c8f21751f5e5255a7d6  plasma5support-6.1.4.tar.xz
-fc8fe31088cad9f1a904554956df708b  plasma-activities-stats-6.1.4.tar.xz
-85a3ff80ec16299dc8aa12190ce2bc24  kpipewire-6.1.4.tar.xz
-575c902a134bb24214f76c500460df39  plasma-workspace-6.1.4.tar.xz
-d000e0ee0f0e530c9dc64ab9252bc17a  plasma-disks-6.1.4.tar.xz
-180136a6b20736c359b999cbd3509afc  bluedevil-6.1.4.tar.xz
-3f065b337807c2a37d27a90bbcf1d8d1  kde-gtk-config-6.1.4.tar.xz
-bcfa7f92df7c2f1a6c7718a12f81734c  kmenuedit-6.1.4.tar.xz
-08590284bc4613804563db94a68c7cd2  kscreen-6.1.4.tar.xz
-801318aea037e3d64f0aa7c9ca4fef8b  kwallet-pam-6.1.4.tar.xz
-aa6bc381778b4e10c9798c3abeeb5692  kwrited-6.1.4.tar.xz
-9c4f88ca9936252f62705f27687af764  milou-6.1.4.tar.xz
-cbeb7b6b0094e9ec19af07ea458c8eb3  plasma-nm-6.1.4.tar.xz
-aa32529c005706d2253333c93faa45de  plasma-pa-6.1.4.tar.xz
-4c7484c0d5e4352372d32a340656abec  plasma-workspace-wallpapers-6.1.4.tar.xz
-f904e90a9db900551d228f20dac06a45  polkit-kde-agent-1-6.1.4.tar.xz
-312fe34839a8d0861cc676766a4317e4  powerdevil-6.1.4.tar.xz
-adc8dad07c1157e79aed7476025b6925  plasma-desktop-6.1.4.tar.xz
-cfbc61347436b9ff7ff43b7130d7955a  kgamma-6.1.4.tar.xz
-41d6254b23061c4b4067b0d2db150cbf  ksshaskpass-6.1.4.tar.xz
-#7bf7fd0d3a4a381148885cd058872212  plasma-sdk-6.1.4.tar.xz
-ce1bbaf7df576f6ddccd1adda545657a  sddm-kcm-6.1.4.tar.xz
-#5482b86089286d9b0153f09752d57574  discover-6.1.4.tar.xz
-#d33ef85fb879f3073f1f26f1695e72f3  breeze-grub-6.1.4.tar.xz
-#42bb6940246062b24ee80ac6e3b40e2d  breeze-plymouth-6.1.4.tar.xz
-e458fddb447b0c76e8e49bb772b423a9  kactivitymanagerd-6.1.4.tar.xz
-e0b3c21962456a5f9f79a739c477c22c  plasma-integration-6.1.4.tar.xz
-#bebea20d8972e4052690877455aea645  plymouth-kcm-6.1.4.tar.xz
-6bf11a27e32cc81e689867ddf59080c6  xdg-desktop-portal-kde-6.1.4.tar.xz
-96d1d51407b85d22f01e6438e8e492cb  drkonqi-6.1.4.tar.xz
-34627cfef9b00bc58bc853790e978dfd  plasma-vault-6.1.4.tar.xz
-#d7984e9a5d3c4ac7a6e36b656cc16f3a  plasma-browser-integration-6.1.4.tar.xz
-626f7f2e373085f948d0809413b0d49f  kde-cli-tools-6.1.4.tar.xz
-5ba8376be2db662750ef48f582f22352  systemsettings-6.1.4.tar.xz
-db8923a9b87e95dd5ec82a20da4ae95b  plasma-thunderbolt-6.1.4.tar.xz
-#0106b72c6a46c966d31b7a4afdb456b3  plasma-mobile-6.1.4.tar.xz
-#8a7de2aa288ae50190fcd86a7d72cbcb  plasma-nano-6.1.4.tar.xz
-3bc5c58b1d06e4f4f1667799219ae887  plasma-firewall-6.1.4.tar.xz
-bf76a58afb8def0a0d07ea65429154fc  plasma-systemmonitor-6.1.4.tar.xz
-e6e3a3bc681b7044b5219ed6417f0310  qqc2-breeze-style-6.1.4.tar.xz
-d3096345a478a821fa16620dadf95fb4  ksystemstats-6.1.4.tar.xz
-03a717ac104f6f44ab9dffafdc37710b  oxygen-sounds-6.1.4.tar.xz
-a2f8684825ee231fefad28589f321ce7  kdeplasma-addons-6.1.4.tar.xz
-#4691fcec4a83314e82c8d1b64bf23c8e  flatpak-kcm-6.1.4.tar.xz
-8175024493047e4e98cd12f4d52bc24b  plasma-welcome-6.1.4.tar.xz
-8431d1bf294e2ba3cacd9c455678d118  ocean-sound-theme-6.1.4.tar.xz
-ed8102ad60b2c8ae9ce12dcaf1ff3cd5  print-manager-6.1.4.tar.xz
-#523c82bcf113168b2113612d7b20e544  wacomtablet-6.1.4.tar.xz
-#ebb06249b835ea73743c9cf6e91df4df  kwayland-integration-6.1.4.tar.xz
-#87332ae4b1c87a6921651ae9211a7e86  krdp-6.1.4.tar.xz
-7ca2419cbdb9e4e9b2822b930ac5ec18  oxygen-6.1.4.tar.xz</literal>
+<literal>34c760dc07f498d800c78013e89720b8  kdecoration-6.3.2.tar.xz
+1a23a3c130d5a73e851556638e05c86a  libkscreen-6.3.2.tar.xz
+f8d52a88a1b4bb492fb4c590d93efd9f  libksysguard-6.3.2.tar.xz
+7d88c11927b7254a48c239f8ff833161  breeze-6.3.2.tar.xz
+7c23c6cca6ae3b75c7d6e338d655f6be  breeze-gtk-6.3.2.tar.xz
+f56e4b5f766ddf07974646305e32f86e  layer-shell-qt-6.3.2.tar.xz
+c1ee6ea5e63f87819e53aae19e7175f5  plasma-activities-6.3.2.tar.xz
+d98a720f6c7bf6b18f68eaa0842454c9  libplasma-6.3.2.tar.xz
+97d0ef783470792339b0ab04325bc374  kscreenlocker-6.3.2.tar.xz
+cb1b7c21781685de53e066ed83f0ec88  kinfocenter-6.3.2.tar.xz
+153b3403440f5376a170055b3e0e7740  kglobalacceld-6.3.2.tar.xz
+425782c861e1b1bf0bb49a782b402cd6  kwayland-6.3.2.tar.xz
+e4c54188e25914eb0d0e5693b0e6332c  kwin-6.3.2.1.tar.xz
+#309881e87eab586be5448455f4d81b19  kwin-6.3.2.tar.xz
+0c0eaea9839bff9b0ac70e09814618f2  plasma5support-6.3.2.tar.xz
+b59f54a9c59f5633d4141f9acd6369ce  plasma-activities-stats-6.3.2.tar.xz
+dbdc3c9f45d0e0e09ab2b6cf6b6b75d7  kpipewire-6.3.2.tar.xz
+b83418536dead5549a9c87eaf7b1fe4d  plasma-workspace-6.3.2.tar.xz
+5737bfdf712844e76b0da0acedd8f339  plasma-disks-6.3.2.tar.xz
+62d50988f3833ed98e22a0c6fbb805ff  bluedevil-6.3.2.tar.xz
+dfd47627bc8da5c5b53475214a648b28  kde-gtk-config-6.3.2.tar.xz
+06577237fc872fb7659b11e829594144  kmenuedit-6.3.2.tar.xz
+77dba21438203d747f9361ef91e3f27b  kscreen-6.3.2.tar.xz
+2b880797d9e6ccd1cba40285436b1789  kwallet-pam-6.3.2.tar.xz
+bf7edbc9fd326ab2764e1244e6835ffa  kwrited-6.3.2.tar.xz
+7d787ff90098760bf8eb5db7fd833bc8  milou-6.3.2.tar.xz
+1b9dd5ae4ebf274bc282d2636af50fbb  plasma-nm-6.3.2.tar.xz
+281ec80a71b3942a8d42a5132682f1bc  plasma-pa-6.3.2.tar.xz
+0f225ead05e73c43599a66cd6d796cc6  plasma-workspace-wallpapers-6.3.2.tar.xz
+5bdd87252dc6713f4b9ebd44e2caaf4e  polkit-kde-agent-1-6.3.2.tar.xz
+29608ea71ab87f3491adcb5584ca8dc9  powerdevil-6.3.2.tar.xz
+f323dda4120302a0759fe81679c9dbd6  plasma-desktop-6.3.2.tar.xz
+4353d584447fb28011637ed3d85b4920  kgamma-6.3.2.tar.xz
+e278489c407a411270f70d945f6d6a51  ksshaskpass-6.3.2.tar.xz
+#bf4d0d25e309e930cbf867b0f4460e51  plasma-sdk-6.3.2.tar.xz
+2b4b42f97b187209a6d93f7167b793ca  sddm-kcm-6.3.2.tar.xz
+#05dd805ad6eaaa6563ac16ef413f8ad3  discover-6.3.2.tar.xz
+#037192907099c3a3edcceee135336040  breeze-grub-6.3.2.tar.xz
+#5e2b70c2282b5597f86008e3bf27b632  breeze-plymouth-6.3.2.tar.xz
+a7846a4612e60ac416b1db227d208e95  kactivitymanagerd-6.3.2.tar.xz
+477b200bc4bc43344529a835c5e607a3  plasma-integration-6.3.2.tar.xz
+#9b3e41e24234f6c01f64739babcede7a  plymouth-kcm-6.3.2.tar.xz
+79cea0f52385ce4bb8448a0f7b17f212  xdg-desktop-portal-kde-6.3.2.tar.xz
+6fd748a372f52c33ce869b58b7d5fe18  drkonqi-6.3.2.tar.xz
+ed431307e4784a87bd24576df4394e6e  plasma-vault-6.3.2.tar.xz
+#6ed2a9395f7e569ca38875c44db408db  plasma-browser-integration-6.3.2.tar.xz
+147069fdc10dea3a7a7701df9fd2d9ee  kde-cli-tools-6.3.2.tar.xz
+3a846d5cf8d923780e21f011ae2ceb17  systemsettings-6.3.2.tar.xz
+8b43cda434ae5d88c9436e3d4b793164  plasma-thunderbolt-6.3.2.tar.xz
+#5c1c23af1627d25842bfc28dc56fe048  plasma-mobile-6.3.2.tar.xz
+#9a07133320259913c5a826b5256f86d8  plasma-nano-6.3.2.tar.xz
+488fc23da31e10dd7bc2a1e36ee6716d  plasma-firewall-6.3.2.tar.xz
+602917d54289a02a6711f215dae470bb  plasma-systemmonitor-6.3.2.tar.xz
+361d1a0da813fd82bd36e11fcc4b157b  qqc2-breeze-style-6.3.2.tar.xz
+b26d38fb9f9d83b27bcafaec1597843a  ksystemstats-6.3.2.tar.xz
+2102f13838581d36a8247e2b54fff369  oxygen-sounds-6.3.2.tar.xz
+ba8261586695cccdb01a6de8d400281c  kdeplasma-addons-6.3.2.tar.xz
+#b32d6d4486fd549d61aeff96c1dfff85  flatpak-kcm-6.3.2.tar.xz
+8d3998b1e171ee55c91a419cc8ba6319  plasma-welcome-6.3.2.tar.xz
+faf86ec8c776cd351c1a96ed70328da3  ocean-sound-theme-6.3.2.tar.xz
+f7a577b9baf316504e2ab9481f376008  print-manager-6.3.2.tar.xz
+7d06df172f05b46ea6e97ae41f6e8be7  wacomtablet-6.3.2.tar.xz
+#8575d2950cff501301f92426145e3056  kwayland-integration-6.3.2.tar.xz
+#3679989f3a64f9c5b976175267119334  krdp-6.3.2.tar.xz
+b812507c2d6720a1a9aca4e38b993f68  oxygen-6.3.2.tar.xz
+#99b5985ac398900121545d03ab54530e  plasma-dialer-6.3.2.tar.xz
+#ffeddc23f3e90de981301940b21550d0  spacebar-6.3.2.tar.xz
+e9fc02ced53504b97341e0f248c63ee8  spectacle-6.3.2.tar.xz</literal>
 EOF</userinput></screen>
 
     <note>
@@ -286,7 +305,8 @@ EOF</userinput></screen>
           </listitem>
           <listitem>
             <para>
-              The plasma-mobile package provides phone functionality for Plasma.
+              The plasma-mobile, plasma-dialer, and spacebar packages 
+              provide phone functionality for Plasma.
             </para>
           </listitem>
           <listitem>
@@ -296,8 +316,7 @@ EOF</userinput></screen>
           </listitem>
           <listitem>
             <para>
-              The wacomtablet and kwayland-integration applications require
-              plasma5 support.
+              The kwayland-integration application requires plasma5 support.
             </para>
           </listitem>
         </itemizedlist>
@@ -328,7 +347,8 @@ EOF</userinput></screen>
     if $(echo $line | grep -E -q '^ *$|^#' ); then continue; fi
     file=$(echo $line | cut -d" " -f2)
 
-    pkg=$(echo $file|sed 's|^.*/||')          # Remove directory
+    pkg=$(echo $file|sed 's|^.*/||')           # Remove directory
+    packagedir=$(echo $pkg |sed 's|\.tar.*||') # Source directory
 
     tar -xf $file
     pushd $packagedir
@@ -378,7 +398,7 @@ exit</userinput></screen>
       Portal to be detected. As the &root; user:
     </para>
 
-<screen><userinput># Setup xsessions (X11 sessions)
+<screen role="root"><userinput># Setup xsessions (X11 sessions)
 install -dvm 755 /usr/share/xsessions
 cd /usr/share/xsessions
 

@@ -6,10 +6,10 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  " ">
-  <!ENTITY mesa-md5sum        "e3a195842c5cfbfb7234ed45f70af787">
-  <!ENTITY mesa-size          "28 MB">
-  <!ENTITY mesa-buildsize     "959 MB (with docs, add 538 MB for tests)">
-  <!ENTITY mesa-time          "3.0 SBU (with docs; add 1.0 SBU for tests; both with parallelism=4)">
+  <!ENTITY mesa-md5sum        "2e920916b613b5bcf1f752c9caae3d89">
+  <!ENTITY mesa-size          "45 MB">
+  <!ENTITY mesa-buildsize     "1.2 GB (with docs; add 573 MB for tests)">
+  <!ENTITY mesa-time          "4 SBU (with docs; add 1.4 SBU for tests; both with parallelism=4)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
@@ -36,7 +36,7 @@
       </para>
     </note>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -78,7 +78,7 @@
       <listitem>
         <para>
           Recommended patch:
-          <ulink url="&patch-root;/mesa-add_xdemos-3.patch"/>
+          <ulink url="&patch-root;/mesa-add_xdemos-4.patch"/>
           (installs 2 demo programs for testing Mesa - not needed if you
           install the <ulink url="https://archive.mesa3d.org/demos/">
           mesa-demos</ulink> package)
@@ -141,8 +141,7 @@
         </listitem>
         <listitem>
           <para>
-            <xref linkend="vulkan-loader"/> (required for the Zink
-            gallium driver)
+            <xref linkend="vulkan-loader"/> (required for Vulkan support)
           </para>
         </listitem>
         <listitem>
@@ -152,12 +151,23 @@
         </listitem>
         <listitem>
           <para>
-            <xref linkend="cbindgen"/> and <xref linkend="rust-bindgen"/>
+            <xref linkend="cbindgen"/>,
+            <xref linkend="make-ca"/>, and
+            <xref linkend="rust-bindgen"/>
             (required for the Nouveau Vulkan driver)
           </para>
         </listitem>
       </itemizedlist>
     </para>
+
+    <note>
+      <para>
+        An Internet connection is needed for building the Nouveau Vulkan
+        driver.  The system certificate store may need to be set up with
+        <xref role='recommended' linkend='make-ca'/> before building this
+        package.
+      </para>
+    </note>
 
     <note>
       <para>
@@ -181,7 +191,7 @@
 
       <para>
         The video device is most likely one of three families: AMD, Intel, or
-        Nvidia.  See the Command Explanations for
+        NVIDIA.  See the Command Explanations for
         <parameter>-D gallium-drivers=auto</parameter> below to
         see what options are available for your specific video hardware (or
         emulated video hardware).  You should probably add the softpipe or
@@ -213,7 +223,7 @@
     <para role="optional">
       <xref linkend="libgcrypt"/>,
       <xref linkend="libunwind"/>,
-      <xref linkend="lm_sensors"/> <!-- for libsensors according to Meson -->,
+      <xref linkend="lm_sensors"/>, <!-- for libsensors according to Meson -->
       <xref linkend="nettle"/>,
       <xref linkend="valgrind"/>,
       <ulink url="https://archive.mesa3d.org/demos/">mesa-demos</ulink>
@@ -241,8 +251,6 @@
     </note>
 -->
 
-    &build-use-internet;
-
   </sect2>
 
   <sect2 role="kernel" id="mesa-kernel"
@@ -266,16 +274,35 @@
       </para>
 
       <para>
+        For the GPUs supported by the Iris Gallium3D driver, with
+        <option>CONFIG_DRM_I915</option> enabled and
+        <option>CONFIG_DRM_XE_FORCE_PROBE</option> set to
+        the string <literal>*</literal>, the i915 driver will be used
+        if it supports the GPU, and the Xe driver will be used if it
+        supports the GPU but the i915 driver does not.  If you are sure
+        your GPU is supported by the i915 driver, you can disable the
+        Xe driver to save some build time.  If your GPU is supported
+        by both drivers and you want to use the Xe driver, you can disable
+        the i915 driver, or make the i915 driver deny your GPU via the
+        <option>CONFIG_DRM_I915_FORCE_PROBE</option> option, for example
+        setting it to <literal>!7d55</literal> would make i915 deny the
+        Meteor Lake integrated GPU (of which the PCI ID is
+        <literal>8086:7d55</literal>), leaving it for the Xe driver.
+      </para>
+
+      <para>
         <option>CONFIG_DRM_RADEON</option>,
         <option>CONFIG_DRM_AMDGPU</option>,
-        <option>CONFIG_DRM_NOUVEAU</option>, and
-        <option>CONFIG_DRM_I915</option> may require firmware.
+        <option>CONFIG_DRM_NOUVEAU</option>,
+        <option>CONFIG_DRM_I915</option>,
+        and <option>CONFIG_DRM_XE</option> may require firmware.
         See <xref linkend='postlfs-firmware'/> for details.
       </para>
 
       <para>
-        Selecting <option>CONFIG_DRM_RADEON</option> or
-        <option>CONFIG_DRM_AMDGPU</option> as
+        Selecting <option>CONFIG_DRM_RADEON</option>,
+        <option>CONFIG_DRM_AMDGPU</option>, or
+        <option>CONFIG_DRM_NOUVEAU</option> as
         <quote><literal>y</literal></quote> is not recommended. If it is, any
         required firmware must be built as a part of the kernel image or the
         initramfs for the driver to function correctly.
@@ -313,8 +340,7 @@
     </para>
 
 <!--<screen><userinput>patch -Np1 -i ../mesa-&mesa-version;-add_xdemos-1.patch</userinput></screen>-->
-<screen><userinput>patch -Np1 -i ../mesa-add_xdemos-3.patch</userinput></screen>
-
+<screen><userinput>patch -Np1 -i ../mesa-add_xdemos-4.patch</userinput></screen>
    <!-- Note that freedreno, vc4, and virgl all need special support from
         libdrm - renodr
         For me, libdrm does not mention virgl, but mesa accepts it. AFAICS
@@ -393,9 +419,18 @@ meson setup ..                 \
       -D gallium-drivers=auto  \
       -D vulkan-drivers=auto   \
       -D valgrind=disabled     \
+      -D video-codecs=all      \
       -D libunwind=disabled    &amp;&amp;
 
 ninja</userinput></screen>
+
+    <warning>
+      <para>
+        Please ask your lawyer or remove the
+        <parameter>-D video-codecs=all</parameter> option if you will
+        distribute the compiled Mesa libraries and drivers to others.
+      </para>
+    </warning>
 
     <para>
       To test the results, issue:
@@ -405,6 +440,8 @@ ninja</userinput></screen>
      All 90 tests passed for me for 23.1.0 [bdubbs]
      89 Tests passed for me, 1 timeout on 23.1.8 [rahul]
      All 98 tests passed for me for 23.3.1 [bdubbs]
+     All 106 tests passed for me for 24.3.1 [zeckma]
+     All 104 tests passed for me for 25.0.1 [zeckma]
 -->
 
     <para>
@@ -522,9 +559,9 @@ ninja</userinput></screen>
         </listitem>
         <listitem>
           <para>
-             <literal>zink</literal> (using Vulkan to implement OpenGL,
-             it's not very useful on x86 as at now but it may replace other
-             drivers for modern GPU models in the future)
+             <literal>zink</literal> (uses Vulkan to implement OpenGL,
+             and while unstable at times, it can be a decent replacement for
+             non-performant gallium drivers like nouveau)
           </para>
         </listitem>
       </itemizedlist>
@@ -604,6 +641,11 @@ ninja</userinput></screen>
     </para>
 
     <para>
+      <parameter>-D video-codecs=all</parameter>: This parameter enables
+      building codecs for video formats covered by third-party patents.
+    </para>
+
+    <para>
       <parameter>-D libunwind=disabled</parameter>: This parameter disables
       the usage of libunwind.
     </para>
@@ -622,6 +664,12 @@ ninja</userinput></screen>
       linux options are auto (default), x11, wayland, surfaceless, and drm.
     </para>
 
+    <para>
+      <option>-D legacy-x11="..."</option> This parameter controls which legacy
+      X11 features get built-in support. Available linux options are none
+      (default) and dri2. These features are rarely needed anymore.
+    </para>
+
   </sect2>
 
   <sect2 role="content">
@@ -632,6 +680,7 @@ ninja</userinput></screen>
       <segtitle>Installed Libraries</segtitle><!-- in /usr/lib -->
       <segtitle>Installed DRI Driver Stubs</segtitle><!-- in /usr/lib/dri -->
       <segtitle>Installed VA-API Drivers</segtitle><!-- in /usr/lib/dri -->
+      <segtitle>Installed GBM Backends</segtitle><!-- in /usr/lib/gbm -->
       <segtitle>Installed VDPAU Drivers</segtitle><!-- in /usr/lib/vdpau -->
       <segtitle>Installed Vulkan Drivers</segtitle><!-- in /usr/lib -->
       <segtitle>Installed Directories</segtitle>
@@ -675,8 +724,13 @@ ninja</userinput></screen>
           <!-- Begin VA-API drivers -->
           nouveau_drv_video.so,
           radeonsi_drv_video.so, and
-          virtio_gpu_drv_video.so,
+          virtio_gpu_drv_video.so
           <!-- End VA-API drivers -->
+        </seg>
+        <seg>
+          <!-- Begin GBM backends -->
+          dri_gbm.so
+          <!-- End GBM backends -->
         </seg>
         <seg>
           <!-- Begin VDPAU drivers -->
@@ -684,8 +738,8 @@ ninja</userinput></screen>
           libvdpau_r600.so,
           libvdpau_radeonsi.so, and
           libvdpau_virtio_gpu.so
+          (many of these drivers are hard-linked)
           <!-- End VDPAU drivers -->
-          (Many of these drivers are hard-linked).
         </seg>
         <seg>
           libvulkan_intel_hasvk.so,
@@ -697,7 +751,7 @@ ninja</userinput></screen>
         <seg>
           <!-- $XORG_PREFIX/include/GL is installed by xorg-protos -->
           $XORG_PREFIX/{include/{EGL,GLES,GLES2,GLES3,KHR},
-          $XORG_PREFIX/lib/{dri,vdpau}},
+          $XORG_PREFIX/lib/{dri,gbm,vdpau}},
           $XORG_PREFIX/share/drirc.d (contains workarounds for various applications,
           particularly browsers and games),
           $XORG_PREFIX/share/vulkan,
@@ -737,6 +791,17 @@ ninja</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="dri_gbm">
+        <term><filename class='libraryfile'>dri_gbm.so</filename></term>
+        <listitem>
+          <para>
+            implements Graphics Buffer Management functions needed by
+            <systemitem class='library'>libgbm</systemitem> on top of
+            <systemitem class='library'>libdrm</systemitem>
+          </para>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libdril_dri">
         <term><filename class='libraryfile'>libdril_dri.so</filename></term>
         <listitem>
@@ -760,6 +825,15 @@ ninja</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="libgallium">
+        <term><filename class='libraryfile'>libgallium-&mesa-version;.so</filename></term>
+        <listitem>
+          <para>
+            contains all the Gallium3D drivers
+          </para>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libgbm">
         <term><filename class="libraryfile">libgbm.so</filename></term>
         <listitem>
@@ -769,6 +843,19 @@ ninja</userinput></screen>
           </para>
           <indexterm zone="mesa libgbm">
             <primary sortas="c-libgbm">libgbm.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libglapi">
+        <term><filename class="libraryfile">libglapi.so</filename></term>
+        <listitem>
+          <para>
+            is the <application>Mesa</application> implementation of the OpenGL
+            API
+          </para>
+          <indexterm zone="mesa libglapi">
+            <primary sortas="c-libglapi">libglapi.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -809,12 +896,15 @@ ninja</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libgallium">
-        <term><filename class='libraryfile'>libgallium-&mesa-version;.so</filename></term>
+      <varlistentry id="libxatracker">
+        <term><filename class="libraryfile">libxatracker.so</filename></term>
         <listitem>
           <para>
-            contains all the Gallium3D drivers
+            is the XA state tracker for the VMWare vmwgfx driver
           </para>
+          <indexterm zone="mesa libxatracker">
+            <primary sortas="c-libxatracker">libxatracker.so</primary>
+          </indexterm>
         </listitem>
       </varlistentry>
 

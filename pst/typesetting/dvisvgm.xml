@@ -8,7 +8,7 @@
        NOT via the tags at github - those use autogen.sh -->
   <!ENTITY dvisvgm-download-http "https://github.com/mgieseki/dvisvgm/releases/download/&dvisvgm-version;/dvisvgm-&dvisvgm-version;.tar.gz">
   <!ENTITY dvisvgm-download-ftp  " ">
-  <!ENTITY dvisvgm-md5sum        "2ddbb5ec720deaaf2e13f3a521089671">
+  <!ENTITY dvisvgm-md5sum        "9f4ce67a08be6ae0fa17bf6fda64f76e">
   <!ENTITY dvisvgm-size          "2.8 MB">
   <!-- for dvisvgm-3.22 on top of TL2023, 7 MB for program,
        a few KB for bigger dvisvgm.1 and the PDF man page was not updated.
@@ -35,7 +35,7 @@
       PDF files to SVG format.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -128,7 +128,9 @@
       commands:
     </para>
 
-<screen><userinput>sed -i 's/python/&amp;3/' tests/Makefile.in         &amp;&amp;
+<screen><userinput>TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') &amp;&amp;
+
+sed -i 's/python/&amp;3/' tests/Makefile.in         &amp;&amp;
 ./configure                                     \
     --bindir=$TEXLIVE_PREFIX/bin/${TEXARCH}     \
     --mandir=$TEXLIVE_PREFIX/texmf-dist/doc/man \

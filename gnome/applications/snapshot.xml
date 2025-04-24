@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY snapshot-download-http "&gnome-download-http;/snapshot/&gnome-46;/snapshot-&snapshot-version;.tar.xz">
+  <!ENTITY snapshot-download-http "&gnome-download-http;/snapshot/&gnome-48;/snapshot-&snapshot-version;.tar.xz">
   <!ENTITY snapshot-download-ftp  " ">
-  <!ENTITY snapshot-md5sum        "25f97e88005b933c382e5a0c2193599c">
-  <!ENTITY snapshot-size          "22 MB">
-  <!ENTITY snapshot-buildsize     "1.1 GB (2.9 MB installed)">
+  <!ENTITY snapshot-md5sum        "eed102d3704794563f7c482c980c75a4">
+  <!ENTITY snapshot-size          "12 MB">
+  <!ENTITY snapshot-buildsize     "1.4 GB (5.6 MB installed)">
   <!ENTITY snapshot-time          "4.5 SBU">
 ]>
 
@@ -29,7 +29,7 @@
       takes pictures and videos from a Webcam.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -76,7 +76,10 @@
 
     <bridgehead renderas="sect4">Required at runtime</bridgehead>
     <para role="required">
-      <xref role="runtime" linkend="pipewire"/>
+      <xref role='runtime' linkend="libgstgtk4"/>,
+      <xref role="runtime" linkend="pipewire"/>,
+      <xref role="runtime" linkend="xdg-desktop-portal-gnome"/>, and
+      <xref role="runtime" linkend="xdg-user-dirs"/>
     </para>
 
   </sect2>
@@ -91,20 +94,6 @@
       </para>
     </note>
 
-<!-- No longer needed with pango-1.51.0
-    <para>
-      First, remove a check against the system <application>Pango</application>
-      version that is too strict:
-    </para>
-    
-<screen><userinput remap="pre">sed '/pango.v1_52/,+1d' -i vendor/pango-sys/Cargo.toml &amp;&amp;
-
-cat &gt;&gt; Cargo.toml &lt;&lt; EOF
-<literal>[patch.crates-io.pango-sys]
-path = "vendor/pango-sys"</literal>
-EOF</userinput></screen>
--->
-
     <para>
       Install <application>Snapshot</application> by running the following
       commands:
@@ -118,8 +107,6 @@ ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>ninja test</command>.
-      <!--One test is known to fail due to deprecated constructs in
-      appstream-1.0+-->
     </para>
 
     <para>

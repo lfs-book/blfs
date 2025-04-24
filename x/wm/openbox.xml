@@ -9,7 +9,7 @@
   <!ENTITY openbox-download-ftp  " ">
   <!ENTITY openbox-md5sum        "b72794996c6a3ad94634727b95f9d204">
   <!ENTITY openbox-size          "944 KB">
-  <!ENTITY openbox-buildsize     "21 MB">
+  <!ENTITY openbox-buildsize     "19 MB">
   <!ENTITY openbox-time          "0.3 SBU">
 ]>
 
@@ -32,7 +32,7 @@
       almost every aspect of how you interact with your desktop.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -62,6 +62,16 @@
         </para>
       </listitem>
     </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Download</bridgehead>
+     <itemizedlist spacing="compact">
+       <listitem>
+         <para>
+           Required patch:
+           <ulink url="&patch-root;/openbox-&openbox-version;-py3-1.patch"/>
+         </para>
+       </listitem>
+     </itemizedlist>
 
     <bridgehead renderas="sect3">Openbox Dependencies</bridgehead>
 
@@ -98,19 +108,18 @@
     </note>
 
     <para>
-      If you only installed the Python 3 PyXDG module convert one of the
-      scripts to Python 3:
+      Update the package scripts to enable Python 3:
     </para>
 
-<screen><userinput>2to3-&python3-majorver; -w data/autostart/openbox-xdg-autostart &amp;&amp;
-sed 's/python/python3/' -i data/autostart/openbox-xdg-autostart</userinput></screen>
+<screen><userinput>patch -Np1 -i ../openbox-&openbox-version;-py3-1.patch</userinput></screen>
 
     <para>
       Install <application>Openbox</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr     \
+<screen><userinput>autoreconf -fi &amp;&amp;
+./configure --prefix=/usr     \
             --sysconfdir=/etc \
             --disable-static  \
             --docdir=/usr/share/doc/openbox-&openbox-version; &amp;&amp;

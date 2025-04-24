@@ -4,34 +4,34 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gtk3-download-http "&gnome-download-http;/gtk+/&gnome-minor-24;/gtk+-&gtk3-version;.tar.xz">
+  <!ENTITY gtk3-download-http "&gnome-download-http;/gtk/&gnome-minor-24;/gtk-&gtk3-version;.tar.xz">
   <!ENTITY gtk3-download-ftp  " ">
-  <!ENTITY gtk3-md5sum        "226e372664a7fae749a50a04983ecd8d">
+  <!ENTITY gtk3-md5sum        "0d8f0c49d5232fb9948595d8ff16f2a5">
   <!ENTITY gtk3-size          "13 MB">
-  <!ENTITY gtk3-buildsize     "252 MB (add 8 MB for tests)">
+  <!ENTITY gtk3-buildsize     "242 MB (add 8 MB for tests)">
   <!ENTITY gtk3-time          "0.8 SBU (using parallelism=4; add 0.2 SBU for tests)">
 ]>
 
-<sect1 id="gtk3" xreflabel="GTK+-&gtk3-version;">
+<sect1 id="gtk3" xreflabel="GTK-&gtk3-version;">
   <?dbhtml filename="gtk3.html"?>
 
 
-  <title>GTK+-&gtk3-version;</title>
+  <title>GTK-&gtk3-version;</title>
 
   <indexterm zone="gtk3">
-    <primary sortas="a-GTK+3">GTK+3</primary>
+    <primary sortas="a-GTK3">GTK3</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to GTK+ 3</title>
+    <title>Introduction to GTK3</title>
 
     <para>
-      The <application>GTK+ 3</application> package contains
+      The <application>GTK3</application> package contains
       libraries used for creating graphical user interfaces for
       applications.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -67,7 +67,17 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">GTK+ 3 Dependencies</bridgehead>
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Recommended patch (for fixing the GObject introspection data):
+          <ulink url="&patch-root;/gtk-&gtk3-version;-upstream_fix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">GTK3 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
@@ -80,14 +90,12 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref role='runtime' linkend="adwaita-icon-theme"/>
-        (at runtime; default for some gtk+3 settings keys and
-        also needed for one test),
+        (at runtime; default for some gtk3 settings keys)
       <xref linkend="docbook-xsl"/> (for generating manual pages),
       <xref linkend="hicolor-icon-theme"/> (needed for tests),
       <xref linkend="iso-codes"/>,
       <xref linkend="libxkbcommon"/>,
       <xref linkend="libxslt"/> (for generating manual pages),
-      <xref linkend="sassc"/>,
       <xref linkend="wayland"/>, and
       <xref linkend="wayland-protocols"/>
     </para>
@@ -104,17 +112,25 @@
       <xref linkend="gtk-doc"/>,
       <xref linkend="libcloudproviders"/>,
       <xref linkend="pyatspi2"/> (for tests),
-      <xref linkend='tracker3'/>, and
+      <xref linkend="sassc"/>,
+      <xref linkend="tinysparql"/>, and
       <ulink url="https://icl.utk.edu/papi/">PAPI</ulink>
     </para>
 
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of GTK+ 3</title>
+    <title>Installation of GTK3</title>
 
     <para>
-      Install <application>GTK+ 3</application> by running the following
+      Fix an issue causing the GObject introspection data to be incorrect
+      with gobject-introspection-1.84 or newer:
+    </para>
+
+    <screen><userinput>patch -Np1 -i ../gtk-&gtk3-version;-upstream_fix-1.patch</userinput></screen>
+
+    <para>
+      Install <application>GTK3</application> by running the following
       commands:
     </para>
 
@@ -179,8 +195,8 @@ ninja</userinput></screen>
 
     <para>
       <option>-D tracker3=true</option>: This switch enables the search
-      function based on Tracker 3 in the GTK+-3 file chooser dialog.
-      It requires <xref linkend="tracker3"/>.
+      function based on TinySPARQL in the GTK3 file chooser dialog.
+      It requires <xref linkend="tinysparql"/>.
     </para>
 
     <para>
@@ -192,7 +208,7 @@ ninja</userinput></screen>
   </sect2>
 
   <sect2 role="configuration">
-    <title>Configuring GTK+ 3</title>
+    <title>Configuring GTK3</title>
 
     <sect3 id="gtk3-config">
       <title>Config Files</title>
@@ -213,11 +229,11 @@ ninja</userinput></screen>
     <sect3><title>Configuration Information</title>
 
       <para>
-        <application>GTK+ 3</application> themes change the way a
-        <application>GTK+ 3</application> application looks. An icon theme can
+        <application>GTK3</application> themes change the way a
+        <application>GTK3</application> application looks. An icon theme can
         be used to change the icons that appear on the application's toolbar.
-        If you have installed a <application>GTK+ 3</application> theme (e.g.
-        the Adwaita theme built in <application>GTK+ 3</application>),
+        If you have installed a <application>GTK3</application> theme (e.g.
+        the Adwaita theme built in <application>GTK3</application>),
         an icon theme (such as <xref
         linkend="oxygen-icons"/>) and/or a font (<xref linkend="dejavu-fonts"/>),
         you can set your preferences in <filename>~/.config/gtk-3.0/settings.ini</filename>,
@@ -246,12 +262,12 @@ EOF</userinput></screen>
         There are many settings keys, some with default values. You can find
         them at <ulink
         url="https://developer.gnome.org/gtk3/stable/GtkSettings.html">Settings:
-        GTK+ 3 Reference Manual</ulink>. There are many more themes available at
+        GTK3 Reference Manual</ulink>. There are many more themes available at
         <ulink url="https://www.gnome-look.org/browse/"/> and other places.
       </para>
 
       <para>
-        As part of GTK+-3.0's redesign, the scroll bar buttons are no longer
+        As part of GTK-3.0's redesign, the scroll bar buttons are no longer
         visible on the scrollbar in many applications. If this functionality
         is desired, modify the <filename>gtk.css</filename> file and restore
         them using the following command:
@@ -314,7 +330,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             provides support for displaying
-            <application>GTK+ 3</application> applications in a web browser,
+            <application>GTK3</application> applications in a web browser,
             using HTML5 and web sockets
           </para>
           <indexterm zone="gtk3 broadwayd">
@@ -328,7 +344,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is a simple program that demonstrates some of the tasks that can be
-            done with <application>GTK+ 3</application>
+            done with <application>GTK3</application>
           </para>
           <indexterm zone="gtk3 gtk3-demo">
             <primary sortas="b-gtk3-demo">gtk3-demo</primary>
@@ -340,7 +356,7 @@ EOF</userinput></screen>
         <term><command>gtk3-demo-application</command></term>
         <listitem>
           <para>
-            is a simple <application>GTK+ 3</application> application
+            is a simple <application>GTK3</application> application
           </para>
           <indexterm zone="gtk3 gtk3-demo-application">
             <primary sortas="b-gtk3-demo-application">gtk3-demo-application</primary>
@@ -366,7 +382,7 @@ EOF</userinput></screen>
         <term><command>gtk3-widget-factory</command></term>
         <listitem>
           <para>
-            is a program to view <application>GTK+ 3</application> themes and widgets
+            is a program to view <application>GTK3</application> themes and widgets
           </para>
           <indexterm zone="gtk3 gtk3-widget-factory">
             <primary sortas="b-gtk3-widget-factory">gtk3-widget-factory</primary>
@@ -391,7 +407,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             converts symbolic SVG icons into specially prepared PNG files.
-            <application>GTK+ 3</application> can load and recolor these PNGs,
+            <application>GTK3</application> can load and recolor these PNGs,
             just like original SVGs, but loading them is much faster
           </para>
           <indexterm zone="gtk3 gtk-encode-symbolic-svg">
@@ -420,7 +436,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             collects information about loadable input method modules for
-            <application>GTK+ 3</application> and writes it to the default cache
+            <application>GTK3</application> and writes it to the default cache
             file location, or to standard output
           </para>
           <indexterm zone="gtk3 gtk-query-immodules-3.0">
@@ -434,7 +450,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             provides a complete listing of all settings related to
-            <application>GTK+ 3</application>
+            <application>GTK3</application>
           </para>
           <indexterm zone="gtk3 gtk-query-settings">
             <primary sortas="b-gtk-query-settings">gtk-query-settings</primary>

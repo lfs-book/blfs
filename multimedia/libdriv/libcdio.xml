@@ -35,7 +35,7 @@
       bit linear PCM.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -92,6 +92,14 @@
 
   <sect2 role="installation">
     <title>Installation of libcdio</title>
+
+    <para>
+      If you are building on an i686 system, fix a build issue caused by
+      large file support:
+      <!--_cdio_generic.c:63:20: error: implicit declaration of function ‘lseek64’-->
+    </para>
+
+<screen><userinput remap="pre">sed '/CDIO_LSEEK/s/lseek64/lseek/' -i lib/driver/_cdio_generic.c</userinput></screen>
 
     <para>
       Install <application>libcdio</application> by running the

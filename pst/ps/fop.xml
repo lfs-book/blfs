@@ -6,9 +6,9 @@
 
   <!ENTITY fop-download-http "https://archive.apache.org/dist/xmlgraphics/fop/source/fop-&fop-version;-src.tar.gz">
   <!ENTITY fop-download-ftp  " ">
-  <!ENTITY fop-md5sum        "f7537ca7f2e16971fa99c8bb0dad62c7">
+  <!ENTITY fop-md5sum        "0815e845757c527e2617aca1ca2d82d1">
   <!ENTITY fop-size          "20 MB">
-  <!ENTITY fop-buildsize     "333 MB (including files downloaded to the user directory)">
+  <!ENTITY fop-buildsize     "342 MB (including files downloaded to the user directory)">
   <!ENTITY fop-time          "0.9 SBU">
 <!--
   <!ENTITY pdfbox-version    "2.0.27">
@@ -54,7 +54,7 @@
       primary output target is PDF.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -125,6 +125,12 @@
           </simplelist>
         </para>
       </listitem>
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/fop-&fop-version;-upstream_fixes-1.patch"/>
+        </para>
+      </listitem>
     </itemizedlist>
 
     <itemizedlist spacing="compact">
@@ -146,6 +152,12 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="apache-ant"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="libarchive"/> (required for the unpacking OFFO hyphenation
+      patterns)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -203,6 +215,12 @@ rm -rf offo-hyphenation</userinput></screen>
       <title>Installing fop Components</title>
 
       <para>
+        First, fix a build error caused by Java-23:
+      </para>
+
+<screen><userinput>patch -Np1 -i ../fop-&fop-version;-upstream_fixes-1.patch</userinput></screen>
+
+      <para>
         The <command>javadoc</command> command that ships with OpenJDK 10 and
         later has
         become much stricter than previous versions regarding conformance of
@@ -235,7 +253,7 @@ rm -rf offo-hyphenation</userinput></screen>
 
 LC_ALL=en_US.UTF-8                     \
 PATH=$PATH:/tmp/apache-maven-&maven-version;/bin \
-ant all javadocs &amp;&amp;
+ant package javadocs &amp;&amp;
 
 mv build/javadocs .</userinput></screen>
 
@@ -255,7 +273,7 @@ chmod a+x /opt/fop-&fop-version;/fop                                &amp;&amp;
 ln -v -sfn fop-&fop-version; /opt/fop</userinput></screen>
 
       <para>
-        The last thing to do is to clean what we have done:
+        Finally, remove the temporary copy of Apache Maven:
       </para>
 
 <screen><userinput>rm -rf /tmp/apache-maven-&maven-version;</userinput></screen>

@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY gnome-system-monitor-download-http
-           "&gnome-download-http;/gnome-system-monitor/&gnome-46;/gnome-system-monitor-&gnome-system-monitor-version;.tar.xz">
+           "&gnome-download-http;/gnome-system-monitor/&gnome-48;/gnome-system-monitor-&gnome-system-monitor-version;.tar.xz">
   <!ENTITY gnome-system-monitor-download-ftp  " ">
-  <!ENTITY gnome-system-monitor-md5sum        "d2c121f58825bf5a441f16f13b0d3201">
-  <!ENTITY gnome-system-monitor-size          "1020 KB">
+  <!ENTITY gnome-system-monitor-md5sum        "e5d25a6f7ee0ba9d0fb19b1eb2f852a1">
+  <!ENTITY gnome-system-monitor-size          "1.0 MB">
   <!ENTITY gnome-system-monitor-buildsize     "27 MB">
-  <!ENTITY gnome-system-monitor-time          "0.2 SBU (with parallelism=4)">
+  <!ENTITY gnome-system-monitor-time          "0.1 SBU (with parallelism=4)">
 ]>
 
 <sect1 id="gnome-system-monitor" xreflabel="gnome-system-monitor-&gnome-system-monitor-version;">
@@ -32,7 +32,7 @@
       <command>gtop</command>.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,7 +83,8 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="appstream-glib"/>,
-      <xref linkend="desktop-file-utils"/>, and
+      <xref linkend="desktop-file-utils"/>,
+      <ulink url="https://github.com/catchorg/Catch2">Catch2</ulink>, and
       <ulink url="https://github.com/uncrustify/uncrustify">uncrustify</ulink>
     </para>
 
@@ -91,6 +92,14 @@
 
   <sect2 role="installation">
     <title>Installation of GNOME System Monitor</title>
+
+    <para>
+      First, remove a hard dependency on Catch2, which is only used if you
+      are running the unit tests:
+    </para>
+
+<screen><userinput remap="pre">find . -name meson.build | xargs sed -i -e '/catch2/d' &amp;&amp;
+sed -i '152,162d' src/meson.build</userinput></screen>
 
     <para>
       Install <application>GNOME System Monitor</application> by running
@@ -113,7 +122,9 @@ meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      This package does not come with a test suite.
+      This package comes with a test suite, but it requires the external
+      Catch2 dependency. If you have Catch2 installed, you can omit the seds
+      above and then run the tests with <command>ninja test</command>.
     </para>
 
     <para>

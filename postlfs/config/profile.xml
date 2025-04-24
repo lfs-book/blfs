@@ -95,17 +95,10 @@
       setting up some helper functions and some basic parameters. It specifies
       some <command>bash</command> history parameters and, for security
       purposes, disables keeping a permanent history file for the <systemitem
-      class="username">root</systemitem> user.  It also sets a default user
-      prompt.  It then calls small, single purpose scripts in the <filename
+      class="username">root</systemitem> user.
+      It then calls small, single purpose scripts in the <filename
       class='directory'>/etc/profile.d</filename> directory to provide most
       of the initialization.
-    </para>
-
-    <para>
-      For more information on the escape sequences you can use for your prompt
-      (i.e., the <envar>PS1</envar> environment variable) see <command>info
-      bash</command> -- <emphasis role="strong">Node: Printing a
-      Prompt</emphasis>.
     </para>
 
 <screen role="root"><?dbfo keep-together="auto"?><userinput>cat &gt; /etc/profile &lt;&lt; "EOF"
@@ -175,23 +168,13 @@ export XDG_DATA_DIRS=${XDG_DATA_DIRS:-/usr/share}
 export XDG_CONFIG_DIRS=${XDG_CONFIG_DIRS:-/etc/xdg}
 export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/tmp/xdg-$USER}
 
-# Set up a red prompt for root and a green one for users.
-NORMAL="\[\e[0m\]"
-RED="\[\e[1;31m\]"
-GREEN="\[\e[1;32m\]"
-if [[ $EUID == 0 ]] ; then
-  PS1="$RED\u [ $NORMAL\w$RED ]# $NORMAL"
-else
-  PS1="$GREEN\u [ $NORMAL\w$GREEN ]\$ $NORMAL"
-fi
-
 for script in /etc/profile.d/*.sh ; do
         if [ -r $script ] ; then
                 . $script
         fi
 done
 
-unset script RED GREEN NORMAL
+unset script
 
 # End /etc/profile</literal>
 EOF</userinput></screen>
@@ -271,6 +254,7 @@ fi
 
 # End /etc/profile.d/bash_completion.sh</literal>
 EOF</userinput></screen>
+
       <para>
         Make sure that the directory exists:
       </para>
@@ -307,10 +291,7 @@ fi
 
 if [ -f "$HOME/.dircolors" ] ; then
         eval $(dircolors -b $HOME/.dircolors)
-fi
-
-alias ls='ls --color=auto'
-alias grep='grep --color=auto'</literal>
+fi</literal>
 EOF</userinput></screen>
 
     </sect3>
@@ -349,13 +330,13 @@ EOF</userinput></screen>
 
       <note>
         <para>
-          The <command>man</command> program automatically deduce the search
+          The <command>man</command> program automatically deduces the search
           path for man pages by examining the content of the
           <envar>PATH</envar> variable, see
           <ulink role='man' url='&man;manpath.5'>manpath(5)</ulink> for
           details.  Setting the <envar>MANPATH</envar> variable may override
-          the automatic deduction, so the BLFS editors do not recommend to
-          set it.  If you must set it for any reason, it's better to start
+          the automatic deduction, so the BLFS editors do not recommend 
+          setting it.  If you must set it for any reason, it's better to start
           its value with a colon (<literal>:</literal>), for example
           <command>MANPATH=:/opt/somepkg/share/man:/opt/otherpkg/share/man</command>
           so the paths listed in the <envar>MANPATH</envar> variable will
@@ -534,7 +515,7 @@ EOF</userinput></screen>
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 
-# Provides prompt for non-login shells, specifically shells started
+# Provides prompt for interactive shells, specifically shells started
 # in the X environment. [Review the LFS archive thread titled
 # PS1 Environment Variable for a great case study behind this script
 # addendum.]
@@ -550,8 +531,19 @@ fi
 
 unset RED GREEN NORMAL
 
+# GnuPG wants this or it'll fail with pinentry-curses under some
+# circumstances (for example signing a Git commit)
+tty -s &amp;&amp; export GPG_TTY=$(tty)
+
 # End /etc/bashrc</literal>
 EOF</userinput></screen>
+
+    <para>
+      For more information on the escape sequences you can use for your prompt
+      (i.e., the <envar>PS1</envar> environment variable) see <command>info
+      bash</command> -- <emphasis role="strong">Node: Printing a
+      Prompt</emphasis>.
+    </para>
 
   </sect2>
 
@@ -729,7 +721,7 @@ EOF</userinput></screen>
     <para>
       Finally, Ian Macdonald has written an excellent collection of tips and
       tricks to enhance your shell environment.  You can read it online at
-      <ulink url="https://www.caliban.org/bash/index.shtml"/>.
+      <ulink url="https://caliban.org/bash/index.shtml"/>.
     </para>
 
   </sect2>

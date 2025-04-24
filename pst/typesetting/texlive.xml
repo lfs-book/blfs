@@ -6,22 +6,22 @@
   <!-- utah -->
   <!ENTITY texlive-download-http "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/&texlive-year;/texlive-&texlive-version;-source.tar.xz">
   <!ENTITY texlive-download-ftp  " ">
-  <!ENTITY texlive-md5sum        "1da2f08e3ba4a3708870dd088c1d6823">
-  <!ENTITY texlive-size          "67 MB">
+  <!ENTITY texlive-md5sum        "699b3a9871885e54f35c155332d69da4">
+  <!ENTITY texlive-size          "106 MB">
 
-  <!ENTITY texlive-buildsize      "9.1 GB including the additional download and the tests, 8.3 GB installed">
-  <!ENTITY texlive-time           "4.6 SBU including the additional download and the tests, building with parallelism=4">
+  <!ENTITY texlive-buildsize     "9.8 GB including the additional downloads and the tests, 8.7 GB installed">
+  <!ENTITY texlive-time          "4.0 SBU including the additional downloads and the tests, building with parallelism=4">
 
   <!-- utah -->
   <!ENTITY texlive-texmf-download-http "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/&texlive-year;/texlive-&texlive-version;-texmf.tar.xz">
   <!ENTITY texlive-texmf-download-ftp  " ">
-  <!ENTITY texlive-texmf-md5sum        "e67ce334dd0fddda5f4a87b4fcaaf48f">
-  <!ENTITY texlive-texmf-size          "4.0 GB">
+  <!ENTITY texlive-texmf-md5sum        "9b3093da81e6eacf98fde86589471a22">
+  <!ENTITY texlive-texmf-size          "4.4 GB">
 
-  <!ENTITY texlive-extra-download-http "https://ftp.tu-chemnitz.de/pub/tug/historic/systems/texlive/&texlive-year;/texlive-&texlive-version;-extra.tar.xz">
+  <!ENTITY texlive-extra-download-http "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/&texlive-year;/texlive-&texlive-version;-extra.tar.xz">
   <!ENTITY texlive-extra-download-ftp  " ">
-  <!ENTITY texlive-extra-md5sum        "1bd045bd1673ce61bde590c10b86c6cc">
-  <!ENTITY texlive-extra-size          "1.9 MB">
+  <!ENTITY texlive-extra-md5sum        "8aabf4273a001d79c3c8de347f028145">
+  <!ENTITY texlive-extra-size          "2.0 MB">
 
 <!-- The following commit will change future installs so that the scripts in
 texmf-dist linked from bin/ are copied instead of symlinks.
@@ -94,7 +94,7 @@ and it might have been removed by next year. -->
       initialize the new installation will be found.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -197,13 +197,14 @@ and it might have been removed by next year. -->
           Download size: &texlive-extra-size;
         </para>
       </listitem>
-
+<!--
       <listitem>
         <para>
           Required patch: <ulink url=
           "&patch-root;/texlive-&texlive-version;-source-upstream_fixes-1.patch"/>
         </para>
       </listitem>
+-->
     </itemizedlist>
 
     <bridgehead renderas="sect3">TeX Live from source Dependencies</bridgehead>
@@ -267,6 +268,17 @@ and it might have been removed by next year. -->
       </para>
     </note>
 
+<!-- Applied in TL2025 -renodr
+    <para>
+      Fix a build failure that occurs on some platforms due to more strict
+      compiler warnings:
+    </para>
+
+<screen><userinput remap="pre">sed -e '182 s/internal_font_number/boolean/' \
+    -e '301 s/internal_font_number/boolean/' \
+    -i texk/web2c/pdftexdir/pdftex.ch</userinput></screen>
+-->
+
     <para>
       Now, as a normal user:
     </para>
@@ -275,8 +287,6 @@ and it might have been removed by next year. -->
 	ande configure. But keeping it there as a commented line adds too much vertical space.
     patch -Np1 -i ../texlive-&texlive-version;-source-security_fix-1.patch &amp;&amp;-->
 <screen><userinput>export TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') &amp;&amp;
-
-patch -Np1 -i ../texlive-&texlive-version;-source-upstream_fixes-1.patch &amp;&amp;
 
 mkdir texlive-build &amp;&amp;
 cd    texlive-build &amp;&amp;
@@ -299,7 +309,6 @@ cd    texlive-build &amp;&amp;
     --with-system-graphite2                       \
     --with-system-harfbuzz                        \
     --with-system-icu                             \
-    --with-system-libgs                           \
     --with-system-libpaper                        \
     --with-system-libpng                          \
     --with-system-mpfr                            \
@@ -318,6 +327,7 @@ make</userinput></screen>
       which result in a difference in the final decimal places of the psresize
       test. The <application>libpaper</application> developer does not think
       this is significant.
+      <!-- Still true with TL 2025 -->
     </para>
 
     <para>
@@ -427,9 +437,6 @@ fmtutil-sys --all</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/tex-system.xml"/>
-<!--
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/tex-xpdf.xml"/>-->
 
     <para>
       <parameter>--disable-dvisvgm</parameter>: As noted above, the shipped version
@@ -497,7 +504,7 @@ fmtutil-sys --all</userinput></screen>
         <seg>libkpathsea.so,
              libptexenc.so,
              libsynctex.so,
-             libtexlua52.so,
+             libtexlua53.so,
              libtexluajit.so
         </seg>
         <seg>$TEXLIVE_PREFIX/bin,
@@ -561,14 +568,14 @@ fmtutil-sys --all</userinput></screen>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="libtexlua52">
-        <term><filename class="libraryfile">libtexlua52.so</filename></term>
+      <varlistentry id="libtexlua53">
+        <term><filename class="libraryfile">libtexlua53.so</filename></term>
         <listitem>
           <para>
-            provides Lua 5.2, modified for use with LuaTeX
+            provides Lua 5.3, modified for use with LuaTeX
           </para>
-          <indexterm zone="texlive libtexlua52">
-            <primary sortas="c-libtexlua52">libtexlua52.so</primary>
+          <indexterm zone="texlive libtexlua53">
+            <primary sortas="c-libtexlua53">libtexlua53.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>

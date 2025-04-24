@@ -6,10 +6,10 @@
 
   <!ENTITY qemu-download-http "https://download.qemu.org/qemu-&qemu-version;.tar.xz">
   <!ENTITY qemu-download-ftp  " ">
-  <!ENTITY qemu-md5sum        "15c2c59ff05377b60184eb4ae124c698">
-  <!ENTITY qemu-size          "126 MB">
-  <!ENTITY qemu-buildsize     "2.2 GB (427 MB installed)">
-  <!ENTITY qemu-time          "1.6 SBU (add 1.0 SBU for tests, both using parallelism=4)">
+  <!ENTITY qemu-md5sum        "9cfba589eb897edc7f7dda6e8d503afe">
+  <!ENTITY qemu-size          "129 MB">
+  <!ENTITY qemu-buildsize     "2.3 GB (475 MB installed)">
+  <!ENTITY qemu-time          "1.1 SBU (add 0.5 SBU for tests, both using parallelism=4)">
 ]>
 
 <sect1 id="qemu" xreflabel="qemu-&qemu-version;">
@@ -31,7 +31,7 @@
       AMD-V).
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -134,7 +134,7 @@
       <ulink url="https://github.com/luigirizzo/netmap">netmap</ulink>,
       <ulink url="https://github.com/numactl/numactl">numactl</ulink>,
       <ulink url="https://github.com/linux-rdma/rdma-core">rdma-core</ulink>,
-      <ulink url="https://selinuxproject.org/">SELinux</ulink>,
+      <ulink url="https://github.com/SELinuxProject/selinux">SELinux</ulink>,
       <ulink url="https://google.github.io/snappy/">snappy</ulink>,
       <ulink url="https://gitlab.freedesktop.org/spice/spice">spice</ulink>,
       <ulink url="https://gitlab.freedesktop.org/spice/usbredir">usbredir</ulink>,
@@ -215,16 +215,7 @@
 
   <sect2 role="installation">
     <title>Installation of qemu</title>
-<!-- group kvm is created in lfs chapter 7 even for sysv
-    <para revision="sysv">
-      You will need a dedicated group that will contain users (other than root)
-      allowed to access the KVM device.  Create this group by running the
-      following command as the
-      <systemitem class="username">root</systemitem> user:
-    </para>
 
-<screen role="root" revision="sysv"><userinput>groupadd -g 61 kvm</userinput></screen>
--->
     <para>
       The udev rule of LFS only allows the &root; user, the users owning
       a local login session supported by the optional runtime dependency
@@ -280,8 +271,8 @@ make</userinput></screen>
     <para>
       <application>qemu</application> uses <command>ninja</command> as
       a subprocess when building.  To run the tests, issue:
-      <command>ninja test</command>. One test, bios-tables-test, 
-      is known to fail.
+      <command>ninja test</command>. One test, qtest-x86_64/bios-tables-test,
+      is known to fail on some systems.
     </para>
 
     <para>
@@ -334,7 +325,7 @@ chmod 4750 /usr/libexec/qemu-bridge-helper</userinput></screen>
     </para>
 
     <para>
-      <parameter>--enable-slirp</parameter>: This switch forces the building
+      <parameter>--enable-slirp</parameter>: This switch forces the build
       system to check for <xref linkend='libslirp'/>.  Remove it if you
       don't need the <option>-netdev user</option> support.
     </para>
@@ -356,12 +347,12 @@ chmod 4750 /usr/libexec/qemu-bridge-helper</userinput></screen>
     <para>
       Since using qemu means using a virtual computer, the steps to set up
       the virtual machine are in close analogy with those to set up a real
-      computer. You'll need to decide about CPU, memory, disk, USB devices,
-      network card(s), screen size, etc. Once the <quote>hardware</quote> is
+      computer. You'll need to make decisions about CPU, memory, disk, USB
+      devices, network card(s), screen size, etc. Once the <quote>hardware</quote> is
       decided, you'll have for example to choose how to connect the machine
-      to internet, and/or to install an OS. In the following, we show basic
-      ways of performing those steps. But qemu is much more than this, and it
-      is strongly advised to read the qemu documentation in
+      to internet, and/or to install an OS. In the following section, we show
+      basic ways of performing those steps. However, qemu is much more powerful
+      than this, and it is strongly advised to read the qemu documentation in
       <filename>/usr/share/doc/qemu-&qemu-version;/qemu-doc.html</filename>.
     </para>
 
@@ -369,7 +360,7 @@ chmod 4750 /usr/libexec/qemu-bridge-helper</userinput></screen>
       <para>
         It is standard practice to name the computer running qemu
         <quote>host</quote> and the emulated machine running under qemu the
-        <quote>guest.</quote> We'll use those notations in the following.
+        <quote>guest.</quote> We'll use these notations in the following text.
       </para>
     </note>
 
@@ -378,7 +369,7 @@ chmod 4750 /usr/libexec/qemu-bridge-helper</userinput></screen>
         The following instructions assume the optional symbolic link,
         <filename>qemu</filename>, has been created. Additionally,
         <command>qemu</command> should be run in a graphical environment.
-        But it is possible to use qemu <quote>headless</quote> or through
+        It is also possible to use qemu <quote>headless</quote> or through
         SSH. See the documentation for the various possibilities.
       </para>
     </note>
@@ -416,10 +407,10 @@ qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE</userinput></screen>
       Follow the normal installation procedures for the chosen distribution.
       The <parameter>-boot</parameter> option specifies the boot order of
       drives as a string of drive letters. Valid drive letters are: a, b
-      (floppy 1 and 2), c (first hard disk), d (first CD-ROM). The
+      (floppy 1 and 2), c (first hard disk), and d (first CD-ROM). The
       <parameter>-m</parameter> option is the amount of memory to use for the
       virtual machine. The choice depends on the load of the host. Modern
-      distributions should be comfortable with 1GB.
+      distributions should be comfortable with 4GB.
       The <parameter>-enable-kvm</parameter> option allows hardware
       acceleration. Without this switch, the emulation is much slower.
     </para>
@@ -468,9 +459,9 @@ qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE</userinput></screen>
     </para>
 
     <para>
-      <parameter>-cdrom grub-img.iso</parameter>: defines an iso formatted file
-      to use as a cdrom. Here we use a grub rescue disk, which may turn handy
-      when something goes wrong at boot time.
+      <parameter>-cdrom grub-img.iso</parameter>: defines an ISO formatted file
+      to use as a cdrom. Here we use a grub rescue disk, which may become handy
+      if something goes wrong at boot time.
     </para>
 
     <para>
@@ -528,9 +519,9 @@ qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE</userinput></screen>
     </para>
 
     <para>
-      <option>-drive file=&lt;filename&gt;,if=virtio</option>: Provide
+      <option>-drive file=&lt;filename&gt;,if=virtio</option>: provides a
       Virtio interface to the guest kernel for accessing the disk image,
-      instead of simulating a real disk hardware.  This can improve disk I/O
+      instead of simulating a real disk hardware. This can improve disk I/O
       performance, but it requires a Virtio driver in guest kernel.  Use
       it instead of a plain <option>-drive</option> if the guest kernel
       supports Virtio.  To build a Linux kernel with Virtio support for the
@@ -544,7 +535,7 @@ qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE</userinput></screen>
     </para>
 
     <para>
-      <option>-net nic,netdev=net0,model=virtio-net-pci</option>: Provide
+      <option>-net nic,netdev=net0,model=virtio-net-pci</option>: provides a
       Virtio interface to the guest kernel for accessing the network
       interface, instead of simulating a real network interface card.  This
       can improve network I/O performance, but it requires a Virtio driver
@@ -567,11 +558,10 @@ qemu-img create -f qcow2 $VDISK_FILENAME $VDISK_SIZE</userinput></screen>
       several guests are running, they cannot communicate with each other.
       Other network devices can be used for this purpose. For example, there
       is the <quote>socket</quote> device, which allows several guests to
-      share a common virtual network. In the following, we describe in more
-      details how to set up the <quote>bridge</quote> device, which allows
+      share a common virtual network. In the following section, we describe in
+      more details how to set up the <quote>bridge</quote> device, which allows
       the guests to appear as if connected to the local network. All the
-      commands below should be run as the <systemitem
-      class="username">root</systemitem> user.
+      commands below should be run as the &root; user.
     </para>
 
     <para revision="sysv">
@@ -633,8 +623,9 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
           qemu-keymap,
           qemu-nbd,
           qemu-pr-helper,
-          qemu-storage-daemon, and
-          qemu-system-&lt;arch&gt;
+          qemu-storage-daemon,
+          qemu-system-&lt;arch&gt;, and
+          qemu-vmsr-helper
         </seg>
         <seg>None</seg>
         <seg>
@@ -653,7 +644,7 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
         <term><command>elf2dmp</command></term>
         <listitem>
           <para>
-            Converts files from elf to dmp format
+            converts files from elf to dmp format
           </para>
           <indexterm zone="qemu elf2dmp">
             <primary sortas="b-elf2dmp">elf2dmp</primary>
@@ -743,7 +734,7 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
         <term><command>qemu-pr-helper</command></term>
         <listitem>
           <para>
-            Implements the persistent reservation helper for QEMU
+            implements the persistent reservation helper for QEMU
           </para>
           <indexterm zone="qemu qemu-pr-helper">
             <primary sortas="b-qemu-pr-helper">qemu-pr-helper</primary>
@@ -755,8 +746,8 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
         <term><command>qemu-storage-daemon</command></term>
         <listitem>
           <para>
-            allows to modify disk images using the QEMU Monitor Protocol (QMP)
-            without running a VM
+            allows a user to modify disk images using the QEMU Monitor Protocol
+            (QMP) without running a VM
           </para>
           <indexterm zone="qemu qemu-storage-daemon">
             <primary sortas="b-qemu-storage-daemon">qemu-storage-daemon</primary>
@@ -776,6 +767,17 @@ echo allow br0 &gt; /etc/qemu/bridge.conf</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="qemu-vmsr-helper">
+         <term><command>qemu-vmsr-helper</command></term>
+         <listitem>
+           <para>
+             is a virtual RAPL MSR helper for qemu
+           </para>
+           <indexterm zone="qemu qemu-vmsr-helper">
+             <primary sortas="b-qemu-vmsr-helper">qemu-vmsr-helper</primary>
+           </indexterm>
+         </listitem>
+       </varlistentry>
     </variablelist>
 
   </sect2>

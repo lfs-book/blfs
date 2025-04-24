@@ -6,12 +6,11 @@
 
   <!ENTITY firefox-download-http "&mozilla-http;/firefox/releases/&firefox-version;esr/source/firefox-&firefox-version;esr.source.tar.xz">
   <!ENTITY firefox-download-ftp  " ">
-  <!ENTITY firefox-md5sum        "8d2e8b9115580dcbdeafeee60699ec81">
-  <!ENTITY firefox-size          "537 MB">
+  <!-- size and md5sum are in packages.ent -->
 
   <!-- NB with stylo, much of the build uses rust, and therefore cargo files.
     But the extra cached cargo files, if any, seem to be minimal -->
-  <!ENTITY firefox-buildsize     "6.8 GB (222 MB installed) without tests">
+  <!ENTITY firefox-buildsize     "6.8 GB (218 MB installed) without tests">
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
@@ -39,7 +38,7 @@
       <application>Mozilla</application> codebase.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,21 +74,17 @@
       </listitem>
     </itemizedlist>
 
-<!--<bridgehead renderas="sect3">Additional Downloads</bridgehead>
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/firefox-&firefox-version;-consolidated-1.patch"/>
+          <ulink url="&patch-root;/firefox-&firefox-version;esr-upstream_fixes-1.patch"/>
         </para>
       </listitem>
-      <listitem>
-        <para>
-          Required patch for new <xref linkend="ffmpeg"/> API:
-          <ulink url="&patch-root;/firefox-&firefox-version;-ffmpeg_6-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>-->
+    </itemizedlist>
+-->
 
     <note>
       <para>
@@ -137,6 +132,7 @@ tar: Exiting with failure status due to previous errors
       <xref linkend="cbindgen"/>,
       <xref linkend="gtk3"/>,
       <xref linkend="libnotify"/>,
+      <xref linkend="libarchive"/>,
       <xref linkend="llvm"/> (with clang, used for bindgen even if using gcc),
       <xref linkend="nodejs"/>,
       <xref linkend="pulseaudio"/>
@@ -145,8 +141,7 @@ tar: Exiting with failure status due to previous errors
         now deprecated by mozilla), in either case please read the
         Configuration Information,
       <xref linkend="python3"/> (after installing <xref linkend="sqlite"/>), 
-      <xref linkend="startup-notification"/>, and
-      <xref linkend="unzip"/>
+      and <xref linkend="startup-notification"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -302,13 +297,20 @@ sed '0,/"Keyframe"/{//d}' -i servo/ports/geckolib/cbindgen.toml</userinput></scr
     <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1859752
          https://hg.mozilla.org/try/rev/d5f3b0c4f08a -->
     <para>
-      If building with system ICU, adapt the line break mapping for ICU
+      If you are building with system ICU, adapt the line break mapping for ICU
       74 or later.  This construct adds five entries to a c++ array.
     </para>
 
 <screen><userinput>for i in {43..47}; do
    sed -i '/ZWJ/s/}/,CLASS_CHARACTER&amp;/' intl/lwbrk/LineBreaker.cpp 
 done</userinput></screen>
+
+    <para>
+      If you are building with system ICU, adapt the build system to use the
+      correct library:
+    </para>
+
+<screen><userinput remap="pre">sed -i 's/icu-i18n/icu-uc &amp;/' js/moz.configure</userinput></screen>
 
     <para>
       Compile <application>Firefox</application> by issuing the following
@@ -609,7 +611,7 @@ ln -sfv /usr/lib/firefox/browser/chrome/icons/default/default128.png \
 
       <para>
         Although WebRender (using the GPU for compositing) is not used by
-        default, it now appears to work well on supported hardware (ATI, Nvidia
+        default, it now appears to work well on supported hardware (ATI, NVIDIA
         and Intel GPUs with Mesa-18 or later). For an explanation, please see
         <ulink
        url="https://hacks.mozilla.org/2017/10/the-whole-web-at-maximum-fps-how-webrender-gets-rid-of-jank/">hacks.mozilla.org</ulink>.

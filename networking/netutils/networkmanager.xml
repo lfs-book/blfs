@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY NetworkManager-download-http
-"&gnome-download-http;/NetworkManager/&NetworkManager-minor;/NetworkManager-&NetworkManager-version;.tar.xz">
+"https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/releases/&NetworkManager-version;/downloads/NetworkManager-&NetworkManager-version;.tar.xz">
   <!ENTITY NetworkManager-download-ftp  " ">
-  <!ENTITY NetworkManager-md5sum        "783b84e24516b14f77bbcbb4b73b3087">
+  <!ENTITY NetworkManager-md5sum        "a41314bafb43239c5813b1160e54b0dd">
   <!ENTITY NetworkManager-size          "5.9 MB">
-  <!ENTITY NetworkManager-buildsize     "299 MB (with tests and documentation)">
-  <!ENTITY NetworkManager-time          "0.9 SBU (with tests, using parallelism=4)">
+  <!ENTITY NetworkManager-buildsize     "304 MB (with tests and documentation)">
+  <!ENTITY NetworkManager-time          "0.5 SBU (with tests, using parallelism=4)">
 ]>
 
 <sect1 id="NetworkManager" xreflabel="NetworkManager-&NetworkManager-version;">
@@ -35,7 +35,7 @@
       available.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <note revision="systemd">
       <para>
@@ -186,6 +186,7 @@ meson setup ..                    \
       -D modem_manager=false      \
       -D systemdsystemunitdir=no  \
       -D systemd_journal=false    \
+      -D nm_cloud_setup=false     \
       -D qt=false                 &amp;&amp;
 ninja</userinput></screen>
 
@@ -202,6 +203,7 @@ meson setup ..                    \
       -D selinux=false            \
       -D qt=false                 \
       -D session_tracking=systemd \
+      -D nm_cloud_setup=false     \
       -D modem_manager=false      &amp;&amp;
 ninja</userinput></screen>
 
@@ -327,10 +329,22 @@ done</userinput></screen>
       802.1X).
     </para>
 
+<!--
+    The values for this option have changed.  thsy are now 
+    "systemd", "elogind", "consolekit", "auto" with auto as
+    the default.  We really don't need to mention this.
+
     <para>
       <option>-D suspend_resume=upower</option>: Use this switch if
       you have <xref linkend='upower'/> installed and want to use it
       (instead of &logind;) for suspend and resume support.
+    </para>
+-->
+    <para>
+      <option>-D nm_cloud_setup=false</option>: Use this switch if
+      you have not installed <xref linkend='jansson'/>. This disables 
+      nm-cloud-setup which is used to automatically configure the 
+      network in a public cloud environment within a VM.
     </para>
   </sect2>
 
@@ -457,6 +471,20 @@ EOF</userinput></screen>
           removed, and the interface brought down prior to starting
           <application>Network Manager</application>.
         </para>
+       
+        <para revision="sysv">
+          The easiest way to do this is to remove S20network from
+          <filename>/etc/rc.d/rc3.d/</filename> and <filename>/etc/rc.d/rc5.d/</filename>.
+        </para>
+
+        <para revision="sysv">
+          Also, if using <xref linkend="dhcpcd"/>, be careful about timing issues if
+          setting up network applications such as ntpd, nfs, or sshd. It takes 
+          several seconds for dhcpcd to initialize the network interface and if
+          these applications start before the network interface is completely 
+          initialized, these applications may have to be started manually.
+        </para>
+
       </note>
 
       <indexterm zone="NetworkManager NetworkManager-init">
@@ -466,22 +494,7 @@ EOF</userinput></screen>
 <screen role="root" revision="sysv"><userinput>make install-networkmanager</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl enable NetworkManager</userinput></screen>
-<!-- The below instruction is obsolete. NetworkManager-wait-online is now
-     enabled by default when enabling NetworkManager. -->
-<!--
-      <para revision="systemd">
-        <application>NetworkManager</application> also ships a systemd unit
-        called <filename>NetworkManager-wait-online.service</filename> which
-        can be used to prevent services that require network connectivity
-        from starting until <application>NetworkManager</application> has
-        established the connection. To enable it, run the following command
-        as the <systemitem class="username">root</systemitem> user:
-      </para>
 
-<screen role="root" revision="systemd"><userinput>systemctl enable NetworkManager-wait-online</userinput></screen>
-   -->
-      <!-- As such, let's now provide instructions on how to disable that
-           behavior, for those who wish to do so. -->
       <para revision="systemd">
         Starting in version 1.11.2 of <application>NetworkManager</application>,
         a systemd unit named <filename>NetworkManager-wait-online.service</filename>

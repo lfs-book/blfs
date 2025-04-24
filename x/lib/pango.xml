@@ -6,9 +6,9 @@
 
   <!ENTITY pango-download-http "&gnome-download-http;/pango/&pango-minor;/pango-&pango-version;.tar.xz">
   <!ENTITY pango-download-ftp  " ">
-  <!ENTITY pango-md5sum        "7ad89b03f6850e0be28f91522b793842">
-  <!ENTITY pango-size          "1.9 MB">
-  <!ENTITY pango-buildsize     "27 MB (with tests)">
+  <!ENTITY pango-md5sum        "71615b3aaca41195d4aca28052495832">
+  <!ENTITY pango-size          "1.8 MB">
+  <!ENTITY pango-buildsize     "22 MB (with tests)">
   <!ENTITY pango-time          "0.1 SBU (Using parallelism=4; with tests)">
 ]>
 
@@ -33,7 +33,7 @@
       the <application>GTK+</application> widget toolkit.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,7 +87,6 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="cantarell-fonts"/> (for tests),
   <!--<xref linkend="gtk-doc"/>,-->
   <!--<xref linkend="sysprof"/>,-->
       <xref linkend="gi-docgen"/> (to generate documentation),
@@ -109,10 +108,11 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr          \
-            --buildtype=release    \
-            --wrap-mode=nofallback \
-            ..                     &amp;&amp;
+meson setup --prefix=/usr            \
+            --buildtype=release      \
+            --wrap-mode=nofallback   \
+            -D introspection=enabled \
+            ..                       &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -126,16 +126,6 @@ ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>ninja test</command>.
-      Two tests, testiter and test-font, are known to fail for unknown reason.
-      <!-- One test,
-      <filename>test-font</filename> is known to fail.  Some tests may
-      fail if no Opentype or Truetype fonts are installed in
-      <filename class='directory'>/usr/share/fonts</filename>.
-      -->
-      <!--<filename>test-itemize</filename>, are are known to fail. if
-      <xref linkend="cantarell-fonts"/> are not installed.-->
-      <!-- the other problematic tests get skipped now -->
-      <!-- Even with cantarell-fonts, pango-1.50.9 test-font fails again. -->
     </para>
 
     <para>

@@ -6,9 +6,9 @@
 
   <!ENTITY gegl-download-http "https://download.gimp.org/pub/gegl/0.4/gegl-&gegl-version;.tar.xz">
   <!ENTITY gegl-download-ftp  " ">
-  <!ENTITY gegl-md5sum        "a96ae32d46855ab4eefa1fce2dbefda1">
-  <!ENTITY gegl-size          "5.5 MB">
-  <!ENTITY gegl-buildsize     "80 MB (Add 4 MB for tests)">
+  <!ENTITY gegl-md5sum        "44246c68d282c4511e1a0a442ec502d9">
+  <!ENTITY gegl-size          "5.7 MB">
+  <!ENTITY gegl-buildsize     "125 MB (Add 4 MB for tests)">
   <!ENTITY gegl-time          "0.7 SBU (add 0.1 SBU for tests, both with parallelism=4)">
 ]>
 
@@ -30,7 +30,7 @@
       image processing format.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -160,15 +160,13 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr --buildtype=release -D libav=disabled .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      To run the tests, issue: <command>ninja test</command>. <!--This should
-      indicate no failures, but will skip many tests depending on optional
-      dependencies installed on the system. 7 tests in the
-      <filename>gegl:ff-load-save</filename> portion of the test suite are
-      known to fail due to incompatibilities with ffmpeg-6.0.-->
+      To run the tests, issue: <command>ninja test</command>. Fourteen tests
+      are known to fail in the <filename>gegl:ff-load-save</filename> portion 
+      of the test suite due to incompatibilities with recent versions of ffmpeg.
     </para>
 
     <para>
@@ -180,12 +178,12 @@ ninja</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
+<!--
     <para>
       <parameter>-D libav=disabled</parameter>: This switch disables building
       support for ffmpeg because the latest version causes the build to fail.
     </para>
-
+-->
     <para>
       <option>-D docs=true</option>: Use this switch to build and install the
       documentation (requires <xref linkend="gtk-doc"/>).

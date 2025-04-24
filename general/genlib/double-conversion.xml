@@ -6,11 +6,10 @@
 
   <!ENTITY double-conversion-download-http "https://github.com/google/double-conversion/archive/v&double-conversion-version;/double-conversion-&double-conversion-version;.tar.gz">
   <!ENTITY double-conversion-download-ftp  " ">
-  <!ENTITY double-conversion-md5sum        "b344abb64084a4a1d98a43e67752989b">
+  <!ENTITY double-conversion-md5sum        "7bbcf4bd2e1a96ef9d2a6fa60e887276">
   <!ENTITY double-conversion-size          "6.7 MB">
   <!ENTITY double-conversion-buildsize     "62 MB (with tests)">
-  <!ENTITY double-conversion-time          "0.1 SBU (with tests)">
-
+  <!ENTITY double-conversion-time          "less than 0.1 SBU (with tests)">
 ]>
 
 <sect1 id="double-conversion" xreflabel="double-conversion-&double-conversion-version;">
@@ -32,7 +31,7 @@
       for IEEE doubles.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,10 +88,11 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr \
-      -D BUILD_SHARED_LIBS=ON      \
-      -D BUILD_TESTING=ON          \
-      ..                          &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+      -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+      -D BUILD_SHARED_LIBS=ON             \
+      -D BUILD_TESTING=ON                 \
+      ..                                  &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -109,13 +109,17 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+     href="../../xincludes/cmake-policy-version.xml"/>
+
     <para>
-      <parameter>-D BUILD_SHARED_LIBS=ON</parameter>: This switch forces cmake to build
-      a shared version of the library instead of the static version.
+      <parameter>-D BUILD_SHARED_LIBS=ON</parameter>: This switch forces cmake
+      to build a shared version of the library instead of the static version.
     </para>
 
     <para>
-      <parameter>-D BUILD_TESTING=ON</parameter>: This switch builds the test programs.
+      <parameter>-D BUILD_TESTING=ON</parameter>: This switch builds the test
+      programs.
     </para>
   </sect2>
 

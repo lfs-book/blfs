@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY ModemManager-download-http "https://www.freedesktop.org/software/ModemManager/ModemManager-&ModemManager-version;.tar.xz">
+  <!ENTITY ModemManager-download-http "https://gitlab.freedesktop.org/mobile-broadband/ModemManager/-/archive/&ModemManager-version;/ModemManager-&ModemManager-version;.tar.gz">
   <!ENTITY ModemManager-download-ftp  " ">
-  <!ENTITY ModemManager-md5sum        "9f014dfc59f1bd8bc230bb2c2974d104">
-  <!ENTITY ModemManager-size          "2.5 MB">
-  <!ENTITY ModemManager-buildsize     "155 MB (with tests)">
-  <!ENTITY ModemManager-time          "0.7 SBU (Using parallelism=4; with tests)">
+  <!ENTITY ModemManager-md5sum        "a466797bc8c34fb91ef5af04c03c6f9a">
+  <!ENTITY ModemManager-size          "2.0 MB">
+  <!ENTITY ModemManager-buildsize     "52 MB (with tests)">
+  <!ENTITY ModemManager-time          "0.3 SBU (Using parallelism=4; with tests)">
 ]>
 
 <sect1 id="ModemManager" xreflabel="ModemManager-&ModemManager-version;">
@@ -31,7 +31,7 @@
       protocol used to communicate with the actual device.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -102,33 +102,38 @@
       commands:
     </para>
 
-<screen revision="sysv"><userinput>./configure --prefix=/usr                 \
-            --sysconfdir=/etc             \
-            --localstatedir=/var          \
-            --disable-static              \
-            --disable-maintainer-mode     \
-            --with-systemd-journal=no     \
-            --with-systemd-suspend-resume &amp;&amp;
-make</userinput></screen>
+<screen revision="sysv"><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
 
-<screen revision="systemd"><userinput>./configure --prefix=/usr                 \
-            --sysconfdir=/etc             \
-            --localstatedir=/var          \
-            --disable-static              \
-            --disable-maintainer-mode     \
-            --with-systemd-journal        \
-            --with-systemd-suspend-resume &amp;&amp;
-make</userinput></screen>
+meson setup ..                 \
+      --prefix=/usr            \
+      --buildtype=release      \
+      -D bash_completion=false \
+      -D man=false             \
+      -D qrtr=false            \
+      -D systemdsystemunitdir=no &amp;&amp;
+ninja</userinput></screen>
+
+<screen revision="systemd"><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup ..                 \
+      --prefix=/usr            \
+      --buildtype=release      \
+      -D bash_completion=false \
+      -D man=false             \
+      -D qrtr=false            &amp;&amp;
+ninja</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      To test the results, issue: <command>ninja test</command>.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -136,29 +141,37 @@ make</userinput></screen>
 
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/meson-buildtype-release.xml"/>
+
     <para>
-      <parameter>--with-systemd-suspend-resume</parameter>: This
-      switch forces <application>ModemManager</application> to use the
-      <phrase revision="sysv"><application>elogind</application></phrase>
-      <phrase revision="systemd"><application>systemd</application></phrase>
-      power management facilities.
+      <parameter>-D bash_completion=false</parameter>: Use this option
+      if the external
+      <ulink url="https://github.com/scop/bash-completion">bash-completion</ulink>
+      package is not installed.
     </para>
 
     <para>
-      <phrase revision="systemd"><parameter>--with-systemd-journal</parameter></phrase>
-      <phrase revision="sysv"><parameter>--with-systemd-journal=no</parameter></phrase>
-      : This switch forces <application>ModemManager</application>
-      <phrase revision="sysv">not</phrase> to use the systemd journal for
-      logging.
+      <parameter>-D man=false</parameter>: Use this option
+      if the external
+      <ulink url="https://ftpmirror.gnu.org/gnu/help2man/">help2man</ulink>
+      package is not installed.
     </para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
+    <para>
+      <parameter>-D qrtr=false</parameter>: This switch disables support for
+      the QRTR protocol which needs the external
+      <ulink url="https://gitlab.freedesktop.org/mobile-broadband/libqrtr-glib">libqrtr-glib</ulink> package.
+    </para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gtk-doc-rebuild.xml"/>
+    <para revision="sysv">
+      <parameter>-D systemdsystemunitdir=no</parameter>: This switch prevents
+      <application>meson</application> from looking for the systemd
+      units directory and failing since it is not available on SysV systems.
+    </para>
 
   </sect2>
+
   <sect2 role="configuration" revision="systemd">
     <title>Configuring ModemManager</title>
 

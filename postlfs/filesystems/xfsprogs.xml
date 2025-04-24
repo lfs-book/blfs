@@ -6,10 +6,10 @@
 
   <!ENTITY xfsprogs-download-http "&kernel-dl;/linux/utils/fs/xfs/xfsprogs/xfsprogs-&xfsprogs-version;.tar.xz">
   <!ENTITY xfsprogs-download-ftp  " ">
-  <!ENTITY xfsprogs-md5sum        "d1ae9f461cedf440473d422bf8407efa">
+  <!ENTITY xfsprogs-md5sum        "339b90d4716d5f1e3e9d31f3c68f830d">
   <!ENTITY xfsprogs-size          "1.4 MB">
-  <!ENTITY xfsprogs-buildsize     "63 MB">
-  <!ENTITY xfsprogs-time          "0.3 SBU (Using parallelism=4)">
+  <!ENTITY xfsprogs-buildsize     "99 MB">
+  <!ENTITY xfsprogs-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="xfsprogs" xreflabel="xfsprogs-&xfsprogs-version;">
@@ -30,7 +30,7 @@
       administration and debugging tools for the XFS file system.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -101,22 +101,15 @@
   <sect2 role="installation">
     <title>Installation of xfsprogs</title>
 
-      <!-- Now appears to be fixed -->
-<!--
-    <para>
-      First, fix an incompatibility with gettext-0.22:
-    </para>
-
-<screen><userinput remap="pre">sed -i 's/0.lf/0.1f/' po/de.po</userinput></screen>
--->
     <para>
       Install <application>xfsprogs</application> by running the following
       commands:
     </para>
 
- <screen><userinput>make DEBUG=-DNDEBUG     \
+<screen><userinput>make DEBUG=-DNDEBUG     \
      INSTALL_USER=root  \
-     INSTALL_GROUP=root</userinput></screen>
+     INSTALL_GROUP=root \
+     LOCAL_CONFIGURE_OPTIONS="--localstatedir=/var"</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -137,6 +130,13 @@ rm -rfv /usr/lib/libhandle.{a,la}</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
+      <parameter>sed ... static long filesize...</parameter>: That
+      sed fixes an issue which appears when building on 32 bit systems,
+      only. There is a mismatch in prototype and function header which
+      results in error on that architecture.
+    </para>
+
+    <para>
       <parameter>DEBUG=-DNDEBUG</parameter>: Turns off debugging
       symbols.
     </para>
@@ -145,6 +145,12 @@ rm -rfv /usr/lib/libhandle.{a,la}</userinput></screen>
       <parameter>INSTALL_USER=root</parameter>
       <parameter>INSTALL_GROUP=root</parameter>: This
       sets the owner and group of the installed files.
+    </para>
+
+    <para>
+      <parameter>LOCAL_CONFIGURE_OPTIONS="--localstatedir=/var"</parameter>:
+      This sets the state directory to /var, preventing /usr/var from being
+      created.
     </para>
 
     <para>
@@ -167,8 +173,8 @@ rm -rfv /usr/lib/libhandle.{a,la}</userinput></screen>
         <seg>fsck.xfs, mkfs.xfs, xfs_admin, xfs_bmap, xfs_copy, xfs_db,
         xfs_estimate, xfs_freeze, xfs_fsr, xfs_growfs, xfs_info, xfs_io,
         xfs_logprint, xfs_mdrestore, xfs_metadump, xfs_mkfile, xfs_ncheck,
-        xfs_quota, xfs_repair, xfs_rtcp, xfs_scrub, xfs_scrub_all,
-        and xfs_spaceman</seg>
+        xfs_property, xfs_protofile, xfs_quota, xfs_repair, xfs_rtcp,
+        xfs_scrub, xfs_scrub_all, and xfs_spaceman</seg>
         <seg>libhandle.so</seg>
         <seg>/usr/include/xfs,
         /usr/lib/xfsprogs,
@@ -393,6 +399,30 @@ rm -rfv /usr/lib/libhandle.{a,la}</userinput></screen>
           </para>
           <indexterm zone="xfsprogs xfs_ncheck">
             <primary sortas="b-xfs_ncheck">xfs_ncheck</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xfs_property">
+        <term><command>xfs_property</command></term>
+        <listitem>
+          <para>
+            examines and edits properties about a XFS filesystem
+          </para>
+          <indexterm zone="xfsprogs xfs_property">
+            <primary sortas="b-xfs_property">xfs_property</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="xfs_protofile">
+        <term><command>xfs_protofile</command></term>
+        <listitem>
+          <para>
+            creates a protofile for use with <command>mkfs.xfs</command>
+          </para>
+          <indexterm zone="xfsprogs xfs_protofile">
+            <primary sortas="b-xfs_protofile">xfs_protofile</primary>
           </indexterm>
         </listitem>
       </varlistentry>

@@ -7,9 +7,9 @@
   <!ENTITY gst10-plugins-bad-download-http
            "&gstreamer-dl;/gst-plugins-bad/gst-plugins-bad-&gst10-plugins-bad-version;.tar.xz">
   <!ENTITY gst10-plugins-bad-download-ftp  " ">
-  <!ENTITY gst10-plugins-bad-md5sum        "b0791b9671b875b25bb532f62edc6432">
-  <!ENTITY gst10-plugins-bad-size          "6.7 MB">
-  <!ENTITY gst10-plugins-bad-buildsize     "266 MB (with tests)">
+  <!ENTITY gst10-plugins-bad-md5sum        "6c58efbdf2f3686e02519acbdffd7296">
+  <!ENTITY gst10-plugins-bad-size          "7.4 MB">
+  <!ENTITY gst10-plugins-bad-buildsize     "260 MB (with tests)">
   <!ENTITY gst10-plugins-bad-time          "0.8 SBU (Using parallelism=4; with tests)">
 ]>
 
@@ -34,7 +34,7 @@
       maintainer, or some actual wide use.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,6 +69,18 @@
         </para>
       </listitem>
     </itemizedlist>
+
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch:
+          <ulink url="&patch-root;/gst-plugins-bad-&gst10-plugins-bad-version;-x265_4.1-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">GStreamer Bad Plug-ins Dependencies</bridgehead>
 
@@ -109,6 +121,7 @@
       <xref linkend="libusb"/>,
       <xref linkend="libwebp"/>,
       <xref linkend="libxkbcommon"/>,
+      <xref linkend="libxml2"/>,
       <xref linkend="neon"/>,
       <xref linkend="nettle"/> or <xref linkend="libgcrypt"/>
       (for SSL support in the hls plugin, if both are not installed OpenSSL will
@@ -116,6 +129,7 @@
       <xref linkend="opencv"/> (with additional modules),
       <xref linkend="openjpeg2"/>,
       <xref linkend="opus"/>,
+      <xref linkend="pango"/>,
       <xref linkend="qrencode"/>,
       <xref linkend="sbc"/>,
       <xref linkend="sdl"/>,
@@ -126,6 +140,7 @@
       <xref linkend="wayland"/> (<xref linkend="gtk3"/> must have been
       compiled with wayland support),
       <xref linkend="x265"/>,
+      <xref linkend="zxing-cpp"/>,
       <!--<ulink url="https://aomedia.googlesource.com/aom/">aom</ulink>,-->
       <ulink url="https://bs2b.sourceforge.net/">bs2b</ulink>,
       <ulink url="https://acoustid.org/chromaprint">Chromaprint</ulink>,
@@ -173,21 +188,27 @@
       <ulink url="https://github.com/Mindwerks/wildmidi/">WildMidi</ulink>,
       <ulink url="https://webkit.org/wpe/">WPE-WebKit</ulink>,
       <ulink url="https://github.com/Igalia/WPEBackend-fdo">WPEBackend-fdo</ulink>,
-      <ulink url="https://zbar.sourceforge.net/">ZBAR</ulink>,
-      <ulink url="https://zapping.sourceforge.net/ZVBI/index.html/">ZVBI</ulink>, and
-      <ulink url="https://github.com/zxing/zxing">zxing</ulink>
+      <ulink url="https://zbar.sourceforge.net/">ZBAR</ulink>, and
+      <ulink url="https://zapping.sourceforge.net/ZVBI/index.html/">ZVBI</ulink>
+      <!--<ulink url="https://github.com/zxing/zxing">zxing</ulink>-->
     </para>
 
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of GStreamer Bad Plug-ins</title>
-    <!--
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/gst10-objc-error.xml"/>
-    -->
+
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/gst10-plugins.xml"/>
+
+<!-- Not needed in 1.24.10
+    <para>
+      If you installed the optional <xref linkend="x265"/> package, apply the
+      following patch:
+    </para>
+
+    <screen><userinput remap="pre">patch -Np1 -i ../gst-plugins-bad-&gst10-plugins-bad-version;-x265_4.1-1.patch</userinput></screen>
+-->
 
     <para>
       Install <application>GStreamer Bad Plug-ins</application> by running the
@@ -205,9 +226,8 @@ ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>ninja test</command>. Several tests
-      need a terminal emulator in a graphical session. Two tests,
-      <emphasis>elements_vapostproc</emphasis> and
-      <emphasis>elements_dash_mpd</emphasis>, are known to fail.
+      need a terminal emulator in a graphical session. One test,
+      <emphasis>elements_dash_mpd</emphasis>, is known to fail.
       <!-- Upstream issue is https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3124 -->
 
       <!-- Upstream issue gst-plugins-bad/#1426 -->

@@ -6,38 +6,34 @@
 
 <!--<!ENTITY intel-media-driver-version                "23.2.4">-->
 
-  <!ENTITY intel-media-download-http "https://github.com/intel/media-driver/archive/intel-media-&intel-media-version;.tar.gz">
+  <!ENTITY intel-media-download-http "https://github.com/lfs-book/intel-media-driver/archive/v&intel-media-version;/intel-media-driver-&intel-media-version;.tar.gz">
   <!ENTITY intel-media-download-ftp  " ">
-  <!ENTITY intel-media-md5sum        "c602d9a3ebebb2ad8a5239dc5951c65b">
-  <!ENTITY intel-media-size          "25 MB">
-  <!ENTITY intel-media-buildsize     "2.1 GB (360 MB installed with a single GPU model)">
-  <!ENTITY intel-media-time          "3.8 SBU (with parallelism=4 and a single GPU model)">
+  <!ENTITY intel-media-md5sum        "e9093f4be5b90d638f858b0469f908c7">
+  <!ENTITY intel-media-size          "27 MB">
+  <!ENTITY intel-media-buildsize     "1.5 GB (282 MB installed with a single GPU model)">
+  <!ENTITY intel-media-time          "3.2 SBU (with parallelism=4 and a single GPU model)">
 
 ]>
 
-  <sect1 id="intel-media" xreflabel="intel-media-&intel-media-version;">
-  <?dbhtml filename="intel-media.html"?>
+  <sect1 id="intel-media-driver" xreflabel="intel-media-driver-&intel-media-version;">
+  <?dbhtml filename="intel-media-driver.html"?>
 
-    <sect1info>
-      <date>$Date$</date>
-    </sect1info>
+    <title>intel-media-driver-&intel-media-version;</title>
 
-    <title>intel-media-&intel-media-version;</title>
-
-    <indexterm zone="intel-media">
-      <primary sortas="a-intel-media">intel-media</primary>
+    <indexterm zone="intel-media-driver">
+      <primary sortas="a-intel-media-driver">intel-media-driver</primary>
     </indexterm>
 
     <sect2 role="package">
-      <title>Introduction to intel-media</title>
+      <title>Introduction to intel-media-driver</title>
 
       <para>
-        The <application>intel-media</application> package provides a
+        The <application>intel-media-driver</application> package provides a
         VA API driver for Intel GPUs that are provided with Broadwell CPUs and
         higher. This includes support for a variety of codecs.
       </para>
 
-      &lfs122_checked;
+      &lfs123_checked;
 
       <bridgehead renderas="sect3">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -72,6 +68,8 @@
           </para>
         </listitem>
       </itemizedlist>
+
+      &github-lfs-fork;
 <!--
       <bridgehead renderas="sect2">Additional Downloads</bridgehead>
       <itemizedlist spacing="compact">
@@ -83,20 +81,12 @@
         </listitem>
       </itemizedlist>
 -->
-      <note>
-        <para>
-          The tarball <filename>intel-media-&intel-media-version;.tar.gz</filename>
-          will extract to the directory
-          <filename class="directory">media-driver-intel-media-&intel-media-version;</filename>.
-        </para>
-      </note>
-
-      <bridgehead renderas="sect3">intel-media Dependencies</bridgehead>
+      <bridgehead renderas="sect3">intel-media-driver Dependencies</bridgehead>
 
       <bridgehead renderas="sect4">Required</bridgehead>
       <para role="required">
         <xref linkend="cmake"/>,
-        <xref linkend="intel-gmmlib"/>,
+        <xref linkend="gmmlib"/>,
         <xref linkend="libva"/>, and
         <xref linkend="xorg-env"/>
       </para>
@@ -114,15 +104,20 @@
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
         href="intel-media-kernel.xml"/>
 
-      <indexterm zone="intel-media intel-media-kernel">
-        <primary sortas="d-intel-media">intel-media</primary>
+      <indexterm zone="intel-media-driver intel-media-kernel">
+        <primary sortas="d-intel-media-driver">intel-media-driver</primary>
       </indexterm>
+
+      <para>
+        See <xref linkend='mesa-kernel'/> for more info about the i915 driver
+        and the Xe driver.
+      </para>
     </sect2>
 
     <!-- TODO: It's said Gen9+ (Skylake or later) may need some firmware files. -->
 
     <sect2 role="installation">
-      <title>Installation of intel-media</title>
+      <title>Installation of intel-media-driver</title>
 
       <note>
         <para>
@@ -139,32 +134,33 @@
              complete the build -->
         <para>
           If you know the model of your Intel GPU, you can pass the
-          <option>-D{GEN{8,9,11,12},MTL,ARL}=OFF</option> option to the
-          <command>cmake</command> command but leaving the option for your
+          <option>-D{GEN{8,9,11,12},MTL,ARL,LNL,BMG,PTL}=OFF</option> option
+          to the <command>cmake</command> command but leaving the option for your
           GPU out.  Note that the <quote>GEN</quote> number here is the
           generation of the GPU, not the CPU.  For example, with an Intel
           Core i7-1065G7 CPU shipping a 11th-generation Intel GPU, the
-          <option>-D{GEN{8,9,12},MTL,ARL}=OFF</option> option can be used
-          so the code specific to the other generations of Intel GPUs won't
-          be built.
+          <option>-D{GEN{8,9,12},MTL,ARL,LNG,BMG,XE2_HPG,PTL}=OFF</option> option
+          can be used so the code specific to the other generations of Intel GPUs
+          won't be built.
         </para>
 
         <para>
           To determine the model of the Intel GPU, install
           <xref linkend='pciutils'/> and run
           <command>lspci -nn | grep -Ei 'VGA|DISPLAY'</command> first.
-          It will output some information about the GPU.  If the output
-          contains <literal>Meteor Lake</literal>, the GPU model is
-          <literal>MTL</literal>.  Otherwise, follow
-          <ulink url='https://dgpu-docs.intel.com/devices/hardware-table.html'/>
-          to find the entry for your GPU and the model of the GPU should
-          be in the <quote>Architecture</quote> column.  The Xe and Xe-HPG
-          architectures are covered by the <literal>GEN12</literal> model.
+          It will output some information about the GPU, including
+          the PCI vendor ID (<literal>8086</literal> for Intel) and the
+          PCI device ID.  For example, with an Intel Core i5-11300H CPU, the
+          output is <literal>8086:9a49</literal>.  Now searching for the
+          registration of this device ID in the intel-media-driver source tree:
         </para>
-        <!-- TODO: The info about MTL is my best guess, the referred Intel
-        page does not contain Meteor Lake GPU PCI devicd ID as at Feb 2024.
-        XeHPC is not enabled by default but they are some data center GPUs.
-        Not sure if anyone will run LFS in a data center. -->
+        <screen role='nodump'><userinput>grep -ri 'RegisterDevice(0x<replaceable>9a49</replaceable>'</userinput></screen>
+        <para>
+          And determine the GPU model from the file name containing the
+          registration.  For the example above, the file name is
+          <filename>media_sysinfo_g12.cpp</filename>, indicating the model
+          is <literal>GEN12</literal>.
+        </para>
       </note>
 <!--
       <para>
@@ -174,7 +170,7 @@
  <screen><userinput remap="pre">patch -Np1 -i ../intel-media-&intel-media-version;-gcc14_fixes-1.patch</userinput></screen>
 -->
       <para>
-        Install <application>intel-media</application> by running the
+        Install <application>intel-media-driver</application> by running the
         following commands:
       </para>
 
@@ -182,6 +178,7 @@
 cd    build &amp;&amp;
 
 cmake -D CMAKE_INSTALL_PREFIX=$XORG_PREFIX \
+      -D CMAKE_POLICY_VERSION_MINIMUM=3.5  \
       -D INSTALL_DRIVER_SYSCONF=OFF        \
       -D BUILD_TYPE=Release                \
       -G Ninja                             \
@@ -257,7 +254,7 @@ ninja</userinput></screen>
               provides API functions which allow running GPU kernels on the
               render engine
             </para>
-            <indexterm zone="intel-media libigfxcmrt">
+            <indexterm zone="intel-media-driver libigfxcmrt">
               <primary sortas="c-libigfxcmrt">libigfxcmrt.so</primary>
             </indexterm>
           </listitem>

@@ -6,9 +6,9 @@
 
   <!ENTITY xarchiver-download-http  "https://github.com/ib/xarchiver/archive/&xarchiver-version;/xarchiver-&xarchiver-version;.tar.gz">
   <!ENTITY xarchiver-download-ftp  " ">
-  <!ENTITY xarchiver-md5sum        "bfdace2b113417e1bc77ef304280d103">
+  <!ENTITY xarchiver-md5sum        "7c0119f53e530f31bb3b16225f0cef74">
   <!ENTITY xarchiver-size          "1.1 MB">
-  <!ENTITY xarchiver-buildsize     "11 MB">
+  <!ENTITY xarchiver-buildsize     "10 MB">
   <!ENTITY xarchiver-time          "0.1 SBU">
 ]>
 
@@ -31,7 +31,7 @@
       and many other archive formats.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <note>
       <para>
@@ -95,17 +95,40 @@
 
     <bridgehead renderas="sect4">Optional (Runtime)</bridgehead>
     <para role="optional">
+      <xref role="runtime" linkend="seven-zip"/>,
       <xref role="runtime" linkend="cpio"/>,
       <xref role="runtime" linkend="lzo"/>,
-      <xref role="runtime" linkend="p7zip"/>,
       <xref role="runtime" linkend="unrar"/>,
-      <xref role="runtime" linkend="unzip"/>, and
-      <xref role="runtime" linkend="zip"/>
+      <xref role="runtime" linkend="zip"/>, and
+      <ulink url='https://sourceforge.net/projects/infozip/files/UnZip%206.x%20%28latest%29/'>unzip</ulink>
     </para>
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of xarchiver</title>
+
+    <para>
+      BLFS provides <command>unzip</command> as a symlink to
+      <command>bsdunzip</command> from <xref linkend='libarchive'/>, but
+      it doesn't work for xarchiver.  Adapt xarchiver to use
+      <xref linkend='seven-zip'/> for handling
+      <filename class='extension'>.zip</filename> files by default instead:
+    </para>
+
+<screen><userinput>sed '/TOGGLE.*prefer_unzip/s/TRUE/FALSE/' -i src/pref_dialog.c</userinput></screen>
+
+    <note>
+      <para>
+        If you've already installed and run this package before
+        (maybe in another distro if your
+        <filename class='directory'>/home</filename> is a partition shared
+        with that distro),
+        it's likely already configured to prefer <command>unzip</command>.
+        Unset the <quote>Prefer unzip for zip files</quote> checkbox in the
+        <quote>Action => Preferences</quote> dialog to change the
+        configuration.
+      </para>
+    </note>
 
     <para>
       Install <application>xarchiver</application> by running the

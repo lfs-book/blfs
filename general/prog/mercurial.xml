@@ -6,13 +6,13 @@
 
   <!ENTITY mercurial-download-http "https://www.mercurial-scm.org/release/mercurial-&mercurial-version;.tar.gz">
   <!ENTITY mercurial-download-ftp  " ">
-  <!ENTITY mercurial-md5sum        "f0c076d22c07bf65ffb02753fc516084">
-  <!ENTITY mercurial-size          "7.9 MB">
-  <!ENTITY mercurial-buildsize     "113 MB (with docs, add 1.5 GB for tests)">
-  <!ENTITY mercurial-time          "0.3 SBU (with docs; add 16 SBU for tests; both using parallelism=8)">
+  <!ENTITY mercurial-md5sum        "a003be6ee306703d6699c4013c4441ec">
+  <!ENTITY mercurial-size          "8.6 MB">
+  <!ENTITY mercurial-buildsize     "88 MB (with docs, add 58 MB for tests)">
+  <!ENTITY mercurial-time          "0.3 SBU (with docs; add 25 SBU for tests; both using parallelism=4)">
 ]>
 
-<sect1 id="mercurial" xreflabel="Mercurial-&mercurial-version;">
+<sect1 id="mercurial" xreflabel="mercurial-&mercurial-version;">
   <?dbhtml filename="mercurial.html"?>
 
 
@@ -33,7 +33,7 @@
       such as Mozilla for Firefox and Thunderbird.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,6 +73,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="pypa-build"/>,
       <xref linkend="docutils"/>
         (required to build the documentation),
       <xref linkend="git"/>,
@@ -93,50 +94,45 @@
 
   <sect2 role="installation">
     <title>Installation of Mercurial</title>
-    <!-- Rust port is now part of the standard tests -->
 
     <para>
-      Build <application>Mercurial</application> by issuing the following
-      command:
+      <application>Mercurial</application> is built and installed 
+      in a single command as the &root; user:
     </para>
 
-<screen><userinput>make build</userinput></screen>
+<screen role="root"><userinput>make PREFIX=/usr install</userinput></screen>
 
     <para>
-      To build the documentation (requires <xref linkend="docutils"/>), issue:
+      The documentation is built by the above command (in man and html formats),
+      but only the manual pages are installed. If you wish to install the
+      html documentation, issue as the &root; user:
     </para>
 
-<screen remap="doc"><userinput>make doc</userinput></screen>
-<!--
-    The tests do not hang.  Better to just report what failed.
-
-    [renodr]: The tests do crash due to syntax errors and crash before they get
-    to the Python portion (which is where most of Mercurial is)
--->
+<screen role="root"
+        remap="doc"><userinput>mkdir /usr/share/doc/mercurial-&mercurial-version; &amp;&amp;
+cp -R doc/html /usr/share/doc/mercurial-&mercurial-version;</userinput></screen>
 
     <para>
       If you wish to run the tests, the rust tests must be removed as they are
       currently broken due to syntax errors. To do this, issue:
     </para>
 
-<screen><userinput>sed -i '138,142d' Makefile</userinput></screen>
+<screen><userinput>sed -i '152,155d' Makefile</userinput></screen>
 
     <para>
       To run the test suite, issue:
     </para>
-<screen remap="test"><userinput>TESTFLAGS="-j<replaceable>&lt;N&gt;</replaceable> --tmpdir tmp" make check</userinput></screen>
-<!-- The blacklists have to be checked every release of Mercurial, do a listing
-     of tests/blacklists, but do not include the README.
-     For 6.4.1 removing the -blacklist entries did not affect the test results
-     although blacklists/fsmonitor and blacklists/linux-vfat still exist. -->
+
+<screen remap="test"><userinput>TESTFLAGS="-j<replaceable>&lt;N&gt;</replaceable> --with-hg /usr/bin/hg" make check</userinput></screen>
 
     <para>
       where <replaceable>&lt;N&gt;</replaceable> is an integer between one
-      and the number of ( processor X threads ), inclusive. Tests may
+      and the number of ( processor X threads ), inclusive (default is the
+      total number of processors as returned by <command>nproc</command>).
+      Tests may
       fail because some error messages have changed in Python or
       some deprecation warnings are printed that were not present when the
-      test was designed.  Two tests are known to fail: test-duplicateoptions.py
-      and test-profile.t.
+      test was designed.
     </para>
       <!--
       # Ran 908 tests, 65 skipped, 4 failed.  real  10m37.422s -bdubbs  6 Sep 22.
@@ -151,11 +147,17 @@
       # Ran 948 tests, 66 skipped, 0 failed. -renodr 22 Nov 23 (mercurial-6.6).
       # Ran 946 tests, 71 skipped, 2 failed. -bdubbs 20 Mar 24 (mercurial-6.7).
       # Ran 966 tests, 58 skipped, 1 failed. -renodr 16 Mar 24 (mercurial-6.8).
+      # Ran 955 tests, 69 skipped, 2 failed. -zeckma 24 Nov 24 (mercurial-6.9).
+      # Ran 929 tests, 95 skipped, 3 failed. -renodr 18 Jan 25 (mercurial-6.9.1).
+      # Ran 954 tests, 70 skipped, 2 failed. -bdubbs 28 Feb 25 (mercurial-6.9.2).
+      # Ran 970 tests, 57 skipped, 1 failed. -pierre 28 Mar 25 (mercurial-7.0).
       -->
     <para>
       In order to
       investigate any apparently failing tests, you may use the
-      <command>run-tests.py</command> script. To see the almost forty switches,
+      <command>run-tests.py</command> script in the
+      <filename class="directory">tests</filename> directory. To see the
+      almost forty switches,
       some of them very useful, issue <command>tests/run-tests.py
       --help</command>.  Running the following commands, you will execute only
       the tests that failed before:
@@ -163,18 +165,18 @@
 
 <screen remap="test"><userinput>pushd tests  &amp;&amp;
   rm -rf tmp &amp;&amp;
-  ./run-tests.py --tmpdir tmp test-gpg.t
+  ./run-tests.py --with-hg /usr/bin/hg <replaceable>test-gpg.t</replaceable>
 popd</userinput></screen>
-
+<!-- not tested for a very long time
     <para>
       Normally, the previous failures will be reproducible. However, if
-      you add the switch <option>--debug</option> before
-      <option>--tmpdir</option>, and run the tests again, some failures may
+      you add the switch <option>- -debug</option> before
+      <option>- -tmpdir</option>, and run the tests again, some failures may
       disappear, which is a problem with the test suite. If this happens,
       there will be no more of these failures even if you do not pass the
-      --debug switch again.
+      - -debug switch again.
     </para>
-
+    -->
     <para>
       An interesting switch is <option>--time</option>, which will generate a
       table of all the executed tests and their respective start, end, user,
@@ -182,21 +184,6 @@ popd</userinput></screen>
       switches may be used with <command>make check</command> by including
       them in the <envar>TESTFLAGS</envar> environment variable.
     </para>
-
-    <para>
-      Install <application>Mercurial</application> by running the following
-      command (as <systemitem class="username">root</systemitem>):
-    </para>
-
-<screen role="root"><userinput>make PREFIX=/usr install-bin</userinput></screen>
-
-    <para>
-      If you built the documentation, install it by running the following
-      command (as <systemitem class="username">root</systemitem>):
-    </para>
-
-<screen role="root"
-        remap="doc"><userinput>make PREFIX=/usr install-doc</userinput></screen>
 
     <para>
       After installation, two very quick and simple tests should run
@@ -297,7 +284,7 @@ EOF</userinput></screen>
           /usr/lib/python&python3-majorver;/site-packages/hgext,
           /usr/lib/python&python3-majorver;/site-packages/hgext3rd,
           /usr/lib/python&python3-majorver;/site-packages/mercurial, and
-          /usr/lib/python&python3-majorver;/site-packages/mercurial-&mercurial-version;-py&python3-majorver;.egg-info
+          /usr/lib/python&python3-majorver;/site-packages/mercurial-&mercurial-version;.dist-info
         </seg>
       </seglistitem>
     </segmentedlist>

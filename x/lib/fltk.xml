@@ -5,11 +5,11 @@
   %general-entities;
 
   <!-- Watch directory when updating -->
-  <!ENTITY fltk-download-http "https://fltk.org/pub/fltk/&fltk-version;/fltk-&fltk-version;-source.tar.gz">
+  <!ENTITY fltk-download-http "https://github.com/fltk/fltk/releases/download/release-&fltk-version;/fltk-&fltk-version;-source.tar.gz">
   <!ENTITY fltk-download-ftp  " ">
-  <!ENTITY fltk-md5sum        "6e7a389f97b420bc31f99edd3522a85e">
-  <!ENTITY fltk-size          "5.4 MB">
-  <!ENTITY fltk-buildsize     "122 MB (with documentation)">
+  <!ENTITY fltk-md5sum        "2df31c81fbf9ef79f9ac5895d4559e6b">
+  <!ENTITY fltk-size          "8.8 MB">
+  <!ENTITY fltk-buildsize     "223 MB">
   <!ENTITY fltk-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
@@ -33,7 +33,7 @@
       graphical user interfaces for applications.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -65,6 +65,16 @@
       <listitem>
         <para>
           Estimated build time: &fltk-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional Documentation:
+          <ulink url="https://github.com/fltk/fltk/releases/download/release-&fltk-version;/fltk-&fltk-version;-docs-html.tar.gz"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -130,20 +140,29 @@ make</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, install the package and remove unneeded static libraries.
+      As the &root; user:
     </para>
 
-<screen role="root"><userinput>make docdir=/usr/share/doc/fltk-&fltk-version; install</userinput></screen>
+<screen role="root"><userinput>make docdir=/usr/share/doc/fltk-&fltk-version; install &amp;&amp;
+rm -vf /usr/lib/libfltk*.a</userinput></screen>
 
     <para>
       If desired, install some example games built as a part of the tests,
-      extra documentation and example programs.  As the <systemitem
-      class="username">root</systemitem> user:
+      extra documentation and example programs.  As the &root; user:
     </para>
 
 <screen role="root"
         remap="doc"><userinput>make -C test          docdir=/usr/share/doc/fltk-&fltk-version; install-linux &amp;&amp;
 make -C documentation docdir=/usr/share/doc/fltk-&fltk-version; install-linux</userinput></screen>
+
+    <para>
+      If you downloaded the optional html documentation, install it as the &root; 
+      user:
+    </para>
+
+<screen role="root"><userinput>tar -C /usr/share/doc/fltk-&fltk-version; --strip-components=4 -xf ../fltk-&fltk-version;-docs-html.tar.gz
+</userinput></screen>
 
   </sect2>
 
@@ -174,10 +193,10 @@ make -C documentation docdir=/usr/share/doc/fltk-&fltk-version; install-linux</u
           sudoku
         </seg>
         <seg>
-          libfltk.{a,so},
-          libfltk_forms.{a,so},
-          libfltk_gl.{a,so}, and
-          libfltk_images.{a,so}
+          libfltk.so,
+          libfltk_forms.so,
+          libfltk_gl.so, and
+          libfltk_images.so
         </seg>
         <seg>
           /usr/include/FL and

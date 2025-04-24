@@ -6,75 +6,13 @@
 
   <!ENTITY php-download-http "https://www.php.net/distributions/php-&php-version;.tar.xz">
   <!ENTITY php-download-ftp  " ">
-  <!ENTITY php-md5sum        "eb5a29392a0b2fb18b2d836967abb12e">
-  <!ENTITY php-size          "12 MB">
-  <!ENTITY php-buildsize     "527 MB (with documentation and tests)">
-  <!ENTITY php-time          "1.4 SBU (with parallelism=4; add 1.9 SBU for tests)">
-  <!-- Tests were run for 8.0.1 at -j4, had two timeouts as well.
-       Results were otherwise normal though, so I'm unsure of what caused the
-       increase in time. -renodr
-       No timeout for 8.0.2. Tests run at -j4 too. -pierre
-       No timeouts on 8.0.3 for me this time. -renodr
-       No timeouts on 8.0.5 -bdubbs
-       No timeouts, one failure on 8.0.9 -bdubbs
-       No timeouts on 8.0.10 - thomas
-       No timeouts on 8.0.11 - thomas
-
-TEST RESULT SUMMARY 8.1.0
-
-Exts skipped    :   36
-Exts tested     :   36
-
-Number of tests : 17060             12551
-Tests skipped   : 4509 ( 26.4%)
-Tests warned    :    2 (  0.0%) (  0.0%)
-Tests failed    :    4 (  0.0%) (  0.0%)
-Expected fail   :   28 (  0.2%) (  0.2%)
-Tests passed    : 12517 ( 73.4%) ( 99.7%)
-
-Time taken      :  165 seconds
-
-Stats for tests changed slightly for 8.1.1, but not significantly.
-Stats for tests changed slightly for 8.1.2, but not significantly.
-  Tests failed    :    1
-For 8.1.4, ran tests at -j4. One test still fails.
-For 8.1.5, ran tests at -j4. One test still fails.
-
-Running tests at -j4 does nothing.  The jobs count is not passed to the
-actual routine running the tests.
-
-For 8.1.7:
-Number of tests : 17250             12714
-Tests skipped   : 4536 ( 26.3%)
-Tests warned    :    2 (  0.0%) (  0.0%)
-Tests failed    :    1 (  0.0%) (  0.0%)
-Expected fail   :   27 (  0.2%) (  0.2%)
-Tests passed    : 12684 ( 73.5%) ( 99.8%)
-
-Time taken      :  162 seconds
-
-The warnings are really XFAIL.  The FAIL is ext/phar/tests/bug69958.phpt.
-It appears to be mission a test file.
-
-For 8.1.10:
-Number of tests : 17315             12768
-Tests skipped   : 4547 ( 26.3%) - - - - - - - -
-Tests warned    :    2 (  0.0%) (  0.0%)
-Tests failed    :    5 (  0.0%) (  0.0%)
-Expected fail   :   27 (  0.2%) (  0.2%)
-Tests passed    : 12734 ( 73.5%) ( 99.7%)
-
-Time taken      :  162 seconds
-
-For 8.2.0:
-Number of tests : 17768             13167
-Tests skipped   : 4601 ( 25.9%) - - - - - - - -
-Tests warned    :    3 (  0.0%) (  0.0%)
-Tests failed    :    1 (  0.0%) (  0.0%)
-Expected fail   :   25 (  0.1%) (  0.2%)
-Tests passed    : 13138 ( 73.9%) ( 99.8%)
-
-Time taken      :  166 seconds
+  <!ENTITY php-md5sum        "59cb62ecc45b7cb6a914233227b66e8a">
+  <!ENTITY php-size          "13 MB">
+  <!ENTITY php-buildsize     "813 MB (with documentation and tests)">
+  <!ENTITY php-time          "1.8 SBU (with parallelism=4; add 2.5 SBU for tests)">
+  
+<!-- 
+Removed test stats from before version 8.3.
 
 For 8.3.0:
 Number of tests : 18682             13904
@@ -140,6 +78,37 @@ Expected fail   :    11 (  0.1%) (  0.1%)
 Tests passed    : 14029 ( 74.3%) ( 99.9%)
 
 Time taken      :   163 seconds
+
+- - - 8.3.13 [bdubbs] (i7-14700K) performance mode - - -
+Number of tests : 18963             14098
+Tests skipped   :  4865 ( 25.7%) - - - - - - - -
+Tests warned    :     1 (  0.0%) (  0.0%)
+Tests failed    :     1 (  0.0%) (  0.0%)
+Expected fail   :    11 (  0.1%) (  0.1%)
+Tests passed    : 14085 ( 74.3%) ( 99.9%)
+
+Time taken      :   184 seconds
+
+- - - 8.4.1 [bdubbs] (i7-14700K) performance mode - - -
+Number of tests : 20090             15455
+Tests skipped   :  4635 ( 23.1%) - - - - - - - -
+Tests warned    :     1 (  0.0%) (  0.0%)
+Tests failed    :     1 (  0.0%) (  0.0%)
+Expected fail   :     8 (  0.0%) (  0.1%)
+Tests passed    : 15445 ( 76.9%) ( 99.9%)
+
+Time taken      : 202.419 seconds
+
+- - - 8.4.5 [renodr] (E5-1650v3) performance mode - - -
+
+Number of tests : 20261             15587
+Tests skipped   :  4674 ( 23.1%) - - - - - - - -
+Tests warned    :     1 (  0.0%) (  0.0%)
+Tests failed    :     7 (  0.0%) (  0.0%)
+Expected fail   :     8 (  0.0%) (  0.1%)
+Tests passed    : 15571 ( 76.9%) ( 99.9%)
+
+Time taken      : 291.804 seconds
 -->
 ]>
 
@@ -163,7 +132,7 @@ Time taken      :   163 seconds
       general purpose scripting language.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -396,7 +365,7 @@ make</userinput></screen>
 make</userinput></screen>
     <para>
       To test the results, issue: <command>make test</command>. Several
-      tests (out of over 18000) may fail, in which case you are asked
+      tests (out of over 20000) may fail, in which case you are asked
       whether you want to send the report to the PHP developers. If you
       want to automate the test, you may prefix the command with
       <command>yes "n" | </command>.

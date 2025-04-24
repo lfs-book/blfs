@@ -6,10 +6,10 @@
 
   <!ENTITY xdg-desktop-portal-download-http "https://github.com/flatpak/xdg-desktop-portal/releases/download/&xdg-desktop-portal-version;/xdg-desktop-portal-&xdg-desktop-portal-version;.tar.xz">
   <!ENTITY xdg-desktop-portal-download-ftp  " ">
-  <!ENTITY xdg-desktop-portal-md5sum        "4ebe7be08961456544d0ceeca22a03ea">
-  <!ENTITY xdg-desktop-portal-size          "684 KB">
-  <!ENTITY xdg-desktop-portal-buildsize     "34 MB (with tests)">
-  <!ENTITY xdg-desktop-portal-time          "0.1 SBU (add 0.3 SBU for tests; with parallelism=4)">
+  <!ENTITY xdg-desktop-portal-md5sum        "9f6450322a359a95018b57960d1ca4fd">
+  <!ENTITY xdg-desktop-portal-size          "1.1 MB">
+  <!ENTITY xdg-desktop-portal-buildsize     "21 MB (add 2 MB for tests)">
+  <!ENTITY xdg-desktop-portal-time          "0.1 SBU (add 0.2 SBU for tests; with parallelism=4)">
 ]>
 
 <sect1 id="xdg-desktop-portal" xreflabel="xdg-desktop-portal-&xdg-desktop-portal-version;">
@@ -37,7 +37,7 @@
       service needs a backend implementing desktop-specific portal interfaces.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -109,8 +109,9 @@
     <para role="optional">
       <xref linkend="geoclue2"/> (for the <quote>location</quote> portal), and
       <xref linkend="pytest"/> with
-      <xref linkend="libportal"/> and
-      <xref linkend="python-dbusmock"/> (for running tests)
+      <xref linkend="libportal"/>,
+      <xref linkend="python-dbusmock"/>, and
+      <xref linkend="umockdev"/> (for running tests)
     </para>
 
     <bridgehead renderas="sect4">Optional (for building
@@ -136,14 +137,20 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr --buildtype=release -D tests=disabled .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      If you have installed the needed dependencies, you can test the results
-      by running <command>ninja test</command>.<phrase revision="systemd">
-      Six tests are known to fail if you are not using
-      <xref linkend="gnome-terminal"/> and are in GNOME.</phrase>
+      If the optional dependencies are installed, you can test the results by
+      running:
+    </para>
+
+<screen remap="test"><userinput>meson configure -D tests=enabled &amp;&amp;
+ninja test</userinput></screen>
+
+    <para>
+      Without the external dependencies one test, integration/dynamiclauncher
+      is known to fail.
     </para>
 
     <para>
@@ -160,6 +167,15 @@ ninja</userinput></screen>
 
   </sect2>
 
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>-D tests=disabled</parameter>: Prevents requiring
+      several optional dependencies that are only needed for tests.
+    </para>
+
+  </sect2>
   <sect2 role="configuration">
     <title>Configuring xdg-desktop-portal</title>
 

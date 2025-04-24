@@ -8,9 +8,9 @@
 
   <!ENTITY tl-installer-download-ftp    " ">
   <!ENTITY tl-installer-md5sum          "cec36f23d7d4e1a4a2a90f77bad8e667">
-  <!ENTITY tl-installer-date             "20230313"> <!-- in the directory name -->
+  <!ENTITY tl-installer-date            "20250312"> <!-- in the directory name -->
   <!ENTITY tl-installer-size            "5.5 MB">
-  <!ENTITY tl-installer-buildsize        "85 MB for plain TeX, typically 2 to 4 MB for latex and later engines, 8.6 GB if everything is included">
+  <!ENTITY tl-installer-buildsize       "90 MB for plain TeX, typically 323 MB for latex and later engines, 9.0 GB if everything is included">
   <!ENTITY tl-installer-time            "varies, depending on network speed and traffic">
 <!-- The following commit will change future installs so that the scripts in
 texmf-dist linked from bin/ are copied instead of symlinks.
@@ -35,7 +35,6 @@ and it might have been removed by next year. -->
 
 <sect1 id="tl-installer" xreflabel="install-tl-unx">
   <?dbhtml filename="tl-installer.html"?>
-
 
   <title>install-tl-unx</title>
 
@@ -86,13 +85,13 @@ and it might have been removed by next year. -->
       </para>
     </note>
 
-    <!-- editors: latex-test-20240320.tar.xz at ~/ken/tex-testfiles and the
+    <!-- editors: latex-test-20250109.tar.xz at ~/ken/tex-testfiles and the
     ABOUT.pdf now deal with specifying which collections are needed when using
     binary texlive. Please do not sign off this package without at least
     testing asy to ensure that the symlinks are as needed. Please also be aware
     that removing a collection might leave huge backups in tlpkg/backups -->
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -158,18 +157,12 @@ and it might have been removed by next year. -->
       this is to support a PDF viewer of your choice, for example
        <xref role="nodep" linkend="epdfview"/>).
     </para>
-<!-- seems to not be needed in 2021
-    <para role="recommended">
-      the optional non-wide-character ncurses library (for "some binary-only
-      application") from the bottom of the <application>Ncurses</application>
-      page in LFS is needed
-      for xindy.run which is used by <application>xindy</application>
-    </para> -->
     <para role="recommended">
       The binary version of <application>asy</application> needs
       <xref linkend="freeglut"/>.
     </para>
-    <para> <!-- needed, but cannot recommend :-) -->
+<!-- Not needed in TL2025
+    <para>
       The binary version of asy is linked to libGLX.so.0 from
       <ulink url="https://gitlab.freedesktop.org/glvnd/libglvnd/">libglvnd</ulink>,
       but installing that will break future updates of BLFS packages such as
@@ -177,13 +170,17 @@ and it might have been removed by next year. -->
       <systemitem class="username">root</systemitem> user:
     </para>
     <screen role="nodump"><userinput>ln -sv libGL.so.1 /usr/lib/libGLX.so.0</userinput></screen>
+-->
+
+<!-- This was rechecked in TL2025. Running 'readelf -a biber | grep NEEDED'
+     does *not* report needing libcrypt.so.1, but xindy does. -renodr -->
     <para role="recommended">
-    The binary versions of <application>biber</application> and
-    <application>xindy</application> are linked to <filename
-    class='libraryfile'>libcrypt.so.1</filename> from old versions
-    of <application>glibc</application>. To use these two applications, follow the
-    Note about binary-only applications in <application>libxcrypt</application> in
-    LFS to install the ABI version 1 crypt library.
+      The binary version of <application>xindy</application> is linked to
+      <filename class='libraryfile'>libcrypt.so.1</filename> from old versions
+      of <application>glibc</application>. To use the application, follow the
+      Note about binary-only applications in <application>libxcrypt</application>
+      in <ulink url="&lfs-root;/chapter08/libxcrypt.html">LFS Chapter 8</ulink>
+      to install the ABI version 1 crypt library.
     </para>
     <note>
       <para>
@@ -205,20 +202,16 @@ and it might have been removed by next year. -->
       The <application>TeX Live</application> set of programs with its
       supporting documents, fonts, and utilities is very large.  The upstream
       maintainers recommend placing all files in a single directory structure.
-      BLFS recommends <filename class='directory'>/opt/texlive</filename>.
+      The BLFS team recommends <filename class='directory'>/opt/texlive</filename>.
     </para>
 
     <note>
      <para>
        If you have chosen to install the binary as a normal user, the directory
-       for the prefix needs to be writable by that user.  The
-       <systemitem class="username">root</systemitem> user can chown
-       <filename class="directory">/opt/texlive/2024</filename> to that
-       user before the user starts the install.<!-- Problem was reported on
-       texlive list, at least ls-R was involved and maybe other files,
-       suggestion was to remove, chown prefix, reinstall. --> If any later
-       change in that directory is made by the <systemitem
-       class="username">root</systemitem> user, <emphasis>that will change the
+       for the prefix needs to be writable by that user. The &root; user can chown
+       <filename class="directory">/opt/texlive/&texlive-year;</filename> to that
+       user before the user starts the install. If any later change in that
+       directory is made by the &root; user, <emphasis>that will change the
        ownership</emphasis>, which breaks usage by normal users.
      </para>
     </note>
@@ -262,35 +255,32 @@ and it might have been removed by next year. -->
 
     <para>
       This command is interactive and allows selection or modification of
-      platform, packages, directories, and other options. The full installation
-      scheme will require about 4.9 gigabytes of disk space. The time to
-      complete the download will depend on your internet connection speed
-      and the number of packages selected.
+      platform, packages, directories, and other options.  The time to complete
+      the download will depend on your internet connection speed and the number
+      of packages selected.
     </para>
 
     <para>
-      It has been established by Debian that the <command>python</command>
-      scripts in <filename class="directory">latex-make</filename> will work
-      with <command>python3</command>, so update them to invoke that by running
-      the following command as the <systemitem class="username">root</systemitem>
-      user:
+      For a minimal install that will build documentation that is referenced in
+      BLFS, the only installation collections needed are '[a] Essential
+      programs and files' and '[D] LaTeX fundamental packages'. This will
+      download about 132 files and use about 323 MB. Users can select other 
+      collections as needed but a full installation will download several 
+      thousand files and use over 8GB.
     </para>
 
-<screen role="root"><userinput>for F in /opt/texlive/&texlive-year;/texmf-dist/scripts/latex-make/*.py ; do
-  test -f $F &amp;&amp; sed -i 's%/usr/bin/env python%/usr/bin/python3%' $F || true
-done
-</userinput></screen>
+    <note>
+      <para>
+        After installation, the PATH environment variable will need to be
+        updated, and other variables will need to be set. Please refer to
+        <xref linkend="tex-path"/> to set these environment variables.
+      </para>
+    </note>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <command>test -f $F &amp;&amp; sed ...</command>: in a small install these
-      files might not be present, so test if they exist and if not return 'true'
-      to avoid any error if this command has been copied into one of your own install scripts.
-    </para>
 
     <para>
       <option>./install-tl --location

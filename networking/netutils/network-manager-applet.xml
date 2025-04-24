@@ -34,7 +34,7 @@
        and <application>LXDE</application>.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -96,7 +96,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gnome-bluetooth"/> and
+      <xref linkend="gnome-bluetooth"/>,
+      <xref linkend='jansson'/>, and
       <ulink url="https://launchpad.net/libappindicator">libindicator</ulink>
     </para>
 
@@ -118,7 +119,8 @@ meson setup ..            \
       --prefix=/usr       \
       --buildtype=release \
       -D appindicator=no  \
-      -D selinux=false    &amp;&amp;
+      -D selinux=false    \
+      -D team=false       &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -143,18 +145,17 @@ ninja</userinput></screen>
       without this option.
     </para>
 
-    <!-- Jansson is now included in NM as Required
-    <para>
-      <parameter>-D team=false</parameter>: This switch disables the team
-      configuration editor since it requires <xref linkend="jansson"/>. If
-      you have Jansson installed, remove this option or set it to "true".
-    </para>
-    -->
-
     <para>
       <parameter>-D selinux=false</parameter>: This switch forcibly
       disables <application>SELinux</application> support since it is not
       currently in BLFS and the build will fail without it.
+    </para>
+
+    <para>
+      <parameter>-D team=false</parameter>: This switch disables the team
+      configuration editor since it requires <xref linkend="jansson"/>. If
+      you have Jansson installed, remove this option or set it to
+      <literal>true</literal>.
     </para>
 
     <!-- no longer needed as of 1.16.0

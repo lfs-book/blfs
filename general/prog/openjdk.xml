@@ -5,21 +5,21 @@
   %general-entities;
 
   <!ENTITY ojdk-tarball              "jdk-&openjdk-version;-ga.tar.gz">
-  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk22u">
+  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk23u">
   <!ENTITY ojdk-download             "&ojdk-repo;/archive/&ojdk-tarball;">
 
   <!ENTITY anduin-download           "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;">
 
-  <!ENTITY ojdk-md5sum               "13b4e71252055e6d78ae12b8db5021d4">
-  <!ENTITY ojdk-size                 "107 MB">
+  <!ENTITY ojdk-md5sum               "31ff1e9a086626610591efdff44cb7b3">
+  <!ENTITY ojdk-size                 "112 MB">
 
   <!ENTITY jtreg-version             "7.3.1+1">
   <!ENTITY jtreg-download            "&anduin-download;/jtreg-&jtreg-version;.tar.gz">
   <!ENTITY jtreg-md5sum              "0038551ecaf37d0cd99832217f79e56d">
   <!ENTITY jtreg-size                "9.0 MB">
 
-  <!ENTITY ojdk-bdsize               "3.7 GB (add 625 MB for tests)">
-  <!ENTITY ojdk-time                 "5.2 SBU with 4 jobs (add 34 SBU for tests with 4 jobs)">
+  <!ENTITY ojdk-bdsize               "3.7 GB (add 515 MB for tests)">
+  <!ENTITY ojdk-time                 "4.8 SBU with 4 jobs (add 33 SBU for tests with 4 jobs)">
 ]>
 
 <sect1 id="openjdk" xreflabel="OpenJDK-&openjdk-version;">
@@ -43,7 +43,7 @@
       runtime environment to run <application>Java</application> programs.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <para>
       OpenJDK is GPL'd code, with a special exception made for non-free
@@ -171,7 +171,7 @@
       <xref linkend="alsa-lib"/>,
       <xref linkend="cpio"/>,
       <xref linkend="cups"/>,
-      <xref linkend="unzip"/>,
+      <xref linkend="libarchive"/>,
       <xref linkend="which"/>,
       <xref linkend="xorg7-lib"/>, and
       <xref linkend="zip"/>
@@ -234,7 +234,8 @@
         This is the only requirement for the environment. Modern Java
         installations do not need <envar>JAVA_HOME</envar> and
         <envar>CLASSPATH</envar> is not used here. Furthermore, OpenJDK
-        developers recommend unsetting <envar>JAVA_HOME</envar>.
+        developers recommend unsetting <envar>JAVA_HOME</envar> and
+        <envar>CLASSPATH</envar>.
       </para>
 
       <para>
@@ -250,6 +251,8 @@
     </para>
 
 <screen><userinput>unset JAVA_HOME                             &amp;&amp;
+unset CLASSPATH                             &amp;&amp;
+unset MAKEFLAGS                             &amp;&amp;
 bash configure --enable-unlimited-crypto    \
                --disable-warnings-as-errors \
                --with-stdc++lib=dynamic     \
@@ -263,6 +266,7 @@ bash configure --enable-unlimited-crypto    \
                --with-version-build="&openjdk-build;"     \
                --with-version-pre=""        \
                --with-version-opt=""        \
+               --with-jobs=<replaceable>$(nproc)</replaceable>         \
                --with-cacerts-file=/etc/pki/tls/java/cacerts &amp;&amp;
 make images</userinput></screen>
 
@@ -284,7 +288,7 @@ unset JT_JAVA</userinput></screen>
       the results, see the files
       <filename>JTreport/test_{jdk,langtools}/text/stats.txt</filename> and
       <filename>JTreport/test_{jdk,langtools}/text/summary.txt</filename>.
-      You should expect to see around 60 failures and 10 errors.
+      You should expect to see around 80 failures and 10 errors.
     </para>
     <!--
          14.0.1+7:
@@ -328,6 +332,12 @@ unset JT_JAVA</userinput></screen>
          22.0.2+9:
          for x86_64: passed: 6,772; failed: 82; error: 15
          for i686:   passed: 6,704; failed: 79; error: 17
+         23.0.1+11:
+         for x86_64: passed: 6,859; failed: 84; error: 15
+         for i686:   passed: 6,790; failed: 81; error: 16
+         23.0.2+7:
+         for x86_64: passed: 6,863; failed: 84; error: 15
+         for i686:   passed: 6,794; failed: 81; error: 16
     -->
 
     <para>
@@ -431,7 +441,7 @@ EOF</userinput></screen>
     </para>
 
     <para>
-      <option>--with-jobs=<replaceable>&lt;X&gt;</replaceable></option>:
+      <parameter>--with-jobs=<replaceable>$(nproc)</replaceable></parameter>:
       The <parameter>-j</parameter> passed to make does not work with make as
       invoked here. By default, the build system will use the number of
       CPUs - 1.
@@ -556,7 +566,7 @@ bin/keytool -list -cacerts</userinput></screen>
         jconsole, jdb, jdeprscan, jdeps, jfr, jhsdb, jimage, jinfo,
         jlink, jmap, jmod, jpackage, jps, jrunscript, jshell, jstack,
         jstat, jstatd, jwebserver, keytool, rmiregistry, and serialver</seg>
-        <seg>38 libraries in /opt/jdk-&openjdk-version;+&openjdk-build;/lib/</seg>
+        <seg>37 libraries in /opt/jdk-&openjdk-version;+&openjdk-build;/lib/</seg>
         <seg>/opt/jdk-&openjdk-version;+&openjdk-build;</seg>
       </seglistitem>
     </segmentedlist>

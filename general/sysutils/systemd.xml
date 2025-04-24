@@ -7,10 +7,10 @@
   <!--  <!ENTITY systemd-download-http "https://anduin.linuxfromscratch.org/LFS/systemd-&systemd-version;-&systemd-stable;.tar.xz"> For whenever we move to a stable snapshot for backports -->
   <!ENTITY systemd-download-http "https://github.com/systemd/systemd/archive/v&systemd-version;/systemd-&systemd-version;.tar.gz">
   <!ENTITY systemd-download-ftp  " ">
-  <!ENTITY systemd-md5sum        "846a8b47a235793d0f937dfc53cfb78f">
+  <!ENTITY systemd-md5sum        "8e4fc90c7aead651fa5c50bd1b34abc2">
   <!ENTITY systemd-size          "15 MB">
-  <!ENTITY systemd-buildsize     "344 MB (with tests)">
-  <!ENTITY systemd-time          "1.3 SBU (with tests using 4 cores)">
+  <!ENTITY systemd-buildsize     "353 MB (with tests)">
+  <!ENTITY systemd-time          "1.4 SBU (with tests using 4 cores)">
 
 ]>
 
@@ -38,7 +38,7 @@
       which provides many additional features for dependent packages.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -99,7 +99,7 @@
         <filename class='libraryfile'>pam_systemd.so</filename> PAM module.
         <xref linkend='linux-pam'/> is required for them.  All packages in
         BLFS book with a dependency on <application>systemd</application>
-        expects it has been rebuilt with <xref linkend='linux-pam'/>.
+        expect that it has been rebuilt with <xref linkend='linux-pam'/>.
       </para>
     </note>
 
@@ -116,6 +116,7 @@
       <xref linkend="git"/>,
       <xref linkend="gnutls"/>,
       <xref linkend="iptables"/>,
+      <xref linkend="libarchive"/>,
       <xref linkend="libgcrypt"/>,
       <xref linkend="libidn2"/>,
       <xref linkend="libpwquality"/>,
@@ -268,7 +269,7 @@ ninja</userinput></screen>
       BLFS system with UEFI if following <xref linkend='grub-setup'/>.
       And, it requires the <application>pefile</application> Python module
       at runtime, so if it's enabled but <application>pefile</application>
-      is not installed, in the test suite one test for it will fail.  To
+      is not installed, one test for it will fail in the test suite. To
       enable <command>systemd-ukify</command>, install the
       <application>pefile</application> module and then change
       <quote>disabled</quote> to <quote>enabled</quote> in the above
@@ -366,18 +367,18 @@ EOF</userinput></screen>
       <para>
         Now ensure <xref linkend='shadow'/> has been already rebuilt with
         <xref linkend='linux-pam'/> support first, then logout, and login
-        again.  This ensures the running login session registered with
-        <command>systemd-logind</command> and a per-user systemd instance
-        running for each user owning a login session.  Many BLFS packages
-        listing Systemd as a dependency needs the
+        again. This will ensure that the running login session is registered
+        with <command>systemd-logind</command>, and that a per-user systemd
+        instance is running for each user owning a login session. Many BLFS
+        packages listing systemd as a dependency need the
         <command>systemd-logind</command> integration and/or a running
-        per-user systemd instance.
+        per-user systemd instance at runtime.
       </para>
     </important>
 
     <warning>
       <para>
-        If upgrading from a previous version of systemd and an
+        If you are upgrading from a previous version of systemd and an
         initrd is used for system boot, you should generate a new initrd before
         rebooting the system.
       </para>
@@ -407,6 +408,7 @@ EOF</userinput></screen>
           <!-- maybe userdbd/userdbctl can go in LFS, try at next time -->
           homectl (optional),
           systemd-cryptenroll (if <xref linkend="cryptsetup"/> is installed),
+          systemd-cryptsetup (if <xref linkend="cryptsetup"/> is installed),
           and userdbctl (optional)
         </seg>
       </seglistitem>
@@ -441,6 +443,18 @@ EOF</userinput></screen>
           </para>
           <indexterm zone="systemd systemd-cryptenroll">
             <primary sortas="b-systemd-cryptenroll">systemd-cryptenroll</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="systemd-cryptsetup">
+        <term><command>systemd-cryptsetup</command></term>
+        <listitem>
+          <para>
+            Attaches or removes an encrypted block device
+          </para>
+          <indexterm zone="systemd systemd-cryptsetup">
+            <primary sortas="b-systemd-cryptsetup">systemd-cryptsetup</primary>
           </indexterm>
         </listitem>
       </varlistentry>

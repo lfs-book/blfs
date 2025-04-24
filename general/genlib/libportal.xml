@@ -6,10 +6,10 @@
 
   <!ENTITY libportal-download-http "https://github.com/flatpak/libportal/releases/download/&libportal-version;/libportal-&libportal-version;.tar.xz">
   <!ENTITY libportal-download-ftp  " ">
-  <!ENTITY libportal-md5sum        "3226036adea29ce152d9ca0be5ab0486">
-  <!ENTITY libportal-size          "104 KB">
-  <!ENTITY libportal-buildsize     "4.5 MB (with tests)">
-  <!ENTITY libportal-time          "0.1 SBU (add 0.4 SBU for tests)">
+  <!ENTITY libportal-md5sum        "0c63ee25d2e2986ce4df544fe8149046">
+  <!ENTITY libportal-size          "108 KB">
+  <!ENTITY libportal-buildsize     "4.0 MB (with tests; add 9 MB for docs)">
+  <!ENTITY libportal-time          "less than 0.1 SBU (add 0.6 SBU for tests)">
 ]>
 
 <sect1 id="libportal" xreflabel="libportal-&libportal-version;">
@@ -30,7 +30,7 @@
       a library that contains GIO-style async APIs for most Flatpak portals.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -65,17 +65,17 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--  No longer needed
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Optional patch (required for running the test suite):
-          <ulink url="&patch-root;/libportal-&libportal-version;-testsuite_fix-1.patch"/>
+          Required patch:
+          <ulink url="&patch-root;/libportal-&libportal-version;-qt6.9_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
--->
+
     <bridgehead renderas="sect3">libportal Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -128,14 +128,12 @@
 fi</userinput></screen>
     </warning>
 
-<!--
     <para>
-      If running the test suite, apply a patch to fix several test
-      failures with python-dbusmock 0.30.0 or later:
+      First, apply a patch to fix building against Qt 6.9 and later:
+      <!-- BLFS Ticket #21429 -->
     </para>
 
-    <screen><userinput>patch -Np1 -i ../libportal-&libportal-version;-testsuite_fix-1.patch</userinput></screen>
--->
+<screen><userinput remap="pre">patch -Np1 -i ../libportal-&libportal-version;-qt6.9_fixes-1.patch</userinput></screen>
 
     <para>
       Install <application>libportal</application> by running the following
@@ -153,8 +151,8 @@ ninja</userinput></screen>
       the API documentation for this package, issue:
     </para>
 
-<screen role='nodump'><userinput>sed "/output/s/-1/-&libportal-version;/" -i ../doc/meson.build &amp;&amp;
-meson configure -D docs=true                   &amp;&amp;
+<screen role='nodump'><userinput>sed -i "/output/s/-1/-&libportal-version;/" ../doc/meson.build &amp;&amp;
+meson configure -D docs=true                     &amp;&amp;
 ninja</userinput></screen>
 
     <para>

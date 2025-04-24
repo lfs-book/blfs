@@ -6,10 +6,10 @@
 
   <!ENTITY librsvg-download-http "&gnome-download-http;/librsvg/&librsvg-minor;/librsvg-&librsvg-version;.tar.xz">
   <!ENTITY librsvg-download-ftp  " ">
-  <!ENTITY librsvg-md5sum        "7f4ddb27f5fbede01bf4e12eb4c682c0">
-  <!ENTITY librsvg-size          "5.8 MB">
-  <!ENTITY librsvg-buildsize     "1.2 GB (16 MB installed), add 491 MB for tests">
-  <!ENTITY librsvg-time          "0.6 SBU (add 0.4 SBU for tests; both using parallelism=4)">
+  <!ENTITY librsvg-md5sum        "ba3320798fec656c58c849df030dd7d3">
+  <!ENTITY librsvg-size          "6.4 MB">
+  <!ENTITY librsvg-buildsize     "1.1 GB (17 MB installed), add 494 MB for tests">
+  <!ENTITY librsvg-time          "1.4 SBU (add 1.0 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="librsvg" xreflabel="librsvg-&librsvg-version;">
@@ -31,7 +31,7 @@
       Scalable Vector Graphic (SVG) images.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -73,9 +73,8 @@
     <para role="required">
       <xref linkend="cairo"/>,
       <xref linkend="cargo-c"/>,
-      <xref linkend="gdk-pixbuf"/>,
-      <xref linkend="pango"/>, and
-      <xref linkend="rust"/>
+      <xref linkend="gdk-pixbuf"/>, and
+      <xref linkend="pango"/>
     </para>
 
     &build-use-internet;
@@ -99,6 +98,14 @@
     <title>Installation of librsvg</title>
 
     <para>
+      First, fix the installation path of the API documentation:
+    </para>
+
+<screen><userinput>sed -e "/OUTDIR/s|,| / 'librsvg-&librsvg-version;', '--no-namespace-dir',|" \
+    -e '/output/s|Rsvg-2.0|librsvg-&librsvg-version;|'                      \
+    -i doc/meson.build</userinput></screen>
+
+    <para>
       Install <application>librsvg</application> by running the following
       commands:
     </para>
@@ -107,29 +114,30 @@
 cd    build &amp;&amp;
 
 meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
-meson compile</userinput></screen>                                    
+ninja</userinput></screen>
 
     <!-- Be sure to unset GLIB_LOG_LEVEL.  If set, it interferes with the 
          tests. 
 
-         With 2.59.1 one test of 5 fails.
+         With 2.59.1 one test of 5 fails. (I cannot see any failures here,
+         but using rustc-1.82.0.)
      -->
 
     <para>
       To test the results, issue:
     </para>
 
-    <screen remap='test'><userinput>meson test --print-errorlogs --no-rebuild</userinput></screen>
+    <screen remap='test'><userinput>ninja test</userinput></screen>
 
     <para>
-      One test, C API tests, is known to fail.
+      One test, Rust tests (rsvg), is known to fail.
     </para>
 
     <para>
       Now, as the &root; user:
     </para>
 
-<screen role="root"><userinput>meson install --no-rebuild </userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 <!--
     <note>
       <para>
@@ -144,41 +152,15 @@ meson compile</userinput></screen>
 -->
 
   </sect2>
-<!--
+<!-- Not currently used, but keeping commented just in case. -renodr
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <parameter>- -enable-vala</parameter>: This switch enables
-      building of the Vala bindings. Remove this switch if you don't have
-      <xref linkend="vala"/> installed.
-    </para>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
-
-    <para>
-      <parameter>DOC_INSTALL_DIR='$(docdir)'</parameter>: This override
-      ensures installing the API documentation into the expected location
-      if <xref linkend='gi-docgen'/> is installed.
-    </para>
 
     <para>
       <command>cargo update - -precise=0.3.36 time</command>: This updates
       the <filename>Cargo.lock</filename> file to refer to version 0.3.36
       of the time crate for the test suite.  Originally it refers to
       version 0.3.34, which fails to build with Rustc-1.80.0 or later.
-    </para>
-
-    <para>
-      <option>- -disable-introspection</option>: Use this switch if you have
-      not installed <application>Gobject Introspection</application>.
-    </para>
-
-    <para>
-      <option>- -disable-gtk-doc</option>: This switch prevents building
-      the API documentation, even if <xref linkend="gi-docgen"/> (despite
-      the name of the option) is available.
     </para>
 
   </sect2>

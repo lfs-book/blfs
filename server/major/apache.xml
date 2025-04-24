@@ -7,10 +7,10 @@
   <!ENTITY apache-download-http
            "https://archive.apache.org/dist/httpd/httpd-&apache-version;.tar.bz2">
   <!ENTITY apache-download-ftp  " ">
-  <!ENTITY apache-md5sum        "cded7afa23c13c4854008d95a69ce016">
+  <!ENTITY apache-md5sum        "8b5ee2a61d569a3eacec5778e7f20e13">
   <!ENTITY apache-size          "7.2 MB">
-  <!ENTITY apache-buildsize     "85 MB">
-  <!ENTITY apache-time          "0.4 SBU (Using parallelism=4)">
+  <!ENTITY apache-buildsize     "88 MB">
+  <!ENTITY apache-time          "0.3 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="apache" xreflabel="Apache-&apache-version;">
@@ -32,7 +32,7 @@
       web serving operations.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -136,19 +136,19 @@ sed -e '/HTTPD_ROOT/s:${ap_prefix}:/etc/httpd:'       \
 sed -e '/encoding.h/a # include &lt;libxml/xmlstring.h&gt;' \
     -i modules/filters/mod_xml2enc.c  &amp;&amp;
 
-./configure --enable-authnz-fcgi                              \
-            --enable-layout=BLFS                              \
-            --enable-mods-shared="all cgi"                    \
-            --enable-mpms-shared=all                          \
-            --enable-suexec=shared                            \
-            --with-apr=/usr/bin/apr-1-config                  \
-            --with-apr-util=/usr/bin/apu-1-config             \
-            --with-suexec-bin=/usr/lib/httpd/suexec           \
-            --with-suexec-caller=apache                       \
-            --with-suexec-docroot=/srv/www                    \
-            --with-suexec-logfile=/var/log/httpd/suexec.log   \
-            --with-suexec-uidmin=100                          \
-            --with-suexec-userdir=public_html                 &amp;&amp;
+./configure --enable-authnz-fcgi                    \
+            --enable-layout=BLFS                    \
+            --enable-mods-shared="all cgi"          \
+            --enable-mpms-shared=all                \
+            --enable-suexec=shared                  \
+            --with-apr=/usr/bin/apr-1-config        \
+            --with-apr-util=/usr/bin/apu-1-config   \
+            --with-suexec-bin=/usr/lib/httpd/suexec \
+            --with-suexec-caller=apache             \
+            --with-suexec-docroot=/srv/www          \
+            --with-suexec-uidmin=100                \
+            --with-suexec-userdir=public_html       \
+            --with-suexec-logfile=/var/log/httpd/suexec.log &amp;&amp;
 make</userinput></screen>
 
     <para>

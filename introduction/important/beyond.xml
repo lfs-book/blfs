@@ -153,8 +153,8 @@
           you can try putting a package name in the search box. If the package is
           found you can look at the files (specfile to control the build, various
           patches) or the commits. If that fails, you can download
-          an srpm (source rpm) and using <application>rpm2cpio</application> (see
-          the Tip at the bottom of the page). For rpms go to <ulink
+          an srpm (source rpm) and using <application>rpmextract</application>
+          (see the Tip at the bottom of the page). For rpms go to <ulink
           url="https://dl.fedoraproject.org/pub/fedora/linux/"/> and then choose
           which repo you wish to look at - development/rawhide is the latest
           development, or choose releases for what was shipped in a release,
@@ -212,18 +212,23 @@
     <para>If you have found a package that is only available in
     <filename class='extension'>.deb</filename> or
     <filename class='extension'>.rpm</filename>
-    format, there are two small scripts, <command>rpm2targz</command> and
-    <command>deb2targz</command> that are available at
-    <ulink url="&sources-anduin-http;/extras/deb2targz.tar.bz2"/> and
-    <ulink url="&sources-anduin-http;/extras/rpm2targz.tar.bz2"/> to convert the archives
-    into a simple <filename>tar.gz</filename> format.</para>
-    <para>You may also find an rpm2cpio script useful.  The Perl version in the
-    linux kernel archives at <ulink
-    url="https://lore.kernel.org/all/20021016121842.GA2292@ncsu.edu/2-rpm2cpio"/>
-    works for most source rpms.  The rpm2targz script will use an rpm2cpio script
-    or binary if one is on your path.  Note that rpm2cpio will unpack a source
-    rpm in the current directory, giving a tarball, a spec file, and perhaps patches
-    or other files.</para>
+    format, there are different methods of extracting them.</para>
+    <para><filename class='extension'>.deb</filename> files are just
+    archives that are created and extracted by
+    <application>ar</application>. It can be extracted by running:
+    <command>ar x $PACKAGE.deb</command>. It will extract many files; however,
+    the important one is <filename>data.tar.gz</filename>. It contains all the
+    files that would typically be installed from it.</para>
+    <para>For <filename class='extension'>.rpm</filename> files, you can
+    install <ulink
+    url="https://archlinux.org/packages/extra/any/rpmextract/">rpmextract</ulink>
+    (see the <ulink
+    url="https://gitlab.archlinux.org/archlinux/packaging/packages/rpmextract/-/blob/main/PKGBUILD?ref_type=heads">PKGBUILD</ulink>
+    for how they install the package) and use <command>rpmextract.sh</command>
+    from the package to extract the file. It will extract to multiple
+    directories, such as <filename class="directory">app</filename> and
+    <filename class="directory">usr</filename>. You can also use <xref
+    linkend="file-roller"/> or <xref linkend="ark"/> for the extraction.</para>
   </tip>
 
 </sect1>

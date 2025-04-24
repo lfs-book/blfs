@@ -8,7 +8,7 @@
 
   <!ENTITY cracklib-download-http "&cracklib-url;/v&cracklib-version;/cracklib-&cracklib-version;.tar.xz">
   <!ENTITY cracklib-download-ftp  " ">
-  <!ENTITY cracklib-md5sum        "a99e0aef4c677df7063624690b634988">
+  <!ENTITY cracklib-md5sum        "e8ea2b86de774fc09fdd0f2829680b19">
   <!ENTITY cracklib-size          "456 KB">
   <!ENTITY cracklib-buildsize     "5.0 MB">
   <!ENTITY cracklib-time          "less than 0.1 SBU">
@@ -37,7 +37,7 @@
       passwords to words in chosen word lists.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -135,8 +135,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr    \
-            --disable-static \
+<screen><userinput>CPPFLAGS+=' -I /usr/include/python3.13' \
+./configure --prefix=/usr               \
+            --disable-static            \
             --with-default-dict=/usr/lib/cracklib/pw_dict &amp;&amp;
 make</userinput></screen>
 
@@ -156,10 +157,8 @@ make</userinput></screen>
       to the <command>create-cracklib-dict</command> command.
     </para>
 
-<screen role="root"><userinput>install -v -m644 -D    ../cracklib-words-&cracklib-version;.xz \
-                         /usr/share/dict/cracklib-words.xz    &amp;&amp;
-
-unxz -v                  /usr/share/dict/cracklib-words.xz    &amp;&amp;
+<screen role="root"><userinput>xzcat ../cracklib-words-&cracklib-version;.xz \
+                       &gt; /usr/share/dict/cracklib-words       &amp;&amp;
 ln -v -sf cracklib-words /usr/share/dict/words                &amp;&amp;
 echo $(hostname) >>      /usr/share/dict/cracklib-extra-words &amp;&amp;
 install -v -m755 -d      /usr/lib/cracklib                    &amp;&amp;
@@ -173,6 +172,12 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
     </para>
 
 <screen remap="test"><userinput>make test</userinput></screen>
+
+    <para>
+      If desired, test the Python module with:
+    </para>
+
+<screen remap="test"><userinput>python3 -c 'import cracklib; cracklib.test()'</userinput></screen>
 
     <important>
       <para>
@@ -191,20 +196,18 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-<!-- not needed with 2.10.2
+<!--
     <para>
-      <command>autoreconf -fiv</command>: The configure script shipped with
-      the package is too old to get the right version string of Python
-      3.10 or later. This command regenerates it with a more recent version
-      of autotools, which fixes the issue.
-    </para>
-
-    <para>
-      <envar>PYTHON=python3</envar>: This forces the installation of
-      python bindings for Python 3, even if Python 2 is installed.
+      <command>autoreconf</command>: This command resets the configuration
+      to recognize <application>Python-3.13</application>.
     </para>
 -->
+    <para>
+      <envar>CPPFLAGS+=' -I /usr/include/python3.13'</envar>: 
+      This environment variable is needed to
+      allow the package to find the <application>Python-3.13</application> 
+      include files.
+    </para>
 
     <para>
       <parameter>--with-default-dict=/usr/lib/cracklib/pw_dict</parameter>:
@@ -215,6 +218,12 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <command>sed ... ./python/test_cracklib.py</command>: This command 
+      updates the build procedure for the Python module for 
+      <application>Python-3.13</application> and later..
+    </para>
 
     <para>
       <command>install -v -m644 -D ...</command>: This command creates the
@@ -260,10 +269,9 @@ create-cracklib-dict     /usr/share/dict/cracklib-words \
         <seg>cracklib-check, cracklib-format, cracklib-packer,
         cracklib-unpacker, cracklib-update, and create-cracklib-dict</seg>
 
-        <seg>libcrack.so and the _cracklib.so
-          (<application>Python</application> module)</seg>
+        <seg>libcrack.so and _cracklib.so (Python module)</seg>
 
-        <seg>/usr/lib/cracklib, /usr/share/dict and /usr/share/cracklib</seg>
+        <seg>/usr/lib/cracklib, /usr/share/dict, and /usr/share/cracklib</seg>
       </seglistitem>
     </segmentedlist>
 

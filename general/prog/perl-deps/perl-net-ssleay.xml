@@ -36,7 +36,7 @@
         </listitem>
       </itemizedlist>-->
 
-      &lfs122_checked;
+      &lfs123_checked;
 
       <bridgehead renderas="sect4">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -59,6 +59,9 @@
 
       <note>
         <para>
+          <!-- https://github.com/radiator-software/p5-net-ssleay/issues/511 -->
+          One test named <filename>32_x509_get_cert_info.t</filename> is
+          known to fail with OpenSSL-3.4.0 or later.
           If enabling the external tests, one test in t/external/15_altnames.t
           may fail. <!-- https://rt.cpan.org/Public/Bug/Display.html?id=12954 -->
         </para>
@@ -70,7 +73,7 @@
 
 <screen><userinput>yes '' | perl Makefile.PL &amp;&amp;
 make                      &amp;&amp;
-make test</userinput></screen>
+make test || true</userinput></screen>
 
         Now, as the <systemitem class="username">root</systemitem> user:
 
@@ -87,6 +90,11 @@ make test</userinput></screen>
         <command>yes ''</command>: Perl will ask if you wish to run external
         tests, which will fail if you do not have network connectivity. The
         default is 'n', specifying this allows you to script the build.
+      </para>
+
+      <para>
+        <command>|| true</command>: When running a script which exits on
+        error, this prevents stopping because of the known test failure.
       </para>
 
     </sect3>

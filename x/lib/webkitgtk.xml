@@ -6,10 +6,10 @@
 
   <!ENTITY webkitgtk-download-http "https://webkitgtk.org/releases/webkitgtk-&webkitgtk-version;.tar.xz">
   <!ENTITY webkitgtk-download-ftp  " ">
-  <!ENTITY webkitgtk-md5sum        "126f51432eb59d6c307c70858f5459c9">
-  <!ENTITY webkitgtk-size          "41 MB">
-  <!ENTITY webkitgtk-buildsize     "1.4 GB (163 MB installed, add 157 MB for GTK-4)">
-  <!ENTITY webkitgtk-time          "32 SBU (for GTK-3, using parallelism=8, add 32 SBU for GTK-4)">
+  <!ENTITY webkitgtk-md5sum        "dce4acd27a743eb4be03ab4a7cd8353f">
+  <!ENTITY webkitgtk-size          "42 MB">
+  <!ENTITY webkitgtk-buildsize     "1.5 GB (182 MB installed, add 177 MB for GTK-4)">
+  <!ENTITY webkitgtk-time          "24 SBU (for GTK-3, using parallelism=8, add 24 SBU for GTK-4)">
 
   <!ENTITY libbacktrace
     "<ulink url='https://github.com/ianlancetaylor/libbacktrace'>libbacktrace</ulink>">
@@ -35,7 +35,7 @@
       platforms.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -77,7 +77,7 @@
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/webkitgtk-&webkitgtk-version;-upstream_fixes-1.patch"/>
+          <ulink url="&patch-root;/webkitgtk-&webkitgtk-version;-build_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -112,7 +112,7 @@
     <para role="recommended">
       <xref linkend="bubblewrap"/>,
       <xref linkend="enchant"/>,
-      <xref linkend="geoclue2"/>,
+      <xref role='runtime' linkend="geoclue2"/> (runtime),
       &gobject-introspection;,
       <xref linkend="hicolor-icon-theme"/>,
       <xref linkend="libavif"/>,
@@ -128,9 +128,11 @@
       <xref linkend="wayland"/>,
       <xref linkend="woff2"/>,
       <ulink url="https://ccache.dev/">ccache</ulink>,
+      <ulink url="http://www.festvox.org/flite/">flite</ulink>,
       <ulink url="https://sourceforge.net/projects/hunspell/files/Hyphen/">Hyphen</ulink>,
       &libbacktrace;,
-      <ulink url="https://gnome.pages.gitlab.gnome.org/libmanette/">libmanette</ulink>, and
+      <ulink url="https://gnome.pages.gitlab.gnome.org/libmanette/">libmanette</ulink>,
+      <ulink url="https://github.com/project-spiel/libspiel">libspiel</ulink>, and
       <ulink url="&sysprof-url;">sysprof</ulink>
     </para>
 
@@ -152,17 +154,16 @@
         same system. We give build instructions for both cases below, but
         the only difference is the setting of <command>-D USE_GTK4</command>
       </para>
+
+      <para>
+        If you are building this package on a 32-bit system, or a 64-bit system
+        with less than 16GB of memory, you must add the
+        <command>-D CMAKE_CXX_FLAGS_RELEASE="-O2 -DNDEBUG"</command> option to
+        the CMake line to prevent build failures relating to running out of
+        memory. Performance will be impacted slightly, but not at a level where
+        it is noticeable during normal usage.
+      </para>
     </important>
-
-<!--
-    <para>
-      First, fix a regression that occurs with some websites that use
-      WebAssembly: <! - - Ticket #20235 - ->
-    </para>
-
-<screen><userinput remap="pre">sed '/returnLocation.isStackArgument/,/returnLocation = canonicalLocation/d'\
-    -i Source/JavaScriptCore/wasm/WasmBBQJIT.cpp</userinput></screen>
--->
 
     <para>
       If you want to install the GTK+-3 version of
@@ -187,6 +188,7 @@ cmake -D CMAKE_BUILD_TYPE=Release      \
       -D USE_GTK4=OFF                  \
       -D ENABLE_BUBBLEWRAP_SANDBOX=ON  \
       -D USE_SYSPROF_CAPTURE=NO        \
+      -D ENABLE_SPEECH_SYNTHESIS=OFF   \
       -W no-dev -G Ninja ..            &amp;&amp;
 ninja</userinput></screen>
 
@@ -209,6 +211,7 @@ cmake -D CMAKE_BUILD_TYPE=Release      \
       -D ENABLE_JOURNALD_LOG=OFF       \
       -D ENABLE_BUBBLEWRAP_SANDBOX=ON  \
       -D USE_SYSPROF_CAPTURE=NO        \
+      -D ENABLE_SPEECH_SYNTHESIS=OFF   \
       -W no-dev -G Ninja ..            &amp;&amp;
 ninja</userinput></screen>
 
@@ -246,6 +249,7 @@ cmake -D CMAKE_BUILD_TYPE=Release         \
       -D USE_GTK4=ON                      \
       -D ENABLE_BUBBLEWRAP_SANDBOX=ON     \
       -D USE_SYSPROF_CAPTURE=NO           \
+      -D ENABLE_SPEECH_SYNTHESIS=OFF      \
       -W no-dev -G Ninja ..               &amp;&amp;
 ninja</userinput></screen>
 
@@ -266,6 +270,7 @@ cmake -D CMAKE_BUILD_TYPE=Release      \
       -D ENABLE_JOURNALD_LOG=OFF       \
       -D ENABLE_BUBBLEWRAP_SANDBOX=ON  \
       -D USE_SYSPROF_CAPTURE=NO        \
+      -D ENABLE_SPEECH_SYNTHESIS=OFF   \
       -W no-dev -G Ninja ..            &amp;&amp;
 ninja</userinput></screen>
 
@@ -291,11 +296,6 @@ cp -rv ../Documentation/* /usr/share/gtk-doc/html</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-<!--    <para>
-      <command>sed ... TextCheckerEnchant.cpp</command>: This command
-      is needed to allow the build to complete with enchant-2.x.
-    </para> -->
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/cmake-skip-install-rpath.xml"/>
@@ -344,13 +344,6 @@ cp -rv ../Documentation/* /usr/share/gtk-doc/html</userinput></screen>
       GTK-4.
     </para>
 
-<!--
-    <para>
-      <parameter>-D USE_JPEGXL=OFF</parameter>: This switch turns off support
-      for JPEG-XL images. Remove it if you have the optional package
-      <ulink url="https://github.com/libjxl/libjxl">libjxl</ulink> installed.
-    </para>
--->
     <para>
       <parameter>-D ENABLE_BUBBLEWRAP_SANDBOX=ON</parameter>: This switch
       enables the Bubblewrap sandbox, which helps mitigate the impact of most
@@ -371,6 +364,15 @@ cp -rv ../Documentation/* /usr/share/gtk-doc/html</userinput></screen>
     <para>
       <parameter>-D USE_SYSPROF_CAPTURE=NO</parameter>: This switch
       disables a hard dependency on <ulink url="&sysprof-url;">sysprof</ulink>.
+    </para>
+
+    <para>
+      <parameter>-D ENABLE_SPEECH_SYNTHESIS=OFF</parameter>: This switch
+      disables building speech synthesis support into WebKitGTK because it
+      requires additional external dependencies. You will need both
+      <ulink url="http://www.festvox.org/flite/">flite</ulink> and
+      <ulink url="https://github.com/project-spiel/libspiel">libspiel</ulink>
+      if you wish to enable this.
     </para>
 
     <para>

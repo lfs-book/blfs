@@ -6,10 +6,10 @@
 
   <!ENTITY x265-download-http "https://bitbucket.org/multicoreware/x265_git/downloads/x265_&x265-version;.tar.gz">
   <!ENTITY x265-download-ftp  " ">
-  <!ENTITY x265-md5sum        "99997ecc8ee4d3575ba7715c759ad3bb">
+  <!ENTITY x265-md5sum        "f1c3c80248d8574378a4aac8f374f6de">
   <!ENTITY x265-size          "1.6 MB">
-  <!ENTITY x265-buildsize     "45 MB">
-  <!ENTITY x265-time          "0.5 SBU (using parallelism=4)">
+  <!ENTITY x265-buildsize     "39 MB">
+  <!ENTITY x265-time          "0.4 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="x265" xreflabel="x265-&x265-version;">
@@ -30,7 +30,7 @@
       video streams into the H.265/HEVC format.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,6 +89,13 @@
     <title>Installation of x265</title>
 
     <para>
+      First, remove some CMake policy settings that are no longer compatible
+      with CMake-4.0 and later:
+    </para>
+
+<screen><userinput>sed -r '/cmake_policy.*(0025|0054)/d' -i source/CMakeLists.txt</userinput></screen>
+
+    <para>
       Install <application>x265</application> by running the following
       commands:
     </para>
@@ -97,9 +104,11 @@
 <screen><userinput>mkdir bld &amp;&amp;
 cd    bld &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr \
-      -D GIT_ARCHETYPE=1           \
-      -W no-dev ../source          &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+      -D GIT_ARCHETYPE=1                  \
+      -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+      -W no-dev                           \
+      ../source                           &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -110,7 +119,7 @@ make</userinput></screen>
          bug.  This <important> block should be removed when we update x265
          to 3.7 (or 4.0 or whatever new version).  The problem only happens
          when we downgrade libx265.so, upgrading is OK (as long as following
-         the LFS package management page).  -->
+         the LFS package management page). 
     <important>
       <para>
         If downgrading from the bleeding-edge x265-20240812 (it had been
@@ -128,6 +137,7 @@ make</userinput></screen>
         from x265-3.6.
       </para>
     </important>
+    -->
 
     <para>
       To install the package, first remove any old library versions.
@@ -144,17 +154,20 @@ rm -vf /usr/lib/libx265.a</userinput></screen>
       <title>Command Explanations</title>
 
       <para>
-        <parameter>-W no-dev</parameter>: This switch is used to suppress warnings
-        intended for the package developers.
-      </para>
-
-      <para>
         <parameter>-D GIT_ARCHETYPE=1</parameter>: This switch is needed
         because the build system will not generate a pkg-config file or install
         a shared library unless <xref linkend="git"/> is installed. Git isn't
         required for anything else in this package, so this switch is used to
         work around it for users who do not want to install Git as a build
         dependency.
+      </para>
+
+      <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+        href="../../xincludes/cmake-policy-version.xml"/>
+
+      <para>
+        <parameter>-W no-dev</parameter>: This switch is used to suppress warnings
+        intended for the package developers.
       </para>
 
       <para>

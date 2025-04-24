@@ -4,133 +4,118 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY p7zip-download-http "https://github.com/p7zip-project/p7zip/archive/v&p7zip-version;/p7zip-&p7zip-version;.tar.gz">
-  <!ENTITY p7zip-download-ftp  " ">
-  <!ENTITY p7zip-md5sum        "00acfd6be87848231722d2d53f89e4a5">
-  <!ENTITY p7zip-size          "6.5 MB">
-  <!ENTITY p7zip-buildsize     "55 MB">
-  <!ENTITY p7zip-time          "2.3 SBU (with tests)">
+  <!ENTITY seven-zip-download-http "https://github.com/ip7z/7zip/archive/&seven-zip-version;/7zip-&seven-zip-version;.tar.gz">
+  <!ENTITY seven-zip-download-ftp  " ">
+  <!ENTITY seven-zip-md5sum        "41d0d31a3b0e39a1cbd848c10574fb0b">
+  <!ENTITY seven-zip-size          "2.1 MB">
+  <!ENTITY seven-zip-buildsize     "39 MB">
+  <!ENTITY seven-zip-time          "2.3 SBU (with tests)">
 ]>
 
-<sect1 id="p7zip" xreflabel="p7zip-&p7zip-version;">
-  <?dbhtml filename="p7zip.html"?>
+<sect1 id="seven-zip" xreflabel="7zip-&seven-zip-version;">
+  <?dbhtml filename="7zip.html"?>
 
 
-  <title>p7zip-&p7zip-version;</title>
+  <title>7zip-&seven-zip-version;</title>
 
-  <indexterm zone="p7zip">
-    <primary sortas="a-p7zip">p7zip</primary>
+  <indexterm zone="seven-zip">
+    <primary sortas="a-7zip">7zip</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to p7zip</title>
+    <title>Introduction to 7zip</title>
 
     <para>
-      <application>p7zip</application> is the Unix command-line port of 7-Zip, a
+      <application>7zip</application> is a
       file archiver that archives with high compression ratios. It handles 7z,
       ZIP, GZIP, Brotli,  BZIP2, XZ, TAR, APM, ARJ, CAB, CHM, CPIO, CramFS, DEB,
       DMG, FAT, HFS, ISO, Lizard, LZ5, LZFSE, LZH, LZMA, LZMA2, MBR, MSI, MSLZ,
       NSIS, NTFS, RAR, RPM, SquashFS, UDF, VHD, WIM, XAR, Z, and Zstd formats.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Download (HTTP): <ulink url="&p7zip-download-http;"/>
+          Download (HTTP): <ulink url="&seven-zip-download-http;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download (FTP): <ulink url="&p7zip-download-ftp;"/>
+          Download (FTP): <ulink url="&seven-zip-download-ftp;"/>
         </para>
       </listitem>
       <listitem>
         <para>
-          Download MD5 sum: &p7zip-md5sum;
+          Download MD5 sum: &seven-zip-md5sum;
         </para>
       </listitem>
       <listitem>
         <para>
-          Download size: &p7zip-size;
+          Download size: &seven-zip-size;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated disk space required: &p7zip-buildsize;
+          Estimated disk space required: &seven-zip-buildsize;
         </para>
       </listitem>
       <listitem>
         <para>
-          Estimated build time: &p7zip-time;
+          Estimated build time: &seven-zip-time;
         </para>
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing='compact'>
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/p7zip-&p7zip-version;-consolidated_fixes-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
-    <bridgehead renderas="sect3">p7zip Dependencies</bridgehead>
+    <bridgehead renderas="sect3">7zip Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="https://www.wxwidgets.org/">wxWidgets</ulink>
+      <ulink url="https://github.com/Terraspace/UASM">UASM</ulink>
     </para>
 
 
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of p7zip</title>
+    <title>Installation of 7zip</title>
 
     <para>
-      First, fix several security vulnerabilities:
-    </para>
-
-<screen><userinput>patch -Np1 -i ../p7zip-&p7zip-version;-consolidated_fixes-1.patch</userinput></screen>
-
-    <para>
-      Next, prevent <application>p7zip</application> from installing
-      compressed manual pages:
-    </para>
-
-<screen><userinput remap="pre">sed '/^gzip/d' -i install.sh</userinput></screen>
-
-    <para>
-      Install <application>p7zip</application> by running the following
+      Install <application>7zip</application> by running the following
       commands:
     </para>
 
-<screen><userinput>make all3</userinput></screen>
+<screen><userinput>for i in Bundles/{Alone,Alone7z,Format7zF,SFXCon} UI/Console; do
+    make -C CPP/7zip/$i -f ../../cmpl_gcc.mak
+done</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>.
+      This package does not have a test suite.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<!-- dev note: make DEST_DIR=<DESTDIR> install -->
+<screen role="root"><userinput>install -vDm755 CPP/7zip/Bundles/Alone{/b/g/7za,7z/b/g/7zr} \
+                CPP/7zip/Bundles/Format7zF/b/g/7z.so        \
+                CPP/7zip/UI/Console/b/g/7z                  \
+                -t /usr/lib/7zip/                              &amp;&amp;
 
-<screen role="root"><userinput>make DEST_HOME=/usr \
-     DEST_MAN=/usr/share/man \
-     DEST_SHARE_DOC=/usr/share/doc/p7zip-&p7zip-version; install</userinput></screen>
+install -vm755 CPP/7zip/Bundles/SFXCon/b/g/7zCon \
+               /usr/lib/7zip/7zCon.sfx           &amp;&amp;
 
-    <note>
-      <para>
-        If using DESTDIR techniques, use DEST_DIR instead.
-      </para>
-    </note>
+(for i in 7z 7za 7zr; do
+    cat &gt; /usr/bin/$i &lt;&lt; EOF || exit
+<literal>#!/bin/sh
+exec /usr/lib/7zip/$i "\$@"</literal>
+EOF
+    chmod 755 /usr/bin/$i || exit
+done) &amp;&amp;
+
+cp -rv DOC -T /usr/share/doc/7zip-&seven-zip-version;</userinput></screen>
 
   </sect2>
 
@@ -150,7 +135,7 @@
           None
         </seg>
         <seg>
-          /usr/lib/p7zip and /usr/share/doc/p7zip-&p7zip-version;
+          /usr/lib/7zip and /usr/share/doc/7zip-&seven-zip-version;
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -166,7 +151,7 @@
           <para>
             is a file archiver utility
           </para>
-          <indexterm zone="p7zip Sevenz">
+          <indexterm zone="seven-zip Sevenz">
             <primary sortas="b-7z">7z</primary>
           </indexterm>
         </listitem>
@@ -179,7 +164,7 @@
             is a stand-alone executable handling less archive formats than
             <command>7z</command>
           </para>
-          <indexterm zone="p7zip Sevenza">
+          <indexterm zone="seven-zip Sevenza">
             <primary sortas="b-7za">7za</primary>
           </indexterm>
         </listitem>
@@ -192,7 +177,7 @@
             is a minimal version of <command>7za</command> that handles only
             7z archives
           </para>
-          <indexterm zone="p7zip Sevenzr">
+          <indexterm zone="seven-zip Sevenzr">
             <primary sortas="b-7zr">7zr</primary>
           </indexterm>
         </listitem>

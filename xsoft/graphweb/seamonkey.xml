@@ -6,10 +6,10 @@
 
   <!ENTITY seamonkey-download-http "https://archive.seamonkey-project.org/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
   <!ENTITY seamonkey-download-ftp  " ">
-  <!ENTITY seamonkey-md5sum        "0fbfbd69ab1ceb417528419324551510">
-  <!ENTITY seamonkey-size          "238 MB">
-  <!ENTITY seamonkey-buildsize     "4.5 GB (149 MB installed)">
-  <!ENTITY seamonkey-time          "6.9 SBU (with parallelism=8)">
+  <!ENTITY seamonkey-md5sum        "1b506ff751f39b2480ba4e16afb86d6d">
+  <!ENTITY seamonkey-size          "237 MB">
+  <!ENTITY seamonkey-buildsize     "4.4 GB (150 MB installed)">
+  <!ENTITY seamonkey-time          "6.8 SBU (with parallelism=8)">
 ]>
 
 <sect1 id="seamonkey" xreflabel="seamonkey-&seamonkey-version;">
@@ -38,7 +38,7 @@
       <xref linkend="firefox"/> and <xref linkend="thunderbird"/>.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -83,18 +83,6 @@
           <ulink url="&patch-root;/seamonkey-&seamonkey-version;-cxx17-1.patch"/>
         </para>
       </listitem>
-    <!--
-      <listitem>
-        <para>
-          Required Python module:
-          <ulink url="&pymodules-dl;/s/setuptools/setuptools-&setuptools-version;.tar.gz"/>
-        </para>
-        <para>
-          This module has already been installed in LFS, but now we need
-          to rebuild its wheel package for the SeaMonkey build system.
-        </para>
-      </listitem>
-    -->
     </itemizedlist>
 
     <note>
@@ -111,9 +99,8 @@
     <para role="required">
       <xref linkend="cbindgen"/>,
       <xref linkend="gtk3"/>,
-      <xref linkend="nodejs"/>,
+      <xref linkend="libarchive"/>,
       <xref linkend="python311"/>,
-      <xref linkend="unzip"/>,
       <xref linkend="yasm"/>, and
       <xref linkend="zip"/>
     </para>
@@ -143,12 +130,11 @@
     <para role="optional">
       <xref linkend="alsa-lib"/>,
       <xref linkend="dbus-glib"/>,
-      <xref linkend="startup-notification"/>,
+      <xref linkend="nodejs"/>,
       <xref linkend="valgrind"/>,
       <xref linkend="wget"/>,
       <xref linkend="wireless_tools"/>,
-      <ulink url="https://hunspell.sourceforge.net/">Hunspell</ulink>,
-      <ulink url="https://gitlab.gnome.org/Archive/gconf">Gconf</ulink>, and
+      <ulink url="https://hunspell.sourceforge.net/">Hunspell</ulink> and
       <ulink url="https://facebook.github.io/watchman/">Watchman</ulink>
     </para>
 
@@ -163,7 +149,7 @@
       configuration options. A default <filename>mozconfig</filename> file is
       created below. To see the entire list of available configuration options
       (and an abbreviated description of each one), issue
-      <command>./configure --help</command>. You may also wish to review the
+      <command>python3 configure.py --help</command>. You may also wish to review the
       entire file and uncomment any other desired options. Create the file by
       issuing the following command:
     </para>
@@ -181,15 +167,13 @@ ac_add_options --disable-necko-wifi
 
 # Uncomment these lines if you have installed optional dependencies:
 #ac_add_options --enable-system-hunspell
-#ac_add_options --enable-startup-notification
 
 # Uncomment the following option if you have not installed PulseAudio
 #ac_add_options --disable-pulseaudio
 # and uncomment this if you installed alsa-lib instead of PulseAudio
 #ac_add_options --enable-alsa
 
-# Comment out the following option if you have gconf installed
-ac_add_options --disable-gconf
+# Comment out the following option
 
 # Comment out following options if you have not installed
 # recommended dependencies:
@@ -231,7 +215,7 @@ ac_add_options --disable-tests
 
 # The SIMD code relies on the unmaintained packed_simd crate which
 # fails to build with Rustc >= 1.78.0.  We may re-enable it once
-# Mozilla port the code to use std::simd and std::simd is stabilized.
+# Mozilla ports the code to use std::simd and std::simd is stabilized.
 ac_add_options --disable-rust-simd
 
 ac_add_options --enable-strip
@@ -240,11 +224,8 @@ ac_add_options --enable-install-strip
 # You cannot distribute the binary if you do this.
 ac_add_options --enable-official-branding
 
-# The option to use system cairo was removed in 2.53.9.
 ac_add_options --enable-system-ffi
 ac_add_options --enable-system-pixman
-
-ac_add_options --with-system-bz2
 ac_add_options --with-system-jpeg
 ac_add_options --with-system-png
 ac_add_options --with-system-zlib
@@ -259,16 +240,19 @@ EOF</userinput></screen>
 
     <para>
       First, if you are building with system ICU, adapt the line break mapping
-      for ICU-74 or later, and apply a patch to build this package with the
+      for ICU-74 or later, apply a patch to build this package with the
       C++17 standard because the headers of ICU-75 or later require some
-      C++17 features:
+      C++17 features, and adapt the build system to use the correct library
+      with ICU-76 or later:
     </para>
 
 <screen><userinput remap="pre">(for i in {43..47}; do
    sed '/ZWJ/s/$/,CLASS_CHARACTER/' -i intl/lwbrk/LineBreaker.cpp || exit $?
 done) &amp;&amp;
 
-patch -Np1 -i ../seamonkey-&seamonkey-version;-cxx17-1.patch</userinput></screen>
+patch -Np1 -i ../seamonkey-&seamonkey-version;-cxx17-1.patch &amp;&amp;
+
+sed -i 's/icu-i18n/icu-uc &amp;/' js/moz.configure</userinput></screen>
 
     <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1894423 -->
     <para>
@@ -277,7 +261,7 @@ patch -Np1 -i ../seamonkey-&seamonkey-version;-cxx17-1.patch</userinput></screen
       19.1.0 release:
     </para>
 
-<screen><userinput>sed '/ExclusiveData(ExclusiveData&amp;&amp;/,/^ *}/d' \
+<screen><userinput>sed -e '/ExclusiveData(ExclusiveData&amp;&amp;/,/^ *}/d' \
     -i js/src/threading/ExclusiveData.h</userinput></screen>
 
     <para>
@@ -326,7 +310,7 @@ cp -v $(find -name seamonkey.1 | head -n1) /usr/share/man/man1</userinput></scre
       Finally, unset the <envar>PATH_PY311</envar> variable:
     </para>
 
-<screen><userinput>unset $PATH_PY311</userinput></screen>
+<screen><userinput>unset PATH_PY311</userinput></screen>
 
   </sect2>
 

@@ -29,9 +29,9 @@
 <!ENTITY blfs-version  "systemd">
 <!ENTITY patch-version "svn">
 ]]>
-<!ENTITY lfs-appstream-meta-ver  "12.2-rc1">
+<!ENTITY lfs-appstream-meta-ver  "&version;">
 <!ENTITY lfs-appstream-meta-type "development">
-<!ENTITY lfs-appstream-meta-date "2024-08-17">
+<!ENTITY lfs-appstream-meta-date "&pubdate;">
 ]]><!-- End %development -->
 
 <![ %release; [
@@ -98,16 +98,11 @@
 <!ENTITY pymodules-dl         "https://files.pythonhosted.org/packages/source">
 <!ENTITY sourceforge-dl       "https://downloads.sourceforge.net">
 
-<!ENTITY fedora-http-repo     "http://pkgs.fedoraproject.org/repo/pkgs">
-<!ENTITY jaist-ftp-repo       "ftp://ftp.jaist.ac.jp/pub//sourceforge">
-<!ENTITY lxqt-http-repo       "http://downloads.lxqt.org/lxqt">
 <!ENTITY publisher            "Unknown">
 <!ENTITY xorg-download-http   "https://www.x.org/pub/individual">
-<!ENTITY xorg-download-ftp    "ftp://ftp.x.org/pub/individual">
 <!ENTITY pypi                 "https://pypi.python.org/pypi">
-<!ENTITY appstream-glib-url   "http://people.freedesktop.org/~hughsient/appstream-glib/releases">
 <!ENTITY elinks-url           "http://elinks.or.cz">
-<!ENTITY w3m-url              "http://w3m.sourceforge.net/">
+<!ENTITY w3m-url              "https://w3m.sourceforge.net/">
 <!ENTITY sysprof-url          "https://wiki.gnome.org/Apps/Sysprof">
 <!ENTITY man                  "https://man.archlinux.org/man/">
 
@@ -126,8 +121,8 @@
 
 <!-- End LFS versions -->
 
-<!ENTITY blfs-bootscripts-version     "20240913">
-<!ENTITY systemd-units-version        "20240916">
+<!ENTITY blfs-bootscripts-version     "20250225">
+<!ENTITY systemd-units-version        "20241211">
 
 <!ENTITY blfs-wiki                    "https://wiki.&lfs-domainname;/blfs/wiki">
 
@@ -135,13 +130,13 @@
      relates to the version of LFS it will build/work against -->
 
 
-<!ENTITY lfs122_checked  "<note><para>Development versions of BLFS may not build or run
+<!ENTITY lfs123_checked  "<note><para>Development versions of BLFS may not build or run
                           some packages properly if LFS or dependencies have been updated
                           since the most recent stable versions of the books.</para></note>">
-<!--
-<!ENTITY lfs122_checked  "<para>This package is known to build and work properly
-                          using an LFS 12.2 platform.</para>">
--->
+
+<!ENTITY lfs124_checked  "<para>This package is known to build and work properly
+                          using an LFS 12.3 platform.</para>">
+
 
 <!-- End special entities about LFS compatibility -->
 
@@ -201,13 +196,19 @@ export -f as_root</userinput></screen>
           <command>meson configure</command> command will reset this
           option.">
 
+<!-- "Required" may not be true here, but in 2025 we should really just
+     consider SSL required for the Internet.  -->
 <!ENTITY build-use-internet
          "<note><para>An Internet connection is needed for building this
+          package.  The system certificate store may need to be set up with
+          <xref role='required' linkend='make-ca'/> before building this
           package.</para></note>">
 
 <!ENTITY test-use-internet
          "<note><para>An Internet connection is needed for some tests of
-          this package.</para></note>">
+          this package.  The system certificate store may need to be set up
+          with <xref role='optional' linkend='make-ca'/> before testing this
+          package.</para></note>">
 
 <!ENTITY logind
          "<phrase revision='sysv'><xref linkend='elogind'/></phrase>
@@ -216,8 +217,10 @@ export -f as_root</userinput></screen>
 <!ENTITY build-wheel-cmd "pip3 wheel -w dist --no-build-isolation --no-deps --no-cache-dir">
 <!ENTITY build-wheel "<screen><userinput>&build-wheel-cmd; $PWD</userinput></screen>">
 
-<!ENTITY install-wheel "pip3 install --no-index --find-links=dist --no-cache-dir --no-user">
+<!ENTITY install-wheel "pip3 install --no-index --find-links dist --no-user">
 
 <!ENTITY berkeley-db "<ulink url='https://anduin.linuxfromscratch.org/BLFS/bdb/db-5.3.28.tar.gz'>Berkeley DB</ulink> (deprecated)">
 
 <!ENTITY gobject-introspection "<xref linkend='glib2'/> (with GObject Introspection)">
+
+<!ENTITY github-lfs-fork "<note><para>On GitHub we've forked the upstream repository into our own <literal>lfs-book</literal> namespace and recreated a tag for the release.  This is done to ensure the downloaded tarball file name to be correct and consistent (i.e. it shouldn't change when using the browser instead of a tool like <command>wget</command>).  Our tag and the upstream release tag are on the same commit, so we've not introduced any change to the tarball content except the name of its top-level directory (that Git does not track).</para></note>">

@@ -32,7 +32,7 @@
       and use when no users are logged in.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -85,6 +85,8 @@
       <xref linkend="dbus"/>,
       <xref linkend="glib2"/> (GObject Introspection recommended),
       <xref linkend="lcms2"/>,
+      <xref linkend="libgudev"/>,
+      <xref linkend="libgusb"/>,
       <xref linkend="polkit"/>, and
       <!-- Polkit now needed, see #11481 in Trac -->
       <xref linkend="sqlite"/>
@@ -92,11 +94,9 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
-      <xref linkend="libgudev"/>,
-      <xref linkend="libgusb"/>,
+      <phrase revision="sysv"><xref linkend="elogind"/></phrase>
       <phrase revision="systemd" role="runtime"><xref linkend="systemd"/>
-      (runtime),</phrase>
+      (runtime)</phrase>
       and <xref linkend="vala"/>
     </para>
 
@@ -104,9 +104,10 @@
     <para role="optional">
       <xref linkend="gnome-desktop"/> and
       <xref linkend="colord-gtk"/> (to build the example tools),
-      <xref linkend="docbook-utils"/>,
+      <xref linkend="docbook5"/>,
+      <xref linkend="docbook-xsl-ns"/>, and
+      <xref linkend="libxslt"/> (to build the man pages),
       <xref linkend="gtk-doc"/>,
-      <xref linkend="libxslt"/>,
       <xref linkend="sane"/>,
       <ulink url="https://www.argyllcms.com/">ArgyllCMS</ulink>, and
       <ulink url="https://github.com/scop/bash-completion/">Bash Completion</ulink>
@@ -170,6 +171,17 @@ meson setup ..                  \
       -D bash_completion=false  \
       -D docs=false             \
       -D man=false              &amp;&amp;
+ninja</userinput></screen>
+
+    <!-- See https://github.com/hughsie/colord/pull/175 for the sed -->
+    <para>
+      If <xref linkend='docbook5'/>, <xref linkend='docbook-xsl-ns'/>,
+      and <xref linkend='libxslt'/> are installed, build the man pages:
+    </para>
+
+    <screen role='nodump'><userinput>sed -e '/class="manual"/i&lt;refmiscinfo class="source"&gt;colord&lt;/refmiscinfo&gt;' \
+    -i ../man/*.xml &amp;&amp;
+meson configure -D man=true &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -238,14 +250,6 @@ ninja</userinput></screen>
       <parameter>-D docs=false</parameter>: This switch disables building
       of documentation. Omit if you have <xref linkend="gtk-doc"/> available.
     </para>
-
-    <para>
-      <parameter>-D man=false</parameter>: This switch disables building
-      of man pages. Omit if you have <xref linkend="docbook-utils"/>
-      available. Namespaced versions of the docbook-xsl stylesheets
-      are also required.
-    </para>
-
   </sect2>
 
   <sect2 role="content">

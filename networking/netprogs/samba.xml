@@ -6,9 +6,9 @@
 
   <!ENTITY samba-download-http "https://download.samba.org/pub/samba/stable/samba-&samba-version;.tar.gz">
   <!ENTITY samba-download-ftp  " ">
-  <!ENTITY samba-md5sum        "6273347955fd8e35e486dc4489f90bf3">
+  <!ENTITY samba-md5sum        "c3f3d5eb760b27d5d340f81844405673">
   <!ENTITY samba-size          "41 MB">
-  <!ENTITY samba-buildsize     "669 MB (add 64 MB for quicktest)">
+  <!ENTITY samba-buildsize     "691 MB (add 64 MB for quicktest)">
   <!ENTITY samba-time          "2.1 SBU (using parallelism=4; add 0.4 SBU for quicktest)">
 ]>
 
@@ -34,7 +34,7 @@
       nameserver (which among other things provides LAN browsing support).
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,13 +69,22 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Optional patch (Required for running the test suite):
+          <ulink url="&patch-root;/samba-&samba-version;-testsuite_linux_6_13-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+-->
     <bridgehead renderas="sect3">Samba Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="gnutls"/>,
-      <xref linkend="jansson"/>,
       <xref linkend="libtirpc"/>,
       <xref linkend="perl-parse-yapp"/>, and
       <xref linkend="rpcsvc-proto"/>
@@ -88,9 +97,11 @@
       <xref linkend="fuse3"/>,
       <xref linkend="gpgme"/>,
       <xref linkend="icu"/>,
+      <xref linkend="jansson"/>,
       <xref linkend="libtasn1"/>,
       <xref linkend="libxslt"/> (for documentation),
       <xref linkend="linux-pam"/>,
+      <xref linkend="lmdb"/>,
       <xref linkend="mitkrb"/>, and
       <xref linkend="openldap"/>
     </para>
@@ -110,11 +121,10 @@
       <xref linkend="libgcrypt"/>,
       <xref linkend="libnsl"/>,
       <xref linkend="libunwind"/>,
-      <xref linkend="lmdb"/>,
       <xref linkend="markdown"/>,
       <xref linkend="nss"/>,
       <xref linkend="popt"/>,
-      <xref linkend="talloc"/> (included),
+      <xref linkend="talloc"/> (used by the test suite),
       <xref linkend="vala"/>,
       <xref linkend="valgrind"/> (optionally used by the test suite),
       <xref linkend="xfsprogs"/>,
@@ -161,7 +171,7 @@
       for some Python modules out of the scope of BLFS:
     </para>
 
-<screen><userinput remap="pre">python3 -m venv pyvenv &amp;&amp;
+<screen><userinput remap="pre">python3 -m venv --system-site-packages pyvenv         &amp;&amp;
 ./pyvenv/bin/pip3 install cryptography pyasn1 iso8601</userinput></screen>
 
     <para>

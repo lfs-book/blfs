@@ -6,13 +6,14 @@
 
   <!ENTITY poppler-download-http "https://poppler.freedesktop.org/poppler-&poppler-version;.tar.xz">
   <!ENTITY poppler-download-ftp  " ">
-  <!ENTITY poppler-md5sum        "c4a92a7ee9cd8137c50273bcc5252646">
-  <!ENTITY poppler-size          "1.8 MB">
-  <!ENTITY poppler-buildsize     "76 MB (with Qt6 library; add 13 MB for tests)">
-  <!ENTITY poppler-time          "0.9 SBU (with parallelism=4, tests, and Qt6 library)">
+  <!ENTITY poppler-md5sum        "ece775bee0a0a26cc1e325291308feac">
+  <!ENTITY poppler-size          "1.9 MB">
+  <!ENTITY poppler-buildsize     "77 MB (with Qt6 library and tests)">
+  <!ENTITY poppler-time          "1.2 SBU (with parallelism=4, tests, and Qt6 library)">
   <!-- For poppler 24.05.0 All 65 tests passed in 1.8 seconds -->
   <!-- For poppler 24.06.0 One test, check_qt6_signature_basics, out of 65 tests 
        passed in 42 seconds -->
+  <!-- For poppler 25.02.0 All 65 tests passed in 3.9 seconds -->
 
   <!ENTITY poppler-data-version       "0.4.12">
 
@@ -42,7 +43,7 @@
       useful for providing PDF rendering functionality as a shared library.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -154,16 +155,7 @@
 
   <sect2 role="installation">
     <title>Installation of Poppler</title>
-<!--
-    <para>
-      First, conditionalize C++20 only code to fix non C++20 builds that 
-      don't use the affected methods.
-    </para>
 
-<screen><userinput>sed -e '/::starts/i #if __cplusplus >= 202002L'\
-    -e '/::ends/a #endif'                      \
-    -i goo/GooString.h</userinput></screen>
--->
     <para>
       Now, install <application>Poppler</application> by running the following
       commands:
@@ -186,7 +178,6 @@ ninja</userinput></screen>
       them is:
 <command>git clone --depth 1 https://gitlab.freedesktop.org/poppler/test.git testfiles</command>.
       Then issue: <command>LC_ALL=en_US.UTF-8 ninja test</command>.
-      One subtest of check_qt6_signature_basics is known to fail.
     </para>
 
     <para>
@@ -260,7 +251,7 @@ cd poppler-data-&poppler-data-version;</userinput></screen>
     <para>
       <option>-D ENABLE_BOOST=OFF</option>: Use this parameter if you have
       not installed <application>boost</application> (the Splash backend for
-      Qt5 recommends boost).
+      Qt6 recommends boost).
     </para>
 
     <para>

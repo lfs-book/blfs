@@ -6,9 +6,9 @@
 
   <!ENTITY sysstat-download-http "https://sysstat.github.io/sysstat-packages/sysstat-&sysstat-version;.tar.xz">
   <!ENTITY sysstat-download-ftp  " ">
-  <!ENTITY sysstat-md5sum        "16fd81728fec899f22155fdfcebece97">
-  <!ENTITY sysstat-size          "900 KB">
-  <!ENTITY sysstat-buildsize     "29 MB">
+  <!ENTITY sysstat-md5sum        "2643a0734d0d3c6dc48f04372a7bf59c">
+  <!ENTITY sysstat-size          "912 KB">
+  <!ENTITY sysstat-buildsize     "31 MB">
   <!ENTITY sysstat-time          "0.1 SBU">
 ]>
 
@@ -33,7 +33,7 @@
       cron to collect and historize performance and activity data.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,9 +69,9 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Sysstat Dependencies</bridgehead>
+    <bridgehead renderas="sect3" revision="sysv">Sysstat Dependencies</bridgehead>
 
-    <para role="recommended">
+    <para role="recommended" revision="sysv">
       There are no build-time requirements for this package; however,
       it is designed to be controlled by a cron daemon such as
       <xref linkend="fcron" role="runtime"/>.
@@ -105,8 +105,8 @@ make</userinput></screen>
 <screen role="root"><userinput>make install</userinput></screen>
 
     <para revision="systemd">
-      Install the systemd unit by running the following commands as the
-      <systemitem class="username">root</systemitem> user:
+      Install the systemd units and timers by running the following commands as
+      the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root" revision="systemd"><userinput>install -v -m644 sysstat.service /usr/lib/systemd/system/sysstat.service                      &amp;&amp;
@@ -118,7 +118,7 @@ install -v -m644 cron/sysstat-summary.service /usr/lib/systemd/system/sysstat-su
 install -v -m644 cron/sysstat-summary.timer /usr/lib/systemd/system/sysstat-summary.timer</userinput></screen>
 
     <para revision="systemd">
-      Fix the systemd unit by running the following command as the
+      Fix one of the systemd units by running the following command as the
       <systemitem class="username">root</systemitem> user:
     </para>
 
@@ -184,7 +184,7 @@ install -v -m644 cron/sysstat-summary.timer /usr/lib/systemd/system/sysstat-summ
 
     </sect3>
 
-    <sect3>
+    <sect3 revision="sysv">
      <title>Cron Information</title>
 
       <para>
@@ -228,9 +228,9 @@ install -v -m644 cron/sysstat-summary.timer /usr/lib/systemd/system/sysstat-summ
       </indexterm>
 
       <para revision="sysv">
-        At system startup, a LINUX RESTART message must be
-        inserted in the daily data file to reinitialize the kernel counters.
-        This can be automated by installing the
+        At system startup, a LINUX RESTART message must be inserted in the
+        daily data file to reinitialize the kernel counters. This can be
+        automated by installing the
         <filename>/etc/rc.d/init.d/sysstat</filename> init script included in
         the <xref linkend="bootscripts"/> package using the following command
         as the <systemitem class="username">root</systemitem> user:
@@ -239,15 +239,21 @@ install -v -m644 cron/sysstat-summary.timer /usr/lib/systemd/system/sysstat-summ
 <screen role="root" revision="sysv"><userinput>make install-sysstat</userinput></screen>
 
       <para revision="systemd">
-        At system startup, a LINUX RESTART message must
-        be inserted in the daily data file to reinitialize the kernel counters.
-        This can be automated by enabling the previously installed systemd unit
+        At system startup, a LINUX RESTART message must be inserted in the
+        daily data file to reinitialize the kernel counters. This can be
+        automated by enabling the previously installed systemd unit
         by running the following command as the
         <systemitem class="username">root</systemitem> user:
       </para>
 
 <screen role="root" revision="systemd"><userinput>systemctl enable sysstat</userinput></screen>
 
+      <para revision="systemd">
+        In addition to placing the LINUX RESTART message into the daily data
+        file, there are systemd timers installed which will automatically
+        capture the required history information for the <command>sar</command>
+        command.
+      </para>
     </sect3>
 
   </sect2>

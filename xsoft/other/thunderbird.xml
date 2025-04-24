@@ -6,10 +6,10 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;esr/source/thunderbird-&thunderbird-version;esr.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "f4ae4efb5640e6d7dec15305f6426915">
-  <!ENTITY thunderbird-size          "641 MB">
-  <!ENTITY thunderbird-buildsize     "7.8 GB (256 MB installed)">
-  <!ENTITY thunderbird-time          "15 SBU (on a 8-core machine)">
+  <!ENTITY thunderbird-md5sum        "046c4c2b4cb945eee04fc27bc386c207">
+  <!ENTITY thunderbird-size          "643 MB">
+  <!ENTITY thunderbird-buildsize     "7.8 GB (252 MB installed)">
+  <!ENTITY thunderbird-time          "13 SBU (on a 8-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
 
@@ -36,7 +36,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,20 +72,19 @@
       </listitem>
     </itemizedlist>
 
-
     <bridgehead renderas="sect3">Thunderbird Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="cbindgen"/>,
       <xref linkend="gtk3"/>,
+      <xref linkend="libarchive"/>,
       <xref linkend="llvm"/> including clang, <!-- used by default if found -->
       <xref linkend="nodejs"/>,
       <xref linkend="pulseaudio"/> (or <xref linkend="alsa-lib"/> if you edit
       the mozconfig; although it is now deprecated by mozilla),
-      <xref linkend="python3"/> (rebuilt with the sqlite module),
-      <xref linkend="startup-notification"/>, and
-      <xref linkend="unzip"/>
+      <xref linkend="python3"/> (rebuilt with the sqlite module), and
+      <xref linkend="startup-notification"/>
       <!--<xref linkend="yasm"/>-->
     </para>
 
@@ -134,49 +133,6 @@
         continuing.
       </para>
     </note>
-
- <!-- Restore after Python 3.12 is usable for this package again
-    <para>
-      The building system ships several internal copies of the Python 3
-      modules <application>setuptools</application> and
-      <filename>six.py</filename>.  The shipped copies are too old
-      to work well with Python 3.12 or later.  Replace them with the
-      symlinks to the LFS <application>setuptools</application> package and
-      <xref linkend='six'/> already installed on the system, and adapt the
-      building system for these updated Python modules.  We also need to
-      rewrite the code based on the <filename>imp</filename> module removed
-      in Python 3.12 and later using the <filename>importlib</filename>
-      module:
-    </para>
-
-<screen><userinput>(for i in $(find -name six.py); do
-   ln -sfv /usr/lib/python&python3-majorver;/site-packages/six.py $i
-   [ $? = 0 ] || exit $?
- done) &amp;&amp;
-
-sed '/ConfigParser/s/Safe//'                          \
-    -i testing/mozbase/mozprofile/mozprofile/prefs.py &amp;&amp;
-
-(for i in setuptools distutils-precedence.pth  \
-          pkg_resources _distutils_hack; do
-   rm -rf third_party/python/setuptools/$i     &amp;&amp;
-   ln -sv /usr/lib/python&python3-majorver;/site-packages/$i \
-          third_party/python/setuptools
-   [ $? = 0 ] || exit $?
- done) &amp;&amp;
-
-sed 's/distutils/setuptools._&amp;/'            \
-    -i python/mozbuild/mozbuild/nodeutil.py &amp;&amp;
-
-sed -e '/^import/s/imp$/importlib.util/'             \
-    -e 's/imp.new_module/__import__/'                \
-    -e "s/imp.load_source\(.*\)/spec =               \
-        importlib.util.spec_from_file_location\1;    \
-        mod = importlib.util.module_from_spec(spec); \
-        spec.loader.exec_module(mod)/" -i python/mach/mach/main.py &amp;&amp;
-sed '/import imp/d' -i netwerk/dns/prepare_tlds.py
-</userinput></screen>
--->
 
     <para>
       The configuration of <application>Thunderbird</application> is
@@ -236,17 +192,6 @@ ac_add_options --with-system-zlib
 # and was reported to seriously slow the build. Disable it.
 ac_add_options --without-wasm-sandboxed-libraries</literal>
 EOF</userinput></screen>
-
-    <!-- https://phabricator.services.mozilla.com/D219025 -->
-<!--
-    <para>
-      Adapt two files for compatibility with cbindgen-0.27.0 or later:
-    </para>
-
-    <screen><userinput>sed 's/input.try/&amp;_parse/' \
-    -i servo/components/style_traits/values.rs &amp;&amp;
-sed '0,/"Keyframe"/{//d}' -i servo/ports/geckolib/cbindgen.toml</userinput></screen>
--->
 
     <para>
       Now invoke the Python <command>mach</command> script to compile

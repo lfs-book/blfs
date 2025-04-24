@@ -6,10 +6,10 @@
 
   <!ENTITY gpgme-download-http "&gnupg-http;/gpgme/gpgme-&gpgme-version;.tar.bz2">
   <!ENTITY gpgme-download-ftp  " ">
-  <!ENTITY gpgme-md5sum        "01a8c05b409847e87daf0543e91f8c37">
+  <!ENTITY gpgme-md5sum        "2e0cc1df9f3da8c2a7d7c9dc33b7f0bf">
   <!ENTITY gpgme-size          "1.8 MB">
-  <!ENTITY gpgme-buildsize     "260 MB (with tests)">
-  <!ENTITY gpgme-time          "1.0 SBU (with all bindings and tests; with parallelism=4)">
+  <!ENTITY gpgme-buildsize     "404 MB (with tests)">
+  <!ENTITY gpgme-time          "1.5 SBU (with all bindings and tests; with parallelism=4)">
 ]>
 
 <sect1 id="gpgme" xreflabel="GPGME-&gpgme-version;">
@@ -35,7 +35,7 @@
       signature verification and key management.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -94,7 +94,8 @@
       <xref linkend="graphviz"/> (for API documentation),
       <xref linkend="gnupg2"/> (required if Qt or SWIG are installed;
         used during the test suite),
-      <xref linkend="clisp"/>, and
+      <xref linkend="clisp"/>,
+      <xref linkend="qt6"/>, and
       <xref linkend="swig"/> (for language bindings)
     </para>
 
@@ -102,6 +103,20 @@
 
   <sect2 role="installation">
     <title>Installation of GPGME</title>
+
+<!-- No longer needed with 1.24.2
+    <para>
+      First, allow the build system to detect Python-&python3-majorver;.
+      Also, prevent the build system from attaching the
+      <literal>-unknown</literal> suffix to the version string when it's
+      regenerated outside of a Git repository. After this, regenerate the build
+      system:
+    </para>
+
+<screen><userinput>sed 's/\[3.12\]/&amp;,[&python3-majorver;]/' -i configure.ac &amp;&amp;
+sed 's/-unknown//' -i autogen.sh           &amp;&amp;
+autoconf</userinput></screen>
+-->
 
     <para>
       Install <application>GPGME</application> by running the following
@@ -130,9 +145,7 @@ fi</userinput></screen>
 
     <para>
       To test the results, you should have <xref linkend="gnupg2"/> installed
-      and remove the <option>--disable-gpg-test</option> above. If
-      <xref linkend='swig'/> is installed, it's necessary to adapt the
-      test suite to use the Python 3 binding just built as a wheel as well.
+      and remove the <option>--disable-gpg-test</option> above. 
       Issue:
     </para>
 
@@ -146,11 +159,6 @@ fi &amp;&amp;
 
 make -k check PYTHONS= PYTHON=$PWD/testenv/bin/python3</userinput></screen>
 
-    <!-- https://dev.gnupg.org/T6778 -->
-    <para>
-      One test named <filename>t-quick-key-manipulation.py</filename> is
-      known to fail.
-    </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:

@@ -6,8 +6,8 @@
 
   <!ENTITY subversion-download-http "https://archive.apache.org/dist/subversion/subversion-&subversion-version;.tar.bz2">
   <!ENTITY subversion-download-ftp  " ">
-  <!ENTITY subversion-md5sum        "19756a5ceb32a022698a66e48616ef6b">
-  <!ENTITY subversion-size          "8.2 MB">
+  <!ENTITY subversion-md5sum        "af6001dc7af2f1242a4f72e8a5c565d2">
+  <!ENTITY subversion-size          "8.3 MB">
   <!-- for 1.12.0                    1.12.2         1.13.0
        make javahl: 0.5 SBU  28 MB; not avail
        swig-pl:     0.8      42 MB; 0.7 SBU  43 MB; 0.6 SBU 44 MB
@@ -15,13 +15,12 @@
        swig-rb:     0.4      22 MB; 0.4      21 MB; 0.3     21 MB
        docs:        2 secs   26 MB; 2 sec    27 MB; 2 sec   26 MB
        tests       46 min  1104 MB  46:52  1103 MB  47 min   -->
-  <!ENTITY subversion-buildsize     "193 MB (add 189 MB for bindings, 54 MB for docs, 1.3 GB for tests)">
-  <!ENTITY subversion-time          "0.5 SBU (Using parallelism=4; add 2.0 SBU for bindings, 30 SBU for tests)">
+  <!ENTITY subversion-buildsize     "260 MB (add 189 MB for bindings, 54 MB for docs, 1.3 GB for tests)">
+  <!ENTITY subversion-time          "1.5 SBU (Using parallelism=4; add 2.0 SBU for bindings, 30 SBU for tests)">
 ]>
 
 <sect1 id="subversion" xreflabel="Subversion-&subversion-version;">
   <?dbhtml filename="subversion.html"?>
-
 
   <title>Subversion-&subversion-version;</title>
 
@@ -43,7 +42,7 @@
       a repository is covered at <xref linkend="svnserver"/>.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -79,16 +78,6 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          Required patch:
-          <ulink url="&patch-root;/subversion-&subversion-version;-upstream_fixes-1.patch"/>
-        </para>
-      </listitem>
-    </itemizedlist>
-
     <bridgehead renderas="sect3">Subversion Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -103,17 +92,6 @@
       <xref linkend="swig"/> (for regenerating the build system)
     </para>
 
-<!-- support for berkeley db is deprecated since 1.8
-    <note>
-      <para>
-        If you require the <application>Berkeley DB</application> back-end hooks
-        in <application>Subversion</application> to build or support BDB based
-        repositories, you must have <application>APR-util</application> linked to
-        the <application>Berkeley DB</application> library.
-      </para>
-    </note>
--->
-
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="apache"/>,
@@ -123,12 +101,10 @@
       <xref linkend="doxygen"/> (for generating HTML documentation),
       <xref linkend="gnome-keyring"/>,
       <xref linkend="libsecret"/>,
-<!--      <xref linkend="kdelibs"/> (for <ulink url="http://utils.kde.org/projects/kwalletmanager/">KWallet</ulink> support), -->
       <xref linkend="py3c"/> (for the python bindings, and tests),
       <xref linkend="python3"/> (with sqlite support for the tests),
       <xref linkend="ruby"/>,
-      <!--<xref linkend="swig"/> (for building Perl, Python and Ruby bindings),-->
-      and
+      <xref linkend="swig"/>, and
       <ulink url="https://git.netsurf-browser.org/libutf8proc.git/">UTF8proc</ulink>
     </para>
 
@@ -145,47 +121,15 @@
 
   <sect2 role="installation">
     <title>Installation of Subversion</title>
-<!--
-      <note>
-        <para>
-          This package may fail during the make phase when using multiple
-          processors.  If this occurs try continuing with
-          <emphasis>make -j1</emphasis> or redo the entire build process with
-          fresh sources using <emphasis>-j1</emphasis>.
-        </para>
-      </note>
--->
-
-    <para>
-      First, adapt some Python scripts to use python3:
-    </para>
-
-<screen><userinput remap="pre">grep -rl '^#!.*python$' | xargs sed -i '1s/python/&amp;3/'</userinput></screen>
-
-    <para>
-      Next, fix building this package with GCC 14:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../subversion-&subversion-version;-upstream_fixes-1.patch</userinput></screen>
-
-    <para>
-      After modifying the SWIG bindings like we did with the patch, the build
-      system must be regenerated so the bindings pick up the changes:
-    </para>
-
-<screen><userinput remap="pre">touch build/generator/swig/*.py &amp;&amp;
-mv -v build-outputs.mk{,.old}   &amp;&amp;
-./autogen.sh --release</userinput></screen>
 
     <para>
       Install <application>Subversion</application> by running the following
       commands:
     </para>
 
-<screen><userinput>PYTHON=python3                        \
-./configure --prefix=/usr             \
-            --disable-static          \
-            --with-apache-libexecdir  \
+<screen><userinput>./configure --prefix=/usr            \
+            --disable-static         \
+            --with-apache-libexecdir \
             --with-utf8proc=internal &amp;&amp;
 make</userinput></screen>
 
@@ -207,6 +151,7 @@ make</userinput></screen>
       included in <xref linkend="apache-ant"/> and must be downloaded
       separately. To build the Java bindings, issue the following command:
     </para>
+
     <para>
       <screen><command>make -j1 javahl</command></screen>
     </para>
@@ -216,21 +161,20 @@ make</userinput></screen>
       <application>Python</application>, or <application>Ruby</application>
       bindings, issue any of the following command:
     </para>
-    <para>
-      <screen><command>make swig-pl</command> # for <application>Perl</application>
+
+<screen><command>make swig-pl</command> # for <application>Perl</application>
 <command>make swig-py \
      swig_pydir=/usr/lib/python&python3-majorver;/site-packages/libsvn \
      swig_pydir_extra=/usr/lib/python&python3-majorver;/site-packages/svn</command> # for <application>Python</application>
 <command>make swig-rb</command> # for <application>Ruby</application></screen>
-    </para>
 
     <para>
-      To test the results, issue: <command>make check</command>. Four tests in
+      To test the results, issue: <command>make check</command>. <!-- Four tests in
       the <filename>commit_tests.py</filename>,
       <filename>prop_tests.py</filename>, and
       <filename>update_tests.py</filename> suites are known to fail. Due to
       changes in Python-3.12, you can expect to see around 200 Syntax Warnings
-      during the test suite due to invalid escape sequences.
+      during the test suite due to invalid escape sequences.-->
     </para>
 
     <para>

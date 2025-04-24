@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY ncftp-download-http "https://www.ncftp.com/downloads/ncftp/ncftp-&ncftp-version;-src.tar.xz">
+  <!ENTITY ncftp-download-http "https://www.ncftp.com/public_ftp/ncftp/ncftp-&ncftp-version;-src.tar.gz">
   <!ENTITY ncftp-download-ftp  " ">
-  <!ENTITY ncftp-md5sum        "bbcb048d2412f4d62bc798818e703680">
-  <!ENTITY ncftp-size          "416 KB">
-  <!ENTITY ncftp-buildsize     "6.9 MB">
+  <!ENTITY ncftp-md5sum        "8d2d4cf6d28bfff3bcfac383a249f792">
+  <!ENTITY ncftp-size          "624 KB">
+  <!ENTITY ncftp-buildsize     "13 MB">
   <!ENTITY ncftp-time          "0.2 SBU">
 ]>
 
@@ -32,7 +32,7 @@
       <command>ftp</command> program.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -89,7 +89,7 @@
 
   <sect2 role="installation">
     <title>Installation of NcFTP</title>
-
+<!--
     <para>
       There are two ways to build <application>NcFTP</application>.  The first
       (and optimal) way builds most of the functionality as a shared library
@@ -111,10 +111,9 @@
     </para>
 
 <screen><userinput remap="pre">sed -i 's/def HAVE_STDLIB_H/ 1/;s/extern select/extern int select/' configure</userinput></screen>
-
+-->
     <para>
-      To install <application>NcFTP</application> using the
-      first (and optimal) method, run the following commands:
+      To install <application>NcFTP</application>, run the following commands:
     </para>
 
 <screen><userinput>CC=/usr/bin/gcc \
@@ -132,14 +131,14 @@ make</userinput></screen>
 
 <screen role='root'><userinput>make -C libncftp soinstall &amp;&amp;
 make install</userinput></screen>
-
+<!--
     <para>
       To install <application>NcFTP</application> using the
       second method (with the <filename class="libraryfile">libncftp</filename>
       functionality linked in statically) run the following commands:
     </para>
 
-<screen role="nodump"><userinput>./configure --prefix=/usr --sysconfdir=/etc &amp;&amp;
+<screen role="nodump"><userinput>./configure - -prefix=/usr - -sysconfdir=/etc &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -151,7 +150,7 @@ make</userinput></screen>
     </para>
 
 <screen role="nodump"><userinput>make install</userinput></screen>
-
+-->
   </sect2>
 
   <sect2 role="commands">
@@ -160,12 +159,12 @@ make</userinput></screen>
     <para>
       <envar>CC=/usr/bin/gcc</envar>. This environment variable ensures
       that <command>gcc</command> is used if <xref linkend="llvm"/> is
-      installed.  The build procedure is broken if <command>gcc</command>
-      is not used.
+      installed.  <!--The build procedure is broken if <command>gcc</command>
+      is not used.-->
     </para>
 
     <para>
-      <command>make -C ... &amp;&amp; make -C ...</command>:
+      <command>make -C ... &amp;&amp; make ...</command>:
       These commands make and install the dynamic library <filename
       class="libraryfile">libncftp</filename> which is then used to link
       against when compiling the main program.
@@ -234,7 +233,7 @@ make</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>ncftp, ncftpbatch, ncftpbookmarks, ncftpget,
+        <seg>ncftp, ncftpbatch, ncftpget,
         ncftpls, ncftpput, and ncftpspooler</seg>
         <seg>libncftp.so</seg>
         <seg>None</seg>
@@ -269,7 +268,7 @@ make</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
       <varlistentry id="ncftpbookmarks">
         <term><command>ncftpbookmarks</command></term>
         <listitem>
@@ -282,7 +281,7 @@ make</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
       <varlistentry id="ncftpget">
         <term><command>ncftpget</command></term>
         <listitem>

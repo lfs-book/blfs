@@ -6,10 +6,10 @@
 
   <!ENTITY fetchmail-download-http "&sourceforge-dl;/fetchmail/fetchmail-&fetchmail-version;.tar.xz">
   <!ENTITY fetchmail-download-ftp  " ">
-  <!ENTITY fetchmail-md5sum        "33a916a14b91ba932b970fe02d28f058">
-  <!ENTITY fetchmail-size          "1.2 MB">
-  <!ENTITY fetchmail-buildsize     "12 MB including tests">
-  <!ENTITY fetchmail-time          "0.1 SBU including tests">
+  <!ENTITY fetchmail-md5sum        "c2fa268271f44f4991e6a87804c90211">
+  <!ENTITY fetchmail-size          "1.1 MB">
+  <!ENTITY fetchmail-buildsize     "11 MB including tests">
+  <!ENTITY fetchmail-time          "0.1 SBU (including tests)">
 ]>
 
 <sect1 id="fetchmail" xreflabel="fetchmail-&fetchmail-version;">
@@ -32,7 +32,7 @@
       then be read by normal mail user agents.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -107,25 +107,22 @@
       commands:
     </para>
 
-<screen><userinput>PYTHON=python3 \
-./configure --prefix=/usr \
-            --enable-fallback=procmail &amp;&amp;
+<screen><userinput>./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
       To test the results, issue: <command>make check</command>.
     </para>
 
-
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role='root'><userinput>make install                                  &amp;&amp;
+<screen role='root'><userinput>make install &amp;&amp;
 chown -v fetchmail:nogroup /usr/bin/fetchmail</userinput></screen>
 
   </sect2>
-
+<!--
   <sect2 role="commands">
     <title>Command Explanations</title>
 
@@ -137,14 +134,14 @@ chown -v fetchmail:nogroup /usr/bin/fetchmail</userinput></screen>
     </para>
 
     <para>
-      <parameter>--enable-fallback=procmail</parameter>: This tells
+      <parameter>- -enable-fallback=procmail</parameter>: This tells
       <application>Fetchmail</application> to hand incoming mail to
       <application>Procmail</application> for delivery, if the port 25 mail
       server is not present or not responding.
     </para>
 
   </sect2>
-
+-->
   <sect2 role="configuration">
     <title>Configuring Fetchmail</title>
 
@@ -257,18 +254,8 @@ chmod -v 0600 ~/.fetchmailrc</userinput></screen>
             is intended to assist you in setting up and editing a
             <filename>~/.fetchmailrc</filename> configuration file, by using
             a <application>Tk</application> GUI interface. It is written for
-            <application>Python</application> and the Tkinter module but is
-            labelled with a WARNING that it needs to be updated
-            for fetchmail 6.4's SSL options and other recent new options
+            <application>Python</application> and uses the Tkinter module
           </para>
-          <!-- keep this description commented but fetchmailconf
-               has been updated in the last months (June 2020). It can use
-               Python 3, with the help of the "past" module.
-          <para>
-            is an unmaintained GUI command to assist in creating a
-            <filename>~/.fetchmailrc</filename> configuration file and
-            should not be used.
-          </para>-->
           <indexterm zone="fetchmail fetchmailconf">
             <primary sortas="b-fetchmailconf">fetchmailconf</primary>
           </indexterm>

@@ -5,12 +5,12 @@
   %general-entities;
 
   <!-- Also update the download, md5, size entities in libxml2py2.xml -->
-  <!ENTITY libxml2-download-http "https://download.gnome.org/sources/libxml2/2.13/libxml2-&libxml2-version;.tar.xz">
+  <!ENTITY libxml2-download-http "https://download.gnome.org/sources/libxml2/2.14/libxml2-&libxml2-version;.tar.xz">
 <!--  <!ENTITY libxml2-download-http "http://xmlsoft.org/sources/libxml2-&libxml2-version;.tar.xz">-->
   <!ENTITY libxml2-download-ftp  " ">
-  <!ENTITY libxml2-md5sum        "1c5f9cfeee665eb6f1ddc186aba4cf2f">
-  <!ENTITY libxml2-size          "2.4 MB">
-  <!ENTITY libxml2-buildsize     "111 MB (with tests)">
+  <!ENTITY libxml2-md5sum        "7119ed27bed2d6542b8b4baeac6d53be">
+  <!ENTITY libxml2-size          "2.2 MB">
+  <!ENTITY libxml2-buildsize     "95 MB (with tests)">
   <!ENTITY libxml2-time          "0.4 SBU (Using parallelism=4; with tests)">
   <!ENTITY testsuite-version     "20130923">
 ]>
@@ -33,7 +33,7 @@
       and utilities used for parsing XML files.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -71,14 +71,14 @@
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
-      <!-- 2.13.4:  all changed appied
+<!--     
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/libxml2-&libxml2-version;-upstream_fix-2.patch"/>
+          <ulink url="&patch-root;/libxml2-&libxml2-version;-fix_parse_blanks-1.patch"/>
         </para>
       </listitem>
-      -->
+-->
       <listitem>
         <para>
           Optional Test Suite:
@@ -103,28 +103,24 @@
 
   <sect2 role="installation">
     <title>Installation of libxml2</title>
-
 <!--
     <para>
-      At first, fix an issue causing <command>xmlcatalog</command> to emit
-      bogus warnings when a new catalog file is created.  The patch will
-      modify the building system, so regenerate the building scripts after
-      applying the patch:
+      First, apply a patch from upstream:
     </para>
 
-    <screen><userinput>patch -Np1 -i ../libxml2-&libxml2-version;-upstream_fix-2.patch</userinput></screen>
+<screen><userinput>patch -Np1 -i ../libxml2-&libxml2-version;-fix_parse_blanks-1.patch</userinput></screen>
 -->
-
     <para>
       Install <application>libxml2</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr           \
-            --sysconfdir=/etc       \
-            --disable-static        \
-            --with-history          \
-            --with-icu              \
+<screen><userinput>
+./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --disable-static  \
+            --with-history    \
+            --with-icu        \
             PYTHON=/usr/bin/python3 \
             --docdir=/usr/share/doc/libxml2-&libxml2-version; &amp;&amp;
 make</userinput></screen>
@@ -200,27 +196,6 @@ sed '/libs=/s/xml2.*/xml2"/' -i /usr/bin/xml2-config</userinput></screen>
       <parameter>PYTHON=/usr/bin/python3</parameter>: Allows building
       the libxml2 module with Python3 instead of Python2.
     </para>
-
-<!--
-    <para>
-      <option>- -with-icu</option>: Add this switch if you have built
-      <xref linkend="icu"/>, for better unicode support.
-    </para>
-
-    <note>
-      <para>
-        If the <option>- -with-icu</option> switch is used, the BLFS editors
-        recommend removing unneeded references to the ICU libraries. This
-        will prevent many packages that use libxml2 from unnecessarily linking
-        to the ICU libraries.  This, in turn, will prevent the need for
-        rebuilding many packages when upgrading ICU to a new major version.
-        After installing libxml2, as the &root; user, issue:
-      </para>
-
-<screen role="nodump"><userinput>rm -vf /usr/lib/libxml2.la &amp;&amp;
-sed '/libs=/s/xml2.*/xml2"/' -i /usr/bin/xml2-config</userinput></screen>
-    </note>
--->
 
   </sect2>
 

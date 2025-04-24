@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY gnome-keyring-download-http
-           "&gnome-download-http;/gnome-keyring/&gnome-46;/gnome-keyring-&gnome-keyring-version;.tar.xz">
+           "&gnome-download-http;/gnome-keyring/&gnome-48;/gnome-keyring-&gnome-keyring-version;.tar.xz">
   <!ENTITY gnome-keyring-download-ftp  " ">
-  <!ENTITY gnome-keyring-md5sum        "7a8ab16a87f03ca05fc176925fcce649">
-  <!ENTITY gnome-keyring-size          "1.3 MB">
-  <!ENTITY gnome-keyring-buildsize     "129 MB">
+  <!ENTITY gnome-keyring-md5sum        "d19a99eadeb5d92774b7960c51d1c5dc">
+  <!ENTITY gnome-keyring-size          "752 KB">
+  <!ENTITY gnome-keyring-buildsize     "44 MB">
   <!ENTITY gnome-keyring-time          "0.2 SBU (Using parallelism=4; add 0.2 SBU for tests)">
 ]>
 
@@ -31,7 +31,7 @@
       daemon that keeps passwords and other secrets for users.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -84,10 +84,12 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <ulink url="https://people.redhat.com/sgrubb/libcap-ng/">libcap-ng</ulink>
+<!-- Meson doesn't mention any of these
       <xref linkend="gnupg2"/>,
       <xref linkend="valgrind"/>,
       <ulink url="https://github.com/linux-test-project/lcov">LCOV</ulink>, and
-      <ulink url="https://people.redhat.com/sgrubb/libcap-ng/">libcap-ng</ulink>
+-->
     </para>
 
   </sect2>
@@ -95,37 +97,41 @@
   <sect2 role="installation">
     <title>Installation of GNOME Keyring</title>
 
-<!--
-    <para>
-      Regenerate the <command>configure</command> script to make it work
-      with libgcrypt-1.11 or newer:
-    </para>
-
-<screen><userinput>autoreconf</userinput></screen>
--->
-
     <para>
       Install <application>GNOME Keyring</application> by running the
       following commands:
     </para>
 
-<screen><userinput>sed -i 's:"/desktop:"/org:' schema/*.xml &amp;&amp;
+<screen revision='sysv'><userinput>sed -i 's:"/desktop:"/org:' schema/*.xml &amp;&amp;
 
-./configure --prefix=/usr      \
-            --sysconfdir=/etc  \
-            --enable-ssh-agent &amp;&amp;
-make</userinput></screen>
+mkdir build-gkr &amp;&amp;
+cd    build-gkr &amp;&amp;
+
+meson setup ..            \
+      --prefix=/usr       \
+      --buildtype=release \
+      -D systemd=disabled \
+      -D ssh-agent=true   &amp;&amp;
+ninja</userinput></screen>
+
+<screen revision='systemd'><userinput>sed -i 's:"/desktop:"/org:' schema/*.xml &amp;&amp;
+
+mkdir build-gkr &amp;&amp;
+cd    build-gkr &amp;&amp;
+
+meson setup --prefix=/usr --buildtype=release -D ssh-agent=true .. &amp;&amp;
+ninja</userinput></screen>
 
     <para>
       A session bus address is necessary to run the tests. To test the results,
-      issue: <command>make check</command>.
+      issue: <command>ninja test</command>.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -137,9 +143,15 @@ make</userinput></screen>
       deprecated entry in the schema template.
     </para>
 
+    <para revision="sysv">
+      <parameter>-D systemd=disabled</parameter>: This switch prevents
+      a failure due to the build system requiring
+      <application>systemd</application> by default.
+    </para>
+
     <para>
-      <parameter>--enable-ssh-agent</parameter>: This switch enables the SSH
-      agent built in to gnome-keyring instead of the one in GCR. This is done
+      <parameter>-D ssh-agent=true</parameter>: This switch enables the SSH
+      agent built into gnome-keyring instead of the one in GCR. This is done
       due to bugs in gcr which cause the agent to not work correctly.
       <!--https://bugzilla.redhat.com/show_bug.cgi?id=2250704-->
     </para>

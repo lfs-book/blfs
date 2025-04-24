@@ -4,18 +4,18 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY kio-extras-download-http "&kf5apps-download-http;/kio-extras-&kf5apps-version;.tar.xz">
+  <!ENTITY kio-extras-download-http "&kf6apps-download-http;/kio-extras-&kf6apps-version;.tar.xz">
   <!ENTITY kio-extras-download-ftp  " ">
-  <!ENTITY kio-extras-md5sum        "d16ed519ecd148253147c4525f1b9d86">
-  <!ENTITY kio-extras-size          "1.4 MB">
-  <!ENTITY kio-extras-buildsize     "49 MB">
-  <!ENTITY kio-extras-time          "0.4 SBU (using parallelism=4)">
+  <!ENTITY kio-extras-md5sum        "ae2a8b1eb0365c6b50ae2f45cbb3541f">
+  <!ENTITY kio-extras-size          "3.4 MB">
+  <!ENTITY kio-extras-buildsize     "97 MB">
+  <!ENTITY kio-extras-time          "0.5 SBU (using parallelism=4)">
 ]>
 
-<sect1 id="kio-extras" xreflabel="kio-extras-&kf5apps-version;">
+<sect1 id="kio-extras" xreflabel="kio-extras-&kf6apps-version;">
   <?dbhtml filename="kio-extras.html"?>
 
-  <title>kio-extras-&kf5apps-version;</title>
+  <title>kio-extras-&kf6apps-version;</title>
 
   <indexterm zone="kio-extras">
     <primary sortas="a-kio-extras">kio-extras</primary>
@@ -30,7 +30,7 @@
       network access abstractions.
     </para>
 
-    &lfs12x_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,20 +70,28 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="kdsoap"/> and
-      <xref linkend="kf6-frameworks"/>
+      <xref linkend="kf6-frameworks"/>,
+      <xref linkend="kdsoap-ws-discovery-client"/>,
+      <xref linkend="plasma-activities-stats"/>, and
+      <xref linkend="qcoro"/>
     </para>
-<!--
+
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <!-- Recommended because CMake complains without it and it is used for
+      core functionality in plasma-workspace -->
+      <xref linkend="libkexiv2"/>
     </para>
--->
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="libtirpc"/>,
       <xref linkend="samba"/>,
       <xref linkend="taglib"/>,
+      <ulink url="https://github.com/AppImageCommunity/libappimage">libappimage</ulink>,
+      <ulink url="https://libimobiledevice.org/">libimobiledevice</ulink>,
       <ulink url="https://libmtp.sourceforge.net/">libmtp</ulink>,
+      <ulink url="https://github.com/libimobiledevice/libplist">libplist</ulink>,
       <ulink url="https://www.libssh.org/">libssh</ulink>, and
       <ulink url="https://www.openexr.com/">OpenEXR</ulink>
     </para>
@@ -101,7 +109,7 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=$KF5_PREFIX \
+cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
       -D CMAKE_BUILD_TYPE=Release         \
       -D BUILD_TESTING=OFF                \
       -W no-dev .. &amp;&amp;
@@ -132,10 +140,12 @@ make</userinput></screen>
           None
         </seg>
         <seg>
-          libkioarchive.so and 32 plugins
+          libkioarchive6.so and 33 plugins
         </seg>
         <seg>
-          None
+          $KF6_PREFIX/include/KioArchive6,
+          $KF6_PREFIX/lib/cmake/KioArchive6, and
+          $KF6_PREFIX/share/doc/HTML/en/kioworker6
         </seg>
       </seglistitem>
     </segmentedlist>

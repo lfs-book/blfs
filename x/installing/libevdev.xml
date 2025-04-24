@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY libevdev-version "1.13.3">
+  <!ENTITY libevdev-version "1.13.4">
 
   <!ENTITY libevdev-download-http "https://www.freedesktop.org/software/libevdev/libevdev-&libevdev-version;.tar.xz">
   <!ENTITY libevdev-download-ftp  " ">
-  <!ENTITY libevdev-md5sum        "57ee77b7d4c480747e693779bb92fb84">
-  <!ENTITY libevdev-size          "452 KB">
+  <!ENTITY libevdev-md5sum        "2e8a4665e332699ccba7ee54a0dd189a">
+  <!ENTITY libevdev-size          "456 KB">
   <!ENTITY libevdev-buildsize     "6.2 MB (with tests)">
   <!ENTITY libevdev-time          "less than 0.1 SBU (with tests)">
 ]>
@@ -35,7 +35,7 @@
         functions for Xorg input drivers.
       </para>
 
-      &lfs122_checked;
+      &lfs123_checked;
 
       <bridgehead renderas="sect4">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -75,8 +75,10 @@
 
       <bridgehead renderas="sect5">Optional</bridgehead>
       <para role="optional">
-        <xref linkend="doxygen"/> and
-        <xref linkend="valgrind"/> (optional for tests)
+        <xref linkend="doxygen"/>,
+        <xref linkend="valgrind"/> (optional for tests),
+        and <ulink url='https://libcheck.github.io/check/'>check</ulink>
+        (required for tests)
       </para>
 
     </sect3>
@@ -124,9 +126,10 @@ cd    build &amp;&amp;
 meson setup ..                  \
       --prefix=$XORG_PREFIX     \
       --buildtype=release       \
-      -D documentation=disabled &amp;&amp;
+      -D documentation=disabled \
+      -D tests=disabled         &amp;&amp;
 ninja</userinput></screen>
-
+<!--
       <para>
         The regression tests can be run as the <systemitem
         class="username">root</systemitem> user with <command>ninja
@@ -139,12 +142,27 @@ ninja</userinput></screen>
         system will go into Sleep and need to be woken up to finish the test
         suites.
       </para>
+-->
+      <para>
+        The test suite requires <application>Check</application> that we've
+        removed from LFS.
+      </para>
 
       <para>
         Now, as the <systemitem class="username">root</systemitem> user:
       </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
+    </sect3>
+
+    <sect3 role="commands">
+      <title>Command Explanations</title>
+
+      <para>
+        <parameter>-D tests=disabled</parameter>: This allows the package to
+        compile if <application>Check</application> is not installed.
+        We've removed <application>Check</application> from LFS.
+      </para>
     </sect3>
 
     <sect3 role="content">

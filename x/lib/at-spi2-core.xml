@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY at-spi2-core-download-http
-           "&gnome-download-http;/at-spi2-core/2.54/at-spi2-core-&at-spi2-core-version;.tar.xz">
+           "&gnome-download-http;/at-spi2-core/2.56/at-spi2-core-&at-spi2-core-version;.tar.xz">
   <!ENTITY at-spi2-core-download-ftp  " ">
-  <!ENTITY at-spi2-core-md5sum        "21a200a6f76673a7178e1669272e8ecf">
-  <!ENTITY at-spi2-core-size          "564 KB">
+  <!ENTITY at-spi2-core-md5sum        "5235179c7e120b5ee3f154673651b9f6">
+  <!ENTITY at-spi2-core-size          "572 KB">
   <!ENTITY at-spi2-core-buildsize     "15 MB (with tests)">
-  <!ENTITY at-spi2-core-time          "0.5 SBU (with tests)">
+  <!ENTITY at-spi2-core-time          "0.2 SBU (with tests)">
 ]>
 
 <sect1 id="at-spi2-core" xreflabel="at-spi2-core-&at-spi2-core-version;">
@@ -34,7 +34,7 @@
       applications.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -100,16 +100,20 @@
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..            \
-      --prefix=/usr       \
-      --buildtype=release \
-      -D systemd_user_dir=/tmp &amp;&amp;
+meson setup ..                  \
+      --prefix=/usr             \
+      --buildtype=release       \
+      -D gtk2_atk_adaptor=false \
+      -D systemd_user_dir=/tmp  &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup ..                  \
+      --prefix=/usr             \
+      --buildtype=release       \
+      -D gtk2_atk_adaptor=false &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -148,12 +152,10 @@ rm /tmp/at-spi-dbus-bus.service</userinput></screen>
       and <xref linkend='sphinx'/> installed on your system.
     </para>
 
-    <!-- For when we remove gtk2 from the book:
     <para>
       <parameter>-D gtk2_atk_adaptor=false</parameter>: This switch disables
       building the GTK+-2 module for this package.
     </para>
-    -->
 
   </sect2>
 
@@ -166,17 +168,13 @@ rm /tmp/at-spi-dbus-bus.service</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <!-- <seg> No user executable programs
-          at-spi-bus-launcher and at-spi2-registryd in /usr/libexec
-        </seg> -->
         <seg>
           None
         </seg>
         <seg>
           libatk-1.0.so,
-          libatk-bridge-2.0.so,
-          libatspi.so, and
-          /usr/lib/gtk-2.0/modules/libatk-bridge.so
+          libatk-bridge-2.0.so, and
+          libatspi.so
         </seg>
         <seg>
           /usr/include/atk-1.0,
@@ -194,20 +192,6 @@ rm /tmp/at-spi-dbus-bus.service</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-    <!-- Not user executable programs
-      <varlistentry id="at-spi2-registryd">
-        <term><command>at-spi2-registryd</command></term>
-        <listitem>
-          <para>
-            is the <application>At-Spi2</application> registry daemon.
-          </para>
-          <indexterm zone="at-spi2-core at-spi2-registryd">
-            <primary sortas="b-at-spi2-registryd">at-spi2-registryd</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-    -->
-
       <varlistentry id="libatk-1.0">
         <term><filename class="libraryfile">libatk-1.0.so</filename></term>
         <listitem>
@@ -221,6 +205,7 @@ rm /tmp/at-spi-dbus-bus.service</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- BLFS does not support GTK+-2 anymore.
       <varlistentry id="libatk-bridge">
         <term><filename class="libraryfile">libatk-bridge.so</filename></term>
         <listitem>
@@ -232,6 +217,7 @@ rm /tmp/at-spi-dbus-bus.service</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="libatk-bridge-2.0">
         <term><filename class="libraryfile">libatk-bridge-2.0.so</filename></term>

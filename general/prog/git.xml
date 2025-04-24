@@ -8,15 +8,15 @@
 
   <!ENTITY git-download-http "&git-root;/git-&git-version;.tar.xz">
   <!ENTITY git-download-ftp  " ">
-  <!ENTITY git-md5sum        "c32e8d924104dafe909765801c110f32">
+  <!ENTITY git-md5sum        "7e607007a44de52cccda06040fe9362c">
 
-  <!ENTITY git-size          "7.2 MB">
+  <!ENTITY git-size          "7.4 MB">
   <!-- but people keep forgetting that an install not only needs the net build
        space, it also needs the install space (or DESTDIR) -->
-  <!ENTITY git-buildsize     "442 MB (with downloaded documentation; add 19 MB for building docs; add 21 MB for tests)">
+  <!ENTITY git-buildsize     "541 MB (with downloaded documentation; add 19 MB for building docs; add 21 MB for tests)">
   <!-- With 2.23.0, there was a large increase in time for tests. Possibly disk related? -->
   <!-- Confirmed that it is disk related.-->
-  <!ENTITY git-time          "0.3 SBU (with parallelism=4; add 0.4 SBU for building doc, and up to 7 SBU (disk speed dependent) for tests)">
+  <!ENTITY git-time          "0.3 SBU (with parallelism=4; add 1.0 SBU for building docs, and up to 7 SBU (disk speed dependent) for tests)">
 ]>
 
 <sect1 id="git" xreflabel="git-&git-version;">
@@ -47,7 +47,7 @@
       <application>Team Foundation Server</application>.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -128,9 +128,10 @@
       (gitk, a simple <application>Git</application>
       repository viewer, uses <application>Tk</application> at runtime),
       <xref linkend="valgrind"/>,
-      <ulink url="https://metacpan.org/pod/Authen::SASL">Authen::SASL</ulink> and
-      <ulink url="https://metacpan.org/pod/MIME::Base64">MIME::Base64</ulink>
-      (both runtime, for <command>git send-email</command>),
+      <ulink url="https://metacpan.org/pod/Authen::SASL">Authen::SASL</ulink>
+<!--      and (this one is part of core perl)
+      <ulink url="https://metacpan.org/pod/MIME::Base64">MIME::Base64</ulink>-->
+      (runtime, for <command>git send-email</command>),
       <phrase revision='sysv'>and </phrase><xref
       linkend='perl-io-socket-ssl'/> (runtime, for
       <command>git send-email</command> to connect to a SMTP server with
@@ -144,8 +145,8 @@
     and other docs)</bridgehead>
     <para role="optional">
       <xref linkend="xmlto"/> and
-      <xref linkend="asciidoc"/>
-      <!-- or xref linkend="asciidoctor", doesn't work now because it needs docbook-xsl-ns -->,
+      <xref linkend="asciidoc"/>,
+      <!-- or xref linkend="asciidoctor", doesn't work now because it needs docbook-xsl-ns -->
       and also
       <ulink url="https://dblatex.sourceforge.net/">dblatex</ulink>
       (for the PDF version of the user manual), and
@@ -190,8 +191,12 @@ make</userinput></screen>
 
     <para>
       The test suite can be run in parallel mode. To run the test suite, issue:
-      <command>make test -k |&amp; tee test.log</command>.  If some test
-      fails, the list of failed tests can be shown via
+      <command>GIT_UNZIP=nonexist make test -k |&amp; tee test.log</command>.
+      The <envar>GIT_UNZIP</envar> setting prevents the test suite from
+      using <command>unzip</command>, we need it because in BLFS
+      <command>unzip</command> is a symlink to <command>bsdunzip</command>
+      which does not satisfy the assumption of some tests cases.  If any
+      test case fails, the list of failed tests can be shown via
       <command>grep '^not ok' test.log | grep -v TODO</command>.
       <!-- It looks like I'd misdiagnosed the issue.  -->
       <!--phrase revision='systemd'>One test named <literal>start and stop
@@ -261,19 +266,19 @@ find        /usr/share/doc/git-&git-version; -type f -exec chmod 644 {} \;</user
     </para>
 
 <screen role="root"><userinput>mkdir -vp /usr/share/doc/git-&git-version;/man-pages/{html,text}         &amp;&amp;
-mv        /usr/share/doc/git-&git-version;/{git*.txt,man-pages/text}     &amp;&amp;
+mv        /usr/share/doc/git-&git-version;/{git*.adoc,man-pages/text}     &amp;&amp;
 mv        /usr/share/doc/git-&git-version;/{git*.,index.,man-pages/}html &amp;&amp;
 
 mkdir -vp /usr/share/doc/git-&git-version;/technical/{html,text}         &amp;&amp;
-mv        /usr/share/doc/git-&git-version;/technical/{*.txt,text}        &amp;&amp;
+mv        /usr/share/doc/git-&git-version;/technical/{*.adoc,text}        &amp;&amp;
 mv        /usr/share/doc/git-&git-version;/technical/{*.,}html           &amp;&amp;
 
 mkdir -vp /usr/share/doc/git-&git-version;/howto/{html,text}             &amp;&amp;
-mv        /usr/share/doc/git-&git-version;/howto/{*.txt,text}            &amp;&amp;
+mv        /usr/share/doc/git-&git-version;/howto/{*.adoc,text}            &amp;&amp;
 mv        /usr/share/doc/git-&git-version;/howto/{*.,}html               &amp;&amp;
 
 sed -i '/^&lt;a href=/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-index.html &amp;&amp;
-sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-index.txt</userinput></screen>
+sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-index.adoc</userinput></screen>
 
   </sect2>
 

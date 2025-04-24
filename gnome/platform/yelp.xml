@@ -30,7 +30,7 @@
       browser used for viewing help files.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -66,12 +66,23 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/yelp-&yelp-version;-security_fix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Yelp Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="gsettings-desktop-schemas"/>,
-      <xref linkend="webkitgtk"/> and
+      <xref linkend="libhandy1"/>,
+      <xref linkend="webkitgtk"/>, and
       <xref linkend="yelp-xsl"/>
     </para>
 
@@ -99,6 +110,12 @@
 
   <sect2 role="installation">
     <title>Installation of Yelp</title>
+
+    <para>
+      First, fix a security vulnerability that allows for arbitrary file reads:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../yelp-&yelp-version;-security_fix-1.patch</userinput></screen>
 
     <para>
       Install <application>Yelp</application> by running the following

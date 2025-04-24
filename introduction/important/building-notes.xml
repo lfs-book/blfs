@@ -249,8 +249,7 @@ tar -xvf filename.tar.bz2</userinput></screen>
       Note that the <option>-j</option> switches only limits the parallel
       jobs started by <command>make</command> or <command>ninja</command>,
       but each job may still spawn its own processes or threads.  For
-      example, <command>ld.gold</command> will use multiple threads for
-      linking, and some tests of packages can spawn multiple threads for
+      example, some tests of packages can spawn multiple threads for
       testing thread safety properties.  There is no generic way for the
       building system to know the number of processes or threads spawned by
       a job. So generally we should not consider the value passed with
@@ -376,14 +375,14 @@ EOF</userinput></screen>
     <para>
       With
       <phrase revision='systemd'>
-        <parameter>MemoryHigh=8G</parameter>
+        <parameter>MemoryHigh=8G</parameter>,
       </phrase>
       <phrase revision='sysv'>
         <literal>8589934592</literal> (the output of
         <userinput>bc -e '8*2^30'</userinput>, 2^30 represents
         2<superscript>30</superscript>, i.e. a Gigabyte) in the
-        <filename>memory.high</filename> entry
-      </phrase>, a soft limit of memory usage is set.
+        <filename>memory.high</filename> entry,
+      </phrase> a soft limit of memory usage is set.
       If the processes in the cgroup (<command>make</command> and all the
       descendants of it) uses more than 8 GB of system memory in total,
       the kernel will throttle down the processes and try to reclaim the
@@ -664,8 +663,18 @@ chmod 755 blfs-yes-test2</userinput></screen>
         <quote>runtime,</quote> see below) for a clean and trouble-free
         build, that won't have issues either during the build process, or at
         run-time.  The instructions in the book assume these packages are
-        installed.  Some changes or workarounds may be required if these
-        packages are not installed. If a recommended dependency is said
+        installed.  In many cases, if a recommended dependency (not just
+        <quote>runtime</quote>) is not installed, the built package may
+        lack some important functionalities (for example, a video player
+        may be only able to play audio). Sometimes, it's needed to modify
+        the book instructions to disable those important functionalities.
+        In other cases, the build system of the package may build a copy
+        of the dependency (often outdated and sometimes with known security
+        vulnerabilities) shipped in the source tree, or may be downloaded from
+        the Internet during the build process. This increases build time and
+        disk usage. This could potentially cause other problems.
+
+        If a recommended dependency is said
         to be <quote>runtime,</quote> it means that BLFS strongly suggests
         that this dependency is installed before using the package, for
         getting full functionality.</para>
@@ -717,11 +726,10 @@ chmod 755 blfs-yes-test2</userinput></screen>
     <title>Stripping One More Time</title>
 
     <para>
-      In LFS, stripping of debugging symbols and unneeded symbol table
-      entries was discussed a couple of times.  When building BLFS packages,
-      there are generally no special instructions that discuss stripping
-      again. Stripping can be done while installing a package, or
-      afterwards.
+      In LFS, stripping of debugging symbols was discussed a couple of times.
+      When building BLFS packages, there are generally no special instructions
+      that discuss stripping again. Stripping can be done while installing a
+      package, or afterwards.
     </para>
 
     <bridgehead renderas="sect3" id="stripping-install">Stripping while Installing a Package</bridgehead>
@@ -833,8 +841,8 @@ last_file=
          continue;
        fi
 
-       cp --preserve $file    ${file}.tmp
-       strip --strip-unneeded ${file}.tmp
+       cp --preserve $file ${file}.tmp
+       strip --strip-debug ${file}.tmp
        mv ${file}.tmp $file
 
        last_fs_inode="$fs $inode"
@@ -1249,7 +1257,7 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
       </para>
 
       <para>
-        For <envar>LDFLAGS</envar>, there are three options can be used
+        For <envar>LDFLAGS</envar>, three options can be used
         for optimization.  They are quite safe to use and the building
         system of some packages use some of these options as the default.
       </para>
@@ -1311,8 +1319,8 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
         forward a part of its spirit by enabling PIE
         (<option>-fPIE -pie</option>) and SSP
         (<option>-fstack-protector-strong</option>) as the defaults
-        for GCC and clang.  And, the linkers (<command>ld.bfd</command>
-        and <command>ld.gold</command>) have also enabled
+        for GCC and clang.  And, the linker (<command>ld</command>)
+        has also enabled
         <option>-Wl,-z,relro</option> which makes a part of the Global
         Offset Table (GOT) immutable,
         by default since Binutils 2.27. What is being covered here is

@@ -4,36 +4,16 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gimp-download-http "&sources-anduin-http;/gimp/gimp3-&gimp-version;.tar.xz">
+  <!ENTITY gimp-download-http "https://download.gimp.org/gimp/v&gimp-majmin;/gimp-&gimp-version;.tar.xz">
   <!ENTITY gimp-download-ftp  " ">
-  <!ENTITY gimp-md5sum        "17fcd0bfc8e66fc61d672b4409cb3e3a">
+  <!ENTITY gimp-md5sum        "e08392371ac08ce55c01dc824f734a35">
   <!ENTITY gimp-size          "26 MB">
-  <!ENTITY gimp-buildsize     "456 MB (162 MB installed)">
+  <!ENTITY gimp-buildsize     "471 MB (183 MB installed)">
   <!ENTITY gimp-time          "1.2 SBU (Using parallelism=4)">
 
-  <!-- pro-tem, a pull of gimp-help, https://gitlab.gnome.org/GNOME/gimp-help.git
-  git archive - -format=tar - -prefix=${DIRNAME}/ HEAD | xz >../${DIRNAME}.tar.xz -->
-
-  <!-- renodr: I generated the git tarball using the following instructions:
-       cd /tmp &&
-       mkdir gimp-help &&
-       cd gimp-help &&
-       git clone https://gitlab.gnome.org/GNOME/gimp-help.git &&
-       cd gimp-help &&
-       git checkout gimp-help-2-10 &&
-       cd .. &&
-       rm -rv gimp-help/.git &&
-       mv -v gimp-help gimp-help-<DATE>
-       tar -cJvf gimp-help-<DATE>.tar.xz gimp-help-<DATE>
-
-       After you've completed this, run a test build, and upload the tarball to
-       anduin.-->
-
-  <!ENTITY gimp-help-version    "&gimp-version;">
-  <!ENTITY gimp-help-download   "&sources-anduin-http;/gimp/gimp3-help-&gimp-help-version;.tar.xz">
-<!--  <!ENTITY gimp-help-download   "https://download.gimp.org/pub/gimp/help/gimp-help-&gimp-help-version;.tar.bz2">-->
-  <!ENTITY gimp-help-md5sum     "162d57a67ff737ed221a8d7f274d119f">
-  <!ENTITY gimp-help-size       "129 MB">
+  <!ENTITY gimp-help-download   "https://download.gimp.org/pub/gimp/help/gimp-help-&gimp-help-version;.tar.bz2">
+  <!ENTITY gimp-help-md5sum     "6a45a29097c69d5cf0d86e5c9b6e5f9e">
+  <!ENTITY gimp-help-size       "126 MB">
   <!ENTITY gimp-help-buildsize  "From 351 MB (74 MB installed) for en only to 1.5 GB for all
                                  languages">
   <!ENTITY gimp-help-time       "0.4 SBU (en only), 5.1 SBU for all languages; using parallelism=4">
@@ -57,7 +37,7 @@
       photo retouching, image composition and image authoring.
     </para>
 
-    &lfs122_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -94,22 +74,13 @@
     </itemizedlist>
 
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-<!--
-    <note>
-      <para>
-       The creation of local html files with recent versions of the necessary
-       packages is somewhat broken (some png images are not sourced by the
-       generated HTML, only their captions are visible).
-      </para>
-    </note>
--->
-    <note>
-      <para>
-        The English version of the help files is complete, but large
-        parts of the text for many other languages are not yet translated.
-      </para>
-    </note>
 
+    <note>
+      <para>
+        The English version of the help files is complete, but some
+        parts of the text for other languages may not yet be translated.
+      </para>
+    </note>
 
     <itemizedlist spacing="compact">
       <listitem>
@@ -163,11 +134,6 @@
     <para role="recommended">
       <xref linkend="graphviz"/>,
       <xref linkend="gs"/> (with libgs installed),
-      <xref role='runtime' linkend="gvfs"/> and
-      <xref role='runtime' linkend='glib-networking'/>
-      (both runtime, to access the online help, open images from a HTTP
-      or HTTPS URL, drag and drop images from an external application,
-      etc.),
       <xref linkend="iso-codes"/>,
       <xref linkend="libgudev"/>,
       <xref linkend="pygobject3"/>, and
@@ -178,6 +144,8 @@
     <para role="optional">
       <xref linkend="aalib"/>,
       <xref linkend="alsa-lib"/>,
+      <xref linkend="appstream"/> (for one test),
+      <xref linkend="gi-docgen"/>,
       <xref linkend="gjs"/>,
       <xref linkend="libjxl"/>,
       <xref linkend="libmng"/>,
@@ -185,7 +153,6 @@
       <xref linkend="libwebp"/>,
       <xref linkend="lua"/>,
       <xref linkend="openjpeg2"/>,
-      <xref linkend="gtk-doc"/>,
       <ulink url="https://github.com/HEASARC/cfitsio">cfitsio</ulink>,
       <ulink url="https://github.com/ianlancetaylor/libbacktrace">libbacktrace</ulink>,
       <ulink url="https://github.com/svanderburg/libiff">libiff</ulink>,
@@ -215,6 +182,17 @@
     <title>Installation of Gimp</title>
 
     <para>
+      If upgrading from a previous Gimp-3 installation, as the &root; user,
+      remove some files and directories from the old installation or the
+      build system may mistakenly pick them up, causing a build failure:
+    </para>
+
+<screen role="root"><userinput>rm -rf /usr/{lib,share}/gimp/3.0 &amp;&amp;
+rm -f  /usr/share/gir-1.0/Gimp-3.0.gir &amp;&amp;
+rm -f  /usr/lib/girepository-1.0/Gimp-3.0.typelib &amp;&amp;
+rm -f  /usr/lib/libgimp*-3.0.so*</userinput></screen>
+
+    <para>
       Install <application>Gimp</application> by running
       the following commands:
     </para>
@@ -222,14 +200,17 @@
 <screen><userinput>mkdir gimp-build &amp;&amp;
 cd    gimp-build &amp;&amp;
 
-meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup ..                   \
+      --prefix=/usr              \
+      --buildtype=release        \
+      -D headless-tests=disabled &amp;&amp;
 ninja</userinput></screen>
 
+    <!-- The wayland-specific keyboard_zoom_focus failure is known:
+         https://gitlab.gnome.org/GNOME/gimp/-/issues/12536 -->
     <para>
-      To test the results (requires an X-Windowed terminal) issue:
-      <command>ninja test</command>.
-      <!-- km: in 2.10.16 no failures, 2 tests were skipped -->
-
+      To test the results (requires a terminal in a graphical environment)
+      issue: <command>ninja test</command>.
     </para>
 
     <para>
@@ -252,23 +233,10 @@ ninja</userinput></screen>
       If you wish to install local copies of the help files to read offline, 
       unpack the gimp-help tarball and change into the root of the newly 
       created source tree. 
-
-      <!--
-      The documentation generated by gimp-help-2.10.34 and online help have
-      the same contents, so I comment this out. [pierre Nov. 2023]
-      Because of the
-      issues mentioned in the note above, you are recommended to use the online
-      help, either by building against <xref linkend="gvfs"/> so that 'help'
-      can open the latest XML files in your browser, or else you can manually
-      open the html in your browser by going to <ulink
-      url="https://docs.gimp.org/2.10/en/">https://docs.gimp.org/2.10/en</ulink>
-     (change the language code if desired).-->
     </para>
 
-<screen><userinput>tar -xf ../../gimp3-help-&gimp-version;.tar.xz &amp;&amp;
-cd gimp3-help-&gimp-version;
-
-automake --add-missing
+<screen><userinput>tar -xf ../../gimp-help-&gimp-help-version;.tar.bz2 &amp;&amp;
+cd gimp-help-&gimp-help-version;
 
 ALL_LINGUAS=&quot;ca cs da de en en_GB es fa fr hr ko lt nl nn pt pt_BR ro sl sv uk zh_CN&quot; \
 ./configure --prefix=/usr</userinput></screen>
@@ -296,6 +264,16 @@ chown -R root:root /usr/share/gimp/3.0/help</userinput></screen>
 
   <sect2 role="commands" id="gimp-cmd-explanations">
     <title>Command Explanations</title>
+
+    <para>
+      <parameter>-D headless-tests=disabled</parameter>: This switch
+      disables using <command>xvfb-run</command> for running the tests.
+      Without this switch, many tests fail if <command>xvfb-run</command>
+      has been installed. <!-- xvfb-run is referred by the mutter package
+      for testing.  But why the GIMP test doesn't like it on the local
+      machine?  The upstream CI uses it anyway.  I really don't
+      know :(.  -->
+    </para>
 
     <para>
       <envar>ALL_LINGUAS=&quot;ca cs da de en en_GB es fa...&quot;</envar>: by
@@ -333,11 +311,13 @@ chown -R root:root /usr/share/gimp/3.0/help</userinput></screen>
 
       <seglistitem>
         <seg>
-          gimp-2.99,
-          gimp-console-2.99,
-          gimptool-2.99,
-          gimp-test-clipboard-2.99, and
-          gimp-script-fu-interpreter-3.0
+          gimp-3.0,
+          gimp-console-3.0,
+          gimptool-3.0,
+          gimp-test-clipboard-3.0,
+          gimp-script-fu-interpreter-3.0, and
+          gimp{,-console,tool,-test-clipboard,script-fu-interpreter}{,-3}
+          (symlinks)
         </seg>
         <seg>
           libgimp-3.0.so, 
@@ -347,6 +327,7 @@ chown -R root:root /usr/share/gimp/3.0/help</userinput></screen>
           libgimpconfig-3.0.so, 
           libgimpmath-3.0.so, 
           libgimpmodule-3.0.so, 
+          libgimpthumb-3.0.so,
           libgimpui-3.0.so, and 
           libgimpwidgets-3.0.so
         </seg>
@@ -356,7 +337,7 @@ chown -R root:root /usr/share/gimp/3.0/help</userinput></screen>
           /usr/lib/gimp-3.0,
           /usr/lib/gimp/3.0, 
           /usr/share/gimp/3.0, and 
-          /usr/share/doc/gimp-2.99
+          /usr/share/doc/gimp-3.0
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -366,45 +347,45 @@ chown -R root:root /usr/share/gimp/3.0/help</userinput></screen>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
 
-      <varlistentry id="gimp-2.99">
-        <term><command>gimp-2.99</command></term>
+      <varlistentry id="gimp-3.0">
+        <term><command>gimp-3.0</command></term>
         <listitem>
           <para>
             is the Gnu Image Manipulation Program. It works with a variety
             of image formats and provides a large selection of tools
           </para>
-          <indexterm zone="gimp gimp-2.99">
-            <primary sortas="b-gimp-2.99">gimp-2.99</primary>
+          <indexterm zone="gimp gimp-3.0">
+            <primary sortas="b-gimp-3.0">gimp-3.0</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="gimp-console-2.99">
-        <term><command>gimp-console-2.99</command></term>
+      <varlistentry id="gimp-console-3.0">
+        <term><command>gimp-console-3.0</command></term>
         <listitem>
           <para>
             is a console program that behaves as if The
             <application>Gimp</application> was called with the
             <option>--no-interface</option> command-line option
           </para>
-          <indexterm zone="gimp gimp-console-2.99">
-            <primary sortas="b-gimp-console-2.99">gimp-console-2.99</primary>
+          <indexterm zone="gimp gimp-console-3.0">
+            <primary sortas="b-gimp-console-3.0">gimp-console-3.0</primary>
           </indexterm>
         </listitem>
       </varlistentry>
 
-      <varlistentry id="gimptool-2.99">
-        <term><command>gimptool-2.99</command></term>
+      <varlistentry id="gimptool-3.0">
+        <term><command>gimptool-3.0</command></term>
         <listitem>
           <para>
             is a tool that can build plug-ins or scripts and install them
             if they are distributed in one source file.
-            <command>gimptool-2.99</command> can also be used by programs that
+            <command>gimptool-3.0</command> can also be used by programs that
             need to know what libraries and include-paths The
             <application>Gimp</application> was compiled with
           </para>
-          <indexterm zone="gimp gimptool-2.99">
-            <primary sortas="b-gimptool-2.99">gimptool-2.99</primary>
+          <indexterm zone="gimp gimptool-3.0">
+            <primary sortas="b-gimptool-3.0">gimptool-3.0</primary>
           </indexterm>
         </listitem>
       </varlistentry>
