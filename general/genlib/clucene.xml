@@ -105,8 +105,10 @@ sed -i '/Misc.h/a #include &lt;ctime&gt;' src/core/CLucene/document/DateTools.cp
 mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr \
-      -D BUILD_CONTRIBS_LIB=ON .. &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr        \
+      -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+      -D BUILD_CONTRIBS_LIB=ON            \
+      -W no-dev ..                        &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -120,11 +122,19 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+     href="../../xincludes/cmake-policy-version.xml"/>
+
     <para>
       <parameter>-D BUILD_CONTRIBS_LIB=ON</parameter>: This cmake variable
       enables building the CLucene contribs library necessary for running
       applications that use language specific text analyzers like LibreOffice
       for example.
+    </para>
+
+    <para>
+      <parameter>-W no-dev</parameter>: This parameter silences several warnings
+      only intended for project developers.
     </para>
 
   </sect2>
