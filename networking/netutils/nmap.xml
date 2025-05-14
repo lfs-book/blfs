@@ -88,7 +88,11 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <note>
       <para>
-        These packages are recommended because if they're not installed, the
+        If the <application>PyGObject3</application> module is not
+        installed, you'd have to skip the command making the build system
+        use the LFS <application>Setuptools</application> installation and
+        then an Internet connection would be needed.  The other
+        packages are recommended because if they're not installed, the
         build process will compile and link against its own (often older)
         version.
       </para>
@@ -115,6 +119,14 @@
 
   <sect2 role="installation">
     <title>Installation of Nmap</title>
+
+    <para>
+      Make the build system use the <application>Setuptools</application>
+      Python module from LFS instead of downloading a copy from the
+      Internet:
+    </para>
+
+<screen><userinput>sed 's/-m build/&amp; --no-isolation/' -i Makefile.in</userinput></screen>
 
     <para>
       Install <application>Nmap</application> by running the following
