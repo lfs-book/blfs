@@ -123,10 +123,14 @@
     <para>
       Make the build system use the <application>Setuptools</application>
       Python module from LFS instead of downloading a copy from the
-      Internet:
+      Internet, and install the Python wheels already created when running
+      the <command>make</command> instead of rebuilding them again on
+      <command>make install</command>:
     </para>
 
-<screen><userinput>sed 's/-m build/&amp; --no-isolation/' -i Makefile.in</userinput></screen>
+<screen><userinput>sed -ri Makefile.in \
+    -e 's#-m build#&amp; --no-isolation#'  \
+    -e '/pip install/s#(ZENMAP|NDIFF)DIR\)/#&amp;dist/*.whl#'</userinput></screen>
 
     <para>
       Install <application>Nmap</application> by running the following
