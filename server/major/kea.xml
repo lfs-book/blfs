@@ -6,8 +6,8 @@
 
   <!ENTITY kea-download-http "https://downloads.isc.org/isc/kea/&kea-dhcp-version;/kea-&kea-dhcp-version;.tar.gz">
   <!ENTITY kea-download-ftp  " ">
-  <!ENTITY kea-md5sum        "80c18994ce9a08f3391e145dd986fa39">
-  <!ENTITY kea-size          "9.9 MB">
+  <!ENTITY kea-md5sum        "abf8cb8bbc74fd7691883b837e9deec8">
+  <!ENTITY kea-size          "10 MB">
   <!ENTITY kea-buildsize     "1.5 GB (332 MB installed; add 4 GB for tests)">
   <!ENTITY kea-time          "4.1 SBU (with parallelism=4; add 12 SBU for tests)">
   <!ENTITY kea-arm-vers      "&kea-dhcp-version;">
@@ -162,6 +162,14 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make -j1 install</userinput></screen>
+
+    <para>
+      Create some directories and fix their permission settings as the
+      <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>install -dm0750 /var/lib/kea
+install -dm0750 /var/log/kea</userinput></screen>
 
   </sect2>
 
@@ -418,15 +426,15 @@ make</userinput></screen>
     "control-sockets": {
       "dhcp4": {
         "socket-type": "unix",
-        "socket-name": "/run/kea4-ctrl-socket"
+        "socket-name": "/run/kea/kea4-ctrl-socket"
       },
       "dhcp6": {
         "socket-type": "unix",
-        "socket-name": "/run/kea6-ctrl-socket"
+        "socket-name": "/run/kea/kea6-ctrl-socket"
       },
       "d2": {
         "socket-type": "unix",
-        "socket-name": "/run/kea-ddns-ctrl-socket"
+        "socket-name": "/run/kea/kea-ddns-ctrl-socket"
       }
     },
 
@@ -435,7 +443,7 @@ make</userinput></screen>
         "name": "kea-ctrl-agent",
         "output_options": [
           {
-            "output": "/var/log/kea-ctrl-agent.log",
+            "output": "/var/log/kea/kea-ctrl-agent.log",
             "pattern": "%D{%Y-%m-%d %H:%M:%S.%q} %-5p %m\n"
           }
         ],
@@ -473,12 +481,13 @@ EOF</userinput></screen>
 
     "control-socket": {
       "socket-type": "unix",
-      "socket-name": "/run/kea4-ctrl-socket"
+      "socket-name": "/run/kea/kea4-ctrl-socket"
     },
 
     "lease-database": {
       "type": "memfile",
-      "lfc-interval": 3600
+      "lfc-interval": 3600,
+      "name": "/var/lib/kea/kea-leases4.csv"
     },
 
     "expired-leases-processing": {
@@ -532,7 +541,7 @@ EOF</userinput></screen>
         "name": "kea-dhcp4",
         "output_options": [
           {
-            "output": "/var/log/kea-dhcp4.log",
+            "output": "/var/log/kea/kea-dhcp4.log",
             "pattern": "%D{%Y-%m-%d %H:%M:%S.%q} %-5p %m\n"
           }
         ],
@@ -578,7 +587,7 @@ EOF</userinput></screen>
     "port": 53001,
     "control-socket": {
       "socket-type": "unix",
-      "socket-name": "/run/kea-ddns-ctrl-socket"
+      "socket-name": "/run/kea/kea-ddns-ctrl-socket"
     },
 
     "tsig-keys": [
@@ -624,7 +633,7 @@ EOF</userinput></screen>
         "name": "kea-dhcp-ddns",
         "output_options": [
           {
-            "output": "/var/log/kea-ddns.log",
+            "output": "/var/log/kea/kea-ddns.log",
             "pattern": "%D{%Y-%m-%d %H:%M:%S.%q} %-5p %m\n"
           }
         ],
@@ -695,12 +704,14 @@ EOF</userinput></screen>
         </seg>
         <seg>
           /etc/kea,
+          /run/kea,
           /usr/include/kea,
           /usr/lib/kea,
           /usr/lib/python&python3-majorver;/site-packages/kea,
           /usr/share/kea,
-          /usr/share/doc/kea-&kea-dhcp-version;, and
-          /var/lib/kea
+          /usr/share/doc/kea-&kea-dhcp-version;,
+          /var/lib/kea, and
+          /var/log/kea
         </seg>
       </seglistitem>
     </segmentedlist>
