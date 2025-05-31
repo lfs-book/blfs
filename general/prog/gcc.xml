@@ -7,10 +7,10 @@
   <!ENTITY gcc-download-http  "&gnu-http;/gcc/gcc-&gcc-version;/gcc-&gcc-version;.tar.xz">
   <!ENTITY gcc-download-ftp   " ">
   <!-- Update this also on the grub-uefi page -->
-  <!ENTITY gcc-md5sum         "2268420ba02dc01821960e274711bde0">
-  <!ENTITY gcc-size           "88 MB">
-  <!ENTITY gcc-buildsize      "11 GB (3.4 GB installed with all listed languages; add 1.6 GB for tests)">
-  <!ENTITY gcc-time           "14 SBU (add 34 SBU for tests; both with parallelism=8)">
+  <!ENTITY gcc-md5sum         "e55d13c55428bca27b4d2ea02f883135">
+  <!ENTITY gcc-size           "94 MB">
+  <!ENTITY gcc-buildsize      "12 GB (3.8 GB installed with all listed languages; add 1.6 GB for tests)">
+  <!ENTITY gcc-time           "16 SBU (add 30 SBU for tests; both with parallelism=8)">
 ]>
 
 <sect1 id="gcc" xreflabel="GCC-&gcc-version;">
@@ -36,13 +36,14 @@
 
     <note>
       <para>
-        Additional languages, among which D and Ada, are available in the
-        collection. D and Ada have a binary bootstrap requirement for the first
+        Additional languages, among which COBOL, D, and Ada, are available in the
+        collection. COBOL is currently only supported on x86-64 systems. D and Ada 
+        have a binary bootstrap requirement for the first
         installation, so their installation is not described here. To install
-        them, you can proceed along the same lines as below after installing
-        the corresponding compiler from a binary package, adding
-        <option>ada</option> or <option>d</option> to the
-        <parameter>--enable-languages</parameter> line.
+        D or Ada, you can proceed along the same lines as below after installing
+        the corresponding compiler from a binary package.  Finally add 
+        <option>ada</option> or <option>d</option> or <option>cobol</option> to the
+        <parameter>--enable-languages</parameter> line as desired.
       </para>
     </note>
 
@@ -175,7 +176,7 @@ cd    build               &amp;&amp;
     --disable-fixincludes \
     --enable-languages=c,c++,fortran,go,objc,obj-c++,m2 &amp;&amp;
 make</userinput></screen>
-
+<!--
     <para>If running tests, as in LFS, remove/fix several known test failures:</para>
 
 <screen><userinput>sed -e '/cpython/d'               -i ../gcc/testsuite/gcc.dg/plugin/plugin.exp
@@ -183,17 +184,17 @@ sed -e 's/no-pic /&amp;-no-pie /'     -i ../gcc/testsuite/gcc.target/i386/pr1136
 sed -e 's/300000/(1|300000)/'     -i ../libgomp/testsuite/libgomp.c-c++-common/pr109062.c
 sed -e 's/{ target nonpic } //' \
     -e '/GOTPCREL/d'              -i ../gcc/testsuite/gcc.target/i386/fentryname3.c</userinput></screen>
-
+-->
 <para>
       If you have installed additional packages such as
       <application>valgrind</application> and <application>gdb</application>,
       the <application>gcc</application> part of the test suite will run more
       tests than in LFS. Some of those will report FAIL and others XPASS
-      (pass when expected to FAIL). As of gcc-14.1.0, about 74 FAILs occur
+      (pass when expected to FAIL). As of gcc-15.1.0, about 69 FAILs occur
       in the <quote>guality</quote> suite, as well as miscellaneous failures
       throughout the rest of the test suite.
-      If all the compilers above are built, there will be a little over 110
-      unexpected failures out of over 617,000 tests. To run the tests, issue:
+      If all the compilers above are built, there will be about 107
+      unexpected failures out of over 610,000 tests. To run the tests, issue:
     </para>
 
 
