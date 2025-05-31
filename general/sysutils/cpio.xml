@@ -79,6 +79,14 @@
     <title>Installation of cpio</title>
 
     <para>
+      Add a workaround for an issue shown by gcc15:
+    </para>
+<screen><userinput>sed -e "/^extern int (\*xstat)/s/()/(const char * restrict,  struct stat * restrict)/" \
+    -i src/extern.h
+sed -e "/^int (\*xstat)/s/()/(const char * restrict,  struct stat * restrict)/" \
+    -i src/global.c</userinput></screen>
+
+    <para>
       Install <application>cpio</application> by running the following
       commands:
     </para>
