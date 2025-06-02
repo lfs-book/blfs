@@ -120,13 +120,12 @@ useradd -c "GDM Daemon Owner" -d /var/lib/gdm -u 21 \
         -g gdm -s /bin/false gdm &amp;&amp;
 passwd -ql gdm</userinput></screen>
 
-<!--
-    <para revision="sysv">
-      First, adapt GDM to build without systemd present:
+    <para>
+      First, adapt GDM to build with GCC 15:
     </para>
 
-<screen revision="sysv"><userinput remap="pre">sed -i -r '/(^| )systemd_dep/d' meson.build</userinput></screen>
--->
+<screen><userinput remap="pre">sed -r 's/([(*])bool([) ])/\1boolval\2/' -i common/gdm-settings-utils.*</userinput></screen>
+
 
     <para>
       Install <application>GDM</application> by running the following
