@@ -255,13 +255,6 @@ targets = "X86"
 [build]
 description = "for BLFS &version;"
 
-# Do a 2-stage bootstrap instead of a 3-stage one to save time and space.
-# Note that the numbers "1" below mean to *run* the stage-*1* compiler and
-# build the stage-2 compiler.
-build-stage = 1
-test-stage = 1
-doc-stage = 1
-
 # Omit docs to save time and space (default is to build them).
 docs = false
 
@@ -432,8 +425,7 @@ EOF</userinput></screen>
       </para>
     </note>
 
-<screen role='root'><userinput>./x.py install rustc std &amp;&amp;
-./x.py install --stage=1 cargo clippy rustfmt</userinput></screen>
+<screen role='root'><userinput>./x.py install</userinput></screen>
 
     <para>
       Still as the &root; user, fix the installation of documentation,
@@ -544,13 +536,6 @@ mv -v /etc/bash_completion.d/cargo /usr/share/bash-completion/completions</useri
     <para>
       <parameter>--no-fail-fast</parameter>: this switch ensures that the test suite
       will not stop at the first error.
-    </para>
-
-    <!-- https://github.com/rust-lang/rust/issues/94147 -->
-    <para>
-      <parameter>--stage=1</parameter>: this switch works around an issue
-      causing some Rustc components unnecessarily rebuilt running
-      <command>./x.py install</command>.
     </para>
 
   </sect2>
