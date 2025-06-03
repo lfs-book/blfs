@@ -136,14 +136,14 @@
   <sect2 role="installation">
     <title>Installation of GTK 4</title>
 
-<!--
+
     <para>
-      Fix the PNG colorspace deserialization breakage with libpng-1.6.45
-      or later:
+      First, fix a problem when building with gcc-15:
     </para>
 
-    <screen><userinput>patch -Np1 -i ../gtk-&gtk4-version;-libpng_1_6_45-1.patch</userinput></screen>
--->
+    <screen><userinput role='pre'>sed -e '939 s/= { 0, }//'                                       \
+    -e '940 a memset (&amp;transform, 0, sizeof(GtkCssTransform));' \
+    -i gtk/gtkcsstransformvalue.c</userinput></screen>
 
     <para>
       Install <application>GTK 4</application> by running the following
