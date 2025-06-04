@@ -103,9 +103,9 @@
       commands as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role='root'><userinput>patch -Np1 -i ../procmail-&procmail-version;-consolidated_fixes-1.patch &amp;&amp;
+<screen role='root'><userinput>patch -Np1 -i ../procmail-&procmail-version;-consolidated_fixes-1.patch               &amp;&amp;
 
-make LOCKINGTEST=/tmp MANDIR=/usr/share/man install       &amp;&amp;
+make CC="gcc -std=gnu17" LOCKINGTEST=/tmp MANDIR=/usr/share/man install &amp;&amp;
 make install-suid</userinput></screen>
 
   </sect2>
@@ -125,6 +125,12 @@ make install-suid</userinput></screen>
       <command>make LOCKINGTEST=/tmp install</command>: This prevents
       <command>make</command> from asking you where to test file-locking
       patterns.
+    </para>
+
+    <para>
+      <command>CC="gcc -std=gnu17"</command>: This sets the C standard to C17
+      because this package is not compatible with C23, and no fixes are readily
+      available.
     </para>
 
     <para>
