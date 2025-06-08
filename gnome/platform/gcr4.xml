@@ -74,7 +74,6 @@
     <para role="required">
       <xref linkend="glib2"/> (GObject Introspection recommended),
       <xref linkend="libgcrypt"/>,
-      <xref linkend="openssh"/>, and
       <xref linkend="p11-kit"/>
     </para>
 
@@ -90,7 +89,8 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gi-docgen"/>,
-      <xref linkend="gnutls"/>, and
+      <xref linkend="gnutls"/>,
+      <xref linkend="openssh"/>, and
       <xref linkend="valgrind"/>
     </para>
 
@@ -117,6 +117,7 @@ cd    build &amp;&amp;
 meson setup --prefix=/usr       \
             --buildtype=release \
             -D gtk_doc=false    \
+            -D ssh_agent=false  \
             ..                  &amp;&amp;
 ninja</userinput></screen>
 
@@ -156,13 +157,15 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <option>-D ssh_agent=false</option>: Use this switch if you
-      haven't installed <xref linkend="openssh"/>, and wish to disable
-      ssh capabilities.
+      <parameter>-D gtk_doc=false</parameter>: &gi-doc-disable;
     </para>
 
     <para>
-      <option>-D gtk_doc=false</option>: &gi-doc-disable;
+      <parameter>-D ssh_agent=false</parameter>: Disable the ssh-agent
+      implementation of this package.  This implementation is intended to
+      replace the ssh-agent implementation of
+      <xref linkend='gnome-keyring'/>, but it turns out the replacement
+      still has some unresolved issue.
     </para>
 
     <para>
