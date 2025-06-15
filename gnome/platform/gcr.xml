@@ -97,24 +97,11 @@
   <sect2 role="installation">
     <title>Installation of Gcr</title>
 
-    <!--
-    <caution>
-      <para>
-        If you are upgrading from a version of gcr prior to 3.36.0, you must
-        run the <filename>remove-la-files.sh</filename> script from the
-        <xref linkend="la-files"/> after installing gcr.
-      </para>
-    </caution>
-    -->
-
-<!--
     <para>
-      First apply a fix for building with newer versions of
-      <application>meson</application>:
+      First apply a fix for building without OpenSSH installed:
     </para>
 
-<screen><userinput>find . -name meson.build | xargs sed -i /packages.\*deps/d</userinput></screen>
--->
+<screen><userinput>sed '/ssh.add/d; /ssh.agent/d' -i meson.build</userinput></screen>
 
     <para>
       Install <application>Gcr</application> by running the following
@@ -181,12 +168,22 @@ ninja</userinput></screen>
       (usage of uninitialized value) identified by upstream.
     </para>
     -->
-
+    <!-- Uncomment this and delete the <para> below when we switch from
+         gnome-keyring ssh-agent to gcr4 ssh-agent.
     <para>
       <parameter>-D ssh_agent=false</parameter>: Prevent a conflict with
-      <xref linkend='gcr4'/>.  Omit this switch if you do not plan to
-      install <xref linkend='gcr4'/> and you want to use
-      <command>gcr-ssh-agent</command>.
+      <xref linkend='gcr4'/>.  The ssh-agent of Gcr 3 is known
+      to be problematic, if you want to use
+      <command>gcr-ssh-agent</command> you need to install
+      <xref linkend='gcr4'/> instead.
+    </para>
+    -->
+    <para>
+      <parameter>-D ssh_agent=false</parameter>: Disable the ssh-agent
+      implementation of this package.  This implementation is intended to
+      replace the ssh-agent implementation of
+      <xref linkend='gnome-keyring'/>, but it turns out the replacement
+      still has some unresolved issue.
     </para>
 
     <para>

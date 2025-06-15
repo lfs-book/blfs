@@ -5,10 +5,10 @@
   %general-entities;
 
   <!ENTITY protobuf-download-http "https://github.com/protocolbuffers/protobuf/releases/download/v&protobuf-version;/protobuf-&protobuf-version;.tar.gz">
-  <!ENTITY protobuf-md5sum        "1f9277e737f2cad088a824e50723f495">
+  <!ENTITY protobuf-md5sum        "a53a7a039d0d20e6ed84685a92ae500a">
   <!ENTITY protobuf-size          "9.1 MB">
-  <!ENTITY protobuf-buildsize     "127 MB">
-  <!ENTITY protobuf-time          "1.1 SBU (with parallelism=4)">
+  <!ENTITY protobuf-buildsize     "147 MB">
+  <!ENTITY protobuf-time          "1.5 SBU (with parallelism=4)">
 ]>
 
 <sect1 id="protobuf" xreflabel="Protobuf-&protobuf-version;">
@@ -89,7 +89,6 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr      \
       -D CMAKE_BUILD_TYPE=Release       \
       -D CMAKE_SKIP_INSTALL_RPATH=ON    \
       -D protobuf_BUILD_TESTS=OFF       \
-      -D protobuf_BUILD_LIBUPB=OFF      \
       -D protobuf_BUILD_SHARED_LIBS=ON  \
       -G Ninja ..                       &amp;&amp;
 ninja</userinput></screen>
@@ -104,7 +103,13 @@ ninja</userinput></screen>
       Now, as the &root; user:
     </para>
 
-<screen role="root"><userinput>ninja install</userinput></screen>
+    <screen role="root"><userinput>ninja install</userinput></screen>
+
+<!-- We need to revisit this in July. For now, temporary solution.
+
+<screen role="root"><userinput>ninja install &amp;&amp;
+rm /usr/lib/libupb.a</userinput></screen>
+-->
 
   </sect2>
 
@@ -147,7 +152,10 @@ ninja</userinput></screen>
 
       <seglistitem>
         <seg>
-          protoc-&protobuf-version;.0 and protoc (a symlink to protoc-&protobuf-version;.0)
+          protoc (a symlink to protoc-&protobuf-version;.0),
+          protoc-&protobuf-version;.0,
+          protoc-gen-upb (a symlink to protoc-gen-upb-&protobuf-version;.0), and
+          protoc-gen-upbdefs (a symlink to protoc-gen-upbdefs-&protobuf-version;.0)
         </seg>
         <seg>
           libprotobuf.so,
@@ -158,8 +166,7 @@ ninja</userinput></screen>
         </seg>
         <seg>
           /usr/include/google,
-          /usr/include/java,
-          /usr/include/upb_generator,
+          /usr/include/upb,
           /usr/lib/cmake/protobuf, and
           /usr/lib/cmake/utf8_range
         </seg>

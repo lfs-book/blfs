@@ -6,9 +6,9 @@
 
   <!ENTITY nmap-download-http "https://nmap.org/dist/nmap-&nmap-version;.tar.bz2">
   <!ENTITY nmap-download-ftp  " ">
-  <!ENTITY nmap-md5sum        "faef7f359731ab2fa0321939ff0fbbab">
+  <!ENTITY nmap-md5sum        "e4ac67fa85b4c2a93b49c811b1f0d163">
   <!ENTITY nmap-size          "12 MB">
-  <!ENTITY nmap-buildsize     "108 MB (add 38 MB for tests)">
+  <!ENTITY nmap-buildsize     "109 MB (add 38 MB for tests)">
   <!ENTITY nmap-time          "0.4 SBU (Using parallelism=4; add 0.1 SBU for tests)">
 ]>
 
@@ -88,7 +88,11 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <note>
       <para>
-        These packages are recommended because if they're not installed, the
+        If the <application>PyGObject3</application> module is not
+        installed, you'd have to skip the command making the build system
+        use the LFS <application>Setuptools</application> installation and
+        then an Internet connection would be needed.  The other
+        packages are recommended because if they're not installed, the
         build process will compile and link against its own (often older)
         version.
       </para>
@@ -115,6 +119,18 @@
 
   <sect2 role="installation">
     <title>Installation of Nmap</title>
+
+    <para>
+      Make the build system use the <application>Setuptools</application>
+      Python module from LFS instead of downloading a copy from the
+      Internet, and install the Python wheels already created when running
+      the <command>make</command> instead of rebuilding them again on
+      <command>make install</command>:
+    </para>
+
+<screen><userinput>sed -ri Makefile.in \
+    -e 's#-m build#&amp; --no-isolation#'  \
+    -e '/pip install/s#(ZENMAP|NDIFF)DIR\)/#&amp;dist/*.whl#'</userinput></screen>
 
     <para>
       Install <application>Nmap</application> by running the following

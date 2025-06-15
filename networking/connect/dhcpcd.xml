@@ -6,9 +6,9 @@
 
   <!ENTITY dhcpcd-download-http "https://github.com/NetworkConfiguration/dhcpcd/releases/download/v&dhcpcd-version;/dhcpcd-&dhcpcd-version;.tar.xz">
   <!ENTITY dhcpcd-download-ftp  " ">
-  <!ENTITY dhcpcd-md5sum        "417ccbdef28a633e212b4fb59ba06fbf">
+  <!ENTITY dhcpcd-md5sum        "ce62bc6caf02421ac40135dbb92377b5">
   <!ENTITY dhcpcd-size          "272 KB">
-  <!ENTITY dhcpcd-buildsize     "3.8 MB (with tests)">
+  <!ENTITY dhcpcd-buildsize     "3.2 MB (with tests)">
   <!ENTITY dhcpcd-time          "less than 0.1 SBU (with tests)">
 ]>
 
@@ -106,8 +106,7 @@
     <para>
       If you however would like to use privilege separation, additional
       installation steps are necessary to set up the proper environment. Issue
-      the following commands as the
-      <systemitem class="username">root</systemitem> user:
+      the following commands as the &root; user:
     </para>
 
 <screen role="root"><userinput>install  -v -m700 -d /var/lib/dhcpcd &amp;&amp;
@@ -164,7 +163,7 @@ make</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role='root'><userinput>make install</userinput></screen>
@@ -250,7 +249,7 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
         the network service script,
         <filename>/usr/lib/services/dhcpcd</filename>
         included in the <xref linkend="bootscripts"/> package
-        (as user <systemitem class="username">root</systemitem>):
+        (as the &root; user):
       </para>
 
       <indexterm zone="dhcpcd dhcpcd-init">
@@ -275,10 +274,10 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
       </note>
 
       <para id="dhcpcd-config2">
-        Finally, as the <systemitem class="username">root</systemitem> user
-        create the <filename>/etc/sysconfig/ifconfig.eth0</filename>
-        configuration file using the following commands. Adjust appropriately
-        for additional interfaces:
+        Finally, as the &root; user, create the
+        <filename>/etc/sysconfig/ifconfig.eth0</filename> configuration file
+        using the following commands. Adjust appropriately for additional
+        interfaces:
       </para>
 
       <indexterm zone="dhcpcd dhcpcd-config2">
@@ -310,10 +309,9 @@ EOF</userinput></screen>
       <para id="dhcpcd-config4">
         Although not usual, it is possible that you need
         to configure <application>dhcpcd</application> to use a fixed ip. Here,
-        we give an example. As the
-        <systemitem class="username">root</systemitem> user create the
+        we give an example. As the &root; user, create the
         <filename>/etc/sysconfig/ifconfig.eth0</filename> configuration file
-        using the following commands.  Adjust appropriately for additional
+        using the following commands. Adjust appropriately for additional
         interfaces and for the actual ip and router you need:
       </para>
 
@@ -351,8 +349,7 @@ EOF</userinput></screen>
         If you want to configure network interfaces at boot using
         <command>dhcpcd</command>, you need to install the
         systemd unit included in <xref linkend="systemd-units"/>
-        package by running the following command as the
-        <systemitem class="username">root</systemitem> user:
+        package by running the following command as the &root; user:
       </para>
 
 <screen role="root"><userinput>make install-dhcpcd</userinput></screen>
@@ -392,7 +389,7 @@ EOF</userinput></screen>
       <para>
         At this point you can test if <command>dhcpcd</command> is
         behaving as expected by running the following command as the
-        <systemitem class="username">root</systemitem> user:
+        &root; user:
       </para>
 
 <screen role="root"><userinput>systemctl start dhcpcd@<replaceable>eth0</replaceable></userinput></screen>
@@ -400,8 +397,7 @@ EOF</userinput></screen>
       <para>
         To start <command>dhcpcd</command> on a specific interface
         at boot, enable the previously installed systemd unit by
-        running the following command as the
-        <systemitem class="username">root</systemitem> user:
+        running the following command as the &root; user:
       </para>
 
 <screen role="root"><userinput>systemctl enable dhcpcd@<replaceable>eth0</replaceable></userinput></screen>

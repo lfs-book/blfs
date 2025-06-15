@@ -98,6 +98,10 @@ exit</xsl:text>
         <xsl:when test="contains($patch.name, 'nss-standalone')">
           <xsl:text>/nss</xsl:text>
         </xsl:when>
+          <!-- python requests module -->
+        <xsl:when test="contains($patch.name, 'requests')">
+          <xsl:text>/requests</xsl:text>
+        </xsl:when>
           <!-- tidy -->
         <xsl:when test="contains($patch.name, 'tidy')">
           <xsl:text>/tidy</xsl:text>

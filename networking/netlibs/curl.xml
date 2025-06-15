@@ -6,10 +6,10 @@
 
   <!ENTITY curl-download-http "https://curl.se/download/curl-&curl-version;.tar.xz">
   <!ENTITY curl-download-ftp  " ">
-  <!ENTITY curl-md5sum        "b94f85cf7c03fcc31b3750e45a424f26">
+  <!ENTITY curl-md5sum        "cba9ea54bccefed639a529b1b5b17405">
   <!ENTITY curl-size          "2.7 MB">
-  <!ENTITY curl-buildsize     "61 MB (add 15 MB for tests)">
-  <!ENTITY curl-time          "0.2 SBU (with parallelism=4; add 4.9 SBU for tests (without valgrind, add 14 SBU with valgrind))">
+  <!ENTITY curl-buildsize     "52 MB (add 68 MB for tests)">
+  <!ENTITY curl-time          "0.3 SBU (add 4.9 SBU for tests (without valgrind, add 16 SBU with valgrind) all using parallelism=4)">
 ]>
 
 <sect1 id="curl" xreflabel="cURL-&curl-version;">
@@ -76,7 +76,7 @@
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/curl-&curl-version;-function_naming-1.patch"/>
+          <ulink url="&patch-root;/curl-&curl-version;-upstream_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -141,15 +141,21 @@
 
   <sect2 role="installation">
     <title>Installation of cURL</title>
+<!--
+    <para>
+      First, apply a patch from upstream:
+    </para>
 
+<screen><userinput>patch -Np1 -i ../curl-&curl-version;-upstream_fix-1.patch</userinput></screen>
+-->
     <para>
       Install <application>cURL</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr                           \
-            --disable-static                        \
-            --with-openssl                          \
+<screen><userinput>./configure --prefix=/usr    \
+            --disable-static \
+            --with-openssl   \
             --with-ca-path=/etc/ssl/certs &amp;&amp;
 make</userinput></screen>
 
