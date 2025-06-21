@@ -282,7 +282,13 @@ ac_add_options --without-wasm-sandboxed-libraries
 # telemetry reporting in Firefox.
 unset MOZ_TELEMETRY_REPORTING
 
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir</literal>
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
+
+# By default firefox will attempt to use the window class firefox-default on launch. 
+This makes the icon not work properly because wayland does not support the X11 property 
+class header. Change the remoting name to fix this. This is also reflected in the .desktop
+file where StartupWMClass is set to firefox
+MOZ_APP_REMOTINGNAME=firefox</literal>
 EOF</userinput></screen>
 
     <!-- https://phabricator.services.mozilla.com/D219025 -->
@@ -541,7 +547,8 @@ Type=Application
 Icon=firefox
 Categories=GNOME;GTK;Network;WebBrowser;
 MimeType=$MIMETYPE
-StartupNotify=true</literal>
+StartupNotify=true
+StartupWMClass=firefox</literal>
 EOF
 
 unset MIMETYPE &amp;&amp;
