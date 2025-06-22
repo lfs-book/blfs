@@ -250,9 +250,10 @@
       Configure and build the package with the following commands:
     </para>
 
-<screen><userinput>unset JAVA_HOME                             &amp;&amp;
-unset CLASSPATH                             &amp;&amp;
-unset MAKEFLAGS                             &amp;&amp;
+<screen><userinput>export MAKEFLAGS_HOLD=$MAKEFLAGS           &amp;&amp;
+unset  JAVA_HOME                           &amp;&amp;
+unset  CLASSPATH                           &amp;&amp;
+unset  MAKEFLAGS                           &amp;&amp;
 bash configure --enable-unlimited-crypto    \
                --disable-warnings-as-errors \
                --with-stdc++lib=dynamic     \
@@ -363,6 +364,21 @@ done</userinput></screen>
         <command>cp</command> command.
       </para>
     </note>
+
+    <para>
+      There will be plenty of binaries with debug info that take up over half
+      of the installed size. If you don't care about debugging, you can remove
+      the info:
+    </para>
+
+<screen><userinput>find /opt/jdk-&openjdk-version;+&openjdk-build; -name *.debuginfo -delete</userinput></screen>
+
+    <para>
+      Restore the <envar>MAKEFLAGS</envar> variable:
+    </para>
+
+<screen><userinput>export MAKEFLAGS=$MAKEFLAGS_HOLD &amp;&amp;
+unset  MAKEFLAGS_HOLD</userinput></screen>
 
     <para>
       There are now two <application>OpenJDK</application> SDKs installed
