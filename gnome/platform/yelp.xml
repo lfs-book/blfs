@@ -6,9 +6,9 @@
 
   <!ENTITY yelp-download-http "&gnome-download-http;/yelp/&gnome-42;/yelp-&yelp-version;.tar.xz">
   <!ENTITY yelp-download-ftp  " ">
-  <!ENTITY yelp-md5sum        "3792122c4ab90725716cd88e9274f0f6">
-  <!ENTITY yelp-size          "1.4 MB">
-  <!ENTITY yelp-buildsize     "21 MB">
+  <!ENTITY yelp-md5sum        "55f5edc7e1d52797a8fba23540fa72c1">
+  <!ENTITY yelp-size          "1.2 MB">
+  <!ENTITY yelp-buildsize     "13 MB">
   <!ENTITY yelp-time          "0.1 SBU">
 ]>
 
@@ -66,6 +66,7 @@
       </listitem>
     </itemizedlist>
 
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -75,6 +76,7 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">Yelp Dependencies</bridgehead>
 
@@ -91,10 +93,12 @@
       <xref linkend="desktop-file-utils"/>
     </para>
 
+<!--
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gtk-doc"/>
     </para>
+-->
 
     <note>
       <para>
@@ -111,19 +115,24 @@
   <sect2 role="installation">
     <title>Installation of Yelp</title>
 
+<!--
     <para>
       First, fix a security vulnerability that allows for arbitrary file reads:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../yelp-&yelp-version;-security_fix-1.patch</userinput></screen>
+-->
 
     <para>
       Install <application>Yelp</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+ninja</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -133,7 +142,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
     <para>
       Still as the <systemitem class="username">root</systemitem> user, ensure
@@ -146,6 +155,7 @@ make</userinput></screen>
 
   </sect2>
 
+<!--
   <sect2 role="commands">
     <title>Command Explanations</title>
 
@@ -156,6 +166,7 @@ make</userinput></screen>
       href="../../xincludes/gtk-doc-rebuild.xml"/>
 
   </sect2>
+-->
 
   <sect2 role="content">
     <title>Contents</title>
