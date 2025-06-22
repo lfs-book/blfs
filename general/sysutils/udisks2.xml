@@ -116,14 +116,13 @@
   <sect2 role="installation">
     <title>Installation of UDisks</title>
 
-<!-- Applied upstream in version 2.9.0.
     <para>
-      First, fix a regression caused by glib-2.64:
+      First, fix a security vulnerability that can allow for privilege
+      escalation, by forcing filesystems to be mounted with nosuid.
     </para>
 
-<screen><userinput remap="pre">sed -i '/stdout_channel = g/a g_io_channel_set_encoding (job->child_stdout_channel, NULL, NULL);' src/udisksspawnedjob.c &amp;&amp;
-sed -i '/stderr_channel = g/a g_io_channel_set_encoding (job->child_stderr_channel, NULL, NULL);' src/udisksspawnedjob.c</userinput></screen>
--->
+<screen><userinput remap="pre">sed -i 's/fstype, NULL/fstype, "nodev,nosuid"/' src/udiskslinuxfilesystemhelpers.c</userinput></screen>
+
 
     <para>
       Install <application>UDisks</application> by running the following
