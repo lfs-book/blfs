@@ -326,7 +326,7 @@ fi</userinput></screen>
         running the following commands:
       </para>
 
-<screen><userinput>make CCARGS="$CCARGS" AUXLIBS="$AUXLIBS" makefiles &amp;&amp;
+<screen><userinput>make CC="gcc -std=gnu17" CCARGS="$CCARGS" AUXLIBS="$AUXLIBS" makefiles &amp;&amp;
 make</userinput></screen>
 
     <!-- There is a test suite, but it fails a lot. It seems to need
@@ -367,6 +367,16 @@ make</userinput></screen>
       destination directories in all but the few cases. If the
       <option>html_directory</option> and <option>readme_directory</option>
       options are not set then the documentation will not be installed.
+    </para>
+
+    <!--
+      Next version of postfix still has gcc15 issues
+      Tested at 22 July 25 with RC postfix-3.11-20250621.tar.gz
+    -->
+    <para>
+      <option>CC="gcc -std=gnu17"</option>: this is used to overcome an issue
+      with gcc-15. This version of gcc uses <literal>-std=gnu23</literal> by
+      default which exposes several issues in the source code.
     </para>
 
     <para>
