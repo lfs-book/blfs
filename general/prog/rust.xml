@@ -6,7 +6,7 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "dace019fa53452f321b93d34a37f995d">
+  <!ENTITY rust-md5sum        "9591d6806ab23c04b862ce934b1e86eb">
   <!ENTITY rust-size          "271 MB">
   <!ENTITY rust-buildsize     "9.4 GB (252 MB installed); add 7.4 GB if running the tests">
   <!ENTITY rust-time          "9.0 SBU (including download time; add 15 SBU for tests, both using parallelism=8)">
@@ -146,17 +146,15 @@
     </itemizedlist>
 
     <!--  keep this here for reuse in case we need a patch -->
-    <!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required patch:
-          <ulink url="&patch-root;/rustc-&rust-version;-llvm_20-1.patch"/>
+          Optional patch (required for testing the package):
+          <ulink url="&patch-root;/rustc-&rust-version;-testsuite_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
-    -->
 
     <bridgehead renderas="sect3">Rust Dependencies</bridgehead>
 
@@ -242,7 +240,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn us to do such a review.
-change-id = 138986
+change-id = 140732
 
 [llvm]
 # When using system llvm prefer shared libraries
@@ -306,13 +304,14 @@ EOF</userinput></screen>
       </para>
     </note>
 -->
-<!-- retain here in case we need a patch
+<!-- retain here in case we need a patch -->
     <para>
-      Now fix build failures with LLVM 20:
+      If running the test suite, apply a patch to make it compatible with
+      GCC-15 or newer:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../rustc-&rust-version;-llvm_20-1.patch</userinput></screen>
--->
+<screen><userinput remap="pre">patch -Np1 -i ../rustc-&rust-version;-testsuite_fix-1.patch</userinput></screen>
+
     <para>
       Compile <application>Rust</application> by running the following
       commands:
@@ -342,6 +341,16 @@ EOF</userinput></screen>
     </para>
 
 <screen remap="test"><userinput>./x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
+
+    <para>
+      Four tests in the bootstrap test suite are known to fail because
+      they expect to run in the Rust Git repository.
+      The test named <filename>tests/run-make/musl-default-linking</filename>
+      is known to fail because we've not enabled the AArch64 target in
+      <xref linkend='llvm'/>.  The test named
+      <filename>tests/run-make/linker-warning</filename> is known to fail
+      due to some reason unknown yet.
+    </para>
 
 <!-- Let's just comment this out.  Nobody has tested on a system w/o
      FileCheck for a long time.
