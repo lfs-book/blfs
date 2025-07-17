@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY balsa-download-http "https://pawsa.fedorapeople.org/balsa/balsa-&balsa-version;.tar.xz">
+  <!ENTITY balsa-download-http "https://gitlab.gnome.org/GNOME/balsa/-/archive/&balsa-version;/balsa-&balsa-version;.tar.gz">
   <!ENTITY balsa-download-ftp  " ">
-  <!ENTITY balsa-md5sum        "bebd22cb6bac87ee05255c48ee1d28dd">
-  <!ENTITY balsa-size          "3.5 MB">
-  <!ENTITY balsa-buildsize     "66 MB">
-  <!ENTITY balsa-time          "0.2 SBU (Using parallelism=4)">
+  <!ENTITY balsa-md5sum        "c1039c22e8c2544c6a357626d71b6220">
+  <!ENTITY balsa-size          "6.0 MB">
+  <!ENTITY balsa-buildsize     "44 MB">
+  <!ENTITY balsa-time          "0.1 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="balsa" xreflabel="Balsa-&balsa-version;">
@@ -27,7 +27,7 @@
 
     <para>
       The <application>Balsa</application> package contains a
-      <application>GNOME</application>-2 based mail client.
+      lightweight <application>GTK+</application>-based mail client.
     </para>
 
     &lfs123_checked;
@@ -66,6 +66,7 @@
       </listitem>
     </itemizedlist>
 
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
 
     <itemizedlist spacing="compact">
@@ -76,18 +77,19 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">Balsa Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="aspell"/>,
       <xref linkend="enchant"/>,
       <xref linkend="gmime3"/>,
       <xref linkend="gpgme"/>,
-      <xref linkend="gtk3"/>, and
-      <xref linkend="libnotify"/>
-      <!--<xref linkend="rarian"/>-->
+      <xref linkend="gtk3"/>,
+      <xref linkend="libical"/>,
+      <xref linkend="libnotify"/>, and
+      <xref linkend="libsecret"/>
     </para>
 
     <bridgehead renderas="sect4">Required (Runtime)</bridgehead>
@@ -99,18 +101,17 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="compface"/>,
-      <xref linkend="gcr"/>,
+      <xref linkend="gspell"/>,
       <xref linkend="gtksourceview"/>,
       <xref linkend="libcanberra"/>,
-      <xref linkend="libsecret"/>,
       <xref linkend="mitkrb"/>,
       <xref linkend="openldap"/>,
       <xref linkend="procmail"/>,
       <xref linkend="sqlite"/>,
       <xref linkend="webkitgtk"/>,
       <ulink url="https://pypi.python.org/pypi/html2text/">html2text</ulink>,
-      <ulink url="https://osmo-pim.sourceforge.net/">osmo</ulink>,
-      <ulink url="https://sourceforge.net/projects/rubrica.berlios/">rubrica</ulink>,
+      <ulink url="https://github.com/linuxmint/xapp">libxapp</ulink>,
+      <ulink url="https://osmo-pim.sourceforge.net/">osmo</ulink>, and
       <ulink url="&gnome-download-http;/yelp-tools/">yelp-tools</ulink>
     </para>
 
@@ -119,23 +120,27 @@
   <sect2 role="installation">
     <title>Installation of Balsa</title>
 
+<!-- Not needed with 2.6.5.
     <para>
       First, fix build issues when configuring without WebKitGTK, or when
       using WebKitGTK-2.38 or later.
     </para>
 
 <screen><userinput>patch -Np1 -i ../balsa-&balsa-version;-upstream_fixes-2.patch</userinput></screen>
+-->
 
     <para>
       Install <application>Balsa</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr            \
-            --sysconfdir=/etc        \
-            --localstatedir=/var/lib \
-            --without-html-widget    &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup .. --prefix=/usr       \
+               --buildtype=release \
+               -D html-widget=no   &amp;&amp;
+ninja</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -145,105 +150,50 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role='root'><userinput>make install</userinput></screen>
+<screen role='root'><userinput>ninja install</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <!-- Support has been added for this, but the option is still unrecognized.
     <para>
-      <parameter>- -with-rubrica</parameter>: This parameter is used
-      to provide Rubrica2 address book support.
-    </para>
-    -->
-
-    <!-- configure says this is an invalid option with 2.5.11
-    <para>
-      <option>- -enable-smime</option>: Use this option to enable S/MIME
-      support if <application>GnuPG-2.x.x</application> is installed.
-    </para>
-    -->
-
-    <para>
-      <parameter>--without-html-widget</parameter>: This option disables
+      <parameter>-D html-widget=no</parameter>: This option disables
       building the HTML renderer. If you want the HTML renderer to be built,
       verify that you have <xref linkend="webkitgtk"/> installed, and then
       remove this option.
     </para>
 
     <para>
-      <option>--with-canberra</option>: Enable libcanberra support.
+      <option>-D canberra=true</option>: This switch enables support for event
+      sounds via <xref linkend="libcanberra" role="nodep"/>.
     </para>
 
     <para>
-      <option>--with-compface</option>: Enable compface support.
+      <option>-D compface=true</option>: This switch enables support for using
+      <xref linkend="compface" role="nodep"/> to compress thumbnails for contacts.
     </para>
 
     <para>
-      <option>--with-gcr</option>: Use libgcr for TLS support.
+      <option>-D gcr=true</option>: This switch enables support for using libgcr
+      for handling TLS certificates. This requires that the
+      <xref linkend="gcr" role="nodep"/> package is installed, which is part
+      of a runtime dependency for libsecret.
     </para>
 
     <para>
-      <option>--with-gss</option>: Enable GSSAPI support.
+      <option>-D gss=true</option>: This switch enables support for Kerberos
+      authentication. This requires that the
+      <xref linkend="mitkrb" role="nodep"/> package is installed.
     </para>
 
     <para>
-      <option>--with-ldap</option>: Use this option to enable LDAP address
-      book support if <application>OpenLDAP</application> is installed.
-    </para>
-
-    <para>
-      <option>--with-libsecret</option>: Enable strong password
-      support and support for gnome-keyring to store passwords.
-    </para>
-
-    <!-- configure says this is an invalid option with 2.5.11
-    <para>
-      <option>- -with-gpgme</option>: Use this option to enable GPG support
-      if <quote><application>GnuPG</application> Made Easy</quote>
-      (<application>GPGME</application>) is installed.
-    </para>
-    -->
-
-    <para>
-      <option>--with-sqlite</option>: Use this option to enable SQLite
-      address book support if <application>SQLite</application> is
-      installed.
+      <option>-D ldap=true</option>: This switch enables LDAP address book
+      support. This requires that the <xref linkend="openldap" role="nodep"/>
+      package is installed.
     </para>
 
   </sect2>
-
-<!-- All of this information is invalid. These options no longer exist since
-     Balsa was ported to GTK3.
-  <sect2 role="configuration">
-    <title>Configuring Balsa</title>
-
-    <sect3>
-      <title>Configuration Information</title>
-
-      <para>
-        All configuration of <application>Balsa</application> is done
-        through the <application>Balsa</application> menu system, with mailbox
-        configuration done with the Settings&mdash;&gt;Preferences menu.
-      </para>
-
-      <para>
-        If you are unable to connect to your ISP, they probably don't
-        support APOP.  Disable it in Settings/Preferences/POP3/advanced.
-      </para>
-
-      <para>
-        If you enable filters for your incoming POP3 mail, you must have
-        <xref linkend="procmail"/> installed, as the incoming mail will be
-        handed off to <command>procmail</command> for processing.
-      </para>
-
-    </sect3>
-
-  </sect2>
--->
 
   <sect2 role="content">
     <title>Contents</title>
@@ -271,7 +221,7 @@ make</userinput></screen>
         <term><command>balsa</command></term>
         <listitem>
           <para>
-            is a glib based mail client
+            is a GTK+-based mail client
           </para>
           <indexterm zone="balsa balsa-prog">
             <primary sortas="b-balsa">balsa</primary>
@@ -283,7 +233,7 @@ make</userinput></screen>
         <term><command>balsa-ab</command></term>
         <listitem>
           <para>
-            is the address-book application used by <command>balsa</command>
+            is the address book application used by <command>balsa</command>
           </para>
           <indexterm zone="balsa balsa-ab">
             <primary sortas="b-balsa">balsa-ab</primary>
