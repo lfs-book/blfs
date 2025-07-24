@@ -293,10 +293,15 @@ install -v -m644 dbus/dbus-wpa_supplicant.conf \
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="nodump" revision="sysv"><userinput>wpa_passphrase <replaceable>SSID</replaceable> <replaceable>SECRET_PASSWORD</replaceable> &gt; /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</userinput></screen>
+<screen role="nodump" revision="sysv"><userinput>wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</userinput></screen>
 
 <screen role="nodump" revision="systemd"><userinput>install -v -dm755 /etc/wpa_supplicant &amp;&amp;
-wpa_passphrase <replaceable>SSID</replaceable> <replaceable>SECRET_PASSWORD</replaceable> &gt; /etc/wpa_supplicant/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</userinput></screen>
+wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/wpa_supplicant/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</userinput></screen>
+
+      <para>
+        The <command>wpa_supplicant</command> command will ask you to
+        input the password of the access point.
+      </para>
 
       <para>
         <phrase revision="sysv">
