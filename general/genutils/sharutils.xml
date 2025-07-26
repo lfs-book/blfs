@@ -72,21 +72,17 @@
     <title>Installation of Sharutils</title>
 
     <para>
-      Fix a heap buffer overflow, and an issue exposed by GCC-10:
+      First, fix issues exposed by current GCC versions:
     </para>
 
-<screen><userinput>sed -i 's/BUFSIZ/rw_base_size/' src/unshar.c &amp;&amp;
-sed -i '/program_name/s/^/extern /' src/*opts.h</userinput></screen>
+<screen><userinput>patch -Np1 -i ../sharutils-&sharutils-version;-consolidated-1.patch</userinput></screen>
 
     <para>
       Install <application>Sharutils</application> by running
       the following commands:
     </para>
 
-<screen><userinput>sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c        &amp;&amp;
-echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h &amp;&amp;
-
-./configure --prefix=/usr &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --prefix=/usr --disable-dependency-tracking &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -101,6 +97,21 @@ make</userinput></screen>
 
   </sect2>
 
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>--disable-dependency-tracking</parameter>: This switch is used
+      to disable unneeded code in the build system.
+    </para>
+
+    <para>
+      <parameter>--with-openssl</parameter>: This optional switch is used to enable
+      incorporation of integrity checks into the package's executable programs.
+    </para>
+
+  </sect2>
+
   <sect2 role="content">
     <title>Contents</title>
 
@@ -111,7 +122,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          shar, unshar, uudecode and uuencode
+          shar, unshar, uudecode, and uuencode
         </seg>
         <seg>
           None
