@@ -90,6 +90,10 @@ exit</xsl:text>
         <xsl:when test="contains($patch.name, 'konsole')">
           <xsl:text>/konsole</xsl:text>
         </xsl:when>
+          <!-- httpd -->
+        <xsl:when test="contains($patch.name, 'httpd')">
+          <xsl:text>/httpd</xsl:text>
+        </xsl:when>
           <!-- node -->
         <xsl:when test="contains($patch.name, 'node')">
           <xsl:text>/node</xsl:text>
