@@ -77,7 +77,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/>
+      <xref linkend="docutils"/> and
+      <xref linkend="gi-docgen"/>
     </para>
 
   </sect2>
@@ -94,6 +95,24 @@
 cd    build &amp;&amp;
 
 meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If <xref linkend='docutils'/> is installed, build the man
+      pages:
+    </para>
+
+    <screen><userinput remap='doc'>meson configure -D man=true &amp;&amp;
+ninja</userinput></screen>
+
+
+    <para>
+      If <xref linkend='gi-docgen'/> is installed, build the API
+      documentation:
+    </para>
+
+    <screen><userinput remap='doc'>sed "/json_docdir =/s|$| / 'json-glib-&json-glib-version;'|" -i ../doc/meson.build &amp;&amp;
+meson configure -D documentation=enabled &amp;&amp;
 ninja</userinput></screen>
 
     <para>
