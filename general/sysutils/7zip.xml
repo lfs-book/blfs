@@ -83,12 +83,19 @@
     <title>Installation of 7zip</title>
 
     <para>
+      Turn off <literal>-Werror</literal> to avoid warnings being treated as
+      errors:
+    </para>
+
+<screen><userinput>sed 's/-Werror //g' -i CPP/7zip/7zip_gcc.mak</userinput></screen>
+
+    <para>
       Install <application>7zip</application> by running the following
       commands:
     </para>
 
 <screen><userinput>(for i in Bundles/{Alone,Alone7z,Format7zF,SFXCon} UI/Console; do
-    make -C CPP/7zip/$i -f ../../cmpl_gcc.mak CFLAGS_WARN_ALL=-Wall || exit
+    make -C CPP/7zip/$i -f ../../cmpl_gcc.mak || exit
 done)</userinput></screen>
 
     <para>
@@ -96,7 +103,7 @@ done)</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>install -vDm755 CPP/7zip/Bundles/Alone{/b/g/7za,7z/b/g/7zr} \
@@ -114,16 +121,6 @@ done) &amp;&amp;
 
 cp -rv DOC -T /usr/share/doc/7zip-&seven-zip-version;</userinput></screen>
 
-  </sect2>
-
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
-    <para>
-      <parameter>CFLAGS_WARN_WALL=-Wall</parameter>: This switch overrides
-      the <literal>CFLAGS_WARN_WALL</literal>. The default contains
-      <parameter>-Wall</parameter> which can cause a build failure.
-    </para>
   </sect2>
 
   <sect2 role="content">
