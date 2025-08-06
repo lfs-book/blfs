@@ -176,13 +176,17 @@
   <sect2 role="installation">
     <title>Installation of Python 3</title>
 
-<!--
+    <!-- CVE-2025-8194/BLFS Ticket #21895. The sed adds three lines, thank you
+         Bruce for the sed! Please do not modify the spacing. -renodr -->
     <para>
-      First, fix a security vulnerability in Python's Unicode support:
+      First, fix a security vulnerability in the tarfile module:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../Python-&python3-version;-security_fixes-1.patch</userinput></screen>
--->
+<screen><userinput remap="pre">sed -e '/Round/{n;n;a\
+        # Only non-negative offsets are allowed\
+        if count &lt; 0:\
+            raise InvalidHeaderError("invalid offset")
+}' -i Lib/tarfile.py</userinput></screen>
 
     <para>
       Install <application>Python 3</application> by running the following
