@@ -30,8 +30,6 @@
       In BLFS, the source code of SpiderMonkey is taken from Firefox.
     </para>
 
-    <!-- To editors: make sure polkit works with mozjs when
-         tagging SpiderMonkey or upgrading it to a new major version.  -->
     &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
@@ -148,13 +146,6 @@ tar: Exiting with failure status due to previous errors
       </para>
 
     </note>
-
-    <para>
-      If you are using ICU-76.1 or later, adapt the build system to use the
-      correct library:
-    </para>
-
-<screen><userinput remap="pre">sed -i 's/icu-i18n/icu-uc &amp;/' js/moz.configure</userinput></screen>
 
     <para>
       Install <application>SpiderMonkey</application> by running the following
@@ -283,6 +274,15 @@ make</userinput></screen>
 <screen role="root"><userinput>make install &amp;&amp;
 rm -v /usr/lib/libjs_static.ajs &amp;&amp;
 sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js&spidermonkey-major;-config</userinput></screen>
+
+    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1973993
+         https://bugzilla.mozilla.org/show_bug.cgi?id=1973994 -->
+    <para>
+      Still as the &root; user, fix two issues with the installed headers:
+    </para>
+
+<screen role='root'><userinput>ln -sfv js/ProfilingCategoryList.h /usr/include/mozjs-140 &amp;&amp;
+sed '$i#define XP_UNIX' -i /usr/include/mozjs-140/js-config.h</userinput></screen>
 
   </sect2>
 
