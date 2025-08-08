@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "9591d6806ab23c04b862ce934b1e86eb">
-  <!ENTITY rust-size          "271 MB">
+  <!ENTITY rust-md5sum        "982f087479302e6d91432efc81852b00">
+  <!ENTITY rust-size          "256 MB">
   <!ENTITY rust-buildsize     "9.4 GB (252 MB installed); add 7.4 GB if running the tests">
   <!ENTITY rust-time          "9.0 SBU (including download time; add 15 SBU for tests, both using parallelism=8)">
 ]>
@@ -343,6 +343,10 @@ EOF</userinput></screen>
 <screen remap="test"><userinput>./x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
 
     <para>
+      <!-- https://github.com/rust-lang/rust/issues/145079 -->
+      Eight tests in the ui test suite are known to fail with
+      <literal>description</literal> set in the <literal>build</literal>
+      section of the <filename>bootstrap.toml</filename> file.
       Four tests in the bootstrap test suite are known to fail because
       they expect to run in the Rust Git repository.
       The test named <filename>tests/run-make/musl-default-linking</filename>
