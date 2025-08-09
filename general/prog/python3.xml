@@ -7,10 +7,10 @@
   <!ENTITY python3-download-http
            "https://www.python.org/ftp/python/&python3-version;/Python-&python3-version;.tar.xz">
   <!ENTITY python3-download-ftp  " ">
-  <!ENTITY python3-md5sum        "dbaa8833aa736eddbb18a6a6ae0c10fa">
+  <!ENTITY python3-md5sum        "4170b57e642c15a1dfed17313ec57cc2">
   <!ENTITY python3-size          "22 MB">
-  <!ENTITY python3-buildsize     "308 MB (add 59 MB for tests)">
-  <!ENTITY python3-time          "1.5 SBU (add 1.5 SBU for tests; both using parallelism=4)">
+  <!ENTITY python3-buildsize     "309 MB (add 59 MB for tests)">
+  <!ENTITY python3-time          "1.5 SBU (add 2.8 SBU for tests; both using parallelism=4)">
   <!--
   Note: Size does not reflect docs that were installed in LFS.
   Test time measured with 60 second timeout.
@@ -176,18 +176,6 @@
   <sect2 role="installation">
     <title>Installation of Python 3</title>
 
-    <!-- CVE-2025-8194/BLFS Ticket #21895. The sed adds three lines, thank you
-         Bruce for the sed! Please do not modify the spacing. -renodr -->
-    <para>
-      First, fix a security vulnerability in the tarfile module:
-    </para>
-
-<screen><userinput remap="pre">sed -e '/Round/{n;n;a\
-        # Only non-negative offsets are allowed\
-        if count &lt; 0:\
-            raise InvalidHeaderError("invalid offset")
-}' -i Lib/tarfile.py</userinput></screen>
-
     <para>
       Install <application>Python 3</application> by running the following
       commands:
@@ -236,6 +224,10 @@ make</userinput></screen>
          For Python-3.13.4
          Total tests: run=45,204 failures=2 skipped=1,745
          Total test files: run=481/480 failed=3 skipped=20 resource_denied=2 rerun=3
+
+         For Python-3.13.6
+         Total tests: run=45,289 failures=2 skipped=1,966
+         Total test files: run=482/480 failed=4 skipped=20 resource_denied=2 rerun=4
     -->
 
     <para>
@@ -248,7 +240,7 @@ make</userinput></screen>
 
     <para>
       Of over 44,000 tests, the following tests are known to fail:
-      test_importlib and test_peg_generator.
+      test_idle, test_importlib, test_tkinter, and test_zipfile.
     </para>
 
     <para>
