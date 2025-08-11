@@ -345,19 +345,6 @@ EOF</userinput></screen>
     tar -xf $file
     pushd $packagedir
 
-       # Fix some build issues with qt-6.9.0 and later
-       case $name in
-         breeze)
-           sed -e '/QList/i #include &lt;QDebug&gt;' \
-               -i cursors/src/kcursorgen/kcursorgen.h
-         ;;
-
-         plasma-vault)
-           sed -e '/QFuture/i #include &lt;QDebug&gt;' \
-               -i kded/engine/commandresult.h
-         ;;
-       esac
-
        mkdir build
        cd    build
 
