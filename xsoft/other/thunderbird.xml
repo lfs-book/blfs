@@ -200,6 +200,29 @@ ac_add_options --with-system-zlib
 ac_add_options --without-wasm-sandboxed-libraries</literal>
 EOF</userinput></screen>
 
+
+    <para>
+      Change a Rust file to allow implicit autoref to prevent a build failure
+      and replace CRLF with LF endings
+      <footnote><para>
+        CRLF, or Carriage Return Line Feed, is used most often on Windows, and
+        is juxtaposed with LF, or regular Line Feed, which is seen on Unix and
+        Unix-like systems. CRLF is represented by <literal>\r\n</literal>,
+        whereas LF is represented by <literal>\n</literal>. The
+        <command>sed</command> operation that edits the Rust file inserts a
+        line at the beginning of the file, ending with LF, but as the rest of
+        the lines in the file end wth CRLF, editors like Vim will then
+        represent CRLF with <computeroutput>^M</computeroutput>. Thus, the
+        second expression converts all CRLF ending lines with LF. If the second
+        expression was not there, it shouldn't cause an issue with compilation,
+        but editing the file with a text editor may grow frustrating as a
+        result of this difference.
+      </para></footnote>:
+    </para>
+
+<screen><userinput>sed -e '1i\#![warn(dangerous_implicit_autorefs)]' -e $'s/\r$//' \
+  -i third_party/rust/allocator-api2/src/stable/vec/mod.rs</userinput></screen>
+
     <para>
       Now invoke the Python <command>mach</command> script to compile
       <application>Thunderbird</application>:
