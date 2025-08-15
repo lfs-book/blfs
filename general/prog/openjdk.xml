@@ -193,9 +193,6 @@
       <xref linkend="git"/>,
       <xref linkend="graphviz"/>,
       <xref linkend="mercurial"/>,
-<!-- not needed now, it seems
-      an X Window manager such as <xref linkend="twm"/> (for the tests), and
--->
       <ulink url="https://ccache.dev/">ccache</ulink>,
       <ulink url="https://pandoc.org/">pandoc</ulink>, and
       <ulink url="https://zlib.net/pigz">pigz</ulink>
@@ -212,20 +209,13 @@
     </para>
 
 <screen><userinput>tar -xf ../jtreg-&jtreg-version;.tar.gz</userinput></screen>
-<!--
-    <para>
-      Apply a patch to allow building with make-4.3:
-    </para>
-
-<screen><userinput>patch -p1 -i ../openjdk-&openjdk-version;-make_4.3_fix-1.patch</userinput></screen>
 
     <para>
-      Fix an issue coming from a removed header in glibc-2.32:
+      Fix a build failure caused by glibc-2.42:
     </para>
 
-<screen><userinput>sed -i /sysctl/d \
-    src/jdk.incubator.jpackage/unix/native/libapplauncher/PosixPlatform.cpp</userinput></screen>
--->
+<screen><userinput>find src -name *.*pp -exec sed -i 's/uabs(/g_uabs(/' {} \;</userinput></screen>
+
     <note>
       <para>
         Before proceeding, you should ensure that your environment
