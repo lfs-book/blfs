@@ -133,7 +133,9 @@ passwd -ql gdm</userinput></screen>
     </para>
 
 <screen revision="sysv"><userinput>sed -e 's@systemd@elogind@'                                \
+    -e 's/-session optional/-session required/'            \
     -e '/elogind/isession  required       pam_loginuid.so' \
+
     -i data/pam-lfs/gdm-launch-environment.pam &amp;&amp;
 
 mkdir build &amp;&amp;
@@ -143,6 +145,7 @@ meson setup ..                   \
       --prefix=/usr              \
       --buildtype=release        \
       -D gdm-xsession=true       \
+      -D initial-vt=7            \
       -D run-dir=/run/gdm        \
       -D logind-provider=elogind \
       -D systemd-journal=false   \
@@ -179,10 +182,15 @@ ninja</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
 
-    <para>
-      <option>-D initial-vt=7</option>: Use this switch
-      to make <application>GDM</application> start on VT7
-      instead of the first free VT.
+    <!-- This is needed due to elogind not being started by a bootscript and
+         not being available until too late. -->
+    <para revision="sysv">
+      <parameter>-D initial-vt=7</parameter>: This switch starts GDM on VT7
+      by default, since on SysV systems, elogind is not available until it
+      gets activated by PAM during a login session. The default behavior is
+      to start on the currently active TTY, but this behavior causes GDM to
+      fail to start in virtual environments and other situations where Wayland
+      is not supported.
     </para>
 
     <para>
@@ -234,14 +242,10 @@ ninja</userinput></screen>
         qemu), GDM will hide Wayland sessions by
         default. This is often done to prevent users from encountering problems
         with buggy drivers, which can result in system lockups, application
-        crashes, power management problems, and graphics slowdowns.
-	<phrase revision="sysv">However, on sysv, a permission problem
-	prevents running X11 for user <systemitem role="username">gdm
-	</systemitem>, so running on wayland is mandatory. If your system
-	is sysv on a virtual machine or</phrase><phrase revision="systemd">
-	If your system is a virtual machine or</phrase> you have
-        an NVIDIA GPU and still want to try running Wayland sessions anyway,
-        execute the following command as the &root; user:
+        crashes, power management problems, and graphics slowdowns. If your
+        system is a virtual machine or</phrase> you have an NVIDIA GPU and
+        still want to try running Wayland sessions anyway, execute the following
+        command as the &root; user:
       </para>
 
  <screen role="nodump"><userinput>ln -s /dev/null /etc/udev/rules.d/61-gdm.rules</userinput></screen>
