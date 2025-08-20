@@ -406,6 +406,17 @@ systemd-run --user --pty -d -G -p LimitCORE=0 ninja check-all</userinput></scree
       linker is not true with the BFD linker and we've had to stop them
       from using the removed Gold linker.
 
+      <!-- https://github.com/llvm/llvm-project/commit/6beb6f34bc8e -->
+      One test named
+      <literal>DataFlowSanitizer-x86_64 :: atomic.cpp</literal> is known
+      to fail with gcc-15.1 or newer.
+
+      One test named
+      <filename>SanitizerCommon-asan-x86_64-Linux :: onprint.cpp</filename>
+      is known to fail because the unwinder in the sanitizer depends on
+      the frame pointer that the default configuration of Glibc does not
+      enable.
+
       One test named <filename>Linux/clone_setns.cpp</filename> will fail
       if <option>CONFIG_USER_NS</option> is not enabled in kernel
       configuration.
