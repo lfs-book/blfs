@@ -7,7 +7,7 @@
   <!ENTITY spidermonkey-download-http "&mozilla-http;/firefox/releases/&spidermonkey-version;esr/source/firefox-&spidermonkey-version;esr.source.tar.xz">
   <!ENTITY spidermonkey-download-ftp  " ">
   <!-- size and md5sum are in packages.ent -->
-  <!ENTITY spidermonkey-buildsize     "4.4 GB (48 MB installed after removing 38 MB static lib; add 30 MB for the main tests and 27 MB for the jit tests)">
+  <!ENTITY spidermonkey-buildsize     "4.7 GB (48 MB installed after removing 38 MB static lib; add 30 MB for the main tests and 27 MB for the jit tests)">
   <!ENTITY spidermonkey-time          "1.8 SBU (with parallelism=4; add 0.5 SBU for the main tests and 2.1 SBU for the jit tests)">
 ]>
 
@@ -30,7 +30,7 @@
       In BLFS, the source code of SpiderMonkey is taken from Firefox.
     </para>
 
-    &lfs123_checked;
+    &lfs124_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -275,14 +275,12 @@ make</userinput></screen>
 rm -v /usr/lib/libjs_static.ajs &amp;&amp;
 sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js&spidermonkey-major;-config</userinput></screen>
 
-    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1973993
-         https://bugzilla.mozilla.org/show_bug.cgi?id=1973994 -->
+    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1973994 -->
     <para>
-      Still as the &root; user, fix two issues with the installed headers:
+      Still as the &root; user, fix an issue with one of the installed headers:
     </para>
 
-<screen role='root'><userinput>ln -sfv js/ProfilingCategoryList.h /usr/include/mozjs-140 &amp;&amp;
-sed '$i#define XP_UNIX' -i /usr/include/mozjs-140/js-config.h</userinput></screen>
+<screen role='root'><userinput>sed '$i#define XP_UNIX' -i /usr/include/mozjs-140/js-config.h</userinput></screen>
 
   </sect2>
 
