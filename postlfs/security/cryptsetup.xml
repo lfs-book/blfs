@@ -6,10 +6,10 @@
 
   <!ENTITY cryptsetup-download-http "&kernel-dl;/linux/utils/cryptsetup/v&cryptsetup-minor;/cryptsetup-&cryptsetup-version;.tar.xz">
   <!ENTITY cryptsetup-download-ftp  " ">
-  <!ENTITY cryptsetup-md5sum        "f663f37dd478484f61ace54902c17274">
+  <!ENTITY cryptsetup-md5sum        "92b51ffa30e98447dccece6e4a055e3b">
   <!ENTITY cryptsetup-size          "11 MB">
-  <!ENTITY cryptsetup-buildsize     "33 MB (add 5 MB for tests)">
-  <!ENTITY cryptsetup-time          "0.2 SBU (add 8.1 SBU for tests)">
+  <!ENTITY cryptsetup-buildsize     "40 MB (add 6 MB for tests)">
+  <!ENTITY cryptsetup-time          "0.2 SBU (add 19 SBU for tests)">
 ]>
 
 <sect1 id="cryptsetup" xreflabel="cryptsetup-&cryptsetup-version;">
@@ -30,7 +30,7 @@
       using the kernel crypto API.
     </para>
 
-    &lfs123_checked;
+    &lfs124_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -92,10 +92,10 @@
       <xref linkend="asciidoctor"/>,
       <xref linkend="libpwquality"/>,
       <ulink url="https://github.com/P-H-C/phc-winner-argon2">argon2</ulink>,
-      <ulink url="https://www.libssh.org/">libssh</ulink>, and
+      <ulink url="https://www.libssh.org/">libssh</ulink>,
+      <ulink url="https://github.com/Mbed-TLS/mbedtls">mbedtls</ulink>, and
       <ulink url="https://www.openwall.com/passwdqc/">passwdqc</ulink>
     </para>
-
 
   </sect2>
 
@@ -137,12 +137,12 @@ make</userinput></screen>
 <screen><literal>CONFIG_SCSI_LOWLEVEL,
 CONFIG_SCSI_DEBUG,
 CONFIG_BLK_DEV_DM_BUILTIN,
+CONFIG_CRC_T10DIF,
 CONFIG_CRYPTO_USER,
 CONFIG_CRYPTO_CRYPTD,
 CONFIG_CRYPTO_LRW,
 CONFIG_CRYPTO_XTS,
 CONFIG_CRYPTO_ESSIV,
-CONFIG_CRYPTO_CRCT10DIF,
 CONFIG_CRYPTO_AES_TI,
 CONFIG_CRYPTO_AES_NI_INTEL,
 CONFIG_CRYPTO_BLOWFISH,
@@ -167,6 +167,12 @@ CONFIG_CRYPTO_TWOFISH_X86_64</literal></screen>
       2 of 25 tests failed (8 tests were not run)
       FAIL: keyring-compat-test
       FAIL: tcrypt-compat-test
+
+      Version 2.8.1 08/20/2025 -renodr
+      =======================
+      All 24 tests passed
+      (10 tests were not run)
+      =======================
       -->
     </para>
 
@@ -220,7 +226,7 @@ CONFIG_CRYPTO_TWOFISH_X86_64</literal></screen>
       <seglistitem>
         <seg>
           cryptsetup,
-          cryptsetup-reencrypt,
+          <!--cryptsetup-reencrypt,-->
           integritysetup, and
           veritysetup
         </seg>
@@ -228,7 +234,7 @@ CONFIG_CRYPTO_TWOFISH_X86_64</literal></screen>
           libcryptsetup.so
         </seg>
         <seg>
-          None
+          /usr/lib/cryptsetup
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -250,6 +256,7 @@ CONFIG_CRYPTO_TWOFISH_X86_64</literal></screen>
         </listitem>
       </varlistentry>
 
+<!--
       <varlistentry id="cryptsetup-reencrypt">
         <term><command>cryptsetup-reencrypt</command></term>
         <listitem>
@@ -261,6 +268,7 @@ CONFIG_CRYPTO_TWOFISH_X86_64</literal></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="integritysetup">
         <term><command>integritysetup</command></term>

@@ -6,10 +6,10 @@
 
   <!ENTITY webkitgtk-download-http "https://webkitgtk.org/releases/webkitgtk-&webkitgtk-version;.tar.xz">
   <!ENTITY webkitgtk-download-ftp  " ">
-  <!ENTITY webkitgtk-md5sum        "05c700f43b9b06eb0017aa408b00b657">
+  <!ENTITY webkitgtk-md5sum        "23e26bc4e30b80462cb1030fab352409">
   <!ENTITY webkitgtk-size          "42 MB">
-  <!ENTITY webkitgtk-buildsize     "1.5 GB (182 MB installed, add 177 MB for GTK-4)">
-  <!ENTITY webkitgtk-time          "24 SBU (for GTK-3, using parallelism=8, add 24 SBU for GTK-4)">
+  <!ENTITY webkitgtk-buildsize     "1.5 GB (186 MB installed, add 181 MB for GTK-4)">
+  <!ENTITY webkitgtk-time          "21 SBU (for GTK-3, using parallelism=8, add 21 SBU for GTK-4)">
 
   <!ENTITY libbacktrace
     "<ulink url='https://github.com/ianlancetaylor/libbacktrace'>libbacktrace</ulink>">
@@ -156,12 +156,29 @@
       </para>
 
       <para>
-        If you are building this package on a 32-bit system, or a 64-bit system
-        with less than 16GB of memory, you must add the
-        <command>-D CMAKE_CXX_FLAGS_RELEASE="-O2 -DNDEBUG"</command> option to
-        the CMake line to prevent build failures relating to running out of
-        memory. Performance will be impacted slightly, but not at a level where
-        it is noticeable during normal usage.
+        With the default <quote>release</quote> build configuration,
+        some source files of this package require more than 4 GiB of RAM
+        to be built.  As the result, you should pass
+        <parameter>-j<replaceable>&lt;N&gt;</replaceable></parameter>
+        to <command>ninja</command> (replacing
+        <replaceable>&lt;N&gt;</replaceable> with the quotient of the amount
+        of available RAM and 4 GiB) to limit the number of parallel jobs
+        and avoid the job from being killed by the kernel OOM killer.
+      </para>
+
+      <!-- Maybe we should report this to WebKitGTK team and suggest them
+           to seperate the problematic source files.  But anyway BLFS does
+           not really support a 32-bit configuration so this is just
+           informative.  -->
+      <para>
+        On a 32-bit system, the sum of RAM and swap space used by a build
+        job (in fact, any single process) cannot exceed 4 GiB.
+        So if you are building this package on a 32-bit system, you must add
+        the <command>-D CMAKE_CXX_FLAGS_RELEASE="-O2 -DNDEBUG"</command>
+        option to the <command>cmake</command> to disable some optimizations
+        which need a lot of memory to limit the memory usage of individual
+        build jobs.  Performance will be impacted slightly, but not at a
+        level where it is noticeable during normal usage.
       </para>
     </important>
 

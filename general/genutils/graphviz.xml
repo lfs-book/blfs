@@ -6,10 +6,10 @@
 
   <!ENTITY graphviz-download-http "https://gitlab.com/graphviz/graphviz/-/archive/&graphviz-version;/graphviz-&graphviz-version;.tar.bz2">
   <!ENTITY graphviz-download-ftp  " ">
-  <!ENTITY graphviz-md5sum        "4a4dbe47b00b07cd6ba01c75f7d02e6a">
-  <!ENTITY graphviz-size          "25 MB">
-  <!ENTITY graphviz-buildsize     "216 MB">
-  <!ENTITY graphviz-time          "0.6 SBU (using parallelism=4)">
+  <!ENTITY graphviz-md5sum        "f069bffc04da2a9af9ae1eaa1abe9dd4">
+  <!ENTITY graphviz-size          "32.2 MB">
+  <!ENTITY graphviz-buildsize     "154 MB">
+  <!ENTITY graphviz-time          "0.3 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="graphviz" xreflabel="Graphviz-&graphviz-version;">
@@ -34,7 +34,7 @@
       tools, libraries, and language bindings.
     </para>
 
-    &lfs123_checked;
+    &lfs124_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,17 +90,23 @@
       </para>
     </note>
 
-    <bridgehead renderas="sect4">Optional, for various bitmap outputs</bridgehead>
-    <para role="optional">
-      <xref linkend="pango"/>, with
-        <xref linkend="cairo"/>,
-        <xref linkend="xorg7-lib"/>,
-        <xref linkend="fontconfig"/>,
-        <xref linkend="libpng"/>, to generate images in bitmap SVG, postscript,
-        PNG, and PDF formats, or to display the image on screen. The PNG
-        output is required for building <xref role="nodep" linkend="gegl"/>.
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="cmake"/>
     </para>
 
+    <bridgehead renderas="sect4">Recommended, for needed bitmap outputs</bridgehead>
+    <para role="recommended">
+      <xref linkend="pango"/>, with
+      <xref linkend="cairo"/>,
+      <xref linkend="xorg7-lib"/>,
+      <xref linkend="fontconfig"/>,
+      <xref linkend="libpng"/>, to generate images in bitmap SVG, postscript,
+      PNG, and PDF formats, or to display the image on screen. The PNG
+      output is required for building <xref role="nodep" linkend="gegl"/>.
+    </para>
+
+    <bridgehead renderas="sect4">Optional, for additional bitmap outputs</bridgehead>
     <para role="optional">
       <xref linkend="aalib"/> (for outputting images in ASCII art),
       <xref linkend="cups"/> (for formatting graphs for printing),
@@ -189,9 +195,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr \
-      -D CMAKE_BUILD_TYPE=Release  \
-      ..                           &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr   \
+      -D CMAKE_BUILD_TYPE=Release    \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON \
+      ..                             &amp;&amp;
 
 sed -i '/GZIP/s/:.*$/=/' CMakeCache.txt &amp;&amp;
 
@@ -212,6 +219,9 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-skip-install-rpath.xml"/>
 
     <para>
       <command>sed ... CMakeCache.txt</command>: This command is needed to

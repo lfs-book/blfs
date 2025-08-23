@@ -7,7 +7,7 @@
   <!ENTITY apache-download-http
            "https://archive.apache.org/dist/httpd/httpd-&apache-version;.tar.bz2">
   <!ENTITY apache-download-ftp  " ">
-  <!ENTITY apache-md5sum        "8b5ee2a61d569a3eacec5778e7f20e13">
+  <!ENTITY apache-md5sum        "7274bb6fa215925fd697451a0f133483">
   <!ENTITY apache-size          "7.2 MB">
   <!ENTITY apache-buildsize     "88 MB">
   <!ENTITY apache-time          "0.3 SBU (Using parallelism=4)">
@@ -73,7 +73,7 @@
       <listitem>
         <para>
           Required patch:
-          <ulink url="&patch-root;/httpd-&apache-version;-blfs_layout-1.patch"/>
+          <ulink url="&patch-root;/httpd-blfs_layout-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -124,17 +124,14 @@ useradd -c "Apache Server" -d /srv/www -g apache \
       following commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../httpd-&apache-version;-blfs_layout-1.patch             &amp;&amp;
+<screen><userinput>patch -Np1 -i ../httpd-blfs_layout-1.patch             &amp;&amp;
 
-sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in              &amp;&amp;
+sed '/dir.*CFG_PREFIX/s@^@#@' -i support/apxs.in       &amp;&amp;
 
 sed -e '/HTTPD_ROOT/s:${ap_prefix}:/etc/httpd:'       \
     -e '/SERVER_CONFIG_FILE/s:${rel_sysconfdir}/::'   \
     -e '/AP_TYPES_CONFIG_FILE/s:${rel_sysconfdir}/::' \
     -i configure  &amp;&amp;
-
-sed -e '/encoding.h/a # include &lt;libxml/xmlstring.h&gt;' \
-    -i modules/filters/mod_xml2enc.c  &amp;&amp;
 
 ./configure --enable-authnz-fcgi                    \
             --enable-layout=BLFS                    \
@@ -187,11 +184,6 @@ chown -v -R apache:apache /srv/www</userinput></screen>
 
     <para>
       <command>sed -e '/HTTPD_ROOT/s ...</command>: Fixes some paths.
-    </para>
-
-    <para>
-      <command>sed -e '/encoding.h/a ...</command>; Fix building against
-      libxml-2.12.x.
     </para>
 
     <para>

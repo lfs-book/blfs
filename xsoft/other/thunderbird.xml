@@ -6,10 +6,10 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;esr/source/thunderbird-&thunderbird-version;esr.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "d143d43392ae5659a6c276278d6a4779">
-  <!ENTITY thunderbird-size          "645 MB">
-  <!ENTITY thunderbird-buildsize     "8.2 GB (253 MB installed)">
-  <!ENTITY thunderbird-time          "13 SBU (on a 8-core machine)">
+  <!ENTITY thunderbird-md5sum        "eef18ede445b88e91fd258f4dee17bd1">
+  <!ENTITY thunderbird-size          "715 MB">
+  <!ENTITY thunderbird-buildsize     "8.9 GB (276 MB installed)">
+  <!ENTITY thunderbird-time          "15 SBU (on a 8-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
 
@@ -36,7 +36,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs123_checked;
+    &lfs124_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -94,6 +94,8 @@
            functions do not render correctly and it causes other strange
            behavior to occur. See Ticket #18323 for more details, as well as
            https://lore.kernel.org/distributions/075a20b1-869b-78f3-9ace-e106a4d43ac4@linuxlounge.net/T/#u -->
+      <!-- As of 140.0esr, this is still an issue due to a patch for ICU not
+           being upstreamed yet. Do not enable system ICU yet. -->
       <!--<xref linkend="icu"/>,-->
       <xref linkend="libevent"/>,
       <xref linkend="libvpx"/>,
@@ -198,6 +200,17 @@ ac_add_options --with-system-zlib
 ac_add_options --without-wasm-sandboxed-libraries</literal>
 EOF</userinput></screen>
 
+
+    <para>
+      Change a Rust file to allow implicit autoref to prevent a build failure.
+      The trailing <literal>\r</literal> ensures that the MS-DOS format is used
+      for the inserted line so that it will be consistent with all other lines
+      in the file:
+    </para>
+
+<screen><userinput>sed -e '1i\#![warn(dangerous_implicit_autorefs)]\r' \
+    -i third_party/rust/allocator-api2/src/stable/vec/mod.rs</userinput></screen>
+
     <para>
       Now invoke the Python <command>mach</command> script to compile
       <application>Thunderbird</application>:
@@ -218,7 +231,7 @@ export MOZBUILD_STATE_PATH=$(pwd)/mozbuild          &amp;&amp;
 
     <para>
       Install <application>Thunderbird</application> by running the following
-      commands as the <systemitem class="username">root</systemitem> user:
+      commands as the &root; user:
     </para>
 
 <screen role="root"><userinput>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none ./mach install</userinput></screen>
@@ -326,7 +339,6 @@ unset MOZBUILD_STATE_PATH</userinput></screen>
       </tip>
 -->
     <para>
-
       If you use a desktop environment such as <application>GNOME</application>
       or <application>KDE</application>, a desktop file
       <filename>thunderbird.desktop</filename> may be created, in order to
@@ -334,8 +346,7 @@ unset MOZBUILD_STATE_PATH</userinput></screen>
       the menu. <!--If you didn't enable
       <application>startup-notification</application> in your mozconfig, then
       change the StartupNotify line to false.--> Run the following commands as the
-      <systemitem class="username">root</systemitem> user:
-
+      &root; user:
     </para>
 
 <screen role="root"><userinput>mkdir -pv /usr/share/{applications,pixmaps} &amp;&amp;

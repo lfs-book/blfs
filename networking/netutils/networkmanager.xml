@@ -7,10 +7,10 @@
   <!ENTITY NetworkManager-download-http
 "https://gitlab.freedesktop.org/NetworkManager/NetworkManager/-/releases/&NetworkManager-version;/downloads/NetworkManager-&NetworkManager-version;.tar.xz">
   <!ENTITY NetworkManager-download-ftp  " ">
-  <!ENTITY NetworkManager-md5sum        "a41314bafb43239c5813b1160e54b0dd">
+  <!ENTITY NetworkManager-md5sum        "300509d31ac641bba24240d708916083">
   <!ENTITY NetworkManager-size          "5.9 MB">
-  <!ENTITY NetworkManager-buildsize     "304 MB (with tests and documentation)">
-  <!ENTITY NetworkManager-time          "0.5 SBU (with tests, using parallelism=4)">
+  <!ENTITY NetworkManager-buildsize     "328 MB (with tests and documentation)">
+  <!ENTITY NetworkManager-time          "0.9 SBU (with tests, using parallelism=4)">
 ]>
 
 <sect1 id="NetworkManager" xreflabel="NetworkManager-&NetworkManager-version;">
@@ -35,7 +35,7 @@
       available.
     </para>
 
-    &lfs123_checked;
+    &lfs124_checked;
 
     <note revision="systemd">
       <para>
@@ -111,6 +111,7 @@
       <xref linkend="gnutls"/> (can be used instead of <xref linkend="nss"/>),
       <xref linkend="gtk-doc"/>,
       <xref linkend="jansson"/>,
+      <xref linkend="libnvme"/>,
       <xref linkend="ModemManager"/>,
       <xref linkend="upower"/>,
       <xref linkend="valgrind"/>,
@@ -181,6 +182,7 @@ meson setup ..                    \
       -D nmtui=true               \
       -D ovs=false                \
       -D ppp=false                \
+      -D nbft=false               \
       -D selinux=false            \
       -D session_tracking=elogind \
       -D modem_manager=false      \
@@ -200,6 +202,7 @@ meson setup ..                    \
       -D nmtui=true               \
       -D ovs=false                \
       -D ppp=false                \
+      -D nbft=false               \
       -D selinux=false            \
       -D qt=false                 \
       -D session_tracking=systemd \
@@ -285,6 +288,13 @@ done</userinput></screen>
       <application>mobile-broadband-provider-info</application>.
     </para>
 
+    <para>
+      <parameter>-D nbft=false</parameter>: This switch is required if
+      <xref linkend="libnvme"/> is not installed, and disabled NBFT support in
+      the initrd generator. Note that BLFS does not use the initrd generator
+      provided from NetworkManager by default.
+    </para>
+
     <para revision="sysv">
       <parameter>-D session_tracking=elogind</parameter>: This switch
       is used to set <command>elogind</command> as the default
@@ -317,6 +327,13 @@ done</userinput></screen>
     </para>
 
     <para>
+      <parameter>-D nm_cloud_setup=false</parameter>: Use this switch if
+      you have not installed <xref linkend='jansson'/>. This disables
+      nm-cloud-setup which is used to automatically configure the
+      network in a public cloud environment within a VM.
+    </para>
+
+    <para>
       <option>-D crypto=gnutls</option>: Use this switch if you have GnuTLS
       installed and want to use it for certificate and key operations in
       NetworkManager, instead of using NSS (the default).
@@ -340,12 +357,7 @@ done</userinput></screen>
       (instead of &logind;) for suspend and resume support.
     </para>
 -->
-    <para>
-      <option>-D nm_cloud_setup=false</option>: Use this switch if
-      you have not installed <xref linkend='jansson'/>. This disables 
-      nm-cloud-setup which is used to automatically configure the 
-      network in a public cloud environment within a VM.
-    </para>
+
   </sect2>
 
   <sect2 role="configuration">
@@ -563,7 +575,7 @@ EOF</userinput></screen>
         <term><command>nm-online</command></term>
         <listitem>
           <para>
-            is an utility to determine whether you are online
+            is a utility to determine whether you are online
           </para>
           <indexterm zone="NetworkManager nm-online">
             <primary sortas="b-nm-online">nm-online</primary>

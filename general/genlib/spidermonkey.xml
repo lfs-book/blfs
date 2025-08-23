@@ -7,8 +7,8 @@
   <!ENTITY spidermonkey-download-http "&mozilla-http;/firefox/releases/&spidermonkey-version;esr/source/firefox-&spidermonkey-version;esr.source.tar.xz">
   <!ENTITY spidermonkey-download-ftp  " ">
   <!-- size and md5sum are in packages.ent -->
-  <!ENTITY spidermonkey-buildsize     "4.4 GB (48 MB installed after removing 38 MB static lib; add 34 MB for the main tests and 37 MB for the jit tests)">
-  <!ENTITY spidermonkey-time          "1.8 SBU (with parallelism=4; add 0.4 SBU for the main tests and 1.9 SBU for the jit tests)">
+  <!ENTITY spidermonkey-buildsize     "4.7 GB (48 MB installed after removing 38 MB static lib; add 30 MB for the main tests and 27 MB for the jit tests)">
+  <!ENTITY spidermonkey-time          "1.8 SBU (with parallelism=4; add 0.5 SBU for the main tests and 2.1 SBU for the jit tests)">
 ]>
 
 <sect1 id="spidermonkey" xreflabel="SpiderMonkey from Firefox-&spidermonkey-version;">
@@ -30,9 +30,7 @@
       In BLFS, the source code of SpiderMonkey is taken from Firefox.
     </para>
 
-    <!-- To editors: make sure polkit works with mozjs when
-         tagging SpiderMonkey or upgrading it to a new major version.  -->
-    &lfs123_checked;
+    &lfs124_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -150,13 +148,6 @@ tar: Exiting with failure status due to previous errors
     </note>
 
     <para>
-      If you are using ICU-76.1 or later, adapt the build system to use the
-      correct library:
-    </para>
-
-<screen><userinput remap="pre">sed -i 's/icu-i18n/icu-uc &amp;/' js/moz.configure</userinput></screen>
-
-    <para>
       Install <application>SpiderMonkey</application> by running the following
       commands:
     </para>
@@ -200,7 +191,7 @@ make</userinput></screen>
      JSTESTS_EXTRA_ARGS="--timeout 300 --wpt=disabled" | tee jstest.log</userinput></screen>
 
     <para>
-      Because we are building with system ICU, 161 tests
+      Because we are building with system ICU, 24 tests
       (out of a total of more than 50,000) are known to fail.
       The list of failed tests can be extracted via
       <command>grep 'UNEXPECTED-FAIL' jstest.log</command>.
@@ -283,6 +274,13 @@ make</userinput></screen>
 <screen role="root"><userinput>make install &amp;&amp;
 rm -v /usr/lib/libjs_static.ajs &amp;&amp;
 sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js&spidermonkey-major;-config</userinput></screen>
+
+    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1973994 -->
+    <para>
+      Still as the &root; user, fix an issue with one of the installed headers:
+    </para>
+
+<screen role='root'><userinput>sed '$i#define XP_UNIX' -i /usr/include/mozjs-140/js-config.h</userinput></screen>
 
   </sect2>
 

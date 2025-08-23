@@ -10,7 +10,7 @@
 
   <!ENTITY anduin-download           "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;">
 
-  <!ENTITY ojdk-md5sum               "69a690032d2a50c746363d4e4fac15fd">
+  <!ENTITY ojdk-md5sum               "160e4f0de98c13fddba4f1dc0bad3615">
   <!ENTITY ojdk-size                 "115 MB">
 
   <!ENTITY jtreg-version             "7.5.1+1">
@@ -19,7 +19,7 @@
   <!ENTITY jtreg-size                "9.0 MB">
 
   <!ENTITY ojdk-bdsize               "3.8 GB (add 630 MB for tests)">
-  <!ENTITY ojdk-time                 "3.5 SBU with 4 jobs (add 32 SBU for tests with 4 jobs)">
+  <!ENTITY ojdk-time                 "4.3 SBU with 4 jobs (add 35 SBU for tests with 4 jobs)">
 ]>
 
 <sect1 id="openjdk" xreflabel="OpenJDK-&openjdk-version;">
@@ -43,7 +43,7 @@
       runtime environment to run <application>Java</application> programs.
     </para>
 
-    &lfs123_checked;
+    &lfs124_checked;
 
     <para>
       OpenJDK is GPL'd code, with a special exception made for non-free
@@ -193,9 +193,6 @@
       <xref linkend="git"/>,
       <xref linkend="graphviz"/>,
       <xref linkend="mercurial"/>,
-<!-- not needed now, it seems
-      an X Window manager such as <xref linkend="twm"/> (for the tests), and
--->
       <ulink url="https://ccache.dev/">ccache</ulink>,
       <ulink url="https://pandoc.org/">pandoc</ulink>, and
       <ulink url="https://zlib.net/pigz">pigz</ulink>
@@ -212,20 +209,13 @@
     </para>
 
 <screen><userinput>tar -xf ../jtreg-&jtreg-version;.tar.gz</userinput></screen>
-<!--
-    <para>
-      Apply a patch to allow building with make-4.3:
-    </para>
-
-<screen><userinput>patch -p1 -i ../openjdk-&openjdk-version;-make_4.3_fix-1.patch</userinput></screen>
 
     <para>
-      Fix an issue coming from a removed header in glibc-2.32:
+      Fix a build failure caused by glibc-2.42:
     </para>
 
-<screen><userinput>sed -i /sysctl/d \
-    src/jdk.incubator.jpackage/unix/native/libapplauncher/PosixPlatform.cpp</userinput></screen>
--->
+<screen><userinput>find src -name *.*pp -exec sed -i 's/uabs(/g_uabs(/' {} \;</userinput></screen>
+
     <note>
       <para>
         Before proceeding, you should ensure that your environment
@@ -250,9 +240,10 @@
       Configure and build the package with the following commands:
     </para>
 
-<screen><userinput>unset JAVA_HOME                             &amp;&amp;
-unset CLASSPATH                             &amp;&amp;
-unset MAKEFLAGS                             &amp;&amp;
+<screen><userinput>export MAKEFLAGS_HOLD=$MAKEFLAGS           &amp;&amp;
+unset  JAVA_HOME                           &amp;&amp;
+unset  CLASSPATH                           &amp;&amp;
+unset  MAKEFLAGS                           &amp;&amp;
 bash configure --enable-unlimited-crypto    \
                --disable-warnings-as-errors \
                --with-stdc++lib=dynamic     \
@@ -341,6 +332,9 @@ unset JT_JAVA</userinput></screen>
          24.0.1:9:
          for x86_64: passed: 6,857; failed: 64; error: 40
          for i686:   passed: 6,954; failed: 54; error: 41
+         24.0.2+12:
+         for x86_64: passed: 6,952; failed: 54; error: 43
+         for i686:   passed: 6,856; failed: 64; error: 41
     -->
 
     <para>
@@ -363,6 +357,21 @@ done</userinput></screen>
         <command>cp</command> command.
       </para>
     </note>
+
+    <para>
+      There will be plenty of binaries with debug info that take up over half
+      of the installed size. If you don't care about debugging, you can remove
+      the info:
+    </para>
+
+<screen><userinput>find /opt/jdk-&openjdk-version;+&openjdk-build; -name *.debuginfo -delete</userinput></screen>
+
+    <para>
+      Restore the <envar>MAKEFLAGS</envar> variable:
+    </para>
+
+<screen><userinput>export MAKEFLAGS=$MAKEFLAGS_HOLD &amp;&amp;
+unset  MAKEFLAGS_HOLD</userinput></screen>
 
     <para>
       There are now two <application>OpenJDK</application> SDKs installed

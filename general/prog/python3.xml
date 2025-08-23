@@ -7,17 +7,17 @@
   <!ENTITY python3-download-http
            "https://www.python.org/ftp/python/&python3-version;/Python-&python3-version;.tar.xz">
   <!ENTITY python3-download-ftp  " ">
-  <!ENTITY python3-md5sum        "dbaa8833aa736eddbb18a6a6ae0c10fa">
+  <!ENTITY python3-md5sum        "256cdb3bbf45cdce7499e52ba6c36ea3">
   <!ENTITY python3-size          "22 MB">
-  <!ENTITY python3-buildsize     "308 MB (add 59 MB for tests)">
-  <!ENTITY python3-time          "1.5 SBU (add 1.5 SBU for tests; both using parallelism=4)">
+  <!ENTITY python3-buildsize     "379 MB (add 59 MB for tests)">
+  <!ENTITY python3-time          "1.5 SBU (add 2.8 SBU for tests; both using parallelism=4)">
   <!--
   Note: Size does not reflect docs that were installed in LFS.
   Test time measured with 60 second timeout.
   -->
   <!ENTITY python3htmldoc-download-http
   "https://www.python.org/ftp/python/doc/&python3-version;/python-&python3-version;-docs-html.tar.bz2">
-  <!ENTITY python3-docs-md5sum "5c708de9d0f811199466f6c712381bbe">
+  <!ENTITY python3-docs-md5sum "b84c0d81b2758398bb7f5b7411d3d908">
 ]>
 
 <sect1 id="python3" xreflabel="Python-&python3-version;">
@@ -48,7 +48,7 @@
       </para>
     </note>
 
-    &lfs123_checked;
+    &lfs124_checked;
 
     <important>
       <para>
@@ -176,14 +176,6 @@
   <sect2 role="installation">
     <title>Installation of Python 3</title>
 
-<!--
-    <para>
-      First, fix a security vulnerability in Python's Unicode support:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../Python-&python3-version;-security_fixes-1.patch</userinput></screen>
--->
-
     <para>
       Install <application>Python 3</application> by running the following
       commands:
@@ -232,6 +224,14 @@ make</userinput></screen>
          For Python-3.13.4
          Total tests: run=45,204 failures=2 skipped=1,745
          Total test files: run=481/480 failed=3 skipped=20 resource_denied=2 rerun=3
+
+         For Python-3.13.6
+         Total tests: run=45,289 failures=2 skipped=1,966
+         Total test files: run=482/480 failed=4 skipped=20 resource_denied=2 rerun=4
+
+         For Python-3.13.7
+         Total tests: run=46,701 failures=2 skipped=1,773
+         Total test files: run=479/480 failed=1 skipped=20 resource_denied=2 rerun=1
     -->
 
     <para>
@@ -244,7 +244,7 @@ make</userinput></screen>
 
     <para>
       Of over 44,000 tests, the following tests are known to fail:
-      test_importlib and test_peg_generator.
+      test_idle, test_importlib, test_tkinter, and test_zipfile.
     </para>
 
     <para>
@@ -335,8 +335,8 @@ tar --strip-components=1  \
 
       <seglistitem>
         <seg>
-          2to3 (symlink) and
-          2to3-&python3-majorver;,
+          <!--2to3 (symlink) and
+          2to3-&python3-majorver;,-->
 
           <!--
           easy_install-&python3-majorver;,
