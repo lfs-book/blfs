@@ -130,7 +130,11 @@ ninja</userinput></screen>
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+meson setup --prefix=/usr              \
+            --buildtype=release        \
+            -D man=false               \
+            -D docbook=false           \
+            ..                         &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -142,11 +146,9 @@ ninja</userinput></screen>
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
-<!-- For some reason, there are I/O errors with the DTD @ freedesktop
-     that causes error messages to flood stdin. -->
 
     <para>
-      Move the documentation to a versioned directory:
+      If you generated the documentation, move it to a versioned directory:
     </para>
 
 <screen role="root"><userinput>mv -v /usr/share/doc/gnome-session{,-&gnome-session-version;}</userinput></screen>
@@ -219,10 +221,15 @@ by systemd-user.-->
     <para>
       It is also possible to start <application>GNOME</application> from the
       command line. However, you must still have <xref linkend="gdm"/> installed
-      for some portions of the desktop to work. One reason to start from the
-      command line is if you want Wayland support on a system that has the
-      proprietary NVIDIA driver installed, since GDM will not show the Wayland
-      session type on such a system.
+      for the desktop to work. In previous releases of GNOME, gnome-shell would
+      start without it installed, but this changed in 48.0. GDM does not need
+      to be enabled to start gnome-shell from the command line.
+      <!-- Bruce discovered the above regarding gdm/gnome-session. The GDM page
+      now covers using Wayland on systems with NVIDIA cards as well, so I've
+      commented the text below.-->
+      <!--One reason to start from the command line is if you want Wayland
+      support on a system that has the proprietary NVIDIA driver installed,
+      since GDM will not show the Wayland session type on such a system.-->
     </para>
 
     <para>
