@@ -31,7 +31,7 @@
       TCP/IP fingerprinting.
     </para>
 
-    &lfs124_checked;
+    &lfs123_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -112,7 +112,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="http://code.google.com/p/libdnet/">libdnet</ulink>
+      <ulink url="http://code.google.com/p/libdnet/">libdnet</ulink> and
+      <ulink url="https://pypi.org/project/setuptools-gettext/">setuptools-gettext</ulink>
+      (currently <ulink url='https://github.com/pypa/build/issues/729'>useless</ulink>)
     </para>
 
   </sect2>
@@ -131,6 +133,12 @@
 <screen><userinput>sed -ri Makefile.in \
     -e 's#-m build#&amp; --no-isolation#'  \
     -e '/pip install/s#(ZENMAP|NDIFF)DIR\)/#&amp;dist/*.whl#'</userinput></screen>
+
+    <para>
+      Remove a useless dependency on setuptools-gettext:
+    </para>
+
+    <screen><userinput>sed 's/, "setuptools-gettext"//' -i zenmap/pyproject.toml</userinput></screen>
 
     <para>
       Install <application>Nmap</application> by running the following
