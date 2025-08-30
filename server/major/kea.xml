@@ -117,7 +117,17 @@
     <title>Installation of ISC Kea DHCP Server</title>
 
     <para>
-      Install <application>ISC Kea DHCP Server</application> by running
+      First, apply a few fixes required for boost-&boost-version;:
+    </para>
+<screen><userinput>sed -e "s/, modules: \['system'\]//" -i meson.build &amp;&amp;
+sed -e "/shared_ptr.hpp/a#include <boost/asio/deadline_timer.hpp>" \
+    -i src/lib/asiolink/interval_timer.cc &amp;&amp;
+sed -e "/posix_time_types.hpp/a#include <boost/asio/deadline_timer.hpp>" \
+    -i src/lib/asiodns/io_fetch.cc
+</userinput></screen>
+
+    <para>
+      Now, install <application>ISC Kea DHCP Server</application> by running
       the following commands:
     </para>
 
@@ -135,7 +145,7 @@ meson setup ..             \
 ninja</userinput></screen>
 
     <para>
-      If tests were enabled, run <command>ninja check</command> to test
+      If tests were enabled, run <command>ninja test</command> to test
       the results. There are tests which require a live database when
       any of the database hooks are built.
     </para>
@@ -147,6 +157,12 @@ ninja</userinput></screen>
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
+
+    <para>
+      Fix some paths coded in the <command>keactrl</command> script:
+    </para>
+
+<screen role="root"><userinput>sed -e "s;\${prefix}/;;" -i /usr/sbin/keactrl</userinput></screen>
 
     <para>
       Create some directories and fix their permission settings as the
