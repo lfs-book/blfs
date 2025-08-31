@@ -6,10 +6,10 @@
 
   <!ENTITY mitkrb-download-http "https://kerberos.org/dist/krb5/&mitkrb-major-version;/krb5-&mitkrb-version;.tar.gz">
   <!ENTITY mitkrb-download-ftp  " ">
-  <!ENTITY mitkrb-md5sum        "aedd6f13c11480091af51cdc1555099b">
+  <!ENTITY mitkrb-md5sum        "8f841cea186ef6856ea6c2a063091861">
   <!ENTITY mitkrb-size          "8.3 MB">
-  <!ENTITY mitkrb-buildsize     "96 MB (add 16 MB for tests)">
-  <!ENTITY mitkrb-time          "0.3 SBU (Using parallelism=4; add 0.8 SBU for tests)">
+  <!ENTITY mitkrb-buildsize     "135 MB (add 15 MB for tests)">
+  <!ENTITY mitkrb-time          "0.4 SBU (Using parallelism=4; add 3.8 SBU for tests)">
 ]>
 
 <sect1 id="mitkrb" xreflabel="MIT Kerberos V5-&mitkrb-version;">
@@ -87,7 +87,7 @@
       <xref linkend="bind-utils"/>,
       <xref linkend='cracklib'/> (<filename>/usr/share/dict/words</filename>
       referred by some tests),
-      <xref linkend="gnupg2"/> (to authenticate the package),
+      <!--<xref linkend="gnupg2"/> (to authenticate the package),-->
       <xref linkend="keyutils"/>,
       <xref linkend="openldap"/>,<!-- Seems so that mit has its own
       implementation of rpc now.
@@ -142,16 +142,10 @@ make</userinput></screen>
 
     <para>
       To test the build, issue: <command>make -j1 -k check</command>.
-      <!-- You need at least <xref link end="tcl"/>, which is used to drive the
-      test suite.  Furthermore, <xref link end="dejagnu"/> must be available for
-      some of the tests to run. If you have a former version of MIT Kerberos V5
-      installed, it may happen that the test suite may pick up the installed
-      versions of the libraries, rather than the newly built ones. If so, it is
-      better to run the tests after the installation. -->Some tests may fail with
-      the latest version of dejagnu and glibc.  Some tests may hang for a
-      long time and fail if the system is not connected to a network.
-      One test, <filename>t_kadm5srv</filename>, is known to fail.
-      If <xref linkend='keyutils'/> is installed but
+      Some tests may fail with the latest version of dejagnu and glibc.
+      Some tests may hang for a long time and fail if the system is not
+      connected to a network. One test, <filename>t_kadm5srv</filename>,
+      is known to fail. If <xref linkend='keyutils'/> is installed but
       <xref linkend='keyutils-test-kernel'/> is not
       satisfied, some tests will fail complaining
       <computeroutput>keyctl failed with code 1</computeroutput>.
@@ -209,10 +203,11 @@ cp -vfr ../doc -T /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
 
     <para>
       <parameter>--with-system-verto=no</parameter>: This switch fixes a bug in
-      the package: it does not recognize its own verto library installed
-      previously. This is not a problem, if reinstalling the same version,
-      but if you are updating, the old library is used as system's one,
-      instead of installing the new version.
+      the package where the build system does not recognize its own verto library
+      if this package has been installed before. This is not a problem if you
+      are reinstalling the same version, but can be problematic if you are
+      updating because the old version of the verto library will be used instead
+      of installing the newer version.
     </para>
 
     <para>
@@ -268,8 +263,8 @@ cp -vfr ../doc -T /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
           <para>
             You should consider installing some sort of password checking
             dictionary so that you can configure the installation to only
-            accept strong passwords. A suitable dictionary to use is shown in
-            the <xref linkend="cracklib"/> instructions. Note that only one
+            accept strong passwords. A suitable dictionary to use is installed
+            in the <xref linkend="cracklib"/> instructions. Note that only one
             file can be used, but you can concatenate many files into one. The
             configuration file shown below assumes you have installed a
             dictionary to <filename>/usr/share/dict/words</filename>.
@@ -278,8 +273,7 @@ cp -vfr ../doc -T /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
 
         <para>
           Create the Kerberos configuration file with the following
-          commands issued by the <systemitem class="username">root</systemitem>
-          user:
+          commands issued by the &root; user:
         </para>
 
 <screen role="root"><userinput>cat &gt; /etc/krb5.conf &lt;&lt; "EOF"
@@ -337,15 +331,14 @@ EOF</userinput></screen>
         </para>
 
         <para>
-          Create the KDC database:
+          Next, create the KDC database:
        </para>
 
 <screen role="root"><userinput>kdb5_util create -r <replaceable>&lt;EXAMPLE.ORG&gt;</replaceable> -s</userinput></screen>
 
         <para>
-          Now you should populate the database with principals
-          (users). For now, just use your regular login name or
-          <systemitem class="username">root</systemitem>.
+          Now, you should populate the database with principals
+          (users). For now, just use your regular login name or &root;.
         </para>
 
 <screen role="root"><userinput>kadmin.local
@@ -706,8 +699,8 @@ EOF</userinput></screen>
         <term><command>krb5-config</command></term>
         <listitem>
           <para>
-            gives information on how to link programs against
-            libraries
+            provides information about how to link programs against the
+            <application>Kerberos 5</application> libraries
           </para>
           <indexterm zone="mitkrb krb5-config-prog2">
             <primary sortas="b-krb5-config">krb5-config</primary>
@@ -743,9 +736,8 @@ EOF</userinput></screen>
         <term><command>ksu</command></term>
         <listitem>
           <para>
-            is the super user program using Kerberos protocol.
-            Requires a properly configured
-            <filename>/etc/shells</filename> and
+            is the super user program using the Kerberos protocol. It requires
+            a properly configured <filename>/etc/shells</filename> and
             <filename>~/.k5login</filename> containing principals
             authorized to become super users
           </para>
@@ -798,7 +790,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             is used to contact a sample server and authenticate to it
-            using Kerberos 5 tickets, then display the server's
+            using Kerberos 5 tickets, and then display the server's
             response
           </para>
           <indexterm zone="mitkrb sclient">
@@ -811,8 +803,8 @@ EOF</userinput></screen>
         <term><command>sim_client</command></term>
         <listitem>
           <para>
-            is a simple UDP-based sample client program, for
-            demonstration
+            is a simple UDP-based sample client program for
+            demonstration purposes
           </para>
           <indexterm zone="mitkrb sim_client">
             <primary sortas="b-sim_client">sim_client</primary>
@@ -824,8 +816,8 @@ EOF</userinput></screen>
         <term><command>sim_server</command></term>
         <listitem>
           <para>
-            is a simple UDP-based server application, for
-            demonstration
+            is a simple UDP-based server application for
+            demonstration purposes
           </para>
           <indexterm zone="mitkrb sim_server">
             <primary sortas="b-sim_server">sim_server</primary>
@@ -837,7 +829,7 @@ EOF</userinput></screen>
         <term><command>sserver</command></term>
         <listitem>
           <para>
-            is the sample Kerberos 5 server
+            is a sample Kerberos 5 server
           </para>
           <indexterm zone="mitkrb sserver">
             <primary sortas="b-sserver">sserver</primary>
@@ -875,7 +867,7 @@ EOF</userinput></screen>
         <listitem>
           <para>
             contains the Generic Security Service Application Programming
-            Interface (GSSAPI) functions which provides security services
+            Interface (GSSAPI) functions which provide security services
             to callers in a generic fashion, supportable with a range of
             underlying mechanisms and technologies and hence allowing
             source-level portability of applications to different
