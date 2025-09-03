@@ -79,7 +79,6 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="avahi"/>,
       <xref linkend="libnotify"/>,
       <xref linkend="ModemManager"/>, and
       <xref linkend="vala"/>
@@ -87,6 +86,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="avahi"/> and
       <xref linkend="gtk-doc"/>
     </para>
 
@@ -103,10 +103,11 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr       \
-            --buildtype=release \
-            -D gtk-doc=false    \
-            ..                  &amp;&amp;
+meson setup --prefix=/usr        \
+            --buildtype=release  \
+            -D gtk-doc=false     \
+            -D nmea-source=false \
+            ..                   &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -128,6 +129,13 @@ ninja</userinput></screen>
       href="../../xincludes/meson-buildtype-release.xml"/>
 
     <para>
+      <parameter>-D nmea-source=false</parameter>: This switch disables the
+      NMEA source. Remove it if you have installed the
+      <application>Avahi</application> package and your local network has
+      a NMEA server.
+    </para>
+
+    <para>
       <option>-D 3g-source=false</option>: This switch disables
       the 3G backend. Use it if you have not installed the
       <application>ModemManager</application> package.
@@ -143,12 +151,6 @@ ninja</userinput></screen>
       <option>-D cdma-source=false</option>: This switch disables the
       CDMA source backend. Use it if you have not installed the
       <application>ModemManager</application> package.
-    </para>
-
-    <para>
-      <option>-D nmea-source=false</option>: This switch disables the
-      NMEA source. Use it if you have not installed the
-      <application>Avahi</application> package.
     </para>
 
     <para>
