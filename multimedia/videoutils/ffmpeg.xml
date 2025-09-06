@@ -6,9 +6,9 @@
 
   <!ENTITY ffmpeg-download-http "https://ffmpeg.org/releases/ffmpeg-&ffmpeg-version;.tar.xz">
   <!ENTITY ffmpeg-download-ftp  " ">
-  <!ENTITY ffmpeg-md5sum        "26f2bd7d20c6c616f31d7130c88d7250">
+  <!ENTITY ffmpeg-md5sum        "2c91c725fb1b393618554ff429e4ae43">
   <!ENTITY ffmpeg-size          "11 MB">
-  <!ENTITY ffmpeg-buildsize     "205 MB (add 1.7 GB for the FATE suite/tests, add 869 MB for documentation)">
+  <!ENTITY ffmpeg-buildsize     "227 MB (add 1.7 GB for the FATE suite/tests, add 881 MB for documentation)">
   <!ENTITY ffmpeg-time          "1.2 SBU (using parallelism=4; add 3.2 SBU (with THREADS=4) to run the FATE suite after sample files are downloaded; add 0.2 SBU for doxygen docs)">
 ]>
 
@@ -97,7 +97,7 @@
       <xref linkend="opus"/>,
       <xref linkend="x264"/>,
       <xref linkend="x265"/>, and
-      <xref linkend="nasm"/> or <xref linkend="yasm"/>
+      <xref linkend="nasm"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended for desktop use</bridgehead>
@@ -107,7 +107,7 @@
       <xref linkend="sdl2"/>
     </para>
 
-    <bridgehead renderas="sect4">Recommended for systems with Intel Video</bridgehead>
+    <bridgehead renderas="sect4">Recommended for systems with NVIDIA Video</bridgehead>
     <para role="recommended">
       <xref linkend="libvdpau"/> and
       <xref linkend="libvdpau-va-gl"/>
@@ -160,6 +160,9 @@
       <ulink url="https://www.twolame.org/">TwoLAME</ulink>,
       <ulink url="https://sourceforge.net/projects/opencore-amr/files/vo-aacenc/">vo-aaenc</ulink>,
       <ulink url="https://sourceforge.net/projects/opencore-amr/files/vo-amrwbenc/">vo-amrwbenc</ulink>, and
+      <ulink url="https://github.com/intel/libvpl">libvpl</ulink> (for non-vaapi QuickSync) with one of the runtimes,
+      <ulink url="https://github.com/intel/vpl-gpu-rt">vpl-gpu-rt</ulink> (Broadwell/5000+),
+      <ulink url="https://github.com/Intel-Media-SDK/MediaSDK">intel-media-sdk</ulink> (Haswell/4000 series or below) use patches from Arch for build,
       <!--<ulink url="https://vulkan.org/">Vulkan</ulink>, and-->
       <ulink url="https://zapping.sourceforge.net/ZVBI/">ZVBI</ulink>
     </para>
@@ -200,7 +203,7 @@
             --enable-libx264     \
             --enable-libx265     \
             --enable-openssl     \
-            --ignore-tests=enhanced-flv-av1 \
+            --ignore-tests=enhanced-flv-av1,enhanced-flv-multitrack \
             --docdir=/usr/share/doc/ffmpeg-&ffmpeg-version; &amp;&amp;
 
 make &amp;&amp;
