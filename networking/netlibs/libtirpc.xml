@@ -67,7 +67,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing='compact'>
       <listitem>
@@ -77,7 +77,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">libtirpc Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -96,13 +96,13 @@
         any existing version of <xref linkend='rpcbind'/>
       </para>
     </note>
-
+<!--
     <para>
       First, apply a patch to make the package compatible with gcc-15:
     </para>
 
 <screen><userinput role="pre">patch -Np1 -i ../libtirpc-&libtirpc-version;-gcc15_fixes-1.patch</userinput></screen>
-
+-->
     <para>
       Install <application>libtirpc</application> by running the following
       commands:
@@ -112,7 +112,8 @@
             --sysconfdir=/etc \
             --disable-static  \
             --disable-gssapi  &amp;&amp;
-make</userinput></screen>
+
+make CC="gcc -std=gnu17"</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -123,6 +124,17 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <option>CC="gcc -std=gnu17"</option>: this is used to overcome an issue
+      with gcc-15. This version of gcc uses <literal>-std=gnu23</literal> by
+      default which exposes several issues in the source code.
+    </para>
 
   </sect2>
 
