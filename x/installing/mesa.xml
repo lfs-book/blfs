@@ -6,10 +6,10 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  " ">
-  <!ENTITY mesa-md5sum        "fe3eb39e8a3c6fbb36eb3da57be022e7">
-  <!ENTITY mesa-size          "45 MB">
-  <!ENTITY mesa-buildsize     "1.1 GB (with docs; add 576 MB for tests)">
-  <!ENTITY mesa-time          "3.8 SBU (with docs; add 1.7 SBU for tests; both with parallelism=4)">
+  <!ENTITY mesa-md5sum        "0f5efeb82427fb841fc89df51b487ed5">
+  <!ENTITY mesa-size          "42 MB">
+  <!ENTITY mesa-buildsize     "1.2 GB (with docs; add 483 MB for tests)">
+  <!ENTITY mesa-time          "3.8 SBU (with docs; add 1.9 SBU for tests; both with parallelism=4)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
@@ -25,8 +25,8 @@
     <title>Introduction to Mesa</title>
 
     <para>
-      <application>Mesa</application> is an OpenGL compatible 3D graphics
-      library.
+      <application>Mesa</application> contains several libraries and drivers
+      for multiple APIs like OpenGL and Vulkan.
     </para>
 
 <!--
@@ -234,11 +234,8 @@
       the patch above),
       <ulink url="https://omxil.sourceforge.net/">Bellagio OpenMAX Integration
       Layer</ulink> (for mobile platforms), and
-      <!--<ulink url="https://github.com/KhronosGroup/glslang">glslang</ulink>
-      (for vulkan drivers),-->
       <ulink url="https://github.com/tizonia/tizonia-openmax-il/wiki/Tizonia-OpenMAX-IL/">
-      libtizonia</ulink>,
-      <!-- <ulink url="https://github.com/KhronosGroup/Vulkan-Loader">Vulkan-Loader</ulink> -->
+      libtizonia</ulink>
     </para>
 <!--
     <note>
@@ -343,6 +340,9 @@
 
 <!--<screen><userinput>patch -Np1 -i ../mesa-&mesa-version;-add_xdemos-1.patch</userinput></screen>-->
 <screen><userinput>patch -Np1 -i ../mesa-add_xdemos-4.patch</userinput></screen>
+   <!-- Testers with libglvnd, pass `-D glvnd=disabled` to meson for the patch
+        to work. This will build the OpenGL libraries which we want anyway for
+        accurate measurements. - zeckma -->
    <!-- Note that freedreno, vc4, and virgl all need special support from
         libdrm - renodr
         For me, libdrm does not mention virgl, but mesa accepts it. AFAICS
@@ -438,7 +438,7 @@ ninja</userinput></screen>
       To test the results, issue:
     </para>
 
-    <screen remap='test'><userinput>meson configure -D build-tests=true &amp;&amp;
+<screen remap='test'><userinput>meson configure -D build-tests=true &amp;&amp;
 sed '/float rsqrtf/,/^}/d' \
     -i ../src/gallium/drivers/llvmpipe/lp_test_arit.c &amp;&amp;
 ninja test</userinput></screen>
@@ -446,18 +446,18 @@ ninja test</userinput></screen>
 <!-- All 98  tests passed for me for 23.3.1 [bdubbs]
      All 106 tests passed for me for 24.3.1 [zeckma]
      All 104 tests passed for me for 25.0.1 [zeckma]
-     All 94  tests passed for me for 25.1.2 [zeckma] -->
+     All 94  tests passed for me for 25.1.2 [zeckma]
+     All 94  tests passed for me for 25.2.2 [zeckma] -->
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
 
     <para>
       If desired, install the optional documentation by running
-      the following commands as the
-      <systemitem class="username">root</systemitem> user:
+      the following commands as the &root; user:
     </para>
 
 <screen role="root"
@@ -668,11 +668,15 @@ ninja test</userinput></screen>
       linux options are auto (default), x11, wayland, surfaceless, and drm.
     </para>
 
+<!-- No available values for this option anymore, dri2 has been completely
+     removed. Hide this now. -->
+<!--
     <para>
       <option>-D legacy-x11="..."</option> This parameter controls which legacy
       X11 features get built-in support. Available linux options are none
       (default) and dri2. These features are rarely needed anymore.
     </para>
+-->
 
   </sect2>
 
@@ -684,27 +688,27 @@ ninja test</userinput></screen>
       <segtitle>Installed Libraries</segtitle><!-- in /usr/lib -->
       <segtitle>Installed DRI Driver Stubs</segtitle><!-- in /usr/lib/dri -->
       <segtitle>Installed VA-API Drivers</segtitle><!-- in /usr/lib/dri -->
-      <segtitle>Installed GBM Backends</segtitle><!-- in /usr/lib/gbm -->
+      <segtitle>Installed GBM Drivers</segtitle><!-- in /usr/lib/gbm -->
       <segtitle>Installed VDPAU Drivers</segtitle><!-- in /usr/lib/vdpau -->
       <segtitle>Installed Vulkan Drivers</segtitle><!-- in /usr/lib -->
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
         <seg>
-          glxgears,
-          glxinfo,
-          mme_fermi_sim_hw_test, and
-          mme_tu104_sim_hw_test
+          <!-- Begin programs -->
+          glxgears and
+          glxinfo
+          <!-- End programs -->
         </seg>
         <seg>
+          <!-- Begin libraries -->
           libEGL.so,
           libGL.so,
           libGLESv1_CM.so,
           libGLESv2.so,
-          libgbm.so,
-          libglapi.so,
-          libgallium-&mesa-version;.so, and
-          libxatracker.so
+          libgbm.so, and
+          libgallium-&mesa-version;.so
+          <!-- End libraries -->
         </seg>
         <seg>
           <!-- Begin DRI driver stubs -->
@@ -716,7 +720,6 @@ ninja test</userinput></screen>
           nouveau_dri.so,
           r300_dri.so,
           r600_dri.so,
-          r600_drv_video.so,
           radeonsi_dri.so,
           swrast_dri.so,
           virtio_gpu_dri.so,
@@ -727,14 +730,15 @@ ninja test</userinput></screen>
         <seg>
           <!-- Begin VA-API drivers -->
           nouveau_drv_video.so,
+          r600_drv_video.so,
           radeonsi_drv_video.so, and
           virtio_gpu_drv_video.so
           <!-- End VA-API drivers -->
         </seg>
         <seg>
-          <!-- Begin GBM backends -->
+          <!-- Begin GBM drivers -->
           dri_gbm.so
-          <!-- End GBM backends -->
+          <!-- End GBM drivers -->
         </seg>
         <seg>
           <!-- Begin VDPAU drivers -->
@@ -746,20 +750,24 @@ ninja test</userinput></screen>
           <!-- End VDPAU drivers -->
         </seg>
         <seg>
+          <!-- Begin Vulkan drivers -->
           libvulkan_intel_hasvk.so,
           libvulkan_intel.so,
           libvulkan_lvp.so,
           libvulkan_nouveau.so, and
           libvulkan_radeon.so
+          <!-- End Vulkan drivers -->
         </seg>
         <seg>
+          <!-- Begin directories -->
           <!-- $XORG_PREFIX/include/GL is installed by xorg-protos -->
-          $XORG_PREFIX/{include/{EGL,GLES,GLES2,GLES3,KHR},
-          $XORG_PREFIX/lib/{dri,gbm,vdpau}},
+          $XORG_PREFIX/include/{EGL,GLES,GLES2,GLES3,KHR},
+          $XORG_PREFIX/lib/{dri,gbm,vdpau},
           $XORG_PREFIX/share/drirc.d (contains workarounds for various applications,
           particularly browsers and games),
           $XORG_PREFIX/share/vulkan,
           and /usr/share/doc/mesa-&mesa-version;
+          <!-- End directories -->
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -799,9 +807,7 @@ ninja test</userinput></screen>
         <term><filename class='libraryfile'>dri_gbm.so</filename></term>
         <listitem>
           <para>
-            implements Graphics Buffer Management functions needed by
-            <systemitem class='library'>libgbm</systemitem> on top of
-            <systemitem class='library'>libdrm</systemitem>
+            is the GBM driver for <application>Mesa</application>
           </para>
         </listitem>
       </varlistentry>
@@ -851,6 +857,8 @@ ninja test</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- No longer installed as of 25.2.0 -->
+<!--
       <varlistentry id="libglapi">
         <term><filename class="libraryfile">libglapi.so</filename></term>
         <listitem>
@@ -863,6 +871,7 @@ ninja test</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="libGLESv1_CM">
         <term><filename class="libraryfile">libGLESv1_CM.so</filename></term>
@@ -900,6 +909,8 @@ ninja test</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- No longer installed as of 25.2.0 -->
+<!--
       <varlistentry id="libxatracker">
         <term><filename class="libraryfile">libxatracker.so</filename></term>
         <listitem>
@@ -911,6 +922,7 @@ ninja test</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
     </variablelist>
 
