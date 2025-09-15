@@ -9,10 +9,10 @@
   <!ENTITY gs-download-http
   "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs&gs-packver;/ghostscript-&gs-dl-version;.tar.xz">
   <!ENTITY gs-download-ftp  " ">
-  <!ENTITY gs-md5sum        "c26a0415b3f18d7ca7825ce64f0ca6c4">
-  <!ENTITY gs-size          "65 MB">
-  <!ENTITY gs-buildsize     "294 MB (with fonts and libgs.so)">
-  <!ENTITY gs-time          "1.3 SBU (Using parallelism=4; with libgs.so)">
+  <!ENTITY gs-md5sum        "de467eb7ceb58c0b41537fb28ea2eb40">
+  <!ENTITY gs-size          "66 MB">
+  <!ENTITY gs-buildsize     "776 MB (with fonts and libgs.so)">
+  <!ENTITY gs-time          "2.0 SBU (Using parallelism=4; with libgs.so)">
 
   <!ENTITY gs-standard-fonts-download
   "&sourceforge-dl;/gs-fonts/ghostscript-fonts-std-8.11.tar.gz">
@@ -85,6 +85,7 @@
          Commenting this out since it's no longer needed, but keeping it for the
          inevitable next time that we need a patch for this package.-->
 
+    <!--
     <itemizedlist spacing="compact">
       <listitem>
         <para>
@@ -93,6 +94,7 @@
         </para>
       </listitem>
     </itemizedlist>
+    -->
 
     <para>
       If you wish, you can download additional fonts.
@@ -196,21 +198,12 @@
 
 <screen><userinput>rm -rf freetype lcms2mt jpeg libpng openjpeg</userinput></screen>
 
-
+<!--
     <para>
       Apply a patch to prevent a problem when building with gcc-15:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../ghostscript-&gs-version;-gcc15_fixes-1.patch</userinput></screen>
-
-<!-- Fixed in 10.04.0
-    <para>
-      Fix building this package with gcc-14 and libidn:
-    </para>
-
-<screen><userinput remap="pre">sed -e '186 s/NewPassword =/*NewPassword =/' \
-    -e '187 s/NewLen =/*NewLen =/'           \
-    -i pdf/pdf_sec.c</userinput></screen>
 -->
 
     <para>
@@ -221,7 +214,8 @@
 
 ./configure --prefix=/usr           \
             --disable-compile-inits \
-            --with-system-libtiff   &amp;&amp;
+            --with-system-libtiff   \
+            CFLAGS="${CFLAGS:--g -O3} -fPIC" &amp;&amp;
 make</userinput></screen>
 
     <note>
@@ -307,6 +301,11 @@ fc-cache -v /usr/share/ghostscript/fonts/</userinput></screen>
     <para>
       <parameter>--with-system-libtiff</parameter>: Remove this option if
       you've not installed <xref linkend="libtiff"/>.
+    </para>
+
+    <para>
+      <parameter>CFLAGS="${CFLAGS:--g -O3} -fPIC"</parameter>: These flags are 
+      needed to prevent a linker error during the build process.
     </para>
 
     <para>
