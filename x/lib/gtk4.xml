@@ -132,6 +132,23 @@
 
   </sect2>
 
+  <sect2 role="kernel" id='gtk4-kernel'>
+    <title>Kernel Configuration</title>
+
+    <para>
+      Some GTK-4 features need the the following options in the kernel
+      configuration.  It's also needed by the test suite.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="gtk4-kernel.xml"/>
+
+    <indexterm zone="gtk4 gtk4-kernel">
+      <primary sortas="d-gtk4">gtk4</primary>
+    </indexterm>
+
+  </sect2>
+
   <sect2 role="installation">
     <title>Installation of GTK 4</title>
 
@@ -176,7 +193,7 @@ ninja</userinput></screen>
     <screen remap='test'><userinput>env -u{GALLIUM_DRIVER,MESA_LOADER_DRIVER_OVERRIDE}          \
     LIBGL_ALWAYS_SOFTWARE=1 VK_LOADER_DRIVERS_SELECT='lvp*' \
     dbus-run-session meson test --setup x11                 \
-                                --no-suite={headless,needs-udmabuf}</userinput></screen>
+                                --no-suite=headless</userinput></screen>
 
     <para>
       If you are in a Wayland session, replace the one occurrence of
@@ -302,13 +319,8 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <parameter>--no-suite={headless,needs-udmabuf}</parameter>: Disable
-      the tests requiring the external dependency pydbus, and the tests
-      requiring the device node
-      <filename class='devicefile'>/dev/udmabuf</filename>.
-      The device node does not exist if the feature is not enabled in the
-      kernel configuration<phrase revision='sysv'>, and even if it exists it
-      cannot be accessed as unprivileged users</phrase>.
+      <parameter>--no-suite=headless</parameter>: Disable
+      the tests requiring the external dependency pydbus.
     </para>
   </sect2>
 
