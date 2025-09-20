@@ -6,7 +6,12 @@
 
   <!ENTITY svt-av1-root
     "https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v&svt-av1-version;">
-  <!ENTITY svt-av1-download "&svt-av1-root;/SVT-AV1-v&svt-av1-version;.tar.gz">
+  <!ENTITY svt-av1-download-http "&svt-av1-root;/SVT-AV1-v&svt-av1-version;.tar.gz">
+  <!ENTITY svt-av1-download-ftp  " ">
+  <!ENTITY svt-av1-md5sum        "77b9d52e8c26bacf8bca742f8448dbc1">
+  <!ENTITY svt-av1-size          "11 MB">
+  <!ENTITY svt-av1-buildsize     "81 MB">
+  <!ENTITY svt-av1-time          "0.7 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="svt-av1" xreflabel="SVT-AV1-&svt-av1-version;">
@@ -25,12 +30,37 @@
       The SVT-AV1 package contains an AV1 encoder.
     </para>
 
-    &long-build-time;
+    &lfs124_checked;
 
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Download: <ulink url="&svt-av1-download;"/>
+          Download (HTTP): <ulink url="&svt-av1-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&svt-av1-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &svt-av1-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &svt-av1-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &svt-av1-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &svt-av1-time;
         </para>
       </listitem>
     </itemizedlist>
@@ -47,6 +77,11 @@
       <xref linkend="nasm"/>
     </para>
 
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <xref linkend="valgrind"/>
+    </para>
+
   </sect2>
 
   <sect2 role="installation">
@@ -59,12 +94,27 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr \
-      -D CMAKE_BUILD_TYPE=Release  \
-      -D BUILD_SHARED_LIBS=ON      \
-      -G Ninja .. &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr   \
+      -D CMAKE_BUILD_TYPE=Release    \
+      -D CMAKE_SKIP_INSTALL_RPATH=ON \
+      -D BUILD_SHARED_LIBS=ON        \
+      -D BUILD_TESTING=ON            \
+      -W no-dev -G Ninja .. &amp;&amp;
 
 ninja</userinput></screen>
+
+    <para>
+      The test suite is very long and doesn't provide meaningful results. If
+      you want to test the results anyway, rebuild the package with
+      <option>-D BUILD_TESTING=ON</option>, then run
+      <command>ninja test</command>.
+    </para>
+
+<!-- SVT-AV1's test suite clones into libaom and uses that test suite. After
+     doing the test suite for libaom multiple times and generally having time
+     wasted, there doesn't seem to be a good reason to do it here. Let's give
+     the user the option and info needed to do it anyway, but not make it part
+     of the standard measurements to save us time. - zeckma -->
 
     <para>
       Now, as the &root; user:
@@ -74,44 +124,20 @@ ninja</userinput></screen>
 
   </sect2>
 
-  <sect2 role="installation">
-    <title>lib32 Installation of SVT-AV1</title>
-
-    <para>
-      Install lib32-SVT-AV1 by running the following
-      commands:
-    </para>
-
-<screen><userinput>rm -rf * &amp;&amp;
-CC="gcc -m32" CXX="g++ -m32"         \
-PKG_CONFIG_PATH=/usr/lib32/pkgconfig \
-cmake -D CMAKE_INSTALL_PREFIX=/usr   \
-      -D CMAKE_INSTALL_LIBDIR=lib32  \
-      -D CMAKE_BUILD_TYPE=Release    \
-      -D BUILD_SHARED_LIBS=ON        \
-      -G Ninja .. &amp;&amp;
-
-ninja</userinput></screen>
-
-    <para>
-      Now, as the &root; user:
-    </para>
-
-<screen role="root"><userinput>DESTDIR=$PWD/DESTDIR ninja install    &amp;&amp;
-cp -vR DESTDIR/usr/lib32/* /usr/lib32 &amp;&amp;
-rm -rf DESTDIR                        &amp;&amp;
-ldconfig</userinput></screen>
-
-  </sect2>
-
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    &options-cmake;
+    <para>
+      <parameter>-D BUILD_SHARED_LIBS=ON</parameter>: This parameter forces
+      building shared versions of the libraries.
+    </para>
+
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/cmake-skip-install-rpath.xml"/>
 
     <para>
-      <parameter>-D BUILD_SHARED_LIBS=ON</parameter>: This switch builds shared
-      versions of the libraries.
+      <option>-D BUILD_TESTING=ON</option>: This option enables building the
+      unit tests.
     </para>
 
   </sect2>
