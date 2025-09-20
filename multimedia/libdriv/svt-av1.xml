@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY svt-av1-root
+    "https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v&svt-av1-version;">
+  <!ENTITY svt-av1-download "&svt-av1-root;/SVT-AV1-v&svt-av1-version;.tar.gz">
+]>
+
+<sect1 id="svt-av1" xreflabel="SVT-AV1-&svt-av1-version;">
+  <?dbhtml filename="svt-av1.html"?>
+
+  <title>SVT-AV1-&svt-av1-version;</title>
+
+  <indexterm zone="svt-av1">
+    <primary sortas="a-svt-av1">SVT-AV1</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to SVT-AV1</title>
+
+    <para>
+      The SVT-AV1 package contains an AV1 encoder.
+    </para>
+
+    &long-build-time;
+
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download: <ulink url="&svt-av1-download;"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">SVT-AV1 Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="cmake"/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend="nasm"/>
+    </para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of SVT-AV1</title>
+
+    <para>
+      Install SVT-AV1 by running the following commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      -D BUILD_SHARED_LIBS=ON      \
+      -G Ninja .. &amp;&amp;
+
+ninja</userinput></screen>
+
+    <para>
+      Now, as the &root; user:
+    </para>
+
+<screen role="root"><userinput>ninja install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>lib32 Installation of SVT-AV1</title>
+
+    <para>
+      Install lib32-SVT-AV1 by running the following
+      commands:
+    </para>
+
+<screen><userinput>rm -rf * &amp;&amp;
+CC="gcc -m32" CXX="g++ -m32"         \
+PKG_CONFIG_PATH=/usr/lib32/pkgconfig \
+cmake -D CMAKE_INSTALL_PREFIX=/usr   \
+      -D CMAKE_INSTALL_LIBDIR=lib32  \
+      -D CMAKE_BUILD_TYPE=Release    \
+      -D BUILD_SHARED_LIBS=ON        \
+      -G Ninja .. &amp;&amp;
+
+ninja</userinput></screen>
+
+    <para>
+      Now, as the &root; user:
+    </para>
+
+<screen role="root"><userinput>DESTDIR=$PWD/DESTDIR ninja install    &amp;&amp;
+cp -vR DESTDIR/usr/lib32/* /usr/lib32 &amp;&amp;
+rm -rf DESTDIR                        &amp;&amp;
+ldconfig</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    &options-cmake;
+
+    <para>
+      <parameter>-D BUILD_SHARED_LIBS=ON</parameter>: This switch builds shared
+      versions of the libraries.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          SvtAv1EncApp
+        </seg>
+        <seg>
+          libSvtAv1Enc
+        </seg>
+        <seg>
+          /usr/include/svt-av1
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="SvtAv1EncApp">
+        <term><command>SvtAv1EncApp</command></term>
+        <listitem>
+          <para>
+            is the SVT-AV1 encoder utility
+          </para>
+          <indexterm zone="svt-av1 SvtAv1EncApp">
+            <primary sortas="b-SvtAv1EncApp">SvtAv1EncApp</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libSvtAv1Enc">
+        <term><filename class="libraryfile">libSvtAv1Enc</filename></term>
+        <listitem>
+          <para>
+            contains functions that enable encoding AV1
+          </para>
+          <indexterm zone="svt-av1 libSvtAv1Enc">
+            <primary sortas="c-libSvtAv1Enc">libSvtAv1Enc</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </sect2>
+
+</sect1>
