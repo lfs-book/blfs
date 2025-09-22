@@ -7,15 +7,14 @@
   <!ENTITY libtiff-download-http
            "https://download.osgeo.org/libtiff/tiff-&libtiff-version;.tar.gz">
   <!ENTITY libtiff-download-ftp  " ">
-  <!ENTITY libtiff-md5sum        "3a0fa4a270a4a192b08913f88d0cfbdd">
-  <!ENTITY libtiff-size          "3.7 MB">
-  <!ENTITY libtiff-buildsize     "60 MB (with tests)">
+  <!ENTITY libtiff-md5sum        "f1044dd3b4466cc53464210148e08146">
+  <!ENTITY libtiff-size          "3.9 MB">
+  <!ENTITY libtiff-buildsize     "50 MB (with tests)">
   <!ENTITY libtiff-time          "0.2 SBU (with tests)">
 ]>
 
 <sect1 id="libtiff" xreflabel="libtiff-&libtiff-version;">
   <?dbhtml filename="libtiff.html"?>
-
 
   <title>libtiff-&libtiff-version;</title>
 
@@ -120,10 +119,9 @@
 <screen><userinput>mkdir -p libtiff-build &amp;&amp;
 cd       libtiff-build &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr ..     \
-      -D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
-      -G Ninja                            \
-      -D CMAKE_INSTALL_DOCDIR=/usr/share/doc/libtiff-&libtiff-version; &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      -W no-dev -G Ninja ..
 ninja</userinput></screen>
 
     <para>
@@ -131,20 +129,22 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem>
-      user:
+      Now, as the &root; user:
     </para>
 
-<screen role="root"><userinput>ninja install</userinput></screen>
+<screen role="root"><userinput>ninja install &amp;&amp;
+mv -v /usr/share/doc/{tiff,libtiff-&libtiff-version;}</userinput></screen>
 
   </sect2>
 
+<!--
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/cmake-policy-version.xml"/>
   </sect2>
+-->
 
   <sect2 role="content">
     <title>Contents</title>
@@ -187,7 +187,7 @@ ninja</userinput></screen>
         </seg>
         <seg>
           /usr/lib/cmake/tiff and
-          /usr/share/doc/tiff-&libtiff-version;
+          /usr/share/doc/libtiff-&libtiff-version;
         </seg>
       </seglistitem>
     </segmentedlist>
