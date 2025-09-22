@@ -69,21 +69,21 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <xref linkend="libaom"/>
+      <xref linkend="dav1d"/> and
+      <xref linkend="svt-av1"/> (only supports YUV420)
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gdk-pixbuf"/>
+      <xref linkend="gdk-pixbuf"/> and
+      <xref linkend="libaom"/> (for chroma subsampling outside YUV420)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <ulink url="https://github.com/google/googletest">gtest</ulink>,
-      <ulink url="https://code.videolan.org/videolan/dav1d">libdav1d</ulink>,
-      <ulink url="https://chromium.googlesource.com/libyuv/libyuv/">libyuv</ulink>,
-      <ulink url="https://github.com/xiph/rav1e">rav1e</ulink>, and
-      <ulink url="https://gitlab.com/AOMediaCodec/SVT-AV1">svt-av1</ulink>
+      <ulink url="https://chromium.googlesource.com/libyuv/libyuv/">libyuv</ulink>, and
+      <ulink url="https://github.com/xiph/rav1e">rav1e</ulink>
     </para>
 
     &test-use-internet;
@@ -104,6 +104,8 @@ cd    build &amp;&amp;
 cmake -D CMAKE_INSTALL_PREFIX=/usr \
       -D CMAKE_BUILD_TYPE=Release  \
       -D AVIF_CODEC_AOM=SYSTEM     \
+      -D AVIF_CODEC_DAV1D=SYSTEM   \
+      -D AVIF_CODEC_SVT=SYSTEM     \
       -D AVIF_BUILD_GDK_PIXBUF=ON  \
       -D AVIF_LIBYUV=OFF           \
       -G Ninja .. &amp;&amp;
@@ -138,9 +140,9 @@ ninja &amp;&amp; ninja test</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-D AVIF_CODEC_AOM=SYSTEM</parameter>: This switch enables using
-      the AOM codec. This package is useless without at least one codec
-      built in.
+      <parameter>-D AVIF_CODEC_{AOM,DAV1D,SVT}=SYSTEM</parameter>: These
+      switches enable using the AV1 codec via dav1d, libaom, and SVT-AV1. This
+      package is useless without and AV1 encoder and decoder.
     </para>
 
     <para>
@@ -156,21 +158,9 @@ ninja &amp;&amp; ninja test</userinput></screen>
     </para>
 
     <para>
-      <option>-D AVIF_CODEC_DAV1D=SYSTEM</option>: Use this switch if you have
-      installed <ulink url="https://code.videolan.org/videolan/dav1d">libdav1d</ulink>
-      and wish to use it as a codec.
-    </para>
-
-    <para>
       <option>-D AVIF_CODEC_RAV1E=SYSTEM</option>: Use this switch if you have
       installed <ulink url="https://github.com/xiph/rav1e">rav1e</ulink> and
       wish to use it as a codec.
-    </para>
-
-    <para>
-      <option>-D AVIF_CODEC_SVT=SYSTEM</option>: Use this switch if you have
-      installed <ulink url="https://gitlab.com/AOMediaCodec/SVT-AV1">svt-av1</ulink>
-      and wish to use it as a codec.
     </para>
 
   </sect2>

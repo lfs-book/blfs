@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY gst-plugins-rs-download-http "https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs/-/archive/gstreamer-&gst10-plugins-rs-version;/gst-plugins-rs-gstreamer-&gst10-plugins-rs-version;.tar.gz">
+  <!ENTITY gst-plugins-rs-md5sum        "04ee9a381d6e163b3ca1b35f4b347969">
+  <!ENTITY gst-plugins-rs-size          "2.9 MB">
+  <!ENTITY libgstdav1d-buildsize        "416 MB (19 MB installed)">
+  <!ENTITY libgstdav1d-time             "0.3 SBU (with parallelism=8)">
+  <!ENTITY libgstgtk4-buildsize         "831 MB (51 MB installed)">
+  <!ENTITY libgstgtk4-time              "0.5 SBU (with parallelism=8)">
+]>
+
+<sect1 id="gst-plugins-rs" xreflabel="gst-plugins-rs-&gst10-plugins-rs-version;">
+  <?dbhtml filename="gst-plugins-rs.html"?>
+
+  <title>gst-plugins-rs-&gst10-plugins-rs-version;</title>
+
+  <indexterm zone="gst-plugins-rs">
+    <primary sortas="a-gst-plugins-rs">gst-plugins-rs</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to gst-plugins-rs</title>
+
+    <para>
+      The <application>gst-plugins-rs</application> package several Rust
+      plugins for interacting with the gstreamer multimedia framework.
+      This page has instructions for libgstdav1d and libgstgtk4.
+    </para>
+
+    <para>
+      The libgstdav1d plugin provides AV1 decoding via dav1d through
+      gstreamer.
+    </para>
+
+    <para>
+      The libgstgtk4 plugin binds gstreamer to GTK-4.
+    </para>
+
+    &lfs124_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&gst-plugins-rs-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &gst-plugins-rs-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &gst-plugins-rs-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required for libgstdav1d: &libgstdav1d-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time for libgstdav1d: &libgstdav1d-time;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required for libgstgtk4: &libgstgtk4-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time for libgstgtk4: &libgstgtk4-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">gst-plugins-rs Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="git"/>,
+      <xref linkend="gst10-plugins-base"/>, and
+      <xref linkend='rust'/>
+    </para>
+
+    <bridgehead renderas="sect4">Required for libgstdav1d</bridgehead>
+    <para role="required">
+      <xref linkend="dav1d"/>
+    </para>
+
+    <bridgehead renderas="sect4">Required for libgstgtk4</bridgehead>
+    <para role="required">
+      <xref linkend="gtk4"/>
+    </para>
+
+    &build-use-internet;
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of gst-plugins-rs</title>
+
+    <sect3>
+      <title>Installation of libgstdav1d</title>
+
+      <para>
+        Install <application>libgstdav1d</application> by running the following
+        commands:
+      </para>
+
+<screen><userinput>cd video/dav1d &amp;&amp;
+cargo build --release</userinput></screen>
+
+      <para>
+        This package does not come with a test suite.
+      </para>
+
+      <para>
+        Now, as the &root; user:
+      </para>
+
+<screen role="root"><userinput>install -vm755 ../../target/release/libgstdav1d.so /usr/lib/gstreamer-1.0</userinput></screen>
+
+    </sect3>
+
+    <sect3>
+      <title>Installation of libgstgtk4</title>
+
+      <para>
+        Install <application>libgstgtk4</application> by running the following
+        commands:
+      </para>
+
+<screen><userinput>cd video/gtk4 &amp;&amp;
+cargo build --release</userinput></screen>
+
+      <para>
+        This package does not come with a test suite, but its basic
+        functionality can be tested after installation.
+      </para>
+
+      <para>
+        Now, as the &root; user:
+      </para>
+
+<screen role="root"><userinput>install -vm755 ../../target/release/libgstgtk4.so /usr/lib/gstreamer-1.0</userinput></screen>
+
+      <para>
+        To test the basic functionality of the package, issue:
+        <command>gst-launch-1.0 videotestsrc num-buffers=60 !
+        gtk4paintablesink</command> in a graphical terminal emulator.
+        It should play a test video in a GTK-4 window for 2 seconds.
+      </para>
+    </sect3>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          None
+        </seg>
+        <seg>
+          libgstdav1d.so and libgstgtk4.so
+        </seg>
+        <seg>
+          None
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="libgstdav1d">
+        <term><filename class="libraryfile">libgstdav1d.so</filename></term>
+        <listitem>
+          <para>
+            provides a binding between dav1d and the gstreamer multimedia
+            framework
+          </para>
+          <indexterm zone="gst-plugins-rs libgstdav1d">
+            <primary sortas="c-libgstdav1d">libgstdav1d.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libgstgtk4">
+        <term><filename class="libraryfile">libgstgtk4.so</filename></term>
+        <listitem>
+          <para>
+            provides a binding between GTK-4 and the gstreamer multimedia
+            framework
+          </para>
+          <indexterm zone="gst-plugins-rs libgstgtk4">
+            <primary sortas="c-libgstgtk4">libgstgtk4.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </sect2>
+</sect1>
