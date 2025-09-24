@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY gdk-pixbuf-download-http
-           "&gnome-download-http;/gdk-pixbuf/2.42/gdk-pixbuf-&gdk-pixbuf-version;.tar.xz">
+      "&gnome-download-http;/gdk-pixbuf/&gdk-pixbuf-dir;/gdk-pixbuf-&gdk-pixbuf-version;.tar.xz">
   <!ENTITY gdk-pixbuf-download-ftp  " ">
-  <!ENTITY gdk-pixbuf-md5sum        "f986fdbba5ec6233c96f8b6535811780">
+  <!ENTITY gdk-pixbuf-md5sum        "75f9cae9bd3c82d4648673e86a77c7bb">
   <!ENTITY gdk-pixbuf-size          "6.2 MB">
-  <!ENTITY gdk-pixbuf-buildsize     "33 MB (with tests)">
+  <!ENTITY gdk-pixbuf-buildsize     "35 MB (with tests)">
   <!ENTITY gdk-pixbuf-time          "0.2 SBU (with tests)">
 ]>
 
@@ -91,8 +91,10 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gi-docgen"/>
+      <xref linkend="gi-docgen"/> 
       (to generate documentation),
+      <ulink url="https://gitlab.gnome.org/GNOME/glycin/">glycin</ulink> 
+      (to implement anamation), 
       <xref role="runtime" linkend="libavif"/>
       (runtime dependency, needed for loading AVIF images),
       <xref role="runtime" linkend="libjxl"/>
@@ -118,6 +120,7 @@ meson setup ..            \
       --prefix=/usr       \
       --buildtype=release \
       -D others=enabled   \
+      -D glycin=disabled  \
       --wrap-mode=nofallback &amp;&amp;
 ninja</userinput></screen>
 
@@ -173,9 +176,8 @@ ninja</userinput></screen>
     Program rst2man found: ../docs/meson.build:70:2: ERROR: Problem encountered:
     No rst2man found, but man pages were explicitly enabled -->
     <para>
-      <option>-D man=false</option>: Use this option if you do not want to
-      generate manual pages, or if you do not want to install
-      <xref linkend="docutils" role="nodep"/>.
+      <option>-D glycin=disabled</option>: This option is needed if the optional
+      dependency <application>glycin</application> is not installed.
     </para>
   </sect2>
 
