@@ -6,9 +6,9 @@
 
   <!ENTITY ffmpeg-download-http "https://ffmpeg.org/releases/ffmpeg-&ffmpeg-version;.tar.xz">
   <!ENTITY ffmpeg-download-ftp  " ">
-  <!ENTITY ffmpeg-md5sum        "2c91c725fb1b393618554ff429e4ae43">
+  <!ENTITY ffmpeg-md5sum        "26f2bd7d20c6c616f31d7130c88d7250 ">
   <!ENTITY ffmpeg-size          "11 MB">
-  <!ENTITY ffmpeg-buildsize     "227 MB (add 1.7 GB for the FATE suite/tests, add 881 MB for documentation)">
+  <!ENTITY ffmpeg-buildsize     "205 MB (add 1.7 GB for the FATE suite/tests, add 869 MB for documentation)">
   <!ENTITY ffmpeg-time          "1.2 SBU (using parallelism=4; add 3.2 SBU (with THREADS=4) to run the FATE suite after sample files are downloaded; add 0.2 SBU for doxygen docs)">
 ]>
 
@@ -87,8 +87,8 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="dav1d"/>,
-      <xref linkend="libaom"/> (for chroma subsampling outside of YUV420),
+<!--      <xref linkend="dav1d"/>, -->
+      <xref linkend="libaom"/><!-- (for chroma subsampling outside of YUV420)-->,
       <xref linkend="libass"/>,
       <xref linkend="fdk-aac"/>,
       <xref linkend="freetype2"/>,
@@ -96,7 +96,7 @@
       <xref linkend="libvorbis"/>,
       <xref linkend="libvpx"/>,
       <xref linkend="opus"/>,
-      <xref linkend="svt-av1"/> (only supports YUV420),
+<!--      <xref linkend="svt-av1"/> (only supports YUV420), -->
       <xref linkend="x264"/>,
       <xref linkend="x265"/>, and
       <xref linkend="nasm"/>
@@ -196,19 +196,23 @@
             --disable-debug      \
             --enable-libaom      \
             --enable-libass      \
-            --enable-libdav1d    \
             --enable-libfdk-aac  \
             --enable-libfreetype \
             --enable-libmp3lame  \
             --enable-libopus     \
-            --enable-libsvtav1   \
             --enable-libvorbis   \
             --enable-libvpx      \
             --enable-libx264     \
             --enable-libx265     \
             --enable-openssl     \
-            --ignore-tests=enhanced-flv-av1,enhanced-flv-multitrack \
+            --ignore-tests=enhanced-flv-av1 \
             --docdir=/usr/share/doc/ffmpeg-&ffmpeg-version; &amp;&amp;
+
+<!--        - -enable-libdav1d    \ 
+            - -enable-libsvtav1   \
+            - -ignore-tests=enhanced-flv-av1,enhanced-flv-multitrack \
+
+-->
 
 make &amp;&amp;
 
@@ -377,12 +381,12 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
       <parameter>--enable-libass</parameter>: Enables ASS/SSA subtitle format
       rendering via <filename class="libraryfile">libass</filename>.
     </para>
-
+<!--
     <para>
-      <parameter>--enable-libdav1d</parameter>: Enables AV1 decoding
+      <parameter>- -enable-libdav1d</parameter>: Enables AV1 decoding
       via <filename class="libraryfile">libdav1d</filename>.
     </para>
-
+-->
     <para>
       <option>--enable-libdrm</option>: Use this switch if
       <xref linkend="libdrm"/> is installed to build the <quote>kmsgrab</quote>
