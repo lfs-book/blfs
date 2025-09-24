@@ -87,8 +87,8 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-<!--      <xref linkend="dav1d"/>, -->
-      <xref linkend="libaom"/><!-- (for chroma subsampling outside of YUV420)-->,
+      <xref linkend="dav1d"/>,
+      <xref linkend="libaom"/> (for chroma subsampling outside of YUV420)
       <xref linkend="libass"/>,
       <xref linkend="fdk-aac"/>,
       <xref linkend="freetype2"/>,
@@ -96,7 +96,7 @@
       <xref linkend="libvorbis"/>,
       <xref linkend="libvpx"/>,
       <xref linkend="opus"/>,
-<!--      <xref linkend="svt-av1"/> (only supports YUV420), -->
+      <xref linkend="svt-av1"/> (only supports YUV420),
       <xref linkend="x264"/>,
       <xref linkend="x265"/>, and
       <xref linkend="nasm"/>
@@ -205,14 +205,10 @@
             --enable-libx264     \
             --enable-libx265     \
             --enable-openssl     \
-            --ignore-tests=enhanced-flv-av1 \
+            --enable-libdav1d    \
+            --enable-libsvtav1   \
+            --ignore-tests=enhanced-flv-av1,enhanced-flv-multitrack \
             --docdir=/usr/share/doc/ffmpeg-&ffmpeg-version; &amp;&amp;
-
-<!--        - -enable-libdav1d    \ 
-            - -enable-libsvtav1   \
-            - -ignore-tests=enhanced-flv-av1,enhanced-flv-multitrack \
-
--->
 
 make &amp;&amp;
 
@@ -381,12 +377,12 @@ grep ^TEST ../fate.log | wc -l</userinput></screen>
       <parameter>--enable-libass</parameter>: Enables ASS/SSA subtitle format
       rendering via <filename class="libraryfile">libass</filename>.
     </para>
-<!--
+
     <para>
-      <parameter>- -enable-libdav1d</parameter>: Enables AV1 decoding
+      <parameter>--enable-libdav1d</parameter>: Enables AV1 decoding
       via <filename class="libraryfile">libdav1d</filename>.
     </para>
--->
+
     <para>
       <option>--enable-libdrm</option>: Use this switch if
       <xref linkend="libdrm"/> is installed to build the <quote>kmsgrab</quote>
