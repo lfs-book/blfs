@@ -6,10 +6,10 @@
 
   <!ENTITY postgresql-download-http "https://ftp.postgresql.org/pub/source/v&postgresql-version;/postgresql-&postgresql-version;.tar.bz2">
   <!ENTITY postgresql-download-ftp  " ">
-  <!ENTITY postgresql-md5sum        "e72b7e5dc22d44d56b113ed1f74e4084">
+  <!ENTITY postgresql-md5sum        "ce1c99eafd54278847a04c299cff80c5">
   <!ENTITY postgresql-size          "21 MB">
-  <!ENTITY postgresql-buildsize     "280 MB (with tests)">
-  <!ENTITY postgresql-time          "0.7 SBU (with parallelism=4, add 0.1 SBU for tests)">
+  <!ENTITY postgresql-buildsize     "345 MB (with tests)">
+  <!ENTITY postgresql-time          "1.0 SBU (with parallelism=4, add 0.1 SBU for tests)">
 ]>
 
 <sect1 id="postgresql" xreflabel="PostgreSQL-&postgresql-version;">
@@ -118,11 +118,19 @@ useradd -c "PostgreSQL Server" -g postgres -d /srv/pgsql/data \
     </note>
 
     <para>
+      First, fix a typo in a sgml file:
+    </para>
+
+<screen><userinput>sed -e 's/"app-pgchecksums "/"app-pgchecksums"/' \
+    -i doc/src/sgml/ref/pg_combinebackup.sgml</userinput></screen>
+
+    <para>
       Install <application>PostgreSQL</application> with the
       following commands:
     </para>
 
-<screen><userinput>sed -i '/DEFAULT_PGSOCKET_DIR/s@/tmp@/run/postgresql@' src/include/pg_config_manual.h &amp;&amp;
+<screen><userinput>sed -e '/DEFAULT_PGSOCKET_DIR/s@/tmp@/run/postgresql@' \
+    -i src/include/pg_config_manual.h                  &amp;&amp;
 
 ./configure --prefix=/usr \
             --docdir=/usr/share/doc/postgresql-&postgresql-version; &amp;&amp;
