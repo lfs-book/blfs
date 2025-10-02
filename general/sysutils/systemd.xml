@@ -7,10 +7,10 @@
   <!--  <!ENTITY systemd-download-http "https://anduin.linuxfromscratch.org/LFS/systemd-&systemd-version;-&systemd-stable;.tar.xz"> For whenever we move to a stable snapshot for backports -->
   <!ENTITY systemd-download-http "https://github.com/systemd/systemd/archive/v&systemd-version;/systemd-&systemd-version;.tar.gz">
   <!ENTITY systemd-download-ftp  " ">
-  <!ENTITY systemd-md5sum        "25fe5d328e22641254761f1baa74cee0">
+  <!ENTITY systemd-md5sum        "490c1c2bbe5b576ff9ca2848fbd31507">
   <!ENTITY systemd-size          "16 MB">
-  <!ENTITY systemd-buildsize     "359 MB (with tests)">
-  <!ENTITY systemd-time          "1.4 SBU (with tests using 4 cores)">
+  <!ENTITY systemd-buildsize     "408 MB (with tests)">
+  <!ENTITY systemd-time          "1.7 SBU (with tests using 4 cores)">
 
 ]>
 
@@ -114,10 +114,8 @@
       <xref linkend="curl"/>,
       <xref linkend="cryptsetup"/>,
       <xref linkend="git"/>,
-      <xref linkend="gnutls"/>,
       <xref linkend="iptables"/>,
       <xref linkend="libarchive"/>,
-      <xref linkend="libgcrypt"/>,
       <xref linkend="libidn2"/>,
       <xref linkend="libpwquality"/>,
       <xref linkend="libseccomp"/>,
@@ -166,6 +164,17 @@
   <sect2 role="installation">
     <title>Installation of systemd</title>
 
+
+    <warning>
+      <para>
+        If a previous version of systemd has been installed, remove a service
+        that will generate errors on following boots.
+      </para>
+
+<screen role="root"><userinput remap="pre">rm -v /usr/lib/systemd/system/systemd-update-utmp-runlevel.service</userinput></screen>
+
+    </warning>
+
     <para>
       Remove two unneeded groups,
       <systemitem class="groupname">render</systemitem> and
@@ -195,7 +204,6 @@ meson setup ..                 \
       -D sysusers=false        \
       -D rpmmacrosdir=no       \
       -D homed=disabled        \
-      -D userdb=false          \
       -D mode=release          \
       -D pam=enabled           \
       -D pamconfdir=/etc/pam.d \
@@ -206,7 +214,7 @@ meson setup ..                 \
       -D docdir=/usr/share/doc/systemd-&systemd-version; &amp;&amp;
 
 ninja</userinput></screen>
-<!-- Regarding homed and userdb, see the note below in Command Explanations-->
+<!-- Regarding homed, see the note below in Command Explanations-->
 
     <note>
       <para>
@@ -245,13 +253,6 @@ ninja</userinput></screen>
     </para>
 
     <para>
-      <parameter>-D userdb=false</parameter>: Removes a daemon that does not
-      offer any use under a BLFS configuration. If you wish to enable the
-      <application>userdbd</application> daemon, replace "false" with "true"
-      in the above meson command.
-    </para>
-
-    <para>
       <parameter>-D homed=disabled</parameter>: Removes a daemon that does not offer
       any use under a traditional BLFS configuration, especially using accounts
       created with useradd. To enable systemd-homed, first ensure that you have
@@ -275,7 +276,7 @@ ninja</userinput></screen>
       <command>meson setup</command> command.
     </para>
 
-    <!-- EDITORS NOTE: Explanation on removing userdbd and homed:
+    <!-- EDITORS NOTE: Explanation on removing homed:
     In BLFS, we do not fully support disk encryption. We offer instructions for
     building 'cryptsetup' as a dependency, but we do not offer instructions for
     actually configuring it. In addition, we generally do not include
@@ -299,7 +300,7 @@ ninja</userinput></screen>
     traditional UNIX users and groups, I advise that we take the following
     approach to avoid any confusion:
 
-    - Leave the added Short Descriptions for homectl and userdbctl
+    - Leave the added Short Descriptions for homectl userdbctl
     - Add the above command explanations and restore the previous behavior
 
     Should we decide to enable homed by default anytime in the future,
@@ -404,11 +405,9 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          <!-- maybe userdbd/userdbctl can go in LFS, try at next time -->
           homectl (optional),
-          systemd-cryptenroll (if <xref linkend="cryptsetup"/> is installed),
+          systemd-cryptenroll (if <xref linkend="cryptsetup"/> is installed), and
           systemd-cryptsetup (if <xref linkend="cryptsetup"/> is installed),
-          and userdbctl (optional)
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -458,6 +457,7 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- Not needed now that it's in LFS.
       <varlistentry id="userdbctl">
         <term><command>userdbctl</command></term>
         <listitem>
@@ -469,6 +469,7 @@ EOF</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="pam_systemd">
         <term><filename class="libraryfile">pam_systemd.so</filename></term>
