@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "982f087479302e6d91432efc81852b00">
-  <!ENTITY rust-size          "256 MB">
+  <!ENTITY rust-md5sum        "a6e15778947c83cb6cf7b2fcf58a2cd0">
+  <!ENTITY rust-size          "260 MB">
   <!ENTITY rust-buildsize     "9.4 GB (252 MB installed); add 7.4 GB if running the tests">
   <!ENTITY rust-time          "9.0 SBU (including download time; add 15 SBU for tests, both using parallelism=8)">
 ]>
@@ -242,7 +242,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn us to do such a review.
-change-id = 142379
+change-id = 144675
 
 [llvm]
 # When using system llvm prefer shared libraries
@@ -274,11 +274,6 @@ channel = "stable"
 # Enable the same optimizations as the official upstream build.
 lto = "thin"
 codegen-units = 1
-
-# Don't build lld which does not belong to this package and seems not
-# so useful for BLFS.  Even if it turns out to be really useful we'd build
-# it as a part of the LLVM package instead.
-lld = false
 
 # Don't build llvm-bitcode-linker which is only useful for the NVPTX
 # backend that we don't enable.
@@ -345,17 +340,9 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
 <screen remap="test"><userinput>./x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
 
     <para>
-      <!-- https://github.com/rust-lang/rust/issues/145079 -->
-      Eight tests in the ui test suite are known to fail with
-      <literal>description</literal> set in the <literal>build</literal>
-      section of the <filename>bootstrap.toml</filename> file.
-      Four tests in the bootstrap test suite are known to fail because
-      they expect to run in the Rust Git repository.
-      The test named <filename>tests/run-make/musl-default-linking</filename>
+      The test named <filename>tests/run-make/rustdoc-target-modifiers</filename>
       is known to fail because we've not enabled the AArch64 target in
-      <xref linkend='llvm'/>.  The test named
-      <filename>tests/run-make/linker-warning</filename> is known to fail
-      due to some reason unknown yet.
+      <xref linkend='llvm'/>.
     </para>
 
 <!-- Let's just comment this out.  Nobody has tested on a system w/o
