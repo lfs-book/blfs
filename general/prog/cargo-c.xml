@@ -28,8 +28,8 @@
     <title>Introduction to cargo-c</title>
 
     <para>
-      The <application>cargo-c</application> package creates a cargo 
-      subcommand to build and install C-ABI compatible dynamic and 
+      The <application>cargo-c</application> package creates a cargo
+      subcommand to build and install C-ABI compatible dynamic and
       static libraries.
     </para>
 
@@ -93,7 +93,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="libssh2"/> 
+      <xref linkend="libssh2"/>
     </para>
 
     &build-use-internet;
@@ -137,8 +137,8 @@
       commands:
     </para>
 
-<screen><userinput>[ ! -e /usr/include/libssh2.h ] || export LIBSSH2_SYS_USE_PKG_CONFIG=1    &amp;&amp;
-[ ! -e /usr/include/sqlite3.h ] || export LIBSQLITE3_SYS_USE_PKG_CONFIG=1 &amp;&amp;
+<screen><userinput>export LIBSSH2_SYS_USE_PKG_CONFIG=1    &amp;&amp;
+export LIBSQLITE3_SYS_USE_PKG_CONFIG=1 &amp;&amp;
 
 cargo build --release</userinput></screen>
 
@@ -159,15 +159,28 @@ cargo build --release</userinput></screen>
 <screen><userinput>unset LIB{SSH2,SQLITE3}_SYS_USE_PKG_CONFIG</userinput></screen>
 
   </sect2>
-<!--
+
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/meson-buildtype-release.xml"/>
+    <!-- https://github.com/alexcrichton/ssh2-rs/issues/173 -->
+    <para>
+      <command>export LIBSSH2_SYS_USE_PKG_CONFIG=1</command>: Allow
+      <command>cargo</command> to link to system libssh2.  Omit this command
+      if you've not installed <xref linkend='libssh2'/>.
+    </para>
+
+    <!-- src/tools/cargo/Cargo.toml is specifying "bundled" as the
+         upstream is suggesting to avoid issues building for Windoge.
+         We don't care about Windoge so override this as we have
+         sqlite3 in LFS.  -->
+    <para>
+      <command>export LIBSQLITE3_SYS_USE_PKG_CONFIG=1</command>: Allow
+      <command>cargo</command> to link to system sqlite.
+    </para>
 
   </sect2>
--->
+
   <sect2 role="content">
     <title>Contents</title>
 
