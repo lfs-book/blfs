@@ -89,12 +89,6 @@
 
     <bridgehead renderas="sect3">libxml2 Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para role="required">
-      <xref linkend="git"/> (used by meson during configuration to determine
-      the version of libxml2 being built)
-    </para>
-
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="icu"/>
@@ -120,6 +114,13 @@
 
 <screen><userinput>patch -Np1 -i ../libxml2-&libxml2-version;-upstream_fix-1.patch</userinput></screen>
 -->
+    <para>
+      First, remove an unnecessary call to <command>git</command> in
+      <filename>meson.build</filename>:
+    </para>
+
+<screen><userinput>sed -i "/'git'/,+3d" meson.build</userinput></screen>
+
     <para>
       Install <application>libxml2</application> by running the following
       commands:
