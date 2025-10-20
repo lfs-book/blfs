@@ -178,10 +178,14 @@ ninja</userinput></screen>
 <screen role="root"><userinput>ninja install</userinput></screen>
 
     <para>
-      The <command>xml2-config</command> may return static libraries for
-      the project, but since we only install dynamic libraries, it should
-      always return the name of shared libraries. Fix this by issuing,
-      as &root;:
+      The <command>xml2-config</command> may return flags needed to link
+      against the static library for the project, including the references
+      to the <xref linkend='icu'/> libraries.  That would be pointless
+      because we only install the shared library.  To make things worse,
+      that may cause some packages using <application>libxml2</application>
+      to be unnecessarily linked against some <xref linkend='icu'/> library,
+      then those packages will need a rebuild if ICU is upgraded to a new
+      major version.  Fix this by issuing, as &root;:
     </para>
 
 <screen role="root"><userinput>sed "s/--static/--shared/" -i /usr/bin/xml2-config</userinput></screen>
