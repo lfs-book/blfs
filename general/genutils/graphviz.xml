@@ -194,6 +194,20 @@
 
 <screen><userinput>sed -i '/ldflags/ s/ $.*&amp;&amp;//' cmake/FindPHP.cmake</userinput></screen>
 
+    <!-- Fortunately we don't run the test suite of this package.  If we
+         start to run the test suite this hack may break tests.  -->
+    <para>
+      Now prevent hard coding library search paths (rpath) into the shared
+      libraries.  The libraries does not need rpath for an installation into
+      the standard location, and rpath may sometimes cause unwanted effects
+      or even security issues.  We cannot use
+      <option>-D CMAKE_SKIP_INSTALL_RPATH=ON</option> for this package
+      because the rpath is really needed for the programs installed by this
+      package, so we need to edit the build system:
+    </para>
+
+<screen><userinput>sed '/ORIGIN/d' -i lib/CMakeLists.txt</userinput></screen>
+
     <para>
       Install <application>Graphviz</application> by running the following
       commands:
@@ -202,10 +216,9 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr   \
-      -D CMAKE_BUILD_TYPE=Release    \
-      -D CMAKE_SKIP_INSTALL_RPATH=ON \
-      ..                             &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      ..                           &amp;&amp;
 
 sed -i '/GZIP/s/:.*$/=/' CMakeCache.txt &amp;&amp;
 
@@ -226,9 +239,6 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/cmake-skip-install-rpath.xml"/>
 
     <para>
       <command>sed ... CMakeCache.txt</command>: This command is needed to
