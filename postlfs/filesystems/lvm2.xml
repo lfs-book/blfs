@@ -6,21 +6,11 @@
 
   <!ENTITY lvm2-download-http "https://sourceware.org/ftp/lvm2/LVM2.&lvm2-version;.tgz">
   <!ENTITY lvm2-download-ftp  " ">
-  <!ENTITY lvm2-md5sum        "d1527944d496d602f479e8fe9138c94a">
+  <!ENTITY lvm2-md5sum        "62a7c701fe07a5c30ff9fcb624cd3437">
   <!ENTITY lvm2-size          "2.8 MB">
-  <!ENTITY lvm2-buildsize     "39 MB (add 20 MB for tests; transient files can grow up to around 300 MB in the /tmp directory during tests)">
-  <!-- My build size was 124 MB with tests, but I'll leave this here. -renodr
-       The files in /tmp are transient. I monitor /tmp with a loop during
-       tests. -pierre, August 2020
-
-       Build size with tests was 58M.  The largest size of /tmp I saw was 289 MB.
-       ### 412 tests: 245 passed, 155 skipped, 0 timed out, 1 warned, 11 failed
-       Aug 2023 LVM2.2.03.22 - bdubbs
-
-       ### 424 tests: 261 passed, 153 skipped, 0 timed out, 1 warned, 9 failed
-       Nov 2023 LVM2.2.03.23 - bdubbs
-       -->
-  <!ENTITY lvm2-time          "0.4 SBU (add 9 to 48 SBU for tests, depending on disk speed and whether ram block device is enabled in the kernel)">
+  <!ENTITY lvm2-buildsize     "39 MB (add up to 300 MB for transient files for tests in the /tmp directory)">
+  <!ENTITY lvm2-time          "0.4 SBU (add 9 to 48 SBU for tests, depending on disk speed 
+  and options enabled in the kernel)">
 ]>
 
 <sect1 id="lvm2" xreflabel="LVM2-&lvm2-version;">
@@ -86,14 +76,16 @@
       <xref linkend='libaio'/>
      </para>
 
-    <bridgehead renderas="sect4">Optional</bridgehead>
+    <bridgehead renderas="sect4">Optional for tests</bridgehead>
     <para role="optional">
-      <xref linkend='libnvme'/>,
+      <xref linkend='btrfs-progs'/>,
+      <xref linkend='dosfstools'/>,
+      <xref linkend='jfsutils'/>,
       <xref linkend='mdadm'/>,
+      <xref linkend='parted'/>,
       <xref linkend='valgrind'/>,
       <xref linkend='which'/>,
-      <xref linkend='xfsprogs'/> (latter four may be used, but are not required,
-        for tests),
+      <xref linkend='xfsprogs'/>,
       <ulink 
         url='https://mirrors.edge.kernel.org/pub/linux/kernel/people/jeffm/reiserfsprogs/'>
         reiserfsprogs</ulink>,
@@ -112,12 +104,21 @@
       and recompile the kernel:
     </para>
 
-    <note><para>
-      There are several other Device Mapper options in the kernel beyond those
-      listed below.  In order to get reasonable results if running the
-      regression tests, all must be enabled either internally or as a module.
-      The tests will all time out if Magic SysRq key is not enabled.
-    </para></note>
+    <note>
+      <para>
+        There are several other Device Mapper options in the kernel beyond those
+        listed below.  In order to get reasonable results if running the
+        regression tests, all must be enabled either internally or as a module.
+        The tests will all time out if Magic SysRq key is not enabled.
+      </para>
+
+      <para>
+        In addition most of the optional packages for tests require kernel options
+        that are needed. If the optional packages or their kernel options are not 
+        installed the tests will be flagged as either failed or skipped in an 
+        inconsistent way.
+      </para>
+    </note>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="lvm2-kernel.xml"/>
@@ -175,7 +176,13 @@ make -C libdm install</userinput></screen>
       on the speed of the disk(s), and on the number of enabled kernel options.
     </para>
 
-    <!-- Results for LVM2.2.02.176:
+    <!-- 
+    My build size was 124 MB with tests, but I'll leave this here. -renodr
+       
+    The files in /tmp are transient. I monitor /tmp with a loop during
+    tests. -pierre, August 2020
+
+    Results for LVM2.2.02.176:
     ### 292 tests: 177 passed, 46 skipped, 0 timed out, 60 warned, 9 failed
 
     Results for LVM2.2.03.01:
@@ -201,21 +208,49 @@ make -C libdm install</userinput></screen>
 
     Results for LVM2.2.03.20 [pierre]:
     ### 407 tests: 324 passed, 75 skipped, 0 timed out, 3 warned, 5 failed
+    
+    Build size with tests was 58M.  The largest size of /tmp I saw was 289 MB.
+    ### 412 tests: 245 passed, 155 skipped, 0 timed out, 1 warned, 11 failed
+    Aug 2023 LVM2.2.03.22 - bdubbs
+
+    ### 424 tests: 261 passed, 153 skipped, 0 timed out, 1 warned, 9 failed
+    Nov 2023 LVM2.2.03.23 - bdubbs   
     -->
 
     <para>
-      The tests do not implement the <quote>expected fail</quote> possibility,
-      and a small number of test failures is expected by upstream.
-      <!-- 1 -->More failures may happen because some kernel options are missing.
-      For example, the lack of the <emphasis>dm-delay</emphasis> device
-      mapper target  explains some failures.
-      <!-- 2 -->Some tests may fail if there is insufficient free space available
-      in the partition with the /tmp directory.  At least one test fails if 16 TB
-      is not available.
-      <!-- 3 -->Some tests are flagged  <quote>warned</quote> if
-      <ulink url='https://github.com/jthornber/thin-provisioning-tools'>
-      thin-provisioning-tools</ulink> are not installed. A workaround is to
-      add the following flags to <command>configure</command>:
+      The tests do not implement the <quote>expected fail</quote> possibility
+      and some test failures are expected by upstream.
+    
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            Most tests will fail if the kernel does not have all the device
+            drivers listed above.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            More failures may happen because some kernel options are missing.
+            For example, the lack of the <emphasis>dm-delay</emphasis> device
+            mapper target  explains some failures.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Some tests may fail if there is insufficient free space available
+            in the partition with the /tmp directory.  At least one test fails if 16 TB
+            is not available.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            Some tests are flagged  <quote>warned</quote> if
+            <ulink url='https://github.com/jthornber/thin-provisioning-tools'>
+            thin-provisioning-tools</ulink> are not installed. A workaround is to
+            add the following flags to <command>configure</command>:
+          </para>
+        </listitem>
+      </itemizedlist>
     </para>
 
 <screen role="nodump"><userinput>     --with-thin-check=    \
