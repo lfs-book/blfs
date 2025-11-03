@@ -75,6 +75,7 @@
       <bridgehead renderas="sect5">Optional (for testing)</bridgehead>
       <para role="optional">
         <xref linkend="pytest"/>,
+        <ulink url="https://pypi.org/project/colorama/">colorama</ulink>,
         <ulink url="https://pypi.org/project/pyperf/">pyperf</ulink>,
         <ulink url="https://pypi.org/project/pypinfo/">pypinfo</ulink>,
         <ulink url="https://pypi.org/project/pytest-instafail/">pytest-instafail</ulink>,
@@ -110,19 +111,13 @@
 <screen remap='test'><userinput>cp build/lib*/psutil/*.so psutil</userinput></screen>
 
       <para>
-        If using Python-3.14.0 or higher, one test needs to be fixed to prevent hanging:
-      </para>
-
-<screen remap='test'><userinput>sed "/multiprocessing.Pool/i\            multiprocessing.set_start_method('fork')" \
-    -i psutil/tests/test_process_all.py</userinput></screen>
-
-      <para>
         To test the results, issue:
       </para>
 
 <screen remap='test'><userinput>python3 -m venv --system-site-packages testenv                            &amp;&amp;
-testenv/bin/pip3 install pytest-{instafail,subtests,xdist} pyperf pypinfo &amp;&amp;
-testenv/bin/python3 -m pytest</userinput></screen>
+testenv/bin/pip3 install colorama pytest-{instafail,subtests,xdist} pyperf \
+                         pypinfo &amp;&amp;
+PSUTIL_DEBUG=1 testenv/bin/python3 -m pytest</userinput></screen>
 
       <itemizedlist spacing="compact">
         <listitem>
