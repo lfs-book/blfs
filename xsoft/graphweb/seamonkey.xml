@@ -6,10 +6,10 @@
 
   <!ENTITY seamonkey-download-http "https://archive.seamonkey-project.org/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
   <!ENTITY seamonkey-download-ftp  " ">
-  <!ENTITY seamonkey-md5sum        "388a3a89245c3c3aa0e2303fba7ed253">
-  <!ENTITY seamonkey-size          "237 MB">
+  <!ENTITY seamonkey-md5sum        "10aa8c289014ff26d3991fc695af3224">
+  <!ENTITY seamonkey-size          "239 MB">
   <!ENTITY seamonkey-buildsize     "3 GB (138 MB installed)">
-  <!ENTITY seamonkey-time          "6 SBU (with parallelism=8)">
+  <!ENTITY seamonkey-time          "6.3 SBU (with parallelism=8)">
 ]>
 
 <sect1 id="seamonkey" xreflabel="seamonkey-&seamonkey-version;">
@@ -105,7 +105,7 @@
       <xref linkend="gtk3"/>,
       <xref linkend="libarchive"/>,
       <xref linkend="python311"/>,
-      <xref linkend="yasm"/>, and
+      <xref linkend="nasm"/>, and
       <xref linkend="zip"/>
     </para>
 
@@ -116,7 +116,6 @@
       <!--<xref linkend="libvpx"/>, Causes build failures similar to Firefox -->
       <xref linkend="libwebp"/>,
       <xref linkend="llvm"/> (with clang),
-      <xref linkend="nasm"/>,
       <xref linkend="nspr"/>,
       <xref linkend="nss"/>, and
       <xref linkend="pulseaudio"/>
@@ -254,7 +253,12 @@ EOF</userinput></screen>
       with ICU-76 or later:
     </para>
 
-<screen><userinput remap="pre">(for i in {43..47}; do
+<!-- This used to be 43..47. ICU-78 adjusted line mapping. Firefox 140esr is
+     adjusted by adding a CLASS_CHARACTER at the end of what would be 47. So we
+     just increase 47 to 48 to adapt for ICU-78 rather quite easily instead of
+     needing another sed command/expression. May change again in ICU-79.
+     - zeckma -->
+<screen><userinput remap="pre">(for i in {43..48}; do
    sed '/ZWJ/s/$/,CLASS_CHARACTER/' -i intl/lwbrk/LineBreaker.cpp || exit $?
 done) &amp;&amp;
 
@@ -286,6 +290,7 @@ sed -i 's/icu-i18n/icu-uc &amp;/' js/moz.configure</userinput></screen>
     </para>
 
 <screen><userinput>export PATH_PY311=/opt/python3.11/bin:$PATH &amp;&amp;
+export MOZBUILD_STATE_PATH=${PWD}/mozbuild  &amp;&amp;
 PATH=$PATH_PY311 AUTOCONF=true MACH_USE_SYSTEM_PYTHON=1 ./mach build</userinput></screen>
 
     <para>
@@ -315,15 +320,30 @@ chown -R 0:0 /usr/lib/seamonkey                          &amp;&amp;
 cp -v $(find -name seamonkey.1 | head -n1) /usr/share/man/man1</userinput></screen>
 
     <para>
-      Finally, unset the <envar>PATH_PY311</envar> variable:
+      Finally, unset temporary variables that were set above:
     </para>
 
-<screen><userinput>unset PATH_PY311</userinput></screen>
+<screen><userinput>unset PATH_PY311 MOZBUILD_STATE_PATH</userinput></screen>
 
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <command>export MOZBUILD_STATE_PATH=${PWD}/mozbuild</command>: The build
+      tells you that it intends to create <filename
+      class="directory">~/.mozbuild</filename>, and offer you an option to
+      press &lt;ENTER&gt; to accept this, or Ctrl-C to cancel and restart the
+      build after specifying the directory. In practice, the message may not
+      appear until after &lt;ENTER&gt; is keyed, i.e. the build stalls.
+    </para>
+
+    <para>
+      That directory is used for a (probably random) telemetry identifier.
+      Creating this directory within the build directory and deleting it after the
+      installation prevents it being used.
+    </para>
 
     <para>
       <command>export CC=clang CXX=clang++</command>:
