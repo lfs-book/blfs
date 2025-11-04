@@ -73,17 +73,13 @@
       <xref linkend="libpng"/>
     </para>
 
-    <bridgehead renderas="sect4">Recommended</bridgehead>
-    <para role="recommended">
-      <xref linkend="gdk-pixbuf"/> (for the plugin)
-    </para>
-
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="asciidoc"/> (for man pages),
       <xref linkend="doxygen"/> and <xref linkend="graphviz"/>
       (for documentation),
       <!--<xref linkend="gimp"/> (for the plugin),-->
+      <xref linkend="gdk-pixbuf"/> (for the plugin),
       <xref linkend="java"/> (for the JAR),
       <xref linkend="libavif"/>,
       <xref linkend="libwebp"/>,
@@ -112,7 +108,7 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr             \
       -D BUILD_SHARED_LIBS=ON                  \
       -D JPEGXL_ENABLE_SKCMS=OFF               \
       -D JPEGXL_ENABLE_SJPEG=OFF               \
-      -D JPEGXL_ENABLE_PLUGINS=ON              \
+      -D JPEGXL_ENABLE_PLUGINS=OFF             \
       -D JPEGXL_INSTALL_JARDIR=/usr/share/java \
       -G Ninja ..                              &amp;&amp;
 ninja</userinput></screen>
@@ -169,9 +165,11 @@ gdk-pixbuf-query-loaders --update-cache</userinput></screen>
     </para>
     
     <para>
-      <parameter>-D JPEGXL_ENABLE_PLUGINS=ON</parameter>: This parameter enables
-      Plugin support, which creates plugins for <!--<xref linkend="gimp"/> and-->
-      <xref linkend="gdk-pixbuf"/> if the package is installed.
+      <parameter>-D JPEGXL_ENABLE_PLUGINS=OFF</parameter>: This parameter
+      disables building the JPEG XL loader plugins for GIMP and gdk-pixbuf.
+      The GIMP plugin isn't compatible with the GIMP version in the book,
+      and the gdk-pixbuf plugin is useless when gdk-pixbuf is built with
+      its recommended dependency glycin.
     </para>
 
     <para>
@@ -201,9 +199,8 @@ gdk-pixbuf-query-loaders --update-cache</userinput></screen>
           libjxl.so,
           libjxl_cms.so,
           libjxl_extras_codec.so,
-          libjxl_jni.so,
-          libjxl_threads.so, and
-          libpixbufloader-jxl.so (in /usr/lib/gdk-pixbuf-2.0/2.10.0/loaders)
+          libjxl_jni.so, and
+          libjxl_threads.so
         </seg>
         <seg>
           /usr/include/jxl
