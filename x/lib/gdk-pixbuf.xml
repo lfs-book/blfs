@@ -82,7 +82,9 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="docutils"/> and
-      <xref linkend="glycin"/>
+      <xref linkend="glycin"/> (circular: build gdk-pixbuf without glycin
+      first, then build glycin with all its recommended dependencies,
+      finally rebuild gdk-pixbuf)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -108,11 +110,16 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..            \
-      --prefix=/usr       \
-      --buildtype=release \
-      -D others=enabled   \
-      --wrap-mode=nofallback &amp;&amp;
+meson setup ..                \
+      --prefix=/usr           \
+      --buildtype=release     \
+      -D others=enabled       \
+      -D png=disabled         \
+      -D gif=disabled         \
+      -D jpeg=disabled        \
+      -D tiff=disabled        \
+      -D thumbnailer=disabled \
+      --wrap-mode=nofallback  &amp;&amp;
 ninja</userinput></screen>
 
     <para>
@@ -164,6 +171,14 @@ ninja</userinput></screen>
     <para>
       <parameter>-D others=enabled</parameter>: Build the loaders for some
       formats not supported by glycin yet, notably XBM and XPM.
+    </para>
+
+    <para>
+      <parameter>-D *=disabled</parameter>: Don't build the components
+      obsoleted in favor of glycin.  Those components are automatically
+      disabled when building this package with glycin installed, explicitly
+      specify those options to make the configuration of the first build
+      (without glycin) consistent.
     </para>
   </sect2>
 
