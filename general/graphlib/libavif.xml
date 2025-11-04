@@ -75,12 +75,12 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="gdk-pixbuf"/> and
       <xref linkend="libaom"/> (for chroma subsampling outside YUV420)
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="gdk-pixbuf"/>,
       <ulink url="https://github.com/google/googletest">gtest</ulink>,
       <ulink url="https://chromium.googlesource.com/libyuv/libyuv/">libyuv</ulink>, and
       <ulink url="https://github.com/xiph/rav1e">rav1e</ulink>
@@ -106,7 +106,7 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr \
       -D AVIF_CODEC_AOM=SYSTEM     \
       -D AVIF_CODEC_DAV1D=SYSTEM   \
       -D AVIF_CODEC_SVT=SYSTEM     \
-      -D AVIF_BUILD_GDK_PIXBUF=ON  \
+      -D AVIF_BUILD_GDK_PIXBUF=OFF \
       -D AVIF_LIBYUV=OFF           \
       -G Ninja .. &amp;&amp;
 ninja</userinput></screen>
@@ -146,9 +146,10 @@ ninja &amp;&amp; ninja test</userinput></screen>
     </para>
 
     <para>
-      <parameter>-D AVIF_BUILD_GDK_PIXBUF=ON</parameter>: This switch builds
-      the AVIF loader for applications which use gdk-pixbuf. Remove it if you
-      have not installed <xref role="nodep" linkend="gdk-pixbuf"/>.
+      <parameter>-D AVIF_BUILD_GDK_PIXBUF=OFF</parameter>: This switch
+      disables building the AVIF loader for applications which use
+      gdk-pixbuf.  The loader is useless when gdk-pixbuf is built with its
+      recommended dependency glycin.
     </para>
 
     <para>
@@ -178,8 +179,7 @@ ninja &amp;&amp; ninja test</userinput></screen>
           None
         </seg>
         <seg>
-          libavif.so and
-          libpixbbufloader-avif.so (in /usr/lib/gdk-pixbuf-2.0/2.10.0/loaders)
+          libavif.so
         </seg>
         <seg>
           /usr/include/avif and
