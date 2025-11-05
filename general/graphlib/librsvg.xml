@@ -6,8 +6,8 @@
 
   <!ENTITY librsvg-download-http "&gnome-download-http;/librsvg/&librsvg-minor;/librsvg-&librsvg-version;.tar.xz">
   <!ENTITY librsvg-download-ftp  " ">
-  <!ENTITY librsvg-md5sum        "ea1e31b9d65fe905fa0cb730c2c7e82f">
-  <!ENTITY librsvg-size          "6.4 MB">
+  <!ENTITY librsvg-md5sum        "f015a7dca4952ba9a2e3b8b536695f1f">
+  <!ENTITY librsvg-size          "6.5 MB">
   <!ENTITY librsvg-buildsize     "1.2 GB (18 MB installed; add 510 MB for tests)">
   <!ENTITY librsvg-time          "0.6 SBU (add 0.3 SBU for tests; both using parallelism=4)">
 ]>
@@ -87,9 +87,8 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="docutils"/> (for man pages),
-      <xref linkend="gi-docgen"/> (for documentation), and
-      <xref linkend="xorg7-font"/> (for tests)
+      <xref linkend="docutils"/> (for man pages) and
+      <xref linkend="gi-docgen"/> (for documentation)
     </para>
 
   </sect2>
@@ -121,6 +120,9 @@ ninja</userinput></screen>
 
          With 2.59.1 one test of 5 fails. (I cannot see any failures here,
          but using rustc-1.82.0.)
+
+         Use meson test -v instead of ninja test to show the failed test
+         in case there is one in the rust test suite.
      -->
 
     <para>
@@ -128,14 +130,6 @@ ninja</userinput></screen>
     </para>
 
     <screen remap='test'><userinput>meson test -v</userinput></screen>
-
-    <!-- https://gitlab.gnome.org/GNOME/librsvg/-/issues/1201 -->
-    <para>
-      One subtest named <literal>too_many_elements</literal> in the
-      <quote>Rust tests (rsvg)</quote> test is known to fail with
-      libxml2-2.15.0 or newer. One subtest in the C API tests is
-      also known to fail.
-    </para>
 
     <para>
       Now, as the &root; user:
@@ -182,8 +176,7 @@ ninja</userinput></screen>
           rsvg-convert
         </seg>
         <seg>
-          librsvg-2.so and
-          libpixbufloader-svg.so (installed in /usr/lib/gdk-pixbuf-2.0/2.10.0/loaders)
+          librsvg-2.so
         </seg>
         <seg>
           /usr/include/librsvg-2.0 and
@@ -220,21 +213,6 @@ ninja</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
-      <varlistentry id="libpixbufloader-svg">
-        <term><filename class="libraryfile">libpixbufloader-svg.so</filename></term>
-        <listitem>
-          <para>
-            is the <application>Gdk Pixbuf</application> plugin that allows
-            <application>GTK+</application> applications to render Scalable
-            Vector Graphics images
-          </para>
-          <indexterm zone="librsvg libpixbufloader-svg">
-            <primary sortas="c-libpixbufloader-svg">libpixbufloader-svg.so</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-
     </variablelist>
 
   </sect2>
