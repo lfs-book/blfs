@@ -26,7 +26,7 @@
     <title>Introduction to libde265</title>
 
     <para>
-      The <application>libde265</application> package contains an open
+      The <application>libde265</application> package contains an open source
       H.265 video codec implementation.
     </para>
 
@@ -85,8 +85,8 @@
     <!-- One of them would be "/usr/bin/tests" and IMO installing them is
          completely stupid.  -->
     <para>
-      At first, prevent the installation of some programs only useful for
-      hacking libde265:
+      First, prevent the installation of some programs which are only useful
+      for hacking libde265:
     </para>
 
 <screen><userinput>sed '/tools/d' -i Makefile.am &amp;&amp;
@@ -97,7 +97,9 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr         \
+            --disable-sherlock265 \
+            --disable-static      &amp;&amp;
 make</userinput></screen>
 
     <!-- The README.md file mentions a "testdata" directory but I cannot
@@ -117,9 +119,16 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
+      <parameter>--disable-sherlock265</parameter>: This switch disables the
+      sherlock265 program because it requires Qt5, which is no longer in BLFS.
+      The sherlock265 program is mostly useful for users who are editing H.265
+      videos.
+    </para>
+
+    <para>
       <option>--enable-encoder</option>: This option enables the H.265
-      encoder, in addition to the decoder.  The encoder is still
-      experimental so the instruction above does not contain this option.
+      encoder, in addition to the decoder.  The encoder is still experimental
+      though so the instructions above do not contain this option.
     </para>
   </sect2>
 
@@ -153,7 +162,7 @@ make</userinput></screen>
         <term><command>dec265</command></term>
         <listitem>
           <para>
-            decodes H.265 data (raw bitstream of a stream with NAL units)
+            decodes H.265 data (a raw bitstream of a stream with NAL units)
           </para>
           <indexterm zone="libde265 dec265">
             <primary sortas="b-dec265">dec265</primary>
