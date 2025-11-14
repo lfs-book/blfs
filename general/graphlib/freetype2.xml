@@ -97,8 +97,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="harfbuzz"/>
-      (circular: build freetype, then harfbuzz, then reinstall freetype),
+      <xref linkend="harfbuzz"/>,
       <xref linkend="libpng"/>, and
       <xref linkend="which"/>
     </para>
@@ -136,7 +135,10 @@
 sed -r "s:.*(#.*SUBPIXEL_RENDERING) .*:\1:" \
     -i include/freetype/config/ftoption.h  &amp;&amp;
 
-./configure --prefix=/usr --enable-freetype-config --disable-static &amp;&amp;
+./configure --prefix=/usr            \
+            --disable-static         \
+            --enable-freetype-config \
+            --with-harfbuzz=dynamic &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -144,7 +146,7 @@ make</userinput></screen>
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
@@ -170,11 +172,23 @@ rm -v /usr/share/doc/freetype-&freetype2-version;/freetype-config.1</userinput><
       url="https://freetype.org/patents.html"/> before enabling this option.
     </para>
 
+    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../../xincludes/static-libraries.xml"/>
+
     <para>
       <parameter>--enable-freetype-config</parameter>: This switch
-      ensure that the man page for freetype-config is installed.
+      ensures that the man page for freetype-config is installed.
     </para>
 
+    <para>
+      <parameter>--with-harfbuzz=dynamic</parameter>: This switch ensures that
+      HarfBuzz is loaded dynamically, skipping the requirement to rebuild this
+      package after HarfBuzz is installed.
+    </para>
+
+<!-- I do not know if the above switch renders this one useless, due
+     to loading HarfBuzz dynamically. Until the usecase is tested, let's leave
+     this here just to be prudent. - zeckma -->
     <para>
       <option>--without-harfbuzz</option>: If
       <application>harfbuzz</application> is installed prior to
@@ -183,8 +197,6 @@ rm -v /usr/share/doc/freetype-&freetype2-version;/freetype-config.1</userinput><
       build failure.
     </para>
 
-    <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
     <!-- No longer valid with 2.10.1, /usr/bin/freetype-config is installed
          by the 'make install' command.
     <para>
