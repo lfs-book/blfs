@@ -4,19 +4,18 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY libdvdread-download-http "https://get.videolan.org/libdvdread/&libdvdread-version;/libdvdread-&libdvdread-version;.tar.bz2">
+  <!ENTITY libdvdread-download-http "https://get.videolan.org/libdvdread/&libdvdread-version;/libdvdread-&libdvdread-version;.tar.xz">
   <!ENTITY libdvdread-download-ftp  " ">
-  <!ENTITY libdvdread-md5sum        "3c58d1624a71a16ff40f55dbaca82523">
-  <!ENTITY libdvdread-size          "388 KB">
-  <!ENTITY libdvdread-buildsize     "3.6 MB">
+  <!ENTITY libdvdread-md5sum        "3e2977ccc1f7a9639f7a88e93d04fbd6">
+  <!ENTITY libdvdread-size          "92 KB">
+  <!ENTITY libdvdread-buildsize     "1.6 MB">
   <!ENTITY libdvdread-time          "less than 0.1 SBU">
 ]>
 
 <sect1 id="libdvdread" xreflabel="libdvdread-&libdvdread-version;">
   <?dbhtml filename="libdvdread.html"?>
 
-
-  <title>Libdvdread-&libdvdread-version;</title>
+  <title>libdvdread-&libdvdread-version;</title>
 
   <indexterm zone="libdvdread">
     <primary sortas="a-Libdvdread">Libdvdread</primary>
@@ -72,14 +71,21 @@
     <title>Installation of Libdvdread</title>
 
     <para>
+      First, install the documentaion in a versioned directory:
+    </para>
+
+<screen><userinput>sed -i "/get_option/s/libdvdread/&amp;-&libdvdread-version;/" meson.build</userinput></screen>
+
+    <para>
       Install <application>libdvdread</application> by running the
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr    \
-            --disable-static \
-            --docdir=/usr/share/doc/libdvdread-&libdvdread-version; &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+ninja</userinput></screen>
 
     <para>
       This package does not come with a test suite.
@@ -89,9 +95,10 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install &amp;&amp;
+rm -fv /usr/lib/libdvdread.a</userinput></screen>
   </sect2>
-
+<!--
   <sect2 role="commands">
     <title>Command Explanations</title>
 
@@ -99,7 +106,7 @@ make</userinput></screen>
       href="../../xincludes/static-libraries.xml"/>
 
   </sect2>
-
+-->
   <sect2 role="content">
     <title>Contents</title>
 
