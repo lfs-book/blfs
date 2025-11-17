@@ -7,10 +7,10 @@
 
   <!ENTITY mariadb-download-http "https://downloads.mariadb.org/interstitial/mariadb-&mariadb-version;/source/mariadb-&mariadb-version;.tar.gz">
   <!ENTITY mariadb-download-ftp  " ">
-  <!ENTITY mariadb-md5sum        "3c81bc728598f5b53067220c7b729747">
+  <!ENTITY mariadb-md5sum        "00cae9ff1a3f828c737eacc167479873">
   <!ENTITY mariadb-size          "114 MB">
-  <!ENTITY mariadb-buildsize     "2.2 GB (761 MB installed)">
-  <!ENTITY mariadb-time          "3.6 SBU (with parallelism=8, add 0.4 SBU for tests)">
+  <!ENTITY mariadb-buildsize     "2.2 GB (763 MB installed)">
+  <!ENTITY mariadb-time          "3.7 SBU (with parallelism=8, add 2.8 SBU for tests)">
 ]>
 
 <sect1 id="mariadb" xreflabel="MariaDB-&mariadb-version;">
@@ -70,8 +70,8 @@
 
     <note>
       <para>
-        The installed size of MariaDB is 761 MB, but this can be
-        reduced by about 268 MB, if desired, by removing the <filename
+        The installed size of MariaDB is 763 MB, but this can be
+        reduced by about 269 MB, if desired, by removing the <filename
         class="directory">/usr/share/mariadb/test</filename>
         directory after installation.
       </para>
@@ -191,12 +191,23 @@ make</userinput></screen>
       To test the results, issue: <command>make test</command>.
       Two tests, my_tzinfo and test-connect, are known to fail.
     </para>
+<!--
+    Leaving this for upstream developers.  When I tried to run it the 
+    procedure failed after 10 failures.  To fix that, the option
+    - -max-test-fail 0 is needed.
+
+    My error message was:
+    Too many tests(10) failed! Terminating...
+       Only  2616  of 8178 completed.
+       The servers were restarted 890 times
+       Spent 1966.864 of 648 seconds executing testcases
+       Too many failed: Failed 10/1620 tests, 99.38% were successful.
 
     <note><para>
       A more extensive set of tests can be run with the following:</para>
 
 <screen remap="test"><userinput>pushd mysql-test
-./mtr --parallel <replaceable>&lt;N&gt;</replaceable> --mem --force
+./mtr - -parallel <replaceable>&lt;N&gt;</replaceable> - -mem - -force
 popd</userinput></screen>
 
     <para>
@@ -204,7 +215,7 @@ popd</userinput></screen>
       Over 5400 tests are run in about 24 SBU with N=4.  A few tests
       may fail, mainly due to character set issues.
     </para></note>
-
+-->
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
