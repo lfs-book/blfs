@@ -80,8 +80,15 @@
 <screen role="root"><userinput>&install-wheel; ply</userinput></screen>
 
     <para>
-      This package does not come with a working test suite.
+      To run the tests, issue:
     </para>
+
+<screen><userinput>pushd test                                                 &amp;&amp;
+sed -i 's/self.assert_/self.assertTrue/' test{lex,yacc}.py &amp;&amp;
+sed -i 's/"ERROR:/r"ERROR:/' testlex.py                    &amp;&amp;
+python3 testlex.py                                         &amp;&amp;
+python3 testyacc.py                                        &amp;&amp;
+popd</userinput></screen>
 
     </sect3>
 
