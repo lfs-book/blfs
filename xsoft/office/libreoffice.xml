@@ -7,24 +7,24 @@
   <!ENTITY libreoffice-dl "https://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "0d823a106e573b69dfd7e3bfba7ea920">
-  <!ENTITY libreoffice-core-size          "273 MB">
+  <!ENTITY libreoffice-core-md5sum        "bcab169d1814ad144b756a023d361cd7">
+  <!ENTITY libreoffice-core-size          "274 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "1d4d8eee03da063f5885331641b8377e">
+  <!ENTITY libreoffice-dict-md5sum        "bcab169d1814ad144b756a023d361cd7">
   <!ENTITY libreoffice-dict-size          "60 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "fcc3a3aabac2e8e9f5dc4c52b8e62289">
+  <!ENTITY libreoffice-help-md5sum        "014ff6e15a06d1b07f9b7975b1dd3101">
   <!ENTITY libreoffice-help-size          "58 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum        "6fe8fb5cfad4290a143d5ab536dc3d81">
-  <!ENTITY libreoffice-translations-size          "220 MB">
+  <!ENTITY libreoffice-translations-md5sum        "a6288ba8fadbf5a09e9bba8570559c25">
+  <!ENTITY libreoffice-translations-size          "221 MB">
 
   <!-- full size remeasured for 7.0.0.3 -->
 
-  <!ENTITY libreoffice-buildsize  "11 GB including the additional files if downloaded during the build (778 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
+  <!ENTITY libreoffice-buildsize  "8.6 GB including the additional files if downloaded during the build (740 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
 
  <!-- Editors: many updates to poppler will break LO using system poppler until
       somebody is able to provide a patch or sed.  In these cases, please mark
@@ -36,6 +36,7 @@
 
       Not a problem with 7.1.7.2 and poppler-21.05.0.  - bdubbs
       A problem with 7.3.1.3 and poppler-21.05.0, Arch had a patch.  - bdubbs
+      Not a problem with 25.8.3.2 and poppler-25.11.0. - bdubbs
 
   -->
 
@@ -57,7 +58,7 @@
 
        For 7.5.4.2, I increased the parallelism to 8.  -bdubbs
   -->
-  <!ENTITY libreoffice-time "23 SBU with parallelism=8 (will vary due to download time)">
+  <!ENTITY libreoffice-time "27 SBU with parallelism=8 (will vary due to download time)">
 
 ]>
 
@@ -320,7 +321,7 @@
 
 <!-- keep a commented instruction if no patches are currently required -->
 
-
+i<!--
     <para>
       First, fix build failures introduced by the latest version of poppler:
     </para>
@@ -329,18 +330,10 @@
     -e '/double \*pBbox/ s/double \*/std::array&lt;double, 4&gt; \&amp;/' \
     -i sdext/source/pdfimport/xpdfwrapper/pdfioutdev_gpl.cxx    \
        sdext/source/pdfimport/xpdfwrapper/pdfioutdev_gpl.hxx</userinput></screen>
-
-<!-- Not needed with 25.8.0.4
-    <para>
-      Next, fix a problem with OpenJDK-24 and later that occurs due to the
-      removal of deprecated API in Java:
-    </para>
-
-<screen><userinput remap="pre">sed -i 's/-Djava.security.manager=allow//' external/hsqldb/ExternalProject_hsqldb.mk</userinput></screen>
 -->
 
     <para>
-      Next, fix a problem with detecting Boost::System, which was changed from
+      First, fix a problem with detecting Boost::System, which was changed from
       a library to a series of headers in Boost-1.89.0:
     </para>
 
