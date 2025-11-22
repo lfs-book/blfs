@@ -6,10 +6,10 @@
 
   <!ENTITY mercurial-download-http "https://www.mercurial-scm.org/release/mercurial-&mercurial-version;.tar.gz">
   <!ENTITY mercurial-download-ftp  " ">
-  <!ENTITY mercurial-md5sum        "6cf868fd3d2e7c38105dacbd1bc8624f">
+  <!ENTITY mercurial-md5sum        "e44ca9851c10b2d9f5a823bf555ef138">
   <!ENTITY mercurial-size          "8.6 MB">
-  <!ENTITY mercurial-buildsize     "87 MB (with docs, add 32 MB for tests)">
-  <!ENTITY mercurial-time          "0.3 SBU (with docs; add 23 SBU for tests; both using parallelism=4)">
+  <!ENTITY mercurial-buildsize     "126 MB (with docs, add 33 MB for tests)">
+  <!ENTITY mercurial-time          "0.6 SBU (with docs; add 24 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="mercurial" xreflabel="mercurial-&mercurial-version;">
@@ -87,6 +87,7 @@
       <xref linkend="pygments"/>,
       <xref linkend="rust"/> (see <filename>rust/README.rst</filename> and <filename>rust/rhg/README.md</filename>),
       <xref linkend="subversion"/> (with Python bindings),
+      <xref linkend="which"/> (used in one test),
       <ulink url="https://www.nongnu.org/cvs/">CVS</ulink>,
       <ulink url="https://pypi.python.org/pypi/pyflakes">pyflakes</ulink>, and
       <ulink url="https://github.com/google/re2/">re2</ulink>
@@ -96,14 +97,14 @@
 
   <sect2 role="installation">
     <title>Installation of Mercurial</title>
-
+    <!--
     <para>
       First work a round an issue with <xref linkend="docutils"/> and
       above:
     </para>
 
 <screen><userinput>sed -i '/try:/,+3s/^/#/' doc/hgmanpage.py</userinput></screen>
-
+-->
     <para>
       <application>Mercurial</application> is built and installed 
       in a single command as the &root; user:
@@ -126,10 +127,21 @@ cp -R doc/html /usr/share/doc/mercurial-&mercurial-version;</userinput></screen>
       currently broken due to syntax errors. To do this, issue:
     </para>
 
-<screen><userinput>sed -i '151,154d' Makefile</userinput></screen>
+<screen remap="test"><userinput>sed -i '151,154d' Makefile</userinput></screen>
 
     <para>
-      To run the test suite, issue:
+      There is also a problem with permissions in the build directory, since
+      the above <command>install</command> command has created files owned
+      by &root;, that one test tries to modify. To remedy this, issue, as the
+      &root; user:
+    </para>
+
+<screen remap="test"
+        role="root"><userinput>chown -Rv <replaceable>username</replaceable> .</userinput></screen>
+
+    <para>
+      Where <replaceable>username</replaceable> should be replaced with the
+      user name of the person running the tests. To run the test suite, issue:
     </para>
 
 <screen remap="test"><userinput>TESTFLAGS="-j<replaceable>&lt;N&gt;</replaceable> --with-hg /usr/bin/hg" make check</userinput></screen>
@@ -162,6 +174,7 @@ cp -R doc/html /usr/share/doc/mercurial-&mercurial-version;</userinput></screen>
       # Ran 970 tests, 57 skipped, 1 failed. -pierre 28 Mar 25 (mercurial-7.0).
       # Ran 975 tests, 57 skipped, 1 failed. -renodr 15 Aug 25 (mercurial-7.1).
       # Ran 965 tests, 67 skipped, 1 failed. -pierre 16 Oct 25 (mercurial-7.1.1).
+      # Ran 974 tests, 58 skipped, 14 failed. -pierre 22 Nov 25 (mercurial-7.1.2 with python-3.14).
       -->
     <para>
       In order to
@@ -175,19 +188,9 @@ cp -R doc/html /usr/share/doc/mercurial-&mercurial-version;</userinput></screen>
     </para>
 
 <screen remap="test"><userinput>pushd tests  &amp;&amp;
-  rm -rf tmp &amp;&amp;
-  ./run-tests.py --with-hg /usr/bin/hg <replaceable>test-import.t</replaceable>
+  ./run-tests.py --with-hg /usr/bin/hg --retest
 popd</userinput></screen>
-<!-- not tested for a very long time
-    <para>
-      Normally, the previous failures will be reproducible. However, if
-      you add the switch <option>- -debug</option> before
-      <option>- -tmpdir</option>, and run the tests again, some failures may
-      disappear, which is a problem with the test suite. If this happens,
-      there will be no more of these failures even if you do not pass the
-      - -debug switch again.
-    </para>
-    -->
+
     <para>
       An interesting switch is <option>--time</option>, which will generate a
       table of all the executed tests and their respective start, end, user,
@@ -207,8 +210,10 @@ username = <replaceable>&lt;user_name&gt; &lt;user@mail&gt;</replaceable></liter
 EOF</userinput></screen>
 
     <para>
-      where you must replace &lt;user_name&gt; and &lt;your@mail&gt; (mail
-      is optional and can be omitted). With the user identity defined, run
+      where you must replace &lt;user_name&gt; and &lt;user@mail&gt; (mail
+      is optional and can be omitted, but if you keep it, you should also
+      keep the angle brackets <quote>&lt;&gt;</quote>). With the user identity
+      defined, run
       <command>hg debuginstall</command> and several lines will be displayed,
       the last one reading "no problems detected". Another quick and simple
       test is just <command>hg</command>, which should output basic commands
