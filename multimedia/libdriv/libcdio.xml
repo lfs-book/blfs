@@ -99,7 +99,11 @@
       <!--_cdio_generic.c:63:20: error: implicit declaration of function ‘lseek64’-->
     </para>
 
-<screen><userinput remap="pre">sed '/CDIO_LSEEK/s/lseek64/lseek/' -i lib/driver/_cdio_generic.c</userinput></screen>
+<screen><userinput remap="pre">case $(uname -m) in
+   i?86)
+      sed '/CDIO_LSEEK/s/lseek64/lseek/'  -i lib/driver/_cdio_generic.c &amp;&amp;
+      sed '/CDIO_FSEEK/s/fseeko64/fseek/' -i lib/driver/_cdio_stdio.c   ;;
+esac</userinput></screen>
 
     <para>
       Install <application>libcdio</application> by running the
