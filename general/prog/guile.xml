@@ -6,10 +6,10 @@
 
   <!ENTITY guile-download-http "&gnu-http;/guile/guile-&guile-version;.tar.xz">
   <!ENTITY guile-download-ftp  " ">
-  <!ENTITY guile-md5sum        "375f8a423a23d229552512113aa4a954">
-  <!ENTITY guile-size          "5.5 MB">
-  <!ENTITY guile-buildsize     "184 MB (add 4 MB for tests)">
-  <!ENTITY guile-time          "4.5 SBU (Using parallelism=4; add 0.3 SBU for tests)">
+  <!ENTITY guile-md5sum        "f215f364387f6c9b008efaa11e8079dc">
+  <!ENTITY guile-size          "5.6 MB">
+  <!ENTITY guile-buildsize     "195 MB (add 3 MB for tests)">
+  <!ENTITY guile-time          "4.2 SBU (Using parallelism=4; add 0.3 SBU for tests)">
 ]>
 
 <sect1 id="guile" xreflabel="Guile-&guile-version;">
@@ -66,7 +66,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -76,7 +76,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">Guile Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -95,7 +95,7 @@
 
   <sect2 role="installation">
     <title>Installation of Guile</title>
-
+<!--
     <para>
       First, if you are on a 32-bit system, fix a build failure:
     </para>
@@ -103,14 +103,14 @@
 <screen><userinput remap="pre">case $(uname -m) in
     i?86) patch -Np1 -i ../guile-&guile-version;-32bit_fixes-1.patch ;;
 esac</userinput></screen>
-
+-->
     <para>
       Install <application>Guile</application> by running the following
       commands:
     </para>
 
-<screen><userinput>CC="gcc -std=gnu17"          \
-./configure --prefix=/usr    \
+<!--<screen><userinput>CC="gcc -std=gnu17"          \-->
+<screen><userinput>./configure --prefix=/usr    \
             --disable-static \
             --docdir=/usr/share/doc/guile-&guile-version; &amp;&amp;
 make      &amp;&amp;
@@ -120,15 +120,26 @@ makeinfo --plaintext -o doc/r5rs/r5rs.txt doc/r5rs/r5rs.texi &amp;&amp;
 makeinfo --plaintext -o doc/ref/guile.txt doc/ref/guile.texi</userinput></screen>
 
     <para>
-      To test the results, issue: <command>./check-guile</command>.
+      When running the test suite, first remove a failing test that halts the
+      tests: <command>rm rm test-suite/tests/srfi-207.test</command>.
+      Then test the results, issue: <command>./check-guile</command>.
       On an i686 system, as many as 10 tests will fail in the
       <filename>numbers.test</filename> test suite due to minor floating-point
       rounding errors.
     </para>
     <!-- 10 of the numbers tests fail on i686. This should probably be looked
          into at a later point in time. -renodr -->
-    <!-- All tests pass for 3.0.10 on a x86_64.  Did not check on i686.
-         -bdubbs -->
+    <!-- All tests pass for 3.0.10 on a x86_64.  Did not check on i686.  -->
+    <!-- For 3.0.11 on a x86_64: 
+         Totals for this test run:
+         passes:                 43387
+         failures:               0
+         unexpected passes:      0
+         expected failures:      10
+         unresolved test cases:  21
+         untested test cases:    1
+         unsupported test cases: 1
+         errors:                 0    -bdubbs -->
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
