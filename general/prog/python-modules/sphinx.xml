@@ -6,9 +6,9 @@
 
   <!ENTITY sphinx-download-http "https://files.pythonhosted.org/packages/source/s/sphinx/sphinx-&sphinx-version;.tar.gz">
   <!ENTITY sphinx-download-ftp  " ">
-  <!ENTITY sphinx-md5sum        "eec3083f144d88cf65ad3da422fc7e66">
-  <!ENTITY sphinx-size          "7.9 MB">
-  <!ENTITY sphinx-buildsize     "32 MB (add 22 MB for tests)">
+  <!ENTITY sphinx-md5sum        "353b41bbac4d67edc1ecb692f946f965">
+  <!ENTITY sphinx-size          "8.3 MB">
+  <!ENTITY sphinx-buildsize     "32 MB (add 24 MB for tests)">
   <!ENTITY sphinx-time          "less than 0.1 SBU (add 0.7 SBU for tests)">
 ]>
 
@@ -125,7 +125,7 @@
 
 <screen remap="test"><userinput>python3 -m venv --system-site-packages testenv &amp;&amp;
 source testenv/bin/activate                    &amp;&amp;
-pip3 install sphinx[test]                      &amp;&amp;
+pip3 install sphinx[test] defusedxml           &amp;&amp;
 python3 -m pytest<!-- no && because of a possible error -->
 deactivate</userinput></screen>
 <!-- No failure in 7.0.1 [pierre]
@@ -147,7 +147,9 @@ deactivate</userinput></screen>
 -->
 
       <para>
-        One test, test_theming.py, is known to fail.
+        Four tests (of over 2400 tests) are known to fail: Three in 
+        test_ext_autodoc.py and one in test_util_typing.py.
+        
 <!--
         Six tests, <filename>test_build_latex.py::text_latex_labels</filename>,
         <filename>test_ext_autodoc.py::test_autodoc_special_members</filename>,
