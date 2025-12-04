@@ -6,10 +6,10 @@
 
   <!ENTITY kea-download-http "https://downloads.isc.org/isc/kea/&kea-dhcp-version;/kea-&kea-dhcp-version;.tar.xz">
   <!ENTITY kea-download-ftp  " ">
-  <!ENTITY kea-md5sum        "fc0e6d43f0afbab9e2abc458bded16ac">
+  <!ENTITY kea-md5sum        "a673e95637b708b3b1926c696cdf168b">
   <!ENTITY kea-size          "6.3 MB">
-  <!ENTITY kea-buildsize     "1.5 GB (332 MB installed; add 4 GB for tests)">
-  <!ENTITY kea-time          "4.1 SBU (with parallelism=4; add 12 SBU for tests)">
+  <!ENTITY kea-buildsize     "231 MB (47 MB installed; add 425 MB for tests)">
+  <!ENTITY kea-time          "6.4 SBU (with parallelism=4; add 17 SBU for tests)">
   <!ENTITY kea-arm-vers      "&kea-dhcp-version;">
 ]>
 
@@ -77,12 +77,20 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink url="https://botan.randombit.net/">botan</ulink>,
       <xref linkend="mitkrb"/>,
-      <xref linkend="valgrind"/>; for documentation:
+      <xref linkend="valgrind"/>,
+      <ulink url="https://botan.randombit.net/">botan</ulink>,
+      <ulink url="https://cppcheck.sourceforge.io/">cppcheck</ulink>,
+      <ulink url="https://github.com/CESNET/libyang">libyang</ulink>, and
+      <ulink url="https://plantuml.com/">plantuml</ulink>
+    </para>
+
+    <bridgehead renderas="sect4">Optional (for regenerating documentation)</bridgehead>
+    <para role="optional">
       <xref linkend="doxygen"/>,
-      <xref linkend="graphviz"/>, and
-      <xref linkend="sphinx_rtd_theme"/>
+      <xref linkend="graphviz"/>,
+      <xref linkend="sphinx_rtd_theme"/>, and
+      <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
     </para>
 
     <bridgehead renderas="sect4">Optional database backends</bridgehead>
@@ -149,7 +157,8 @@ ninja</userinput></screen>
     <para>
       If tests were enabled, run <command>ninja test</command> to test
       the results. There are tests which require a live database when
-      any of the database hooks are built.
+      any of the database hooks are built. Some tests may fail if IPv6 support
+      is not functional.
     </para>
 
     <para>
@@ -183,7 +192,7 @@ install -dm0750 /var/log/kea</userinput></screen>
       <option>-D crypto=openssl</option>: Allows using OpenSSL for
       communicating with the control-agent and for DNS updates. Use 
       <option>-D crypto=botan</option> if you want to use botan.
-      Default is openssl.
+      The default provider is openssl.
     </para>
 
     <para>
@@ -196,7 +205,9 @@ install -dm0750 /var/log/kea</userinput></screen>
 
     <para>
       <option>-D tests=enabled</option>: This option is required to build the
-      test suite. Drop it if you are not going to run the tests.
+      test suite. Using this option causes the build size to increase
+      significantly, so it should only be enabled if you are going to run the
+      test suite.
     </para>
 
     <para>
@@ -214,7 +225,7 @@ install -dm0750 /var/log/kea</userinput></screen>
       separate servers which run independently from each other. Each
       of them has its own configuration file.<phrase revision="sysv">
       Additional configuration files come from the keactrl agent which
-      is used to control the servers in an easy way.</phrase>
+      is used to control the servers in an easier way.</phrase>
     </para>
     <para>
       Note that the Kea Control Agent is deprecated since version
@@ -230,12 +241,12 @@ install -dm0750 /var/log/kea</userinput></screen>
       <application>ISC Kea</application> as it is a quite capable system.
       The configuration shown below is a bare minimum to get a DHCP server
       running but it already includes configuration for DDNS (Dynamic DNS).
-      That setup might be working for small networks with a few clients and
-      low traffic. For greater installations with thousands of clients,
+      That setup is best for small networks with a few clients and low amounts
+      of network traffic. For larger installations with thousands of clients,
       <application>ISC Kea</application> can be configured to use databases
-      (mariadb or postgresql) to store the leases and build a cluster with
-      multiple nodes. It can be integrated to
-      <ulink url="https://www.isc.org/categories/stork/">ISC Stork</ulink>
+      such as (mariadb or postgresql) to store the leases and build a cluster
+      with multiple nodes. It can be integrated with
+      <ulink url="https://www.isc.org/categories/stork/">ISC Stork</ulink>,
       which is a management dashboard to <application>ISC Kea</application>.
     </para>
 
@@ -290,10 +301,10 @@ install -dm0750 /var/log/kea</userinput></screen>
       <title>Kea Control Configuration</title>
 
       <para><command>keactrl</command> is used to control the
-      independent servers (IPv4, IPv6, DDNS). Its configuration file
-      <filename>/etc/kea/keactrl.conf</filename> is installed by
+      independent servers (IPv4, IPv6, DDNS). Its configuration file,
+      <filename>/etc/kea/keactrl.conf</filename>, is installed by
       default and includes many path settings which are defined
-      due to the <command>configure</command> at build time. It also
+      from the <command>configure</command> at build time. It also
       includes settings to specify which of the servers should be
       started.</para>
 
@@ -311,36 +322,36 @@ install -dm0750 /var/log/kea</userinput></screen>
           <para>IPv4 DHCP server</para>
           <para>This daemon handles requests for IPv4 addresses.
           Set <literal>dhcp4=yes</literal> to start it, set
-          <literal>dhcp4=no</literal> in case DHCP service for IPv4
-          is not wanted.</para>
+          <literal>dhcp4=no</literal> in case the IPv4 service
+          is not needed.</para>
         </listitem>
         <listitem>
           <para>IPv6 DHCP server</para>
           <para>This daemon handles requests for IPv6 addresses.
           Set <literal>dhcp6=yes</literal> to start it, set
-          <literal>dhcp6=no</literal> in case DHCP service for IPv6
-          is not wanted.</para>
+          <literal>dhcp6=no</literal> in case the IPv6 service
+          is not needed.</para>
         </listitem>
         <listitem>
           <para>Dynamic DNS</para>
           <para>This daemon is used to update a DNS server dynamically
           when Kea assigns an IP address to a device.
           Set <literal>dhcp_ddns=yes</literal> to enable it, set
-          <literal>dhcp_ddns=no</literal> in case dynamic DNS updates
-          are not wanted.</para>
+          <literal>dhcp_ddns=no</literal> if dynamic DNS updates are
+          not needed.</para>
         </listitem>
       </itemizedlist>
 
       <para>
-        The Netconf service is not installed because required
-        dependencies are not covered by the current BLFS book.
+        The Netconf service is not installed because the required dependencies
+        are not installed by BLFS, and configuring it correctly is complicated.
       </para>
 
       <para>
         With the following command, Kea will be configured to
-        start the dhcp service for IPv4 and the
+        start the DHCP service for IPv4 and the
         dynamic DNS update, while the control agent and
-        the dhcp service for IPv6 remain down. Tweak the command to
+        the DHCP service for IPv6 remain down. Tweak the command to
         match your needs on started services and execute as the
         &root; user:
       </para>
@@ -399,8 +410,10 @@ install -dm0750 /var/log/kea</userinput></screen>
         </listitem>
       </itemizedlist>
 
-      <para>The Netconf service is not installed because required
-      dependencies are not covered by the current BLFS book.</para>
+      <para>
+        The Netconf service is not installed because the required dependencies
+        are not installed by BLFS, and configuring it correctly is complicated.
+      </para>
 
     </sect3>
 
@@ -408,8 +421,8 @@ install -dm0750 /var/log/kea</userinput></screen>
       <title>Control Agent Configuration</title>
 
       <para>
-        The provided configuration could be used without changes
-        but in BLFS, objects like sockets are stored in
+        The provided configuration could be used without changes. However, in
+        BLFS, objects like sockets are stored in
         <filename class="directory">/run</filename>
         rather than in
         <filename class="directory">/tmp</filename>.
@@ -419,7 +432,7 @@ install -dm0750 /var/log/kea</userinput></screen>
 <literal>// Begin /etc/kea/kea-ctrl-agent.conf
 {
   // This is a basic configuration for the Kea Control Agent.
-  // RESTful interface to be available at http://127.0.0.1:8000/
+  // The RESTful interface will be available at http://127.0.0.1:8000/
   "Control-agent": {
     "http-host": "127.0.0.1",
     "http-port": 8000,
@@ -467,7 +480,7 @@ EOF</userinput></screen>
         the following command as the &root; user (you'll need to edit this
         file anyway: at least the <emphasis>interfaces</emphasis> field,
         the <emphasis>ddns-qualifying-suffix</emphasis> field, and almost
-        all the fields in <emphasis>Subnet4</emphasis>:
+        all the fields in <emphasis>Subnet4</emphasis>):
       </para>
 
 <screen role="nodump"><userinput>cat &gt; /etc/kea/kea-dhcp4.conf &lt;&lt; "EOF"
@@ -503,7 +516,7 @@ EOF</userinput></screen>
     "rebind-timer": 1800,
     "valid-lifetime": 3600,
 
-    // Enable DDNS - Kea will dynamically update the DNS
+    // Enable DDNS - Kea will dynamically update the BIND DNS server
     "ddns-send-updates" : true,
     "ddns-qualifying-suffix": "your.domain.tld",
     "dhcp-ddns" : {
@@ -572,7 +585,7 @@ EOF</userinput></screen>
 
       <para>
         If there is a <xref linkend="bind"/> server running,
-        <application>ISC Kea</application> can update the DNS when
+        <application>ISC Kea</application> can update the DNS records when
         it gives an IP address to a client. A sample configuration
         file is created in <filename>/etc/kea/kea-dhcp-ddns.conf</filename>.
         Adjust the file to suit your needs or overwrite it by running
@@ -676,26 +689,37 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          keactrl, kea-admin, kea-ctrl-agent, kea-dhcp4, kea-dhcp6,
-          kea-dhcp-ddns, kea-lfc, kea-shell
+          keactrl,
+          kea-admin,
+          kea-ctrl-agent,
+          kea-dhcp4,
+          kea-dhcp6,
+          kea-dhcp-ddns,
+          kea-lfc,
+          kea-msg-compiler, and
+          kea-shell
         </seg>
         <seg>
           libkea-asiodns.so,
           libkea-asiolink.so,
           libkea-cc.so,
-          libkea-cgfclient.so,
+          libkea-cfgrpt.so,
+          libkea-config.so,
           libkea-cryptolink.so,
           libkea-d2srv.so,
           libkea-database.so,
           libkea-dhcp_ddns.so,
-          libkea-dhcp++.so,
+          libkea-dhcp.so,
           libkea-dhcpsrv.so,
-          libkea-dns++.so,
+          libkea-dns.so,
           libkea-eval.so,
           libkea-exceptions.so,
           libkea-hooks.so,
           libkea-http.so,
           libkea-log.so,
+          libkea-log-interprocess.so,
+          libkea-mysql.so,
+          libkea-pgsql.so,
           libkea-process.so,
           libkea-stats.so,
           libkea-tcp.so,
@@ -725,88 +749,95 @@ EOF</userinput></screen>
         <term><command>keactrl</command></term>
         <listitem>
           <para>
-            Tool to control (start/stop) the server processes.
+            is a tool to control (start/stop) the server processes
           </para>
           <indexterm zone="kea keactrl">
             <primary sortas="b-keactrl">keactrl</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+
       <varlistentry id="kea-admin">
         <term><command>kea-admin</command></term>
         <listitem>
           <para>
-            kea-admin is a shell script which offers database maintenance.
+            is a shell script which performs DHCP database maintenance
           </para>
           <indexterm zone="kea kea-admin">
             <primary sortas="b-kea-admin">kea-admin</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+
       <varlistentry id="kea-ctrl-agent">
         <term><command>kea-ctrl-agent</command></term>
         <listitem>
           <para>
-            Daemon which exposes a RESTful control interface for
-            managing Kea servers.
+            is a daemon which exposes a RESTful control interface for
+            managing Kea servers
           </para>
           <indexterm zone="kea kea-ctrl-agent">
             <primary sortas="b-kea-ctrl-agent">kea-ctrl-agent</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+
       <varlistentry id="kea-dhcp4">
         <term><command>kea-dhcp4</command></term>
         <listitem>
           <para>
-            The server daemon providing IPv4 addresses.
+            is the DHCP server daemon providing IPv4 addresses
           </para>
           <indexterm zone="kea kea-dhcp4">
             <primary sortas="b-kea-dhcp4">kea-dhcp4</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+
       <varlistentry id="kea-dhcp6">
         <term><command>kea-dhcp6</command></term>
         <listitem>
           <para>
-            The server daemon providing IPv6 addresses.
+            is the DHCP server daemon providing IPv6 addresses
           </para>
           <indexterm zone="kea kea-dhcp6">
             <primary sortas="b-kea-dhcp6">kea-dhcp6</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+
       <varlistentry id="kea-dhcp-ddns">
         <term><command>kea-dhcp-ddns</command></term>
         <listitem>
           <para>
-            The server daemon performing the dynamic DNS updates.
+            is the DHCP server daemon that performs Dynamic DNS updates
           </para>
           <indexterm zone="kea kea-dhcp-ddns">
             <primary sortas="b-kea-dhcp-ddns">kea-dhcp-ddns</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+
       <varlistentry id="kea-lfc">
         <term><command>kea-lfc</command></term>
         <listitem>
           <para>
-            The kea-lfc service process removes redundant information
+            is the service process that removes redundant information
             from the files used to provide persistent storage for the
-            memfile database backend. It is run by the Kea DHCP server.
+            memfile database backend. It is run by the Kea DHCP server
           </para>
           <indexterm zone="kea kea-lfc">
             <primary sortas="b-kea-lfc">kea-lfc</primary>
           </indexterm>
         </listitem>
       </varlistentry>
+
       <varlistentry id="keashell">
         <term><command>keashell</command></term>
         <listitem>
           <para>
-            RESTful client to the <application>ISC Kea</application>
-            services.
+            is a RESTful client to the <application>ISC Kea</application>
+            DHCP services
           </para>
           <indexterm zone="kea keashell">
             <primary sortas="b-keashell">keashell</primary>
