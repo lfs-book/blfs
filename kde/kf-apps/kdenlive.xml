@@ -15,7 +15,6 @@
 <sect1 id="kdenlive" xreflabel="kdenlive-&kf6apps-version;">
   <?dbhtml filename="kdenlive.html"?>
 
-
   <title>kdenlive-&kf6apps-version;</title>
 
   <indexterm zone="kdenlive">
@@ -70,6 +69,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
+      <xref linkend="git"/>,
       <xref linkend="kf6-frameworks"/>,
       <xref linkend="mlt"/>, and
       <xref role="runtime" linkend="v4l-utils"/> (runtime)
@@ -79,6 +79,13 @@
     <para role="recommended">
       <xref linkend="breeze-icons"/>
     </para>
+
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <ulink url="https://glfs-book.github.io/slfs/general/ladspa-sdk.html">LADSPA-SDK</ulink>
+    </para>
+
+    &build-use-internet;
 
   </sect2>
 
@@ -99,12 +106,21 @@ cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
       -W no-dev .. &amp;&amp;
 make</userinput></screen>
 
+    <note><para>
+      The build process will download a Git repository of
+      <application>OpenTimelineIO</application>, totaling around
+      100 MB. Configuration will seem to hang right after
+      <command>cmake</command> begins running. This is normal, it is fetching
+      that Git repository. If it hangs for a while, it's most likely due to a
+      poor download speed during the download process.
+    </para></note>
+
     <para>
       This package does not come with a test suite.
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
