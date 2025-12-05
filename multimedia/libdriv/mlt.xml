@@ -12,21 +12,21 @@
   <!ENTITY mlt-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
-<sect1 id="mlt" xreflabel="mlt-&mlt-version;">
+<sect1 id="mlt" xreflabel="MLT-&mlt-version;">
   <?dbhtml filename="mlt.html"?>
 
 
-  <title>mlt-&mlt-version;</title>
+  <title>MLT-&mlt-version;</title>
 
   <indexterm zone="mlt">
-    <primary sortas="a-mlt">mlt</primary>
+    <primary sortas="a-mlt">MLT</primary>
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to mlt</title>
+    <title>Introduction to MLT</title>
 
     <para>
-      The <application>mlt</application> package is the Media Lovin Toolkit.
+      The <application>MLT</application> package is the Media Lovin Toolkit.
       It is an open source multimedia framework, designed and developed for
       television broadcasting. It provides a toolkit for broadcasters, video
       editors, media players, transcoders, web streamers and many more types of
@@ -69,20 +69,24 @@
       </listitem>
     </itemizedlist>
 
-    <bridgehead renderas="sect3">mlt Dependencies</bridgehead>
+    <bridgehead renderas="sect3">MLT Dependencies</bridgehead>
 
-    <bridgehead renderas="sect4">Required</bridgehead>
-    <para>
-      <xref linkend='frei0r'/> and
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend='ffmpeg'/>,
+      <xref linkend='frei0r'/>,
+      <xref linkend='libsamplerate'/>, and
       <xref linkend='qt6'/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
-    <para>
+    <para role="optional">
       <xref linkend='doxygen'/>,
       <xref linkend='fftw'/>,
       <xref linkend="libexif"/>,
+      <xref linkend="opencv"/>,
       <xref linkend="sdl2"/>,
+      <xref linkend="swig"/>,
       <ulink url="https://eigen.tuxfamily.org">eigen</ulink>,
       <ulink url="https://jackaudio.org">JACK</ulink>,
       <ulink url="https://www.ladspa.org">LADSPA</ulink>,
@@ -97,10 +101,10 @@
   </sect2>
 
   <sect2 role="installation">
-    <title>Installation of mlt</title>
+    <title>Installation of MLT</title>
 
     <para>
-      Install <application>mlt</application> by running the following commands:
+      Install <application>MLT</application> by running the following commands:
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
@@ -131,7 +135,7 @@ make</userinput></screen>
     </note>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
@@ -143,7 +147,27 @@ make</userinput></screen>
       
     <para>
       <parameter>-D MOD_*=OFF</parameter>: These switches allow the package to build
-      without the optional external packages.
+      without some of the optional external packages.
+    </para>
+
+    <para>
+      <option>-D MOD_AVFORMAT=OFF</option>: This option allows building without
+      <xref linkend='ffmpeg'/>.
+    </para>
+
+    <para>
+      <option>-D MOD_FREI0R=OFF</option>: This option allows building without
+      <xref linkend='frei0r'/>.
+    </para>
+
+    <para>
+      <option>-D MOD_RESAMPLE=OFF</option>: This option allows building without
+      <xref linkend='libsamplerate'/>.
+    </para>
+
+    <para>
+      <option>-D MOD_QT6=OFF</option>: This option allows building without
+      <xref linkend='qt6'/>.
     </para>
     
   </sect2>
@@ -179,7 +203,7 @@ make</userinput></screen>
         <term><command>melt</command></term>
         <listitem>
           <para>
-            is a test tool for mlt
+            is a test tool for MLT
           </para>
           <indexterm zone="mlt melt">
             <primary sortas="b-melt">melt</primary>
