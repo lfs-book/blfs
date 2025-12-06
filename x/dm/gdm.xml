@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY gdm-download-http "&gnome-download-http;/gdm/&gnome-48;/gdm-&gdm-version;.tar.xz">
+  <!ENTITY gdm-download-http "&gnome-download-http;/gdm/&gnome-49;/gdm-&gdm-version;.tar.xz">
   <!ENTITY gdm-download-ftp  " ">
-  <!ENTITY gdm-md5sum        "a17868752c9a90ed560891886f2882f2">
-  <!ENTITY gdm-size          "920 KB">
-  <!ENTITY gdm-buildsize     "44 MB">
+  <!ENTITY gdm-md5sum        "14d92ca52faf7f18ce59a8f3f961a07c">
+  <!ENTITY gdm-size          "948 KB">
+  <!ENTITY gdm-buildsize     "35 MB">
   <!ENTITY gdm-time          "0.2 SBU">
 ]>
 
@@ -120,12 +120,13 @@ useradd -c "GDM Daemon Owner" -d /var/lib/gdm -u 21 \
         -g gdm -s /bin/false gdm &amp;&amp;
 passwd -ql gdm</userinput></screen>
 
+<!-- Fixed in 49
     <para>
       First, adapt GDM to build with GCC 15:
     </para>
 
 <screen><userinput remap="pre">sed -r 's/([(*])bool([) ])/\1boolval\2/' -i common/gdm-settings-utils.*</userinput></screen>
-
+-->
 
     <para>
       Install <application>GDM</application> by running the following
@@ -288,18 +289,6 @@ ninja</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl enable gdm</userinput></screen>
 
-<!-- [pierre October 2020] I don't understand why this is here: power
-     management works perfectly well
-      <para revision="sysv">
-          You should also disable default elogind power management:
-      </para>
-
-<screen role="root" revision="sysv"><userinput>cat &gt;&gt; /etc/elogind/logind.conf &lt;&lt; "EOF"
-<literal>AllowSuspend=no
-AllowHibernation=no</literal>
-EOF</userinput></screen>
--->
-
     </sect3>
 
     <sect3 id="gdm-auto-suspend">
@@ -332,7 +321,7 @@ EOF</userinput></screen>
 
       <seglistitem>
         <seg>
-          gdm, gdm-config, and gdmflexiserver <!--, and gdm-screenshot-->
+          gdm, gdm-config, and gdmflexiserver
         </seg>
         <seg>
           libgdm.so and pam_gdm.so (PAM Module)
@@ -380,20 +369,6 @@ EOF</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
-
-<!--
-      <varlistentry id="gdm-screenshot">
-        <term><command>gdm-screenshot</command></term>
-        <listitem>
-          <para>
-            is a screenshot tool for <application>GDM</application>
-          </para>
-          <indexterm zone="gdm gdm-screenshot">
-            <primary sortas="b-gdm-screenshot">gdm-screenshot</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
- -->
 
     </variablelist>
 
