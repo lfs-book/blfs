@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY localsearch-download-http "&gnome-download-http;/localsearch/3.9/localsearch-&localsearch-version;.tar.xz">
+  <!ENTITY localsearch-download-http "&gnome-download-http;/localsearch/3.10/localsearch-&localsearch-version;.tar.xz">
   <!ENTITY localsearch-download-ftp  " ">
-  <!ENTITY localsearch-md5sum        "6d29c941a4e10eb7fcc6e84d0d90053a">
+  <!ENTITY localsearch-md5sum        "d8022c33b89fda3c207999b6ad9b09f6">
   <!ENTITY localsearch-size          "4.3 MB">
-  <!ENTITY localsearch-buildsize     "35 MB (with tests)">
+  <!ENTITY localsearch-buildsize     "63 MB (with tests)">
   <!ENTITY localsearch-time          "0.2 SBU (with parallelism=4; add as much as 1.0 SBU for tests, dependent on disk speed)">
 ]>
 
@@ -66,6 +66,7 @@
       </listitem>
     </itemizedlist>
 
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -75,6 +76,7 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">Localsearch Dependencies</bridgehead>
 
@@ -94,6 +96,7 @@
       <xref linkend="libexif"/>,
       <xref linkend="libgxps"/>,
       <xref linkend="libseccomp"/>,
+      <xref linkend="libwebp"/>,
       <xref linkend="poppler"/>, and
       <xref linkend="upower"/>
     </para>
@@ -102,10 +105,7 @@
     <para role="optional">
       <xref linkend="asciidoc"/>,
       <xref linkend="cmake"/>,
-      <xref linkend="dconf"/>,
       <xref linkend="libgsf"/>,
-      <xref linkend="NetworkManager"/>,
-      <xref linkend="taglib"/>,
       <xref linkend="totem-pl-parser"/>,
       <ulink url="https://github.com/lipnitsk/libcue">libcue</ulink>,
       <ulink url="https://libiptcdata.sourceforge.net/">libitpcdata</ulink>,
@@ -168,12 +168,14 @@ rm -fv /usr/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Files.Control.s
 <screen remap="test"><userinput>sed -i s/120/<replaceable>200</replaceable>/ tests/functional-tests/meson.build</userinput></screen>
     </note>
 
+<!--
     <para>
       First, apply a patch to make the HTML extractor compatible with
       libxml2-2.14 and later:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../localsearch-&localsearch-version;-libxml2_2_14-1.patch</userinput></screen>
+-->
 
     <para>
       Install <application>Localsearch</application> by running the following
@@ -201,8 +203,10 @@ meson setup --prefix=/usr                  \
 ninja</userinput></screen>
 
     <para>
-      To test the results, issue (adjust the individual test timeout to a
-      value suitable for your machine, see the note above):
+      To test the results, issue the following commands. Make sure that you
+      adjust the individual test timeout to a value suitable for your machine,
+      please read the note above for more details. One test,
+      <filename>test_cli_inhibit</filename>, is known to fail.
     </para>
 
 <screen remap="test"><userinput>dbus-run-session env LC_ALL=C.UTF-8 TRACKER_TESTS_AWAIT_TIMEOUT=<replaceable>20</replaceable> \
@@ -221,6 +225,7 @@ rm -rf ~/tracker-tests</userinput></screen>
         they have to be removed afterwards.
       </para>
     </note>
+
   </sect2>
 
   <sect2 role="commands">
@@ -244,12 +249,12 @@ rm -rf ~/tracker-tests</userinput></screen>
 
     <para>
       <option>-D seccomp=false</option>: This option disables the seccomp system
-      call filter. On some architectures, such as i686 and ARM, the functions
-      that tracker-miners uses are not guarded properly, and tracker-miners
-      will get killed with a SIGSYS as a result.  Note that disabling
+      call filter. On some architectures, such as ARM, the functions that
+      localsearch uses are not guarded properly, and localsearch will get killed
+      with a SIGSYS signal as a result of this. Note that disabling
       seccomp may cause the system to be compromised worse in the event that a
       security vulnerability in localsearch or its dependencies is
-      exploited.
+      exploited, and it is <emphasis>NOT</emphasis> recommended.
     </para>
 
     <para>
@@ -257,7 +262,8 @@ rm -rf ~/tracker-tests</userinput></screen>
       Landlock file access sandbox.  Use it if you don't want to build the
       kernel with Landlock support.  Note that disabling Landlock may
       cause the system to be compromised worse in the event that a security
-      vulnerability in localsearch or its dependencies is exploited.
+      vulnerability in localsearch or its dependencies is exploited, and this
+      is <emphasis>NOT</emphasis> recommended.
     </para>
 
     <para>
