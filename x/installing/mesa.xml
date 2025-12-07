@@ -6,10 +6,10 @@
 
   <!ENTITY mesa-download-http "https://mesa.freedesktop.org/archive/mesa-&mesa-version;.tar.xz">
   <!ENTITY mesa-download-ftp  " ">
-  <!ENTITY mesa-md5sum        "0f5efeb82427fb841fc89df51b487ed5">
+  <!ENTITY mesa-md5sum        "80c20978752fc15a792c41d482b04196">
   <!ENTITY mesa-size          "42 MB">
-  <!ENTITY mesa-buildsize     "1.2 GB (with docs; add 483 MB for tests)">
-  <!ENTITY mesa-time          "3.8 SBU (with docs; add 1.9 SBU for tests; both with parallelism=4)">
+  <!ENTITY mesa-buildsize     "1.1 GB (with docs; add 457 MB for tests)">
+  <!ENTITY mesa-time          "3 SBU (with docs; add 1.4 SBU for tests; both with parallelism=4)">
 ]>
 
 <sect1 id="mesa" xreflabel="Mesa-&mesa-version;">
@@ -43,14 +43,12 @@
       not supported by the BLFS editors.
     </para></note>
 
-<!--
     <note>
       <para>
         <application>Mesa</application> is updated relatively often. You may
-        want to use the latest available &mesa-major-minor;.x mesa version.
+        want to use the latest available version.
       </para>
     </note>
--->
 
     &lfs124_checked;
 
@@ -97,7 +95,8 @@
           <ulink url="&patch-root;/mesa-add_xdemos-4.patch"/>
           (installs 2 demo programs for testing Mesa - not needed if you
           install the <ulink url="https://archive.mesa3d.org/demos/">
-          mesa-demos</ulink> package)
+          mesa-demos</ulink> package; does not build with
+          <application>libglvnd</application>)
         </para>
       </listitem>
     </itemizedlist>
@@ -128,11 +127,6 @@
             You must build <application>libva</application> first without 
             mesa's EGL and GLX support, install this package, and rebuild 
             <application>libva</application>)
-          </para>
-        </listitem>
-        <listitem>
-          <para>
-            <xref linkend="libvdpau"/> (to build VDPAU drivers)
           </para>
         </listitem>
         <listitem>
@@ -237,6 +231,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="libdisplay-info"/>,
       <xref linkend="libgcrypt"/>,
       <xref linkend="libunwind"/>,
       <xref linkend="lm_sensors"/>, <!-- for libsensors according to Meson -->
@@ -439,7 +434,7 @@ meson setup ..                 \
       -D vulkan-drivers=auto   \
       -D valgrind=disabled     \
       -D video-codecs=all      \
-      -D libunwind=disabled    &amp;&amp;
+      -D libunwind=disabled   &amp;&amp;
 
 ninja</userinput></screen>
 
@@ -455,16 +450,17 @@ ninja</userinput></screen>
       To test the results, issue:
     </para>
 
-<screen remap='test'><userinput>meson configure -D build-tests=true &amp;&amp;
+<screen remap='test'><userinput>meson configure -D build-tests=true &amp;&amp;<!--
 sed '/float rsqrtf/,/^}/d' \
-    -i ../src/gallium/drivers/llvmpipe/lp_test_arit.c &amp;&amp;
+    -i ../src/gallium/drivers/llvmpipe/lp_test_arit.c &amp;&amp;-->
 ninja test</userinput></screen>
 
 <!-- All 98  tests passed for me for 23.3.1 [bdubbs]
      All 106 tests passed for me for 24.3.1 [zeckma]
      All 104 tests passed for me for 25.0.1 [zeckma]
      All 94  tests passed for me for 25.1.2 [zeckma]
-     All 94  tests passed for me for 25.2.2 [zeckma] -->
+     All 94  tests passed for me for 25.2.2 [zeckma]
+     All 97  tests passed for me for 25.3.1 [zeckma] -->
 
     <para>
       Now, as the &root; user:
@@ -705,8 +701,7 @@ ninja test</userinput></screen>
       <segtitle>Installed Libraries</segtitle><!-- in /usr/lib -->
       <segtitle>Installed DRI Driver Stubs</segtitle><!-- in /usr/lib/dri -->
       <segtitle>Installed VA-API Drivers</segtitle><!-- in /usr/lib/dri -->
-      <segtitle>Installed GBM Drivers</segtitle><!-- in /usr/lib/gbm -->
-      <segtitle>Installed VDPAU Drivers</segtitle><!-- in /usr/lib/vdpau -->
+      <segtitle>Installed GBM Backends</segtitle><!-- in /usr/lib/gbm -->
       <segtitle>Installed Vulkan Drivers</segtitle><!-- in /usr/lib -->
       <segtitle>Installed Directories</segtitle>
 
@@ -729,19 +724,7 @@ ninja test</userinput></screen>
         </seg>
         <seg>
           <!-- Begin DRI driver stubs -->
-          libdril_dri.so and symlinks to it:
-          crocus_dri.so,
-          i915_dri.so,
-          iris_dri.so,
-          kms_swrast_dri.so,
-          nouveau_dri.so,
-          r300_dri.so,
-          r600_dri.so,
-          radeonsi_dri.so,
-          swrast_dri.so,
-          virtio_gpu_dri.so,
-          vmwgfx_dri.so, and
-          zink_dri.so
+          libdril_dri.so and multiple symlinks to it
           <!-- End DRI driver stubs -->
         </seg>
         <seg>
@@ -749,22 +732,13 @@ ninja test</userinput></screen>
           nouveau_drv_video.so,
           r600_drv_video.so,
           radeonsi_drv_video.so, and
-          virtio_gpu_drv_video.so
+          virtio_gpu_drv_video.so (symlinks to libgallium-&mesa-version;.so)
           <!-- End VA-API drivers -->
         </seg>
         <seg>
-          <!-- Begin GBM drivers -->
+          <!-- Begin GBM backends -->
           dri_gbm.so
-          <!-- End GBM drivers -->
-        </seg>
-        <seg>
-          <!-- Begin VDPAU drivers -->
-          libvdpau_nouveau.so,
-          libvdpau_r600.so,
-          libvdpau_radeonsi.so, and
-          libvdpau_virtio_gpu.so
-          (many of these drivers are hard-linked)
-          <!-- End VDPAU drivers -->
+          <!-- End GBM backends -->
         </seg>
         <seg>
           <!-- Begin Vulkan drivers -->
@@ -779,7 +753,7 @@ ninja test</userinput></screen>
           <!-- Begin directories -->
           <!-- $XORG_PREFIX/include/GL is installed by xorg-protos -->
           $XORG_PREFIX/include/{EGL,GLES,GLES2,GLES3,KHR},
-          $XORG_PREFIX/lib/{dri,gbm,vdpau},
+          $XORG_PREFIX/lib/{dri,gbm},
           $XORG_PREFIX/share/drirc.d (contains workarounds for various applications,
           particularly browsers and games),
           $XORG_PREFIX/share/vulkan,
@@ -824,7 +798,7 @@ ninja test</userinput></screen>
         <term><filename class='libraryfile'>dri_gbm.so</filename></term>
         <listitem>
           <para>
-            is the GBM driver for <application>Mesa</application>
+            is the GBM backend for <application>Mesa</application> drivers
           </para>
         </listitem>
       </varlistentry>
@@ -856,7 +830,7 @@ ninja test</userinput></screen>
         <term><filename class='libraryfile'>libgallium-&mesa-version;.so</filename></term>
         <listitem>
           <para>
-            contains all the Gallium3D drivers
+            contains all the Gallium3D and VA-API drivers
           </para>
         </listitem>
       </varlistentry>
