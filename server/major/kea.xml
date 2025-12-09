@@ -128,13 +128,10 @@
       First, apply a few fixes required for boost-&boost-version;:
     </para>
 
-<screen><userinput>sed -e "s/, modules: \['system'\]//" -i meson.build                      &amp;&amp;
-sed -e "/shared_ptr.hpp/a#include &lt;boost/asio/deadline_timer.hpp&gt;"       \
-    -i src/lib/asiolink/interval_timer.cc                                &amp;&amp;
-sed -e "/posix_time_types.hpp/a#include &lt;boost/asio/deadline_timer.hpp&gt;" \
-    -i src/lib/asiodns/io_fetch.cc                                       &amp;&amp;
-sed -e "/posix_time_types.hpp/a#include &lt;boost/asio/deadline_timer.hpp&gt;" \
-    -i src/lib/asiodns/tests/io_fetch_unittest.cc</userinput></screen>
+<screen><userinput>sed -e "/asio_wrapper/a#include &lt;boost/asio/deadline_timer.hpp&gt;" \
+    -i src/lib/asiolink/interval_timer.cc                        \
+       src/lib/asiodns/io_fetch.cc                               \
+       src/lib/asiodns/tests/io_fetch_unittest.cc</userinput></screen>
 
     <para>
       Now, install <application>ISC Kea DHCP Server</application> by running
