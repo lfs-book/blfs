@@ -406,6 +406,21 @@ EOF</userinput></screen>
         Replace <replaceable>eth0</replaceable> with the actual interface name.
       </para>
 
+      <para>
+        The <command>dhcpcd</command> service has options or lack thereof that
+        might be unsatisfactory. You can override them by running the following
+        commands as the <systemitem class="username">root</systemitem> user:
+      </para>
+
+<screen role="nodump"><userinput>install -v -dm755 /etc/systemd/system/dhcpcd\@<replaceable>eth0</replaceable>.service.d &amp;&amp;
+cat &gt; /etc/systemd/system/dhcpcd\@<replaceable>eth0</replaceable>.service.d/99-user.conf &lt;&lt; EOF
+<literal>[Service]
+ExecStart=
+ExecStart=/sbin/dhcpcd -q -w <replaceable>&lt;list of parameters&gt;</replaceable> %I
+ExecStop=
+ExecStop=/sbin/dhcpcd -x <replaceable>&lt;list of parameters&gt;</replaceable> %I
+</literal>EOF</userinput></screen>
+
     </sect3>
 
   </sect2>
