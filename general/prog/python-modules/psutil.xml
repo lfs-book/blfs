@@ -7,9 +7,9 @@
   <!ENTITY psutil-download-http "&pymodules-dl;/p/psutil/psutil-&psutil-version;.tar.gz">
   <!ENTITY psutil-download-ftp  " ">
   <!ENTITY psutil-md5sum        "&psutil-md5sum;">
-  <!ENTITY psutil-size          "476 KB">
-  <!ENTITY psutil-buildsize     "6.2 MB (add 57 MB for tests)">
-  <!ENTITY psutil-time          "less than 0.1 SBU (add 0.1 SBU with tests) ">
+  <!ENTITY psutil-size          "480 KB">
+  <!ENTITY psutil-buildsize     "58 MB (with tests)">
+  <!ENTITY psutil-time          "0.2 SBU (with tests) ">
 ]>
 
   <!-- Begin psutil -->
@@ -76,6 +76,7 @@
       <para role="optional">
         <xref linkend="pytest"/>,
         <ulink url="https://pypi.org/project/colorama/">colorama</ulink>,
+        <ulink url="https://pypi.org/project/pyleak/">pyleak</ulink>,
         <ulink url="https://pypi.org/project/pyperf/">pyperf</ulink>,
         <ulink url="https://pypi.org/project/pypinfo/">pypinfo</ulink>,
         <ulink url="https://pypi.org/project/pytest-instafail/">pytest-instafail</ulink>,
@@ -83,6 +84,11 @@
         <ulink url="https://pypi.org/project/pytest-xdist/">pytest-xdist</ulink>
       </para>
     </sect3>
+
+<!--
+  I'm not sure why the external pypi.org modules are listed here since we 
+  install them explicitly via pip3 in the test instructions. - bdubbs - Dec 2025
+-->
 
     <sect3 role="installation">
       <title>Installation of psutil</title>
@@ -114,16 +120,19 @@
         To test the results, issue:
       </para>
 
-<screen remap='test'><userinput>python3 -m venv --system-site-packages testenv                            &amp;&amp;
-testenv/bin/pip3 install colorama pytest-{instafail,subtests,xdist} pyperf \
-                         pypinfo &amp;&amp;
+<screen remap='test'><userinput>python3 -m venv --system-site-packages testenv                      &amp;&amp;
+testenv/bin/pip3 install colorama pytest-{instafail,subtests,xdist} \
+                         psleak pyperf pypinfo                      &amp;&amp;
 PSUTIL_DEBUG=1 testenv/bin/python3 -m pytest</userinput></screen>
 
       <itemizedlist spacing="compact">
         <listitem>
           <para>
-            The test named <literal>TestSystemAPIs::test_disk_usage</literal>
-            is known to fail.
+            The tests named 
+            <literal>TestSystemAPIs::test_disk_usage</literal>,
+            <literal>TestFetchAllProcesses::test_all</literal>, and
+            <literal>TestNetAPIs::test_net_if_addrs</literal>
+            are known to fail.
           </para>
         </listitem>
 
