@@ -108,8 +108,13 @@
       installed:
     </para>
 
-<screen
-  remap="pre"><userinput>patch -Np1 -i ../libaom-&libaom-version;-nasm3-1.patch</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../libaom-&libaom-version;-nasm3-1.patch</userinput></screen>
+
+    <para>
+      Prevent installing static versions of the libraries:
+    </para>
+
+<screen><userinput remap="pre">sed -i 's/aom aom_static/aom/' build/cmake/aom_install.cmake</userinput></screen>
 
     <para>
       Install <application>libaom</application> by running the following
@@ -136,8 +141,7 @@ ninja</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>ninja install &amp;&amp;
-rm -v /usr/lib/libaom.a</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
