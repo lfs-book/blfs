@@ -10,16 +10,16 @@
 
   <!ENTITY anduin-download           "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;">
 
-  <!ENTITY ojdk-md5sum               "160e4f0de98c13fddba4f1dc0bad3615">
-  <!ENTITY ojdk-size                 "115 MB">
+  <!ENTITY ojdk-md5sum               "4accf6cbdd48f1f1151c2ec50dbf01b1">
+  <!ENTITY ojdk-size                 "109 MB">
 
   <!ENTITY jtreg-version             "7.5.1+1">
   <!ENTITY jtreg-download            "&anduin-download;/jtreg-&jtreg-version;.tar.gz">
   <!ENTITY jtreg-md5sum              "deb728d5f67a84adadd6025b9ad3252f">
   <!ENTITY jtreg-size                "9.0 MB">
 
-  <!ENTITY ojdk-bdsize               "3.8 GB (add 630 MB for tests)">
-  <!ENTITY ojdk-time                 "4.3 SBU with 4 jobs (add 35 SBU for tests with 4 jobs)">
+  <!ENTITY ojdk-bdsize               "3.9 GB (add 589 MB for tests)">
+  <!ENTITY ojdk-time                 "4.5 SBU with 4 jobs (add 24 SBU for tests with 4 jobs)">
 ]>
 
 <sect1 id="openjdk" xreflabel="OpenJDK-&openjdk-version;">
@@ -210,12 +210,6 @@
 
 <screen><userinput>tar -xf ../jtreg-&jtreg-version;.tar.gz</userinput></screen>
 
-    <para>
-      Fix a build failure caused by glibc-2.42:
-    </para>
-
-<screen><userinput>find src -name *.*pp -exec sed -i 's/uabs(/g_uabs(/' {} \;</userinput></screen>
-
     <note>
       <para>
         Before proceeding, you should ensure that your environment
@@ -335,6 +329,9 @@ unset JT_JAVA</userinput></screen>
          24.0.2+12:
          for x86_64: passed: 6,952; failed: 54; error: 43
          for i686:   passed: 6,856; failed: 64; error: 41
+         21.0.9+10:
+         for x86_64: passed: 6,721; failed: 73; error: 13
+         for i686:   passed: 6,641; failed: 33; error: 17
     -->
 
     <para>
@@ -576,7 +573,7 @@ bin/keytool -list -cacerts</userinput></screen>
       <seglistitem>
         <seg>jar, jarsigner, java, javac, javadoc, javap, jcmd,
         jconsole, jdb, jdeprscan, jdeps, jfr, jhsdb, jimage, jinfo,
-        jlink, jmap, jmod, jnativescan, jpackage, jps, jrunscript, jshell,
+        jlink, jmap, jmod, <!--jnativescan,--> jpackage, jps, jrunscript, jshell,
         jstack, jstat, jstatd, jwebserver, keytool, rmiregistry, and serialver</seg>
         <seg>37 libraries in /opt/jdk-&openjdk-version;+&openjdk-build;/lib/</seg>
         <seg>/opt/jdk-&openjdk-version;+&openjdk-build;</seg>
@@ -820,6 +817,7 @@ bin/keytool -list -cacerts</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!--
       <varlistentry id="jnativescan">
         <term><command>jnativescan</command></term>
         <listitem>
@@ -832,6 +830,7 @@ bin/keytool -list -cacerts</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="jpackage">
         <term><command>jpackage</command></term>
