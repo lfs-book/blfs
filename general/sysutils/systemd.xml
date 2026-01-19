@@ -14,11 +14,12 @@
 
 ]>
 
-<sect1 id="systemd" xreflabel="Systemd-&systemd-version;" revision="systemd">
+<sect1 id="systemd" xreflabel="Systemd-&systemd-version;" >
   <?dbhtml filename="systemd.html"?>
 
 
-  <title>Systemd-&systemd-version;</title>
+  <title revision="sysv">Systemd-&systemd-version; for SysV</title>
+  <title revision="systemd">Systemd-&systemd-version;</title>
   <!-- Whenever we switch back to stable backports, make sure to add the systemd-stable reference back. -->
 
   <indexterm zone="systemd">
@@ -26,9 +27,23 @@
   </indexterm>
 
   <sect2 role="package">
-    <title>Introduction to systemd</title>
+    <title revision="sysv">Introduction to systemd for SysV</title>
+    <title revision="systemd">Introduction to systemd</title>
 
-    <para>
+    <para revision="sysv">
+      <application>Systemd</application> is an all-in-one package providing
+      <command>init</command> (PID 1) and various services such as managing
+      daemons, sessions, locale, etc. It can do that for the whole system
+      (<quote>system</quote> mode, supposed to run as PID 1) or for users
+      (<quote>user</quote> mode). For SysV, the system mode should not be
+      needed, except that more and more packages require the user mode and
+      the user mode relies on the system mode daemon running to start.
+      <application>Systemd</application> must therefore be modified
+      so that the system mode can run as a normal daemon (not PID 1), and does
+      not perform all the initializations it would perform as an init system.
+    </para>
+
+    <para revision="systemd">
       While <application>systemd</application> was installed when
       building LFS, there are many features provided by the package that
       were not included in the initial installation because
@@ -87,10 +102,27 @@
 -->
     <bridgehead renderas="sect3">systemd Dependencies</bridgehead>
 
+    <bridgehead renderas="sect4" revision="sysv">Required</bridgehead>
+
+    <para revision="sysv">
+      <xref role="runtime" linkend="dbus"/> (runtime)
+    </para>
+
     <bridgehead renderas="sect4">Recommended</bridgehead>
 
     <note>
-      <para>
+      <para revision="sysv">
+        <xref linkend='linux-pam'/> is not strictly required to build
+        <application>systemd</application>, but the main reason to build
+        <application>systemd</application> is for the
+        <command>systemd-logind</command> daemon and the
+        <filename class='libraryfile'>pam_systemd.so</filename> PAM module.
+        <xref linkend='linux-pam'/> is required for them. All packages in
+        BLFS book with a dependency on <application>systemd</application>
+        expect that it has been built with <xref linkend='linux-pam'/>.
+      </para>
+
+      <para revision="systemd">
         <xref linkend='linux-pam'/> is not strictly required to build
         <application>systemd</application>, but the main reason to rebuild
         <application>systemd</application> in BLFS (it's already built in
@@ -164,7 +196,6 @@
   <sect2 role="installation">
     <title>Installation of systemd</title>
 
-
     <warning>
       <para>
         If a previous version of systemd has been installed, remove a service
@@ -186,8 +217,8 @@
        -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in</userinput></screen>
 
     <para>
-      Rebuild <application>systemd</application> by running the
-      following commands:
+      <phrase revision="systemd">Reb</phrase><phrase revision="sysv">B</phrase>uild
+      <application>systemd</application> by running the following commands:
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
@@ -216,7 +247,11 @@ meson setup ..                 \
 ninja</userinput></screen>
 <!-- Regarding homed, see the note below in Command Explanations-->
 
-    <note>
+    <para revision="sysv">
+      This package can only be tested on a system booted with systemd.
+    </para>
+
+    <note revision="systemd">
       <para>
         For the best test results, make sure you run the test suite from
         a system that is booted by the same
@@ -224,7 +259,7 @@ ninja</userinput></screen>
       </para>
     </note>
 
-    <para>
+    <para revision="systemd">
       To test the results, issue: <command>ninja test</command>.
       The test named <filename>test-stat-util</filename> is known to fail
       if some kernel features are not enabled.
@@ -233,11 +268,41 @@ ninja</userinput></screen>
       configuration options.
     </para>
 
-   <para>
-     Now, as the <systemitem class="username">root</systemitem> user:
-   </para>
+    <para revision="sysv">
+      Installation should not overwrite already installed files from
+      <application>Udev</application> in LFS. So first do a DESTDIR
+      install:
+    </para>
 
-<screen role="root"><userinput>ninja install</userinput></screen>
+<screen revision="sysv"><userinput>DESTDIR=$(pwd)/dest ninja install</userinput></screen>
+
+    <para revision="sysv">
+      Then, as the &root; user:
+    </para>
+
+<screen revision="sysv" role="root"><userinput>pushd dest &amp;&amp;
+   find . | while read -r p; do
+      p=${p#.}
+      q=${p/systemd/udev}
+      if [ -e "$p" ]; then continue; fi
+      if   [ -e  "$q" ] &amp;&amp;
+         ! [ -e ."$q" ] &amp;&amp;
+         ! [ -d ."$p" ]; then continue; fi
+      if ! [ -h ."$p" ] &amp;&amp;
+           [ -d ."$p" ]; then
+         m=$(stat -c %a ."$p");
+         mkdir -m $m "$p"
+      else
+         cp -P --preserve=mode,xattr ."$p" "$p";
+      fi
+   done
+popd</userinput></screen>
+
+    <para revision="systemd">
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root" revision="systemd"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
@@ -349,19 +414,36 @@ password required    pam_deny.so
 # End /etc/pam.d/systemd-user</literal>
 EOF</userinput></screen>
 
+    <para revision="sysv">
+      The <quote>system</quote> mode of systemd should now be restricted
+      to only start a minimum set of daemons. As the &root; user:
+    </para>
+
+<screen role="root" revision="sysv">rm /usr/lib/systemd/system-generators/*                    &amp;&amp;
+grep systemctl      /usr/lib/udev/rules.d/* | \
+    xargs sed -i '/systemctl/s/^/#/'                       &amp;&amp;
+grep systemd-sysctl /usr/lib/udev/rules.d/* | \
+    xargs sed -i '/systemd-sysctl/s/^/#/'                  &amp;&amp;
+sed -E '/^(Wants|After|Conflicts|Requires|Before)/s/^/#/' \
+    /usr/lib/systemd/system/sysinit.target                \
+    &gt; /etc/systemd/system/sysinit.target                &amp;&amp;
+mv  /usr/lib/systemd/system/sysinit.target.wants{,.ignore} &amp;&amp;
+ln -s sysinit.target /etc/systemd/system/default.target    &amp;&amp;
+ln -s /dev/null      /etc/systemd/system/tmp.mount</userinput></screen>
+
     <!-- For some unknown reason if I don't do this, the per-user systemd
          manager fails to start with "Trying to run as user instance,
          but $XDG_RUNTIME_DIR is not set."  This command is enough to
          fix the issue, and it also seems logical to start using the newly
          rebuilt systemd right away (like "exec bash -&dash;login" in LFS),
          so just add it.  -->
-    <para>
+    <para revision="systemd">
       As the &root; user, replace the running <command>systemd</command>
       manager (the <command>init</command> process) with the
       <command>systemd</command> executable newly built and installed:
     </para>
 
-    <screen role='root'><userinput>systemctl daemon-reexec</userinput></screen>
+<screen role='root' revision="systemd"><userinput>systemctl daemon-reexec</userinput></screen>
 
     <para>
       A desktop environment often run as a group of systemd user services.
@@ -374,7 +456,7 @@ EOF</userinput></screen>
       the instance starts to run:
     </para>
 
-    <screen role='root'><userinput>install -vdm755 /etc/systemd/user-environment-generators &amp;&amp;
+<screen role='root'><userinput>install -vdm755 /etc/systemd/user-environment-generators &amp;&amp;
 cat &gt; /etc/systemd/user-environment-generators/50-profile.sh &lt;&lt; "EOF" &amp;&amp;
 <literal>#!/usr/bin/env -S -i /usr/bin/bash
 # SPDX-License-Identifier: MIT
@@ -415,7 +497,7 @@ chmod -v 755 /etc/systemd/user-environment-generators/50-profile.sh</userinput><
       the change into the desktop environment.
     </para>
 
-    <important>
+    <important revision="systemd">
       <para>
         Now ensure <xref linkend='shadow'/> has been already rebuilt with
         <xref linkend='linux-pam'/> support first, then logout, and login
@@ -428,7 +510,7 @@ chmod -v 755 /etc/systemd/user-environment-generators/50-profile.sh</userinput><
       </para>
     </important>
 
-    <warning>
+    <warning revision="systemd">
       <para>
         If you are upgrading from a previous version of systemd and an
         initrd is used for system boot, you should generate a new initrd before
