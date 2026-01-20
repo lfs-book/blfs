@@ -206,6 +206,16 @@
 
     </warning>
 
+    <para revision="sysv">
+      Remove some tests in the program ensuring it can only be run as PID 1
+      in system mode:
+    </para>
+
+<screen revision="sysv"><userinput>sed -e '/^        if (arg_action == ACTION_RUN &amp;&amp;$/,+4/s|^|//|' \
+    -i src/core/main.c &amp;&amp;
+sed -e '/private bus only/,+2s|^|//|' \
+    -i src/core/dbus.c</userinput></screen>
+
     <para>
       Remove two unneeded groups,
       <systemitem class="groupname">render</systemitem> and
