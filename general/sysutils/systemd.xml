@@ -430,31 +430,45 @@ EOF</userinput></screen>
     </para>
 
 <screen role="root" revision="sysv"><userinput>rm /usr/lib/systemd/system-generators/*                    &amp;&amp;
-grep systemctl      /usr/lib/udev/rules.d/* | \
+grep -l systemctl      /usr/lib/udev/rules.d/* | \
     xargs sed -i '/systemctl/s/^/#/'                       &amp;&amp;
-grep systemd-sysctl /usr/lib/udev/rules.d/* | \
+grep -l systemd-sysctl /usr/lib/udev/rules.d/* | \
     xargs sed -i '/systemd-sysctl/s/^/#/'                  &amp;&amp;
-sed -E '/^(Wants|After|Conflicts|Requires|Before)/s/^/#/' \
-    /usr/lib/systemd/system/sysinit.target                \
-    &gt; /etc/systemd/system/sysinit.target                &amp;&amp;
+for t in sysinit.target basic.target; do
+  sed -E '/^(Wants|After|Conflicts|Requires|Before)/s/^/#/' \
+      /usr/lib/systemd/system/$t &gt; /etc/systemd/system/$t
+done                                                       &amp;&amp;
 mv  /usr/lib/systemd/system/sysinit.target.wants{,.ignore} &amp;&amp;
 ln -s sysinit.target /etc/systemd/system/default.target    &amp;&amp;
+mkdir /etc/systemd/system/sysinit.target.wants             &amp;&amp;
+for u in systemd-journal-catalog-update.service \
+         systemd-journal-flush.service          \
+         systemd-journald.service               \
+         systemd-logind.service; do
+  cp /usr/lib/systemd/system/$u /etc/systemd/system &amp;&amp;
+  ln ../$u /etc/systemd/system/sysinit.target.wants
+done                                                       &amp;&amp;
 ln -s /dev/null      /etc/systemd/system/tmp.mount</userinput></screen>
 
-    <!-- For some unknown reason if I don't do this, the per-user systemd
-         manager fails to start with "Trying to run as user instance,
-         but $XDG_RUNTIME_DIR is not set."  This command is enough to
-         fix the issue, and it also seems logical to start using the newly
-         rebuilt systemd right away (like "exec bash -&dash;login" in LFS),
-         so just add it.  -->
-    <para revision="systemd">
-      As the &root; user, replace the running <command>systemd</command>
-      manager (the <command>init</command> process) with the
-      <command>systemd</command> executable newly built and installed:
-    </para>
+    <sect3 id="systemd-init">
+      <title revision="systemd">Restarting systemd</title>
+      <title revision="sysv">Boot Script</title>
+
+      <!-- For some unknown reason if I don't do this, the per-user systemd
+           manager fails to start with "Trying to run as user instance,
+           but $XDG_RUNTIME_DIR is not set."  This command is enough to
+           fix the issue, and it also seems logical to start using the newly
+           rebuilt systemd right away (like "exec bash -&dash;login" in LFS),
+           so just add it.  -->
+      <para revision="systemd">
+        As the &root; user, replace the running <command>systemd</command>
+        manager (the <command>init</command> process) with the
+        <command>systemd</command> executable newly built and installed:
+      </para>
 
 <screen role='root' revision="systemd"><userinput>systemctl daemon-reexec</userinput></screen>
 
+<<<<<<< HEAD
     <para>
       A desktop environment often run as a group of systemd user services.
       Those services are spawned by the systemd per-user instance, instead
@@ -507,26 +521,42 @@ chmod -v 755 /etc/systemd/user-environment-generators/50-profile.sh</userinput><
       the change into the desktop environment.
     </para>
 
-    <important revision="systemd">
-      <para>
-        Now ensure <xref linkend='shadow'/> has been already rebuilt with
-        <xref linkend='linux-pam'/> support first, then logout, and login
-        again. This will ensure that the running login session is registered
-        with <command>systemd-logind</command>, and that a per-user systemd
-        instance is running for each user owning a login session. Many BLFS
-        packages listing systemd as a dependency need the
-        <command>systemd-logind</command> integration and/or a running
-        per-user systemd instance at runtime.
-      </para>
-    </important>
+      <important revision="systemd">
+        <para>
+          Now ensure <xref linkend='shadow'/> has been already rebuilt with
+          <xref linkend='linux-pam'/> support first, then logout, and login
+          again. This will ensure that the running login session is registered
+          with <command>systemd-logind</command>, and that a per-user systemd
+          instance is running for each user owning a login session. Many BLFS
+          packages listing systemd as a dependency need the
+          <command>systemd-logind</command> integration and/or a running
+          per-user systemd instance at runtime.
+        </para>
+      </important>
 
-    <warning revision="systemd">
-      <para>
-        If you are upgrading from a previous version of systemd and an
-        initrd is used for system boot, you should generate a new initrd before
-        rebooting the system.
+      <warning revision="systemd">
+        <para>
+          If you are upgrading from a previous version of systemd and an
+          initrd is used for system boot, you should generate a new initrd
+          before rebooting the system.
+        </para>
+      </warning>
+
+      <para revision="sysv">
+        To automatically start the <command>systemd</command> daemon when the
+        system is rebooted, install the
+        <filename>/etc/rc.d/init.d/systemd</filename> bootscript from the
+        <xref linkend="bootscripts" revision="sysv"/> package as the
+        &root; user:
       </para>
-    </warning>
+
+      <indexterm revision="sysv" zone="systemd systemd-init">
+        <primary sortas="f-systemd">systemd</primary>
+      </indexterm>
+
+<screen role="root" revision="sysv"><userinput>make install-systemd</userinput></screen>
+
+    </sect3>
 
   </sect2>
 
