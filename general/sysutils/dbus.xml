@@ -99,11 +99,7 @@ not ok 2 test-autolaunch
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="xorg7-lib"/> (for <command>dbus-launch</command> program)
-      <!-- elogind cannot be used by dbus: dbus only uses the systemd service,
-      not the logind one
-      <phrase revision="sysv">and <xref linkend="elogind"/> (These are
-      circular dependencies. First build without them, and then again after
-      both packages are installed.)</phrase>-->
+      <phrase revision="sysv">and <xref linkend="systemd"/></phrase>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -140,8 +136,7 @@ cd    build &amp;&amp;
 
 meson setup --prefix=/usr          \
             --buildtype=release    \
-            --wrap-mode=nofallback \</userinput><userinput revision='sysv'>
-            -D systemd=disabled    \</userinput><userinput>
+            --wrap-mode=nofallback \
             .. &amp;&amp;
 ninja</userinput></screen>
 
@@ -177,7 +172,7 @@ chmod -v      4750       /usr/libexec/dbus-daemon-launch-helper</userinput></scr
 <screen role="root" revision="sysv"><userinput>dbus-uuidgen --ensure</userinput></screen>
 
     <para revision="sysv">
-      If using <xref linkend="elogind"/>, create a symlink to the
+      Now, create a symlink to the
       <filename>/var/lib/dbus/machine-id</filename> file:
     </para>
 
@@ -237,13 +232,6 @@ ninja test</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-wrap-nofallback.xml"/>
-
-    <para revision='sysv'>
-      <parameter>-D systemd=disabled</parameter>: Don't install systemd
-      support files even if
-      <systemitem class='library'>libsystemd</systemitem> exists (i.e.
-      the <xref linkend='elogind'/> package is installed).
-    </para>
 
     <para>
       <parameter>-D intrusive_tests=true</parameter>: Builds extra parts of the code to
@@ -326,32 +314,9 @@ EOF</userinput></screen>
     <sect3  id="dbus-session">
       <title>D-Bus Session Daemon</title>
 
-      <para revision="sysv">
-        To automatically start <command>dbus-daemon</command> when the
-        system is rebooted, install the
-        <filename>/etc/rc.d/init.d/dbus</filename> bootscript from the
-        <xref linkend="bootscripts"/> package.
-      </para>
-
-      <indexterm zone="dbus dbus-session" revision="sysv">
-        <primary sortas="f-dbus">dbus</primary>
-      </indexterm>
-
-<screen role="root" revision="sysv"><userinput>make install-dbus</userinput></screen>
-
-      <para revision="sysv">
-        If this is the first time to install
-        <application>D-Bus</application> on the system and you are not
-        operating in a chroot environment, you can immediately start
-        <command>dbus-daemon</command> without rebooting the system:
-      </para>
-
-      <!-- nodump because maybe the user is building in chroot -->
-      <screen role="nodump" revision="sysv"><userinput>/etc/init.d/dbus start</userinput></screen>
-
-      <para revision="sysv">
-        Note that this boot script only starts the system-wide
-        <application>D-Bus</application> daemon. Each user requiring access to
+      <para>
+        The system-wide <application>D-Bus</application> daemon is started
+        by <xref linkend="systemd"/>. Each user requiring access to
         <application>D-Bus</application> services will also need to run a
         session daemon as well. There are many methods you can use to start a
         session daemon using the <command>dbus-launch</command> command. Review
@@ -359,15 +324,6 @@ EOF</userinput></screen>
         available parameters and options. Here are some suggestions and
         examples:
       </para>
-
-      <para revision="systemd">
-        There are many methods you can use to start a session daemon
-        using the <command>dbus-launch</command> command. Review the
-        <command>dbus-launch</command> man page for details about the
-        available parameters and options. Here are some suggestions and
-        examples:
-      </para>
-
 
       <itemizedlist spacing="compact">
         <listitem>
