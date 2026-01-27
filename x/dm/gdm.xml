@@ -132,12 +132,7 @@ passwd -ql gdm</userinput></screen>
       commands:
     </para>
 
-<screen revision="sysv"><userinput>sed -e 's@systemd@elogind@'                                \
-    -e 's/-session optional/-session required/'            \
-    -e '/elogind/isession  required       pam_loginuid.so' \
-    -i data/pam-lfs/gdm-launch-environment.pam &amp;&amp;
-
-mkdir build &amp;&amp;
+<screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson setup ..                   \
@@ -145,11 +140,7 @@ meson setup ..                   \
       --buildtype=release        \
       -D gdm-xsession=true       \
       -D initial-vt=7            \
-      -D run-dir=/run/gdm        \
-      -D logind-provider=elogind \
-      -D systemd-journal=false   \
-      -D systemdsystemunitdir=no \
-      -D systemduserunitdir=no   &amp;&amp;
+      -D run-dir=/run/gdm        &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
@@ -235,7 +226,8 @@ ninja</userinput></screen>
         file may be overwritten when the user updates their system to have
         a newer version of <application>GDM</application>.
       </para>
-
+      <!-- TODO is this still true with Gnome-49? I don't have any
+           61-gdm.rules files on my installation -->
       <para>
         On some systems with NVIDIA GPUs or virtual GPUs (such as provided by
         qemu), GDM will hide Wayland sessions by

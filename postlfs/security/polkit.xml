@@ -15,7 +15,6 @@
 <sect1 id="polkit" xreflabel="Polkit-&polkit-version;">
   <?dbhtml filename="polkit.html"?>
 
-
   <title>Polkit-&polkit-version;</title>
 
   <indexterm zone="polkit">
@@ -184,7 +183,7 @@ useradd -c "PolicyKit Daemon Owner" -d /etc/polkit-1 -u 27 \
       commands:
     </para>
 
-<screen revision="systemd"><userinput>mkdir build &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson setup ..                   \
@@ -192,24 +191,8 @@ meson setup ..                   \
       --buildtype=release        \
       -D man=true                \
       -D session_tracking=logind \
-      -D tests=true</userinput></screen>
-
-<screen revision="sysv"><userinput>mkdir build &amp;&amp;
-cd    build &amp;&amp;
-
-meson setup ..                     \
-      --prefix=/usr                \
-      --buildtype=release          \
-      -D man=true                  \
-      -D session_tracking=elogind  \
-      -D systemdsystemunitdir=/tmp \
-      -D tests=true</userinput></screen>
-
-    <para>
-      Build the package:
-    </para>
-
-<screen><userinput>ninja</userinput></screen>
+      -D tests=true              &amp;&amp;
+ninja</userinput></screen>
 
     <para>
       To test the results, first ensure that the system
@@ -224,13 +207,6 @@ meson setup ..                     \
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
-
-    <para revision="sysv">
-      Remove some files that aren't useful on a SysV system as the &root; user:
-    </para>
-
-<screen role="root" revision="sysv"><userinput>rm -v /tmp/*.service                 &amp;&amp;
-rm -rf /usr/lib/{sysusers,tmpfiles}.d </userinput></screen>
 
   </sect2>
 

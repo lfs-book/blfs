@@ -124,18 +124,6 @@
       Install <application>Power-profiles-daemon</application> by 
       running the following commands:
     </para>
-<screen revision="sysv"><userinput>mkdir build &amp;&amp;
-cd build &amp;&amp;
-
-meson setup                        \
-      --prefix=/usr                \
-      --buildtype=release          \
-      -D gtk_doc=false             \
-      -D tests=false               \
-      -D systemdsystemunitdir=/tmp \
-      .. &amp;&amp;
-ninja</userinput></screen>
-
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
 cd build &amp;&amp;
@@ -158,14 +146,6 @@ ninja</userinput></screen>
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
-
-    <para revision="sysv">
-      Now, clean up an unneeded systemd unit installed into /tmp:
-    </para>
-
-<screen revision="sysv" role="root">
-<userinput>rm -fv /tmp/power-profiles-daemon.service</userinput>
-</screen>
 
     <para revision="sysv">
       Create a directory required for persistent power states
@@ -193,11 +173,6 @@ ninja</userinput></screen>
       tests because they cannot be run within the boundaries of 
       BLFS.  Remove this if you have installed the external dependencies
       and wish to run the tests.
-    </para>
-
-    <para revision="sysv">
-      <parameter>-D systemdsystemunitdir=/tmp</parameter>: Removes
-      the dependency on <application>systemd</application>.
     </para>
 
   </sect2>
