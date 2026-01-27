@@ -243,6 +243,23 @@ ninja</userinput></screen>
 
     </sect3>
 
+    <sect3 revision="sysv">
+      <title>Adapting <filename>/etc/nsswitch.conf</filename> for GDM</title>
+
+      <para>
+        Starting with GNOME-49, <application>GDM</application> uses the
+        <filename>userdb</filename> manager provided by
+        <application>systemd</application>. This mean that the group and user
+        seeking mechanism of <application>glibc</application> has to be made
+        systemd-aware. As the &root; user, modify the
+        <filename>/etc/nsswitch.conf file</filename> as follows:
+      </para>
+
+<screen role="root"><userinput>sed -E "^(passwd|group|shadow)s/$/ systemd/" \
+    -i /etc/nsswitch.conf</userinput></screen>
+
+    </sect3>
+
     <sect3 id="gdm-init">
       <title><phrase revision="sysv">Boot Script</phrase>
              <phrase revision="systemd">Systemd Unit</phrase></title>
