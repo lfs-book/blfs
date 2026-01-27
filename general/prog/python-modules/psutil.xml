@@ -152,21 +152,37 @@ PSUTIL_DEBUG=1 testenv/bin/python3 -m pytest</userinput></screen>
           </para>
         </listitem>
 
+        <!-- If Shadow is rebuilt with logind, it won't use utmp to track
+             sessions no more and uses logind instead.  This test is invoking
+             the "who" program which is from Coreutils (not Shadow) so it
+             will print nothing and break the test.  Coreutils may be built
+             with logind support but it's not enabled by default (even if
+             libsystemd is installed), and we cannot simply enable it when
+             we build it in LFS because at the time point libsystemd is not
+             installed yet.  See the discussion about utmp Y2038 issue in
+             the LFS Shadow page.  -->
         <listitem>
           <para>
             The test named <literal>TestExampleScripts::test_who</literal> is
             known to fail if the login manager does not write into
-            <filename>/run/utmp</filename> (note that due to the potential year
-            2037 problem, Shadow has already stopped writing into it).
+            <filename>/run/utmp</filename><phrase revision='systemd'> (note
+            that due to the potential year 2038 problem, if
+            <xref linkend='shadow'/> is already rebuilt in BLFS, it will stop
+            writing into the file)</phrase>.
           </para>
         </listitem>
 
-
+        <!-- The mechanism is a little different from above: here psutil
+             itself parses utmp, so even if we build Coreutils with logind
+             support it still won't help.  And it also doesn't like the
+             utmp entry created by gdm (for gdm itself) for some
+             reason.  -->
         <listitem>
           <para>
             The test named <literal>TestSystemAPIs::test_users</literal> is
             known to fail if the <filename>/run/utmp</filename> file contains
-            an entry for the login screen.
+            an entry for the login screen.  It can also fail due to the same
+            reason as <literal>TestExampleScripts::test_who</literal>.
           </para>
         </listitem>
       </itemizedlist>
