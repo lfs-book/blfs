@@ -73,23 +73,23 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="gsettings-desktop-schemas"/>,
-      <xref linkend="gtk3"/>,
-      <xref linkend="gtk4"/>,
       <xref linkend="iso-codes"/>,
-      <xref linkend="itstool"/>,
       <xref linkend="libseccomp"/>, and
       <xref linkend="xkeyboard-config"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="bubblewrap"/> (needed for thumbnailers in Nautilus) and
+      <xref linkend="gtk3"/>,
+      <xref linkend="gtk4"/>,
+      <xref linkend="bubblewrap"/> (needed for thumbnailers in Nautilus), and
       &gobject-introspection;
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="gtk-doc"/> and
+      <xref linkend="itstool"/>,
+      <xref linkend="gtk-doc"/>, and
       <xref linkend="libxkbcommon"/>
     </para>
 
@@ -106,9 +106,10 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr       \
-            --buildtype=release \
-            ..                  &amp;&amp;
+meson setup --prefix=/usr         \
+            --buildtype=release   \
+            -D desktop_docs=false \
+            ..                    &amp;&amp;
 ninja</userinput></screen>
 
     <!--<para>
@@ -139,6 +140,30 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
+
+    <para>
+      <parameter>-D desktop_docs=false</parameter>: This
+      allows building the package without
+      <xref linkend='itstool'/> by disabling the installation
+      of the copies and translations of the GNU FDL, GPL,
+      and LGPL licenses.
+    </para>
+
+    <para>
+      <option>-D build_gtk4=false</option>: Use this option
+      if you wish to build this package without
+      <xref linkend='gtk4'/> installed.  Note that it will
+      likely cause GTK-4 applications depending on this
+      package fail to build.
+    </para>
+
+    <para>
+      <option>-D legacy_library=false</option>: Use this option
+      if you wish to build this package without
+      <xref linkend='gtk3'/> installed.  Note that it will
+      likely cause GTK-3 applications depending on this
+      package fail to build.
+    </para>
 
     <para>
       <option>-D gtk_doc=true</option>: Use this
@@ -175,7 +200,7 @@ ninja</userinput></screen>
           /usr/include/gnome-desktop-4.0,
           /usr/libexec/gnome-desktop-debug,
           /usr/share/gtk-doc/html/gnome-desktop3 (optional), and
-          /usr/share/help/*/{fdl,gpl,lgpl}
+          /usr/share/help/*/{fdl,gpl,lgpl} (optional)
         </seg>
       </seglistitem>
     </segmentedlist>
