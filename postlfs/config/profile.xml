@@ -268,34 +268,6 @@ EOF</userinput></screen>
 
     </sect3>
 
-    <sect3 id="etc-profile.d-dircolors.sh">
-      <title>/etc/profile.d/dircolors.sh</title>
-
-      <indexterm zone="postlfs-config-profile etc-profile.d-dircolors.sh">
-        <primary sortas="e-etc-profile.d-dircolors.sh">/etc/profile.d/dircolors.sh</primary>
-      </indexterm>
-
-      <para>
-        This script uses the <filename>~/.dircolors</filename> and
-        <filename>/etc/dircolors</filename> files to control the colors of
-        file names in a directory listing. They control colorized output of
-        things like <command>ls --color</command>.  The explanation of how to
-        initialize these files is at the end of this section.
-      </para>
-
-<screen role="root"><userinput>cat &gt; /etc/profile.d/dircolors.sh &lt;&lt; "EOF"
-<literal># Setup for /bin/ls and /bin/grep to support color, the alias is in /etc/bashrc.
-if [ -f "/etc/dircolors" ] ; then
-        eval $(dircolors -b /etc/dircolors)
-fi
-
-if [ -f "$HOME/.dircolors" ] ; then
-        eval $(dircolors -b $HOME/.dircolors)
-fi</literal>
-EOF</userinput></screen>
-
-    </sect3>
-
     <sect3 id="extrapaths.sh">
       <title>/etc/profile.d/extrapaths.sh</title>
 
@@ -509,8 +481,15 @@ EOF</userinput></screen>
 # should go into ~/.bash_profile.  Personal aliases and functions should
 # go into ~/.bashrc
 
-# Provides colored /bin/ls and /bin/grep commands.  Used in conjunction
-# with code in /etc/profile.
+# Provides colored /bin/ls and /bin/grep commands.
+
+if [ -f "/etc/dircolors" ] ; then
+        eval $(dircolors -b /etc/dircolors)
+fi
+
+if [ -f "$HOME/.dircolors" ] ; then
+        eval $(dircolors -b $HOME/.dircolors)
+fi
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
@@ -539,6 +518,16 @@ $(tty &amp;>/dev/null) &amp;&amp; export GPG_TTY=$(tty)
 
 # End /etc/bashrc</literal>
 EOF</userinput></screen>
+
+    <para>
+      The script above uses the <filename>~/.dircolors</filename> and
+      <filename>/etc/dircolors</filename> files to control the colors of
+      file names in a directory listing. They control colorized output of
+      things like <command>ls --color</command>.  The explanation of how to
+      initialize these files is at the end of this section.  The setting
+      also depends on the terminal being used, so it needs to be set for
+      each interactive shell, instead of only the login shell.
+    </para>
 
     <para>
       For more information on the escape sequences you can use for your prompt
