@@ -446,7 +446,7 @@ EOF</userinput></screen>
       to only start a minimum set of daemons. As the &root; user:
     </para>
 
-<screen role="root" revision="sysv"><userinput>rm /usr/lib/systemd/system-generators/*                    &amp;&amp;
+<screen role="root" revision="sysv"><userinput>rm -v /usr/lib/systemd/system-generators/*                 &amp;&amp;
 grep -l systemctl      /usr/lib/udev/rules.d/* | \
     xargs sed -i '/systemctl/s/^/#/'                       &amp;&amp;
 grep -l systemd-sysctl /usr/lib/udev/rules.d/* | \
@@ -455,17 +455,18 @@ for t in sysinit.target basic.target; do
   sed -E '/^(Wants|After|Conflicts|Requires|Before)/s/^/#/' \
       /usr/lib/systemd/system/$t &gt; /etc/systemd/system/$t
 done                                                       &amp;&amp;
+rm -rfv /usr/lib/systemd/system/sysinit.target.wants.ignore &amp;&amp;
 mv  /usr/lib/systemd/system/sysinit.target.wants{,.ignore} &amp;&amp;
-ln -s sysinit.target /etc/systemd/system/default.target    &amp;&amp;
-mkdir /etc/systemd/system/sysinit.target.wants             &amp;&amp;
+ln -sfv sysinit.target /etc/systemd/system/default.target   &amp;&amp;
+mkdir -pv /etc/systemd/system/sysinit.target.wants         &amp;&amp;
 for u in systemd-journal-catalog-update.service \
          systemd-journal-flush.service          \
          systemd-journald.service               \
          systemd-logind.service; do
-  cp /usr/lib/systemd/system/$u /etc/systemd/system &amp;&amp;
-  ln ../$u /etc/systemd/system/sysinit.target.wants
+  cp -v /usr/lib/systemd/system/$u /etc/systemd/system &amp;&amp;
+  ln -sfv ../$u /etc/systemd/system/sysinit.target.wants
 done                                                       &amp;&amp;
-ln -s /dev/null      /etc/systemd/system/tmp.mount</userinput></screen>
+ln -sfv /dev/null      /etc/systemd/system/tmp.mount</userinput></screen>
 
     <sect3 id="systemd-init">
       <title revision="systemd">Restarting systemd</title>
