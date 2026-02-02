@@ -309,6 +309,7 @@ ninja</userinput></screen>
 <screen revision="sysv" role="root"><userinput>pushd dest &amp;&amp;
    find . | while read -r p; do
       p=${p#.}
+      if [ -z "$p" ]; then continue; fi
       q=${p/systemd/udev}
       if [ -e "$p" ]; then continue; fi
       if   [ -e  "$q" ] &amp;&amp;
