@@ -115,6 +115,15 @@
     <title>Installation of make-ca and Generation of the CA-certificates stores</title>
 
     <para>
+      At first, remove the <parameter>-t</parameter> option from the
+      <command>mktemp</command> commands in the script.  This option is
+      deprecated and it can cause unwanted effects if <envar>TMPDIR</envar>
+      is set in the environment:
+    </para>
+
+    <screen><userinput>sed '/mktemp/s/-t //' -i make-ca</userinput></screen>
+
+    <para>
       The <application>make-ca</application> script will download and process
       the certificates included in the <filename>certdata.txt</filename> file
       for use as trust anchors for the <xref linkend="p11-kit"/> trust module.
