@@ -221,7 +221,7 @@ by systemd-user.-->
 
   </sect2>
 
-  <sect2 role="starting">
+  <sect2 role="starting" revision="systemd">
     <title>Starting GNOME</title>
 
     <para>
@@ -242,7 +242,8 @@ by systemd-user.-->
       support on a system that has the proprietary NVIDIA driver installed,
       since GDM will not show the Wayland session type on such a system.-->
     </para>
-
+    <!-- we don't build with x11 support. So there is no point in starting
+         with X11
     <warning>
       <para>
         X11 support is deprecated and will be removed in GNOME 50. Please use
@@ -260,13 +261,15 @@ by systemd-user.-->
 EOF
 
 startx</userinput></screen>
-
+-->
     <para>
-      Alternatively, to start <application>GNOME</application> with Wayland
-      support, run the following command:
+      To start <application>GNOME</application> without a display manager
+      you need to determine your session ID, using <command>loginctl</command>.
+      Once it is done, issue (we suppose the session ID is 1):
     </para>
 
-<screen role="nodump"><userinput>XDG_SESSION_TYPE=wayland dbus-run-session gnome-session</userinput></screen>
+    <screen role="nodump"><userinput>systemctl --user set-environment XDG_SESSION_TYPE=wayland XDG_SESSION_ID=<replaceable>1</replaceable> &amp;&amp;
+systemctl --user start gnome-session-wayland@gnome.target</userinput></screen>
 
   </sect2>
 
