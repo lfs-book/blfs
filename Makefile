@@ -31,12 +31,12 @@ ifneq ($(REV), openrc)
 endif
 
 ifeq ($(REV), openrc)
-  BASEDIR         ?= $(HOME)/public_html/blfs-book
-  NOCHUNKS_OUTPUT ?= blfs-book.html
-  DUMPDIR         ?= ~/blfs-commands
-  BLFSHTML        ?= blfs-html.xml
-  BLFSHTML2       ?= blfs-html2.xml
-  BLFSFULL        ?= blfs-full.xml
+  BASEDIR         ?= $(HOME)/public_html/blfs-openrc
+  NOCHUNKS_OUTPUT ?= blfs-openrc.html
+  DUMPDIR         ?= ~/blfs-openrc-commands
+  BLFSHTML        ?= blfs-openrc-html.xml
+  BLFSHTML2       ?= blfs-openrc-html2.xml
+  BLFSFULL        ?= blfs-openrc-full.xml
 else
   BASEDIR         ?= $(HOME)/public_html/blfs-systemd
   NOCHUNKS_OUTPUT ?= blfs-sysd-book.html
