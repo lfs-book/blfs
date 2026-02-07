@@ -391,7 +391,9 @@ done
 unset SHLVL
 
 # Systemd does not want to pass functions to the environment
-unset -f pathappend pathprepend pathremove
+for i in $(declare -pF | awk '{print $3}'); do
+  unset -f $i
+done
 
 python3 &lt;&lt; _EOF
 import os
