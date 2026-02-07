@@ -530,7 +530,7 @@ chmod a+x /usr/lib/systemd/systemd-shutdown</userinput></screen>
 <screen role='root' revision="systemd"><userinput>systemctl daemon-reexec</userinput></screen>
 
     <para>
-      A desktop environment often run as a group of systemd user services.
+      A desktop environment often runs as a group of systemd user services.
       Those services are spawned by the systemd per-user instance, instead
       of the login shell.  To ensure those services get the environment
       variables we've set via
@@ -555,6 +555,11 @@ done
 
 # Some shell magic that we don't want to expose.
 unset SHLVL
+
+# Systemd does not want to pass functions to the environment
+for i in $(declare -pF | awk '{print $3}'); do
+  unset -f $i
+done
 
 python3 &lt;&lt; _EOF
 import os
