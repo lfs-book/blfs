@@ -468,6 +468,49 @@ for u in systemd-journal-catalog-update.service \
 done                                                       &amp;&amp;
 ln -sfv /dev/null      /etc/systemd/system/tmp.mount</userinput></screen>
 
+    <para revision="sysv">
+      Now the shutdown process of <application>systemd</application> has to
+      be modified to interact nicely with <application>SysV</application>.
+      This is done by introducing a unit that is run at the beginning of the
+      systemd shutdown process and by replacing the
+      <command>systemd-shutdown</command> executable with a small script.
+      As the &root; user:
+    </para>
+
+<screen role="root" revision="sysv"><userinput>sed '/Refuse/a \
+Wants=telinit1.service \
+After=telinit1.service' /usr/lib/systemd/system/shutdown.target \
+    &gt; /etc/systemd/system/shutdown.target &amp;&amp;
+
+cat &gt; /etc/systemd/system/telinit1.service &lt;&lt; EOF &amp;&amp;
+<literal>[Unit]
+Description=tell SysV to switch to single user
+# Prevent a conflict with shutdown.target:
+DefaultDependencies=no
+
+[Service]
+Type=notify
+Execstart=/usr/sbin/telinit 1</literal>
+EOF
+
+mv /usr/lib/systemd/systemd-shutdown{,.orig} &amp;&amp;
+cat &gt; /usr/lib/systemd/systemd-shutdown &lt;&lt;EOF &amp;&amp;
+<literal>#!/usr/bin/bash
+
+while [ -n "$1" ]; do
+   case "$1" in
+      --*) shift; continue ;;
+      reboot|poweroff|halt|kexec|exit) cmd="$1"; break ;;
+      *) echo Unrecognized option: $1; exit 1 ;;
+   esac
+done
+if [ -z "$cmd" ]; then echo No command given; exit 1; fi
+if [ reboot = "$cmd" ]; then telinit 6
+                        else telinit 0
+fi</literal>
+EOF
+chmod a+x /usr/lib/systemd/systemd-shutdown</userinput></screen>
+
     <sect3 id="systemd-init">
       <title revision="systemd">Restarting systemd</title>
       <title revision="sysv">Boot Script</title>
