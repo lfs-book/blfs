@@ -255,7 +255,7 @@ install -v -m644 dbus/dbus-wpa_supplicant.conf \
       <title>Config File</title>
 
       <para revision="openrc">
-        <filename>/etc/sysconfig/wpa_supplicant-*.conf</filename>
+        <filename>/etc/wpa_supplicant.conf</filename>
       </para>
 
       <para revision="systemd">
@@ -264,7 +264,7 @@ install -v -m644 dbus/dbus-wpa_supplicant.conf \
 
       <indexterm zone="wpa_supplicant wpa_supplicant-config" revision="openrc">
         <primary
-        sortas="e-etc-sysconfig-wpa_supplicant-star.conf">/etc/sysconfig/wpa_supplicant-*.conf</primary>
+        sortas="e-etc-wpa_supplicant.conf">/etc/wpa_supplicant.conf</primary>
       </indexterm>
 
       <indexterm zone="wpa_supplicant wpa_supplicant-config" revision="systemd">
@@ -282,7 +282,7 @@ install -v -m644 dbus/dbus-wpa_supplicant.conf \
         the pre-shared key in
         <phrase revision="openrc">
           <filename>
- /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</filename>.
+ /etc/wpa_supplicant.conf</filename>.
         </phrase>
         <phrase revision="systemd">
           <filename>
@@ -293,7 +293,7 @@ install -v -m644 dbus/dbus-wpa_supplicant.conf \
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="nodump" revision="openrc"><userinput>wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</userinput></screen>
+<screen role="nodump" revision="openrc"><userinput>wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/wpa_supplicant.conf</userinput></screen>
 
 <screen role="nodump" revision="systemd"><userinput>install -v -dm755 /etc/wpa_supplicant &amp;&amp;
 wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/wpa_supplicant/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</userinput></screen>
@@ -306,7 +306,7 @@ wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/wpa_sup
       <para>
         <phrase revision="openrc">
           <filename>
-            /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf
+            /etc/wpa_supplicant.conf
           </filename>
         </phrase>
         <phrase revision="systemd">
@@ -324,7 +324,7 @@ wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/wpa_sup
         protected, put an entry like this in
         <phrase revision="openrc">
           <filename>
-/etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</filename>.
+/etc/wpa_supplicant.conf</filename>.
         </phrase>
         <phrase revision="systemd">
           <filename>
@@ -368,11 +368,13 @@ update_config=1</screen>
       <para id="wpa-service" revision="openrc">
         If you want to configure network interfaces at boot using
         <command>wpa_supplicant</command>, you need to install the
-        <filename>/lib/services/wpa</filename> script
-        included in <xref linkend="bootscripts"/> package:
+        wpa_supplicant service as the &root; user:
       </para>
 
-<screen role="root" revision="openrc"><userinput>make install-service-wpa</userinput></screen>
+<screen role="root"
+  revision="openrc"><userinput>install -vm755 /usr/share/openrc/support/init.d.examples/wpa_supplicant \
+               /etc/init.d/wpa_supplicant &amp;&amp;
+rc-update add wpa_supplicant default</userinput></screen>
 
       <indexterm zone="wpa_supplicant wpa-service" revision="openrc">
         <primary sortas="f-wpa">wpa</primary>
@@ -381,47 +383,10 @@ update_config=1</screen>
       <para revision="openrc">
         If your router/access point uses DHCP to allocate IP addresses, you
         can install <xref linkend="dhcpcd" role="nodep"/> and use it to
-        automatically obtain network addresses. Create the
-        <filename>/etc/sysconfig/ifconfig-<replaceable>wifi0</replaceable>
-        </filename> by running the following command as the
-        <systemitem class="username">root</systemitem> user:
+        automatically obtain network addresses. The wpa_supplicant service is
+        pretty automatic, you just need to tell dhcpcd
+        in <filename>/etc/conf.d/dhcpcd</filename> what interface to use.
       </para>
-
-<screen role="root" revision="openrc"><userinput>cat &gt; /etc/sysconfig/ifconfig.<replaceable>wifi0</replaceable> &lt;&lt; "EOF"
-<literal>ONBOOT="yes"
-IFACE="<replaceable>wlan0</replaceable>"
-SERVICE="wpa"
-
-# Additional arguments to wpa_supplicant
-WPA_ARGS=""
-
-WPA_SERVICE="dhcpcd"
-DHCP_START="-b -q <replaceable>&lt;insert appropriate start options here&gt;</replaceable>"
-DHCP_STOP="-k <replaceable>&lt;insert additional stop options here&gt;</replaceable>"</literal>
-EOF</userinput></screen>
-
-      <para revision="openrc">
-        Alternatively, if you use static addresses on your local network,
-        then create the
-        <filename>/etc/sysconfig/ifconfig-<replaceable>wifi0</replaceable>
-        </filename> by running the following command as the
-        <systemitem class="username">root</systemitem> user:
-      </para>
-
-<screen role="root" revision="openrc"><userinput>cat &gt; /etc/sysconfig/ifconfig.<replaceable>wifi0</replaceable> &lt;&lt; "EOF"
-<literal>ONBOOT="yes"
-IFACE="<replaceable>wlan0</replaceable>"
-SERVICE="wpa"
-
-# Additional arguments to wpa_supplicant
-WPA_ARGS=""
-
-WPA_SERVICE="ipv4-static"
-IP="192.168.1.1"
-GATEWAY="192.168.1.2"
-PREFIX="24"
-BROADCAST="192.168.1.255"</literal>
-EOF</userinput></screen>
 
       <para revision="systemd">
         There are 3 types of <application>systemd</application> units
@@ -459,17 +424,8 @@ EOF</userinput></screen>
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root" revision="openrc"><userinput>ifup <replaceable>wifi0</replaceable></userinput></screen>
-
-      <para revision="openrc">
-        Replace <replaceable>wlan0</replaceable> with the correct
-        wireless interface and <replaceable>wifi0</replaceable>
-        with desired name for the configuration file. Please note
-        that <filename>wpa_supplicant-*.conf</filename> and
-        <filename>ifconfig.*</filename> configuration files need
-        to have identical names, ie both contain
-        <replaceable>wifi0</replaceable> in their name.
-      </para>
+<screen role="root" revision="openrc"><userinput>/etc/init.d/wpa_supplicant start &amp;&amp;
+/etc/init.d/dhcpcd start</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl start wpa_supplicant@<replaceable>wlan0</replaceable></userinput></screen>
 
