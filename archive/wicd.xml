@@ -97,7 +97,7 @@
     <para>Install <application>Wicd</application> by running the following
     commands:</para>
 
-<screen revision="sysv"><userinput>sed -e "/wpath.logrotate\|wpath.systemd/d" \
+<screen revision="openrc"><userinput>sed -e "/wpath.logrotate\|wpath.systemd/d" \
     -e "/detection failed/ a\                self.init='init/default/wicd'" \
     -i.orig setup.py &amp;&amp;
 
@@ -134,7 +134,7 @@ python setup.py configure --no-install-kde     \
   <sect2 role="commands">
     <title>Command Explanations</title>
 
-    <para revision="sysv"><command>sed -e ... -i setup.py</command>: The first
+    <para revision="openrc"><command>sed -e ... -i setup.py</command>: The first
     expression in this <command>sed</command> command prevents installation of
     logrotate and systemd configuration files. You may omit it if you use these
     utilities. The second one fixes building with BLFS.</para>
@@ -160,7 +160,7 @@ python setup.py configure --no-install-kde     \
     <para><parameter>--no-install-pmutils</parameter>: Prevent installation of
     hooks for pm-utils. Omit this option if you use pm-utils.</para>
 
-    <para revision="sysv"><parameter>--no-install-init</parameter>: Prevent
+    <para revision="openrc"><parameter>--no-install-init</parameter>: Prevent
     installation of any init scripts, as a bootscript is installed later in the
     instructions.</para>
 
@@ -201,19 +201,19 @@ python setup.py configure --no-install-kde     \
         </para>
       </note>
 
-      <para revision="sysv">To automatically start Wicd at boot time, you need
+      <para revision="openrc">To automatically start Wicd at boot time, you need
       to first install the Wicd bootscript,
       <filename>/etc/rc.d/init.d/wicd</filename> included in the <xref
       linkend="bootscripts"/> package (as user <systemitem
       class="username">root</systemitem>):</para>
 
-      <indexterm zone="wicd wicd-init" revision="sysv">
+      <indexterm zone="wicd wicd-init" revision="openrc">
         <primary sortas="f-wicd">wicd (bootscript)</primary>
       </indexterm>
 
-      <screen role='root' revision="sysv"><userinput>make install-wicd</userinput></screen>
+      <screen role='root' revision="openrc"><userinput>make install-wicd</userinput></screen>
 
-      <para revision="sysv">Since Wicd will now handle all configuration of
+      <para revision="openrc">Since Wicd will now handle all configuration of
       network devices, the network bootscript installed by LFS should be
       disabled. This can be achieved by either removing any
       <filename>S*network</filename> and <filename>K*network</filename>

@@ -40,7 +40,7 @@ not ok 2 test-autolaunch
   <sect2 role="package">
     <title>Introduction to D-Bus</title>
 
-    <para revision="sysv">
+    <para revision="openrc">
       <application>D-Bus</application> is a message bus system, a simple way
       for applications to talk to one another.
       <application>D-Bus</application> supplies both a system daemon (for
@@ -101,7 +101,7 @@ not ok 2 test-autolaunch
       <xref linkend="xorg7-lib"/> (for <command>dbus-launch</command> program)
       <!-- elogind cannot be used by dbus: dbus only uses the systemd service,
       not the logind one
-      <phrase revision="sysv">and <xref linkend="elogind"/> (These are
+      <phrase revision="openrc">and <xref linkend="elogind"/> (These are
       circular dependencies. First build without them, and then again after
       both packages are installed.)</phrase>-->
     </para>
@@ -140,7 +140,7 @@ cd    build &amp;&amp;
 
 meson setup --prefix=/usr          \
             --buildtype=release    \
-            --wrap-mode=nofallback \</userinput><userinput revision='sysv'>
+            --wrap-mode=nofallback \</userinput><userinput revision='openrc'>
             -D systemd=disabled    \</userinput><userinput>
             .. &amp;&amp;
 ninja</userinput></screen>
@@ -165,7 +165,7 @@ ninja</userinput></screen>
 <screen role="root"><userinput>chown -v root:messagebus /usr/libexec/dbus-daemon-launch-helper &amp;&amp;
 chmod -v      4750       /usr/libexec/dbus-daemon-launch-helper</userinput></screen>
 
-    <para revision="sysv">
+    <para revision="openrc">
       If you are still building your system in chroot or you did not start the
       daemon yet, but you want to compile some packages that require
       <application>D-Bus</application>, generate the
@@ -174,14 +174,14 @@ chmod -v      4750       /usr/libexec/dbus-daemon-launch-helper</userinput></scr
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root" revision="sysv"><userinput>dbus-uuidgen --ensure</userinput></screen>
+<screen role="root" revision="openrc"><userinput>dbus-uuidgen --ensure</userinput></screen>
 
-    <para revision="sysv">
+    <para revision="openrc">
       If using <xref linkend="elogind"/>, create a symlink to the
       <filename>/var/lib/dbus/machine-id</filename> file:
     </para>
 
-<screen role="root" revision="sysv"><userinput>ln -sfv /var/lib/dbus/machine-id /etc</userinput></screen>
+<screen role="root" revision="openrc"><userinput>ln -sfv /var/lib/dbus/machine-id /etc</userinput></screen>
 
     <para>
       Finally, still as the &root; user, rename the documentation directory
@@ -238,7 +238,7 @@ ninja test</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-wrap-nofallback.xml"/>
 
-    <para revision='sysv'>
+    <para revision='openrc'>
       <parameter>-D systemd=disabled</parameter>: Don't install systemd
       support files even if
       <systemitem class='library'>libsystemd</systemitem> exists (i.e.
@@ -326,20 +326,20 @@ EOF</userinput></screen>
     <sect3  id="dbus-session">
       <title>D-Bus Session Daemon</title>
 
-      <para revision="sysv">
+      <para revision="openrc">
         To automatically start <command>dbus-daemon</command> when the
         system is rebooted, install the
         <filename>/etc/rc.d/init.d/dbus</filename> bootscript from the
         <xref linkend="bootscripts"/> package.
       </para>
 
-      <indexterm zone="dbus dbus-session" revision="sysv">
+      <indexterm zone="dbus dbus-session" revision="openrc">
         <primary sortas="f-dbus">dbus</primary>
       </indexterm>
 
-<screen role="root" revision="sysv"><userinput>make install-dbus</userinput></screen>
+<screen role="root" revision="openrc"><userinput>make install-dbus</userinput></screen>
 
-      <para revision="sysv">
+      <para revision="openrc">
         If this is the first time to install
         <application>D-Bus</application> on the system and you are not
         operating in a chroot environment, you can immediately start
@@ -347,9 +347,9 @@ EOF</userinput></screen>
       </para>
 
       <!-- nodump because maybe the user is building in chroot -->
-      <screen role="nodump" revision="sysv"><userinput>/etc/init.d/dbus start</userinput></screen>
+      <screen role="nodump" revision="openrc"><userinput>/etc/init.d/dbus start</userinput></screen>
 
-      <para revision="sysv">
+      <para revision="openrc">
         Note that this boot script only starts the system-wide
         <application>D-Bus</application> daemon. Each user requiring access to
         <application>D-Bus</application> services will also need to run a
@@ -418,7 +418,7 @@ kill $DBUS_SESSION_BUS_PID</literal></userinput></screen>
 
   </sect2>
 
-  <sect2 role="content" revision="sysv">
+  <sect2 role="content" revision="openrc">
     <title>Contents</title>
 
     <segmentedlist>

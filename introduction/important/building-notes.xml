@@ -314,8 +314,8 @@ tar -xvf filename.tar.bz2</userinput></screen>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="cgroup-kernel.xml"/>
 
-    <!-- We need cgroup2 mounted at /sys/fs/cgroup.  It's done by
-         systemd itself in LFS systemd, mountvirtfs script in LFS sysv. -->
+    <!-- We need cgroup2 mounted at /sys/fs/cgroup. It's done by
+         systemd itself in LFS systemd and by OpenRC's cgroups service. -->
 
     <para revision='systemd'>
       Ensure <xref linkend='systemd'/> and <xref linkend='shadow'/> have
@@ -346,7 +346,7 @@ systemd-run --user --pty --pipe --wait -G -d \
             -p AllowedCPUs=0-3               \
             make -j5</userinput></screen>
 
-    <para revision='sysv'>
+    <para revision='openrc'>
       Ensure <xref linkend='sudo'/> is installed.  To run
       <command>make -j5</command> with the first 4 logical cores and 8 GB
       of system memory, issue:
@@ -357,7 +357,7 @@ systemd-run --user --pty --pipe --wait -G -d \
 
          TODO: can we use elogind to delegate the controllers (like
          systemd) to avoid relying on sudo?  -->
-    <screen revision="sysv" role="nodump"><userinput>bash -e &lt;&lt; \EOF
+    <screen revision="openrc" role="nodump"><userinput>bash -e &lt;&lt; \EOF
   sudo mkdir /sys/fs/cgroup/$$
   sudo sh -c \
     "echo +memory +cpuset > /sys/fs/cgroup/cgroup.subtree_control"
@@ -377,7 +377,7 @@ EOF</userinput></screen>
       <phrase revision='systemd'>
         <parameter>MemoryHigh=8G</parameter>,
       </phrase>
-      <phrase revision='sysv'>
+      <phrase revision='openrc'>
         <literal>8589934592</literal> (the output of
         <userinput>bc -e '8*2^30'</userinput>, 2^30 represents
         2<superscript>30</superscript>, i.e. a Gigabyte) in the
@@ -392,7 +392,7 @@ EOF</userinput></screen>
         <parameter>MemoryHigh</parameter> with
         <parameter>MemoryMax</parameter>.
       </phrase>
-      <phrase revision='sysv'>
+      <phrase revision='openrc'>
         <filename>memory.high</filename> with
         <filename>memory.max</filename>.
       </phrase>
@@ -404,7 +404,7 @@ EOF</userinput></screen>
       <phrase revision='systemd'>
         <parameter>AllowedCPUs=0-3</parameter>
       </phrase>
-      <phrase revision='sysv'>
+      <phrase revision='openrc'>
         <literal>0-3</literal> in the <filename>cpuset.cpus</filename>
         entry
       </phrase> makes the kernel only run the processes in the cgroup on
@@ -444,7 +444,7 @@ EOF</userinput></screen>
       for the detailed explanation of parameters in the command.
     </para>
 
-    <para revision="sysv">
+    <para revision="openrc">
       Read the <filename>Documentation/admin-guide/cgroup-v2.rst</filename>
       file in the Linux kernel source tree for the detailed explanation of
       <systemitem class="filesystem">cgroup2</systemitem> pseudo file

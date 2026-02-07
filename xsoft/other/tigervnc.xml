@@ -94,13 +94,13 @@
           <ulink url="&patch-root;/tigervnc-&tigervnc-version;-configuration_fixes-1.patch"/>
         </para>
       </listitem>
-      <listitem revision='sysv'>
+      <listitem revision='openrc'>
         <para>
           Optional file to start the server without a display manager:
           <ulink url="&sources-anduin-http;/tigervnc/vncserver"/>
         </para>
       </listitem>
-      <listitem revision='sysv'>
+      <listitem revision='openrc'>
         <para>
           Optional manual page:
           <ulink url="&sources-anduin-http;/tigervnc/vncserver.1"/>
@@ -123,7 +123,7 @@
       <xref linkend="gnutls"/>,
       <xref linkend="libgcrypt"/>,
       <xref linkend="libjpeg"/>,
-      <phrase revision='sysv'><xref linkend="linux-pam"/>,</phrase>
+      <phrase revision='openrc'><xref linkend="linux-pam"/>,</phrase>
       <xref linkend="pixman"/>,
       <phrase revision='systemd'><xref linkend="systemd"/>
         (with <xref linkend="linux-pam"/>),</phrase>
@@ -167,7 +167,7 @@
       commands:
     </para>
 
-<screen revision="sysv"><userinput># Put code in place
+<screen revision="openrc"><userinput># Put code in place
 mkdir -p unix/xserver &amp;&amp;
 tar -xf ../xorg-server-&xorg-server-version;.tar.xz \
     --strip-components=1              \
@@ -249,11 +249,11 @@ mv  /usr/share/doc/tigervnc /usr/share/doc/tigervnc-&tigervnc-version;
 
 [ -e /usr/bin/Xvnc ] || ln -svf $XORG_PREFIX/bin/Xvnc /usr/bin/Xvnc</userinput></screen>
 
-   <para revision="sysv">
+   <para revision="openrc">
      Finally, modify the PAM file to be compatible with elogind:
    </para>
 
-<screen role="root" revision="sysv"><userinput>sed -i 's/pam_systemd.so/pam_elogind.so/' /etc/pam.d/tigervnc</userinput></screen>
+<screen role="root" revision="openrc"><userinput>sed -i 's/pam_systemd.so/pam_elogind.so/' /etc/pam.d/tigervnc</userinput></screen>
 
   </sect2>
 
@@ -283,7 +283,7 @@ mv  /usr/share/doc/tigervnc /usr/share/doc/tigervnc-&tigervnc-version;
   <sect2 role="configuration">
     <title>Configuring Tigervnc</title>
 
-    <para revision='sysv'>
+    <para revision='openrc'>
       The default installation of this package makes some changes in the way it
       is used.  The vncserver perl script is placed in /usr/bin/libexec and the
       server is designed to be run via a systemd style .service file or the
@@ -292,14 +292,14 @@ mv  /usr/share/doc/tigervnc /usr/share/doc/tigervnc-&tigervnc-version;
       manager to be installed.
     </para>
 
-    <para revision='sysv'>
+    <para revision='openrc'>
       To restore the previous behavior, install the additional downloaded
       files as the <systemitem class="username">root</systemitem> user:</para>
 
-<screen role="root" revision='sysv'><userinput>install -m755 --owner=root ../vncserver /usr/bin &amp;&amp;
+<screen role="root" revision='openrc'><userinput>install -m755 --owner=root ../vncserver /usr/bin &amp;&amp;
 cp ../vncserver.1 /usr/share/man/man1</userinput></screen>
 
-    <para revision='sysv'>
+    <para revision='openrc'>
       Using the previous procedures, the user specific configuration files of
       vncserver reside in the <filename class='directory'>.vnc</filename>
       directory in the user's home directory.  The
@@ -310,18 +310,18 @@ cp ../vncserver.1 /usr/share/man/man1</userinput></screen>
       <filename>xstartup</filename> would be:
     </para>
 
-<screen revision='sysv'>#!/bin/sh
+<screen revision='openrc'>#!/bin/sh
 [ -x /etc/vnc/xstartup ] &amp;&amp; exec /etc/vnc/xstartup
 [ -r $HOME/.Xresources ] &amp;&amp; xrdb $HOME/.Xresources
 startlxqt &amp;</screen>
 
-    <para revision='sysv'>
+    <para revision='openrc'>
       The <filename>xstartup</filename> file must be executable for the
       commands in it to be executed, so run <command>chmod a+x
       ~/.vnc/xstartup</command>.
     </para>
 
-    <para revision='sysv'>
+    <para revision='openrc'>
       Set up the vnc passwd with <command>vncpasswd</command>. The
       server can then be started with the <command>vncserver</command>
       command.

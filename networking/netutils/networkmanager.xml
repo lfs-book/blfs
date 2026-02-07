@@ -97,7 +97,7 @@
       <xref linkend="nss"/>,
       <xref role='runtime' linkend="polkit"/> (runtime),
       <xref linkend="pygobject3"/>,
-      <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
+      <phrase revision="openrc"><xref linkend="elogind"/>,</phrase>
       <phrase revision="systemd"><xref linkend="systemd"/>,</phrase>
       <xref linkend="vala"/>, and
       <xref linkend="wpa_supplicant"/> (runtime, built with D-Bus support)
@@ -173,7 +173,7 @@
       following commands:
     </para>
 
-<screen revision="sysv"><userinput>mkdir build &amp;&amp;
+<screen revision="openrc"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson setup ..                    \
@@ -279,10 +279,10 @@ done</userinput></screen>
       <command>nmtui</command>.
     </para>
 
-    <para revision="sysv">
+    <para revision="openrc">
       <parameter>-D systemdsystemunitdir=no</parameter> and
-      <parameter>-D systemd_journal=false</parameter>: systemd is not
-      used for sysv init systems, so prevent installing units and using the
+      <parameter>-D systemd_journal=false</parameter>: Systemd is not
+      used for OpenRC, so prevent installing units and using the
       systemd journal.
     </para>
 
@@ -307,7 +307,7 @@ done</userinput></screen>
       provided from NetworkManager by default.
     </para>
 
-    <para revision="sysv">
+    <para revision="openrc">
       <parameter>-D session_tracking=elogind</parameter>: This switch
       is used to set <command>elogind</command> as the default
       program for session tracking.
@@ -472,10 +472,10 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3 id="NetworkManager-init">
-      <title><phrase revision="sysv">Boot Script</phrase>
+      <title><phrase revision="openrc">Boot Script</phrase>
              <phrase revision="systemd">Systemd Unit</phrase></title>
 
-      <para revision="sysv">
+      <para revision="openrc">
         To automatically start the <command>NetworkManager</command> daemon
         when the system is rebooted, install the
         <filename>/etc/rc.d/init.d/networkmanager</filename>bootscript from the
@@ -496,12 +496,12 @@ EOF</userinput></screen>
           <application>Network Manager</application>.
         </para>
        
-        <para revision="sysv">
+        <para revision="openrc">
           The easiest way to do this is to remove S20network from
           <filename>/etc/rc.d/rc3.d/</filename> and <filename>/etc/rc.d/rc5.d/</filename>.
         </para>
 
-        <para revision="sysv">
+        <para revision="openrc">
           Also, if using <xref linkend="dhcpcd"/>, be careful about timing issues if
           setting up network applications such as ntpd, nfs, or sshd. It takes 
           several seconds for dhcpcd to initialize the network interface and if
@@ -515,7 +515,7 @@ EOF</userinput></screen>
         <primary sortas="f-NetworkManager">NetworkManager</primary>
       </indexterm>
 
-<screen role="root" revision="sysv"><userinput>make install-networkmanager</userinput></screen>
+<screen role="root" revision="openrc"><userinput>make install-networkmanager</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl enable NetworkManager</userinput></screen>
 

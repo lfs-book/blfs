@@ -99,7 +99,7 @@
     <para role="required">
       <xref role="runtime" linkend="gnome-session"/>,
       <xref role="runtime" linkend="gnome-shell"/>, and
-      <phrase revision="sysv"><xref role="runtime" linkend="elogind"/></phrase>
+      <phrase revision="openrc"><xref role="runtime" linkend="elogind"/></phrase>
       <phrase revision="systemd"><xref role="runtime" linkend="systemd"/></phrase>
     </para>
 
@@ -133,7 +133,7 @@ passwd -ql gdm</userinput></screen>
       commands:
     </para>
 
-<screen revision="sysv"><userinput>sed -e 's@systemd@elogind@'                                \
+<screen revision="openrc"><userinput>sed -e 's@systemd@elogind@'                                \
     -e 's/-session optional/-session required/'            \
     -e '/elogind/isession  required       pam_loginuid.so' \
     -i data/pam-lfs/gdm-launch-environment.pam &amp;&amp;
@@ -184,7 +184,7 @@ ninja</userinput></screen>
 
     <!-- This is needed due to elogind not being started by a bootscript and
          not being available until too late. -->
-    <para revision="sysv">
+    <para revision="openrc">
       <parameter>-D initial-vt=7</parameter>: This switch starts GDM on VT7
       by default, since on SysV systems, elogind is not available until it
       gets activated by PAM during a login session. The default behavior is
@@ -253,14 +253,14 @@ ninja</userinput></screen>
     </sect3>
 
     <sect3 id="gdm-init">
-      <title><phrase revision="sysv">Boot Script</phrase>
+      <title><phrase revision="openrc">Boot Script</phrase>
              <phrase revision="systemd">Systemd Unit</phrase></title>
 
       <indexterm zone="gdm gdm-init">
         <primary sortas="f-gdm">gdm</primary>
       </indexterm>
 
-      <para revision="sysv">
+      <para revision="openrc">
         To start <command>gdm</command> automatically when the system is
         switched to runlevel 5, install the
         <filename>/etc/rc.d/init.d/xdm</filename> script and the
@@ -270,16 +270,16 @@ ninja</userinput></screen>
         as the <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root" revision="sysv"><userinput>make install-gdm</userinput></screen>
+<screen role="root" revision="openrc"><userinput>make install-gdm</userinput></screen>
 
-      <para revision="sysv">
+      <para revision="openrc">
         In order to permanently set the default runlevel to 5, starting the
         <command>gdm</command> greeter screen automatically, you can modify
         <filename>/etc/inittab</filename>. As the  <systemitem
         class="username">root</systemitem> user:
       </para>
 
-<screen role="root" revision="sysv"><userinput>sed /initdefault/s/3/5/ -i /etc/inittab</userinput></screen>
+<screen role="root" revision="openrc"><userinput>sed /initdefault/s/3/5/ -i /etc/inittab</userinput></screen>
 
       <para revision="systemd">
         To start the <command>gdm</command> daemon at boot, enable

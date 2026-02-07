@@ -69,8 +69,8 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
-      <xref linkend="glib2"/>, <phrase revision="sysv">and</phrase>
+      <phrase revision="openrc"><xref linkend="elogind"/>,</phrase>
+      <xref linkend="glib2"/>, <phrase revision="openrc">and</phrase>
       <xref linkend="pipewire"/><phrase revision="systemd">, and
         <xref role="runtime" linkend="systemd"/> (runtime, rebuilt with
         <xref role="nodep" linkend="linux-pam"/>)
@@ -175,12 +175,12 @@ sed -e '$a autospawn = no' -i /etc/pulse/client.conf</userinput></screen>
 systemctl enable --global pipewire-pulse.socket &amp;&amp;
 systemctl enable --global wireplumber</userinput></screen>
 
-      <para revision="sysv">
+      <para revision="openrc">
         Next, create a shell script that will start Wireplumber and Pipewire
         in the correct order as the &root; user:
       </para>
 
-<screen role="root" revision="sysv"><userinput>cat &gt; /usr/bin/pipewire-launcher.sh &lt;&lt; "EOF"
+<screen role="root" revision="openrc"><userinput>cat &gt; /usr/bin/pipewire-launcher.sh &lt;&lt; "EOF"
 <literal>#!/bin/sh
 # Begin /usr/bin/pipewire-launcher.sh
 
@@ -212,19 +212,19 @@ exec /usr/bin/pipewire-pulse &amp;
 # End /usr/bin/pipewire-launcher.sh</literal>
 EOF</userinput></screen>
 
-    <para revision="sysv">
+    <para revision="openrc">
       Next, make this shell script executable as the &root; user:
     </para>
 
-<screen role="root" revision="sysv"><userinput>chmod +x /usr/bin/pipewire-launcher.sh</userinput></screen>
+<screen role="root" revision="openrc"><userinput>chmod +x /usr/bin/pipewire-launcher.sh</userinput></screen>
 
-    <para revision="sysv">
+    <para revision="openrc">
       Finally, create an XDG Autostart file that will run
       <command>/usr/bin/pipewire-launcher.sh</command> when a desktop
       environment is started, as the &root; user:
     </para>
     
-<screen role="root" revision="sysv"><userinput>cat &gt; /etc/xdg/autostart/pipewire.desktop &lt;&lt; "EOF"
+<screen role="root" revision="openrc"><userinput>cat &gt; /etc/xdg/autostart/pipewire.desktop &lt;&lt; "EOF"
 <literal>[Desktop Entry]
 Version=1.0
 Name=Pipewire

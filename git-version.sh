@@ -1,18 +1,18 @@
 #!/bin/sh
 
-if [ "$1" = sysv ]; then
-    SYSV="INCLUDE"
+if [ "$1" = openrc ]; then
+    OPENRC="INCLUDE"
     SYSTEMD="IGNORE "
 elif [ "$1" = systemd ]; then
-    SYSV="IGNORE "
+    OPENRC="IGNORE "
     SYSTEMD="INCLUDE"
 else
-    echo You must provide either \"sysv\" or \"systemd\" as argument
+    echo You must provide either \"openrc\" or \"systemd\" as argument
     exit 1
 fi
 
-echo "<!ENTITY % sysv    \"$SYSV\">"     >  conditional.ent
-echo "<!ENTITY % systemd \"$SYSTEMD\">"  >> conditional.ent
+echo "<!ENTITY % openrc  \"$OPENRC\">"  >  conditional.ent
+echo "<!ENTITY % systemd \"$SYSTEMD\">" >> conditional.ent
 
 if ! git status > /dev/null; then
     # Either it's not a git repository, or git is unavailable.

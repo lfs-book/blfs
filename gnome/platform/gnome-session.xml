@@ -71,7 +71,7 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <phrase revision="sysv"><xref linkend="elogind"/>,</phrase>
+      <phrase revision="openrc"><xref linkend="elogind"/>,</phrase>
       <xref linkend="gnome-desktop"/>,
       <xref linkend="json-glib"/>,
       <xref linkend="mesa"/>,
@@ -108,18 +108,18 @@
 -->
 
 <!--
-    <para revision="sysv">
+    <para revision="openrc">
       Adapt meson.build so that gnome-session can build without systemd:
     </para>
 
-<screen revision="sysv"><userinput remap="pre">sed -i "/  systemd_dep/,+3d;/if enable_systemd/a \    systemd_userunitdir = '/tmp\'" meson.build</userinput></screen>
+<screen revision="openrc"><userinput remap="pre">sed -i "/  systemd_dep/,+3d;/if enable_systemd/a \    systemd_userunitdir = '/tmp\'" meson.build</userinput></screen>
 -->
     <para>
       Install <application>GNOME Session</application> by
       running the following commands:
     </para>
 
-<screen revision="sysv"><userinput>mkdir build &amp;&amp;
+<screen revision="openrc"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson setup --prefix=/usr              \
@@ -173,23 +173,23 @@ ninja</userinput></screen>
 <screen role="root"><userinput>rm -fv /usr/share/xsessions/gnome.desktop &amp;&amp;
 rm -v /usr/share/wayland-sessions/gnome.desktop</userinput></screen>
 
-    <para revision="sysv">
+    <para revision="openrc">
       Now, as the <systemitem class="username">root</systemitem> user,
       remove systemd units that are useless on SysV systems:
     </para>
 
-<screen role="root" revision="sysv"><userinput>rm -rv /tmp/{*.d,*.target,*.service}</userinput></screen>
+<screen role="root" revision="openrc"><userinput>rm -rv /tmp/{*.d,*.target,*.service}</userinput></screen>
 
 <!-- this part is not needed on systemd, since the dbus session is created
 by systemd-user.-->
-    <para revision="sysv">
+    <para revision="openrc">
       The startup sequence of gnome-wayland needs to create a dbus session.
       On SysV, this has to be added to the shipped
       <filename>gnome-wayland.desktop</filename> file, which is written for
       systemd. As the &root; user:
     </para>
 
-<screen role="root" revision="sysv"><userinput>sed -e 's@^Exec=@&amp;/usr/bin/dbus-run-session @' \
+<screen role="root" revision="openrc"><userinput>sed -e 's@^Exec=@&amp;/usr/bin/dbus-run-session @' \
     -i /usr/share/wayland-sessions/gnome-wayland.desktop</userinput></screen>
 
   </sect2>
@@ -207,7 +207,7 @@ by systemd-user.-->
     </para>
 
 <!-- This option was removed in 46
-    <para revision="sysv">
+    <para revision="openrc">
       <parameter>-D systemd_journal=false</parameter>
       and <parameter>-D systemduserunitdir=/tmp</parameter>: Allow building
       with elogind support on a SysV based system.

@@ -98,7 +98,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <phrase revision="sysv"><xref linkend="dbus"/> and</phrase>
+      <phrase revision="openrc"><xref linkend="dbus"/> and</phrase>
       <xref linkend="libxml2"/>
     </para>
 
@@ -161,7 +161,7 @@ EOF</userinput></screen>
 
     <para>
       If you wish to use <application>WPA Supplicant</application> with
-      <xref linkend="NetworkManager"/>, <phrase revision='sysv'>make sure
+      <xref linkend="NetworkManager"/>, <phrase revision='openrc'>make sure
       that you have installed <xref linkend="dbus"/>, then</phrase> add the
       following options to the <application>WPA Supplicant</application>
       build configuration file by running the following command:
@@ -254,7 +254,7 @@ install -v -m644 dbus/dbus-wpa_supplicant.conf \
     <sect3 id="wpa_supplicant-config">
       <title>Config File</title>
 
-      <para revision="sysv">
+      <para revision="openrc">
         <filename>/etc/sysconfig/wpa_supplicant-*.conf</filename>
       </para>
 
@@ -262,7 +262,7 @@ install -v -m644 dbus/dbus-wpa_supplicant.conf \
         <filename>/etc/wpa_supplicant/wpa_supplicant-*.conf</filename>
       </para>
 
-      <indexterm zone="wpa_supplicant wpa_supplicant-config" revision="sysv">
+      <indexterm zone="wpa_supplicant wpa_supplicant-config" revision="openrc">
         <primary
         sortas="e-etc-sysconfig-wpa_supplicant-star.conf">/etc/sysconfig/wpa_supplicant-*.conf</primary>
       </indexterm>
@@ -280,7 +280,7 @@ install -v -m644 dbus/dbus-wpa_supplicant.conf \
       <para>
         To connect to an access point that uses a password, you need to put
         the pre-shared key in
-        <phrase revision="sysv">
+        <phrase revision="openrc">
           <filename>
  /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</filename>.
         </phrase>
@@ -293,7 +293,7 @@ install -v -m644 dbus/dbus-wpa_supplicant.conf \
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="nodump" revision="sysv"><userinput>wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</userinput></screen>
+<screen role="nodump" revision="openrc"><userinput>wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</userinput></screen>
 
 <screen role="nodump" revision="systemd"><userinput>install -v -dm755 /etc/wpa_supplicant &amp;&amp;
 wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/wpa_supplicant/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</userinput></screen>
@@ -304,7 +304,7 @@ wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/wpa_sup
       </para>
 
       <para>
-        <phrase revision="sysv">
+        <phrase revision="openrc">
           <filename>
             /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf
           </filename>
@@ -322,7 +322,7 @@ wpa_passphrase <replaceable>SSID</replaceable> | sed '/^\t#/d' &gt; /etc/wpa_sup
       <para>
         If you want to connect to an access point that isn't password
         protected, put an entry like this in
-        <phrase revision="sysv">
+        <phrase revision="openrc">
           <filename>
 /etc/sysconfig/wpa_supplicant-<replaceable>wifi0</replaceable>.conf</filename>.
         </phrase>
@@ -365,20 +365,20 @@ update_config=1</screen>
     <sect3>
       <title>Connecting to an Access Point</title>
 
-      <para id="wpa-service" revision="sysv">
+      <para id="wpa-service" revision="openrc">
         If you want to configure network interfaces at boot using
         <command>wpa_supplicant</command>, you need to install the
         <filename>/lib/services/wpa</filename> script
         included in <xref linkend="bootscripts"/> package:
       </para>
 
-<screen role="root" revision="sysv"><userinput>make install-service-wpa</userinput></screen>
+<screen role="root" revision="openrc"><userinput>make install-service-wpa</userinput></screen>
 
-      <indexterm zone="wpa_supplicant wpa-service" revision="sysv">
+      <indexterm zone="wpa_supplicant wpa-service" revision="openrc">
         <primary sortas="f-wpa">wpa</primary>
       </indexterm>
 
-      <para revision="sysv">
+      <para revision="openrc">
         If your router/access point uses DHCP to allocate IP addresses, you
         can install <xref linkend="dhcpcd" role="nodep"/> and use it to
         automatically obtain network addresses. Create the
@@ -387,7 +387,7 @@ update_config=1</screen>
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root" revision="sysv"><userinput>cat &gt; /etc/sysconfig/ifconfig.<replaceable>wifi0</replaceable> &lt;&lt; "EOF"
+<screen role="root" revision="openrc"><userinput>cat &gt; /etc/sysconfig/ifconfig.<replaceable>wifi0</replaceable> &lt;&lt; "EOF"
 <literal>ONBOOT="yes"
 IFACE="<replaceable>wlan0</replaceable>"
 SERVICE="wpa"
@@ -400,7 +400,7 @@ DHCP_START="-b -q <replaceable>&lt;insert appropriate start options here&gt;</re
 DHCP_STOP="-k <replaceable>&lt;insert additional stop options here&gt;</replaceable>"</literal>
 EOF</userinput></screen>
 
-      <para revision="sysv">
+      <para revision="openrc">
         Alternatively, if you use static addresses on your local network,
         then create the
         <filename>/etc/sysconfig/ifconfig-<replaceable>wifi0</replaceable>
@@ -408,7 +408,7 @@ EOF</userinput></screen>
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root" revision="sysv"><userinput>cat &gt; /etc/sysconfig/ifconfig.<replaceable>wifi0</replaceable> &lt;&lt; "EOF"
+<screen role="root" revision="openrc"><userinput>cat &gt; /etc/sysconfig/ifconfig.<replaceable>wifi0</replaceable> &lt;&lt; "EOF"
 <literal>ONBOOT="yes"
 IFACE="<replaceable>wlan0</replaceable>"
 SERVICE="wpa"
@@ -459,9 +459,9 @@ EOF</userinput></screen>
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root" revision="sysv"><userinput>ifup <replaceable>wifi0</replaceable></userinput></screen>
+<screen role="root" revision="openrc"><userinput>ifup <replaceable>wifi0</replaceable></userinput></screen>
 
-      <para revision="sysv">
+      <para revision="openrc">
         Replace <replaceable>wlan0</replaceable> with the correct
         wireless interface and <replaceable>wifi0</replaceable>
         with desired name for the configuration file. Please note

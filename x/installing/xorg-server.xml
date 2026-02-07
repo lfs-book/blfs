@@ -100,7 +100,7 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <phrase revision="sysv"><xref linkend='dbus'/>,
+      <phrase revision="openrc"><xref linkend='dbus'/>,
       <xref role="runtime" linkend="elogind"/> (runtime;
       <systemitem class='library'>libelogind</systemitem> also referred
       at build time but it's not really useful),</phrase>
@@ -116,15 +116,15 @@
          is already under 12.1 freeze. -->
     <note>
       <para>
-        Although it's possible to<phrase revision='sysv'> build this package
+        Although it's possible to<phrase revision='openrc'> build this package
         without <xref linkend='dbus'/> installed or</phrase> run the Xorg
         server without
-        <phrase revision='sysv'><xref linkend='elogind'/></phrase><phrase
+        <phrase revision='openrc'><xref linkend='elogind'/></phrase><phrase
         revision='systemd'><xref linkend='systemd'/>
         (rebuilt with PAM)</phrase> functioning, it would require running
         the Xorg server as the &root; user or Xorg server will malfunction
         or even fail to start.  The BLFS editors strongly discourage
-        skipping <phrase revision='sysv'>these two
+        skipping <phrase revision='openrc'>these two
         dependencies</phrase><phrase revision='systemd'>this
         dependency</phrase>.  Do not attempt to do so unless you really know
         what you are doing.
@@ -237,7 +237,7 @@
     </para>
 
     <!-- To editors: Ironically -D systemd_logind=true shows up only for
-         **sysv** revision.  No it's not a bug.  It's used to make the
+         **openrc** revision.  No it's not a bug.  It's used to make the
          building system error out when dbus is not installed and emphasis
          that we don't support a configuration lacking a recommended
          dependency.  On systemd dbus is installed in LFS.  Despite the
@@ -248,7 +248,7 @@
          section for systemd revision, so just omit it for systemd
          revision.  -->
 
-<screen revision='sysv'><userinput>mkdir build &amp;&amp;
+<screen revision='openrc'><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 meson setup ..               \
@@ -280,7 +280,7 @@ ninja</userinput></screen>
       user:
     </para>
 
-<screen role="root" revision="sysv"><userinput>ninja install &amp;&amp;
+<screen role="root" revision="openrc"><userinput>ninja install &amp;&amp;
 mkdir -pv /etc/X11/xorg.conf.d &amp;&amp;
 install -v -d -m1777 /tmp/.{ICE,X11}-unix &amp;&amp;
 cat &gt;&gt; /etc/sysconfig/createfiles &lt;&lt; "EOF"
@@ -307,7 +307,7 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
       support if <xref linkend="libtirpc"/> is not installed.
     </para>
 
-    <para revision='sysv'>
+    <para revision='openrc'>
       <parameter>-D systemd_logind=true</parameter>:
       This switch makes the building system error out if
       <xref linkend='dbus'/> is not installed.  The BLFS editors discourage
@@ -319,7 +319,7 @@ mkdir -pv /etc/X11/xorg.conf.d</userinput></screen>
       wrapper for legacy DDX driver support on rootless xserver systems.
     </para>
 
-    <para revision="sysv">
+    <para revision="openrc">
       <command>cat &gt;&gt; /etc/sysconfig/createfiles...</command>: This
       command creates the <filename class="directory">/tmp/.ICE-unix</filename>
       and <filename class="directory">/tmp/.X11-unix</filename> directories at

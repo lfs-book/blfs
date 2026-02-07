@@ -86,8 +86,8 @@
       <xref linkend="docutils"/> (for the man pages)
     </para>
 
-    <bridgehead renderas="sect4" revision="sysv">Runtime Dependency</bridgehead>
-    <para role="required" revision="sysv">
+    <bridgehead renderas="sect4" revision="openrc">Runtime Dependency</bridgehead>
+    <para role="required" revision="openrc">
       <xref role="runtime" linkend="consolekit"/>
     </para>
 
@@ -112,25 +112,25 @@ useradd  -c "SDDM Daemon" \
          -u 64 -g sddm    \
          -s /bin/false sddm</userinput></screen>
 
-    <para revision="sysv">
+    <para revision="openrc">
       Next, fix the application to start <command>upowerd</command>,
       if necessary, and after login, start the session with
       <command>ck-launch-session</command>:
     </para>
 
-<screen revision="sysv"><userinput>sed -e '/UPOWER_SERVICE)/ s:^://:' \
+<screen revision="openrc"><userinput>sed -e '/UPOWER_SERVICE)/ s:^://:' \
     -i src/daemon/PowerManager.cpp &amp;&amp;
 
 sed -e '/\$@$/s/exec/&amp; ck-launch-session/' \
     -i data/scripts/Xsession</userinput></screen>
 
-    <para revision="sysv">
+    <para revision="openrc">
       For sddm-0.16.0, ConsoleKit support has been added, but is broken. Remove
       it with:
     </para>
 <!-- This removes also logind support. Hopefully should be fixed for next
      version -->
-<screen revision="sysv"><userinput>sed -e '/available.*true/s/true/false/' \
+<screen revision="openrc"><userinput>sed -e '/available.*true/s/true/false/' \
     -i src/daemon/LogindDBusTypes.cpp</userinput></screen>
 
     <para>
@@ -138,7 +138,7 @@ sed -e '/\$@$/s/exec/&amp; ck-launch-session/' \
       commands:
     </para>
 
-<screen revision="sysv"><userinput>mkdir build &amp;&amp;
+<screen revision="openrc"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 cmake -DCMAKE_INSTALL_PREFIX=/usr \
@@ -177,12 +177,12 @@ install -v -dm755 -o sddm -g sddm /var/lib/sddm</userinput></screen>
       apply additional compiler optimizations.
     </para>
 
-    <para revision="sysv">
+    <para revision="openrc">
       <parameter>-DENABLE_JOURNALD=OFF</parameter>: This switch is used because
       this version of BLFS does not support <application>systemd</application>.
     </para>
 
-    <para revision="sysv">
+    <para revision="openrc">
       <parameter>-DDBUS_CONFIG_FILENAME=sddm_org.freedesktop.DisplayManager.conf</parameter>:
       This switch prevents the file <filename>
       /etc/dbus-1/system.d/org.freedesktop.DisplayManager.conf</filename> from
@@ -281,8 +281,8 @@ install -v -dm755 -o sddm -g sddm /var/lib/sddm</userinput></screen>
       <title>Boot Script</title>
 
       <para>
-        Install the <filename revision="sysv">/etc/rc.d/init.d/sddm</filename>
-        init script from the <xref linkend="bootscripts" revision="sysv"/>
+        Install the <filename revision="openrc">/etc/rc.d/init.d/sddm</filename>
+        init script from the <xref linkend="bootscripts" revision="openrc"/>
         <xref linkend="systemd-units" revision="systemd"/> package.
       </para>
 
@@ -290,7 +290,7 @@ install -v -dm755 -o sddm -g sddm /var/lib/sddm</userinput></screen>
         <primary sortas="f-sddm">sddm</primary>
       </indexterm>
 
-<screen role="root" revision="sysv"><userinput>make install-sddm</userinput></screen>
+<screen role="root" revision="openrc"><userinput>make install-sddm</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl enable sddm</userinput></screen>
 
@@ -307,7 +307,7 @@ install -v -dm755 -o sddm -g sddm /var/lib/sddm</userinput></screen>
         class="username">root</systemitem> user:
       </para>
 
-<screen role="root" revision="sysv"><userinput>cat &gt; /etc/pam.d/sddm &lt;&lt; "EOF"
+<screen role="root" revision="openrc"><userinput>cat &gt; /etc/pam.d/sddm &lt;&lt; "EOF"
 <literal># Begin /etc/pam.d/sddm
 
 auth     requisite      pam_nologin.so
@@ -411,7 +411,7 @@ EOF</userinput></screen>
 
     </sect3>
 
-    <sect3 id="sddm-init" revision="sysv">
+    <sect3 id="sddm-init" revision="openrc">
       <title>Starting sddm</title>
 
       <para>

@@ -93,7 +93,7 @@
   <sect2 role="installation">
     <title>Installation of Fcron</title>
 
-    <para id="fcron-syslog" revision="sysv">
+    <para id="fcron-syslog" revision="openrc">
       <application>Fcron</application>
       uses the cron facility of <command>syslog</command> to log all messages.
       Since LFS does not set up this facility in
@@ -103,11 +103,11 @@
       (perform as the <systemitem class='username'>root</systemitem> user):
     </para>
 
-    <indexterm zone="fcron fcron-syslog" revision="sysv">
+    <indexterm zone="fcron fcron-syslog" revision="openrc">
       <primary sortas="e-etc-syslog.conf">/etc/syslog.conf</primary>
     </indexterm>
 
-<screen role="root" revision="sysv"><userinput>cat &gt;&gt; /etc/syslog.conf &lt;&lt; "EOF"
+<screen role="root" revision="openrc"><userinput>cat &gt;&gt; /etc/syslog.conf &lt;&lt; "EOF"
 <literal># Begin fcron addition to /etc/syslog.conf
 
 cron.* -/var/log/cron.log
@@ -115,13 +115,13 @@ cron.* -/var/log/cron.log
 # End fcron addition</literal>
 EOF</userinput></screen>
 
-    <para revision="sysv">
+    <para revision="openrc">
       The configuration file has been modified, so reloading the
       <command>sysklogd</command> daemon will activate the changes (again as
       the <systemitem class='username'>root</systemitem> user).
     </para>
 
-<screen role="root" revision="sysv"><userinput>/etc/rc.d/init.d/sysklogd reload</userinput></screen>
+<screen role="root" revision="openrc"><userinput>/etc/rc.d/init.d/sysklogd reload</userinput></screen>
 
     <para>
       For security reasons, an unprivileged user and group for
@@ -142,7 +142,7 @@ useradd -d /dev/null -c "Fcron User" -g fcron -s /bin/false -u 22 fcron</userinp
       commands:
     </para>
 
-<screen revision="sysv"><userinput>./configure --prefix=/usr          \
+<screen revision="openrc"><userinput>./configure --prefix=/usr          \
             --sysconfdir=/etc      \
             --localstatedir=/var   \
             --without-sendmail     \
@@ -208,7 +208,7 @@ make</userinput></screen>
       that systemctl does not hang and the unit starts correctly.
     </para>
 
-    <para revision="sysv">
+    <para revision="openrc">
       <parameter>--with-systemdsystemunitdir=no</parameter>:
       This prevents building the <application>systemd</application> units,
       which are not needed for a <application>SYS V</application> system.
@@ -370,10 +370,10 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3  id="fcron-init">
-      <title><phrase revision="sysv">Boot Script</phrase>
+      <title><phrase revision="openrc">Boot Script</phrase>
              <phrase revision="systemd">Systemd Unit</phrase></title>
 
-      <para revision="sysv">
+      <para revision="openrc">
         Install the
         <filename>/etc/rc.d/init.d/fcron</filename> init script from the
         <xref linkend="bootscripts"/> package.
@@ -388,7 +388,7 @@ EOF</userinput></screen>
         <primary sortas="f-fcron">fcron</primary>
       </indexterm>
 
-<screen role="root" revision="sysv"><userinput>make install-fcron</userinput></screen>
+<screen role="root" revision="openrc"><userinput>make install-fcron</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl enable fcron</userinput></screen>
 
@@ -398,7 +398,7 @@ EOF</userinput></screen>
         <filename>/var/spool/fcron/systab</filename> file:
       </para>
 
-<screen role="root" revision="sysv"><userinput>/etc/rc.d/init.d/fcron start &amp;&amp;
+<screen role="root" revision="openrc"><userinput>/etc/rc.d/init.d/fcron start &amp;&amp;
 fcrontab -z -u systab</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl start fcron &amp;&amp;

@@ -21,16 +21,16 @@ else
 endif
 
 ifndef REV
-  REV = sysv
+  REV = openrc
 endif
 
-ifneq ($(REV), sysv)
+ifneq ($(REV), openrc)
   ifneq ($(REV), systemd)
-    $(error REV must be 'sysv' (default) or 'systemd'.)
+    $(error REV must be 'openrc' (default) or 'systemd'.)
   endif
 endif
 
-ifeq ($(REV), sysv)
+ifeq ($(REV), openrc)
   BASEDIR         ?= $(HOME)/public_html/blfs-book
   NOCHUNKS_OUTPUT ?= blfs-book.html
   DUMPDIR         ?= ~/blfs-commands
@@ -56,13 +56,13 @@ help:
 	@echo "Parameters:"
 	@echo "  REV=<rev>            Build variation of book"
 	@echo "                       Valid values for REV are:"
-	@echo "                       * sysv    - Build book for SysV"
+	@echo "                       * openrc  - Build book for OpenRC"
 	@echo "                       * systemd - Build book for systemd"
 	@echo "                       Defaults to 'sysv'"
 	@echo ""
 	@echo "  BASEDIR=<dir>        Put the output in directory <dir>."
 	@echo "                       Defaults to"
-	@echo "                       'HOME/public_html/blfs-book' if REV=sysv (or unset)"
+	@echo "                       'HOME/public_html/blfs-book' if REV=openrc (or unset)"
 	@echo "                       or to"
 	@echo "                       'HOME/public_html/blfs-book-systemd' if REV=systemd"
 	@echo ""

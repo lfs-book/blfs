@@ -311,38 +311,38 @@ EOF</userinput></screen>
 
 <screen role="root"
         remap="test"
-        revision="sysv"><userinput>dhclient <replaceable>&lt;eth0&gt;</replaceable></userinput></screen>
+        revision="openrc"><userinput>dhclient <replaceable>&lt;eth0&gt;</replaceable></userinput></screen>
 
 <screen role="root"
         remap="test"
         revision="systemd"><userinput>systemctl start dhclient@<replaceable>eth0</replaceable></userinput></screen>
 
-      <para revision="sysv">
+      <para revision="openrc">
         Replace <replaceable>&lt;eth0&gt;</replaceable> with your
         desired interface. If you want more verbose output, add the
         <command>-v</command> parameter to the command above.
       </para>
 
-      <para id="dhclient-service" revision="sysv">
+      <para id="dhclient-service" revision="openrc">
         If you want to configure network interfaces at boot using
         <command>dhclient</command>, you need to install the
         <filename>/lib/services/dhclient</filename> script
         included in <xref linkend="bootscripts"/> package:
       </para>
 
-<screen role="root" revision="sysv"><userinput>make install-service-dhclient</userinput></screen>
+<screen role="root" revision="openrc"><userinput>make install-service-dhclient</userinput></screen>
 
-      <indexterm zone="dhcp dhclient-service" revision="sysv">
+      <indexterm zone="dhcp dhclient-service" revision="openrc">
         <primary sortas="f-dhclient">dhclient (service script)</primary>
       </indexterm>
 
-      <para id="dhclient-ifconfig" revision="sysv">
+      <para id="dhclient-ifconfig" revision="openrc">
         Next, create the <filename>/etc/sysconfig/ifconfig.eth0</filename>
         configuration file with the following commands as the
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root" revision="sysv"><userinput>cat &gt; /etc/sysconfig/ifconfig.eth0 &lt;&lt; "EOF"
+<screen role="root" revision="openrc"><userinput>cat &gt; /etc/sysconfig/ifconfig.eth0 &lt;&lt; "EOF"
 <literal>ONBOOT="yes"
 IFACE="eth0"
 SERVICE="dhclient"
@@ -358,15 +358,15 @@ PRINTIP="no"
 PRINTALL="no"</literal>
 EOF</userinput></screen>
 
-      <indexterm zone="dhcp dhclient-ifconfig" revision="sysv">
+      <indexterm zone="dhcp dhclient-ifconfig" revision="openrc">
         <primary sortas="e-etc-sysconfig-...-dhclient">/etc/sysconfig/ifconfig.eth0</primary>
       </indexterm>
 
-      <para revision="sysv">
+      <para revision="openrc">
         Adjust the file to suit your needs.
       </para>
 
-      <para revision="sysv">
+      <para revision="openrc">
         For more information on the appropriate <envar>DHCP_START</envar>
         and <envar>DHCP_STOP</envar> values see
         <command>man 8 dhclient</command>.
@@ -443,11 +443,11 @@ touch /var/lib/dhcpd/dhcpd.leases</userinput></screen>
 
        <para>
         If you want to start the DHCP Server at boot, install the
-        <phrase revision="sysv"><filename>/etc/rc.d/init.d/dhcpd</filename>
+        <phrase revision="openrc"><filename>/etc/rc.d/init.d/dhcpd</filename>
         init script</phrase>
         <phrase revision="systemd"><filename>dhcpd.service</filename>
         unit</phrase> included in the
-        <xref linkend="bootscripts" revision="sysv"/>
+        <xref linkend="bootscripts" revision="openrc"/>
         <xref linkend="systemd-units" revision="systemd"/>
         package:
       </para>
@@ -460,7 +460,7 @@ touch /var/lib/dhcpd/dhcpd.leases</userinput></screen>
 
       <para>
         You will need to edit the
-        <phrase revision="sysv"><filename>/etc/sysconfig/dhcpd</filename></phrase>
+        <phrase revision="openrc"><filename>/etc/sysconfig/dhcpd</filename></phrase>
         <phrase revision="systemd"><filename>/etc/default/dhcpd</filename></phrase>
         in order to set the interface on which <command>dhcpd</command>
         will serve the DHCP requests.
