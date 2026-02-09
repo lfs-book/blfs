@@ -287,6 +287,10 @@ do
   tar -xf $package
   pushd $packagedir
   docdir="--docdir=$XORG_PREFIX/share/doc/$packagedir"
+
+  do_build() { make; }
+  do_test() { make check; }
+  do_install() { as_root make install; }
   
   case $packagedir in
     libXfont2-[0-9]* )
@@ -303,14 +307,10 @@ do
     ;;
   
     libpciaccess* | libxkbfile* )
-      mkdir build
-      cd    build
-        meson setup --prefix=$XORG_PREFIX --buildtype=release ..
-        ninja
-        #ninja test
-        as_root ninja install
-      popd     # $packagedir
-      continue # for loop
+      meson setup --prefix=$XORG_PREFIX --buildtype=release build
+      do_build()  { ninja -C build; }
+      do_test() { ninja -C build test; }
+      do_install() { as_root ninja -C build install; }
     ;;
 
     * )
@@ -318,9 +318,11 @@ do
     ;;
   esac
 
-  make
-  #make check 2>&amp;1 | tee ../$packagedir-make_check.log
-  as_root make install
+  do_build
+  #do_test |&amp; tee ../$packagedir-test.log
+  do_install
+  unset do_build do_test do_install
+
   popd
   rm -rf $packagedir
   as_root /sbin/ldconfig
