@@ -5,7 +5,7 @@
   %general-entities;
 
   <!ENTITY glycin-download-http "https://download.gnome.org/sources/glycin/&glycin-majmin;/glycin-&glycin-version;.tar.xz">
-  <!ENTITY glycin-md5sum        "14ea548305203fc0ab09d7a39ba303ec">
+  <!ENTITY glycin-md5sum        "7f8fac31be0aabd50a44998d9fd4ede2">
   <!ENTITY glycin-size          "6.3 MB">
   <!ENTITY glycin-buildsize     "1.1 GB (additional 775 MB for tests)">
   <!ENTITY glycin-time          "6.4 SBU (additional 9.5 SBU for tests)">
@@ -123,8 +123,8 @@
       If installing Xorg into <filename class='directory'>/opt</filename>,
       download the needed Rust crates now and apply a patch to allow
       accessing <filename class='directory'>$XORG_PREFIX/lib</filename> from
-      the sandbox (note that the patch requires <envar>XORG_PREFIX</envar>
-      set properly for the current user and &root; following
+      the sandbox (note that the patch requires <envar>XORG_PREFIX</envar> to
+      be set properly for both the current user and for &root; following
       <xref linkend='xorg-env'/> before building glycin):
     </para>
 
@@ -135,9 +135,9 @@ patch -Np1 -i ../glycin-&glycin-version;-xorg_prefix-1.patch</userinput></screen
       <para>
         The XBM and XPM support patch below implicitly depends on the patch
         and instructions above, so ensure you've issued the instructions
-        before applying the XBM and XPM support patch.  They make no harm
-        for a Xorg installation in
-        <filename class='directory'>/usr</filename> anyway.
+        before applying the XBM and XPM support patch. The instructions don't
+        cause any problems for a Xorg installation in
+        <filename class='directory'>/usr</filename>.
       </para>
     </note>
 
@@ -204,7 +204,7 @@ ninja</userinput></screen>
       <option>-D glycin-loaders=...</option>: Use this option to specify
       the image loaders to be built.  The default is
       <literal>glycin-heif,glycin-image-rs,glycin-jxl,glycin-svg</literal>,
-      covering the support for all commonly used image formats.  You may
+      covering support for all commonly used image formats. You may
       remove the <literal>glycin-heif</literal>,
       <literal>glycin-jxl</literal>, or <literal>glycin-svg</literal> loader
       if the corresponding recommended dependency is not installed, but
@@ -264,7 +264,7 @@ ninja</userinput></screen>
         <term><filename class="libraryfile">libglycin-2.so</filename></term>
         <listitem>
           <para>
-            contains image load functions which work by running glycin
+            contains image loading functions which work by running glycin
             loaders in a sandbox environment
           </para>
           <indexterm zone="glycin libglycin-2">

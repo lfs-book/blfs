@@ -91,110 +91,13 @@
       <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>install -vdm755 /usr/share/xml/docbook/schema/{dtd,rng,sch,xsd}/5.0 &amp;&amp;
-install -vm644  dtd/* /usr/share/xml/docbook/schema/dtd/5.0         &amp;&amp;
-install -vm644  rng/* /usr/share/xml/docbook/schema/rng/5.0         &amp;&amp;
-install -vm644  sch/* /usr/share/xml/docbook/schema/sch/5.0         &amp;&amp;
-install -vm644  xsd/* /usr/share/xml/docbook/schema/xsd/5.0</userinput></screen>
-
-    <para>
-      Still as the <systemitem class="username">root</systemitem> user,
-      create the individual catalogs:
-    </para>
-
-<screen role="root"><userinput>xmlcatalog --noout --create /usr/share/xml/docbook/schema/dtd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "public"     \
-  "-//OASIS//DTD DocBook XML 5.0//EN" \
-  "docbook.dtd" /usr/share/xml/docbook/schema/dtd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "system"                             \
-  "http://www.oasis-open.org/docbook/xml/5.0/dtd/docbook.dtd" \
-  "docbook.dtd" /usr/share/xml/docbook/schema/dtd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --create /usr/share/xml/docbook/schema/rng/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                 \
-  "http://docbook.org/xml/5.0/rng/docbook.rng" \
-  "docbook.rng" /usr/share/xml/docbook/schema/rng/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                                \
-  "http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" \
-  "docbook.rng" /usr/share/xml/docbook/schema/rng/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                   \
-  "http://docbook.org/xml/5.0/rng/docbookxi.rng" \
-  "docbookxi.rng" /usr/share/xml/docbook/schema/rng/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                                  \
-  "http://www.oasis-open.org/docbook/xml/5.0/rng/docbookxi.rng" \
-  "docbookxi.rng" /usr/share/xml/docbook/schema/rng/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                 \
-  "http://docbook.org/xml/5.0/rng/docbook.rnc" \
-  "docbook.rnc" /usr/share/xml/docbook/schema/rng/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                                \
-  "http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rnc" \
-  "docbook.rnc" /usr/share/xml/docbook/schema/rng/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                   \
-  "http://docbook.org/xml/5.0/rng/docbookxi.rnc" \
-  "docbookxi.rnc" /usr/share/xml/docbook/schema/rng/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                                  \
-  "http://www.oasis-open.org/docbook/xml/5.0/rng/docbookxi.rnc" \
-  "docbookxi.rnc" /usr/share/xml/docbook/schema/rng/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --create /usr/share/xml/docbook/schema/sch/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                 \
-  "http://docbook.org/xml/5.0/sch/docbook.sch" \
-  "docbook.sch" /usr/share/xml/docbook/schema/sch/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                                \
-  "http://www.oasis-open.org/docbook/xml/5.0/sch/docbook.sch" \
-  "docbook.sch" /usr/share/xml/docbook/schema/sch/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --create /usr/share/xml/docbook/schema/xsd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                 \
-  "http://docbook.org/xml/5.0/xsd/docbook.xsd" \
-  "docbook.xsd" /usr/share/xml/docbook/schema/xsd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                                \
-  "http://www.oasis-open.org/docbook/xml/5.0/xsd/docbook.xsd" \
-  "docbook.xsd" /usr/share/xml/docbook/schema/xsd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                   \
-  "http://docbook.org/xml/5.0/xsd/docbookxi.xsd" \
-  "docbookxi.xsd" /usr/share/xml/docbook/schema/xsd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                                  \
-  "http://www.oasis-open.org/docbook/xml/5.0/xsd/docbookxi.xsd" \
-  "docbookxi.xsd" /usr/share/xml/docbook/schema/xsd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"               \
-  "http://docbook.org/xml/5.0/xsd/xlink.xsd" \
-  "xlink.xsd" /usr/share/xml/docbook/schema/xsd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                               \
-   "http://www.oasis-open.org/docbook/xml/5.0/xsd/xlink.xsd" \
-   "xlink.xsd" /usr/share/xml/docbook/schema/xsd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"              \
-   "http://docbook.org/xml/5.0/xsd/xml.xsd" \
-   "xml.xsd" /usr/share/xml/docbook/schema/xsd/5.0/catalog.xml &amp;&amp;
-
-xmlcatalog --noout --add "uri"                             \
-   "http://www.oasis-open.org/docbook/xml/5.0/xsd/xml.xsd" \
-   "xml.xsd" /usr/share/xml/docbook/schema/xsd/5.0/catalog.xml</userinput></screen>
+<screen role="root"><userinput>install -vdm755 /usr/share/xml/docbook/xml-5.0 &amp;&amp;
+cp -rv catalog.xml dtd rng sch xsd /usr/share/xml/docbook/xml-5.0</userinput></screen>
 
     <para>
       Create (or update) and populate the system XML catalog
-      (<filename>/etc/xml/catalog</filename>) by running the
-      following commands as the <systemitem class="username">root</systemitem>
-      user:
+      (<filename>/etc/xml/catalog</filename>) by running the following
+      commands as the &root; user:
     </para>
 
 <screen role="root"><userinput>if [ ! -e /etc/xml/catalog ]; then
@@ -202,34 +105,19 @@ xmlcatalog --noout --add "uri"                             \
     xmlcatalog --noout --create /etc/xml/catalog
 fi &amp;&amp;
 
-xmlcatalog --noout --add "delegatePublic"                    \
-  "-//OASIS//DTD DocBook XML 5.0//EN                       " \
-  "file:///usr/share/xml/docbook/schema/dtd/5.0/catalog.xml" \
+xmlcatalog --noout --add "delegatePublic"             \
+  "-//OASIS//DTD DocBook XML 5.0//EN                " \
+  "file:///usr/share/xml/docbook/xml-5.0/catalog.xml" \
   /etc/xml/catalog &amp;&amp;
 
-xmlcatalog --noout --add "delegateSystem"                    \
-  "http://docbook.org/xml/5.0/dtd/"                          \
-  "file:///usr/share/xml/docbook/schema/dtd/5.0/catalog.xml" \
+xmlcatalog --noout --add "delegateSystem"             \
+  "http://docbook.org/xml/5.0/dtd/"                   \
+  "file:///usr/share/xml/docbook/xml-5.0/catalog.xml" \
   /etc/xml/catalog &amp;&amp;
 
-xmlcatalog --noout --add "delegateURI"                       \
-  "http://docbook.org/xml/5.0/dtd/"                          \
-  "file:///usr/share/xml/docbook/schema/dtd/5.0/catalog.xml" \
-  /etc/xml/catalog &amp;&amp;
-
-xmlcatalog --noout --add "delegateURI"                       \
-  "http://docbook.org/xml/5.0/rng/"                          \
-  "file:///usr/share/xml/docbook/schema/rng/5.0/catalog.xml" \
-  /etc/xml/catalog &amp;&amp;
-
-xmlcatalog --noout --add "delegateURI"                       \
-  "http://docbook.org/xml/5.0/sch/"                          \
-  "file:///usr/share/xml/docbook/schema/sch/5.0/catalog.xml" \
-  /etc/xml/catalog &amp;&amp;
-
-xmlcatalog --noout --add "delegateURI"                       \
-  "http://docbook.org/xml/5.0/xsd/"                          \
-  "file:///usr/share/xml/docbook/schema/xsd/5.0/catalog.xml" \
+xmlcatalog --noout --add "delegateURI"                \
+  "http://docbook.org/xml/5.0"                        \
+  "file:///usr/share/xml/docbook/xml-5.0/catalog.xml" \
   /etc/xml/catalog</userinput></screen>
 
   </sect2>
@@ -241,8 +129,7 @@ xmlcatalog --noout --add "delegateURI"                       \
       <title>Config Files</title>
 
       <para>
-        <filename>/etc/xml/catalog</filename> and
-        <filename>/etc/xml/docbook-5.0</filename>
+        <filename>/etc/xml/catalog</filename>
       </para>
 
       <indexterm zone="docbook5 docbook-config">
@@ -266,7 +153,7 @@ xmlcatalog --noout --add "delegateURI"                       \
 
       <seglistitem>
         <seg>DTD, RNC, RNG, SCH and XSD files</seg>
-        <seg>/etc/xml and /usr/share/xml/docbook/schema/{dtd,rng,sch,xsd}/5.0</seg>
+        <seg>/etc/xml and /usr/share/xml/docbook/xml-5.0</seg>
       </seglistitem>
     </segmentedlist>
 

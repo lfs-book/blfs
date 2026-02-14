@@ -64,7 +64,7 @@ help:
 	@echo "                       Defaults to"
 	@echo "                       'HOME/public_html/blfs-book' if REV=openrc (or unset)"
 	@echo "                       or to"
-	@echo "                       'HOME/public_html/blfs-book-systemd' if REV=systemd"
+	@echo "                       'HOME/public_html/blfs-systemd' if REV=systemd"
 	@echo ""
 	@echo "  V=<val>              If <val> is a non-empty value, all"
 	@echo "                       steps to produce the output is shown."

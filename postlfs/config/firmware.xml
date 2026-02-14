@@ -145,7 +145,7 @@
       Although not needed to load a firmware blob, the following
       tools may be useful for determining, obtaining, or preparing the needed
       firmware in order to load it into the system:
-      <xref linkend="cpio"/>,
+      <xref linkend="cpio"/> (or <xref linkend='libarchive'/>),
       <xref linkend="git"/>,
       <xref linkend="pciutils"/>, and
       <xref linkend="wget"/>
@@ -339,7 +339,8 @@
       <para>
         If you have established that updated microcode is available for
         your system, it is time to prepare it for early loading. This requires
-        an additional package, <xref linkend='cpio'/> and the creation of an
+        an additional package, <xref linkend='cpio'/>
+        (or <xref linkend='libarchive'/>) and the creation of an
         initrd which will need to be added to grub.cfg.
       </para>
 
@@ -391,10 +392,12 @@ cd initrd</userinput></screen>
       </caution>-->
 
       <para>
-        Now prepare the initrd:
+        Now prepare the initrd (you may also use <command>bsdcpio</command>
+        from <xref linkend='libarchive'/> instead of
+        <command>cpio</command>):
       </para>
 
-<screen><userinput>find . | cpio -o -H newc &gt; /boot/microcode.img</userinput></screen>
+<screen><userinput>find * | cpio -o -H newc &gt; /boot/microcode.img</userinput></screen>
 
       <para>
         You now need to add a new entry to /boot/grub/grub.cfg and
