@@ -38,7 +38,7 @@
       This is useful for encrypting authentication and subsequent traffic over
       a network. The <command>ssh</command> and <command>scp</command> commands
       are secure implementations of <command>telnet</command> and
-      <command>rcp</command> respectively.
+      <command>rcp</command>.
     </para>
 
     &lfs130_checked;
@@ -104,9 +104,8 @@
       <ulink url="http://www.citi.umich.edu/projects/smartcard/sectok.html">libsectok</ulink>
     </para>
 
-    <bridgehead renderas="sect4">Optional Runtime (Used only to gather entropy)</bridgehead>
+    <bridgehead renderas="sect4">Optional at runtime (used only to gather entropy)</bridgehead>
     <para role="optional">
-      <!--<xref role="runtime" linkend="openjdk"/>, Not seen in 8.8p1 -->
       <xref role="runtime" linkend="net-tools"/>, and
       <xref role="runtime" linkend="sysstat"/>
     </para>
@@ -242,14 +241,14 @@ install -v -m644    INSTALL LICENCE OVERVIEW README* \
     <para>
       <parameter>--with-default-path=/usr/bin</parameter> and
       <parameter>--with-superuser-path=/usr/sbin:/usr/bin</parameter>:
-      These set <envar>PATH</envar> consistent with LFS and BLFS
-      <application>Shadow</application> package.
+      These set the <envar>PATH</envar> setting to be consistent with the LFS
+      and BLFS <application>Shadow</application> package.
     </para>
 
     <para>
       <parameter>--with-pid-dir=/run</parameter>: This prevents
-      <application>OpenSSH</application> from referring to deprecated
-      <filename class="directory">/var/run</filename>.
+      <application>OpenSSH</application> from referring to the deprecated
+      <filename class="directory">/var/run</filename> directory.
     </para>
 <!--
     <para>
@@ -262,17 +261,19 @@ install -v -m644    INSTALL LICENCE OVERVIEW README* \
     </para>
 -->
     <para>
-      <option>--with-pam</option>: This parameter enables
-      <application>Linux-PAM</application> support in the build.
+      <option>--with-pam</option>: This option enables
+      <application>Linux-PAM</application> support in the build. If you use
+      this option, ensure that you create the PAM configuration in the
+      Configuration Information section below.
     </para>
 
     <para>
-      <option>--with-xauth=$XORG_PREFIX/bin/xauth</option>: Set the default
-      location for the <command>xauth</command> binary for X authentication.
-      The environment variable <envar>XORG_PREFIX</envar> should be set
-      following <xref linkend='xorg-env'/>. This can also be controlled from
-      <filename>sshd_config</filename> with the XAuthLocation keyword. You can
-      omit this switch if <command>xauth</command> (one of
+      <option>--with-xauth=$XORG_PREFIX/bin/xauth</option>: This sets the
+      default location for the <command>xauth</command> binary for X
+      authentication. The environment variable <envar>XORG_PREFIX</envar> should
+      be set following <xref linkend='xorg-env'/>. This can also be controlled
+      from <filename>sshd_config</filename> with the XAuthLocation keyword. You
+      can omit this switch if <command>xauth</command> (one of
       <xref linkend="xorg7-app"/>) is already installed.
     </para>
 
@@ -439,7 +440,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <listitem>
           <para>
             is a file copy program that acts like <command>rcp</command> except
-            it uses an encrypted protocol
+            that it uses an encrypted protocol
           </para>
           <indexterm zone="openssh scp">
             <primary sortas="b-scp">scp</primary>
@@ -476,7 +477,7 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <listitem>
           <para>
             is an <command>rlogin</command>/<command>rsh</command>-like client
-            program except it uses an encrypted protocol
+            program except that it uses an encrypted protocol
           </para>
           <indexterm zone="openssh ssh">
             <primary sortas="b-ssh">ssh</primary>
