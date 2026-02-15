@@ -90,14 +90,19 @@
 <screen role="root"><userinput>&install-wheel; sphinxcontrib-htmlhelp</userinput></screen>
 
     <para>
-      If the optional dependencies are installed, the package can be tested with:
+      If the optional dependencies are installed, the package can be tested with
+      the following commands. The first command fixes a problem with removed API
+      in Sphinx.
     </para>
 
-<screen remap="test"><userinput>pytest</userinput></screen>
+<screen remap="test"><userinput>sed -i 's/keyword/pair: keyword;/' tests/roots/test-chm/index.rst &amp;&amp;
+pytest</userinput></screen>
 
     <para>
-      The test suite will print a warning about upcoming changes in docutils.
+      The tests will output a deprecation notice about upcoming changes in
+      sphinx-11.x.
     </para>
+
     </sect3>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
