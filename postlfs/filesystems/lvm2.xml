@@ -160,6 +160,16 @@ make -C udev  install               &amp;&amp;
 make -C libdm install</userinput></screen>
 
     <para>
+      The tests need the ability to create and remove device nodes in the /tmp
+      directory. On systemd systems, the default is to mount /tmp with the nodev
+      option. Rather than disabling this behavior permanently (since it does
+      have valid security reasons to be doing this), remount the /tmp filesystem
+      temporarily as the &root; user:
+    </para>
+
+<screen role="root" remap="test"><userinput>mount -o remount,dev /tmp</userinput></screen>
+
+    <para>
       To test the results, issue, as the
       <systemitem class="username">root</systemitem> user:
     </para>
