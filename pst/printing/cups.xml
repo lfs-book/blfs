@@ -187,6 +187,16 @@
     </para>
 
     <para>
+      <!-- https://github.com/OpenPrinting/cups/commit/dc4407f5187c4d2a530e6595c27c22ca7efeae01 -->
+      <!-- This doesn't occur on glibc-2.42 for me, but does on 2.43. The issue
+           causes a segfault when printing.-->
+      Fix a runtime issue caused by corruption of a previous pointer when using
+      IPP:
+    </para>
+
+<screen><userinput remap="pre">sed -i '/&amp; ipp->prev)/s/prev/&amp; \&amp;\&amp; ipp->prev->next == *attr/' cups/ipp.c</userinput></screen>
+
+    <para>
       Build <application>Cups</application> by running the following commands:
     </para>
 
