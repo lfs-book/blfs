@@ -6,10 +6,10 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;esr/source/thunderbird-&thunderbird-version;esr.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "37f95dfb61468204c514ac5a36c32cd3">
-  <!ENTITY thunderbird-size          "721 MB">
-  <!ENTITY thunderbird-buildsize     "8.8 GB (268 MB installed)">
-  <!ENTITY thunderbird-time          "16 SBU (on a 8-core machine)">
+  <!ENTITY thunderbird-md5sum        "9e68bcc19f0e25f908d68009660dfc59">
+  <!ENTITY thunderbird-size          "724 MB">
+  <!ENTITY thunderbird-buildsize     "8.8 GB (267 MB installed)">
+  <!ENTITY thunderbird-time          "14 SBU (on a 8-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
 
@@ -36,7 +36,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
         href="../../xincludes/security-updates.xml"/>
@@ -81,6 +81,12 @@
         <para>
           Required patch:
           <ulink url="&patch-root;/thunderbird-&thunderbird-version;esr-python_3.14_fixes-1.patch"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/thunderbird-&thunderbird-version;esr-glibc-2.43.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -232,10 +238,22 @@ EOF</userinput></screen>
 -->
 
     <para>
-      Next, fix building this package with Python 3.14:
+      Next, fix building this package with Python-3.14:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-python_3.14_fixes-1.patch</userinput></screen>
+
+    <para>
+      Fix building this package with glibc-2.43 and adapt the checksums:
+    </para>
+
+<screen><userinput
+  remap="pre">GLSL_PTHREAD="comm/third_party/rust/glslopt/glsl-optimizer/include/c11/threads_posix.h"
+OLDSHA=`sha256sum $GLSL_PTHREAD | awk '{ print $1 }'` &amp;&amp;
+patch -Np1 -i ../thunderbird-&thunderbird-version;esr-glibc-2.43.patch &amp;&amp;
+NEWSHA=`sha256sum $GLSL_PTHREAD | awk '{ print $1 }'` &amp;&amp;
+sed "s/$OLDSHA/$NEWSHA/" \
+  -i comm/third_party/rust/glslopt/.cargo-checksum.json</userinput></screen>
 
     <para>
       Now invoke the Python <command>mach</command> script to compile
