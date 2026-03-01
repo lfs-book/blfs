@@ -235,11 +235,12 @@
       Install <application>VLC</application> by running the following commands:
     </para>
 
-<screen><userinput>BUILDCC=gcc ./configure --prefix=/usr --disable-libplacebo &amp;&amp;
+<screen><userinput>BUILDCC=gcc ./configure --prefix=/usr &amp;&amp;
 make</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      To test the results, issue: <command>make check</command>. One test will
+      fail if you are not in a graphical environment.
     </para>
 
     <para>
@@ -260,19 +261,20 @@ make</userinput></screen>
       For a while, <application>Qt-5</application> was the only way to get a
       graphical interface that this package is known for. It now supports
       <application>Qt-6</application>, but comes with a lot of downsides as it
-      is a fresh port of the previous interface. Things are in a broken state.
-      For example, pausing and other navigation features are broken, video
-      positioning is incorrect, among other issues.
+      is a fresh port of the previous interface. Several bits of functionality
+      are broken. For example, pausing and other navigation features are broken,
+      video positioning is incorrect, among other issues.
     </para>
 
     <para>
       Another issue is that video playback, despite audio playback with image
       metadata being fine, is broken on Wayland without the use of the
-      <envar>QT_QPA_PLATFORM</envar> variable. If you're on Wayland, you should
-      run <command>QT_QPA_PLATFORM=xcb vlc -I "qt"</command> to run the Qt
-      interface. This forces the <literal>xcb</literal> window interface to be
-      used instead of <literal>wayland</literal>, since video playback will try
-      to use <literal>xcb</literal> anyway and fail. On
+      <envar>QT_QPA_PLATFORM</envar> variable. The exact issue is that the video
+      never plays, and the window moves all over the screen. If you're on Wayland,
+      you should run <command>QT_QPA_PLATFORM=xcb vlc -I "qt"</command> to use
+      the Qt interface. This forces the <literal>xcb</literal> window interface
+      to be used instead of <literal>wayland</literal>, since video playback will
+      try to use <literal>xcb</literal> anyway and fail. On
       <application>X11</application>, this should not be an issue.
     </para>
 
@@ -287,15 +289,17 @@ make</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+    <!-- This is the default now, so let's comment this out.
     <para>
-      <parameter>--disable-libplacebo</parameter>: This switch is required to
+      <parameter>- -disable-libplacebo</parameter>: This switch is required to
       disable support for using libplacebo as a rendering pipeline because VLC
       is incompatible with the latest version of libplacebo.
     </para>
+    -->
 
     <para>
-      <option>--disable-vpx</option>: Use this switch to disable
-      <application>libvpx</application>.
+      <option>--disable-vpx</option>: Use this switch if you don't have
+      <application>libvpx</application> installed.
     </para>
 
     <!--<para>
