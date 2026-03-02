@@ -85,8 +85,6 @@
       <xref linkend="cyrus-sasl"/> (for SASL authentication),
       <xref linkend="libnsl"/> (for NIS client support),
       <xref linkend="lvm2"/> (libdevmapper for NFSv4 support),
-      <!--<xref linkend="libnfsidmap"/> (for NFSv4 support),
-      This is now built in, as of 2.2.1-->
       <xref linkend="openldap"/> (for LDAP authentication),
       <xref linkend="mitkrb"/> or
       <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/">
@@ -132,18 +130,24 @@
 
     <note>
       <para>
-        In BLFS we assume that nfs v3 will be used. If the
-        <emphasis>server</emphasis> offers nfs v4 (for linux, CONFIG_NFSD_V4)
+        In BLFS we assume that NFSv3 will be used. If the
+        <emphasis>server</emphasis> offers NFSv4 (for linux, CONFIG_NFSD_V4)
         then auto-negotiation for v3 will fail and you will need to add
         <literal>nfsver=3</literal> to the mount options. This also applies
         if that option is enabled in the <emphasis>client's</emphasis> kernel,
-        for example in a distro trying to mount from a BLFS v3 server.
+        for example in a distro trying to mount from a BLFS NFSv3 server.
       </para>
       <para>
-        Even if neither end of the connection supports nfs v4, adding
+        Even if neither end of the connection supports NFSv4, adding
         <literal>nfsver=3</literal> is still beneficial because it prevents an
         error message "NFS: bad mount option value specified: minorversion=1"
         being logged on every mount.
+      </para>
+      <para>
+        Note that NFSv3 is a faster, stateless, and simpler protocol ideal for 
+        legacy systems and high-performance VMware environments. NFSv4 is a 
+        stateful, secure protocol (supporting ACLs and Kerberos) that uses a 
+        single TCP port (2049) for easier firewall traversal.
       </para>
     </note>
 
@@ -230,18 +234,13 @@ chown nobody:nogroup /var/lib/nfs</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-<!--
-    <para>
-      <command>sed ... support/nsm/rpc.c</command>: This sed it required
-      to fix a build issue with glibc-2.26 and later.
-    </para>
 
     <para>
-      <parameter>- -disable-nfsv4</parameter>: This allows the package to be
-      built when libnfsidmap has not been installed.
+      <parameter>--disable-nfsv4</parameter>: This option prevents building
+      the NFSv4 capabilites into the installed programs.  Remove it if
+      ypu need the advanced capabilities prvided by NFSv4.
     </para>
-    nfs-utils now carries libnfsidmap
--->
+
     <para>
       <parameter>--disable-gss</parameter>: Disables GSSAPI support in this
       package. If you need to use it, make sure that <xref linkend="mitkrb"/>
@@ -250,7 +249,7 @@ chown nobody:nogroup /var/lib/nfs</userinput></screen>
     </para>
 
     <para>
-      <parameter>LIBS="-lsqlite3 -levent_core"</parameter>: is required for
+      <parameter>LIBS='-lsqlite3 -levent_core'</parameter>: is required for
       the fsidd program.
     </para>
 
@@ -299,15 +298,16 @@ EOF</userinput></screen>
                <phrase revision="systemd">Systemd Units</phrase></title>
 
         <para>
-          Install the
+          iIf you have enabled building NFSv4 capabilities, install the
           <phrase revision="sysv">
             <filename>/etc/rc.d/init.d/nfs-server</filename>
             init script
           </phrase>
           <phrase revision="systemd">NFSv4 server units</phrase>
-          included in the <xref linkend="bootscripts" revision="sysv"/>
-          <xref linkend="systemd-units" revision="systemd"/> package
-          to start the server at boot.
+          included in the 
+          <xref linkend="bootscripts" revision="sysv"/>
+          <xref linkend="systemd-units" revision="systemd"/> 
+          package to start the server at boot.
         </para>
 
 <screen role="root" revision="systemd"><userinput>make install-nfsv4-server</userinput></screen>
