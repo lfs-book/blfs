@@ -144,10 +144,11 @@
         being logged on every mount.
       </para>
       <para>
-        Note that NFSv3 is a faster, stateless, and simpler protocol ideal for 
-        legacy systems and high-performance VMware environments. NFSv4 is a 
-        stateful, secure protocol (supporting ACLs and Kerberos) that uses a 
-        single TCP port (2049) for easier firewall traversal.
+        Note that for the purposes of BLFS, we are only covering NFSv3 because
+        it is easier to configure. If you depend on some of the more advanced
+        configuration or security features of NFSv4, you may wish to review
+        <ulink url="https://bobcares.com/blog/mastering-nfsv4-mount-setup-in-client-and-server/">this blog post</ulink>
+        as it may help you setup configuration for NFSv4.
       </para>
     </note>
 
@@ -237,8 +238,8 @@ chown nobody:nogroup /var/lib/nfs</userinput></screen>
 
     <para>
       <parameter>--disable-nfsv4</parameter>: This option prevents building
-      the NFSv4 capabilites into the installed programs.  Remove it if
-      ypu need the advanced capabilities prvided by NFSv4.
+      NFSv4 capabilites into the installed programs. Remove it if
+      you need the advanced capabilities prvided by NFSv4.
     </para>
 
     <para>
@@ -249,8 +250,8 @@ chown nobody:nogroup /var/lib/nfs</userinput></screen>
     </para>
 
     <para>
-      <parameter>LIBS='-lsqlite3 -levent_core'</parameter>: is required for
-      the fsidd program.
+      <parameter>LIBS='-lsqlite3 -levent_core'</parameter>: This environment
+      variable is required for the fsidd program to be compiled correctly.
     </para>
 
     <para>
@@ -298,7 +299,7 @@ EOF</userinput></screen>
                <phrase revision="systemd">Systemd Units</phrase></title>
 
         <para>
-          iIf you have enabled building NFSv4 capabilities, install the
+          If you have enabled building NFSv4 capabilities, install the
           <phrase revision="sysv">
             <filename>/etc/rc.d/init.d/nfs-server</filename>
             init script
