@@ -414,10 +414,22 @@ chmod -v 755 /etc/systemd/user-environment-generators/50-profile.sh</userinput><
       for details about the systemd environment generators.  Note that if
       you've edited the content of
       <filename class='directory'>/etc/profile.d</filename> when a desktop
-      environment is running, you need to run the <command>systemctl
-      --user daemon-reload</command> command to sync the change into the
-      systemd per-user instance, and then log out and log in again to sync
-      the change into the desktop environment.
+      environment is running, you need to sync the change into the
+      systemd per-user instance:
+    </para>
+
+    <screen role='nodump'><userinput>systemctl --user unset-environment \
+  $(/etc/systemd/user-environment-generators/50-profile.sh | sed 's/=.*//')
+systemctl --user daemon-reload</userinput></screen>
+
+    <para>
+      And then log out and log in again to sync the change into the desktop
+      environment.
+      The <command>systemctl --user unset-environment</command> command is
+      needed on some desktop environments which write the environment
+      variables into the runtime environment variable pool of the
+      per-user systemd instance because the content of that pool would
+      override the setting from the generator.
     </para>
 
     <important>
