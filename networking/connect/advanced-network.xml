@@ -94,7 +94,7 @@ EOF</userinput></screen>
       <para>
         Alternatively, if using a static ip setup, create the following
         configuration file by running the following command as the
-        <systemitem class="username">root</systemitem> user:
+        &root; user:
       </para>
 
 <screen role="root"><userinput>cat &gt; /etc/systemd/network/60-br0.network &lt;&lt; EOF
@@ -106,6 +106,14 @@ Address=192.168.0.2/24
 Gateway=192.168.0.1
 DNS=192.168.0.1</literal>
 EOF</userinput></screen>
+
+      <para>
+        If you want to contact another system connected to the bridge,
+        for example a qemu instance, then you also need to enable IP forwarding.
+        Again as the &root; user, do: 
+      </para>
+
+<screen role="root"><userinput>echo 'IPForward=ipv4' >> /etc/systemd/network/60-br0.network</userinput></screen>
 
       <para>
         To bring up the bridge interface, simply restart the
