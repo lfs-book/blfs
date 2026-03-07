@@ -109,9 +109,15 @@
         that will cause a crash at runtime if they are present as the &root;
         user:
       </para>
-    </note>
 
 <screen role="nodump"><userinput remap="pre">rm -rf /usr/lib/epiphany</userinput></screen>
+    </note>
+
+    <para>
+      First, fix one file to be compatible with <xref linkend="nettle"/> and later:
+    </para>
+
+<screen><userinput>sed -i '/hkdf_extract/,/;$/{/DIGEST_SIZE/d}' lib/sync/ephy-sync-crypto.c</userinput></screen>
 
     <para>
       Install <application>Epiphany</application> by running the following
