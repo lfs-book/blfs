@@ -175,13 +175,11 @@
       Fix building this package with glibc-2.43 and adapt the checksums:
     </para>
 
-<screen><userinput
-  remap="pre">GLSL_PTHREAD="comm/third_party/rust/glslopt/glsl-optimizer/include/c11/threads_posix.h"
-OLDSHA=`sha256sum $GLSL_PTHREAD | awk '{ print $1 }'` &amp;&amp;
-patch -Np1 -i ../thunderbird-&thunderbird-version;esr-glibc-2.43.patch &amp;&amp;
-NEWSHA=`sha256sum $GLSL_PTHREAD | awk '{ print $1 }'` &amp;&amp;
-sed "s/$OLDSHA/$NEWSHA/" \
-  -i comm/third_party/rust/glslopt/.cargo-checksum.json</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-glibc-2.43.patch &amp;&amp;
+sed '/patch.crates-io/a glslopt={path="../../third_party/rust/glslopt"}' \
+    -i comm/rust/Cargo.toml &amp;&amp;
+sed '/name = "glslopt"/,/^$/{/source/d;/checksum/d}' \
+    -i comm/rust/Cargo.lock</userinput></screen>
 
     <para>
       The configuration of <application>Thunderbird</application> is
