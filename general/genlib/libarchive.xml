@@ -147,7 +147,18 @@ make</userinput></screen>
 
     <para>
       <option>--with-nettle</option>: This switch uses Nettle for crypto
-      support instead of OpenSSL.
+      support instead of OpenSSL. This support is known to be broken upstream
+      due to Nettle-4.0.
+      <!-- Originally I reverted the commit where I added this because I had
+      a patch from upstream. The patch turned out to be insufficient, it fixes
+      the compiler errors but then generates numerous amounts of undefined
+      reference errors at link time. I chimed in on the upstream bug report
+      at https://github.com/libarchive/libarchive/issues/2876 - and the PR
+      I used to try fixing it was:
+      https://github.com/libarchive/libarchive/pull/2858
+      Since this support is explicitly opt-in, let's just note it's broken
+      for now and I will follow up when upstream gets back to me. -renodr
+      -->
     </para>
 
   </sect2>
