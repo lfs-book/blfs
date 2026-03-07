@@ -157,34 +157,19 @@
       </para>
     </note>
 
-<!--
     <para>
-      Change a Rust file to allow implicit autoref to prevent a build failure.
-      The trailing <literal>\r</literal> ensures that the MS-DOS format is used
-      for the inserted line so that it will be consistent with all other lines
-      in the file:
-    </para>
-
-<screen><userinput>sed -e '1i\#![warn(dangerous_implicit_autorefs)]\r' \
-    -i third_party/rust/allocator-api2/src/stable/vec/mod.rs</userinput></screen>
--->
-
-    <para>
-      Next, fix building this package with Python-3.14:
+      At first, fix building this package with Python-3.14:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-python_3.14_fixes-1.patch</userinput></screen>
 
+    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=2006630 -->
     <para>
       Remove checksums from cargo crates for files that don't exist:
     </para>
 
-<screen><userinput
-  remap="pre">for crate in {minimal-lexical,lmdb-rkv,cubeb-sys,wasi,glslopt,sfv}; do
-  sed -e 's|,"[^"]*.gitmodules[^,]*[^,]||' \
-      -e '$a\'                             \
-      -i comm/third_party/rust/$crate/.cargo-checksum.json
-done</userinput></screen>
+<screen><userinput remap="pre">find -name .cargo-checksum.json | \
+     xargs sed -ri 's|"[^"]*.gitmodules":"[^"]*",?||'</userinput></screen>
 
     <para>
       Fix building this package with glibc-2.43 and adapt the checksums:
