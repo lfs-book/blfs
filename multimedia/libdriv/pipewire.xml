@@ -6,10 +6,10 @@
 
   <!ENTITY pipewire-download-http "https://gitlab.freedesktop.org/pipewire/pipewire/-/archive/&pipewire-version;/pipewire-&pipewire-version;.tar.bz2">
   <!ENTITY pipewire-download-ftp  " ">
-  <!ENTITY pipewire-md5sum        "7f5a60e22101a26a828b2b1958c2d10f">
+  <!ENTITY pipewire-md5sum        "df1c9eb17a9e5f3dae1b32cc23a7cbc8">
   <!ENTITY pipewire-size          "2.0 MB">
-  <!ENTITY pipewire-buildsize     "107 MB (with tests)">
-  <!ENTITY pipewire-time          "0.6 SBU (with tests, both using parallelism=4)">
+  <!ENTITY pipewire-buildsize     "88 MB (with tests)">
+  <!ENTITY pipewire-time          "0.7 SBU (with tests, both using parallelism=4)">
 ]>
 
 <sect1 id="pipewire" xreflabel="pipewire-&pipewire-version;">
@@ -140,24 +140,17 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                 \
-      --prefix=/usr            \
-      --buildtype=release      \
-      -D session-managers="[]" &amp;&amp;
+CFLAGS="-Wno-error=discarded-qualifiers" \
+meson setup ..                           \
+      --prefix=/usr                      \
+      --buildtype=release                \
+      -D session-managers="[]"           &amp;&amp;
 ninja</userinput></screen>
 
     <para>
       To test the result, issue: <command>ninja test</command>.
     </para>
-    <!--
-    <para>
-      If upgrading from an earlier release of Pipewire, it's needed to
-      remove any old binary executables that interfere with the
-      installation.  As the &root; user:
-    </para>
 
-<screen role='root'><userinput>rm -vf /usr/bin/pipewire-*</userinput></screen>
--->
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
@@ -167,6 +160,13 @@ ninja</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <envar>CFLAGS="-Wno-error=discarded-qualifiers"</envar>: 
+      This environment variable prevents a build error due to 
+      discarding "const" qualifiers from pointer target types.
+      <!-- All in spa/plugins/alsa/acp/compat.h (6 instances) -->
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
