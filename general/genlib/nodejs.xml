@@ -6,10 +6,10 @@
 
   <!ENTITY nodejs-download-http "https://nodejs.org/dist/v&nodejs-version;/node-v&nodejs-version;.tar.xz">
   <!ENTITY nodejs-download-ftp  " ">
-  <!ENTITY nodejs-md5sum        "cbbbbb20f7748b946b27a3dd88409098">
+  <!ENTITY nodejs-md5sum        "740a43170672a2f945641436ed14e869">
   <!ENTITY nodejs-size          "49 MB">
   <!ENTITY nodejs-buildsize     "1.4 GB (add 46 MB for tests)">
-  <!ENTITY nodejs-time          "14 SBU (add 4.7 SBU for tests: both using
+  <!ENTITY nodejs-time          "14 SBU (add 4.3 SBU for tests: both using
                                  parallelism=8 and 8 CPUs online, parts of the
                                  tests will use all online CPUs)">
 ]>
@@ -69,6 +69,7 @@
       </listitem>
     </itemizedlist>
 
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -78,6 +79,7 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">Node.js Dependencies</bridgehead>
 
@@ -91,8 +93,9 @@
       <xref linkend="brotli"/>,
       <xref linkend="c-ares"/>,
       <xref linkend="icu"/>,
-      <xref linkend="libuv"/>, and
-      <xref linkend="nghttp2"/>
+      <xref linkend="libuv"/>,
+      <xref linkend="nghttp2"/>, and
+      <xref linkend="simdutf"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -109,11 +112,13 @@
   <sect2 role="installation">
     <title>Installation of Node.js</title>
 
+<!--
     <para>
       First, fix building this package with Python 3.14:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../node-v&nodejs-version;-python_build_fix-1.patch</userinput></screen>
+-->
 
     <para>
       Build <application>Node.js</application> by running the following
@@ -124,8 +129,9 @@
             --shared-brotli        \
             --shared-cares         \
             --shared-libuv         \
-            --shared-openssl       \
             --shared-nghttp2       \
+            --shared-openssl       \
+            --shared-simdutf       \
             --shared-zlib          \
             --with-intl=system-icu &amp;&amp;
 make</userinput></screen>
@@ -145,34 +151,19 @@ Note: We should remove test results after each new BLFS release, and test
 failures here should be updates to Node.js after the latest release.
   - zeckma
 
-After BLFS-12.4:
+After BLFS-13.0:
 
-node.js-22.19.0 (+ 4476|-   3):
-test/parallel/test-fs-cp.mjs
-test/parallel/test-http2-client-set-priority.js
-test/parallel/test-http2-priority-event.js
-
-node.js-22.20.0 (+ 4587|-   4):
-test/parallel/test-fs-cp-async-socket.mjs
-test/parallel/test-fs-cp-sync-copy-socket-error.mjs
-test/parallel/test-http2-client-set-priority.js
-test/parallel/test-http2-priority-event.js
-
-node.js-22.21.1 (+ 4619|-  11):
-test/parallel/test-datetime-change-notify.js
-test/parallel/test-http2-client-set-priority.js
-test/parallel/test-http2-client-unescaped-path.js
-test/parallel/test-http2-multi-content-length.js
-test/parallel/test-http2-priority-event.js
-test/parallel/test-icu-env.js
-test/parallel/test-http2-reset-flood.js
-test/parallel/test-tls-ocsp-callback.js
-test/parallel/test-http2-max-invalid-frames.js
-test/parallel/test-http2-misbehaving-flow-control.js
-test/parallel/test-http2-misbehaving-flow-control-paused.js
-
-node.js-22.22.0 (+ 4625|-  11):
-Same test failures as node.js-22.21.1.
+node.js-22.22.1 (+ 4658|-  10):
+parallel/test-http2-client-set-priority.js
+parallel/test-http2-client-unescaped-path.js
+parallel/test-http2-multi-content-length.js
+parallel/test-http2-priority-event.js
+parallel/test-http2-reset-flood.js
+parallel/test-tls-ocsp-callback.js
+parallel/test-util-styletext.js
+parallel/test-http2-misbehaving-flow-control-paused.js
+parallel/test-http2-max-invalid-frames.js
+parallel/test-http2-misbehaving-flow-control.js
 -->
 
     <para>
@@ -195,7 +186,7 @@ ln -sf node /usr/share/doc/node-&nodejs-version;</userinput></screen>
     </para>
 
     <para>
-      <parameter>--shared-{brotli,cares,libuv,nghttp2,openssl,zlib}</parameter>:
+      <parameter>--shared-{brotli,cares,libuv,nghttp2,openssl,simdutf,zlib}</parameter>:
       This parameter uses the system installed libraries instead of local
       copies.
     </para>
