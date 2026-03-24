@@ -33,14 +33,6 @@
       DHCP client.
     </para>
 
-    <note revision="systemd">
-      <para>
-        Make sure that you disable the <command>systemd-networkd</command>
-        service or configure it to not manage the interfaces you want to manage
-        with <application>dhcpcd</application>.
-      </para>
-    </note>
-
     &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
@@ -249,7 +241,7 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
 
     </sect3>
 
-    <sect3 id="dhcpcd-init" revision="openrc">
+    <sect3 id="dhcpcd-init">
       <title>General Configuration Information</title>
 
       <para>
@@ -264,7 +256,7 @@ install -v -m 644 dhcpcd-hooks/50-dhcpcd-compat /lib/dhcpcd/dhcpcd-hooks/</useri
 <screen role='root'><userinput>install -vDm755 /dev/stdin /etc/init.d/dhcpcd &lt;&lt; "EOF" &amp;&amp;
 <literal>#!/sbin/openrc-run
 # Starts the dhcpcd daemon.
-# Authors: Zeckma - zeckma.tech@gmail.com
+# Authors: Zeckma - zeckma@linuxfromscratch.com
 # Version: LFS &version;
 
 description="starts dhcpcd"
@@ -330,7 +322,7 @@ EOF</userinput></screen>
       </indexterm>
     </sect3>
 
-    <sect3 id="dhcpcd-init2" revision="openrc">
+    <sect3 id="dhcpcd-init2">
       <title>Configuration Information: fixed ip</title>
 
       <para id="dhcpcd-config4">
@@ -364,87 +356,6 @@ EOF</userinput></screen>
 nameserver 208.67.222.222
 nameserver 208.67.220.220</literal>
 EOF</userinput></screen>
-
-    </sect3>
-
-   <sect3 id="dhcpcd-init3" revision="systemd">
-      <title>General Configuration Information</title>
-
-      <para>
-        If you want to configure network interfaces at boot using
-        <command>dhcpcd</command>, you need to install the
-        systemd unit included in <xref linkend="systemd-units"/>
-        package by running the following command as the &root; user:
-      </para>
-
-<screen role="root"><userinput>make install-dhcpcd</userinput></screen>
-
-      <indexterm zone="dhcpcd dhcpcd-init3">
-        <primary sortas="f-dhcpcd">dhcpcd</primary>
-      </indexterm>
-
-      <note>
-        <para id="dhcpcd-config5">
-          The default behavior of <command>dhcpcd</command> is to set the
-          hostname and the mtu. It also overwrites <filename>/etc/resolv.conf
-          </filename> and <filename>/etc/ntp.conf</filename>. These
-          modifications to system configuration files are done by hooks which
-          are stored in <filename class="directory">
-          /usr/lib/dhcpcd/dhcpcd-hooks</filename>. You can change this behavior
-          by removing or adding hooks from/to that directory. The execution
-          of hooks can be disabled by using the <option>--nohook</option>
-          (<option>-C</option>) command line option or by the
-          <option>nohook</option> option in the <filename>/etc/dhcpcd.conf
-          </filename> file.
-        </para>
-      </note>
-
-      <indexterm zone="dhcpcd dhcpcd-config5">
-        <primary sortas="e-etc-resolv.conf">/etc/resolv.conf</primary>
-      </indexterm>
-
-      <note>
-        <para>
-          Make sure that you disable the <command>systemd-networkd</command>
-          service or configure it not to manage the interfaces you want to
-          manage with <application>dhcpcd</application>.
-        </para>
-      </note>
-
-      <para>
-        At this point you can test if <command>dhcpcd</command> is
-        behaving as expected by running the following command as the
-        &root; user:
-      </para>
-
-<screen role="root"><userinput>systemctl start dhcpcd@<replaceable>eth0</replaceable></userinput></screen>
-
-      <para>
-        To start <command>dhcpcd</command> on a specific interface
-        at boot, enable the previously installed systemd unit by
-        running the following command as the &root; user:
-      </para>
-
-<screen role="root"><userinput>systemctl enable dhcpcd@<replaceable>eth0</replaceable></userinput></screen>
-
-      <para>
-        Replace <replaceable>eth0</replaceable> with the actual interface name.
-      </para>
-
-      <para>
-        The <command>dhcpcd</command> service has options or lack thereof that
-        might be unsatisfactory. You can override them by running the following
-        commands as the <systemitem class="username">root</systemitem> user:
-      </para>
-
-<screen role="nodump"><userinput>install -v -dm755 /etc/systemd/system/dhcpcd\@<replaceable>eth0</replaceable>.service.d &amp;&amp;
-cat &gt; /etc/systemd/system/dhcpcd\@<replaceable>eth0</replaceable>.service.d/99-user.conf &lt;&lt; EOF
-<literal>[Service]
-ExecStart=
-ExecStart=/sbin/dhcpcd -q -w <replaceable>&lt;list of parameters&gt;</replaceable> %I
-ExecStop=
-ExecStop=/sbin/dhcpcd -x <replaceable>&lt;list of parameters&gt;</replaceable> %I
-</literal>EOF</userinput></screen>
 
     </sect3>
 

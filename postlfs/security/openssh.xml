@@ -374,13 +374,12 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
     </sect3>
 
     <sect3  id="openssh-init">
-      <title><phrase revision="openrc">Boot Script</phrase>
+      <title><phrase revision="openrc">OpenRC Service</phrase>
              <phrase revision="systemd">Systemd Unit</phrase></title>
 
       <para revision="openrc">
-        To start the SSH server at system boot, install the
-        <filename>/etc/rc.d/init.d/sshd</filename> init script included
-        in the <xref linkend="bootscripts"/> package.
+        To start the SSH server at system boot, you will need to install an
+        OpenRC service. Create and enable it as the &root; user:
       </para>
 
       <para revision="systemd">
@@ -393,8 +392,8 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <para>
           Changing the setting of <option>ListenAddress</option> in
           <filename>/etc/sshd/sshd_config</filename> is unsupported with
-          the BLFS sshd <phrase revision='openrc'>bootscript</phrase><phrase
-          revision='systemd'>systemd unit</phrase>.
+          the BLFS <literal>sshd</literal> <phrase revision='openrc'>OpenRC
+          service</phrase><phrase revision='systemd'>Systemd unit</phrase>.
         </para>
       </note>
 
@@ -402,7 +401,37 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
         <primary sortas="f-sshd">sshd</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-sshd</userinput></screen>
+<screen role='root'
+  revision='openrc'><userinput>install -vDm755 /dev/stdin /etc/init.d/sshd &lt;&lt; "EOF" &amp;&amp;
+<literal>#!/sbin/openrc-run
+# Starts the sshd daemon.
+# Authors: Zeckma - zeckma@linuxfromscratch.com
+# Version: LFS &version;
+
+description="starts sshd"
+
+command=/sbin/sshd
+pidfile=/run/sshd.pid
+command_args="${sshd_options} -o PidFile=${pidfile}"
+
+# Prevent SSH from being killed by OOM by waiting a second
+start_stop_daemon_args="--wait 1000"
+
+depend() {
+  use logger dns entropy
+}
+
+reload() {
+  ebegin "Reloading sshd"
+  start-stop-daemon --signal HUP --pidfile "${pidfile}"
+  eend $?
+}</literal>
+EOF
+
+rc-update add sshd default</userinput></screen>
+
+<screen role='root'
+  revision='systemd'><userinput>make install-sshd</userinput></screen>
     </sect3>
   </sect2>
 
