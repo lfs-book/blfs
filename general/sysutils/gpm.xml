@@ -206,7 +206,7 @@ install -v -m644    doc/{FAQ,HACK_GPM,README*}        \
     <title>Configuring GPM</title>
 
     <sect3 id="gpm-init">
-      <title><phrase revision="openrc">Boot Script</phrase>
+      <title><phrase revision="openrc">OpenRC Service</phrase>
              <phrase revision="systemd">Systemd Unit</phrase></title>
 
       <indexterm zone="gpm gpm-init">
@@ -214,10 +214,30 @@ install -v -m644    doc/{FAQ,HACK_GPM,README*}        \
       </indexterm>
 
       <para revision="openrc">
-        Install the
-        <filename>/etc/rc.d/init.d/gpm</filename> init script included in the
-        <xref linkend="bootscripts"/> package.
+        Create and enable the following OpenRC service as the &root; user:
       </para>
+
+<screen role='root'
+  revision='openrc'><userinput>install -vDm755 /dev/stdin /etc/init.d/gpm &lt;&lt; "EOF" &amp;&amp;
+<literal>#!/sbin/openrc-run
+# Starts the gpm daemon.
+# Authors: Zeckma - zeckma@linuxfromscratch.com
+# Version: LFS &version;
+
+description="starts gpm"
+
+command=/sbin/gpm
+pidfile=/var/run/gpm.pid
+command_args="${gpm_options}"
+
+depend() {
+  need localmount
+  use hotplug logger
+  after udevd
+}</literal>
+EOF
+
+rc-update add gpm default</userinput></screen>
 
       <para revision="systemd">
         To start the <command>gpm</command> daemon at boot,
@@ -226,7 +246,8 @@ install -v -m644    doc/{FAQ,HACK_GPM,README*}        \
         <systemitem class="username">root</systemitem> user:
       </para>
 
-<screen role="root"><userinput>make install-gpm</userinput></screen>
+<screen role="root"
+  revision="systemd"><userinput>make install-gpm</userinput></screen>
 
     </sect3>
 
@@ -240,21 +261,11 @@ install -v -m644    doc/{FAQ,HACK_GPM,README*}        \
       </para>
 
       <para revision="openrc">
-        <filename>/etc/sysconfig/mouse</filename>:
-        This file contains the name of your mouse device and the protocol
-        it uses.  To create this file, run the following as the
-        <systemitem class="username">root</systemitem> user:
+        <filename>/etc/conf.d/gpm</filename>:
+        This file contains all the launch options for <command>gpm</command>.
+        These options mainly specify the kernel device to use and the type of
+        mouse the kernel device is.
       </para>
-
-<screen role="root" revision="openrc"><userinput>cat &gt; /etc/sysconfig/mouse &lt;&lt; "EOF"
-<literal># Begin /etc/sysconfig/mouse
-
-MDEVICE="<replaceable>&lt;yourdevice&gt;</replaceable>"
-PROTOCOL="<replaceable>&lt;yourprotocol&gt;</replaceable>"
-GPMOPTS="<replaceable>&lt;additional options&gt;</replaceable>"
-
-# End /etc/sysconfig/mouse</literal>
-EOF</userinput></screen>
 
       <indexterm zone="gpm gpm-config">
         <primary sortas="e-AA.gpm-root">~/.gpm-root</primary>
@@ -265,7 +276,7 @@ EOF</userinput></screen>
       </indexterm>
 
       <indexterm zone="gpm gpm-config" revision="openrc">
-        <primary sortas="e-etc-sysconfig-mouse">/etc/sysconfig/mouse</primary>
+        <primary sortas="e-etc-sysconfig-mouse">/etc/conf.d/gpm</primary>
       </indexterm>
 
     </sect3>
@@ -274,23 +285,24 @@ EOF</userinput></screen>
       <title>Configuration Information</title>
 
       <para revision="openrc">
-        Examples of values to set <envar>MDEVICE</envar>,
-        <envar>PROTOCOL</envar>, and <envar>GPMOPTS</envar> to are:
+        Create the configuration file as the &root; user:
       </para>
 
-<screen revision="openrc"><literal>MDEVICE="/dev/input/mice"
-PROTOCOL="imps2"
-GPMOPTS=""</literal></screen>
+<screen role="root" revision="openrc"><userinput>cat &gt; /etc/conf.d/gpm &lt;&lt; "EOF"
+<literal>gpm_options="-m <replaceable>/dev/input/mice</replaceable> -t <replaceable>imps2</replaceable>"</literal>
+EOF</userinput></screen>
+
+      <para revision="openrc">
+        The <replaceable>/dev/input/mice</replaceable> part should be
+        the path to the mouse kernel device.
+        The <replaceable>imps2</replaceable> part should be the
+        protocol the mouse should use. For example, <literal>ps2</literal> may
+        be more suitable.
+      </para>
 
       <para revision="openrc">
         A list of which protocol values are known can be found by running
-        <command>gpm -m <replaceable>[device]</replaceable> -t -help</command>.
-        The <envar>MDEVICE</envar> setting depends on which type of mouse you
-        have.  For example, <filename>/dev/ttyS0</filename> for a serial mouse
-        (on Windows this is COM1), <filename>/dev/input/mice</filename> is
-        often used for USB mice and <filename>/dev/psaux</filename> for PS2
-        mice. <envar>GPMOPTS</envar> is the 'catch all' for any additional
-        options that are needed for your hardware.
+        <command>gpm -m <replaceable>&lt;device&gt;</replaceable> -t -help</command>.
       </para>
 
       <para revision="systemd">
