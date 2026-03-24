@@ -32,7 +32,7 @@
       wayland session.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -103,6 +103,15 @@
 
   <sect2 role="installation">
     <title>Installation of Xwayland</title>
+
+    <para>
+      First, make the package compatible with <xref linkend="nettle"/> and later:
+    </para>
+
+<screen><userinput>sed -e '/nettle.sha.h/s/sha/sha1/'                  \
+    -e '/nettle.sha1/a #include &lt;nettle/version.h&gt;' \
+    -e '/digest/s/ctx, 20/ctx/'                     \
+    -i os/xsha1.c</userinput></screen>
 
     <para>
       Install <application>xwayland</application> by running the following

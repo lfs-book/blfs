@@ -27,11 +27,11 @@
 
     <para>
       The <application>ISC Kea</application> package contains the
-      server programs for DHCP. It is the successor of the
-      old ISC DHCP server which is end-of-life since December 2022.
+      server programs for DHCP. This is the successor of the old ISC DHCP
+      server which went out of support in December 2022.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -80,7 +80,7 @@
       <xref linkend="bind"/>,
       <xref linkend="mitkrb"/>,
       <xref linkend="valgrind"/>,
-      <ulink url="https://botan.randombit.net/">botan</ulink>,
+      <ulink url="https://botan.randombit.net/">Botan</ulink>,
       <ulink url="https://cppcheck.sourceforge.io/">cppcheck</ulink>,
       <ulink url="https://github.com/CESNET/libyang">libyang</ulink>, and
       <ulink url="https://plantuml.com/">plantuml</ulink>
@@ -110,7 +110,8 @@
     <title>Kernel Configuration</title>
 
     <para>
-      You must have Packet Socket support. IPv6 support is optional.
+      You must have Packet Socket support. IPv6 support is optional. Enable the
+      following options in the kernel and reboot if necessary:
     </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -191,18 +192,19 @@ install -dm0750 /var/log/kea</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <option>-D crypto=openssl</option>: Allows using OpenSSL for
+      <parameter>-D crypto=openssl</parameter>: Allows using OpenSSL for
       communicating with the control-agent and for DNS updates. Use 
-      <option>-D crypto=botan</option> if you want to use botan.
-      The default provider is openssl.
+      <option>-D crypto=botan</option> if you want to use Botan.
+      The default provider is OpenSSL.
     </para>
 
     <para>
       <option>-D postgresql=enabled</option> or <option>-D mysql=enabled</option>:
-      <application>ISC Kea</application> can store the leases on a
+      <application>ISC Kea</application> can store the leases inside of a
       database. This might be useful in large environments running
       a cluster of DHCP servers. Using the <emphasis>memfile</emphasis>
-      backend (which is a CSV file stored locally) is possible anyhow.
+      backend (which is a CSV file stored locally) is possible, and this method
+      is what the default configuration presented here uses.
     </para>
 
     <para>
@@ -430,7 +432,7 @@ install -dm0750 /var/log/kea</userinput></screen>
         <filename class="directory">/tmp</filename>.
       </para>
 
-<screen role="nodump"><userinput>cat &gt; /etc/kea/kea-ctrl-agent.conf &lt;&lt; "EOF"
+<screen role='root'><userinput>cat &gt; /etc/kea/kea-ctrl-agent.conf &lt;&lt; "EOF"
 <literal>// Begin /etc/kea/kea-ctrl-agent.conf
 {
   // This is a basic configuration for the Kea Control Agent.
@@ -485,7 +487,7 @@ EOF</userinput></screen>
         all the fields in <emphasis>Subnet4</emphasis>):
       </para>
 
-<screen role="nodump"><userinput>cat &gt; /etc/kea/kea-dhcp4.conf &lt;&lt; "EOF"
+<screen role='root'><userinput>cat &gt; /etc/kea/kea-dhcp4.conf &lt;&lt; "EOF"
 <literal>// Begin /etc/kea/kea-dhcp4.conf
 {
   "Dhcp4": {

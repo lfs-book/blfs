@@ -29,7 +29,7 @@
         math in HTML via JavaScript.
       </para>
 
-      &lfs124_checked;
+      &lfs130_checked;
 
       <bridgehead renderas="sect4">Package Information</bridgehead>
       <itemizedlist spacing="compact">
@@ -65,6 +65,16 @@
         </listitem>
       </itemizedlist>
 
+      <bridgehead renderas="sect4">Additional Downloads</bridgehead>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            Required patch:
+            <ulink url="&patch-root;/sphinxcontrib-jsmath-&sc-jsmath-version;-sphinx9_fixes-1.patch"/>
+          </para>
+        </listitem>
+      </itemizedlist>
+
       <bridgehead renderas="sect4">Sphinxcontrib-jsmath Dependencies</bridgehead>
 
       <bridgehead renderas="sect5">Optional (for testing)</bridgehead>
@@ -78,6 +88,13 @@
     <sect3 role="installation">
       <title>Installation of Sphinxcontrib-jsmath</title>
 
+    <para>
+      <!-- PR #53 upstream with additional modifications for tests -->
+      First, fix several incompatibilities with Sphinx-9.1 and pytest-9.0.2:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../sphinxcontrib-jsmath-&sc-jsmath-version;-sphinx9_fixes-1.patch</userinput></screen>
+
     <para> Build the module: </para>
 
 &build-wheel;
@@ -89,12 +106,12 @@
 <screen role="root"><userinput>&install-wheel; sphinxcontrib-jsmath</userinput></screen>
 
     <para>
-      The installation can be tested with the following commands:
+      The installation can be tested with the following command:
     </para>
 
-<screen remap="test"><userinput>sed -i 's/text()/read_&amp;/' tests/test_jsmath.py &amp;&amp;
-pytest</userinput></screen>
+<screen remap="test"><userinput>pytest</userinput></screen>
 
+<!-- Not needed with the sphinx9 compatibility fixes patch.
     <para>
       the <command>sed ...</command> command is needed because of a change
       in <application>Sphinx</application> API for versions greater than
@@ -103,6 +120,7 @@ pytest</userinput></screen>
       <filename>test_disabled_when_equations_not_found</filename>. One
       warning about upcoming changes in docutils is also printed.
     </para>
+-->
 
     </sect3>
 

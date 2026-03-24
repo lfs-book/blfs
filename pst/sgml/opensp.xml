@@ -32,7 +32,7 @@
       documents.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -101,23 +101,26 @@
       commands:
     </para>
 
-<screen><userinput>patch -Np1 -i ../OpenSP-&opensp-version;-gcc14-1.patch          &amp;&amp;
-sed -i 's/32,/253,/' lib/Syntax.cxx                  &amp;&amp;
-sed -i 's/LITLEN          240 /LITLEN          8092/' \
-    unicode/{gensyntax.pl,unicode.syn}               &amp;&amp;
+<screen><userinput>patch -Np1 -i ../OpenSP-&opensp-version;-gcc14-1.patch              &amp;&amp;
+sed -i 's/32,/253,/' lib/Syntax.cxx                      &amp;&amp;
+sed -i 's/LITLEN          240 /LITLEN          8092/'    \
+    unicode/{gensyntax.pl,unicode.syn}                   &amp;&amp;
 
-./configure --prefix=/usr                              \
-            --disable-static                           \
-            --disable-doc-build                        \
-            --enable-default-catalog=/etc/sgml/catalog \
-            --enable-http                              \
+./configure --prefix=/usr                                \
+            --disable-static                             \
+            --disable-doc-build                          \
+            --enable-default-catalog=/etc/sgml/catalog   \
+            --enable-http                                \
             --enable-default-search-path=/usr/share/sgml &amp;&amp;
 
 make pkgdatadir=/usr/share/sgml/OpenSP-&opensp-version;</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>. As many as
-      nine of the 23 tests may fail. Do not be alarmed.
+      To test the results, issue: <command>make check</command>. The
+      <filename>catalog-2</filename>, <filename>af-7</filename>,
+      <filename>af-8</filename>, <filename>af-9</filename>,
+      <filename>af-10</filename>, and <filename>af-11</filename> tests are known
+      to fail.
     </para>
 
     <para>

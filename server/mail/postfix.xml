@@ -9,9 +9,9 @@
   mirror status, some of the mirrors shown as http are actually https -->
   <!ENTITY postfix-download-http "https://ghostarchive.org/postfix/postfix-release/official/postfix-&postfix-version;.tar.gz">
   <!ENTITY postfix-download-ftp  " ">
-  <!ENTITY postfix-md5sum        "604e00614fa14f5d109a176420fde7c3">
-  <!ENTITY postfix-size          "4.8 MB">
-  <!ENTITY postfix-buildsize     "157 MB">
+  <!ENTITY postfix-md5sum        "4b2f1446b9a41fc3fe7fb19c6f488741">
+  <!ENTITY postfix-size          "5.0 MB">
+  <!ENTITY postfix-buildsize     "169 MB (62 MB installed)">
   <!ENTITY postfix-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
@@ -36,7 +36,7 @@
       Internet Service Provider.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -212,7 +212,7 @@ fi</userinput></screen>
 
 <screen><userinput>if [ -r /usr/lib/liblmdb.so ]; then
   CCARGS="$CCARGS -DHAS_LMDB"
-  AUXLIBS="$AUXLIBS -llmdb"
+  AUXLIBS_LMDB="-llmdb"
 fi</userinput></screen>
       </sect4>
 
@@ -247,10 +247,10 @@ fi</userinput></screen>
       </sect4>
 
       <sect4>
-        <title>MySQL</title>
+        <title>MySQL or MariaDB</title>
 
         <para>
-          To use <application>MySQL</application> with
+          To use <application>MySQL</application> or <application>MariaDB</application> with
           <application>Postfix</application>, use the following arguments:
         </para>
 
@@ -324,7 +324,12 @@ fi</userinput></screen>
         running the following commands:
       </para>
 
-<screen><userinput>make CC="gcc -std=gnu17" CCARGS="$CCARGS" AUXLIBS="$AUXLIBS" makefiles &amp;&amp;
+<screen><userinput>make makefiles                    \
+     CCARGS="$CCARGS"             \
+     AUXLIBS="$AUXLIBS"           \
+     AUXLIBS_LMDB="$AUXLIBS_LMDB" \
+     default_database_type=lmdb   \
+     default_cache_db_type=lmdb   &amp;&amp;
 make</userinput></screen>
 
     <!-- There is a test suite, but it fails a lot. It seems to need
@@ -367,20 +372,28 @@ make</userinput></screen>
       options are not set then the documentation will not be installed.
     </para>
 
-    <!--
-      Next version of postfix still has gcc15 issues
-      Tested at 22 July 25 with RC postfix-3.11-20250621.tar.gz
-    -->
+<!--
     <para>
       <option>CC="gcc -std=gnu17"</option>: this is used to overcome an issue
       with gcc-15. This version of gcc uses <literal>-std=gnu23</literal> by
       default which exposes several issues in the source code.
     </para>
+-->
 
     <para>
-      <option>CCARGS="-DNO_EAI ..."</option>: this will turn off SMTPUTF8
+      <option>CCARGS="-DNO_EAI ..."</option>: This will turn off SMTPUTF8
       support, for example  if the rest of your email address infrastructure
       cannot handle UTF-8 email addresses and message header values.
+    </para>
+
+    <para>
+      <option>default_database_type=lmdb</option>: Postfix no longer specifies
+      a default database type. It must be specified when creating the makefiles.
+    </para>
+
+    <para>
+      <option>default_cache_db_type=lmdb</option>: Postfix no longer specifies
+      a default cache type. It must be specified when creating the makefiles.
     </para>
 
   </sect2>
@@ -432,11 +445,11 @@ EOF</userinput></screen>
       <para>
         To protect an existing <filename>/etc/aliases</filename> file,
         the above command appends these aliases to it if it exists. This file
-        should be checked and duplicate aliases removed, if present.
+        should be checked and duplicate aliases removed if present.
       </para>
 
       <para>
-        The BLFS editors recommend to use LMDB instead of Berkeley DB for
+        The BLFS editors recommend to use LMDB for
         Postfix tables.  Add three lines into
         <filename>/etc/postfix/main.cf</filename> to make
         <command>postmap</command> encode the lookup tables in the LMDB

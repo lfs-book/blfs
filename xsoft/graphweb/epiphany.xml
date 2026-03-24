@@ -7,7 +7,7 @@
   <!ENTITY epiphany-download-http
            "&gnome-download-http;/epiphany/&gnome-49;/epiphany-&epiphany-version;.tar.xz">
   <!ENTITY epiphany-download-ftp  " ">
-  <!ENTITY epiphany-md5sum        "e1217ecc45649a9f19ad47740adca29f">
+  <!ENTITY epiphany-md5sum        "bf0e31c822915fddfdfcce97544f6f8e">
   <!ENTITY epiphany-size          "4.0 MB">
   <!ENTITY epiphany-buildsize     "51 MB (with tests)">
   <!ENTITY epiphany-time          "0.2 SBU (with tests; both using parallelism=4)">
@@ -32,7 +32,7 @@
       users. Its principles are simplicity and standards compliance.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -109,9 +109,15 @@
         that will cause a crash at runtime if they are present as the &root;
         user:
       </para>
-    </note>
 
 <screen role="nodump"><userinput remap="pre">rm -rf /usr/lib/epiphany</userinput></screen>
+    </note>
+
+    <para>
+      First, fix one file to be compatible with <xref linkend="nettle"/> and later:
+    </para>
+
+<screen><userinput>sed -i '/hkdf_extract/,/;$/{/DIGEST_SIZE/d}' lib/sync/ephy-sync-crypto.c</userinput></screen>
 
     <para>
       Install <application>Epiphany</application> by running the following

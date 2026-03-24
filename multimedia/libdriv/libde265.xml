@@ -5,9 +5,9 @@
   %general-entities;
 
   <!ENTITY libde265-download-http "https://github.com/strukturag/libde265/releases/download/v&libde265-version;/libde265-&libde265-version;.tar.gz">
-  <!ENTITY libde265-md5sum        "f3173ff6fa273e139de19e6e77bec9b6">
-  <!ENTITY libde265-size          "817 KB">
-  <!ENTITY libde265-buildsize     "30 MB">
+  <!ENTITY libde265-md5sum        "1c14b8da1ce75ed87ede01274d4eb15d">
+  <!ENTITY libde265-size          "284K KB">
+  <!ENTITY libde265-buildsize     "6.9 MB">
   <!ENTITY libde265-time          "0.2 SBU">
 ]>
 
@@ -30,7 +30,7 @@
       H.265 video codec implementation.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -63,6 +63,11 @@
 
     <bridgehead renderas="sect3">libde265 Dependencies</bridgehead>
 
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="cmake"/>
+    </para>
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="sdl2"/>
@@ -82,24 +87,17 @@
   <sect2 role="installation">
     <title>Installation of libde265</title>
 
-    <!-- One of them would be "/usr/bin/tests" and IMO installing them is
-         completely stupid.  -->
-    <para>
-      First, prevent the installation of some programs which are only useful
-      for hacking libde265:
-    </para>
-
-<screen><userinput>sed '/tools/d' -i Makefile.am &amp;&amp;
-./autogen.sh</userinput></screen>
-
     <para>
       Install <application>libde265</application> by running the following
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr         \
-            --disable-sherlock265 \
-            --disable-static      &amp;&amp;
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      .. &amp;&amp;
 make</userinput></screen>
 
     <!-- The README.md file mentions a "testdata" directory but I cannot
@@ -113,23 +111,6 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install</userinput></screen>
-  </sect2>
-
-  <sect2 role="commands">
-    <title>Command Explanations</title>
-
-    <para>
-      <parameter>--disable-sherlock265</parameter>: This switch disables the
-      sherlock265 program because it requires Qt5, which is no longer in BLFS.
-      The sherlock265 program is mostly useful for users who are editing H.265
-      videos.
-    </para>
-
-    <para>
-      <option>--enable-encoder</option>: This option enables the H.265
-      encoder, in addition to the decoder.  The encoder is still experimental
-      though so the instructions above do not contain this option.
-    </para>
   </sect2>
 
   <sect2 role="content">

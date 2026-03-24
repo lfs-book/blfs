@@ -6,10 +6,10 @@
 
   <!ENTITY kdenlive-download-http "&kf6apps-download-http;/kdenlive-&kf6apps-version;.tar.xz">
   <!ENTITY kdenlive-download-ftp  " ">
-  <!ENTITY kdenlive-md5sum        "b5b79faa496f5cd52843fc79e578fbbf">
+  <!ENTITY kdenlive-md5sum        "b3f4d4bf3d0d855f75238b5dd8122742">
   <!ENTITY kdenlive-size          "14 MB">
-  <!ENTITY kdenlive-buildsize     "501 MB">
-  <!ENTITY kdenlive-time          "3.2 SBU (using parallelism=4)">
+  <!ENTITY kdenlive-buildsize     "624 MB">
+  <!ENTITY kdenlive-time          "3.1 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="kdenlive" xreflabel="kdenlive-&kf6apps-version;">
@@ -25,11 +25,11 @@
     <title>Introduction to Kdenlive</title>
 
     <para>
-      The <application>Kdenlive</application> package is a KF6 based video
-      editor.
+      The <application>Kdenlive</application> package is a KDE Frameworks-based
+      video editor that can handle numerous video and audio codecs.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,6 +70,7 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="git"/>,
+      <xref linkend="kddockwidgets"/>,
       <xref linkend="kf6-frameworks"/>,
       <xref linkend="mlt"/>, and
       <xref role="runtime" linkend="v4l-utils"/> (runtime)
@@ -82,11 +83,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <ulink
-        url="https://glfs-book.github.io/slfs/general/ladspa-sdk.html">LADSPA-SDK</ulink>
-      and
-      <ulink
-        url="https://glfs-book.github.io/slfs/general/noise-suppression.html">Noise-Suppression</ulink>
+      <ulink url="https://glfs-book.github.io/slfs/general/ladspa-sdk.html">LADSPA-SDK</ulink>,
+      <ulink url="https://glfs-book.github.io/slfs/general/noise-suppression.html">Noise-Suppression</ulink>, and
+      <ulink url="https://github.com/AcademySoftwareFoundation/OpenTimelineIO">OpenTimelineIO</ulink>
     </para>
 
     &build-use-internet;
@@ -107,6 +106,7 @@ cd    build &amp;&amp;
 cmake -D CMAKE_INSTALL_PREFIX=$KF6_PREFIX \
       -D CMAKE_BUILD_TYPE=Release         \
       -D BUILD_TESTING=OFF                \
+      -D FETCH_OTIO=ON                    \
       -W no-dev .. &amp;&amp;
 make</userinput></screen>
 
@@ -116,7 +116,11 @@ make</userinput></screen>
       100 MB. Configuration will seem to hang right after
       <command>cmake</command> begins running. This is normal, it is fetching
       that Git repository. If it hangs for a while, it's most likely due to a
-      poor download speed during the download process.
+      poor download speed during the download process. The
+      <parameter>-D FETCH_OTIO</parameter> CMake option should be omitted if you
+      have installed the <application>OpenTimelineIO</application> package.
+      <!-- renodr: I still don't like that we're doing this, but I know it's
+           the best approach for BLFS 13.0 -->
     </para></note>
 
     <para>
@@ -163,7 +167,7 @@ make</userinput></screen>
         <listitem>
           <para>
              is an open source non-linear video editor which supports
-             a large number of formats
+             numerous audio and video codecs
           </para>
           <indexterm zone="kdenlive kdenlive-prog">
             <primary sortas="b-kdenlive">kdenlive</primary>

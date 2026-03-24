@@ -7,24 +7,24 @@
   <!ENTITY libreoffice-dl "https://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "4207b73da25f6c21b941136f75ee1e25">
-  <!ENTITY libreoffice-core-size          "274 MB">
+  <!ENTITY libreoffice-core-md5sum        "26333cb0d787e165559ffd8618312a20">
+  <!ENTITY libreoffice-core-size          "278 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "6eb5789e04ccbe82bb3e3236e1450626">
+  <!ENTITY libreoffice-dict-md5sum        "803653b734feb20c151af181f8f6802c">
   <!ENTITY libreoffice-dict-size          "60 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "9e45a4dee0e56290788562bcbfa4eb4b">
-  <!ENTITY libreoffice-help-size          "58 MB">
+  <!ENTITY libreoffice-help-md5sum        "568d29fb7125c049e95ccc1ed34591cb">
+  <!ENTITY libreoffice-help-size          "56 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum        "38a6b691d21d234f5c79bce91b979646">
-  <!ENTITY libreoffice-translations-size          "221 MB">
+  <!ENTITY libreoffice-translations-md5sum        "497e8e0e6dfae80987c23c747e52f06c">
+  <!ENTITY libreoffice-translations-size          "224 MB">
 
   <!-- full size remeasured for 7.0.0.3 -->
 
-  <!ENTITY libreoffice-buildsize  "7.6 GB including the additional files if downloaded during the build (740 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
+  <!ENTITY libreoffice-buildsize  "11 GB including the additional files if downloaded during the build (827 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
 
  <!-- Editors: many updates to poppler will break LO using system poppler until
       somebody is able to provide a patch or sed.  In these cases, please mark
@@ -58,7 +58,7 @@
 
        For 7.5.4.2, I increased the parallelism to 8.  -bdubbs
   -->
-  <!ENTITY libreoffice-time "22 SBU with parallelism=8 (will vary due to download time)">
+  <!ENTITY libreoffice-time "21 SBU with parallelism=8 (will vary due to download time)">
 
 ]>
 
@@ -81,7 +81,7 @@
       and is descended from <application>OpenOffice.org</application>.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -170,12 +170,14 @@
           Required patch to fix building with <xref linkend="icu"/>:
           <ulink url="&patch-root;/libreoffice-&libreoffice-dlversion;-icu76_fixes-1.patch"/>
         </para>
-        <para>
-          Required patch to fix building with <xref linkend="poppler"/>:
-          <ulink url="&patch-root;/libreoffice-&libreoffice-dlversion;-poppler_fixes-1.patch"/>
-        </para>
       </listitem>
       -->
+      <listitem>
+        <para>
+          Required patch to fix building with <xref linkend="poppler"/>:
+          <ulink url="&patch-root;/libreoffice-&libreoffice-dlversion;-poppler_26.02-1.patch"/>
+        </para>
+      </listitem>
 
     </itemizedlist>
     <bridgehead renderas="sect3">LibreOffice Dependencies</bridgehead>
@@ -326,16 +328,7 @@
       First, fix build failures introduced by the latest version of poppler:
     </para>
 
-<screen><userinput remap="pre">sed -e 's/>reset/>rewind/' \
-    -i sdext/source/pdfimport/xpdfwrapper/pdfioutdev_gpl.cxx \
-       sdext/source/pdfimport/xpdfwrapper/pnghelper.cxx</userinput></screen>
-
-    <para>
-      First, fix a problem with detecting Boost::System, which was changed from
-      a library to a series of headers in Boost-1.89.0:
-    </para>
-
-<screen><userinput remap="pre">export boost_cv_lib_system=yes</userinput></screen>
+<screen><userinput remap="pre">patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-poppler_26.02-1.patch</userinput></screen>
 
     <para>
       Next, fix a bug with linking to zlib,
@@ -488,10 +481,10 @@ esac</userinput></screen>
   ln -svf $LO_PREFIX/lib/libreoffice/program/soffice /usr/bin/libreoffice &amp;&amp;
 
   # Set up a generic location independent of version number
-  ln -sfv $LO_PREFIX /opt/libreoffice
+  ln -sfv $LO_PREFIX /opt/libreoffice &amp;&amp;
 
   # Icons
-  mkdir -vp /usr/share/pixmaps
+  mkdir -vp /usr/share/pixmaps &amp;&amp;
   for i in $LO_PREFIX/share/icons/hicolor/32x32/apps/*; do
     ln -svf $i /usr/share/pixmaps
   done &amp;&amp;
@@ -504,7 +497,7 @@ esac</userinput></screen>
   # Man pages
   for i in $LO_PREFIX/share/man/man1/*; do
     ln -svf $i /usr/share/man/man1/
-  done
+  done &amp;&amp;
 
   unset i
 fi</userinput></screen>

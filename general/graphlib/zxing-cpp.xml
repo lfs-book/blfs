@@ -4,11 +4,11 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY zxing-cpp-download-http "https://github.com/zxing-cpp/zxing-cpp/archive/v&zxing-cpp-version;/zxing-cpp-&zxing-cpp-version;.tar.gz">
+  <!ENTITY zxing-cpp-download-http "https://github.com/zxing-cpp/zxing-cpp/releases/download/v&zxing-cpp-version;/zxing-cpp-&zxing-cpp-version;.tar.gz">
   <!ENTITY zxing-cpp-download-ftp  " ">
-  <!ENTITY zxing-cpp-md5sum        "91ae23c12b5a00d54037ad019777238a">
-  <!ENTITY zxing-cpp-size          "988 KB">
-  <!ENTITY zxing-cpp-buildsize     "67 MB">
+  <!ENTITY zxing-cpp-md5sum        "7690dcbad9fd76fb4f6cacf8036f1293">
+  <!ENTITY zxing-cpp-size          "1.5 MB">
+  <!ENTITY zxing-cpp-buildsize     "85 MB">
   <!ENTITY zxing-cpp-time          "0.1 SBU (Using parallelism=4)">
 ]>
 
@@ -30,7 +30,7 @@
       multi-format linear/matrix barcode image processing library.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -93,13 +93,16 @@
 cd    build &amp;&amp;
 
 cmake -D CMAKE_INSTALL_PREFIX=/usr \
-      -D CMAKE_BUILD_TYPE=Release  \
+      -D ZXING_C_API=OFF           \
       -D ZXING_EXAMPLES=OFF        \
+      -D ZXING_WRITERS=BOTH        \
       -W no-dev ..                 &amp;&amp;
 make</userinput></screen>
 
     <para>
-      Tests require an external package.
+      The tests require the
+      <ulink url="https://github.com/google/googletest">googletest</ulink>
+      package, which is not in BLFS.
     </para>
 
     <para>
@@ -132,6 +135,24 @@ make</userinput></screen>
       </seglistitem>
     </segmentedlist>
 
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presention="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="libZXing">
+        <term><filename class="libraryfile">libZXing.so</filename></term>
+        <listitem>
+          <para>
+            provides several API functions for processing barcode images
+          </para>
+          <indexterm zone="zxing-cpp libZXing">
+            <primary sortas="c-libZXing">libZXing.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
   </sect2>
 
 </sect1>

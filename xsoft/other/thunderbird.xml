@@ -6,9 +6,9 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;esr/source/thunderbird-&thunderbird-version;esr.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "37f95dfb61468204c514ac5a36c32cd3">
-  <!ENTITY thunderbird-size          "721 MB">
-  <!ENTITY thunderbird-buildsize     "8.8 GB (268 MB installed)">
+  <!ENTITY thunderbird-md5sum        "e7f41ea1e4a39b322c5d63969e31ec92">
+  <!ENTITY thunderbird-size          "724 MB">
+  <!ENTITY thunderbird-buildsize     "8.9 GB (267 MB installed)">
   <!ENTITY thunderbird-time          "16 SBU (on a 8-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
@@ -36,7 +36,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
         href="../../xincludes/security-updates.xml"/>
@@ -81,6 +81,18 @@
         <para>
           Required patch:
           <ulink url="&patch-root;/thunderbird-&thunderbird-version;esr-python_3.14_fixes-1.patch"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/thunderbird-&thunderbird-version;esr-glibc-2.43.patch"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/thunderbird-&thunderbird-version;esr-llvm_22-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -152,6 +164,36 @@
     </note>
 
     <para>
+      At first, fix building this package with Python-3.14:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-python_3.14_fixes-1.patch</userinput></screen>
+
+    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=2006630 -->
+    <para>
+      Remove checksums from cargo crates for files that don't exist:
+    </para>
+
+<screen><userinput remap="pre">find -name .cargo-checksum.json | \
+     xargs sed -ri 's|"[^"]*.gitmodules":"[^"]*",?||'</userinput></screen>
+
+    <para>
+      Fix building this package with glibc-2.43 and adapt the checksums:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-glibc-2.43.patch &amp;&amp;
+sed '/patch.crates-io/a glslopt={path="../third_party/rust/glslopt"}' \
+    -i comm/rust/Cargo.toml &amp;&amp;
+sed '/name = "glslopt"/,/^$/{/source/d;/checksum/d}' \
+    -i comm/rust/Cargo.lock</userinput></screen>
+
+    <para>
+      Next, fix building this package with LLVM-22:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-llvm_22-1.patch</userinput></screen>
+
+    <para>
       The configuration of <application>Thunderbird</application> is
       accomplished by creating a <filename>mozconfig</filename> file containing
       the desired configuration options. A default
@@ -218,24 +260,6 @@ ac_add_options --with-system-zlib
 # and was reported to seriously slow the build. Disable it.
 ac_add_options --without-wasm-sandboxed-libraries</literal>
 EOF</userinput></screen>
-
-<!--
-    <para>
-      Change a Rust file to allow implicit autoref to prevent a build failure.
-      The trailing <literal>\r</literal> ensures that the MS-DOS format is used
-      for the inserted line so that it will be consistent with all other lines
-      in the file:
-    </para>
-
-<screen><userinput>sed -e '1i\#![warn(dangerous_implicit_autorefs)]\r' \
-    -i third_party/rust/allocator-api2/src/stable/vec/mod.rs</userinput></screen>
--->
-
-    <para>
-      Next, fix building this package with Python 3.14:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-python_3.14_fixes-1.patch</userinput></screen>
 
     <para>
       Now invoke the Python <command>mach</command> script to compile

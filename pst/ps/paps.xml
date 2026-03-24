@@ -33,7 +33,7 @@
       <application>Pango</application>.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,6 +69,15 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing='compact'>
+      <listitem>
+        <para>
+          Required patch: <ulink url="&patch-root;/paps-&paps-version;-fmt_fix-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">paps Dependencies</bridgehead>
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
@@ -89,10 +98,11 @@
 
 
     <para>
-      First fix a problem with glib-2.81.0 or later:
+      First fix problems with glib-2.81.0 and fmt-12.1.0 or later:
     </para>
 
-<screen><userinput>sed -i -r 's/g_utf8_(next|offset)/(char*) &amp;/' src/paps.cc</userinput></screen>
+<screen><userinput>sed -i -r 's/g_utf8_(next|offset)/(char*) &amp;/' src/paps.cc &amp;&amp;
+patch -Np1 -i ../paps-0.8.0-fmt_fix-1.patch</userinput></screen>
 
     <para>
       Install <application>paps</application> by running the following

@@ -6,10 +6,10 @@
 
   <!ENTITY libarchive-download-http "https://github.com/libarchive/libarchive/releases/download/v&libarchive-version;/libarchive-&libarchive-version;.tar.xz">
   <!ENTITY libarchive-download-ftp  " ">
-  <!ENTITY libarchive-md5sum        "2cd5a73ed7fe7f9da22d34ac1048534e">
-  <!ENTITY libarchive-size          "5.8 MB">
-  <!ENTITY libarchive-buildsize     "43 MB (add 37 MB for tests)">
-  <!ENTITY libarchive-time          "0.3 SBU (add 0.8 SBU for tests)">
+  <!ENTITY libarchive-md5sum        "cc93976c9b7db628a1b92a337a5def56">
+  <!ENTITY libarchive-size          "5.7 MB">
+  <!ENTITY libarchive-buildsize     "48 MB (add 37 MB for tests)">
+  <!ENTITY libarchive-time          "0.2 SBU (add 0.3 SBU for tests)">
 ]>
 
 <sect1 id="libarchive" xreflabel="libarchive-&libarchive-version;">
@@ -30,7 +30,7 @@
       interface for reading/writing various compression formats.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -147,7 +147,18 @@ make</userinput></screen>
 
     <para>
       <option>--with-nettle</option>: This switch uses Nettle for crypto
-      support instead of OpenSSL.
+      support instead of OpenSSL. This support is known to be broken upstream
+      due to Nettle-4.0.
+      <!-- Originally I reverted the commit where I added this because I had
+      a patch from upstream. The patch turned out to be insufficient, it fixes
+      the compiler errors but then generates numerous amounts of undefined
+      reference errors at link time. I chimed in on the upstream bug report
+      at https://github.com/libarchive/libarchive/issues/2876 - and the PR
+      I used to try fixing it was:
+      https://github.com/libarchive/libarchive/pull/2858
+      Since this support is explicitly opt-in, let's just note it's broken
+      for now and I will follow up when upstream gets back to me. -renodr
+      -->
     </para>
 
   </sect2>
@@ -162,7 +173,7 @@ make</userinput></screen>
 
       <seglistitem>
         <seg>
-          bsdcat, bsdcpio, bsdtar, and bsdunzip
+          bsdcat, bsdcpio, bsdtar, bsdunzip, and unzip (symlink to bsdunzip)
         </seg>
         <seg>
           libarchive.so

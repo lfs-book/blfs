@@ -35,7 +35,7 @@
       changing SVG images.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,17 +70,17 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch: <ulink
-          url="&patch-root;/inkscape-&inkscape-version;-poppler_fixes-5.patch"/>
+          url="&patch-root;/inkscape-&inkscape-version;-poppler-26_fixes.patch"/>
         </para>
       </listitem>
     </itemizedlist>
--->
+
     <note>
       <para>
         The tarball <filename>inkscape-&inkscape-version;.tar.xz</filename>
@@ -155,7 +155,14 @@
     <title>Installation of Inkscape</title>
 
     <para>
-      First, fix build failures with versions of poppler-26.01.0  and later:
+      First, fix build failures that appeared beginning with poppler-26.01.0:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i inkscape-&inkscape-version;-poppler-26_fixes.patch</userinput></screen>
+
+<!--
+    <para>
+      Then, fix build failures that appeared with poppler-26.01.0:
     </para>
 
 <screen><userinput remap="pre">sed -i 's/gfree/g_free/' src/extension/internal/pdfinput/pdf-input.cpp &amp;&amp;
@@ -163,6 +170,7 @@
 sed -e '/Stream.h/a#include &lt;poppler/goo/gmem.h&gt;' \
     -e 's/reset/rewind/'                          \
     -i src/extension/internal/pdfinput/svg-builder.cpp</userinput></screen>
+-->
 
     <para>
       Install <application>Inkscape</application> by running the following

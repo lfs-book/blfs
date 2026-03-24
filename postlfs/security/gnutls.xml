@@ -53,7 +53,7 @@
       extension, and X.509 and OpenPGP certificate handling.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -99,6 +99,16 @@
     </note>
 -->
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/gnutls-&gnutls-version;-nettle4_fixes-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">GnuTLS Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -124,13 +134,17 @@
       <xref linkend="libseccomp"/>,
       <xref linkend="net-tools"/> (used during the test suite),
       <xref linkend="texlive"/> or <xref linkend="tl-installer"/>,
-      <xref linkend="unbound"/> (to build the DANE library),
+      <phrase revision="openrc"><xref linkend="unbound"/>
+        (to build the DANE library),</phrase>
       <xref linkend="valgrind"/> (used during the test suite),
       <ulink url="&gnu-http;/autogen/">autogen</ulink>,
       <ulink url="https://cmocka.org/">cmocka</ulink> and
-      <ulink url="https://ftp.debian.org/debian/pool/main/d/datefudge/">datefudge</ulink> (used during the test suite if the DANE library is built),
+      <ulink url="https://ftp.debian.org/debian/pool/main/d/datefudge/"
+        revision='openrc'>datefudge</ulink> (used during the test suite if the
+        DANE library is built),
       <ulink url="https://github.com/smuellerDD/leancrypto">leancrypto</ulink>, and
-      <ulink url="&sourceforge-dl;/trousers/">Trousers</ulink> (Trusted Platform Module support)
+      <ulink url="&sourceforge-dl;/trousers/">Trousers</ulink> (Trusted Platform
+        Module support)
     </para>
 
     <note><para>
@@ -146,6 +160,12 @@
   <sect2 role="installation">
     <title>Installation of GnuTLS</title>
 
+    <para>
+      First, apply a patch to allow the package to build with <xref linkend="nettle"/>
+      and later:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../gnutls-&gnutls-version;-nettle4_fixes-1.patch</userinput></screen>
     <para>
       Install <application>GnuTLS</application> by running the
       following commands:

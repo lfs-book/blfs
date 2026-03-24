@@ -65,7 +65,7 @@
       </para>
     </warning>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <warning>
       <para>
@@ -162,7 +162,6 @@
       <xref linkend="pulseaudio"/> (or both),
       <xref linkend="ffmpeg"/>,
       <xref linkend="icu"/>,
-      <xref linkend="libevent"/>,
       <xref linkend="libwebp"/>,
       <xref linkend="libxslt"/>,
       <xref linkend="opus"/>, and
@@ -183,13 +182,13 @@
   <sect2 role="installation">
     <title>Installation of qtwebengine</title>
 
-<!--
+
     <para>
-      Adjust the FFMpeg profiles to support FFMPEG 8.0
+      First, make a fix to be compatible with glibc-2.43 and later:
     </para>
 
-<screen><userinput>patch -Np1 -i ../qtwebengine-&qtwebengine-version;-ffmpeg_8.0-1.patch</userinput></screen>
--->
+<screen><userinput>sed -e '/ifndef SYS_SECCOMP/,+2 d' \
+    -i src/3rdparty/chromium/sandbox/linux/system_headers/linux_seccomp.h</userinput></screen>
 
     <para>
       Install <application>qtwebengine</application> by running the following
@@ -202,7 +201,6 @@ cd    build &amp;&amp;
 cmake -D CMAKE_MESSAGE_LOG_LEVEL=STATUS             \
       -D QT_FEATURE_webengine_system_ffmpeg=ON      \
       -D QT_FEATURE_webengine_system_icu=ON         \
-      -D QT_FEATURE_webengine_system_libevent=ON    \
       -D QT_FEATURE_webengine_proprietary_codecs=ON \
       -D QT_FEATURE_webengine_webrtc_pipewire=ON    \
       -D QT_BUILD_EXAMPLES_BY_DEFAULT=OFF           \

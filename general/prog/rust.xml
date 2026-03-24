@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "65de3c1b0a9304b16ff27433a0dafb95">
-  <!ENTITY rust-size          "258 MB">
+  <!ENTITY rust-md5sum        "cd01d7a97f98940567663652ac9747a0">
+  <!ENTITY rust-size          "262 MB">
   <!ENTITY rust-buildsize     "10 GB (324 MB installed); add 11 GB if running the tests">
   <!ENTITY rust-time          "10 SBU (including download time; add 15 SBU for tests, both using parallelism=8)">
 ]>
@@ -100,7 +100,7 @@
       </para>
     </note>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -233,8 +233,8 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 
 # Tell x.py that the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
-# so x.py will not warn users to rewiew that information.
-change-id = 148795
+# so x.py will not warn users to review that information.
+change-id = 148671
 
 [llvm]
 # When using the system installed copy of LLVM, prefer the shared libraries
@@ -323,6 +323,10 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
       The test named <filename>tests/run-make/rustdoc-target-modifiers</filename>
       is known to fail because we've not enabled the AArch64 target in
       <xref linkend='llvm'/>.
+      <!-- https://github.com/rust-lang/rust/pull/151375 -->
+      The tests named <filename>missing_span_in_backtrace.rs</filename>
+      and <filename>trimmed_multiline_suggestion.rs</filename> may fail
+      because they depend on the terminal width.
     </para>
 
     <para>
@@ -332,29 +336,6 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
       mention of a SIGSEGV or signal 11 in a failing test is a cause for
       concern.
     </para>
-
-    <note>
-      <para>
-        If you've stripped
-        <filename class='libraryfile'>/usr/lib/libc.a</filename> with
-        <command>strip --strip-unneeded</command>, all statically-linked
-        Rust programs will crash with SIGSEGV on start-up, causing several
-        tests (for example
-        <filename>tests/ui/process/nofile-limit.rs</filename>) to fail with
-        SIGSEGV.
-      </para>
-      <para>
-        It's caused by a Glibc bug affecting Glibc-2.42 and several prior
-        releases, so for now we've replaced
-        <parameter>--strip-unneeded</parameter> with
-        <parameter>--strip-debug</parameter> in both the LFS book and
-        <xref linkend='stripping'/> to work around the problem. If you hit
-        this issue, rebuild Glibc and replace the
-        <filename class='libraryfile'>/usr/lib/libc.a</filename> file
-        with the unstripped <filename class='libraryfile'>libc.a</filename>
-        from the fresh build.
-      </para>
-    </note>
 
     <para>
       If you get any <emphasis>other</emphasis> failing test which reports an

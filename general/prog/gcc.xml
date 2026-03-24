@@ -36,7 +36,7 @@
 
     <note>
       <para>
-        Additional languages, among which COBOL, D, and Ada, are available in the
+        Additional languages, including COBOL, D, and Ada, are available in the
         collection. COBOL is currently only supported on x86-64 systems. D and Ada 
         have a binary bootstrap requirement for the first
         installation, so their installation is not described here. To install
@@ -47,7 +47,7 @@
       </para>
     </note>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <caution>
       <para>
@@ -131,7 +131,7 @@
         <command>./configure</command> command below, the
         installation process will overwrite your existing
         <application>GCC</application> C and C++ compilers and libraries.
-        Running the full suite of tests is recommended.
+        Running the full suite of tests is recommended because of this.
       </para>
 
       <para>
@@ -149,9 +149,15 @@
       The instructions below are intentionally performing a
       <quote>bootstrap</quote> process. Bootstrapping is needed for robustness
       and is highly recommended when upgrading the compilers version. To disable
-      bootstrap anyway, add <parameter>--disable-bootstrap</parameter> to the
+      bootstrapping anyway, add <parameter>--disable-bootstrap</parameter> to the
       <command>./configure</command> options below.
     </para>
+
+    <para>
+      First, make a fix required by glibc-2.43 and later: 
+    </para>
+
+<screen><userinput>sed -i 's/char [*]q/const &amp;/' libgomp/affinity-fmt.c</userinput></screen>
 
     <para>
       Install <application>GCC</application> by running the following commands:
@@ -225,12 +231,14 @@ chown -v -R root:root \
 ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/&gcc-version;/liblto_plugin.so \
         /usr/lib/bfd-plugins/</userinput></screen>
 
+<!-- This hasn't been relevant since 12.4, so let's comment this out for now.
     <important>
       <para>
         Now you should upgrade readline to 8.3-rc1 or newer following the
         LFS book, or packages using readline may fail to build.
       </para>
     </important>
+-->
 
   </sect2>
 
@@ -249,8 +257,8 @@ ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/&gcc-version;/liblto_plugin.so \
     </para>
 
     <para>
-      <parameter>--with-system-zlib</parameter>: Uses the system
-      <application>zlib</application> instead of the bundled one.
+      <parameter>--with-system-zlib</parameter>: Uses the system version of
+      <application>zlib</application> instead of the bundled copy.
       <application>zlib</application> is used for compressing
       and decompressing <application>GCC</application>'s intermediate
       language in LTO (Link Time Optimization) object files.
@@ -260,14 +268,15 @@ ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/&gcc-version;/liblto_plugin.so \
       <parameter>--enable-default-pie</parameter>: Makes the
       <option>-fpie</option> option the default when compiling programs.
       Together with the <xref linkend="gASLR"/> feature enabled in the kernel,
-      this defeats some kind of attacks based on known memory layouts.
+      this defeats some types of attacks based on known memory layouts.
     </para>
 
     <para>
       <parameter>--enable-default-ssp</parameter>: Makes the
       <option>-fstack-protector-strong</option> option the default when
       compiling programs. <xref linkend="gSSP"/> is a technique preventing
-      alteration of the program flow by corrupting the parameter stack.
+      attacks that alter the flow of a program by corrupting the parameter
+      stack.
     </para>
 
     <para>
@@ -282,7 +291,9 @@ ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/&gcc-version;/liblto_plugin.so \
       This command identifies which languages to build. You may modify
       this command to remove undesired languages.  GCC also supports Ada
       and D, but building GCC with Ada (or D) support needs an existing
-      Ada (or D) compiler.  So they are not enabled here.
+      Ada (or D) compiler.  So they are not enabled here. You can also enable
+      COBOL support by adding cobol to the command, but note that it only
+      works properly on x86_64 systems.
     </para>
 
 <!--
@@ -337,7 +348,7 @@ ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/&gcc-version;/liblto_plugin.so \
       <!-- from Arch, not tested -->
       <command>make -C gcc jit.install-common jit.install-info</command>
       as the &root; user.  This library is not used by any BLFS package,
-      nor tested by the BLFS developers.
+      nor is it tested by the BLFS developers.
     </para>
 
   </sect2>

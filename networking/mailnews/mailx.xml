@@ -40,7 +40,7 @@
       processing.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -145,14 +145,15 @@ install -v -m644 README /usr/share/doc/heirloom-mailx-&mailx-version;</userinput
 
     <para>
       <command>make SENDMAIL=/usr/sbin/sendmail</command>: This changes the
-      default MTA path of <command>/usr/lib/sendmail</command>.
+      default MTA path of sendmail to <filename>/usr/sbin/sendmail</filename>,
+      instead of using <filename>/usr/lib/sendmail</filename>.
     </para>
 
     <para>
       <command>make PREFIX=/usr UCBINSTALL=/usr/bin/install
-      install</command>: This changes the default installation path of
+      install</command>: This changes the default installation path from
       <filename class='directory'>/usr/local</filename> and the default
-      <command>install</command> command path of
+      <command>install</command> command path from
       <filename class='directory'>/usr/ucb</filename>.
     </para>
 
@@ -190,23 +191,24 @@ install -v -m644 README /usr/share/doc/heirloom-mailx-&mailx-version;</userinput
       <title>Configuration Information</title>
 
       <para>
-        For displaying mails, <application>mailx</application>
+        For displaying mail, <application>mailx</application>
         uses a pager program. Since the default of <command>pg</command>
-        is not available on a LFS system, its required to
-        specify which pager is to use. By default, there is
+        is not available on a LFS system, you need to specify which pager 
+        <command>mailx</command> is supposed to use. By default, the
         <command>more</command> and the more comfortable
-        <command>less</command> installed. If the
-        variable PAGER is not set in <filename>/etc/profile</filename>
-        or <filename>~/.bash_profile</filename>, or if it
-        should be another pager just for reading mails, it can be
-        set system wide in <filename>/etc/nail.rc</filename>:
+        <command>less</command> commands are installed. If the
+        <envar>PAGER</envar> environment variable is not set in
+        <filename>/etc/profile</filename> or <filename>~/.bash_profile</filename>,
+        or if it should be set to another pager specifically for reading mails,
+        it can be set system wide in <filename>/etc/nail.rc</filename> as the
+        &root; user:
       </para>
 
-      <screen role="nodump"><userinput>echo "set PAGER=<replaceable>&lt;more|less&gt;</replaceable>" &gt;&gt; /etc/nail.rc</userinput></screen>
+<screen role="nodump"><userinput>echo "set PAGER=<replaceable>&lt;more|less&gt;</replaceable>" &gt;&gt; /etc/nail.rc</userinput></screen>
 
-      <para>or individually for the actual user in <filename>~/.mailrc</filename>:</para>
+      <para>or for the current user in <filename>~/.mailrc</filename>:</para>
 
-      <screen role="nodump"><userinput>echo "set PAGER=<replaceable>&lt;more|less&gt;</replaceable>" &gt;&gt; ~/.mailrc</userinput></screen>
+<screen role="nodump"><userinput>echo "set PAGER=<replaceable>&lt;more|less&gt;</replaceable>" &gt;&gt; ~/.mailrc</userinput></screen>
 
       <para>
         Other interesting options to set in the config files might
@@ -214,16 +216,17 @@ install -v -m644 README /usr/share/doc/heirloom-mailx-&mailx-version;</userinput
       </para>
 
       <para>
-        If not set in the environment for other packages, the
-        default editor can be set by:
+        If the default editor is not set in the environment for other packages,
+        it can be set by running the following command as the &root; user:
       </para>
 
-      <screen role="nodump"><userinput>echo "set EDITOR=<replaceable>&lt;vim|nano|...&gt;</replaceable>" &gt;&gt; /etc/nail.rc</userinput></screen>
+<screen role="nodump"><userinput>echo "set EDITOR=<replaceable>&lt;vim|nano|...&gt;</replaceable>" &gt;&gt; /etc/nail.rc</userinput></screen>
 
       <para>
         Depending on which kind of <xref linkend="server-mail"/> is
-        installed, it might be required to set the MAILDIR variable
-        so <application>mailx</application> is able to find the mails:
+        installed, it might be necessary to set the MAILDIR variable
+        so that <application>mailx</application> is able to find mail as the
+        &root; user:
       </para>
 
 <screen role="nodump"><userinput>echo "set MAILDIR=Maildir" &gt;&gt; /etc/nail.rc</userinput></screen>
@@ -257,8 +260,8 @@ install -v -m644 README /usr/share/doc/heirloom-mailx-&mailx-version;</userinput
         <listitem>
           <para>
             is a command-line mail user agent compatible with the
-            <command>mailx</command> command found on commercial Unix
-            versions
+            <command>mailx</command> command found on commercial UNIX
+            variants
           </para>
           <indexterm zone="mailx mailx-prog">
             <primary sortas="b-mailx">mailx</primary>

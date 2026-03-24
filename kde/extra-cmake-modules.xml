@@ -6,9 +6,9 @@
 
    <!ENTITY extra-cmake-modules-download-http "&kf6-download-http;/extra-cmake-modules-&kf6-version;.tar.xz">
    <!ENTITY extra-cmake-modules-download-ftp  " ">
-   <!ENTITY extra-cmake-modules-md5sum        "f8f4244ee36b34cc4259adc117e0adb8">
-   <!ENTITY extra-cmake-modules-size          "328 KB">
-   <!ENTITY extra-cmake-modules-buildsize     "10 MB">
+   <!ENTITY extra-cmake-modules-md5sum        "b9c562bac371dcf693ceccb431cad782">
+   <!ENTITY extra-cmake-modules-size          "332 KB">
+   <!ENTITY extra-cmake-modules-buildsize     "11 MB">
    <!ENTITY extra-cmake-modules-time          "less than 0.1 SBU">
 ]>
 
@@ -31,7 +31,7 @@
       <application>KDE Frameworks</application> and other packages.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -91,9 +91,9 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="sphinx"/> (for building documentation),
-      <ulink url="https://pypi.org/project/PyQt5/">PyQt</ulink> (experimental
-      support for building KDE Python bindings), and
+      <xref linkend="sphinx"/> (for building documentation) and
+<!--  <ulink url="https://pypi.org/project/PyQt5/">PyQt</ulink> (experimental
+      support for building KDE Python bindings), and-->
       <ulink url="https://github.com/fsfe/reuse-tool/">ReuseTool</ulink> (for running 
       internal tests)
     </para>
@@ -151,26 +151,26 @@ make</userinput></screen>
 
     <para>
       <command>sed ... Modules/KDEInstallDirs.cmake</command>:
-      This command disables applications using cmake from attempting to
+      This command disables applications using CMake from attempting to
       install files in a <filename class="directory">lib64</filename>
       sub-directory.
     </para>
 
     <para>
     <command>sed ... ECMConfig.cmake.in</command>:
-      This command protects the global <application>cmake</application>
+      This command protects the global <application>CMake</application>
       variable <envar>PACKAGE_PREFIX_DIR</envar> from being changed when
-      checking ECM presence: since we install ECM into <filename
+      checking for the presence of ECM. Since we install ECM into <filename
       class="directory">/usr</filename>, the check would set that variable to
-      <filename class="directory">/usr</filename>, while most KDE packages
+      <filename class="directory">/usr</filename>, but most KDE packages
       expect it to be set to <filename class="directory">/opt/kf6</filename>
-      and would fail to build if it is set to something else.
+      and they will fail to build if it is set to something else.
     </para>
 
     <para>
       <parameter>-D DOC_INSTALL-DIR=/usr/share/doc/extra...</parameter>:
       This switch allows installing the documentation (which is built if
-      <xref linkend="sphinx"/> is installed) in a versioned directory.
+      <xref linkend="sphinx"/> is installed) into a versioned directory.
     </para>
   </sect2>
 
@@ -191,7 +191,7 @@ make</userinput></screen>
         </seg>
         <seg>
           /usr/share/ECM and
-          /usr/share/doc/ECM (if documentation was built)
+          /usr/share/doc/extra-cmake-modules-&kf6-version; (if documentation was built)
         </seg>
       </seglistitem>
     </segmentedlist>

@@ -7,9 +7,9 @@
   <!ENTITY nfs-utils-root "&kernel-dl;/linux/utils/nfs-utils" >
   <!ENTITY nfs-utils-download-http "&nfs-utils-root;/&nfs-utils-version;/nfs-utils-&nfs-utils-version;.tar.xz">
   <!ENTITY nfs-utils-download-ftp  " ">
-  <!ENTITY nfs-utils-md5sum        "a88f16a5b46544c4930d3e1c0fb9355c">
-  <!ENTITY nfs-utils-size          "736 KB">
-  <!ENTITY nfs-utils-buildsize     "24 MB (with tests)">
+  <!ENTITY nfs-utils-md5sum        "69a6ab83132f4a82134e925ac4c7f8c8">
+  <!ENTITY nfs-utils-size          "740 KB">
+  <!ENTITY nfs-utils-buildsize     "20 MB (with tests)">
   <!ENTITY nfs-utils-time          "0.2 SBU (with tests)">
 ]>
 
@@ -33,7 +33,7 @@
       network.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing='compact'>
@@ -85,8 +85,6 @@
       <xref linkend="cyrus-sasl"/> (for SASL authentication),
       <xref linkend="libnsl"/> (for NIS client support),
       <xref linkend="lvm2"/> (libdevmapper for NFSv4 support),
-      <!--<xref linkend="libnfsidmap"/> (for NFSv4 support),
-      This is now built in, as of 2.2.1-->
       <xref linkend="openldap"/> (for LDAP authentication),
       <xref linkend="mitkrb"/> or
       <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/">
@@ -132,18 +130,25 @@
 
     <note>
       <para>
-        In BLFS we assume that nfs v3 will be used. If the
-        <emphasis>server</emphasis> offers nfs v4 (for linux, CONFIG_NFSD_V4)
+        In BLFS we assume that NFSv3 will be used. If the
+        <emphasis>server</emphasis> offers NFSv4 (for linux, CONFIG_NFSD_V4)
         then auto-negotiation for v3 will fail and you will need to add
         <literal>nfsver=3</literal> to the mount options. This also applies
         if that option is enabled in the <emphasis>client's</emphasis> kernel,
-        for example in a distro trying to mount from a BLFS v3 server.
+        for example in a distro trying to mount from a BLFS NFSv3 server.
       </para>
       <para>
-        Even if neither end of the connection supports nfs v4, adding
+        Even if neither end of the connection supports NFSv4, adding
         <literal>nfsver=3</literal> is still beneficial because it prevents an
         error message "NFS: bad mount option value specified: minorversion=1"
         being logged on every mount.
+      </para>
+      <para>
+        Note that for the purposes of BLFS, we are only covering NFSv3 because
+        it is easier to configure. If you depend on some of the more advanced
+        configuration or security features of NFSv4, you may wish to review
+        <ulink url="https://bobcares.com/blog/mastering-nfsv4-mount-setup-in-client-and-server/">this blog post</ulink>
+        as it may help you setup configuration for NFSv4.
       </para>
     </note>
 
@@ -230,18 +235,13 @@ chown nobody:nogroup /var/lib/nfs</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-<!--
-    <para>
-      <command>sed ... support/nsm/rpc.c</command>: This sed it required
-      to fix a build issue with glibc-2.26 and later.
-    </para>
 
     <para>
-      <parameter>- -disable-nfsv4</parameter>: This allows the package to be
-      built when libnfsidmap has not been installed.
+      <parameter>--disable-nfsv4</parameter>: This option prevents building
+      NFSv4 capabilities into the installed programs. Remove it if
+      you need the advanced capabilities provided by NFSv4.
     </para>
-    nfs-utils now carries libnfsidmap
--->
+
     <para>
       <parameter>--disable-gss</parameter>: Disables GSSAPI support in this
       package. If you need to use it, make sure that <xref linkend="mitkrb"/>
@@ -250,8 +250,8 @@ chown nobody:nogroup /var/lib/nfs</userinput></screen>
     </para>
 
     <para>
-      <parameter>LIBS="-lsqlite3 -levent_core"</parameter>: is required for
-      the fsidd program.
+      <parameter>LIBS='-lsqlite3 -levent_core'</parameter>: This environment
+      variable is required for the fsidd program to be compiled correctly.
     </para>
 
     <para>
@@ -299,18 +299,19 @@ EOF</userinput></screen>
                <phrase revision="systemd">Systemd Units</phrase></title>
 
         <para>
-          Install the
+          If you have enabled building NFSv4 capabilities, install the
           <phrase revision="openrc">
             <filename>/etc/rc.d/init.d/nfs-server</filename>
             init script
           </phrase>
           <phrase revision="systemd">NFSv4 server units</phrase>
-          included in the <xref linkend="bootscripts" revision="openrc"/>
-          <xref linkend="systemd-units" revision="systemd"/> package
-          to start the server at boot.
+          included in the 
+          <xref linkend="bootscripts" revision="openrc"/>
+          <xref linkend="systemd-units" revision="systemd"/> 
+          package to start the server at boot.
         </para>
 
-<screen role="root" revision="systemd"><userinput>make install-nfsv4-server</userinput></screen>
+<screen role="nodump" revision="systemd"><userinput>make install-nfsv4-server</userinput></screen>
 
         <para revision="systemd">
           If you have disabled NFSv4 support, run the following command as the

@@ -33,7 +33,7 @@
       tools.
     </para>
 
-    &lfs124_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -68,7 +68,7 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -78,7 +78,7 @@
         </para>
       </listitem>
     </itemizedlist>
--->
+
     <bridgehead renderas="sect3">Valgrind Dependencies</bridgehead>
 
     <!-- Boost appears in the configure script, but it's looking for an
@@ -103,14 +103,20 @@
 
   <sect2 role="installation">
     <title>Installation of Valgrind</title>
-<!--
+
     <para>
       First, make several changes that are required for Valgrind to function on
-      systems with glibc-2.39 and binutils-2.42 installed:
+      systems with glibc-2.43 and Linux 6.18.x installed:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../valgrind-&valgrind-version;-upstream_fixes-1.patch</userinput></screen>
--->
+
+    <para>
+      Next, regenerate the build system since we adjusted the Makefiles:
+    </para>
+
+<screen><userinput remap="pre">autoreconf -fiv</userinput></screen>
+
     <para>
       Install <application>Valgrind</application> by running the following
       commands:
@@ -177,6 +183,10 @@ make</userinput></screen>
          valgrind-3.26.0 [bdubbs] 
          859 tests, 4 stderr failures, 0 stdout failures, 0 stderrB failures, 
          0 stdoutB failures, 0 post failures
+
+         valgrind-3.26.0 w/ patch and glibc-2.43 [renodr]
+         865 tests, 1 stderr failure, 0 stdout failures, 0 stderrB failures,
+         1 stdoutB failure, 0 post failures
      -->
 
     <para>
@@ -191,7 +201,7 @@ make</userinput></screen>
       failures where Valgrind does not currently support certain system calls,
       but the logs for the test suite can be found in the
       <filename class="directory">auxprogs/auxchecks/ltp-full-20250930/ltp/tests</filename>
-      directory.
+      directory. These tests are currently broken with Linux 6.18 and glibc-2.43.
     </para>
 
     <note>
