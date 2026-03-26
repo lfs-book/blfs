@@ -14,7 +14,7 @@
   <!-- editors: with ff63 and rust-1.29, ./mach build -j4 is probably the
    most practical way to get a timing on a machine with more cores, if taking
    cores offline is not practical. If in doubt, round up -->
-  <!ENTITY firefox-time          "13 SBU using -j8, without tests">
+  <!ENTITY firefox-time          "15 SBU using -j8, without tests">
 ]>
 
 <sect1 id="firefox" xreflabel="Firefox-&firefox-version;">
@@ -204,37 +204,6 @@ tar: Exiting with failure status due to previous errors
     <title>Installation of Firefox</title>
 
     <para>
-      First, apply a patch to fix video functionality with
-      <xref linkend="ffmpeg"/>:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;esr-ffmpeg-8.0.patch</userinput></screen>
-
-    <para>
-      We need a patch to fix building this package with glibc-2.43.  This
-      patch changes the vendored rust crate, so we need to edit the
-      build system to make <command>cargo</command> to skip the checksum
-      verification:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;esr-glibc-2.43.patch &amp;&amp;
-sed '/patch.crates-io/a glslopt={path="third_party/rust/glslopt"}' \
-    -i Cargo.toml &amp;&amp;
-sed '/name = "glslopt"/,/^$/{/source/d;/checksum/d}' -i Cargo.lock</userinput></screen>
-
-    <para>
-      Next, fix building this package with Python-3.14:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;esr-python_3.14_fixes-1.patch</userinput></screen>
-
-    <para>
-      Next, fix building this package with LLVM-22:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;esr-llvm_22-1.patch</userinput></screen>
-
-    <para>
       The configuration of <application>Firefox</application> is accomplished
       by creating a <filename>mozconfig</filename> file containing the desired
       configuration options. A default <filename>mozconfig</filename> is
@@ -341,19 +310,37 @@ mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/firefox-build-dir
 MOZ_APP_REMOTINGNAME=firefox</literal>
 EOF</userinput></screen>
 
-<!-- The following sections were fixed in 140.0ESR. ICU >= 76.1 is required -->
-    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1859752
-         https://hg.mozilla.org/try/rev/d5f3b0c4f08a -->
-<!--
     <para>
-      If you are building with system ICU, adapt the line break mapping for ICU
-      74 or later.  This construct adds five entries to a c++ array.
+      Apply a patch to fix video functionality with
+      <xref linkend="ffmpeg"/>:
     </para>
 
-<screen><userinput>for i in {43..47}; do
-   sed -i '/ZWJ/s/}/,CLASS_CHARACTER&amp;/' intl/lwbrk/LineBreaker.cpp 
-done</userinput></screen>
--->
+<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;esr-ffmpeg-8.0.patch</userinput></screen>
+
+    <para>
+      A patch is needed to fix building with glibc-2.43. This
+      patch changes the vendored Rust crate, so the build system must be
+      changed to make <command>cargo</command> skip the checksum
+      verification:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;esr-glibc-2.43.patch &amp;&amp;
+sed '/patch.crates-io/a glslopt={path="third_party/rust/glslopt"}' \
+    -i Cargo.toml &amp;&amp;
+sed '/name = "glslopt"/,/^$/{/source/d;/checksum/d}' -i Cargo.lock</userinput></screen>
+
+    <para>
+      Next, fix building this package with Python-3.14:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;esr-python_3.14_fixes-1.patch</userinput></screen>
+
+    <para>
+      Next, fix building this package with LLVM-22:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../firefox-&firefox-version;esr-llvm_22-1.patch</userinput></screen>
+
     <para>
       If you are building with system ICU-78.1 or later, update one file:
     </para>
