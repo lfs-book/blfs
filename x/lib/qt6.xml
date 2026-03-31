@@ -10,8 +10,8 @@
   <!ENTITY qt6-download-ftp  " ">
   <!ENTITY qt6-md5sum        "a93e9f424a9d11ee8d67bf8fb1af4772">
   <!ENTITY qt6-size          "970 MB">
-  <!ENTITY qt6-buildsize     "71 GB (943 MB installed)">
-  <!ENTITY qt6-time          "36 SBU (using parallelism=8)">
+  <!ENTITY qt6-buildsize     "48 GB (499 MB installed)">
+  <!ENTITY qt6-time          "12 SBU (using parallelism=8)">
 ]>
 
 <sect1 id="qt6" xreflabel="Qt-&qt6-version;">
@@ -259,35 +259,36 @@ ln -sfnv qt-&qt6-version; /opt/qt6</userinput></screen>
 fi</userinput></screen>
 
     <para>
+      First, remove two components that are not used in BLFS and take a long
+      time to build. Also remove qtwebengine that we build separately.
+    </para>
+
+<screen><userinput>rm -rf qtwebengine qt3d qtquick3dphysics</userinput></screen>
+
+    <para>
       Install <application>Qt6</application> by running the following commands:
     </para>
 
-<screen revision="sysv"><userinput>./configure -prefix $QT6PREFIX      \
-            -sysconfdir /etc/xdg    \
-            -dbus-linked            \
-            -openssl-linked         \
-            -system-sqlite          \
-            -nomake examples        \
-            -no-rpath               \
-            -no-sbom                \
-            -syslog                 \
-            -skip qt3d              \
-            -skip qtquick3dphysics  \
-            -skip qtwebengine       &amp;&amp;
+<screen revision="sysv"><userinput>./configure -prefix $QT6PREFIX   \
+            -sysconfdir /etc/xdg \
+            -dbus-linked         \
+            -openssl-linked      \
+            -system-sqlite       \
+            -nomake examples     \
+            -no-rpath            \
+            -no-sbom             \
+            -syslog              &amp;&amp;
 ninja</userinput></screen>
 
-<screen revision="systemd"><userinput>./configure -prefix $QT6PREFIX      \
-            -sysconfdir /etc/xdg    \
-            -dbus-linked            \
-            -openssl-linked         \
-            -system-sqlite          \
-            -nomake examples        \
-            -no-rpath               \
-            -no-sbom                \
-            -journald               \
-            -skip qt3d              \
-            -skip qtquick3dphysics  \
-            -skip qtwebengine       &amp;&amp;
+<screen revision="systemd"><userinput>./configure -prefix $QT6PREFIX   \
+            -sysconfdir /etc/xdg \
+            -dbus-linked         \
+            -openssl-linked      \
+            -system-sqlite       \
+            -nomake examples     \
+            -no-rpath            \
+            -no-sbom             \
+            -journald            &amp;&amp;
 ninja</userinput></screen>
 
     <para>
