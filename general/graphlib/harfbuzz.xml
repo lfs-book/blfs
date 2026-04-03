@@ -7,10 +7,10 @@
   <!ENTITY harfbuzz-download-http
            "https://github.com/harfbuzz/harfbuzz/releases/download/&harfbuzz-version;/harfbuzz-&harfbuzz-version;.tar.xz">
   <!ENTITY harfbuzz-download-ftp  " ">
-  <!ENTITY harfbuzz-md5sum        "de595664aa7213f408d417ea16e8a6be">
+  <!ENTITY harfbuzz-md5sum        "c8f3cf2bab86c2edd662e7beca0240fb">
   <!ENTITY harfbuzz-size          "19 MB">
-  <!ENTITY harfbuzz-buildsize     "169 MB (with tests)">
-  <!ENTITY harfbuzz-time          "0.8 SBU (with tests; both using parallelism=4)">
+  <!ENTITY harfbuzz-buildsize     "161 MB (with tests)">
+  <!ENTITY harfbuzz-time          "0.9 SBU (with tests; both using parallelism=4)">
 ]>
 
 <sect1 id="harfbuzz" xreflabel="harfBuzz-&harfbuzz-version;">
@@ -174,8 +174,11 @@ ninja</userinput></screen>
           libharfbuzz.so,
           libharfbuzz-cairo.so (only if Cairo is installed),
           libharfbuzz-gobject.so,
-          libharfbuzz-icu.so, and
-          libharfbuzz-subset.so
+          libharfbuzz-gpu.so,
+          libharfbuzz-icu.so, 
+          libharfbuzz-raster.so,
+          libharfbuzz-subset.so, and
+          libharfbuzz-vector.so
         </seg>
         <seg>
           /usr/include/harbuzz,
@@ -291,6 +294,19 @@ ninja</userinput></screen>
           </para>
           <indexterm zone="harfbuzz libharfbuzz-gobject">
             <primary sortas="c-libharfbuzz-gobject">libharfbuzz-gobject.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libharfbuzz-gpu">
+        <term><filename class="libraryfile">libharfbuzz-gpu.so</filename></term>
+        <listitem>
+          <para>
+            provides for encoding glyph outlines on the CPU into compact blobs 
+            that the GPU decodes and rasterizes directly in the fragment shader
+          </para>
+          <indexterm zone="harfbuzz libharfbuzz-gpu">
+            <primary sortas="c-libharfbuzz-gpu">libharfbuzz-gpu.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
