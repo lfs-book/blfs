@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
-  <!ENTITY % general-entities SYSTEM "../../../general.ent">
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
   <!ENTITY efibootmgr-download-http "https://github.com/rhboot/efibootmgr/archive/&efibootmgr-version;/efibootmgr-&efibootmgr-version;.tar.gz">
@@ -14,7 +14,6 @@
 
 <sect1 id="efibootmgr" xreflabel="efibootmgr-&efibootmgr-version;">
   <?dbhtml filename="efibootmgr.html"?>
-
 
   <title>efibootmgr-&efibootmgr-version;</title>
 
@@ -74,7 +73,6 @@
       <xref linkend="popt"/>
     </para>
 
-
   </sect2>
 
   <sect2 role="installation">
@@ -111,10 +109,49 @@
 
     <para>
       <parameter>EFI_LOADER=grubx64.efi</parameter>:
-      This option specifies the name of the default EFI boot loader.  It is
+      This option specifies the name of the default EFI boot loader. It is
       set to match the EFI boot loader provided by GRUB.
-      <!--xref linkend="grub-efi"/-->
     </para>
+
+  </sect2>
+
+  <sect2 role="using">
+    <title>Using efibootmgr</title>
+
+    <para>
+      In LFS, the instructions go over how to install GRUB for UEFI. The
+      process installs the EFI in a hardcoded location searched by most UEFI
+      firmware implementations. If you reinstall GRUB however, GRUB will use
+      this package to install the EFI in a place GRUB prefers, which allows
+      greater control over EFI management. The <option>--removable</option>
+      option will no longer be necessary when running
+      <command>grub-install</command>. This package may be necessary in
+      scenarios where the UEFI firmware doesn't look for the hardcoded EFI
+      location. The LFS book addresses this situation.
+    </para>
+
+    <para>
+      In order for <command>efibootmgr</command> to work, the EFI variable file
+      system must be mounted beforehand. If you're still in a chroot and
+      haven't rebooted, mount it as the &root; user:
+    </para>
+
+<screen role="root"><userinput>mountpoint /sys/firmware/efi/efivars ||
+  mount -v -t efivarfs efivarfs /sys/firmware/efi/efivars</userinput></screen>
+
+    <para revision="sysv">
+      The EFI variable file system isn't mounted automatically at boot for
+      SysVinit systems, meaning that whenever <command>grub-install</command>
+      or <command>efibootmgr</command> are executed, they will fail. To ensure
+      the file system gets mounted at boot, add the following to
+      <filename>/etc/fstab</filename> as the &root; user:
+    </para>
+
+<screen revision="sysv"
+  role="root"><userinput>cat &gt;&gt; /etc/fstab &lt;&lt; "EOF"
+<literal>efivarfs /sys/firmware/efi/efivars efivarfs defaults 0 0</literal>
+EOF</userinput></screen>
+
   </sect2>
 
   <sect2 role="content">
