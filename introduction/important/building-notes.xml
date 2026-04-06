@@ -1179,32 +1179,32 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
 
       <para>
         One of the problems with <application>Cargo</application> is that the
-        needed crates are downloaded on the fly, so that
+        needed crates are downloaded on the fly, which makes it so that
         <command>cargo build</command> cannot be run offline. Another annoyance
         is that the needed crates are downloaded to the directory
-        <filename class="directory">~/.cargo</filename>, which may clobber
+        <filename class="directory">~/.cargo</filename>, which may clutter
         the user's or &root;'s home directory. For those who want to have
-        some more control on the downloading location, it is possible to set
-        the variable <envar>CARGO_HOME</envar> to the desired location in the
-        environment, for example:
+        some more control on the download location for the crates, it is
+        possible to set the variable <envar>CARGO_HOME</envar> to the desired
+        location in the environment, for example:
       </para>
 
 <screen role='nodump'><userinput>export CARGO_HOME=<replaceable>/sources/cargo</replaceable></userinput></screen>
 
       <para>
         It is also possible to have all the needed crates downloaded at once
-        before building. We'll give two methods, which may have to be adapted
-        to the particular package that is built. The simplest one is to
-        download the needed packages by running <command>cargo fetch</command>
-        from the directory containing the top <filename>Cargo.toml</filename>
+        before building a package. We'll give two methods, which may have to
+        be adapted to the particular package that is built. The simplest one
+        is to download the needed packages by running <command>cargo fetch</command>
+        from the directory containing the top-level <filename>Cargo.toml</filename>
         file. The packages are downloaded to <envar>$CARGO_HOME</envar> (or
         <filename class='directory'>~/.cargo</filename>), and can be used
         offline in the build instructions. But this may fail in some cases,
         for example for packages that redefine <envar>CARGO_HOME</envar> in
-        their build system. Then the following instructions (run from the
-        directory containing the top <filename>Cargo.toml</filename>), allow
-        to create a <quote>vendor</quote> directory containing the source
-        crates and using it offline. Note that the crates are also downloaded
+        their build system. In this case, the following instructions (run from
+        the directory containing the top <filename>Cargo.toml</filename>), will
+        create a <quote>vendor</quote> directory containing the source crates and
+        will use it offline. Note that the crates are also downloaded
         to <envar>$CARGO_HOME</envar> by the <command>cargo vendor</command>
         command:
       </para>
@@ -1220,7 +1220,7 @@ directory = "vendor"</literal>
 EOF</userinput></screen>
 
       <para>
-        Then instructions can be run as in the book.
+        After this, the instructions can be run as in the book.
       </para>
 
   </sect2>
