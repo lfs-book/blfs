@@ -6,10 +6,10 @@
 
   <!ENTITY mercurial-download-http "https://www.mercurial-scm.org/release/mercurial-&mercurial-version;.tar.gz">
   <!ENTITY mercurial-download-ftp  " ">
-  <!ENTITY mercurial-md5sum        "1b2c2066fcae11baac8341422e1b44c8">
+  <!ENTITY mercurial-md5sum        "1b7fd8be6664ba24e47c29f31dc1ac26">
   <!ENTITY mercurial-size          "8.8 MB">
-  <!ENTITY mercurial-buildsize     "126 MB (with docs, add 33 MB for tests)">
-  <!ENTITY mercurial-time          "0.6 SBU (with docs; add 24 SBU for tests; both using parallelism=4)">
+  <!ENTITY mercurial-buildsize     "127 MB (with docs, add 2.5 GB for tests)">
+  <!ENTITY mercurial-time          "0.3 SBU (with docs; add 30 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="mercurial" xreflabel="mercurial-&mercurial-version;">
@@ -87,6 +87,7 @@
       <xref linkend="pygments"/>,
       <xref linkend="rust"/> (see <filename>rust/README.rst</filename> and <filename>rust/rhg/README.md</filename>),
       <xref linkend="subversion"/> (with Python bindings),
+      <xref linkend="uv_build"/> (for an alternate build method),
       <xref linkend="which"/> (used in one test),
       <ulink url="https://www.nongnu.org/cvs/">CVS</ulink>,
       <ulink url="https://pypi.python.org/pypi/pyflakes">pyflakes</ulink>, and
@@ -116,11 +117,14 @@
 cp -R doc/html /usr/share/doc/mercurial-&mercurial-version;</userinput></screen>
 
     <para>
-      If you wish to run the tests, the rust tests must be removed as they are
-      currently broken due to syntax errors. To do this, issue:
+      If you wish to run the tests, the rust sources have to be fixed for the
+      most recent rust version:
     </para>
 
-<screen remap="test"><userinput>sed -i '178,181d' Makefile</userinput></screen>
+<screen remap="test"><userinput>pushd rust                           &amp;&amp;
+cargo fix --workspace --allow-no-scm &amp;&amp;
+popd
+</userinput></screen>
 
     <para>
       There is also a problem with permissions in the build directory, since
@@ -146,7 +150,8 @@ cp -R doc/html /usr/share/doc/mercurial-&mercurial-version;</userinput></screen>
       Tests may
       fail because some error messages have changed in Python or
       some deprecation warnings are printed that were not present when the
-      test was designed.
+      test was designed. Also, some test use a lot of memory, and may
+      be killed by the kernel, if the system memory is too low.
     </para>
       <!--
       # Ran 908 tests, 65 skipped, 4 failed.  real  10m37.422s -bdubbs  6 Sep 22.
@@ -169,6 +174,7 @@ cp -R doc/html /usr/share/doc/mercurial-&mercurial-version;</userinput></screen>
       # Ran 965 tests, 67 skipped, 1 failed. -pierre 16 Oct 25 (mercurial-7.1.1).
       # Ran 974 tests, 58 skipped, 14 failed. -pierre 22 Nov 25 (mercurial-7.1.2 with python-3.14).
       # Ran 1006 tests, 60 skipped, 3 failed. -renodr 11 Feb 26 (mercurial-7.2 with python-3.14).
+      # Ran 1001 tests, 67 skipped, 0 failed. -pierre 7 Apr 26 (mercurial-7.2.1).
       -->
     <para>
       In order to
