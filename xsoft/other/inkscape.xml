@@ -177,13 +177,14 @@ sed -e '/Stream.h/a#include &lt;poppler/goo/gmem.h&gt;' \
       commands:
     </para>
 
-<screen><userinput>mkdir build                       &amp;&amp;
-cd    build                       &amp;&amp;
+<screen><userinput>mkdir build                        &amp;&amp;
+cd    build                        &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr        \
-      -D CMAKE_BUILD_TYPE=Release         \
-      -W no-dev                           \
-      ..                                  &amp;&amp;
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      -D WITH_INTERNAL_2GEOM=ON    \
+      -W no-dev                    \
+      ..                           &amp;&amp;
 make</userinput></screen>
 
 <!--
@@ -223,6 +224,14 @@ make</userinput></screen>
     </para>
 
     <para>
+      <parameter>-D WITH_INTERNAL_2GEOM=ON</parameter>: This switch is useless
+      for the first build of <application>Inkscape</application>, but it
+      prevents linking to the previously installed
+      <filename class="libraryfile">lib2geom.so</filename> library when
+      upgrading <application>Inkscape</application>.
+    </para>
+
+    <para>
       <parameter>-W no-dev</parameter>: This parameter silences several warnings
       only intended for project developers.
     </para>
@@ -248,11 +257,11 @@ make</userinput></screen>
           inkscape and inkview
         </seg>
         <seg>
-          <!--lib2geom.so and-->
+          lib2geom.so and
           libinkscape_base.so (in /usr/lib/inkscape)
         </seg>
         <seg>
-          <!--/usr/include/2geom-&lib2geom-version;,-->
+          /usr/include/2geom-&lib2geom-version;,
           /usr/lib/inkscape, and
           /usr/share/inkscape
         </seg>
@@ -296,6 +305,18 @@ make</userinput></screen>
           </para>
           <indexterm zone="inkscape libinkscape_base">
             <primary sortas="c-libinkscape_base">libinkscape_base.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="lib2geom">
+        <term><filename class="libraryfile">lib2geom.so</filename></term>
+        <listitem>
+          <para>
+            is a C++ 2D geometry library for vector graphics
+          </para>
+          <indexterm zone="inkscape lib2geom">
+            <primary sortas="c-lib2geom">lib2geom.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
