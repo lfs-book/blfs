@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "cd01d7a97f98940567663652ac9747a0">
-  <!ENTITY rust-size          "262 MB">
+  <!ENTITY rust-md5sum        "c206536bb0e11bbf2ebae91504096e34">
+  <!ENTITY rust-size          "228 MB">
   <!ENTITY rust-buildsize     "10 GB (324 MB installed); add 11 GB if running the tests">
   <!ENTITY rust-time          "10 SBU (including download time; add 15 SBU for tests, both using parallelism=8)">
 ]>
@@ -136,17 +136,25 @@
       </listitem>
     </itemizedlist>
 
-    <!--  keep this here for reuse in case we need a patch
+    <!--  keep this here for reuse in case we need a patch -->
+    <!-- deliberately skipped turning version and md5 into entities:
+         it's unlikely we'd still need this in the next rustc release.  -->
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Optional patch (required for testing the package):
-          <ulink url="&patch-root;/rustc-&rust-version;-testsuite_fix-1.patch"/>
+          OpenSSL Rust binding updated to support OpenSSL 4:
+          <ulink url="https://github.com/lfs-book/rust-openssl/archive/v0.10.78/rust-openssl-v0.10.78.tar.gz"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: 8bfcc36cba65c98380f7ac1ec07efdb4
         </para>
       </listitem>
     </itemizedlist>
-    -->
+
+    &github-lfs-fork;
 
     <bridgehead renderas="sect3">Rust Dependencies</bridgehead>
 
@@ -250,9 +258,6 @@ description = "for BLFS &version;"
 # Omit the documentation to save time and space (the default is to build them).
 docs = false
 
-# Do not look for new versions of the dependencies online.
-locked-deps = true
-
 # Only install these extended tools. Cargo, clippy, rustdoc, and rustfmt
 # are installed by a default rustup installation, and rust-src is needed
 # to build the Rust code in Linux kernel (in case you need such a kernel
@@ -280,6 +285,24 @@ llvm-config = "/usr/bin/llvm-config"
 [target.i686-unknown-linux-gnu]
 llvm-config = "/usr/bin/llvm-config"</literal>
 EOF</userinput></screen>
+
+    <para>
+      Use a newer version of the OpenSSL Rust binding to allow building
+      this package with OpenSSL 4:
+    </para>
+
+<screen><userinput>tar xf ../rust-openssl-0.10.78.tar.gz &amp;&amp;
+
+cat &gt;&gt; src/tools/cargo/Cargo.toml &lt;&lt; EOF &amp;&amp;
+<literal>[patch.crates-io]
+openssl = { path = "../../../rust-openssl-0.10.78/openssl" }
+openssl-sys = { path = "../../../rust-openssl-0.10.78/openssl-sys" }
+</literal>EOF
+
+sed -ri src/tools/cargo/Cargo.lock \
+    -e '/name = "openssl-sys"/,/^$/{/source|checksum/d;s/0.9.111/0.9.114/}' \
+    -e '/name = "openssl"/,/^$/{/source|checksum/d;s/0.10.75/0.10.78/}'     \
+    -e '/name = "openssl-macros"/,/^$/{/source|checksum/d}'</userinput></screen>
 
 <!-- retain here in case we need a patch
     <para>
@@ -320,14 +343,22 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
 <screen remap="test"><userinput>./x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
 
     <para>
-      The test named <filename>tests/run-make/rustdoc-target-modifiers</filename>
+      In the <filename class='directory'>rustdoc-ui</filename> tests,
+      <!-- https://github.com/rust-lang/rust/issues/154392 -->
+      the test named <filename>track-diagnostics.rs</filename>
+      is known to fail because it hard codes paths non-exist on LFS, and
+      the test named <filename>ice-bug-report-url.rs</filename> is known
+      to fail for unknown reason.
+
+      In the <filename class='directory'>run-make</filename> tests,
+      <!-- https://github.com/rust-lang/rust/issues/155606 -->
+      the test named <filename>remap-path-prefix-std</filename> is known
+      to fail because it does not work with LTO enabled,
+      the test named <filename>rustdoc-target-modifiers</filename>
       is known to fail because we've not enabled the AArch64 target in
-      <xref linkend='llvm'/>.
-      <!-- https://github.com/rust-lang/rust/pull/151375 -->
-      The tests named <filename>missing_span_in_backtrace.rs</filename>
-      and <filename>trimmed_multiline_suggestion.rs</filename> may fail
-      because they depend on the terminal width.  Eight tests related
-      to the AMDGPU target are known to fail with LLVM 22 or newer.
+      <xref linkend='llvm'/>, and
+      the test named <filename>short-ice</filename> is known to fail for
+      unknown reason.
     </para>
 
     <para>
