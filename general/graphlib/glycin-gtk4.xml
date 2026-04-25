@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY glycin-gtk4-buildsize     "670 MB (with documentation)">
+  <!ENTITY glycin-gtk4-time          "2.0 SBU (with documentation)">
+]>
+
+<!-- Try to keep the indentation used in this file-->
+<sect1 id="glycin-gtk4" xreflabel="libglycin-gtk4 from glycin-&glycin-version;">
+  <?dbhtml filename="glycin-gtk4.html"?>
+
+  <title>libglycin-gtk4 from glycin-&glycin-version;</title>
+
+  <indexterm zone="glycin-gtk4">
+    <primary sortas="a-libglycin-gtk4">libglycin-gtk4</primary>
+  </indexterm>
+
+  <!--Required section-->
+  <sect2 role="package">
+    <title>Introduction to libglycin-gtk4</title>
+
+    <para>
+      The <systemitem class='library'>libglycin-gtk4</systemitem> library
+      provides GTK-4 integration for <xref linkend='glycin'/>.
+    </para>
+
+    &lfs130_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&glycin-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &glycin-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &glycin-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &glycin-gtk4-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &glycin-gtk4-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">glycin Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend='glycin'/> and <xref linkend='gtk4'/>
+    </para>
+
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref linkend='vala'/>
+    </para>
+
+    &build-use-internet;
+
+    <!--  Only use this if you want to note something in the wiki
+    <para condition="html" role="usernotes">
+      Editor Notes: <ulink url="&blfs-wiki;/glycin-gtk4"/>
+    </para>
+    -->
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of libglycin-gtk4</title>
+
+    <para>
+      Install <systemitem class='library'>libglycin-gtk4</systemitem> by
+      running the following commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup --prefix=/usr               \
+            --buildtype=release         \
+            -D libglycin=false          \
+            -D libglycin-gtk4=true      \
+            -D glycin-loaders=false     \
+            -D glycin-thumbnailer=false &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      If you have installed <xref linkend="gi-docgen"/>, you can build
+      the documentation by issuing:
+    </para>
+
+<screen remap="doc"><userinput>sed "/install_dir:.*doc/s|,$| / 'glycin-' + meson.project_version()&amp;|" \
+    -i ../libglycin/meson.build &amp;&amp;
+
+meson configure -D capi_docs=true &amp;&amp;
+ninja</userinput></screen>
+
+    <para>
+      This package does not come with a test suite.
+    </para>
+
+    <para>
+      Now as the &root; user:
+    </para>
+
+    <screen role="root"><userinput>ninja install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>-D *=false</parameter>: These parameters disable the
+      components already installed as a part of <xref linkend='glycin'/>.
+    </para>
+
+    <para>
+      <option>-D vapi=false</option>: This option allows building this
+      package without <xref linkend='vala'/> installed.
+    </para>
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Library</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          libglycin-gtk4-2.so
+        </seg>
+        <seg>
+          /usr/include/glycin-gtk4-2 and /usr/share/doc/glycin-&glycin-version;/libglycin-gtk-2
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+    <variablelist>
+      <bridgehead renderas="sect3">Short Descriptions</bridgehead>
+      <?dbfo list-presentation="list"?>
+      <?dbhtml list-presentation="table"?>
+
+      <varlistentry id="libglycin-gtk4-2">
+        <term><filename class="libraryfile">libglycin-gtk4-2.so</filename></term>
+        <listitem>
+          <para>
+            provides API functions to convert glycin frames to GDK 4
+            textures
+          </para>
+          <indexterm zone="glycin-gtk4 libglycin-gtk4-2">
+            <primary sortas="c-libglycin-gtk4-2">libglycin-gtk4-2.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </sect2>
+</sect1>
