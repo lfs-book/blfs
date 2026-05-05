@@ -205,10 +205,16 @@ echo <literal>HandleLidSwitch=ignore</literal> &gt; /etc/systemd/logind.conf.d/a
 
       <note revision="systemd">
         <para>
-          This package uses socket based activation and will be started when
-          something needs it. No standalone unit file is provided for this
-          package.
+          This package uses socket based activation, which means it has
+          two systemd units, a <emphasis>socket</emphasis> one and a
+          regular <emphasis>service</emphasis> one. The socket unit is
+          the only one that needs to be enabled, and systemd shall then
+          start the service one on demand. Enable it as the &root; user:
         </para>
+
+<screen revision='systemd'
+        role='root'><userinput>systemctl enable acpid.socket</userinput></screen>
+
       </note>
 
     </sect3>

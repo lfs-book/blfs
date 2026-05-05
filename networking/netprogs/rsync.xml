@@ -253,6 +253,13 @@ EOF</userinput></screen>
 
 <screen role="root"><userinput>make install-rsyncd</userinput></screen>
 
+      <para revision='systemd'>
+        You can then enable the unit at startup as the &root; user with:
+      </para>
+
+<screen revision='systemd'
+        role='root'><userinput>systemctl enable rsyncd</userinput></screen>
+
       <note revision="systemd">
         <para>
           This package comes with two types of units: A service file and a
@@ -267,16 +274,13 @@ EOF</userinput></screen>
         </para>
 
         <para>
-          By default, the first method is used - rsync daemon is started
-          at boot and stopped at shutdown. If the socket method is desired, you
-          need to run as the
-          <systemitem class="username">root</systemitem> user:
+          With the above command, the first method is used - rsync daemon is
+          started at boot and stopped at shutdown. If the socket method is
+          desired, you need to run instead (as the
+          <systemitem class="username">root</systemitem> user):
         </para>
 
-<screen role="nodump"><userinput>systemctl stop rsyncd &amp;&amp;
-systemctl disable rsyncd &amp;&amp;
-systemctl enable rsyncd.socket &amp;&amp;
-systemctl start rsyncd.socket</userinput></screen>
+<screen role="nodump"><userinput>systemctl enable rsyncd.socket</userinput></screen>
 
         <para>
           Note that socket method is only useful for remote backups. For

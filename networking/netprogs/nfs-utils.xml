@@ -294,33 +294,33 @@ EOF</userinput></screen>
                <phrase revision="systemd">Systemd Units</phrase></title>
 
         <para>
-          If you have enabled building NFSv4 capabilities, install the
+          To start the NFS server at boot, install the
           <phrase revision="sysv">
             <filename>/etc/rc.d/init.d/nfs-server</filename>
             init script
           </phrase>
-          <phrase revision="systemd">NFSv4 server units</phrase>
+          <phrase revision="systemd">NFS server units</phrase>
           included in the 
           <xref linkend="bootscripts" revision="sysv"/>
           <xref linkend="systemd-units" revision="systemd"/> 
           package to start the server at boot.
         </para>
-
-<screen role="nodump" revision="systemd"><userinput>make install-nfsv4-server</userinput></screen>
-
-        <para revision="systemd">
-          If you have disabled NFSv4 support, run the following command as the
-          <systemitem class="username">root</systemitem> user to omit the NFSv4
-          specific systemd units:
-        </para>
-
-<!-- both -->
-<screen role="root"><userinput>make install-nfs-server</userinput></screen>
-
-        <indexterm zone="nfs-utils nfs-utils-server-init" revision="sysv">
+        <indexterm zone="nfs-utils nfs-utils-server-init">
           <primary sortas="f-nfs-server">nfs-server</primary>
         </indexterm>
 
+<screen role="root"><userinput>make install-nfs-server</userinput></screen>
+
+        <note revision='systemd'>
+          <para>
+            If you have enabled NFSv4 support, run the following command
+            instead. It will install the units needed for NFSv4 in addition
+            to those needed for the NFS server:
+          </para>
+
+<screen role="nodump" revision="systemd"><userinput>make install-nfsv4-server</userinput></screen>
+
+        </note>
         <para revision="sysv">
           Now create the
           <filename>/etc/sysconfig/nfs-server</filename> configuration file:
@@ -353,6 +353,13 @@ EOF</userinput></screen>
         <indexterm zone="nfs-utils nfs-utils-server-init" revision="systemd">
           <primary sortas="e-etc-default-nfs-utils">/etc/default/nfs-utils</primary>
         </indexterm>
+
+      <para revision='systemd'>
+        You can then enable the unit at startup as the &root; user with:
+      </para>
+
+<screen revision='systemd'
+        role='root'><userinput>systemctl enable nfs-server</userinput></screen>
 
       </sect4>
 
@@ -425,7 +432,7 @@ EOF</userinput></screen>
           the client services at boot.
         </para>
 
-<screen role="root"><userinput>make install-nfs-client</userinput></screen>
+<screen role="nodump"><userinput>make install-nfs-client</userinput></screen>
 
         <indexterm zone="nfs-utils nfs-utils-client-config">
           <primary sortas="f-nfs-client">nfs-client</primary>
@@ -441,6 +448,13 @@ EOF</userinput></screen>
         <indexterm zone="nfs-utils nfs-utils-client-config" revision="sysv">
           <primary sortas="f-netfs">netfs</primary>
         </indexterm>
+
+      <para revision='systemd'>
+        You can then enable the unit at startup as the &root; user with:
+      </para>
+
+<screen revision='systemd'
+        role='nodump'><userinput>systemctl enable nfs-client.target</userinput></screen>
 
       </sect4>
 

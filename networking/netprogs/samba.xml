@@ -611,6 +611,14 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
 
 <screen role="root"><userinput>make install-samba</userinput></screen>
 
+      <para revision='systemd'>
+        You can then enable the units at startup as the &root; user with:
+      </para>
+
+<screen revision='systemd'
+role='root'><userinput>systemctl enable nmbd &amp;&amp;
+systemctl enable smbd</userinput></screen>
+
         <para>
           To start the <command>winbindd</command> daemon at boot,
           install the systemd unit from the <xref linkend="systemd-units"/>
@@ -623,6 +631,13 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
         </indexterm>
 
 <screen role="root"><userinput>make install-winbindd</userinput></screen>
+
+      <para revision='systemd'>
+        You can then enable the unit at startup as the &root; user with:
+      </para>
+
+<screen revision='systemd'
+        role='root'><userinput>systemctl enable winbindd</userinput></screen>
 
         <note>
           <para>
@@ -638,16 +653,14 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
           </para>
 
           <para>
-            By default, the first method is used - the smbd daemon is started
+            with the command above, the first method is used - the smbd daemon
+            is started
             at boot and stopped at shutdown. If the socket method is desired,
-            you need to run the following commands as the <systemitem
-            class="username">root</systemitem> user:
+            you need to run the following commands instead (as the <systemitem
+            class="username">root</systemitem> user):
           </para>
 
-<screen role="root"><userinput>systemctl stop smbd          &amp;&amp;
-systemctl disable smbd       &amp;&amp;
-systemctl enable smbd.socket &amp;&amp;
-systemctl start smbd.socket</userinput></screen>
+<screen role="root"><userinput>systemctl enable smbd.socket</userinput></screen>
 
           <para>
             Note that only the smbd daemon can be socket activated.

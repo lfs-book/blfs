@@ -403,6 +403,38 @@ echo "UsePAM yes" &gt;&gt; /etc/ssh/sshd_config</userinput></screen>
       </indexterm>
 
 <screen role="root"><userinput>make install-sshd</userinput></screen>
+
+      <para revision='systemd'>
+        You can then enable the unit at startup as the &root; user with:
+      </para>
+
+<screen revision='systemd'
+        role='root'><userinput>systemctl enable sshd</userinput></screen>
+
+      <note revision="systemd">
+        <para>
+          This package comes with two types of units: A service file and a
+          socket file. The service file will start sshd daemon once at boot
+          and it will keep running until the system shuts down. The socket file
+          will make systemd listen on ssh port (Default 22, needs to be
+          edited for anything else) and will start sshd daemon when something
+          tries to connect to that port and stop the daemon when the connection
+          is terminated. This is called socket activation and is analogous to
+          using <application>{,x}inetd</application> on a SysVinit based
+          system.
+        </para>
+
+        <para>
+          With the above command, the first method is used - sshd daemon is
+          started at boot and stopped at shutdown. If the socket method is
+          desired, you need to run instead (as the
+          <systemitem class="username">root</systemitem> user):
+        </para>
+
+<screen role="nodump"><userinput>systemctl enable sshd.socket</userinput></screen>
+
+      </note>
+
     </sect3>
   </sect2>
 

@@ -454,7 +454,7 @@ EOF</userinput></screen>
       <para revision="systemd">
         If you want to start <application>Kerberos</application> services
         at boot, install the <filename>krb5-krdc.service</filename>,
-        <filename>krb5-kpropd</filename>, and
+        <filename>krb5-kpropd.service</filename>, and
         <filename>krb5-kadmind.service</filename> units included in
         the <xref linkend="systemd-units"/> package using the following command:
       </para>
@@ -464,6 +464,15 @@ EOF</userinput></screen>
       </indexterm>
 
 <screen role="root"><userinput>make install-krb5</userinput></screen>
+
+      <para revision='systemd'>
+        You can then enable the units at startup as the &root; user with:
+      </para>
+
+<screen revision='systemd'
+role='root'><userinput>systemctl enable krb5-kdc     &amp;&amp;
+systemctl enable krb5-kpropd  &amp;&amp;
+systemctl enable krb5-kadmind &amp;&amp;</userinput></screen>
 
     </sect3>
 
