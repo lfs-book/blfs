@@ -6,9 +6,9 @@
 
   <!ENTITY rsync-download-http "https://www.samba.org/ftp/rsync/src/rsync-&rsync-version;.tar.gz">
   <!ENTITY rsync-download-ftp  " ">
-  <!ENTITY rsync-md5sum        "04ce67866db04fd7a1cde0b78168406e">
-  <!ENTITY rsync-size          "1.1 MB">
-  <!ENTITY rsync-buildsize     "11 MB (with tests; add 24 MB for HTML API documentation)">
+  <!ENTITY rsync-md5sum        "352650b73e30cc0ba54707ae72bdac43">
+  <!ENTITY rsync-size          "1.2 MB">
+  <!ENTITY rsync-buildsize     "12 MB (with tests; add 50 MB for HTML API documentation)">
   <!ENTITY rsync-time          "0.6 SBU (with tests)">
 ]>
 
@@ -67,6 +67,7 @@
       </listitem>
     </itemizedlist>
 
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -76,6 +77,7 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">rsync Dependencies</bridgehead>
 
@@ -109,11 +111,13 @@
 useradd -c "rsyncd Daemon" -m -d /home/rsync -g rsyncd \
     -s /bin/false -u 48 rsyncd</userinput></screen>
 
+<!--
     <para>
       First, fix a security vulnerability:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../rsync-&rsync-version;-security_fix-2.patch</userinput></screen>
+-->
 
     <para>
       Install <application>rsync</application> by running the following
@@ -133,11 +137,10 @@ make</userinput></screen>
 <screen remap="doc"><userinput>doxygen</userinput></screen>
 
     <para>
-      To run the tests, fix one test and then run the test suite:
+      To run the tests, issue:
     </para>
 
-<screen><userinput>sed -i '/typedef/d' wildtest.c &amp;&amp;
-make check</userinput></screen>
+<screen><userinput>make check</userinput></screen>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
