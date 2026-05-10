@@ -87,7 +87,8 @@
       <xref linkend="doxygen"/> (for the API documentation),
       <xref linkend="graphviz"/> (for the API documentation),
       <xref linkend="gtk-doc"/> (for the API documentation),
-      <xref linkend="icu"/>, 
+      <xref linkend="icu"/>,
+      <!-- <xref linkend="java"/> -->
       <xref linkend="pygobject3"/> (for some tests), and
       &berkeley-db;
     </para>
@@ -129,7 +130,9 @@ make -j1</userinput></screen>
 <screen remap="doc"><userinput>make docs</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>.
+      If you wish to run the tests, add the
+      <option>-D LIBICAL_BUILD_TESTING=ON</option> option to CMake when
+      configuring this package and then issue: <command>make test</command>.
     </para>
 
     <para>
@@ -175,8 +178,16 @@ cp -vr apidocs/html/* /usr/share/doc/libical-&libical-version;/html</userinput><
 
     <para>
       <parameter>-D LIBICAL_GLIB_VAPI=true</parameter>: This switch is used
-      in order to build bindings for <xref linkend="vala"/>.
+      to build bindings for <xref linkend="vala"/>.
     </para>
+
+    <!-- Leaving commented until tested against JDK.
+    <para>
+      <parameter>-D LIBICAL_JAVA_BINDINGS=OFF</parameter>: This switch is used
+      to disable the Java bindings. Remove it if you have <xref linkend="java"/>
+      installed and want to build them to use in Java applications.
+    </para>
+    -->
 
     <para>
       <option>-D LIBICAL_ENABLE_BUILTIN_TZDATA=true</option>: This switch is used
@@ -264,7 +275,7 @@ cp -vr apidocs/html/* /usr/share/doc/libical-&libical-version;/html</userinput><
         <listitem>
           <para>
             is a library that allows you to store iCal component data
-            to disk in a variety of ways
+            on disk in a variety of ways
           </para>
           <indexterm zone="libical libicalss">
             <primary sortas="c-libicalss">libicalss.so</primary>
@@ -297,6 +308,17 @@ cp -vr apidocs/html/* /usr/share/doc/libical-&libical-version;/html</userinput><
         </listitem>
       </varlistentry>
 
+      <varlistentry id="libicalvcard">
+        <term><filename class="libraryfile">libicalvcard.so</filename></term>
+        <listitem>
+          <para>
+            is an experimental library for handling VCARD formatted data
+          </para>
+          <indexterm zone="libical libicalvcard">
+            <primary sortas="c-libicalvcard">libicalvcard.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
     </variablelist>
 
   </sect2>
