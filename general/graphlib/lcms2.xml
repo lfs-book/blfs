@@ -6,9 +6,9 @@
 
   <!ENTITY lcms2-download-http "https://github.com/mm2/Little-CMS/releases/download/lcms&lcms2-version;/lcms2-&lcms2-version;.tar.gz">
   <!ENTITY lcms2-download-ftp  " ">
-  <!ENTITY lcms2-md5sum        "ca4bbf484bf0015ed9b110cb988edb0b">
+  <!ENTITY lcms2-md5sum        "541978f73749499e9e0277bfe5a3c868">
   <!ENTITY lcms2-size          "5.5 MB">
-  <!ENTITY lcms2-buildsize     "22 MB (with the tests)">
+  <!ENTITY lcms2-buildsize     "17 MB (with the tests)">
   <!ENTITY lcms2-time          "0.2 SBU (with the tests)">
 ]>
 
@@ -86,25 +86,28 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
+ninja</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make check</command>.
+      To test the results, issue: <command>ninja test</command>.
     </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../../xincludes/static-libraries.xml"/>
+      href="../../xincludes/meson-buildtype-release.xml"/>
 
   </sect2>
 

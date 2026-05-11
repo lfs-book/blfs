@@ -6,10 +6,10 @@
 
   <!ENTITY libical-download-http "https://github.com/libical/libical/releases/download/v&libical-version;/libical-&libical-version;.tar.gz">
   <!ENTITY libical-download-ftp  " ">
-  <!ENTITY libical-md5sum        "539a8a293d344e7aa8ccf3740494a46d">
-  <!ENTITY libical-size          "952 KB">
-  <!ENTITY libical-buildsize     "29 MB (with tests)">
-  <!ENTITY libical-time          "0.2 SBU (using parallelism=4; with tests)">
+  <!ENTITY libical-md5sum        "e6b277202deeb1c4b79e25025c59528b">
+  <!ENTITY libical-size          "1.8 MB">
+  <!ENTITY libical-buildsize     "91 MB (with tests and docs)">
+  <!ENTITY libical-time          "0.4 SBU (using parallelism=4; with tests and docs)">
 <!-- run at -j1 because it fails at -j4 -->
 ]>
 
@@ -87,7 +87,8 @@
       <xref linkend="doxygen"/> (for the API documentation),
       <xref linkend="graphviz"/> (for the API documentation),
       <xref linkend="gtk-doc"/> (for the API documentation),
-      <xref linkend="icu"/>, 
+      <xref linkend="icu"/>,
+      <!-- <xref linkend="java"/> -->
       <xref linkend="pygobject3"/> (for some tests), and
       &berkeley-db;
     </para>
@@ -97,38 +98,24 @@
   <sect2 role="installation">
     <title>Installation of libical</title>
 
-    <!-- https://github.com/libical/libical/pull/690 -->
-    <!-- Seems fixed in 3.0.19
-    <para>
-      If <xref linkend='icu'/> is installed, fix an incompatibility
-      with ICU 75 or later:
-    </para>
-
-    <screen><userinput>sed -i '/getKeywordValuesForLocale/s/NULL/""/' src/libical/icalrecur.c</userinput></screen>
-    -->
-
     <para>
       Install <application>libical</application> by running the
       following commands:
     </para>
 
-  <!-- Needs confirmation, but I got a race condition at -j8,
-  -j1 allowed the build to pass. Pierre 2019-12-06
-  I always have it actually. Hence the entity.
+    <!-- Still needed for version 4.0.0 -->
+    &parallel_issues;
 
-  Works at -j8 and -j4 for version 3.0.18
-
-  Hit it again at -j18 for version 3.0.20 - xry111
-  &parallel_issues;-->
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
 cmake -D CMAKE_INSTALL_PREFIX=/usr  \
       -D CMAKE_BUILD_TYPE=Release   \
-      -D SHARED_ONLY=yes            \
-      -D ICAL_BUILD_DOCS=false      \
-      -D GOBJECT_INTROSPECTION=true \
-      -D ICAL_GLIB_VAPI=true        \
+      -D LIBICAL_STATIC=NO          \
+      -D LIBICAL_BUILD_DOCS=false   \
+      -D LIBICAL_GLIB_VAPI=true     \
+      -D LIBICAL_JAVA_BINDINGS=OFF  \
+      -D LIBICAL_GOBJECT_INTROSPECTION=true \
       .. &amp;&amp;
 make -j1</userinput></screen>
 
@@ -136,14 +123,16 @@ make -j1</userinput></screen>
       If you have <xref linkend="doxygen"/>, <xref linkend="graphviz"/>,
       and <xref linkend="gtk-doc"/>
       installed and wish to build the API documentation,  you should
-      remove the <parameter>-D ICAL_BUILD_DOCS=false</parameter> switch
+      remove the <parameter>-D LIBICAL_BUILD_DOCS=false</parameter> switch
       and issue:
     </para>
 
 <screen remap="doc"><userinput>make docs</userinput></screen>
 
     <para>
-      To test the results, issue: <command>make test</command>.
+      If you wish to run the tests, add the
+      <option>-D LIBICAL_BUILD_TESTING=ON</option> option to CMake when
+      configuring this package and then issue: <command>make test</command>.
     </para>
 
     <para>
@@ -172,41 +161,38 @@ cp -vr apidocs/html/* /usr/share/doc/libical-&libical-version;/html</userinput><
     </para>
 
     <para>
-      <parameter>-D SHARED_ONLY=yes</parameter>: This switch is used
+      <parameter>-D LIBICAL_STATIC=NO</parameter>: This switch is used
       in order to only build the shared libraries.
     </para>
 
     <para>
-      <parameter>-D ICAL_BUILD_DOCS=false</parameter>: This switch prevents
+      <parameter>-D LIBICAL_BUILD_DOCS=false</parameter>: This switch prevents
       building the <application>GTK</application> documentation. Remove
       if you want to build the documentation.
     </para>
 
     <para>
-      <parameter>-D GOBJECT_INTROSPECTION=true</parameter>: This switch is used
+      <parameter>-D LIBICAL_GOBJECT_INTROSPECTION=true</parameter>: This switch is used
       to generate GObject metadata bindings.
     </para>
 
     <para>
-      <parameter>-D ICAL_GLIB_VAPI=true</parameter>: This switch is used
-      in order to build bindings for <xref linkend="vala"/>.
+      <parameter>-D LIBICAL_GLIB_VAPI=true</parameter>: This switch is used
+      to build bindings for <xref linkend="vala"/>.
     </para>
 
+    <!-- Leaving commented until tested against JDK.
     <para>
-      <option>-D USE_BUILTIN_TZDATA=yes</option>: This switch is used
-      in order to build using your own timezone data.
+      <parameter>-D LIBICAL_JAVA_BINDINGS=OFF</parameter>: This switch is used
+      to disable the Java bindings. Remove it if you have <xref linkend="java"/>
+      installed and want to build them to use in Java applications.
     </para>
-
-    <!-- No CMake equivalents
-    <para>
-      <parameter>- -enable-cxx</parameter>: This switch enables
-      <application>libical</application> C++ library.
-    </para>
+    -->
 
     <para>
-      <option>- -enable-python</option>: This switch enables
-      <application>libical</application> Python bindings.
-    </para> -->
+      <option>-D LIBICAL_ENABLE_BUILTIN_TZDATA=true</option>: This switch is used
+      to use the included timezone data.
+    </para>
 
   </sect2>
 
@@ -223,20 +209,21 @@ cp -vr apidocs/html/* /usr/share/doc/libical-&libical-version;/html</userinput><
           None
         </seg>
         <seg>
-          libical_cxx.so,
           libical.so,
-          libical-glib.so,
-          libicalss_cxx.so,
           libicalss.so,
-          and libicalvcal.so
+          libicalss_cxx.so,
+          libicalvcal.so,
+          libicalvcard.so (experimental),
+          libical-glib.so, and
+          libical_cxx.so
         </seg>
         <seg>
           /usr/include/libical,
           /usr/include/libical-glib,
           /usr/lib/cmake/LibIcal,
           /usr/libexec/libical,
-          /usr/share/gtk-doc/html/libical-glib (optional),
-          and /usr/share/doc/libical-&libical-version;/html
+          /usr/share/gtk-doc/libical-glib (when docs are built), and
+          /usr/share/doc/libical-&libical-version;
         </seg>
       </seglistitem>
     </segmentedlist>
@@ -288,7 +275,7 @@ cp -vr apidocs/html/* /usr/share/doc/libical-&libical-version;/html</userinput><
         <listitem>
           <para>
             is a library that allows you to store iCal component data
-            to disk in a variety of ways
+            on disk in a variety of ways
           </para>
           <indexterm zone="libical libicalss">
             <primary sortas="c-libicalss">libicalss.so</primary>
@@ -321,6 +308,17 @@ cp -vr apidocs/html/* /usr/share/doc/libical-&libical-version;/html</userinput><
         </listitem>
       </varlistentry>
 
+      <varlistentry id="libicalvcard">
+        <term><filename class="libraryfile">libicalvcard.so</filename></term>
+        <listitem>
+          <para>
+            is an experimental library for handling VCARD formatted data
+          </para>
+          <indexterm zone="libical libicalvcard">
+            <primary sortas="c-libicalvcard">libicalvcard.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
     </variablelist>
 
   </sect2>
