@@ -66,17 +66,17 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing='compact'>
       <listitem>
         <para>
           Recommended patch: <ulink url=
-            "&patch-root;/nmap-&nmap-version;-pcre_2-1.patch"/>
+            "&patch-root;/nmap-&nmap-version;-openssl4_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
--->
+
     <bridgehead renderas="sect3">Nmap Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -141,10 +141,16 @@
 
     <!-- https://github.com/nmap/nmap/issues/3345 -->
     <para>
-      fix a packaging error that makes the build fail:
+      Fix a packaging error that makes the build fail:
     </para>
 
     <screen><userinput>sed '/py-modules/s/f"/&amp;, "Version"/' -i ndiff/pyproject.toml</userinput></screen>
+
+    <para>
+      Fix compiling this package against OpenSSL-4:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../nmap-&nmap-version;-openssl4_fixes-1.patch</userinput></screen>
 
     <para>
       Install <application>Nmap</application> by running the following
