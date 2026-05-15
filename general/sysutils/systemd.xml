@@ -74,17 +74,17 @@
       </listitem>
     </itemizedlist>
 
-<!--  Comment out (instead of remove) in case a patch will be needed.
+<!--  Comment out (instead of remove) in case a patch will be needed.-->
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
          Required patch:
-         <ulink url="&patch-root;/systemd-&systemd-version;-upstream_fixes-1.patch"/>
+         <ulink url="&patch-root;/systemd-&systemd-version;-buildfix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
--->
+
     <bridgehead renderas="sect3">systemd Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -184,6 +184,12 @@
 
 <screen><userinput remap="pre">sed -i -e 's/GROUP="render"/GROUP="video"/' \
        -e 's/GROUP="sgx", //' rules.d/50-udev-default.rules.in</userinput></screen>
+
+    <para>
+      Fix compilation issues with OpenSSL-4.0:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../systemd-&systemd-version;-buildfix-1.patch</userinput></screen>
 
     <para>
       Rebuild <application>systemd</application> by running the
