@@ -92,6 +92,7 @@ can be found there, no need to change directory -->
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="brotli"/>,
       <xref linkend="freeglut"/>,
       <xref linkend="harfbuzz"/>,
       <xref linkend="libjpeg"/>,
@@ -101,6 +102,7 @@ can be found there, no need to change directory -->
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="zxing-cpp"/>,
       <xref role="runtime" linkend="xdg-utils"/> (runtime),
       <ulink url="https://jbig2dec.com">jbig2dec</ulink>, and
       <ulink url="https://mujs.com/">MuJS</ulink>
@@ -122,6 +124,7 @@ can be found there, no need to change directory -->
     </para>
 
 <screen><userinput>cat &gt; user.make &lt;&lt; EOF &amp;&amp;
+USE_SYSTEM_BROTLI := yes
 USE_SYSTEM_FREETYPE := yes
 USE_SYSTEM_HARFBUZZ := yes
 USE_SYSTEM_JBIG2DEC := no
@@ -168,6 +171,15 @@ ln -sfv mupdf-x11 /usr/bin/mupdf</userinput></screen>
       <command>ln -sfv mupdf-x11 /usr/bin/mupdf </command>:
       This symbolic link chooses between <command>mupdf-gl</command>
       and <command>mupdf-x11</command> when running <command>mupdf</command>.
+    </para>
+
+    <para>
+      <option>barcode=yes</option>: Pass this option to <command>make</command>
+      if you want barcode support. This will use the
+      <application>zxing-cpp</application> library included in the package.
+      If you want to use the system <xref linkend="zxing-cpp"/>, you should add
+      <command>USE_SYSTEM_ZXINGCPP := yes</command> to
+      <filename>user.make</filename>.
     </para>
 
   </sect2>

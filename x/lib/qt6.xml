@@ -8,10 +8,10 @@
 
   <!ENTITY qt6-download-http "&qt6-url;/qt-everywhere-src-&qt6-version;.tar.xz">
   <!ENTITY qt6-download-ftp  " ">
-  <!ENTITY qt6-md5sum        "a93e9f424a9d11ee8d67bf8fb1af4772">
-  <!ENTITY qt6-size          "970 MB">
-  <!ENTITY qt6-buildsize     "71 GB (943 MB installed)">
-  <!ENTITY qt6-time          "36 SBU (using parallelism=8)">
+  <!ENTITY qt6-md5sum        "25d4d1dd74c92b978f164e8f20805985">
+  <!ENTITY qt6-size          "971 MB">
+  <!ENTITY qt6-buildsize     "47 GB (502 MB installed)">
+  <!ENTITY qt6-time          "13 SBU (using parallelism=8)">
 ]>
 
 <sect1 id="qt6" xreflabel="Qt-&qt6-version;">
@@ -69,17 +69,17 @@
         </para>
       </listitem>
     </itemizedlist>
-<!--
+
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           Required patch: <ulink
-          url="&patch-root;/qt-everywhere-src-&qt6-version;-upstream_fixes-1.patch"/>
+          url="&patch-root;/qt-everywhere-src-&qt6-version;-openssl4_fix-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
--->
+
     <bridgehead renderas="sect3">Qt6 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -248,8 +248,14 @@ ln -sfnv qt-&qt6-version; /opt/qt6</userinput></screen>
     </note>
 
     <para>
-      Disable a conflicting declaration on i686 systems and fix a build error
-      due to SIMD intrinsics in QtMultimedia:
+      First, apply a patch to make the package compatible with openssl4:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../qt-everywhere-src-&qt6-version;-openssl4_fix-1.patch</userinput></screen>
+
+    <para>
+      Next, if you are on an i686 system, disable a conflicting declaration
+      and fix a build error due to SIMD intrinsics in QtMultimedia:
     </para>
 
 <screen><userinput>if [ "$(uname -m)" == "i686" ]; then
@@ -259,35 +265,39 @@ ln -sfnv qt-&qt6-version; /opt/qt6</userinput></screen>
 fi</userinput></screen>
 
     <para>
+      Next, remove two components that are not used in BLFS and take a long
+      time to build. Also, remove qtwebengine because we build that component
+      separately with system-installed components. In addition, remove the
+      qtopcua module which is not used in BLFS and which breaks with OpenSSL-4:
+    </para>
+
+<screen><userinput>rm -rf qtwebengine qt3d qtquick3dphysics qtopcua</userinput></screen>
+
+    <para>
       Install <application>Qt6</application> by running the following commands:
     </para>
 
-<screen revision="openrc"><userinput>./configure -prefix $QT6PREFIX      \
-            -sysconfdir /etc/xdg    \
-            -dbus-linked            \
-            -openssl-linked         \
-            -system-sqlite          \
-            -nomake examples        \
-            -no-rpath               \
-            -no-sbom                \
-            -syslog                 \
-            -skip qt3d              \
-            -skip qtquick3dphysics  \
-            -skip qtwebengine       &amp;&amp;
+<screen revision="openrc"><userinput>./configure -prefix $QT6PREFIX   \
+            -sysconfdir /etc/xdg \
+            -dbus-linked         \
+            -openssl-linked      \
+            -system-sqlite       \
+            -nomake examples     \
+            -no-rpath            \
+            -no-sbom             \
+            -syslog              &amp;&amp;
 ninja</userinput></screen>
 
-<screen revision="systemd"><userinput>./configure -prefix $QT6PREFIX      \
-            -sysconfdir /etc/xdg    \
-            -dbus-linked            \
-            -openssl-linked         \
-            -system-sqlite          \
-            -nomake examples        \
-            -no-rpath               \
-            -no-sbom                \
-            -journald               \
-            -skip qt3d              \
-            -skip qtquick3dphysics  \
-            -skip qtwebengine       &amp;&amp;
+<screen revision="systemd"><userinput>./configure -prefix $QT6PREFIX   \
+            -release             \
+            -sysconfdir /etc/xdg \
+            -dbus-linked         \
+            -openssl-linked      \
+            -system-sqlite       \
+            -nomake examples     \
+            -no-rpath            \
+            -no-sbom             \
+            -journald            &amp;&amp;
 ninja</userinput></screen>
 
     <para>

@@ -82,7 +82,7 @@ tar -xvf filename.tar.bz2</userinput></screen>
       decompressor to the <command>patch</command> utility.  For example:
     </para>
 
-    <screen><userinput>gzip -cd ../patchname.patch.gz | patch -p1</userinput></screen>
+    <screen><userinput>zcat ../patchname.patch.gz | patch -p1</userinput></screen>
 
     <para>
       Or for a patch compressed with <command>bzip2</command>:
@@ -1173,6 +1173,54 @@ chmod 744 /usr/sbin/strip-all.sh</userinput></screen>
         approach but seems to be necessary) mostly works. The exception is
         running the tests when building rustc, some of them will
         nevertheless use all online CPUs, at least as of rustc-1.42.0.
+      </para>
+
+      <bridgehead renderas="sect4" id="cargo-offline">Building offline with Cargo</bridgehead>
+
+      <para>
+        One of the problems with <application>Cargo</application> is that the
+        needed crates are downloaded on the fly, which makes it so that
+        <command>cargo build</command> cannot be run offline. Another annoyance
+        is that the needed crates are downloaded to the directory
+        <filename class="directory">~/.cargo</filename>, which may clutter
+        the user's or &root;'s home directory. For those who want to have
+        some more control on the download location for the crates, it is
+        possible to set the variable <envar>CARGO_HOME</envar> to the desired
+        location in the environment, for example:
+      </para>
+
+<screen role='nodump'><userinput>export CARGO_HOME=<replaceable>/sources/cargo</replaceable></userinput></screen>
+
+      <para>
+        It is also possible to have all the needed crates downloaded at once
+        before building a package. We'll give two methods, which may have to
+        be adapted to the particular package that is built. The simplest one
+        is to download the needed packages by running <command>cargo fetch</command>
+        from the directory containing the top-level <filename>Cargo.toml</filename>
+        file. The packages are downloaded to <envar>$CARGO_HOME</envar> (or
+        <filename class='directory'>~/.cargo</filename>), and can be used
+        offline in the build instructions. But this may fail in some cases,
+        for example for packages that redefine <envar>CARGO_HOME</envar> in
+        their build system. In this case, the following instructions (run from
+        the directory containing the top <filename>Cargo.toml</filename>), will
+        create a <quote>vendor</quote> directory containing the source crates and
+        will use it offline. Note that the crates are also downloaded
+        to <envar>$CARGO_HOME</envar> by the <command>cargo vendor</command>
+        command:
+      </para>
+
+<screen role='nodump'><userinput>cargo vendor    &amp;&amp;
+mkdir -v .cargo &amp;&amp;
+cat &gt; .cargo/config.toml &lt;&lt; EOF
+<literal>[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "vendor"</literal>
+EOF</userinput></screen>
+
+      <para>
+        After this, the instructions can be run as in the book.
       </para>
 
   </sect2>

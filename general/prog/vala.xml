@@ -6,10 +6,10 @@
 
   <!ENTITY vala-download-http "&gnome-download-http;/vala/&vala-major-version;/vala-&vala-version;.tar.xz">
   <!ENTITY vala-download-ftp  " ">
-  <!ENTITY vala-md5sum        "14238ac89810b932db9fd75999739494">
+  <!ENTITY vala-md5sum        "a2dc825de503fad703584cfb0ed50302">
   <!ENTITY vala-size          "3.8 MB">
-  <!ENTITY vala-buildsize     "160 MB (add 19 MB for tests)">
-  <!ENTITY vala-time          "0.5 SBU (add 1.0 SBU for tests; both using parallelism=4)">
+  <!ENTITY vala-buildsize     "160 MB (add 16 MB for tests)">
+  <!ENTITY vala-time          "0.4 SBU (add 0.9 SBU for tests; both using parallelism=4)">
 ]>
 
 <sect1 id="vala" xreflabel="Vala-&vala-version;">
@@ -67,7 +67,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -77,7 +77,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">Vala Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -104,21 +104,21 @@
   <sect2 role="installation">
     <title>Installation of Vala</title>
 
-    <!-- https://gitlab.gnome.org/GNOME/vala/-/issues/1621 -->
+    <!-- https://gitlab.gnome.org/GNOME/vala/-/issues/1621 
     <para>
       First, fix an issue causing <command>valadoc</command> to crash
       when compiled against graphviz-13 or later:
     </para>
 
 <screen><userinput>patch -Np1 -i ../vala-&vala-version;-graphviz_13_fix-1.patch</userinput></screen>
-
+-->
     <para>
       Install <application>Vala</application> by running the following
       commands:
     </para>
 
 <screen><userinput>./configure --prefix=/usr &amp;&amp;
-make bootstrap</userinput></screen>
+make</userinput></screen>
 
     <para>
       To test the results, issue: <command>make check</command>.
@@ -135,17 +135,19 @@ make bootstrap</userinput></screen>
   <sect2 role="commands">
     <title>Command Explanations</title>
 
+<!--
     <para>
-      <parameter>bootstrap</parameter>: This <command>make</command>
+      <option>bootstrap</option>: This <command>make</command>
       target forces the building system to build the package twice and use
-      the <command>valac</command> executable produced in the first build
+      the <command>vala</command> executable produced in the first build
       to regenerate the <filename class="extension">.c</filename> files
-      from the <filename class="extension">.vala</filename> files.
-      This is needed because the patch changes one of the
-      <filename class="extension">.vala</filename> files. But it is not
-      needed if a <command>valac</command> executable is already installed
-      on the system. In this case, just run <command>make</command>.
+      from the <filename class="extension">.vala</filename> files if needed.
+      If a <command>vala</command> executable is not installed yet and
+      you've modified any <filename class="extension">.vala</filename> files
+      in the source tree, run <command>make bootstrap</command> instead of
+      <command>make</command>.
     </para>
+-->
 
     <para>
       <option>--disable-valadoc</option>: This option is

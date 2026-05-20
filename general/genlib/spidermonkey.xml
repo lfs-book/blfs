@@ -8,7 +8,7 @@
   <!ENTITY spidermonkey-download-ftp  " ">
   <!-- size and md5sum are in packages.ent -->
   <!ENTITY spidermonkey-buildsize     "4.7 GB (52 MB installed after removing 42 MB static lib; add 29 MB for the main and jit tests)">
-  <!ENTITY spidermonkey-time          "2.2 SBU (with parallelism=4; add 0.7 SBU for the main tests and 2.4 SBU for the jit tests)">
+  <!ENTITY spidermonkey-time          "1.9 SBU (with parallelism=4; add 0.4 SBU for the main tests and 2.6 SBU for the jit tests)">
 ]>
 
 <sect1 id="spidermonkey" xreflabel="SpiderMonkey from Firefox-&spidermonkey-version;">
@@ -151,6 +151,18 @@ tar: Exiting with failure status due to previous errors
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../spidermonkey-&spidermonkey-version;-python_3.14_fixes-1.patch</userinput></screen>
+
+<!--
+    <para>
+      Next, fix building this package with rustc-1.95.0:
+    </para>
+
+<screen><userinput remap="pre">sed '/use super::/a use core::simd::Select;' \
+    -i third_party/rust/encoding_rs/src/x_user_defined.rs &amp;&amp;
+sed '/patch.crates-io/a encoding_rs={path="third_party/rust/encoding_rs"}' \
+    -i Cargo.toml &amp;&amp;
+sed '/name = "encoding_rs"/,/^$/{/source/d;/checksum/d}' -i Cargo.lock</userinput></screen>
+-->
 
     <para>
       Install <application>SpiderMonkey</application> by running the following

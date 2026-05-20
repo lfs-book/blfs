@@ -4,12 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-49;/mutter-&mutter-version;.tar.xz">
+  <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-50;/mutter-&mutter-version;.tar.xz">
   <!ENTITY mutter-download-ftp  " ">
-  <!ENTITY mutter-md5sum        "b3196923a5c29018e8839d4950d7c8ae">
+  <!ENTITY mutter-md5sum        "5e4147170db223878e2845c2ae695640">
   <!ENTITY mutter-size          "8.1 MB">
-  <!ENTITY mutter-buildsize     "103 MB (with tests)">
-  <!ENTITY mutter-time          "0.5 SBU (Using parallelism=4; add 1.4 SBU for tests)">
+  <!ENTITY mutter-buildsize     "90 MB">
+  <!ENTITY mutter-time          "0.4 SBU (Using parallelism=4; add 1.4 SBU for tests)">
 ]>
 
 <sect1 id="mutter" xreflabel="Mutter-&mutter-version;">
@@ -254,9 +254,14 @@ ninja test</userinput></screen>
       compositor in another Wayland session.  In a terminal emulator, issue:
     </para>
 
-    <screen role='nodump'><userinput>MUTTER_DEBUG_DUMMY_MODE_SPECS=1920x1080 mutter --wayland --nested -- vte-2.91</userinput></screen>
+    <screen role='nodump'><userinput>MUTTER_DEBUG_DUMMY_MODE_SPECS=1920x1080 \
+dbus-run-session mutter --wayland --devkit -- vte-2.91</userinput></screen>
 
     <para>
+      There will be a 20-second delay before the nested compositor starts
+      up because of
+      <ulink url='https://gitlab.gnome.org/GNOME/mutter/-/issues/4159'>a
+      known bug</ulink>.
       Replace <replaceable>1920x1080</replaceable> with the size you want
       for the nested Wayland session.
     </para>

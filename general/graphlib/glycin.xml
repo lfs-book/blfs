@@ -4,11 +4,8 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY glycin-download-http "https://download.gnome.org/sources/glycin/&glycin-majmin;/glycin-&glycin-version;.tar.xz">
-  <!ENTITY glycin-md5sum        "7f8fac31be0aabd50a44998d9fd4ede2">
-  <!ENTITY glycin-size          "6.3 MB">
-  <!ENTITY glycin-buildsize     "1.1 GB (additional 775 MB for tests)">
-  <!ENTITY glycin-time          "6.4 SBU (additional 9.5 SBU for tests)">
+  <!ENTITY glycin-buildsize     "1.4 GB (with documentation, add 1 GB for tests)">
+  <!ENTITY glycin-time          "3.8 SBU (with documentation, add 2.5 SBU for tests)">
 ]>
 
 <!-- Try to keep the indentation used in this file-->
@@ -70,12 +67,14 @@
           <ulink url="&patch-root;/glycin-&glycin-version;-xorg_prefix-1.patch"/>
         </para>
       </listitem>
+      <!--
       <listitem>
         <para>
           Recommended patch (required to load XBM and XPM images):
           <ulink url="&patch-root;/glycin-&glycin-version;-xbm_xpm-1.patch"/>
         </para>
       </listitem>
+      -->
     </itemizedlist>
 
     <bridgehead renderas="sect3">glycin Dependencies</bridgehead>
@@ -103,9 +102,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gi-docgen"/>,
-      <xref linkend="gtk4"/> (for
-      <systemitem class='library'>libglycin-gtk4</systemitem> and the test
-      suite), and
+      <xref linkend="gtk4"/> (for the test suite), and
       <ulink url="https://libopenraw.freedesktop.org/">libopenraw</ulink>
     </para>
 
@@ -131,25 +128,14 @@
 <screen><userinput>cargo vendor &amp;&amp;
 patch -Np1 -i ../glycin-&glycin-version;-xorg_prefix-1.patch</userinput></screen>
 
-    <note>
-      <para>
-        The XBM and XPM support patch below implicitly depends on the patch
-        and instructions above, so ensure you've issued the instructions
-        before applying the XBM and XPM support patch. The instructions don't
-        cause any problems for a Xorg installation in
-        <filename class='directory'>/usr</filename>.
-      </para>
-    </note>
-
+<!--https://gitlab.gnome.org/GNOME/glycin/-/merge_requests/396-->
     <para>
-      Now backport an upstream change to make glycin able to load XBM and
-      XPM images.  The upstream change introduces a new dependent Rust crate
-      (<literal>image-extras</literal>) which needs to be synced into the
-      vendored sources by running <command>cargo vendor</command> again:
+      Fix a build error when a system <application>libglycin</application>
+      is not yet installed:
     </para>
 
-<screen><userinput>patch -Np1 -i ../glycin-&glycin-version;-xbm_xpm-1.patch &amp;&amp;
-cargo vendor</userinput></screen>
+<screen><userinput>sed -e "s/get_option('libglycin-gtk4')/(&amp; or get_option('glycin-thumbnailer'))/" \
+    -i meson.build</userinput></screen>
 
     <para>
       Install <application>glycin</application> by running the following
@@ -195,9 +181,9 @@ ninja</userinput></screen>
 
     <para>
       <parameter>-D glycin_gtk4=false</parameter>: This parameter disables
-      the build of <systemitem class='library'>libglycin-gtk4</systemitem>
-      (which is not used by any BLFS packages yet) so this package can be
-      built without <xref linkend='gtk4'/> installed.
+      the build of <systemitem class='library'>libglycin-gtk4</systemitem>.
+      This library will be built separately as
+      <xref linkend='glycin-gtk4'/>, to avoid a circular dependency.
     </para>
 
     <para>
@@ -209,8 +195,8 @@ ninja</userinput></screen>
       <literal>glycin-jxl</literal>, or <literal>glycin-svg</literal> loader
       if the corresponding recommended dependency is not installed, but
       doing so will cause test failures and hamper the functionality of this
-      package.  There are also loaders for the JPEG 2000 and RAW formats but
-      they are not enabled by default.
+      package.  There is also a loader for the RAW format but it is not
+      enabled by default.
     </para>
 
     <para>

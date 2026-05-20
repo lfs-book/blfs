@@ -7,9 +7,9 @@
   <!ENTITY harfbuzz-download-http
            "https://github.com/harfbuzz/harfbuzz/releases/download/&harfbuzz-version;/harfbuzz-&harfbuzz-version;.tar.xz">
   <!ENTITY harfbuzz-download-ftp  " ">
-  <!ENTITY harfbuzz-md5sum        "de595664aa7213f408d417ea16e8a6be">
+  <!ENTITY harfbuzz-md5sum        "54a09da4efb0f172d00f90ac5bde6122">
   <!ENTITY harfbuzz-size          "19 MB">
-  <!ENTITY harfbuzz-buildsize     "169 MB (with tests)">
+  <!ENTITY harfbuzz-buildsize     "174 MB (with tests)">
   <!ENTITY harfbuzz-time          "0.8 SBU (with tests; both using parallelism=4)">
 ]>
 
@@ -71,13 +71,13 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="freetype2"/>,
       <xref linkend="glib2"/> (required for Pango; GObject Introspection
       required for building GNOME),
       <xref role="first" linkend="graphite2"/> (required for building
         <xref role="nodep" linkend="texlive"/> or
-        <xref role="nodep" linkend="libreoffice"/> with system harfbuzz),
-      <xref linkend="icu"/>, and
-      <xref linkend="freetype2"/>
+        <xref role="nodep" linkend="libreoffice"/> with system harfbuzz), and
+      <xref linkend="icu"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -87,6 +87,10 @@
       cairo backend is needed),
       <xref linkend="git"/>,
       <xref linkend="gtk-doc"/>,
+      <xref linkend="glew"/>,
+      <xref linkend="mesa"/>, and
+      <ulink url="https://linuxfromscratch.org/slfs/view/dev/graph/glfw.html">glfw</ulink>
+      (all three for the <application>hb-gpu</application> utility),
       <ulink url="https://pypi.org/project/FontTools/">FontTools</ulink>
       (Python 3 module, for the test suite),
       <ulink url="https://www.colm.net/open-source/ragel/">ragel</ulink>,
@@ -165,20 +169,24 @@ ninja</userinput></screen>
       <seglistitem>
         <seg>
           hb-info,
-          hb-ot-shape-closure,
+          hb-raster,
           hb-shape,
-          hb-subset, and
+          hb-subset,
+          hb-vector, and
           hb-view (only if Cairo is installed)
         </seg>
         <seg>
           libharfbuzz.so,
           libharfbuzz-cairo.so (only if Cairo is installed),
           libharfbuzz-gobject.so,
-          libharfbuzz-icu.so, and
-          libharfbuzz-subset.so
+          libharfbuzz-gpu.so,
+          libharfbuzz-icu.so, 
+          libharfbuzz-raster.so,
+          libharfbuzz-subset.so, and
+          libharfbuzz-vector.so
         </seg>
         <seg>
-          /usr/include/harbuzz,
+          /usr/include/harfbuzz,
           /usr/lib/cmake/harfbuzz, and
           /usr/share/gtk-doc/html/harfbuzz (optional)
         </seg>
@@ -203,6 +211,7 @@ ninja</userinput></screen>
        </listitem>
      </varlistentry>
 
+<!-- Not seen after 14.0.0
      <varlistentry id="hb-ot-shape-closure">
         <term><command>hb-ot-shape-closure</command></term>
         <listitem>
@@ -214,6 +223,19 @@ ninja</userinput></screen>
           </para>
           <indexterm zone="harfbuzz hb-ot-shape-closure">
             <primary sortas="b-hb-ot-shape-closure">hb-ot-shape-closure</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+-->
+
+      <varlistentry id="hb-raster">
+        <term><command>hb-raster</command></term>
+        <listitem>
+          <para>
+            is used to render shaped text as a raster image using a given font
+          </para>
+          <indexterm zone="harfbuzz hb-raster">
+            <primary sortas="b-hb-raster">hb-raster</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -238,6 +260,18 @@ ninja</userinput></screen>
           </para>
           <indexterm zone="harfbuzz hb-subset">
             <primary sortas="b-hb-subset">hb-subset</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="hb-vector">
+        <term><command>hb-vector</command></term>
+        <listitem>
+          <para>
+            is used to draw text in SVG format with a given font
+          </para>
+          <indexterm zone="harfbuzz hb-vector">
+            <primary sortas="b-hb-vector">hb-vector</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -295,6 +329,20 @@ ninja</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="libharfbuzz-gpu">
+        <term><filename class="libraryfile">libharfbuzz-gpu.so</filename></term>
+        <listitem>
+          <para>
+            provides API functions for encoding glyph outlines on the CPU into
+            compact blobs  that the GPU decodes and rasterizes directly into a
+            fragment shader
+          </para>
+          <indexterm zone="harfbuzz libharfbuzz-gpu">
+            <primary sortas="c-libharfbuzz-gpu">libharfbuzz-gpu.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
       <varlistentry id="libharfbuzz-icu">
         <term><filename class="libraryfile">libharfbuzz-icu.so</filename></term>
         <listitem>
@@ -303,6 +351,19 @@ ninja</userinput></screen>
           </para>
           <indexterm zone="harfbuzz libharfbuzz-icu">
             <primary sortas="c-libharfbuzz-icu">libharfbuzz-icu.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry id="libharfbuzz-raster">
+        <term><filename class="libraryfile">libharfbuzz-raster.so</filename></term>
+        <listitem>
+          <para>
+            provides API functions for rasterizing glyphs to bitmaps, including
+            color fonts
+          </para>
+          <indexterm zone="harfbuzz libharfbuzz-raster">
+            <primary sortas="c-libharfbuzz-raster">libharfbuzz-raster.so</primary>
           </indexterm>
         </listitem>
       </varlistentry>
@@ -320,6 +381,19 @@ ninja</userinput></screen>
         </listitem>
       </varlistentry>
 
+      <varlistentry id="libharfbuzz-vector">
+        <term><filename class="libraryfile">libharfbuzz-vector.so</filename></term>
+        <listitem>
+          <para>
+            provides API functions for outputting glyphs to vector formats,
+            including color fonts. Only SVG is currently supported, but more
+            formats may come later
+          </para>
+          <indexterm zone="harfbuzz libharfbuzz-vector">
+            <primary sortas="c-libharfbuzz-vector">libharfbuzz-vector.so</primary>
+          </indexterm>
+        </listitem>
+      </varlistentry>
     </variablelist>
 
   </sect2>

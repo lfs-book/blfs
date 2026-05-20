@@ -6,9 +6,9 @@
 
   <!ENTITY intltool-download-http "http://launchpad.net/intltool/trunk/&intltool-version;/+download/intltool-&intltool-version;.tar.gz">
   <!ENTITY intltool-download-ftp  " ">
-  <!ENTITY intltool-md5sum        "23fbd879118253cb99aeac067da5f591">
-  <!ENTITY intltool-size          "188 KB">
-  <!ENTITY intltool-buildsize     "1.4 MB">
+  <!ENTITY intltool-md5sum        "12e517cac2b57a0121cda351570f1e63">
+  <!ENTITY intltool-size          "159 KB">
+  <!ENTITY intltool-buildsize     "1.5 MB">
   <!ENTITY intltool-time          "less than 0.1 SBU">
 ]>
 
@@ -26,16 +26,16 @@
     <title>Introduction to Intltool</title>
 
     <para>
-      The <application>Intltool</application> is an internationalization
-      tool used for extracting translatable strings from source files,
-      collecting the extracted strings with messages from traditional
-      source files (<filename class="directory">&lt;source
+      The <application>Intltool</application> package provides an
+      internationalization tool used for extracting translatable strings
+      from source files, collecting the extracted strings with messages from
+      traditional source files (<filename class="directory">&lt;source
       directory&gt;/&lt;package&gt;/po</filename>) and merging the
       translations into <filename>.xml</filename>,
       <filename>.desktop</filename> and <filename>.oaf</filename> files.
     </para>
 
-    &lfs75_checked;
+    &lfs130_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -72,19 +72,27 @@
     </itemizedlist>
 
     <bridgehead renderas="sect3">Intltool Dependencies</bridgehead>
-
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <xref linkend="perl-xml-parser"/>
     </para>
 
-    <para condition="html" role="usernotes">User Notes:
-      <ulink url="&blfs-wiki;/intltool"/>
-    </para>
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of Intltool</title>
+
+    <para>First fix a warning that is caused by perl-5.22 and later:</para>
+
+<screen><userinput remap="pre">sed -i 's:\\\${:\\\$\\{:' intltool-update.in</userinput></screen>
+
+    <note>
+      <para>
+        The above regular expression looks unusual because of all the
+        backslashes.  What it does is add a backslash before the right brace
+        character in the sequence '\${' resulting in '\$\{'.
+      </para>
+    </note>
 
     <para>
       Install <application>Intltool</application> by running the following
@@ -103,8 +111,7 @@ make</userinput></screen>
     </para>
 
 <screen role="root"><userinput>make install &amp;&amp;
-install -v -m644 -D doc/I18N-HOWTO \
-    /usr/share/doc/intltool-&intltool-version;/I18N-HOWTO</userinput></screen>
+install -v -m644 -D doc/I18N-HOWTO -t /usr/share/doc/intltool-&intltool-version;</userinput></screen>
 
   </sect2>
 
@@ -118,8 +125,11 @@ install -v -m644 -D doc/I18N-HOWTO \
 
       <seglistitem>
         <seg>
-          intltool-extract, intltool-merge, intltool-prepare,
-          intltool-update and intltoolize
+          intltool-extract, 
+          intltool-merge, 
+          intltool-prepare,
+          intltool-update, and 
+          intltoolize
         </seg>
         <seg>
           None

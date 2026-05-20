@@ -145,8 +145,9 @@
         </listitem>
         <listitem>
           <para>
-            <xref linkend="libclc"/> (required for the Intel iris
-            gallium driver)
+            <xref linkend="libclc"/> (built after
+            <xref linkend='spirv-llvm-translator'/>, required
+            for the Intel iris gallium driver)
           </para>
         </listitem>
         <listitem>
@@ -371,7 +372,7 @@ meson setup ..                 \
       -D vulkan-drivers=auto   \
       -D valgrind=disabled     \
       -D video-codecs=all      \
-      -D libunwind=disabled   &amp;&amp;
+      -D libunwind=disabled    &amp;&amp;
 
 ninja</userinput></screen>
 
@@ -387,9 +388,7 @@ ninja</userinput></screen>
       To test the results, issue:
     </para>
 
-<screen remap='test'><userinput>meson configure -D build-tests=true &amp;&amp;<!--
-sed '/float rsqrtf/,/^}/d' \
-    -i ../src/gallium/drivers/llvmpipe/lp_test_arit.c &amp;&amp;-->
+<screen remap='test'><userinput>meson configure -D build-tests=true &amp;&amp;
 ninja test</userinput></screen>
 
 <!-- all 97  tests passed for me for 25.3.1 [zeckma]

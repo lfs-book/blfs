@@ -5,11 +5,11 @@
   %general-entities;
 
   <!ENTITY gnome-shell-download-http
-           "&gnome-download-http;/gnome-shell/&gnome-49;/gnome-shell-&gnome-shell-version;.tar.xz">
+           "&gnome-download-http;/gnome-shell/&gnome-50;/gnome-shell-&gnome-shell-version;.tar.xz">
   <!ENTITY gnome-shell-download-ftp  " ">
-  <!ENTITY gnome-shell-md5sum        "408cfd73d6e321bf0273dfb074ffb3e1">
+  <!ENTITY gnome-shell-md5sum        "13d63cd5e0bbdd2e43034b9b906c711e">
   <!ENTITY gnome-shell-size          "2.2 MB">
-  <!ENTITY gnome-shell-buildsize     "67 MB (with tests)">
+  <!ENTITY gnome-shell-buildsize     "61 MB (with tests)">
   <!ENTITY gnome-shell-time          "0.2 SBU (Using parallelism=4; with tests)">
 ]>
 
@@ -101,17 +101,16 @@
     <para role="required">
       <xref role="runtime" linkend="adwaita-icon-theme"/>,
       <xref role="runtime" linkend="dconf"/>,
+      <xref role="runtime" linkend="gdm"/>,
+      <xref role="runtime" linkend="libgweather"/>,
+      <xref role="runtime" linkend="libnma"/>, and
+      <xref role='runtime' linkend="systemd" revision='systemd'/>
+
+      <!-- Taken out for now as we know GNOME doesn't work on sysv
       <phrase revision="openrc">
         <xref role='runtime' linkend="elogind"/>,
       </phrase>
-      <xref role="runtime" linkend="gdm"/>,
-      <xref role="runtime" linkend="gnome-control-center"/>,
-      <phrase revision="openrc">and</phrase>
-      <xref role="runtime" linkend="libgweather"/>
-      <phrase revision="systemd">, and</phrase>
-      <phrase revision="systemd">
-        <xref role='runtime' linkend="systemd"/>
-      </phrase>
+      -->
     </para>
 
     <bridgehead renderas="sect4">Recommended Runtime Dependencies</bridgehead>
@@ -151,11 +150,16 @@ ninja</userinput></screen>
 
     <para>
       To run the tests, ensure <application>Mutter</application> is installed
-      after running its test suite, and issue: <command>meson configure -D
-      tests=true &amp;&amp; ninja test</command>. You must be
-      running in a Wayland session to run the tests. Some will fail if <xref
-      linkend="gdm"/> is not installed. <phrase revision="openrc">Several
-      more tests may fail in the Sysv environment.</phrase>
+      after running its test suite, and issue:
+    </para>
+
+<screen remap='test'><userinput>meson configure -D tests=true &amp;&amp;
+ninja test</userinput></screen>
+
+    <para>
+      You must be running in a Wayland session to run the tests. Some will
+      fail if <xref linkend="gdm"/> is not installed.<phrase revision="sysv">
+      Several more tests may fail in the Sysv environment.</phrase>
       <!-- "Failed to read monitors config file
            '/home/xry111/.config/monitors.xml': Logical monitors not
            adjacent"

@@ -6,9 +6,9 @@
 
   <!ENTITY ruby-download-http "https://cache.ruby-lang.org/pub/ruby/&ruby-minor-version;/ruby-&ruby-version;.tar.xz">
   <!ENTITY ruby-download-ftp  " ">
-  <!ENTITY ruby-md5sum        "bf2f837f1ea0072e1c00d3f1d97a529e">
-  <!ENTITY ruby-size          "17 MB">
-  <!ENTITY ruby-buildsize     "1.8 GB (with C API docs and tests)">
+  <!ENTITY ruby-md5sum        "e182f8c1c1a5c2804b2783439a5ee1cc">
+  <!ENTITY ruby-size          "18 MB">
+  <!ENTITY ruby-buildsize     "2.8 GB (with C API docs and tests)">
   <!ENTITY ruby-time          "1.5 SBU (with C API docs; using parallelism=4; add 0.4 SBU for tests)">
 ]>
 
@@ -135,7 +135,7 @@ make</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+    <screen role="root"><userinput>XDG_DATA_HOME=/tmp make install</userinput></screen>
 
     <note>
       <para>
@@ -202,6 +202,16 @@ bundle update rake</userinput></screen>
     <para>
       <option>--disable-install-capi</option>: This switch disables building
       and installing C API documents.
+    </para>
+
+    <para>
+      <command>XDG_DATA_HOME=/tmp ...</command>: If
+      <envar>XDG_DATA_HOME</envar> is not set, the installation process
+      creates the <filename class='directory'>$HOME/.local/share</filename>
+      directory if it does not exist. Depending on the way root privileges
+      have been acquired, this may create files owned by &root; in the user
+      home directory, or in <filename class='directory'>/root</filename>,
+      which is not desirable either.
     </para>
 
   </sect2>

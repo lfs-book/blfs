@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY gnome-session-download-http
-           "&gnome-download-http;/gnome-session/&gnome-49;/gnome-session-&gnome-session-version;.tar.xz">
+           "&gnome-download-http;/gnome-session/&gnome-50;/gnome-session-&gnome-session-version;.tar.xz">
   <!ENTITY gnome-session-download-ftp  " ">
-  <!ENTITY gnome-session-md5sum        "14d0c1ab840ff8a86348e333cd7835ec">
-  <!ENTITY gnome-session-size          "388 KB">
-  <!ENTITY gnome-session-buildsize     "7.5 MB">
-  <!ENTITY gnome-session-time          "0.1 SBU">
+  <!ENTITY gnome-session-md5sum        "9c14ac6880cbc6ebaf8f573e25d94c35">
+  <!ENTITY gnome-session-size          "392 KB">
+  <!ENTITY gnome-session-buildsize     "7.6 MB">
+  <!ENTITY gnome-session-time          "less than 0.1 SBU">
 ]>
 
 <sect1 id="gnome-session" xreflabel="gnome-session-&gnome-session-version;">
@@ -157,22 +157,9 @@ ninja</userinput></screen>
 <screen remap="doc" role="root"><userinput>mv -v /usr/share/doc/gnome-session{,-&gnome-session-version;}</userinput></screen>
 
 
-    <!-- We need to adjust this when GNOME 50 comes out next year. For now,
-         since we've documented the X11 support via a switch, we'll leave this
-         in... -renodr -->
-    <para>
-      This package creates two Xorg based <filename>.desktop</filename> files
-      in the <filename class="directory">/usr/share/wayland-sessions/</filename>
-      directory.  Only one is needed on a BLFS system, so we
-      prevent the extra file showing up as an option in a display manager.  As
-      the &root; user:
-    </para>
-
-<screen role="root"><userinput>rm -v /usr/share/wayland-sessions/gnome.desktop</userinput></screen>
-
     <para revision="openrc">
       Now, as the <systemitem class="username">root</systemitem> user,
-      remove systemd units that are useless on SysV systems:
+      remove systemd units that are useless on OpenRC systems:
     </para>
 
 <screen role="root" revision="openrc"><userinput>rm -rv /tmp/{*.d,*.target,*.service}</userinput></screen>
@@ -181,7 +168,7 @@ ninja</userinput></screen>
 by systemd-user.-->
     <para revision="openrc">
       The startup sequence of gnome-wayland needs to create a dbus session.
-      On SysV, this has to be added to the shipped
+      On OpenRC, this has to be added to the shipped
       <filename>gnome-wayland.desktop</filename> file, which is written for
       systemd. As the &root; user:
     </para>
@@ -266,7 +253,7 @@ startx</userinput></screen>
     </para>
 
     <screen role="nodump"><userinput>systemctl --user set-environment XDG_SESSION_TYPE=wayland XDG_SESSION_ID=<replaceable>1</replaceable> &amp;&amp;
-systemctl --user start gnome-session-wayland@gnome.target</userinput></screen>
+systemctl --user start gnome-session@gnome.target</userinput></screen>
 
   </sect2>
 
