@@ -208,16 +208,7 @@ install -v -m644 doc/html/* /usr/share/doc/unbound-&unbound-version;</userinput>
         or online documentation.
       </para>
 
-      <para revision="openrc">
-        When <application>Unbound</application> is installed, some package
-        builds fail if the file <filename>/etc/unbound/root.key</filename> is
-        not found. This file is created by running the boot script (install
-        instructions below).  Alternatively, it can be created by running the
-        following command as the <systemitem class="username">root</systemitem>
-        user:
-      </para>
-
-      <para revision="systemd">
+      <para>
         When <application>Unbound</application> is installed, some package
         builds fail if the file <filename>/etc/unbound/root.key</filename> is
         not found. Create this file by running the following command as the
@@ -229,25 +220,52 @@ install -v -m644 doc/html/* /usr/share/doc/unbound-&unbound-version;</userinput>
     </sect3>
 
     <sect3 id="unbound-init">
-      <title><phrase revision="openrc">Boot Script</phrase>
+      <title><phrase revision="openrc">OpenRC Service</phrase>
              <phrase revision="systemd">Systemd Unit</phrase></title>
 
       <para>
         If you want the <application>Unbound</application> server to
-        start automatically when the system is booted, install the
-        <phrase revision="openrc"><filename>/etc/rc.d/init.d/unbound</filename>
-        init script</phrase>
-        <phrase revision="systemd"><filename>unbound.service</filename>
-        unit</phrase> included
-        in the <xref linkend="bootscripts" revision="openrc"/>
-        <xref linkend="systemd-units" revision="systemd"/> package:
+        start automatically when the system is booted,
+
+        <phrase revision="openrc">create and enable the OpenRC service as the
+        &root; user:</phrase>
+
+        <phrase revision="systemd">install the
+        <filename>unbound.service</filename> unit included
+        in the <xref linkend="systemd-units"/> package as the &root;
+        user:</phrase>
       </para>
 
       <indexterm zone="unbound unbound-init">
         <primary sortas="f-unbound">unbound</primary>
       </indexterm>
 
-<screen role="root"><userinput>make install-unbound</userinput></screen>
+<screen revision="openrc" role='root'><userinput>install -vDm755 /dev/stdin /etc/init.d/unbound &lt;&lt; "EOF" &amp;&amp;
+<literal>#!/sbin/openrc-run
+# Starts the Unbound daemon.
+# Authors: Zeckma - zeckma@linuxfromscratch.com
+# Version: LFS &version;
+
+description="starts the Unbound DNS resolver"
+
+command=/sbin/unbound
+pidfile=/run/unbound.pid
+command_background=yes
+
+depend() {
+  use net logger
+  provide dns
+  after auth-dns
+}
+
+start_pre() {
+  unbound-anchor
+}</literal>
+EOF
+
+rc-update add unbound default</userinput></screen>
+
+<screen revision="systemd" role="root"><userinput>make install-unbound</userinput></screen>
 
     </sect3>
 
