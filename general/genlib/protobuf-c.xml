@@ -88,7 +88,7 @@
     <title>Installation of Protobuf-c</title>
 
     <para>
-      First fix issues caused by <xref linkend="protobuf"/> and later:
+      First fix issues caused by protobuf-34 and later:
     </para>
 
 <screen><userinput>patch -Np1 -i ../protobuf-c-&protobuf-c-version;-protobuf34_fix-1.patch</userinput></screen>
@@ -98,7 +98,8 @@
       commands:
     </para>
 
-<screen><userinput>CXXFLAGS+=" -std=c++20" ./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>CXXFLAGS="${CXXFLAGS:--O2 -g} -std=c++20" \
+./configure --prefix=/usr --disable-static &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -115,6 +116,12 @@ make</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <envar>CXXFLAGS="${CXXFLAGS:--O2 -g} -std=c++20"</envar>: Override the
+      default C++ standard (C++ 2017) of this package, as the headers from
+      protobuf-35 and later require C++ 2020 features.
+    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
