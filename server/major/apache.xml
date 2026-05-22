@@ -76,6 +76,12 @@
           <ulink url="&patch-root;/httpd-blfs_layout-1.patch"/>
         </para>
       </listitem>
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/httpd-2.4.67-openssl4_fixes-1.patch"/>
+        </para>
+      </listitem>
     </itemizedlist>
 
     <bridgehead renderas="sect3">Apache HTTPD Dependencies</bridgehead>
@@ -117,6 +123,12 @@
 <screen role="root"><userinput>groupadd -g 25 apache &amp;&amp;
 useradd -c "Apache Server" -d /srv/www -g apache \
         -s /bin/false -u 25 apache</userinput></screen>
+
+    <para>
+      Now add a patch for compatibility with openssl4:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../httpd-2.4.67-openssl4_fixes-1.patch</userinput></screen>  
 
     <para>
       Build and install <application>Apache HTTPD</application> by running the
