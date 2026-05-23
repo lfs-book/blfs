@@ -5,7 +5,7 @@
   %general-entities;
 
   <!ENTITY my-download-http "&metacpan_authors;/C/CH/CHRISN/Net-SSLeay-&Net-SSLeay-version;.tar.gz">
-  <!ENTITY my-md5sum "1b22c764e5a094c6261e37a4b1f148ce">
+  <!ENTITY my-md5sum "63772ad94b874b5f0f025c2a4285f82f">
 
 ]>
 
@@ -25,16 +25,16 @@
         Net::SSLeay is a Perl extension for using OpenSSL.
       </para>
 
-      <!--
+
       <bridgehead renderas="sect4">Additional Download</bridgehead>
       <itemizedlist spacing="compact">
         <listitem>
           <para>
-            Required patch (for openssl-1.1.1):
-            <ulink url="&patch-root;/Net-SSLeay-&Net-SSLeay-version;-openssl_1.1.1-1.patch"/>
+            Required patch (for openssl-4):
+            <ulink url="&patch-root;/Net-SSLeay-&Net-SSLeay-version;-openssl4_fixes-1.patch"/>
           </para>
         </listitem>
-      </itemizedlist>-->
+      </itemizedlist>
 
       &lfs130_checked;
 
@@ -57,15 +57,11 @@
     <sect3 role="installation">
       <title>Installation of Net::SSLeay</title>
 
-      <note>
-        <para>
-          <!-- https://github.com/radiator-software/p5-net-ssleay/issues/511 -->
-          One test named <filename>32_x509_get_cert_info.t</filename> is
-          known to fail with OpenSSL-3.4.0 or later.
-          If enabling the external tests, one test in t/external/15_altnames.t
-          may fail. <!-- https://rt.cpan.org/Public/Bug/Display.html?id=12954 -->
-        </para>
-      </note>
+      <para>
+        First, apply a patch to support OpenSSL-4:
+      </para>
+
+<screen><userinput>patch -Np1 -i ../Net-SSLeay-&Net-SSLeay-version;-openssl4_fixes-1.patch</userinput></screen>
 
       <para>
         This module uses a variant of the standard build and installation
@@ -73,7 +69,7 @@
 
 <screen><userinput>yes '' | perl Makefile.PL &amp;&amp;
 make                      &amp;&amp;
-make test || true</userinput></screen>
+make test</userinput></screen>
 
         Now, as the <systemitem class="username">root</systemitem> user:
 
@@ -91,12 +87,12 @@ make test || true</userinput></screen>
         tests, which will fail if you do not have network connectivity. The
         default is 'n', specifying this allows you to script the build.
       </para>
-
+      <!--
       <para>
         <command>|| true</command>: When running a script which exits on
         error, this prevents stopping because of the known test failure.
       </para>
-
+      -->
     </sect3>
 
   </sect2>
