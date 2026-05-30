@@ -7,10 +7,10 @@
 
   <!ENTITY mariadb-download-http "https://downloads.mariadb.org/interstitial/mariadb-&mariadb-version;/source/mariadb-&mariadb-version;.tar.gz">
   <!ENTITY mariadb-download-ftp  " ">
-  <!ENTITY mariadb-md5sum        "27c6eeeda18e0c298f63b7def5ad8061">
-  <!ENTITY mariadb-size          "114 MB">
-  <!ENTITY mariadb-buildsize     "2.3 GB (778 MB installed)">
-  <!ENTITY mariadb-time          "3.9 SBU (with parallelism=8, add 2.9 SBU for tests)">
+  <!ENTITY mariadb-md5sum        "e6ec06ab51a7afa581562499616624a4">
+  <!ENTITY mariadb-size          "115 MB">
+  <!ENTITY mariadb-buildsize     "2.5 GB (832 MB installed)">
+  <!ENTITY mariadb-time          "4.3 SBU (with parallelism=8, add 2.6 SBU for tests)">
 ]>
 
 <sect1 id="mariadb" xreflabel="MariaDB-&mariadb-version;">
@@ -442,15 +442,16 @@ mariadbd-safe --user=mariadb 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen
 
 <screen role="root" revision="systemd"><userinput>make install-mariadb</userinput></screen>
 
-      <note>
+      <caution>
         <para>
-          If you have an existing database already and this
-          installation of binaries was just an upgrade to a newer
-          version, check the upstream documentation for upgrading. It
-          is recommended to run:
+          Upgrading MariaDB from version 11 to 12 requires a full backup, a
+          clean shutdown, uninstalling the old binaries, installing the version
+          12 binaries, restarting the server, and running the 
           <screen role="nodump"><userinput>mariadb-upgrade</userinput></screen>
+          to update system tables. Skipping this backup can result in 
+          unrecoverable data.
         </para>
-      </note>
+      </caution>
     </sect3>
 
   </sect2>
