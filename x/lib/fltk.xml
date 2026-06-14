@@ -7,10 +7,10 @@
   <!-- Watch directory when updating -->
   <!ENTITY fltk-download-http "https://github.com/fltk/fltk/releases/download/release-&fltk-version;/fltk-&fltk-version;-source.tar.gz">
   <!ENTITY fltk-download-ftp  " ">
-  <!ENTITY fltk-md5sum        "8308c6bb9ebc8580807a3834be4fcf54">
-  <!ENTITY fltk-size          "8.9 MB">
-  <!ENTITY fltk-buildsize     "229 MB (add 104 MB for documentation)">
-  <!ENTITY fltk-time          "0.4 SBU (Using parallelism=4)">
+  <!ENTITY fltk-md5sum        "75b2fd1aa2433e13abcbb311043eaee0">
+  <!ENTITY fltk-size          "5.3 MB">
+  <!ENTITY fltk-buildsize     "73 MB">
+  <!ENTITY fltk-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="fltk" xreflabel="FLTK-&fltk-version;">
@@ -68,7 +68,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -78,7 +78,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">FLTK Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -88,7 +88,6 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="glu"/>,
       <xref linkend="hicolor-icon-theme"/>,
       <xref linkend="libjpeg"/>, and
       <xref linkend="libpng"/>
@@ -98,7 +97,8 @@
     <para role="optional">
       <xref linkend="alsa-lib"/>,
       <xref linkend="desktop-file-utils"/>,
-      <xref linkend="doxygen"/>, and
+      <xref linkend="doxygen"/>,
+      <xref linkend="mesa"/>, and
       <xref linkend="texlive"/> (or <xref linkend="tl-installer"/>)
     </para>
 
@@ -119,26 +119,22 @@
       commands:
     </para>
 
-<screen><userinput>mkdir build &amp;&amp;
-cd    build &amp;&amp;
+<screen><userinput>sed -i -e '/cat./d' documentation/Makefile &amp;&amp;
 
-cmake -D CMAKE_INSTALL_PREFIX=/usr \
-      -D FLTK_BUILD_SHARED_LIBS=ON \
-      -D CMAKE_BUILD_TYPE=Release  \
-      -G "Ninja" ..                &amp;&amp;
-ninja</userinput></screen>
+./configure --prefix=/usr --enable-shared  &amp;&amp;
+make</userinput></screen>
 
     <para>
       If you wish to create the API documentation, issue:
     </para>
 
-<screen remap="doc"><userinput>ninja documentation/html</userinput></screen>
+<screen remap="doc"><userinput>make -C documentation html</userinput></screen>
 
     <para>
       The tests for the package are interactive.  To execute the tests, run
-      <command>bin/test/unittests</command>. In addition, there are about 110
+      <command>test/unittests</command>. In addition, there are about 70
       other executable test programs in the <filename
-      class='directory'>bin/test</filename> directory that can be run
+      class='directory'>test</filename> directory that can be run
       individually.
     </para>
 
@@ -147,33 +143,24 @@ ninja</userinput></screen>
       As the &root; user:
     </para>
 
-<screen role="root"><userinput>ninja install &amp;&amp;
-rm -vf /usr/lib/libfltk*.a</userinput></screen>
+<screen role="root"><userinput>make docdir=/usr/share/doc/fltk-&fltk-version; install &amp;&amp;
+rm -fv /usr/lib/libfltk*.a</userinput></screen>
 
     <para>
-      If you have built the documentation, install it as the &root; user:
+      If desired, install some example games built as a part of the tests, 
+      extra documentation and example programs. As the &root; user: 
     </para>
 
-<screen role="root"
-        remap="doc"><userinput>install -vdm 755          /usr/share/doc/fltk-&fltk-version; &amp;&amp;
-cp -Rv documentation/html /usr/share/doc/fltk-&fltk-version;</userinput></screen>
-
-    <para>
-      Otherwise, if you downloaded the optional html documentation,
-      install it as the &root; user:
-    </para>
-
-<screen role="root"><userinput>install -vdm 755 /usr/share/doc/fltk-&fltk-version; &amp;&amp;
-tar -C /usr/share/doc/fltk-&fltk-version; --strip-components=4 -xf ../../fltk-&fltk-version;-docs-html.tar.gz</userinput></screen>
-
+<screen role="root" remap="doc"><userinput>make -C test          docdir=/usr/share/doc/fltk-1.3.9 install-linux &amp;&amp;
+make -C documentation docdir=/usr/share/doc/fltk-1.3.9 install-linux</userinput></screen>
   </sect2>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
 
     <para>
-      <parameter>-D FLTK_BUILD_SHARED_LIBS=ON</parameter>: Build and install
-      shared libraries in addition to static ones.
+      <command>sed ... documentation/Makefile</command>: Avoid installing
+      pages in <filename class='directory'>/usr/share/man/cat*</filename>.
     </para>
 
   </sect2>
@@ -191,11 +178,7 @@ tar -C /usr/share/doc/fltk-&fltk-version; --strip-components=4 -xf ../../fltk-&f
           blocks,
           checkers,
           fltk-config,
-          fltk-options,
-          fltk-options-shared,
-          fluid,
-          fluid-shared,
-          glpuzzle, and
+          fluid, and
           sudoku
         </seg>
         <seg>
@@ -206,7 +189,6 @@ tar -C /usr/share/doc/fltk-&fltk-version; --strip-components=4 -xf ../../fltk-&f
         </seg>
         <seg>
           /usr/include/FL,
-          /usr/share/fltk, and
           /usr/share/doc/fltk-&fltk-version; (optional)
         </seg>
       </seglistitem>
@@ -265,7 +247,7 @@ tar -C /usr/share/doc/fltk-&fltk-version; --strip-components=4 -xf ../../fltk-&f
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
       <varlistentry id="fltk-options-shared">
         <term><command>fltk-options-shared</command></term>
         <listitem>
@@ -278,7 +260,7 @@ tar -C /usr/share/doc/fltk-&fltk-version; --strip-components=4 -xf ../../fltk-&f
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
       <varlistentry id="fluid">
         <term><command>fluid</command></term>
         <listitem>
@@ -290,7 +272,7 @@ tar -C /usr/share/doc/fltk-&fltk-version; --strip-components=4 -xf ../../fltk-&f
           </indexterm>
         </listitem>
       </varlistentry>
-
+<!--
       <varlistentry id="fluid-shared">
         <term><command>fluid-shared</command></term>
         <listitem>
@@ -315,7 +297,7 @@ tar -C /usr/share/doc/fltk-&fltk-version; --strip-components=4 -xf ../../fltk-&f
           </indexterm>
         </listitem>
       </varlistentry>
-
+-->
      <varlistentry id="sudoku">
         <term><command>sudoku</command></term>
         <listitem>
