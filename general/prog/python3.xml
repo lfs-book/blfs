@@ -7,10 +7,10 @@
   <!ENTITY python3-download-http
            "https://www.python.org/ftp/python/&python3-version;/Python-&python3-version;.tar.xz">
   <!ENTITY python3-download-ftp  " ">
-  <!ENTITY python3-md5sum        "16beaf44e56ed4b8254f625504b08a7f">
+  <!ENTITY python3-md5sum        "d28d7fb81a61d3bff5a6bedceb969366">
   <!ENTITY python3-size          "23 MB">
-  <!ENTITY python3-buildsize     "335 MB (add 65 MB for tests)">
-  <!ENTITY python3-time          "2.2 SBU (add 1.0 SBU for tests; both using parallelism=4)">
+  <!ENTITY python3-buildsize     "346 MB (add 65 MB for tests)">
+  <!ENTITY python3-time          "2.3 SBU (add 0.7 SBU for tests; both using parallelism=4)">
   <!--
   Note: Size does not reflect docs that were installed in LFS.
   Test time measured with 120 second timeout.
@@ -29,10 +29,16 @@
   Total duration: 1 min 18 sec
   Total tests: run=48,121 failures=2 skipped=1,916
   Total test files: run=488/492 failed=1 skipped=20 resource_denied=5 rerun=1
+
+  Python-3.14.6
+  1 test failed: test_zipfile
+  Total duration: 1 min 1 sec
+  Total tests: run=48,229 skipped=2,143
+  Total test files: run=488/492 failed=1 skipped=20 resource_denied=5 rerun=1
   -->
   <!ENTITY python3htmldoc-download-http
   "https://www.python.org/ftp/python/doc/&python3-version;/python-&python3-version;-docs-html.tar.bz2">
-  <!ENTITY python3-docs-md5sum "b5e4e78aecd57de93837810d279598e2">
+  <!ENTITY python3-docs-md5sum "95c7483f256f6f0596c9e644756dc556">
 ]>
 
 <sect1 id="python3" xreflabel="Python-&python3-version;">
@@ -140,11 +146,6 @@
     <itemizedlist spacing="compact">
       <listitem>
         <para>
-          Required patch: <ulink url="&patch-root;/Python-&python3-version;-security_fixes-1.patch"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
           Required patch: <ulink url="&patch-root;/Python-&python3-version;-openssl_4-1.patch"/>
         </para>
       </listitem>
@@ -197,13 +198,7 @@
     <title>Installation of Python 3</title>
 
     <para>
-      First, apply a patch consisting of security fixes from upstream:
-    </para>
-
-<screen><userinput remap="pre">patch -Np1 -i ../Python-&python3-version;-security_fixes-1.patch</userinput></screen>
-
-    <para>
-      Next, apply a patch adapting this package to OpenSSL-4:
+      First, apply a patch adapting this package to OpenSSL-4:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../Python-&python3-version;-openssl_4-1.patch</userinput></screen>
@@ -228,52 +223,6 @@ make</userinput></screen>
 
 <screen remap='test'><userinput>make test TESTOPTS="--timeout 120"</userinput></screen>
 
-    <!-- 
-         For Python-3.12.3 all tests pass
-         Total tests: run=41,778 skipped=1,155
-         Total test files: run=485/488 skipped=24 resource_denied=3
-
-         For Python-3.12.4 
-         Total tests: run=42,152 failures=6 skipped=1,234
-         Total test files: run=487/489 failed=4 skipped=17 resource_denied=6 rerun=4
-
-         For Python-3.13.0
-         Total tests: run=44,153 skipped=1,640
-         Total test files: run=479/478 failed=3 skipped=20 resource_denied=2 rerun=3
-
-         For Python-3.13.1
-         Total tests: run=44,420 failures=2 skipped=1,863
-         Total test files: run=480/478 failed=4 skipped=20 resource_denied=2 rerun=4
-
-         For Python-3.13.2
-         Total tests: run=46,327 failures=2 skipped=1,716
-         Total test files: run=479/480 failed=1 skipped=21 resource_denied=2 rerun=1
-
-         For Python-3.13.3
-         Total tests: run=44,697 failures=2 skipped=1,870
-         Total test files: run=482/480 failed=4 skipped=21 resource_denied=2 rerun=4
-
-         For Python-3.13.4
-         Total tests: run=45,204 failures=2 skipped=1,745
-         Total test files: run=481/480 failed=3 skipped=20 resource_denied=2 rerun=3
-
-         For Python-3.13.6
-         Total tests: run=45,289 failures=2 skipped=1,966
-         Total test files: run=482/480 failed=4 skipped=20 resource_denied=2 rerun=4
-
-         For Python-3.13.7
-         Total tests: run=46,701 failures=2 skipped=1,773
-         Total test files: run=479/480 failed=1 skipped=20 resource_denied=2 rerun=1
-
-         For Python-3.14.0
-         Total tests: run=46,901 failures=2 skipped=1,819
-         Total test files: run=492/491 failed=5 skipped=21 resource_denied=4 rerun=5
-
-         For Python-3.14.2
-         Total tests: run=47,481 skipped=2,053
-         Total test files: run=488/491 failed=1 skipped=20 resource_denied=4 rerun=1
-    -->
-
     <para>
       For a relatively slow system you may need to increase the time
       limit and 1 SBU (measured when building Binutils pass 1 with one CPU
@@ -281,13 +230,6 @@ make</userinput></screen>
       automatically re-run failed tests.  If a test failed but then passed
       when re-run, it should be considered as passed.
     </para>
-
-<!-- On a 13.0-rc1 system, zipfile no longer fails. -renodr
-    <para>
-      Of over 47,000 tests, the following test(s) are known to fail:
-      test_zipfile.
-    </para>
--->
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
@@ -322,15 +264,6 @@ tar --strip-components=1  \
       <parameter>--with-system-expat</parameter>: This switch enables linking
       against the system version of <application>Expat</application>.
     </para>
-
-<!--
-    <para>
-      <parameter>- -with-ensurepip=yes</parameter> : This switch enables building
-      the <command>pip</command> and <command>setuptools</command> packaging
-      programs. <command>setuptools</command> is needed for building some
-      Python modules.
-    </para>
--->
 
     <para>
       <parameter>--enable-optimizations</parameter>: This switch enables
@@ -377,13 +310,6 @@ tar --strip-components=1  \
 
       <seglistitem>
         <seg>
-          <!--2to3 (symlink) and
-          2to3-&python3-majorver;,-->
-
-          <!--
-          easy_install-&python3-majorver;,
-          -->
-
           idle3 (symlink) and
           idle&python3-majorver;,
 
@@ -414,34 +340,6 @@ tar --strip-components=1  \
       <bridgehead renderas="sect3">Short Descriptions</bridgehead>
       <?dbfo list-presentation="list"?>
       <?dbhtml list-presentation="table"?>
-      <!--
-      <varlistentry id="2to3">
-        <term><command>2to3</command></term>
-        <listitem>
-          <para>
-            is designed to assist in the transition between python2 and python3
-            by automatically converting code to be Python3 compatible.
-          </para>
-          <indexterm zone="python3 2to3">
-            <primary sortas="b-2to3">2to3</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-      Put here for easy use when removing Python2 -->
-      <!--
-      <varlistentry id="easy_install">
-        <term><command>easy_install</command></term>
-        <listitem>
-          <para>
-            is a frontend to pip3 to make it easier to configure python modules
-            through the PIP package manager
-          </para>
-          <indexterm zone="python3 easy_install">
-            <primary sortas="python3 easy_install">easy_install</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-      -->
       <varlistentry id="idle3">
         <term><command>idle3</command></term>
         <listitem>
@@ -495,21 +393,6 @@ tar --strip-components=1  \
           </indexterm>
         </listitem>
       </varlistentry>
-      <!--
-      <varlistentry id="pyvenv">
-        <term><command>pyvenv</command></term>
-        <listitem>
-          <para>
-            creates virtual <application>Python</application> environments in
-            one or more target directories.
-          </para>
-          <indexterm zone="python3 pyvenv">
-            <primary
-            sortas="b-python&python3-majorver;">python&python3-majorver;</primary>
-          </indexterm>
-        </listitem>
-      </varlistentry>
-      -->
     </variablelist>
 
   </sect2>
