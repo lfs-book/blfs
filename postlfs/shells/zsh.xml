@@ -6,8 +6,8 @@
 
   <!ENTITY zsh-download-http "https://www.zsh.org/pub/zsh-&zsh-version;.tar.xz">
   <!ENTITY zsh-download-ftp  " ">
-  <!ENTITY zsh-md5sum        "182e37ca3fe3fa6a44f69ad462c5c30e">
-  <!ENTITY zsh-size          "3.2 MB">
+  <!ENTITY zsh-md5sum        "5492bfe9a4afacdb2d1d81c27a1d44fa">
+  <!ENTITY zsh-size          "3.3 MB">
   <!ENTITY zsh-buildsize     "48 MB (includes documentation and tests)">
   <!ENTITY zsh-time          "1.6 SBU (Using parallelism=4; includes documentation and tests)">
 ]>
@@ -91,30 +91,6 @@
     <title>Installation of zsh</title>
 
     <para>
-      Adapt the documentation build system for texinfo-7.0 or later:
-    </para>
-
-<screen><userinput>sed -e 's/set_from_init_file/texinfo_&amp;/' \
-    -i Doc/Makefile.in</userinput></screen>
-
-    <!-- https://github.com/zsh-users/zsh/commit/4c89849c9817
-         https://github.com/zsh-users/zsh/commit/ab4d62eb975a -->
-    <para>
-      Some programs shipped in the building system for detecting system
-      features use pre-C99 syntax rejected by GCC-14.1 and later.  Fix them
-      because Zsh will be configured incorrectly and fail to build otherwise:
-    </para>
-
-<screen><userinput>sed -e 's/^main/int &amp;/'      \
-    -e 's/exit(/return(/'    \
-    -i aczsh.m4 configure.ac &amp;&amp;
-
-sed -e 's/test = /&amp;(char**)/' \
-    -i configure.ac           &amp;&amp;
-
-autoconf</userinput></screen>
-
-    <para>
       The documentation files contain references to zsh configuration
       files in <filename class='directory'>/etc</filename>, but we'll
       use <filename class='directory'>/etc/zsh</filename> to hold these
@@ -144,7 +120,8 @@ autoconf</userinput></screen>
             --sysconfdir=/etc/zsh    \
             --enable-etcdir=/etc/zsh \
             --enable-cap             \
-            --enable-gdbm            &amp;&amp;
+            --enable-gdbm            \
+            --enable-pcre            &amp;&amp;
 make                                 &amp;&amp;
 
 makeinfo  Doc/zsh.texi --html      -o Doc/html &amp;&amp;
@@ -169,7 +146,7 @@ makeinfo  Doc/zsh.texi --html --no-split --no-headers -o zsh.html</userinput></s
 
 <screen role="root"><userinput>make install                                                    &amp;&amp;
 make infodir=/usr/share/info install.info                       &amp;&amp;
-make htmldir=/usr/share/doc/zsh-&zsh-version;/html install.html           &amp;&amp;
+make htmldir=/usr/share/doc/zsh-&zsh-version;/html install.html         &amp;&amp;
 install -v -m644 zsh.{html,txt} Etc/FAQ /usr/share/doc/zsh-&zsh-version;</userinput></screen>
 
     <para>
@@ -205,13 +182,13 @@ install -v -m644 zsh.{html,txt} Etc/FAQ /usr/share/doc/zsh-&zsh-version;</userin
       <parameter>--enable-gdbm</parameter>: This option enables the
       use of the <application>GDBM</application> library.
     </para>
-<!-- the next zsh release will support it
+
     <para>
-      <option>- -enable-pcre</option>: This option allows zsh to use
+      <parameter>--enable-pcre</parameter>: This option allows zsh to use
       the <application>PCRE2</application> regular expression library in shell
       builtins.
     </para>
--->
+
   </sect2>
 
   <sect2 role="configuration">

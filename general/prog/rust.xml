@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "c206536bb0e11bbf2ebae91504096e34">
-  <!ENTITY rust-size          "228 MB">
+  <!ENTITY rust-md5sum        "75632c07ce29c765b905f26719c3cb3c">
+  <!ENTITY rust-size          "231 MB">
   <!ENTITY rust-buildsize     "10 GB (324 MB installed); add 11 GB if running the tests">
   <!ENTITY rust-time          "10 SBU (including download time; add 15 SBU for tests, both using parallelism=8)">
 ]>
@@ -138,13 +138,14 @@
 
     <!--  keep this here for reuse in case we need a patch -->
     <!-- deliberately skipped turning version and md5 into entities:
-         it's unlikely we'd still need this in the next rustc release.  -->
+         it will be uneeded in 1.97.0 per
+         https://github.com/rust-lang/cargo/pull/16931. -->
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
         <para>
           OpenSSL Rust binding updated to support OpenSSL 4:
-          <ulink url="https://github.com/lfs-book/rust-openssl/archive/v0.10.78/rust-openssl-v0.10.78.tar.gz"/>
+          <ulink url="https://github.com/lfs-book/rust-openssl/archive/v0.10.78/rust-openssl-0.10.78.tar.gz"/>
         </para>
       </listitem>
       <listitem>
@@ -184,6 +185,11 @@
         modify the instructions to build and use a shipped copy in the
         Rustc source tarball instead.  See the Command Explanations section
         for more details.
+      </para>
+      <para role="recommended">
+        If using the instructions for installing in <filename
+        class="directory">/opt</filename>, it is assumed that you have
+        configured <xref linkend="postlfs-config-profile"/>.
       </para>
     </note>
 
@@ -242,7 +248,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py that the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn users to review that information.
-change-id = 148671
+change-id = 154508
 
 [llvm]
 # When using the system installed copy of LLVM, prefer the shared libraries
@@ -291,7 +297,7 @@ EOF</userinput></screen>
       this package with OpenSSL 4:
     </para>
 
-<screen><userinput>tar xf ../rust-openssl-v0.10.78.tar.gz &amp;&amp;
+<screen><userinput>tar xf ../rust-openssl-0.10.78.tar.gz &amp;&amp;
 
 cat &gt;&gt; src/tools/cargo/Cargo.toml &lt;&lt; EOF &amp;&amp;
 <literal>[patch.crates-io]
@@ -300,8 +306,8 @@ openssl-sys = { path = "../../../rust-openssl-0.10.78/openssl-sys" }
 </literal>EOF
 
 sed -ri src/tools/cargo/Cargo.lock \
-    -e '/name = "openssl-sys"/,/^$/{/source|checksum/d;s/0.9.111/0.9.114/}' \
-    -e '/name = "openssl"/,/^$/{/source|checksum/d;s/0.10.75/0.10.78/}'     \
+    -e '/name = "openssl-sys"/,/^$/{/source|checksum/d;s/0.9.112/0.9.114/}' \
+    -e '/name = "openssl"/,/^$/{/source|checksum/d;s/0.10.76/0.10.78/}'     \
     -e '/name = "openssl-macros"/,/^$/{/source|checksum/d}'</userinput></screen>
 
 <!-- retain here in case we need a patch
@@ -316,10 +322,6 @@ sed -ri src/tools/cargo/Cargo.lock \
       Compile <application>Rust</application> by running the following
       commands:
     </para>
-<!-- fixed in 1.58.0, retain as a reminder that fixed crates can be used
-<screen><userinput>sed -i -e '/^curl /s/0.4.38/0.4.40/' \
-       -e '/^curl-sys /s/0.4.48/0.4.50/' \
-       src/tools/cargo/Cargo.toml &amp;&amp; -->
 
 <screen><userinput>export LIBSSH2_SYS_USE_PKG_CONFIG=1
 export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
@@ -344,9 +346,6 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
 
     <para>
       In the <filename class='directory'>rustdoc-ui</filename> tests,
-      <!-- https://github.com/rust-lang/rust/issues/154392 -->
-      the test named <filename>track-diagnostics.rs</filename>
-      is known to fail because it hard codes paths non-exist on LFS, and
       the test named <filename>ice-bug-report-url.rs</filename> is known
       to fail for unknown reason.
 

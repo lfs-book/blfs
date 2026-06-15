@@ -119,11 +119,19 @@
     <para>
       If <xref linkend='lsb-tools'/> is not installed, the test suite will
       output some lines complaining the <command>lsb_release</command>
-      command not available but it won't affect the test result. The tests
-      are currently known to fail once it attempts to add user-generated keys
+      command is not available but it won't affect the test result. The tests
+      do not work in a chroot environment.
+      <!-- The kernel needs to invoke /sbin/request-key sometimes, so
+      running the test suite in a chroot environment will actually test
+      the host distro's request-key program.  Just don't do that.
+
+      The tests are currently known to fail once it attempts to add user-generated keys
       to the keyring.
-      <!-- I did verify that this occurs on other distros as well, and it seems
-      to be known at Gentoo.-->
+      I did verify that this occurs on other distros as well, and it seems
+      to be known at Gentoo.
+
+      Is this still a issue if we rule out running the test suite in
+      chroot? -->
     </para>
 
   </sect2>

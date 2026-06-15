@@ -6,9 +6,9 @@
 
   <!ENTITY pipewire-download-http "https://gitlab.freedesktop.org/pipewire/pipewire/-/archive/&pipewire-version;/pipewire-&pipewire-version;.tar.bz2">
   <!ENTITY pipewire-download-ftp  " ">
-  <!ENTITY pipewire-md5sum        "9f770dc4f064186ada8cc56189ce70e0">
+  <!ENTITY pipewire-md5sum        "ac5ddcc6fc4b66025eb796e2c71001f1">
   <!ENTITY pipewire-size          "2.0 MB">
-  <!ENTITY pipewire-buildsize     "108 MB (with tests)">
+  <!ENTITY pipewire-buildsize     "110 MB (with tests)">
   <!ENTITY pipewire-time          "0.7 SBU (with tests, both using parallelism=4)">
 ]>
 
@@ -140,9 +140,6 @@
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-<!--
-CFLAGS+=" -Wno-error=discarded-qualifiers" \
--->
 meson setup ..                             \
       --prefix=/usr                        \
       --buildtype=release                  \
@@ -162,13 +159,6 @@ ninja</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
-    <para>
-      <envar>CFLAGS="-Wno-error=discarded-qualifiers"</envar>: 
-      This environment variable prevents a build error due to 
-      discarding "const" qualifiers from pointer target types.
-      <!-- All in spa/plugins/alsa/acp/compat.h (6 instances) -->
-    </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>

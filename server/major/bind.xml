@@ -7,9 +7,9 @@
   <!ENTITY bind-download-http "https://ftp.isc.org/isc/bind9/&bind-version;/bind-&bind-version;.tar.xz">
   <!ENTITY bind-download-ftp  " ">
   <!ENTITY bind-md5sum        "&bind-md5;">
-  <!ENTITY bind-size          "5.5 MB">
-  <!ENTITY bind-buildsize     "163 MB (23 MB installed)">
-  <!ENTITY bind-time          "0.4 SBU (with parallelism=4; about 40 minutes somewhat processor independent, to run the complete test suite)">
+  <!ENTITY bind-size          "5.6 MB">
+  <!ENTITY bind-buildsize     "193 MB (23 MB installed)">
+  <!ENTITY bind-time          "0.4 SBU (with parallelism=4; about 8 minutes somewhat processor independent, to run the complete test suite)">
 ]>
 
 <sect1 id="bind" xreflabel="BIND-&bind-version;">
@@ -110,8 +110,11 @@
     <bridgehead renderas="sect4">Optional (to run the test suite)</bridgehead>
     <para role="optional">
       <xref linkend="perl-net-dns"/>,
-      <ulink url="https://www.dnspython.org/">dnspython</ulink>, and
-      <ulink url="https://hypothesis.readthedocs.io/en/latest/">hypothesis</ulink>
+      <ulink url="https://pypi.org/project/cryptography/">cryptography</ulink>,
+      <ulink url="https://www.dnspython.org/">dnspython</ulink>,
+      <ulink url="https://pypi.org/project/h2/">h2</ulink>,
+      <ulink url="https://hypothesis.readthedocs.io/en/latest/">hypothesis</ulink>, and
+      <ulink url="https://pypi.org/project/pytest-xdist/">pytest-xdist</ulink>
     </para>
 
     <para condition="html" role="usernotes">
@@ -137,6 +140,16 @@
       </para>
     </note>
 -->
+    <para>
+      If you plan to run the tests, a virtual python environment should be
+      set up, so that <command>configure</command> finds the Python binary from
+      that environment. This is needed since this binary is then hardcoded
+      into the test framework:
+    </para>
+
+<screen remap='test'><userinput>python3 -m venv --system-site-packages testenv &amp;&amp;
+source testenv/bin/activate</userinput></screen>
+
     <para>
       Install <application>BIND</application> by running the
       following commands:
@@ -170,20 +183,24 @@ make</userinput></screen>
       The test suite may indicate some skipped tests depending on
       what configuration options are used. Some tests are marked
       <quote>UNTESTED</quote> or do even fail if <xref linkend="perl-net-dns"/>
-      is not installed. One test, <filename>dnssec</filename>, is known to fail.
-      The tests require the
-      <ulink url="https://hypothesis.readthedocs.org/">hypothesis</ulink> and
-      <ulink url="https://www.dnspython.org/">dnspython</ulink> Python modules,
-      which are not in BLFS. To work around this, the instructions below create
-      a Python virtual environment and then install the modules in there prior
-      to running the tests.
+      is not installed. The tests require the
+      <ulink url="https://pypi.org/project/cryptography/">cryptography</ulink>,
+      <ulink url="https://www.dnspython.org/">dnspython</ulink>,
+      <ulink url="https://pypi.org/project/h2/">h2</ulink>,
+      <ulink url="https://hypothesis.readthedocs.org/">hypothesis</ulink>, and
+      <ulink url="https://pypi.org/project/pytest-xdist/">pytest-xdist</ulink>
+      Python modules,
+      which are not in BLFS. Those modules are installed in the virtual
+      environment created earlier prior to running the tests.
       To run the tests, as an unprivileged user, execute:
     </para>
 
-<screen remap="test"><userinput>python3 -m venv --system-site-packages testenv &amp;&amp;
-source testenv/bin/activate                    &amp;&amp;
-pip3 install dnspython hypothesis              &amp;&amp;
-make -k check                                  &amp;&amp;
+<screen remap="test"><userinput>pip3 install cryptography \
+             dnspython    \
+             h2           \
+             hypothesis   \
+             pytest-xdist &amp;&amp;
+make -k check             &amp;&amp;
 deactivate</userinput></screen>
 
     <para>
@@ -315,15 +332,15 @@ install doc/dnssec-guide/* /usr/share/doc/bind-&bind-version;/dnssec-guide</user
       </para>
 
 <screen role="root"><userinput>groupadd -g 20 named &amp;&amp;
-useradd -c "BIND Owner" -g named -s /bin/false -u 20 named &amp;&amp;
-install -d -m770 -o named -g named /srv/named</userinput></screen>
+useradd -c "BIND Owner" -g named -s /bin/false -u 20 named</userinput></screen>
+
 
       <para>
         Set up some files, directories and devices needed by
         <application>BIND</application>:
       </para>
 
-<screen role="root"><userinput>mkdir -p /srv/named &amp;&amp;
+<screen role="root"><userinput>install -d -m770 -o named -g named /srv/named &amp;&amp;
 cd       /srv/named &amp;&amp;
 mkdir -p dev etc/named/{slave,pz} usr/lib/engines var/run/named &amp;&amp;
 mknod /srv/named/dev/null c 1 3 &amp;&amp;

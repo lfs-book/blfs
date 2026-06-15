@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY OpenTimelineIO-download-http "https://github.com/AcademySoftwareFoundation/OpenTimelineIO/archive/v&opentimeline-version;/OpenTimelineIO-&opentimeline-version;.tar.gz">
+  <!ENTITY OpenTimelineIO-download-ftp  " ">
+  <!ENTITY OpenTimelineIO-md5sum        "7b13298f151ad5bd2d4a74c0c66bfa41">
+  <!ENTITY OpenTimelineIO-size          "1.6 MB">
+  <!ENTITY OpenTimelineIO-buildsize     "62 MB">
+  <!ENTITY OpenTimelineIO-time          "0.1 SBU (using parallelism=4">
+]>
+
+<sect1 id="opentimelineio" xreflabel="OpenTimelineIO-&opentimeline-version;">
+  <?dbhtml filename="opentimelineio.html"?>
+
+  <title>OpenTimelineIO-&opentimeline-version;</title>
+
+  <indexterm zone="opentimelineio">
+    <primary sortas="a-OpenTimelineIO">OpenTimelineIO</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to OpenTimelineIO</title>
+
+    <para>
+      The <application>OpenTimelineIO</application> package contains 
+      an interchange format and API for editorial cut information.
+    </para>
+
+    &lfs130_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&OpenTimelineIO-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download (FTP): <ulink url="&OpenTimelineIO-download-ftp;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &OpenTimelineIO-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &OpenTimelineIO-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &OpenTimelineIO-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &OpenTimelineIO-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required download:
+          <ulink url="&sources-anduin-http;/OpenTimelineIO/OpenTimelineIO-rapidjson-20260513.tar.xz"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: 620458ffa66419cdff9bf656a344ed57
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">OpenTimelineIO Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="cmake"/> and
+      <xref linkend="imath"/>
+    </para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of OpenTimelineIO</title>
+
+    <para>
+      First, install a substitute for RapidJSON.  This updates the
+      upstream version that has not been updated since 2016 and avoids
+      downloading untagged releases of external submodules.
+    </para>
+
+<screen><userinput>tar -xvf ../OpenTimelineIO-rapidjson-20260513.tar.xz \
+    --strip-components=1 -C src/deps</userinput></screen>
+
+    <para>
+      Install <application>OpenTimelineIO</application> by running the
+      following commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -D CMAKE_INSTALL_PREFIX=/usr     \
+      -D OTIO_FIND_IMATH=ON            \
+      -D OTIO_AUTOMATIC_SUBMODULES=OFF \
+      -D OTIO_DEPENDENCIES_INSTALL=OFF \
+      .. &amp;&amp;
+make</userinput></screen>
+
+    <para>
+      Now, as the <systemitem class="username">root</systemitem> user:
+    </para>
+
+<screen role="root"><userinput>make install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directory</segtitle>
+
+      <seglistitem>
+        <seg>
+          None
+        </seg>
+        <seg>
+          libopentime.so and
+          libopentimelineio.so 
+        </seg>
+        <seg>
+           /usr/include/opentime,
+           /usr/include/opentimelineio
+           /usr/share/opentime, and
+           /usr/share/opentimelineio 
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>

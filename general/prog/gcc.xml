@@ -7,10 +7,10 @@
   <!ENTITY gcc-download-http  "&gnu-http;/gcc/gcc-&gcc-version;/gcc-&gcc-version;.tar.xz">
   <!ENTITY gcc-download-ftp   " ">
   <!-- Update this also on the grub-uefi page -->
-  <!ENTITY gcc-md5sum         "b861b092bf1af683c46a8aa2e689a6fd">
-  <!ENTITY gcc-size           "96 MB">
+  <!ENTITY gcc-md5sum         "9b016416f8e2dce4a0ef8759d1936446">
+  <!ENTITY gcc-size           "98 MB">
   <!ENTITY gcc-buildsize      "12 GB (3.8 GB installed with all listed languages; add 2 GB for tests)">
-  <!ENTITY gcc-time           "16 SBU (add 33 SBU for tests; both with parallelism=8)">
+  <!ENTITY gcc-time           "20 SBU (add 34 SBU for tests; both with parallelism=8)">
 ]>
 
 <sect1 id="gcc" xreflabel="GCC-&gcc-version;">
@@ -116,6 +116,7 @@
       <xref linkend="graphviz"/> (some tests use it if installed; note that
       if it's installed but not built with
       <xref role='nodep' linkend='libpng'/> these tests will fail),
+      <xref linkend="libxml2"/> (for the COBOL runtime library),
       <xref linkend="valgrind"/> (for tests), and
       <ulink url="https://repo.or.cz/isl.git">ISL</ulink> (to enable graphite optimization)
     </para>
@@ -154,12 +155,6 @@
     </para>
 
     <para>
-      First, make a fix required by glibc-2.43 and later: 
-    </para>
-
-<screen><userinput>sed -i 's/char [*]q/const &amp;/' libgomp/affinity-fmt.c</userinput></screen>
-
-    <para>
       Install <application>GCC</application> by running the following commands:
     </para>
 
@@ -196,13 +191,12 @@ sed -e 's/{ target nonpic } //' \
       <application>valgrind</application> and <application>gdb</application>,
       the <application>gcc</application> part of the test suite will run more
       tests than in LFS. Some of those will report FAIL and others XPASS
-      (pass when expected to FAIL). As of gcc-15.2.0, about 69 FAILs occur
+      (pass when expected to FAIL). <!--As of gcc-16.1.0, about 69 FAILs occur
       in the <quote>guality</quote> suite, as well as miscellaneous failures
-      throughout the rest of the test suite.
-      If all the compilers above are built, there will be about 107
+      throughout the rest of the test suite.-->
+      If all the compilers above are built, there will be about 83
       unexpected failures out of over 610,000 tests. To run the tests, issue:
     </para>
-
 
 <screen><userinput>make -k check</userinput></screen>
 <!-- The command above may error out, so using && may prevent the summary
