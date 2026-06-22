@@ -206,6 +206,13 @@ sed '/name = "encoding_rs"/,/^$/{/source/d;/checksum/d}' -i comm/rust/Cargo.lock
 
 <screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-llvm_22-1.patch</userinput></screen>
 
+<!--https://github.com/mozilla-firefox/firefox/commit/c4aab1ba6aad-->
+    <para>
+      Next, fix building this package with cbindgen-0.29.4:
+    </para>
+
+<screen><userinput remap="pre">sed -i '/const [CVP]/s/pub //' gfx/wr/webrender/src/texture_cache.rs</userinput></screen>
+
     <para>
       The configuration of <application>Thunderbird</application> is
       accomplished by creating a <filename>mozconfig</filename> file containing
