@@ -203,8 +203,10 @@ make</userinput></screen>
     --enable-fhs                           \
     --without-ad-dc                        \
     --with-system-mitkrb5                  \
+    --with-systemd                         \
     --enable-selftest                      \
-    --disable-rpath-install                &amp;&amp;
+    --disable-rpath-install                \
+    --systemd-install-services             &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -318,6 +320,12 @@ install -v -m755    examples/LDAP/{get*,ol*} \
       Remove this if you do not have <xref linkend="mitkrb"/> installed.
     </para>
 
+    <para revision="systemd">
+      <parameter>--with-systemd</parameter>: Enable
+      <application>systemd</application> integration (required by
+      <literal>Type=notify</literal> in the shipped systemd unit files).
+    </para>
+
     <!-- Note that /usr/lib/samba is still in rpath and it's really
          needed. -->
     <para>
@@ -333,6 +341,11 @@ install -v -m755    examples/LDAP/{get*,ol*} \
     <para>
       <option>--with-selftest-prefix=SELFTEST_PREFIX</option>: This option
       specifies the test suite work directory (default=./st).
+    </para>
+
+    <para revision="systemd">
+      <parameter>--systemd-install-services</parameter>: Install the
+      shipped systemd units.
     </para>
 
     <para>
@@ -600,59 +613,28 @@ ln -v -sf /usr/bin/smbspool /usr/lib/cups/backend/smb</userinput></screen>
 
         <para>
           To start the <application>Samba</application> daemons at boot,
-          install the systemd units from the <xref linkend="systemd-units"/>
-          package by running the following command as the
-          <systemitem class="username">root</systemitem> user:
+          enable the shipped systemd unit by running the following command
+          as the &root; user:
         </para>
 
         <indexterm zone="samba samba-init-sysd">
           <primary sortas="f-samba">samba</primary>
         </indexterm>
 
-<screen role="root"><userinput>make install-samba</userinput></screen>
+<screen role="root"><userinput>systemctl enable smb.service</userinput></screen>
 
         <para>
           To start the <command>winbindd</command> daemon at boot,
-          install the systemd unit from the <xref linkend="systemd-units"/>
-          package by running the following command as the
-          <systemitem class="username">root</systemitem> user:
+          enable the shipped systemd unit by running the following command
+          as the &root; user:
         </para>
 
         <indexterm zone="samba samba-init-sysd">
           <primary sortas="f-winbindd">winbindd</primary>
         </indexterm>
 
-<screen role="root"><userinput>make install-winbindd</userinput></screen>
+<screen role="root"><userinput>systemctl enable winbind.service</userinput></screen>
 
-        <note>
-          <para>
-            This package comes with two types of units: A service file and a
-            socket file. The service file will start the smbd daemon once at
-            boot and it will keep running until the system shuts down. The
-            socket file will make systemd listen on the smbd port (Default 445,
-            needs to be edited for anything else) and will start the smbd
-            daemon when something tries to connect to that port and stop the
-            daemon when the connection is terminated. This is called socket
-            activation and is analogous to using
-            <application>{,x}inetd</application> on a SysVinit based system.
-          </para>
-
-          <para>
-            By default, the first method is used - the smbd daemon is started
-            at boot and stopped at shutdown. If the socket method is desired,
-            you need to run the following commands as the <systemitem
-            class="username">root</systemitem> user:
-          </para>
-
-<screen role="root"><userinput>systemctl stop smbd          &amp;&amp;
-systemctl disable smbd       &amp;&amp;
-systemctl enable smbd.socket &amp;&amp;
-systemctl start smbd.socket</userinput></screen>
-
-          <para>
-            Note that only the smbd daemon can be socket activated.
-          </para>
-        </note>
       </sect4>
 
     </sect3>
