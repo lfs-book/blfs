@@ -153,14 +153,16 @@ useradd -c "Dovecot login user" -d /dev/null -u 43 \
             --localstatedir=/var                   \
             --with-systemd=no                      \
             --docdir=/usr/share/doc/dovecot-&dovecot-version;  \
-            --disable-static &amp;&amp;
+            --disable-static                       \
+            CXX="g++ -std=gnu++17" &amp;&amp;
 make</userinput></screen>
 
 <screen revision="systemd"><userinput>./configure --prefix=/usr                          \
             --sysconfdir=/etc                      \
             --localstatedir=/var                   \
             --docdir=/usr/share/doc/dovecot-&dovecot-version;  \
-            --disable-static                       &amp;&amp;
+            --disable-static                       \
+            CXX="g++ -std=gnu++17"                 &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -180,6 +182,12 @@ make</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <para>
+      <parameter>CXX="g++ -std=gnu++17"</parameter>: This setting enables
+      the C++17 standard. It is needed if <xref linkend='xapian'/> is
+      installed, and does not hurt if not.
+    </para>
 
     <para>
       <option>--with-ldap</option>: This switch enables
