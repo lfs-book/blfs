@@ -15,7 +15,6 @@
 <sect1 id="lxqt-wayland-session" xreflabel="lxqt-wayland-session-&lxqt-session-version;">
   <?dbhtml filename="lxqt-wayland-session.html"?>
 
-
   <title>lxqt-wayland-session-&lxqt-wayland-session-version;</title>
 
   <indexterm zone="lxqt-wayland-session">
@@ -26,8 +25,12 @@
     <title>Introduction to lxqt-wayland-session</title>
 
     <para>
-      The <application>lxqt-wayland-session</application> package contains the
-      wayland based session manager for <application>LXQt</application>.
+      The <application>lxqt-wayland-session</application> package contains a
+      helper script for <application>LXQt</application> that starts a Wayland
+      compositor from a given list, then the main
+      <application>LXQt</application> Wayland session. This package also
+      provides compositor-specific configuration files to help with a smooth
+      <application>LXQt</application> experience.
     </para>
 
     &lfs130_checked;
@@ -75,14 +78,19 @@
       <xref linkend="qtxdg-tools"/>
     </para>
 
+    <bridgehead renderas="sect4">Recommended</bridgehead>
+    <para role="recommended">
+      <xref role="runtime" linkend="wayfire"/> (runtime)
+    </para>
+
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of lxqt-wayland-session</title>
 
     <para>
-      Install <application>lxqt-wayland-session</application> by running the following
-      commands:
+      Install <application>lxqt-wayland-session</application> by running the
+      following commands:
     </para>
 
 <screen><userinput>mkdir build &amp;&amp;
@@ -116,33 +124,27 @@ make</userinput></screen>
     </para>
   </sect2>
 -->
-  <sect2 role="configuration">
+  <sect2 id="lxqt-wls-conf" role="configuration">
     <title>Configuring lxqt-wayland-session</title>
 
     <para>
-      Window Managers other than <xref linkend="openbox"/> may be used, e.g.
-      <xref linkend="xfwm4"/>. Please note that <xref linkend="icewm"/> is not a
-      good substitute. <application>Fluxbox</application> does work, although
-      in this context (with <xref linkend="lxqt-config"/>), <xref
-      linkend="openbox"/> is better.  The configuration file
-      <filename>/usr/share/lxqt/windowmanagers.conf</filename> comes with many
-      examples of Window Managers and the ones which are installed will appear
-      in a drop down list of <command>lxqt-config-session</command>. For the
-      ones not included in
-      <filename>/usr/share/lxqt/windowmanagers.conf</filename>, you can use
-      <command>lxqt-config-session</command>'s "search" button, e.g. for <xref
-      linkend="fluxbox"/>, navigating through the file system until you can
-      choose <command>fluxbox</command>. <!--Alternatively, if you wish the Window
-      Manager of your choice to appear in the drop down list, include it in
-      <filename>/etc/xdg/lxqt/windowmanagers.conf</filename>. For <xref
-      linkend="fluxbox"/>, include the line
+      The session chooses from a pre-existing list of Wayland compositors to
+      use. While compositors like Hyprland and Niri can be used, the following
+      uses the recommended compositor <xref linkend="wayfire"/>. Trying to
+      just start the session without configuration fails if labwc, another
+      Wayland compositor, is not installed. Each user will need to have a
+      configuration. Copy and edit a pre-existing configuration as a regular
+      user to use the recommended compositor for the session:
     </para>
 
-<screen role="nodump"><userinput><literal>fluxbox/Name=Fluxbox</literal></userinput></screen>
+<screen role="nodump"><userinput>mkdir -pv ~/.config/lxqt &amp;&amp;
+cp -v /usr/share/lxqt/session.conf ~/.config/lxqt &amp;&amp;
+sed -i '/\[Environment\]/a compositor=wayfire' \
+       ~/.config/lxqt/session.conf</userinput></screen>
+
     <para>
-      and it will appear as an option in the drop down list. To change the WM,
-      after selecting it, you need to restart the session.
--->
+      Now continue until <xref linkend="lxqt-post-install"/> for completing the
+      setup.
     </para>
 
   </sect2>
@@ -179,7 +181,7 @@ make</userinput></screen>
         <term><command>lxqt-qdbus</command></term>
         <listitem>
           <para>
-            is a dbus wrapper for keybinds on wayland compositors.
+            is a dbus wrapper for keybinds on wayland compositors
           </para>
           <indexterm zone="lxqt-wayland-session lxqt-qdbus">
             <primary sortas="b-lxqt-qdbus">lxqt-qdbus</primary>
