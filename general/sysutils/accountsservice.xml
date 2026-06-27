@@ -3,14 +3,13 @@
    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
-
   <!ENTITY accountsservice-download-http
-           "https://www.freedesktop.org/software/accountsservice/accountsservice-&accountsservice-version;.tar.xz">
+           "https://gitlab.freedesktop.org/accountsservice/accountsservice/-/archive/&accountsservice-version;/accountsservice-&accountsservice-version;.tar.bz2">
   <!ENTITY accountsservice-download-ftp  " ">
-  <!ENTITY accountsservice-md5sum        "03dccfe1b306b7ca19743e86d118e64d">
-  <!ENTITY accountsservice-size          "621 KB">
-  <!ENTITY accountsservice-buildsize     "9.8 MB (add 0.5 MB for tests)">
-  <!ENTITY accountsservice-time          "less than 0.1 SBU (with tests)">
+  <!ENTITY accountsservice-md5sum        "eac46328f48acd37ab55bb74106f67ec">
+  <!ENTITY accountsservice-size          "660 KB">
+  <!ENTITY accountsservice-buildsize     "11 MB (with tests)">
+  <!ENTITY accountsservice-time          "0.4 SBU (with tests)">
 ]>
 
 <sect1 id="accountsservice" xreflabel="AccountsService-&accountsservice-version;">
@@ -76,7 +75,6 @@
 
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
-      <!--<xref linkend="libgcrypt"/> and-->
       <xref linkend="polkit"/>
     </para>
 
@@ -98,7 +96,6 @@
     <para role="optional">
       <xref linkend="python-dbusmock"/> and
       <xref linkend="pygobject3"/>
-      <!-- I did not have gtk-doc installed this time, and it worked fine. -->
     </para>
 
   </sect2>
@@ -107,23 +104,7 @@
     <title>Installation of AccountsService</title>
 
     <para>
-      First, rename a directory whose presence prevents the build system from
-      running if <xref linkend="python-dbusmock"/> is not installed:
-    </para>
-
-<screen><userinput>mv tests/dbusmock{,-tests}</userinput></screen>
-
-    <para>
-      Then fix a test script so that the new directory is found, and adapt
-      it for Python 3.12.0 or later:
-    </para>
-
-<screen><userinput>sed -e '/accounts_service\.py/s/dbusmock/dbusmock-tests/' \
-    -e 's/assertEquals/assertEqual/'                      \
-    -i tests/test-libaccountsservice.py</userinput></screen>
-
-    <para>
-      Fix one test that fails if the <option>en_IE.UTF-8</option> locale
+      First, Fix a test that fails if the <option>en_IE.UTF-8</option> locale
       is not installed:
     </para>
 
@@ -152,18 +133,6 @@ meson setup ..            \
       --buildtype=release \
       -D admin_group=adm</userinput></screen>
 
-    <!-- We have to do this after meson setup because mocklibc is extracted
-         from a tarball by the meson setup command.  -->
-    <para>
-      Now adapt the shipped mocklibc copy to allow building the test suite
-      with GCC 14 or later:
-    </para>
-
-<screen><userinput>grep 'print_indent'     ../subprojects/mocklibc-1.0/src/netgroup.c \
-     | sed 's/ {/;/' >> ../subprojects/mocklibc-1.0/src/netgroup.h &amp;&amp;
-sed -i '1i#include &lt;stdio.h&gt;'                                      \
-    ../subprojects/mocklibc-1.0/src/netgroup.h</userinput></screen>
-
     <para>
       Build the package:
     </para>
@@ -187,11 +156,6 @@ sed -i '1i#include &lt;stdio.h&gt;'                                      \
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
-
-    <para>
-      <parameter>-D admin_group=adm</parameter>: This switch sets
-      the group for administrator accounts.
-    </para>
 
     <para>
       <option>-D docbook=true</option>: This switch enables building
