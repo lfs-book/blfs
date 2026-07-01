@@ -85,11 +85,12 @@
 
     <para id="net-tools-automate-example" xreflabel="Net-tools">
       The instructions below automate the configuration process by piping
-      <command>yes</command> to the <command>make</command> command.
+      <command>yes</command> to the <command>make config</command> command.
       If you wish to run the interactive configuration process (by changing
-      the instruction to just <command>make</command>), but you are
-      not sure how to answer all the questions, then just accept the defaults.
-      This will be just fine in the majority of cases. What you're asked here
+      the instruction to just <command>make config</command>), but you are
+      not sure how to answer all the questions, then just accept the defaults,
+      except for anything touching X25, ROSE, and NETROM, which have been
+      disabled in linux-7.1.  What you're asked here
       is a bunch of questions about which network protocols you've enabled
       in your kernel. The default answers will enable the tools from this
       package to work with the most common protocols: TCP, PPP, and several
@@ -124,7 +125,11 @@
     </para>
 
 <screen><userinput>export BINDIR='/usr/bin' SBINDIR='/usr/bin' &amp;&amp;
-yes "" | make -j1                           &amp;&amp;
+yes "" | make config                        &amp;&amp;
+sed -e /ROM/s/0/1/  \
+    -e /X25/s/0/1/  \
+    -e /ROSE/s/0/1/ \
+    -i config.h                             &amp;&amp;
 make DESTDIR=$PWD/install -j1 install       &amp;&amp;
 rm    install/usr/bin/{nis,yp}domainname    &amp;&amp;
 rm    install/usr/bin/{hostname,dnsdomainname,domainname,ifconfig} &amp;&amp;
@@ -154,9 +159,15 @@ cp -a install/* /</userinput></screen>
     </para>
 
     <para>
-      <command>yes "" | make </command>: Piping <command>yes</command>
+      <command>yes "" | make config</command>: Piping <command>yes</command>
       to <command>make config</command> skips the interactive configuration and
       accepts the defaults.
+    </para>
+
+
+    <para>
+      <command>sed -e ...</command>: This disables building protocols that
+      are not available anymore in the kernel.
     </para>
 
     <para>
