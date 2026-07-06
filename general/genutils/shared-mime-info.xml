@@ -7,14 +7,14 @@
   <!ENTITY shared-mime-info-download-http
            "https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/&shared-mime-info-version;/shared-mime-info-&shared-mime-info-version;.tar.gz">
   <!ENTITY shared-mime-info-download-ftp  " ">
-  <!ENTITY shared-mime-info-md5sum        "aac56db912b7b12a04fb0018e28f2f36">
-  <!ENTITY shared-mime-info-size          "7.5 MB">
-  <!ENTITY shared-mime-info-buildsize     "26 MB (with tests)">
+  <!ENTITY shared-mime-info-md5sum        "5f8baa7bac254ea9e65782f754a2880b">
+  <!ENTITY shared-mime-info-size          "8.5 MB">
+  <!ENTITY shared-mime-info-buildsize     "32 MB (with tests)">
   <!ENTITY shared-mime-info-time          "less than 0.1 SBU (with tests)">
 
-  <!ENTITY xdgmime-download-http "&sources-anduin-http;/xdgmime/xdgmime.tar.xz">
+<!--  <!ENTITY xdgmime-download-http "&sources-anduin-http;/xdgmime/xdgmime.tar.xz">
   <!ENTITY xdgmime-md5sum        "7dfb4446705d345d3acd672024049e86">
-
+-->
 ]>
 
 <sect1 id="shared-mime-info"
@@ -72,7 +72,7 @@ xreflabel="shared-mime-info-&shared-mime-info-version;">
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -85,7 +85,7 @@ xreflabel="shared-mime-info-&shared-mime-info-version;">
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">Shared Mime Info Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -96,6 +96,7 @@ xreflabel="shared-mime-info-&shared-mime-info-version;">
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
+      <xref linkend="git"/> (for tests), and
       <xref linkend="xmlto"/>
     </para>
 
@@ -110,6 +111,7 @@ xreflabel="shared-mime-info-&shared-mime-info-version;">
       following commands:
     </para>
 
+<!--
     <para>
       If you wish to run the test suite, you must first extract the
       <filename>xdgmime</filename> tarball into the current directory,
@@ -118,28 +120,31 @@ xreflabel="shared-mime-info-&shared-mime-info-version;">
 
 <screen remap="test"><userinput>tar -xf ../xdgmime.tar.xz &amp;&amp;
 make -C xdgmime</userinput></screen>
-
-    <para>
-      Now build the package:
-    </para>
+-->
 
 <screen><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup --prefix=/usr --buildtype=release -D update-mimedb=true .. &amp;&amp;
+meson setup --prefix=/usr         \
+            --buildtype=release   \
+            -D update-mimedb=true \
+            -D build-tests=false  \
+            .. &amp;&amp;
 ninja</userinput></screen>
-
-    <para role="optional">
-      If you have followed the instructions above to build
-      <application>xdgmime</application>, to test the result issue
-      <command>ninja test</command>.
-    </para>
 
     <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
 <screen role="root"><userinput>ninja install</userinput></screen>
+
+    <para role="test">
+      If want to run the tests, support files will automatically be
+      downloaded from upstream. Build and run the tests with: 
+    </para>
+   
+<screen role="test"><userinput>meson configure -D build-tests=true &amp;&amp;
+ninja test</userinput></screen>
 
   </sect2>
 

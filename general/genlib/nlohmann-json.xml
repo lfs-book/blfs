@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+   "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+  <!ENTITY % general-entities SYSTEM "../../general.ent">
+  %general-entities;
+
+  <!ENTITY nlohmann-json-download-http
+    "https://github.com/nlohmann/json/archive/v&nlohmann-json-version;/json-&nlohmann-json-version;.tar.gz">
+  <!ENTITY nlohmann-json-md5sum        "c2528c3e04faccaaee44f1f8f3d30d99">
+  <!ENTITY nlohmann-json-size          "9.3 MB">
+  <!ENTITY nlohmann-json-buildsize     "21 MB (add 477 MB for tests)">
+  <!ENTITY nlohmann-json-time          "less than 0.1 SBU (add 5.8 SBU for tests)">
+]>
+
+<sect1 id="nlohmann-json" xreflabel="nlohmann-json-&nlohmann-json-version;">
+  <?dbhtml filename="nlohmann-json.html"?>
+
+  <title>json-&nlohmann-json-version; (nlohmann-json)</title>
+
+  <indexterm zone="nlohmann-json">
+    <primary sortas="a-nlohmann-json">json</primary>
+  </indexterm>
+
+  <sect2 role="package">
+    <title>Introduction to nlohmann-json</title>
+
+    <para>
+      The nlohmann-json package provides a header-only in-memory JSON and
+      interface library for C++. The package is simply called
+      <quote>json</quote>, but most refer to it as <quote>nlohmann json</quote>
+      to reduce ambiguity, and is done so here.
+    </para>
+
+    &lfs130_checked;
+
+    <bridgehead renderas="sect3">Package Information</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Download (HTTP): <ulink url="&nlohmann-json-download-http;"/>
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download MD5 sum: &nlohmann-json-md5sum;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Download size: &nlohmann-json-size;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated disk space required: &nlohmann-json-buildsize;
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Estimated build time: &nlohmann-json-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">nlohmann-json Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="cmake"/>
+    </para>
+
+  </sect2>
+
+  <sect2 role="installation">
+    <title>Installation of nlohmann-json</title>
+
+    <para>
+      Install nlohmann-json by running the following commands:
+    </para>
+
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+cmake -D CMAKE_INSTALL_PREFIX=/usr \
+      -D CMAKE_BUILD_TYPE=Release  \
+      -D JSON_BuildTests=OFF       \
+      -G Ninja ..</userinput></screen>
+
+    <para>
+      If you removed the <parameter>-D JSON_BuildTests=OFF</parameter>
+      parameter, run the test suite by issuing
+      <command>ninja &amp;&amp; ninja test</command>. 4 tests are known to fail
+      which fetch contents, but they require that a Git repository for the
+      project is set up.
+    </para>
+
+    <para>
+      Now, as the &root; user:
+    </para>
+
+<screen role="root"><userinput>ninja install</userinput></screen>
+
+  </sect2>
+
+  <sect2 role="commands">
+    <title>Command Explanations</title>
+
+    <para>
+      <parameter>-D JSON_BuildTests=OFF</parameter>:
+      This parameter disables building tests, as they can take a while to
+      build. Remove this option if you want to run the test suite.
+    </para>
+
+  </sect2>
+
+  <sect2 role="content">
+    <title>Contents</title>
+
+    <segmentedlist>
+      <segtitle>Installed Programs</segtitle>
+      <segtitle>Installed Libraries</segtitle>
+      <segtitle>Installed Directories</segtitle>
+
+      <seglistitem>
+        <seg>
+          None
+        </seg>
+        <seg>
+          None
+        </seg>
+        <seg>
+          /usr/include/nlohmann and /usr/share/cmake/nlohmann_json
+        </seg>
+      </seglistitem>
+    </segmentedlist>
+
+  </sect2>
+
+</sect1>
