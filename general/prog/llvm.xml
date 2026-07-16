@@ -139,6 +139,29 @@
     <screen><userinput>sed 's/utility/tool/' -i llvm/utils/FileCheck/CMakeLists.txt</userinput></screen>
 
     <para>
+      As the &root; user, create two configuration
+      files to make <xref linkend='gSSP'/> enabled by default for
+      <command>clang</command> and <command>clang++</command>, so
+      the default configuration of their SSP feature will be consistent
+      with <xref linkend='gcc'/>:
+    </para>
+
+<screen role='root'><userinput>mkdir -pv /etc/clang &amp;&amp;
+for i in clang clang++; do
+  echo -fstack-protector-strong &gt; /etc/clang/$i.cfg
+done</userinput></screen>
+
+    <note>
+      <para>
+        Generally we only create the configuration files after installing
+        the package in BLFS.  However in this case the building system
+        will build compiler-rt with <command>clang</command> and
+        <command>clang++</command>, so we create the configuration files
+        before compiling LLVM to ensure compiler-rt built with SSP.
+      </para>
+    </note>
+
+    <para>
       Install <application>LLVM</application> by running the following
       commands:
     </para>
@@ -403,27 +426,6 @@ rmdir -v - -ignore-fail-on-non-empty /usr/share/doc/LLVM</userinput></screen>
       at the end of the build process.
     </para>
 
-  </sect2>
-
-  <sect2 role="configuration">
-    <title>Configuring LLVM</title>
-
-    <sect3 id="llvm-config-info">
-      <title>Configuration Information</title>
-
-      <para>
-        If you've built Clang, as the &root; user create two configuration
-        files to make <xref linkend='gSSP'/> enabled by default for
-        <command>clang</command> and <command>clang++</command>, so
-        the default configuration of their SSP feature will be consistent
-        with <xref linkend='gcc'/>:
-      </para>
-
-<screen role='root'><userinput>mkdir -pv /etc/clang &amp;&amp;
-for i in clang clang++; do
-  echo -fstack-protector-strong &gt; /etc/clang/$i.cfg
-done</userinput></screen>
-    </sect3>
   </sect2>
 
   <sect2 role="content">
