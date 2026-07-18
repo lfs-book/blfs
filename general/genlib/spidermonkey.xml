@@ -181,6 +181,7 @@ sed '/name = "encoding_rs"/,/^$/{/source/d;/checksum/d}' -i Cargo.lock</userinpu
 <screen><userinput>mkdir obj &amp;&amp;
 cd    obj &amp;&amp;
 
+MOZBUILD_STATE_PATH=${PWD}/mozbuild          \
 ../js/src/configure --prefix=/usr            \
                     --disable-debug-symbols  \
                     --disable-jemalloc       \
@@ -303,6 +304,13 @@ sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js&spidermonkey-major;-config</userinput></sc
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <envar>MOZBUILD_STATE_PATH=${PWD}/mozbuild</envar>: Override the
+      default location
+      (<filename class='directory'>${HOME}/.mozbuild</filename>) for the
+      cache of the build system, to avoid pulluating the home directory.
+    </para>
 
     <para>
       <parameter>--disable-debug-symbols</parameter>: Don't generate debug
