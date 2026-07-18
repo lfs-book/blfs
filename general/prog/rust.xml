@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "75632c07ce29c765b905f26719c3cb3c">
-  <!ENTITY rust-size          "231 MB">
+  <!ENTITY rust-md5sum        "c6fc3febcd3b1235cf4f00c3e05559b3">
+  <!ENTITY rust-size          "232 MB">
   <!ENTITY rust-buildsize     "10 GB (324 MB installed); add 11 GB if running the tests">
   <!ENTITY rust-time          "10 SBU (including download time; add 15 SBU for tests, both using parallelism=8)">
 ]>
@@ -136,27 +136,6 @@
       </listitem>
     </itemizedlist>
 
-    <!--  keep this here for reuse in case we need a patch -->
-    <!-- deliberately skipped turning version and md5 into entities:
-         it will be uneeded in 1.97.0 per
-         https://github.com/rust-lang/cargo/pull/16931. -->
-    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
-    <itemizedlist spacing="compact">
-      <listitem>
-        <para>
-          OpenSSL Rust binding updated to support OpenSSL 4:
-          <ulink url="https://github.com/lfs-book/rust-openssl/archive/v0.10.78/rust-openssl-0.10.78.tar.gz"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Download MD5 sum: 8bfcc36cba65c98380f7ac1ec07efdb4
-        </para>
-      </listitem>
-    </itemizedlist>
-
-    &github-lfs-fork;
-
     <bridgehead renderas="sect3">Rust Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -248,7 +227,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py that the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn users to review that information.
-change-id = 154508
+change-id = 154587
 
 [llvm]
 # When using the system installed copy of LLVM, prefer the shared libraries
@@ -291,24 +270,6 @@ llvm-config = "/usr/bin/llvm-config"
 [target.i686-unknown-linux-gnu]
 llvm-config = "/usr/bin/llvm-config"</literal>
 EOF</userinput></screen>
-
-    <para>
-      Use a newer version of the OpenSSL Rust binding to allow building
-      this package with OpenSSL 4:
-    </para>
-
-<screen><userinput>tar xf ../rust-openssl-0.10.78.tar.gz &amp;&amp;
-
-cat &gt;&gt; src/tools/cargo/Cargo.toml &lt;&lt; EOF &amp;&amp;
-<literal>[patch.crates-io]
-openssl = { path = "../../../rust-openssl-0.10.78/openssl" }
-openssl-sys = { path = "../../../rust-openssl-0.10.78/openssl-sys" }
-</literal>EOF
-
-sed -ri src/tools/cargo/Cargo.lock \
-    -e '/name = "openssl-sys"/,/^$/{/source|checksum/d;s/0.9.112/0.9.114/}' \
-    -e '/name = "openssl"/,/^$/{/source|checksum/d;s/0.10.76/0.10.78/}'     \
-    -e '/name = "openssl-macros"/,/^$/{/source|checksum/d}'</userinput></screen>
 
 <!-- retain here in case we need a patch
     <para>
