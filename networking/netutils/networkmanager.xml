@@ -177,22 +177,23 @@
 <screen revision="sysv"><userinput>mkdir build &amp;&amp;
 cd    build &amp;&amp;
 
-meson setup ..                    \
-      --prefix=/usr               \
-      --buildtype=release         \
-      -D libaudit=no              \
-      -D nmtui=true               \
-      -D ovs=false                \
-      -D ppp=false                \
-      -D nbft=false               \
-      -D selinux=false            \
-      -D session_tracking=elogind \
-      -D modem_manager=false      \
-      -D systemdsystemunitdir=no  \
-      -D systemd_journal=false    \
-      -D nm_cloud_setup=false     \
-      -D clat=false               \
-      -D qt=false                 &amp;&amp;
+meson setup ..                        \
+      --prefix=/usr                   \
+      --buildtype=release             \
+      -D libaudit=no                  \
+      -D nmtui=true                   \
+      -D ovs=false                    \
+      -D ppp=false                    \
+      -D nbft=false                   \
+      -D selinux=false                \
+      -D session_tracking=elogind     \
+      -D modem_manager=false          \
+      -D systemdsystemunitdir=no      \
+      -D systemdsystemgeneratordir=no \
+      -D systemd_journal=false        \
+      -D nm_cloud_setup=false         \
+      -D clat=false                   \
+      -D qt=false                     &amp;&amp;
 ninja</userinput></screen>
 
 <screen revision="systemd"><userinput>mkdir build &amp;&amp;
@@ -283,10 +284,11 @@ done</userinput></screen>
     </para>
 
     <para revision="sysv">
-      <parameter>-D systemdsystemunitdir=no</parameter> and
+      <parameter>-D systemdsystemunitdir=no</parameter>,
+      <parameter>-D systemdsystemgeneratordir=no</parameter>, and
       <parameter>-D systemd_journal=false</parameter>: systemd is not
-      used for sysv init systems, so prevent installing units and using the
-      systemd journal.
+      used for sysv init systems, so prevent installing units, generator files,
+      and using the systemd journal.
     </para>
 
     <para>
