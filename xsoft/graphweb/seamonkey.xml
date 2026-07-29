@@ -6,10 +6,10 @@
 
   <!ENTITY seamonkey-download-http "https://archive.seamonkey-project.org/releases/&seamonkey-version;/source/seamonkey-&seamonkey-version;.source.tar.xz">
   <!ENTITY seamonkey-download-ftp  " ">
-  <!ENTITY seamonkey-md5sum        "e4aee41da61978e44a83b549a360c3b5">
-  <!ENTITY seamonkey-size          "239 MB">
-  <!ENTITY seamonkey-buildsize     "3 GB (138 MB installed)">
-  <!ENTITY seamonkey-time          "6.3 SBU (with parallelism=8)">
+  <!ENTITY seamonkey-md5sum        "1f7bc1087b815cafb85e34ef65505a57">
+  <!ENTITY seamonkey-size          "236 MB">
+  <!ENTITY seamonkey-buildsize     "3.0 GB (140 MB installed)">
+  <!ENTITY seamonkey-time          "5.1 SBU (with parallelism=8)">
 ]>
 
 <sect1 id="seamonkey" xreflabel="seamonkey-&seamonkey-version;">
@@ -77,7 +77,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -94,7 +94,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <note>
       <para>
         The tarball
@@ -117,9 +117,9 @@
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
+      <xref linkend="dbus-glib"/>,
       <xref linkend="icu"/>,
       <xref linkend="libevent"/>,
-      <!--<xref linkend="libvpx"/>, Causes build failures similar to Firefox -->
       <xref linkend="libwebp"/>,
       <xref linkend="llvm"/> (with clang),
       <xref linkend="nspr"/>,
@@ -138,7 +138,6 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="alsa-lib"/>,
-      <xref linkend="dbus-glib"/>,
       <xref linkend="libproxy"/>,
       <xref linkend="nodejs"/>,
       <xref linkend="valgrind"/>,
@@ -167,14 +166,13 @@
 <screen><?dbfo keep-together="auto"?><userinput>cat &gt; mozconfig &lt;&lt; "EOF"
 <literal># If you have a multicore machine, all cores will be used
 
-# If you have installed DBus-Glib comment out this line:
-ac_add_options --disable-dbus
+# If you have not installed DBus-Glib uncomment this line:
+#ac_add_options --disable-dbus
 
 # If you have installed dbus-glib, and you have installed (or will install)
 # wireless-tools, and you wish to use geolocation web services, comment out
 # this line
 ac_add_options --disable-necko-wifi
-
 
 # If you wish to use libproxy to determine proxy server information, you will
 # need to install the libproxy package and then uncomment the option below:
@@ -253,11 +251,7 @@ EOF</userinput></screen>
 
     <para>
       First, if you are building with system ICU, adapt the line break mapping
-      for ICU-74 or later, apply a patch to build this package with the
-      C++17 standard because the headers of ICU-75 or later require some
-      C++17 features, fix a security issue in the bundled version of libvpx,
-      and adapt the build system to use the correct library with ICU-76 or
-      later:
+      for ICU-74 or later:
     </para>
 
 <!-- This used to be 43..47. ICU-78 adjusted line mapping. Firefox 140esr is
@@ -269,20 +263,7 @@ EOF</userinput></screen>
    sed '/ZWJ/s/$/,CLASS_CHARACTER/' -i intl/lwbrk/LineBreaker.cpp || exit $?
 done) &amp;&amp;
 
-patch -Np1 -i ../seamonkey-&seamonkey-version;-cxx17-1.patch                 &amp;&amp;
-patch -Np1 -i ../seamonkey-&seamonkey-version;-libvpx_security_fixes-1.patch &amp;&amp;
-
 sed -i 's/icu-i18n/icu-uc &amp;/' js/moz.configure</userinput></screen>
-
-    <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1894423 -->
-    <para>
-      Next, remove a hunk of unused code violating the C++ standard.
-      Clang has started to reject it even though it's unused since the
-      19.1.0 release:
-    </para>
-
-<screen><userinput>sed -e '/ExclusiveData(ExclusiveData&amp;&amp;/,/^ *}/d' \
-    -i js/src/threading/ExclusiveData.h</userinput></screen>
 
     <para>
       Next, fix a problem with the bundled 'distro' python module:
