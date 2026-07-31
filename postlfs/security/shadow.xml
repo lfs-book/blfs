@@ -6,9 +6,9 @@
 
   <!ENTITY shadow-download-http "https://github.com/shadow-maint/shadow/releases/download/&shadow-version;/shadow-&shadow-version;.tar.xz">
   <!ENTITY shadow-download-ftp  " ">
-  <!ENTITY shadow-md5sum        "ed0f3ff4940822ba75a3b0687a9ce93b">
+  <!ENTITY shadow-md5sum        "cb96509af070aeef1b2814d1c9e34120">
   <!ENTITY shadow-size          "2.2 MB">
-  <!ENTITY shadow-buildsize     "104 MB">
+  <!ENTITY shadow-buildsize     "100 MB">
   <!ENTITY shadow-time          "0.2 SBU">
 ]>
 
@@ -129,6 +129,8 @@ sed -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD YESCRYPT@' \
     -e 's@/var/spool/mail@/var/mail@'                   \
     -e '/PATH=/{s@/sbin:@@;s@/bin:@@}'                  \
     -i etc/login.defs                                   &amp;&amp;
+
+sed -i '/stdio.h/i #include &lt;stdint.h&gt;' lib/find_new_sub_*ids.c &amp;&amp;
 
 ./configure --sysconfdir=/etc   \
             --disable-static    \
