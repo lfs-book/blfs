@@ -175,7 +175,6 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="gdb"/> (used by the test suite if it is present),
-      <xref linkend="git"/> (required by the test suite),
       <ulink url="https://github.com/bytecodealliance/wasmtime/tree/main/cranelift">cranelift</ulink>,
       <ulink url="https://jemalloc.net/">jemalloc</ulink>,
       libgccjit (read the Command Explanations in
@@ -300,10 +299,20 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
     </note>
 
     <para>
+      If running the test suite, fake a Git executable to allow running
+      the test suite without <xref linkend='git'/> installed (we are
+      building from a release tarball instead of Git repository here so
+      Git will not be really useful even if it's installed):
+    </para>
+
+<screen remap='test'><userinput>mkdir fake-git &amp;&amp; ln -sv /usr/bin/false fake-git</userinput></screen>
+
+    <para>
       To run the tests, issue:
     </para>
 
-<screen remap="test"><userinput>./x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
+<screen remap="test"><userinput>PATH+=:$PWD/fake-git \
+./x.py test --verbose --no-fail-fast | tee rustc-testlog</userinput></screen>
 
     <para>
       In the <filename class='directory'>rustdoc-ui</filename> tests,
@@ -317,8 +326,9 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
       the test named <filename>rustdoc-target-modifiers</filename>
       is known to fail because we've not enabled the AArch64 target in
       <xref linkend='llvm'/>, and
-      the test named <filename>short-ice</filename> is known to fail for
-      unknown reason.
+      <!-- https://github.com/rust-lang/rust/issues/158219 -->
+      the test named <filename>short-ice</filename> is not written correctly
+      and known to fail.
     </para>
 
     <para>
