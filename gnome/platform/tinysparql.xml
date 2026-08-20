@@ -85,7 +85,7 @@
 
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="asciidoc"/>,
+      <xref linkend="asciidoc"/> (for the man pages),
       <xref linkend="avahi"/>,
 <!--  It looks like not used even if docs=true,
       the pre-built doc is shipped in tarball and will be installed
@@ -147,6 +147,13 @@ meson setup --prefix=/usr                  \
 ninja</userinput></screen>
 
     <para>
+      If the optional dependency <xref linkend='asciidoc'/> is installed,
+      you may build the man pages with:
+    </para>
+
+<screen remap='doc'><userinput>meson configure -D man=true &amp;&amp; ninja</userinput></screen>
+
+    <para>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
@@ -157,9 +164,10 @@ ninja</userinput></screen>
       and issue: <command>meson configure -D debug=true
       -D tests=true &amp;&amp; LC_ALL=C.UTF-8 ninja test</command>.
       The test suite should be run from a graphical session. One test, test_cli, 
-      is known to fail due to the manual pages not being generated, but will pass if
-      "-D man=false" is omitted when configuring the package.  One other test,
-      resource, is also known to fail.
+      is known to fail if the man pages were not built.
+      <!-- https://gitlab.gnome.org/GNOME/tinysparql/-/commit/47d5bf9313d0 -->
+      One test named <literal>tinysparql:sparql</literal> is known to fail
+      with SQLite 3.53.1 or newer.
     </para>
 
   </sect2>
@@ -169,13 +177,6 @@ ninja</userinput></screen>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/meson-buildtype-release.xml"/>
-
-    <para>
-      <parameter>-D man=false</parameter>: This switch prevents the build
-      process from generating man pages. Omit this switch if you have
-      <xref linkend="asciidoc" role="nodep"/> installed and wish to generate
-      and install the man pages.
-    </para>
 
     <para revision="sysv">
       <parameter>-D systemd_user_services=false</parameter>: This switch prevents
