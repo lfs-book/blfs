@@ -143,6 +143,8 @@
       <ulink url="https://github.com/lzfse/lzfse">lzfse</ulink>,
       <ulink url="https://github.com/luigirizzo/netmap">netmap</ulink>,
       <ulink url="https://github.com/numactl/numactl">numactl</ulink>,
+      <ulink url="https://pypi.org/project/pygdbmi/">pygdbmi</ulink>
+      (for tests),
       <ulink url="https://github.com/linux-rdma/rdma-core">rdma-core</ulink>,
       <ulink url="https://github.com/SELinuxProject/selinux">SELinux</ulink>,
       <ulink url="https://google.github.io/snappy/">snappy</ulink>,
@@ -150,6 +152,8 @@
       <ulink url="https://gitlab.freedesktop.org/spice/usbredir">usbredir</ulink>,
       and <ulink url="https://github.com/virtualsquare/vde-2">VDE</ulink>
     </para>
+
+    &test-use-internet;
 
     <bridgehead renderas="sect4">Optional (Runtime)</bridgehead>
     <para role="optional">
@@ -274,6 +278,7 @@ cd        build &amp;&amp;
              --localstatedir=/var     \
              --target-list=$QEMU_ARCH \
              --audio-drv-list=alsa    \
+             --disable-download       \
              --disable-pa             \
              --enable-slirp           \
              --docdir=/usr/share/doc/qemu-&qemu-version; &amp;&amp;
@@ -285,9 +290,8 @@ make</userinput></screen>
     <para>
       <application>qemu</application> uses <command>ninja</command> as
       a subprocess when building.  To run the tests, issue:
-      <command>ninja test</command>. <!--Three tests are known to fail due
-      to some indent change in the shell output message with bash-5.3
-      or newer.-->
+      <command>ninja test</command>.  The test harness will download the
+      external Python module pygdbmi to satisfy some tests.
     </para>
 
     <para>
@@ -331,6 +335,13 @@ chmod 4750 /usr/libexec/qemu-bridge-helper</userinput></screen>
     <para>
       <parameter>--audio-drv-list=alsa</parameter>: This switch
       sets the audio driver to ALSA. See below for enabling other audio drivers.
+    </para>
+
+    <para>
+      <parameter>--disable-download</parameter>: This switch prevents the
+      <command>configure</command> script from downloading Python modules
+      via Internet (the copies shipped within the tarball will be used
+      instead).
     </para>
 
     <para>
