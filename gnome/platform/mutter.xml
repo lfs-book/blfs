@@ -6,10 +6,10 @@
 
   <!ENTITY mutter-download-http "&gnome-download-http;/mutter/&gnome-50;/mutter-&mutter-version;.tar.xz">
   <!ENTITY mutter-download-ftp  " ">
-  <!ENTITY mutter-md5sum        "5e4147170db223878e2845c2ae695640">
+  <!ENTITY mutter-md5sum        "16e91f37bb05f67c684f3582380f86a1">
   <!ENTITY mutter-size          "8.1 MB">
-  <!ENTITY mutter-buildsize     "90 MB">
-  <!ENTITY mutter-time          "0.4 SBU (Using parallelism=4; add 1.4 SBU for tests)">
+  <!ENTITY mutter-buildsize     "91 MB (add 84 MB for tests)">
+  <!ENTITY mutter-time          "0.4 SBU (Using parallelism=4; add 6.2 SBU for tests)">
 ]>
 
 <sect1 id="mutter" xreflabel="Mutter-&mutter-version;">
@@ -32,7 +32,7 @@
       machine with a hardware accelerated video driver).
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -143,6 +143,13 @@
 <screen><userinput remap="pre">sed "/tests_c_args =/s/$/ + ['-U', 'G_DISABLE_ASSERT']/" -i src/tests/meson.build &amp;&amp;
 sed "/c_args:/a '-U', 'G_DISABLE_ASSERT'," -i src/tests/cogl/unit/meson.build</userinput></screen>
 
+<!-- https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/5102: merged in 50.3
+    <para>
+      Fix a private header that conflicts with pango-1.58 and later:
+    </para>
+
+<screen><userinput remap="pre">sed "/AUTOPTR/d" -i clutter/clutter/pango/clutter-pango-private.h</userinput></screen>
+-->
     <para>
       Install <application>Mutter</application> by running the following
       commands:
@@ -282,10 +289,10 @@ dbus-run-session mutter --wayland --devkit -- vte-2.91</userinput></screen>
           mutter
         </seg>
         <seg>
-          libmutter-17.so and libmutter-test-17.so (optional)
+          libmutter-18.so and libmutter-test-18.so (optional)
         </seg>
         <seg>
-          /usr/{lib,include,libexec/installed-tests,share/{,installed-tests}}/mutter-17
+          /usr/{lib,include,libexec/installed-tests,share/{,installed-tests}}/mutter-18
         </seg>
       </seglistitem>
     </segmentedlist>

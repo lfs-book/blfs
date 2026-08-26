@@ -6,9 +6,9 @@
 
   <!ENTITY thunderbird-download-http "&mozilla-http;/thunderbird/releases/&thunderbird-version;esr/source/thunderbird-&thunderbird-version;esr.source.tar.xz">
   <!ENTITY thunderbird-download-ftp  " ">
-  <!ENTITY thunderbird-md5sum        "1198213ae8b38f75f424cd59e5ff16b7">
-  <!ENTITY thunderbird-size          "724 MB">
-  <!ENTITY thunderbird-buildsize     "8.9 GB (267 MB installed)">
+  <!ENTITY thunderbird-md5sum        "7d6be3aa7ddb01cb2f04d2f49ba142f2">
+  <!ENTITY thunderbird-size          "892 MB">
+  <!ENTITY thunderbird-buildsize     "11.0 GB (296 MB installed)">
   <!ENTITY thunderbird-time          "16 SBU (on a 8-core machine)">
   <!-- Removed the -j1 time because python and rust do not obey it, although
        the C/C++ code appears to obey it.
@@ -36,7 +36,7 @@
       Gecko rendering engine to enable it to display and compose HTML emails.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
         href="../../xincludes/security-updates.xml"/>
@@ -75,6 +75,7 @@
       </listitem>
     </itemizedlist>
 
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -96,6 +97,7 @@
         </para>
       </listitem>
     </itemizedlist>
+-->
 
     <bridgehead renderas="sect3">Thunderbird Dependencies</bridgehead>
 
@@ -163,13 +165,15 @@
       </para>
     </note>
 
+<!--
     <para>
       At first, fix building this package with Python-3.14:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-python_3.14_fixes-1.patch</userinput></screen>
-
+-->
     <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=2006630 -->
+<!--
     <para>
       Remove checksums from cargo crates for files that don't exist:
     </para>
@@ -186,7 +190,7 @@ sed '/patch.crates-io/a glslopt={path="../third_party/rust/glslopt"}' \
     -i comm/rust/Cargo.toml &amp;&amp;
 sed '/name = "glslopt"/,/^$/{/source/d;/checksum/d}' \
     -i comm/rust/Cargo.lock</userinput></screen>
-
+-->
 <!--
     <para>
       Next, fix building this package with rustc-1.95.0.  Again the build
@@ -199,12 +203,21 @@ sed '/patch.crates-io/a encoding_rs={path="../third_party/rust/encoding_rs"}' \
     -i comm/rust/Cargo.toml &amp;&amp;
 sed '/name = "encoding_rs"/,/^$/{/source/d;/checksum/d}' -i comm/rust/Cargo.lock</userinput></screen>
 -->
-
+<!--
     <para>
       Next, fix building this package with LLVM-22:
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../thunderbird-&thunderbird-version;esr-llvm_22-1.patch</userinput></screen>
+-->
+<!--https://github.com/mozilla-firefox/firefox/commit/c4aab1ba6aad-->
+<!--
+    <para>
+      Next, fix building this package with cbindgen-0.29.4:
+    </para>
+
+<screen><userinput remap="pre">sed -i '/const [CVP]/s/pub //' gfx/wr/webrender/src/texture_cache.rs</userinput></screen>
+-->
 
     <para>
       The configuration of <application>Thunderbird</application> is

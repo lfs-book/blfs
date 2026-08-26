@@ -7,10 +7,10 @@
 
   <!ENTITY mariadb-download-http "https://downloads.mariadb.org/interstitial/mariadb-&mariadb-version;/source/mariadb-&mariadb-version;.tar.gz">
   <!ENTITY mariadb-download-ftp  " ">
-  <!ENTITY mariadb-md5sum        "85044cd1ec59cbdbcc4d27a9646d6261">
-  <!ENTITY mariadb-size          "115 MB">
-  <!ENTITY mariadb-buildsize     "2.2 GB (764 MB installed)">
-  <!ENTITY mariadb-time          "3.8 SBU (with parallelism=8, add 2.9 SBU for tests)">
+  <!ENTITY mariadb-md5sum        "83d962d0f5917a0445786cc31337b118">
+  <!ENTITY mariadb-size          "213 MB">
+  <!ENTITY mariadb-buildsize     "3.6 GB (906 MB installed)">
+  <!ENTITY mariadb-time          "6.4 SBU (with parallelism=8, add 2.6 SBU for tests)">
 ]>
 
 <sect1 id="mariadb" xreflabel="MariaDB-&mariadb-version;">
@@ -32,7 +32,7 @@
       database management system.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -80,8 +80,8 @@
 
     <note>
       <para>
-        The installed size of MariaDB is 763 MB, but this can be
-        reduced by about 269 MB, if desired, by removing the <filename
+        The installed size of MariaDB is 778 MB, but this can be
+        reduced by about 270 MB, if desired, by removing the <filename
         class="directory">/usr/share/mariadb/test</filename>
         directory after installation.
       </para>
@@ -90,7 +90,7 @@
     <caution>
       <para>
         If you are upgrading an existing database, please see the
-        <ulink url="https://mariadb.com/docs/release-notes/community-server/mariadb-11-8-series/what-is-mariadb-118">MariaDB Release Notes</ulink>
+        <ulink url="https://mariadb.com/docs/release-notes/community-server/12.3/mariadb-12.3-changes-and-improvements">MariaDB Release Notes</ulink>
         for additional information, and use the instructions after the
         Configuration Information section to ensure a safe upgrade.
       </para>
@@ -147,6 +147,16 @@
       </para>
     </warning>
 
+    <caution>
+      <para>
+        If you are upgrading MariaDB from 11.x to 12.x, please pay special
+        attention to the upgrade notes later in this page. Users of existing
+        MariaDB installations may want to consider staying on the 11.8.x LTS
+        branch instead, especially if they rely on the Galera functionality
+        which was removed from MariaDB-12.x.
+      </para>
+    </caution>
+
     <para>
       For security reasons, running the server as an unprivileged user
       and group is strongly encouraged. Issue the following (as
@@ -156,13 +166,6 @@
 
 <screen role="root"><userinput>groupadd -g 40 mariadb &amp;&amp;
 useradd -c "MariaDB Server" -d /srv/mariadb -g mariadb -s /bin/false -u 40 mariadb</userinput></screen>
-
-    <para>
-      Fix an issue with detecting Boost-1.89.0 and later:
-    </para>
-
-<screen><userinput>sed -i 's/regex system/regex/' \
-       storage/columnstore/columnstore/cmake/boost.cmake</userinput></screen>
 
     <para>
       Fix runtime issues with OpenSSL-4.0 and later:
@@ -199,7 +202,7 @@ cmake -D CMAKE_BUILD_TYPE=Release                       \
       -D WITH_EMBEDDED_SERVER=ON                        \
       -D SKIP_TESTS=ON                                  \
       -D TOKUDB_OK=0                                    \
-      -W no-dev                                         \
+      -W no-author                                      \
       .. &amp;&amp;
 make</userinput></screen>
 
@@ -271,12 +274,12 @@ mv -v /usr/share/user_map.conf /etc/security</userinput></screen>
 
     <para>
       <option>-D WITHOUT_SERVER=ON</option>: Use this
-      switch if you don't want the server and would like to build the client
+      :wqswitch if you don't want the server and would like to build the client
       only.
     </para>
 
     <para>
-      <parameter>-W no-dev</parameter>: This switch turns off some warnings
+      <parameter>-W no-author</parameter>: This switch turns off some warnings
       that are only useful for developers.
     </para>
 
@@ -449,15 +452,15 @@ mariadbd-safe --user=mariadb 2&gt;&amp;1 &gt;/dev/null &amp;</userinput></screen
 
 <screen role="root" revision="systemd"><userinput>make install-mariadb</userinput></screen>
 
-      <note>
+      <caution>
         <para>
-          If you have an existing database already and this
-          installation of binaries was just an upgrade to a newer
-          version, check the upstream documentation for upgrading. It
-          is recommended to run:
-          <screen role="nodump"><userinput>mariadb-upgrade</userinput></screen>
+          Upgrading MariaDB from version 11 to 12 requires a full backup, a
+          clean shutdown, uninstalling the old binaries, installing the version
+          12 binaries, restarting the server, and running the
+          <command>mariadb-upgrade</command> command to update system tables.
+          Skipping this backup can result in unrecoverable data.
         </para>
-      </note>
+      </caution>
     </sect3>
 
   </sect2>

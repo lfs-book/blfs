@@ -6,15 +6,14 @@
 
   <!ENTITY mlt-download-http "https://github.com/mltframework/mlt/releases/download/v&mlt-version;/mlt-&mlt-version;.tar.gz">
   <!ENTITY mlt-download-ftp  " ">
-  <!ENTITY mlt-md5sum        "20de3730ac25953d93ad5c9b71b22a82">
-  <!ENTITY mlt-size          "6.4 MB">
-  <!ENTITY mlt-buildsize     "54 MB">
+  <!ENTITY mlt-md5sum        "259266dc466af040f33a8019a82b9936">
+  <!ENTITY mlt-size          "6.5 MB">
+  <!ENTITY mlt-buildsize     "49 MB">
   <!ENTITY mlt-time          "0.2 SBU (Using parallelism=4)">
 ]>
 
 <sect1 id="mlt" xreflabel="MLT-&mlt-version;">
   <?dbhtml filename="mlt.html"?>
-
 
   <title>MLT-&mlt-version;</title>
 
@@ -33,7 +32,7 @@
       applications.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,14 +68,30 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/mlt-&mlt-version;-ffmpeg-9.0.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">MLT Dependencies</bridgehead>
+
+    <bridgehead renderas="sect4">Required</bridgehead>
+    <para role="required">
+      <xref linkend="cmake"/>
+    </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend='ffmpeg'/>,
       <xref linkend='frei0r'/>,
-      <xref linkend='libsamplerate'/>, and
-      <xref linkend='qt6'/>
+      <xref linkend='libsamplerate'/>,
+      <xref linkend='qt6'/>, and
+      <xref linkend='rnnoise'/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -106,6 +121,12 @@
     <title>Installation of MLT</title>
 
     <para>
+      Fix building this package with ffmpeg-9:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../mlt-&mlt-version;-ffmpeg-9.0.patch</userinput></screen>
+
+    <para>
       Install <application>MLT</application> by running the following commands:
     </para>
 
@@ -119,7 +140,7 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr \
       -D MOD_VIDSTAB=OFF           \
       -D MOD_JACKRACK=OFF          \
       -D MOD_RUBBERBAND=OFF        \
-      -W no-dev .. &amp;&amp;
+      -W no-author .. &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -170,6 +191,11 @@ make</userinput></screen>
     <para>
       <option>-D MOD_QT6=OFF</option>: This option allows building without
       <xref linkend='qt6'/>.
+    </para>
+
+    <para>
+      <option>-D MOD_RNNOISE=OFF</option>: This option allows building without
+      <xref linkend='rnnoise'/>.
     </para>
 
     <para>

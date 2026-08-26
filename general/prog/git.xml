@@ -8,15 +8,15 @@
 
   <!ENTITY git-download-http "&git-root;/git-&git-version;.tar.xz">
   <!ENTITY git-download-ftp  " ">
-  <!ENTITY git-md5sum        "eb1137f556bd67cb4cea974275e51297">
+  <!ENTITY git-md5sum        "758c02a1b621cc0868ee0a0d99573e6b">
 
-  <!ENTITY git-size          "7.7 MB">
+  <!ENTITY git-size          "7.8 MB">
   <!-- but people keep forgetting that an install not only needs the net build
        space, it also needs the install space (or DESTDIR) -->
-  <!ENTITY git-buildsize     "379 MB (with downloaded documentation; add 22 MB for building docs)">
+  <!ENTITY git-buildsize     "403 MB (with tests and downloaded documentation; add 22 MB for building docs)">
   <!-- With 2.23.0, there was a large increase in time for tests. Possibly disk related? -->
   <!-- Confirmed that it is disk related.-->
-  <!ENTITY git-time          "0.4 SBU (add 2.2 SBU (disk speed dependent) for tests and 1.0 SBU for building docs (all with parallelism=4)">
+  <!ENTITY git-time          "0.4 SBU (add 2.0 SBU for tests (disk speed dependent) and 1.0 SBU for building docs (all with parallelism=4)">
 ]>
 
 <sect1 id="git" xreflabel="git-&git-version;">
@@ -47,7 +47,7 @@
       <application>Team Foundation Server</application>.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
     
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -108,7 +108,9 @@
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
       <xref linkend="curl"/> (needed to use <application>Git</application> over
-      http, https, ftp or ftps)
+      http, https, ftp or ftps) and
+      <xref linkend="rust"/>
+
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -302,6 +304,11 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
     </para>
 
     <para>
+      <envar>NO_RUST=1</envar>: Pass this environment variable to
+      <command>make</command> if <xref linkend="rust"/> is not installed. 
+    </para>
+
+    <para>
       <command>tar -xf ../git-manpages-&git-version;.tar.gz -C
       /usr/share/man --no-same-owner</command>: This untars
       <filename>git-manpages-&git-version;.tar.gz</filename>. The
@@ -382,7 +389,7 @@ sed -i '/^\* link:/s|howto/|&amp;html/|' /usr/share/doc/git-&git-version;/howto-
         <term><command>git</command></term>
         <listitem>
           <para>
-            is the stupid content tracker
+            is the content tracker
           </para>
           <indexterm zone="git git-prog">
             <primary sortas="b-git">git</primary>

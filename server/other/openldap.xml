@@ -6,9 +6,9 @@
 
   <!ENTITY openldap-download-http "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-&openldap-version;.tgz">
   <!ENTITY openldap-download-ftp  " ">
-  <!ENTITY openldap-md5sum        "761be850c8ff85dbf5031af7c6c6da44">
+  <!ENTITY openldap-md5sum        "fcb40191baba83c1f237d79f85835283">
   <!ENTITY openldap-size          "6.2 MB">
-  <!ENTITY openldap-buildsize     "100 MB (client and server)">
+  <!ENTITY openldap-buildsize     "108 MB (client and server)">
   <!ENTITY openldap-time          "0.3 SBU (client), 0.8 SBU (server)">
 ]>
 
@@ -30,7 +30,7 @@
       source implementation of the Lightweight Directory Access Protocol.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -90,16 +90,24 @@
         <xref linkend="mariadb"/> or
         <xref linkend="postgresql"/> or
         <ulink url="https://www.mysql.com/">MySQL</ulink>,
-      <ulink url="http://www.openslp.org/">OpenSLP</ulink>,
-      <ulink url="https://docs.mongodb.com/manual/core/wiredtiger/">WiredTiger</ulink>, and
-      &berkeley-db; (for slapd, also deprecated)
+      <ulink url="http://www.openslp.org/">OpenSLP</ulink>, and
+      <ulink url="https://docs.mongodb.com/manual/core/wiredtiger/">WiredTiger</ulink>
     </para>
 
   </sect2>
 
   <sect2 role="installation">
     <title>Installation of OpenLDAP</title>
+<!--
+    <para>
+      Whether you need the client or the server, first apply a fix to
+      build with OpenSSL-4:
+    </para>
 
+<screen><userinput>sed -e 's/cn->length/ASN1_STRING_length(cn)/g'  \
+    -e 's/cn->data/ASN1_STRING_get0_data(cn)/g' \
+    -i libraries/libldap/tls_o.c</userinput></screen>
+-->
     <note>
       <para>
         If you only need to install the client side <command>ldap*</command>
@@ -248,15 +256,6 @@ cp      -vfr      doc/{drafts,rfc,guide} \
       all available overlays.
     </para>
 
-<!--
-    <para>
-      <parameter>- -disable-ndb</parameter>: This switch disables
-      <application>MySQL</application> NDB Cluster backend
-      which causes configure to fail if
-      <application>MySQL</application> is present.
-    </para>
--->
-
     <para>
       <parameter>--disable-sql</parameter>: This switch explicitly
       disables the SQL backend.  Omit this switch if a SQL server is
@@ -381,17 +380,7 @@ cp      -vfr      doc/{drafts,rfc,guide} \
         <filename class="directory">/etc/openldap/slapd.d</filename>
         (recommended by the OpenLDAP documentation).
       </para>
-<!--
-      <para>
-        The shipped configuration files suppose the loadable modules are
-        installed with their <filename class="extension">.la</filename>
-        files, which may not be true if you remove those files as instructed
-        in <xref linkend="libtool"/>. If this is the case, issue, as the
-        <systemitem class="username">root</systemitem> user:
-      </para>
 
-<screen role="root"><userinput>sed 's/\.la$/.so/' -i /etc/openldap/slapd.{conf,ldif}{,.default}</userinput></screen>
--->
       <warning>
         <para>
           The instructions above install an empty LDAP structure and a default
@@ -441,21 +430,6 @@ cp      -vfr      doc/{drafts,rfc,guide} \
       </itemizedlist>
 
     </sect3>
-
-<!--
-    <sect3>
-      <title>Mozilla Address Directory</title>
-
-      <para>
-        By default, LDAPv2 support is disabled in the
-        <filename>slapd.conf</filename> file. Once the database is properly
-        set up and <application>Mozilla</application> is configured to use the
-        directory, you must add <option>allow bind_v2</option> to the
-        <filename>slapd.conf</filename> file.
-      </para>
-
-    </sect3>
- -->
 
     <sect3 id="openldap-init">
       <title><phrase revision="openrc">Boot Script</phrase>

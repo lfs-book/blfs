@@ -38,7 +38,7 @@
       time Server or want to connect to local hardware clocks 
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -70,6 +70,16 @@
       <listitem>
         <para>
           Estimated build time: &ntp-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch to build with OpenSSL-4:
+          <ulink url="&patch-root;/ntp-&ntp-version;-openssl_4-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -147,6 +157,13 @@ autoreconf -fiv</userinput></screen>
     </para>
 
 <screen><userinput>sed -i "/ep.*FAILED/,+4s/ep/ep2/" ntpd/ntp_io.c</userinput></screen>
+
+    <!--https://bugs.ntp.org/show_bug.cgi?id=4023-->
+    <para>
+      Then apply a patch to build with OpenSSL-4:
+    </para>
+
+<screen><userinput>patch -Np1 -i ../ntp-&ntp-version;-openssl_4-1.patch</userinput></screen>
 
     <para>
       Install <application>ntp</application> by running

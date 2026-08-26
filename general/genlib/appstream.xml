@@ -6,10 +6,10 @@
 
   <!ENTITY appstream-download-http "https://www.freedesktop.org/software/appstream/releases/AppStream-&appstream-version;.tar.xz">
   <!ENTITY appstream-download-ftp  " ">
-  <!ENTITY appstream-md5sum        "993cb6e1c6ab57ce59c5c3ba397f2b21">
-  <!ENTITY appstream-size          "2.7 MB">
-  <!ENTITY appstream-buildsize     "40 MB">
-  <!ENTITY appstream-time          "less than 0.1 SBU (add 0.1 SBU for tests; both using parallelism=4)">
+  <!ENTITY appstream-md5sum        "cc07d222289ec963be208c3757bde6a9">
+  <!ENTITY appstream-size          "2.8 MB">
+  <!ENTITY appstream-buildsize     "42 MB">
+  <!ENTITY appstream-time          "0.2 SBU (add 0.3 SBU for tests)">
 ]>
 
 <sect1 id="appstream" xreflabel="AppStream-&appstream-version;">
@@ -30,7 +30,7 @@
       easily accessible to programs which need it.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -75,13 +75,14 @@
       <xref linkend="itstool"/>,
       <xref linkend="libfyaml"/>,
       <xref linkend="libxml2"/>,
-      <xref linkend="libxmlb"/>, and
-      <xref linkend="libxslt"/>
+      <xref linkend="libxmlb"/>, 
+      <xref linkend="libxslt"/>, and
+      <xref linkend="wayland"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
     <para role="recommended">
-      <xref linkend="docbook-xsl"/>
+      <xref linkend="docbook-xsl-ns"/>
     </para>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -114,6 +115,8 @@ ninja</userinput></screen>
 
     <para>
       To test the results, issue: <command>ninja test</command>.
+      <!--One test. AppStream:as-test_yaml is known to fail.
+          All 8 tests pass for me.  - bdubbs AppStream-1.1.4. -->
     </para>
 
     <para>
@@ -159,8 +162,8 @@ mv -v /usr/share/doc/appstream{,-&appstream-version;}</userinput></screen>
 
     <para>
       <option>-D man=false</option>: This switch disables building the
-      manpages. Add it if you do not have 
-      <xref linkend="docbook-xsl" role="nodep"/> installed.
+      manpages. Add it if you do not have the recommend dependency
+      <xref linkend='docbook-xsl-ns'/> installed.
     </para>
 
   </sect2>

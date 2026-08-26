@@ -8,10 +8,10 @@
 
   <!ENTITY qt6-download-http "&qt6-url;/qt-everywhere-src-&qt6-version;.tar.xz">
   <!ENTITY qt6-download-ftp  " ">
-  <!ENTITY qt6-md5sum        "25d4d1dd74c92b978f164e8f20805985">
-  <!ENTITY qt6-size          "971 MB">
-  <!ENTITY qt6-buildsize     "47 GB (502 MB installed)">
-  <!ENTITY qt6-time          "13 SBU (using parallelism=8)">
+  <!ENTITY qt6-md5sum        "669c1f3a41c37fdda389094882044d7a">
+  <!ENTITY qt6-size          "972 MB">
+  <!ENTITY qt6-buildsize     "48 GB (504 MB installed)">
+  <!ENTITY qt6-time          "14 SBU (using parallelism=8)">
 ]>
 
 <sect1 id="qt6" xreflabel="Qt-&qt6-version;">
@@ -34,7 +34,7 @@
       programs such as command-line tools and consoles for servers. 
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -69,7 +69,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -79,7 +79,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">Qt6 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -106,7 +106,7 @@
       <xref linkend="libinput"/>,
       <xref linkend="libmng"/>,
       <xref linkend="libpng"/>,
-      <xref linkend="libtiff"/>,
+      <xref linkend="tiff"/>,
       <xref linkend="libwebp"/>,
       <xref linkend="libxkbcommon"/>,
       <xref linkend="mesa"/>,
@@ -200,9 +200,9 @@ ln -sfnv qt-&qt6-version; /opt/qt6</userinput></screen>
     <note>
       <para>
         If any of <xref linkend="libqtxdg"/>, <xref linkend="qca"/>,
-        <xref linkend="qcoro"/>, or <xref linkend="sddm"/> have been installed,
-        then those packages will need to be reinstalled after installing this 
-        package.
+        <xref linkend="qcoro"/>, <xref linkend="qtkeychain"/>, or
+        <xref linkend="sddm"/> have been installed, then those packages will
+        need to be reinstalled after installing this package.
       </para>
     </note>
 
@@ -246,15 +246,23 @@ ln -sfnv qt-&qt6-version; /opt/qt6</userinput></screen>
         components and to update to a new version.
       </para>
     </note>
-
+<!--
     <para>
       First, apply a patch to make the package compatible with openssl4:
     </para>
 
-<screen><userinput>patch -Np1 -i ../qt-everywhere-src-&qt6-version;-openssl4_fix-1.patch</userinput></screen>
+<screen><userinput>patch -Np1 -i ../../qt-everywhere-src-&qt6-version;-openssl4_fix-1.patch -d qtbase/</userinput></screen>
 
+    <note><para>
+      The above command is correct, as <command>patch</command> will navigate
+      to the <filename class="directory">qtbase</filename> directory first,
+      before applying the patch. This means that the path to the patch must be
+      relative to that directory, instead of the current directory the command
+      is being ran from.
+    </para></note>
+-->
     <para>
-      Next, if you are on an i686 system, disable a conflicting declaration
+      If you are on an i686 system, disable a conflicting declaration
       and fix a build error due to SIMD intrinsics in QtMultimedia:
     </para>
 
@@ -536,27 +544,33 @@ EOF</userinput></screen>
           balsam,
           balsamui,
           canbusutil,
-          <!--cooker,-->
           designer,
           instancer,
+          kmap2qmap,
+          lcheck,
           lconvert,
           lightmapviewer,
           linguist,
           lottietoqml,
           lrelease,
+          lrelease-pro,
+          ltext2id,
           lupdate,
+          lupdate-pro,
           materialeditor,
           meshdebug,
+          particleshadergen,
           pixeltool,
+          qcshadergen,
           qdbus,
           qdbuscpp2xml,
           qdbusviewer,
           qdbusxml2cpp,
           qdistancefieldgenerator,
-          qdoc,
           qmake (hard link to qmake6),
           qmake6,
           qml,
+          qmlcontextpropertydump,
           qmldom,
           qmleasing,
           qmlformat,
@@ -569,7 +583,6 @@ EOF</userinput></screen>
           qmltc,
           qmltestrunner,
           qmltime,
-          qopcuaxmldatatypes2cpp,
           qqem,
           qsb,
           qtdiag (hard link to qtdiag6),
@@ -581,14 +594,17 @@ EOF</userinput></screen>
           qt-cmake-create,
           qt-configure-module,
           shadergen,
-          shapegen, and
-          svg2xml
+          shapegen,
+          svgtoqml,
+          wasmdeployqt, and
+          wasmdeployqt6
         </seg>
         <seg>
           libQt6Bluetooth.so,
           libQt6BundledEmbree.a,
           libQt6BundledOpenXR.a,
           libQt6BundledResonanceAudio.a,
+          libQt6CanvasPainter.so,
           libQt6Charts.so,
           libQt6ChartsQml.so,
           libQt6Coap.so,
@@ -598,16 +614,14 @@ EOF</userinput></screen>
           libQt6DBus.so,
           libQt6DataVisualization.so,
           libQt6DataVisualizationQml.so,
-          libQt6DeclarativeOpcua.so,
           libQt6Designer.so,
           libQt6DesignerComponents.so,
           libQt6DeviceDiscoverySupport.a,
           libQt6EglFSDeviceIntegration.so,
           libQt6EglFsKmsGbmSupport.so,
           libQt6EglFsKmsSupport.so,
-          libQt6ExampleIcons.a,
-          libQt6ExamplesAssetDownloader.a,
           libQt6FbSupport.a,
+          libQtFFmpegMediaPluginImpl.a,
           libQt6Graphs.so,
           libQt6GraphsWidgets.so,
           libQt6Grpc.so,
@@ -625,6 +639,7 @@ EOF</userinput></screen>
           libQt6LabsQmlModels.so,
           libQt6LabsSettings.so,
           libQt6LabsSharedImage.so,
+          libQt6LabsStyleKitImpl.so,
           libQt6LabsSynchronizer.so,
           libQt6LabsWavefrontMesh.so,
           libQt6LanguageServer.a,
@@ -640,7 +655,6 @@ EOF</userinput></screen>
           libQt6Network.so,
           libQt6NetworkAuth.so,
           libQt6Nfc.so,
-          libQt6OpcUa.so,
           libQt6OpenGL.so,
           libQt6OpenGLWidgets.so,
           libQt6PacketProtocol.a,
@@ -652,7 +666,6 @@ EOF</userinput></screen>
           libQt6ProtobufQtGuiTypes.so,
           libQt6ProtobufQuick.so,
           libQt6ProtobufWellKnownTypes.so,
-          libQt6QGstreamerMediaPluginImpl.a,
           libQt6Qml.so,
           libQt6QmlAssetDownloader.a,
           libQt6QmlCompiler.so,
@@ -731,6 +744,7 @@ EOF</userinput></screen>
           libQt6StateMachineQml.so,
           libQt6Svg.so,
           libQt6SvgWidgets.so,
+          libQt6TaskTree.so,
           libQt6Test.so,
           libQt6TextToSpeech.so,
           libQt6UiTools.so,
@@ -993,6 +1007,7 @@ EOF</userinput></screen>
         </listitem>
       </varlistentry>
 
+<!-- Not seen in 6.11.1
       <varlistentry id="qdoc-qt6">
         <term><command>qdoc</command></term>
         <listitem>
@@ -1005,6 +1020,7 @@ EOF</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
+-->
 
       <varlistentry id="qmake-qt6">
         <term><command>qmake</command></term>

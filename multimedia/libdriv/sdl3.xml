@@ -6,9 +6,9 @@
 
   <!ENTITY sdl3-download-http "https://www.libsdl.org/release/SDL3-&sdl3-version;.tar.gz">
   <!ENTITY sdl3-download-ftp  " ">
-  <!ENTITY sdl3-md5sum        "8b94230c2b257ba05d936e5bc5dcf5ab">
+  <!ENTITY sdl3-md5sum        "32968d1180d29903e70cd3f7fc38470b">
   <!ENTITY sdl3-size          "15 MB">
-  <!ENTITY sdl3-buildsize     "119 MB (add 103 MB for tests)">
+  <!ENTITY sdl3-buildsize     "121 MB (add 105 MB for tests)">
   <!ENTITY sdl3-time          "0.3 SBU (Using parallelism=4; add 0.3 SBU for tests)">
 ]>
 
@@ -30,7 +30,7 @@
       multimedia software, such as games and emulators.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -62,6 +62,16 @@
       <listitem>
         <para>
           Estimated build time: &sdl3-time;
+        </para>
+      </listitem>
+    </itemizedlist>
+
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          Required patch:
+          <ulink url="&patch-root;/SDL3-&sdl3-version;-upstream_fixes-1.patch"/>
         </para>
       </listitem>
     </itemizedlist>
@@ -100,6 +110,13 @@
     <title>Installation of SDL3</title>
 
     <para>
+      Fix potential conflicts with <literal>getresuid</literal> by applying a
+      patch:
+    </para>
+
+<screen><userinput remap="pre">patch -Np1 -i ../SDL3-&sdl3-version;-upstream_fixes-1.patch</userinput></screen>
+
+    <para>
       Install <application>SDL3</application> by running the
       following commands:
     </para>
@@ -112,7 +129,7 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr \
       -D SDL_TEST_LIBRARY=OFF      \
       -D SDL_STATIC=OFF            \
       -D SDL_RPATH=OFF             \
-      -W no-dev -G Ninja ..        &amp;&amp;
+      -W no-author -G Ninja ..     &amp;&amp;
 
 ninja</userinput></screen>
 
@@ -140,7 +157,7 @@ cmake -D CMAKE_INSTALL_PREFIX=/usr \
       -D SDL_RPATH=OFF             \
       -D SDL_TESTS=ON              \
       -D SDL_INSTALL_TESTS=ON      \
-      -W no-dev -G Ninja ..        &amp;&amp;
+      -W no-author -G Ninja ..     &amp;&amp;
 
 ninja &amp;&amp;
 DESTDIR=$PWD/TESTS ninja install</userinput></screen>

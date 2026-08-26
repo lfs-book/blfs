@@ -7,16 +7,16 @@
 <!-- for when .0 is not part of the new tarball name, but always referenced -->
 <!ENTITY nss-url "archive.mozilla.org/pub/security/nss/releases">
 
-<!-- micro versions-->
+<!-- micro versions
   <!ENTITY nss-download-http "https://&nss-url;/NSS_3_&nss-minor-version;_&nss-micro-version;_RTM/src/nss-&nss-version;.tar.gz">
-
+-->
 <!-- no micro versions -->
-<!--<!ENTITY nss-download-http "https://&nss-url;/NSS_&nss-dir;_RTM/src/nss-&nss-version;.tar.gz">-->
+<!ENTITY nss-download-http "https://&nss-url;/NSS_&nss-dir;_RTM/src/nss-&nss-version;.tar.gz">
   <!ENTITY nss-download-ftp  " ">
-  <!ENTITY nss-md5sum        "af095ecde13b76cd700ef325758c662d">
-  <!ENTITY nss-size          "75 MB">
-  <!ENTITY nss-buildsize     "392 MB (with tests)">
-  <!ENTITY nss-time          "0.8 SBU (with parallelism=4, add 42 SBU for tests on AMD Ryzens or at least 23 SBU on Intel machines)">
+  <!ENTITY nss-md5sum        "0ca322cec564a53ac5a59ce130d96f46">
+  <!ENTITY nss-size          "76 MB">
+  <!ENTITY nss-buildsize     "406 MB (with tests)">
+  <!ENTITY nss-time          "0.8 SBU (with parallelism=4, add 8.4 SBU for tests)">
   <!-- Don't know why but I got 27 (i9-10900) - rahul -->
   <!-- On my system, I got 64.2 SBU, but Bruce gets 18 SBU. -renodr -->
   <!-- On my system, I got 63 SBU, but Xi gets ~18 SBU. -pierre (for 3.78) -->
@@ -39,6 +39,17 @@
      TinderboxPrint:Unknown: 2
 
    Changes did not warrant running a 16 SBU test suite for 3.106. [bdubbs]
+
+   Test Results 3.105: (Intel i7-14700K) 16 SBU [bdubbs]
+
+   Test Results 3.124: (Intel i7-14700K) 8.4 SBU [bdubbs]
+     Tests summary:
+     Passed:             31903
+     Failed:             0
+     Failed with core:   0
+     ASan failures:      0
+     Unknown status:     1
+     TinderboxPrint:Unknown: 1
    -->
 ]>
 
@@ -64,7 +75,7 @@
       standards into an application.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -157,13 +168,14 @@
 patch -Np1 -i ../nss-&nss-version;-illegal_instruction-1.patch</userinput></screen>
 
 -->
+<!--
     <para>
       First, if you are going to run the test suite, adapt some tests to
       sqlite-3.53.0 and later:
     </para>
 
 <screen><userinput remap="pre">sed -i "490 s/,X'/,[xX]'/" nss/tests/dbtests/dbtests.sh</userinput></screen>
-
+-->
     <para>
       Install <application>NSS</application> by running the following commands:
     </para>
@@ -233,12 +245,6 @@ cd ../</userinput></screen>
            ../../test_results/security/localhost.1/results.html
         </para>
       </listitem>
-      <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=2033208 -->
-      <listitem>
-        <para>
-           9 tests are known to fail with Sqlite 3.53.0 or newer.
-        </para>
-      </listitem>
       <listitem>
         <para>
            A few tests might fail on some Intel machines for unknown reasons.
@@ -251,13 +257,13 @@ cd ../</userinput></screen>
       Now, as the <systemitem class="username">root</systemitem> user:
     </para>
 
-<screen role="root"><userinput>cd ../dist                                                          &amp;&amp;
+<screen role="root"><userinput>cd ../dist                                         &amp;&amp;
 
-install -v -m755 Linux*/lib/*.so              /usr/lib              &amp;&amp;
-install -v -m644 Linux*/lib/{*.chk,libcrmf.a} /usr/lib              &amp;&amp;
+install -v -m755 Linux*/lib/*.so  /usr/lib         &amp;&amp;
+install -v -m644 Linux*/lib/*.chk /usr/lib         &amp;&amp;
 
-install -v -m755 -d                           /usr/include/nss      &amp;&amp;
-cp -v -RL {public,private}/nss/*              /usr/include/nss      &amp;&amp;
+install -v -m755 -d               /usr/include/nss &amp;&amp;
+cp -v -RL {public,private}/nss/*  /usr/include/nss &amp;&amp;
 
 install -v -m755 Linux*/bin/{certutil,nss-config,pk12util} /usr/bin &amp;&amp;
 
@@ -362,7 +368,7 @@ install -v -m644 Linux*/lib/pkgconfig/nss.pc  /usr/lib/pkgconfig</userinput></sc
           certutil, nss-config, and pk12util
         </seg>
         <seg>
-          libcrmf.a, libfreebl3.so, libfreeblpriv3.so,
+          libfreebl3.so, libfreeblpriv3.so,
           libnss3.so, libnssckbi.so, libnssckbi-testlib.so,
           libnssdbm3.so, libnsssysinit.so, libnssutil3.so,
           libpkcs11testmodule.so, libsmime3.so, libsoftokn3.so,

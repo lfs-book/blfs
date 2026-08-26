@@ -7,7 +7,7 @@
   <!ENTITY spidermonkey-download-http "&mozilla-http;/firefox/releases/&spidermonkey-version;esr/source/firefox-&spidermonkey-version;esr.source.tar.xz">
   <!ENTITY spidermonkey-download-ftp  " ">
   <!-- size and md5sum are in packages.ent -->
-  <!ENTITY spidermonkey-buildsize     "4.7 GB (52 MB installed after removing 42 MB static lib; add 29 MB for the main and jit tests)">
+  <!ENTITY spidermonkey-buildsize     "4.7 GB (55 MB installed after removing 42 MB static lib; add 29 MB for the main and jit tests)">
   <!ENTITY spidermonkey-time          "1.9 SBU (with parallelism=4; add 0.4 SBU for the main tests and 2.6 SBU for the jit tests)">
 ]>
 
@@ -29,7 +29,7 @@
       In BLFS, the source code of SpiderMonkey is taken from Firefox.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -181,6 +181,7 @@ sed '/name = "encoding_rs"/,/^$/{/source/d;/checksum/d}' -i Cargo.lock</userinpu
 <screen><userinput>mkdir obj &amp;&amp;
 cd    obj &amp;&amp;
 
+MOZBUILD_STATE_PATH=${PWD}/mozbuild          \
 ../js/src/configure --prefix=/usr            \
                     --disable-debug-symbols  \
                     --disable-jemalloc       \
@@ -303,6 +304,14 @@ sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js&spidermonkey-major;-config</userinput></sc
 
   <sect2 role="commands">
     <title>Command Explanations</title>
+
+    <para>
+      <envar>MOZBUILD_STATE_PATH=${PWD}/mozbuild</envar>: Override the
+      default location
+      (<filename class='directory'>${HOME}/.mozbuild</filename>) for the
+      cache of the build system, to avoid polluting the home directory.
+
+    </para>
 
     <para>
       <parameter>--disable-debug-symbols</parameter>: Don't generate debug

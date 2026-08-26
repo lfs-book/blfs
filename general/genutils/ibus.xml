@@ -35,7 +35,7 @@
       friendly input method user interface.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -87,9 +87,8 @@
     <bridgehead renderas="sect4">Required</bridgehead>
     <para role="required">
       <!-- needed since we're using autogen.sh -->
-      <xref linkend="iso-codes"/>,
-      <xref linkend="libarchive"/> (for extracting the Unicode Character
-      Database), and <xref linkend="vala"/>
+      <xref linkend="iso-codes"/> and
+      <xref linkend="vala"/>
     </para>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -121,8 +120,7 @@
       First, install the Unicode Character Database as the &root; user:
     </para>
 
-<screen role="root"><userinput>mkdir -p               /usr/share/unicode/ucd &amp;&amp;
-unzip -o ../UCD.zip -d /usr/share/unicode/ucd</userinput></screen>
+<screen role="root"><userinput>python3 -m zipfile -e ../UCD.zip /usr/share/unicode/ucd</userinput></screen>
 
     <para>
       Fix an issue with deprecated schema entries:
@@ -174,6 +172,9 @@ make</userinput></screen>
       The test named ibus-keypress requires
       <literal>CONFIG_INPUT_UINPUT</literal> enabled in the kernel
       configuration and it would fail otherwise.
+      <!-- https://github.com/ibus/ibus/commit/ac3a9177ac11 -->
+      The test named <literal>test_gnome.py</literal> is known to fail
+      with xkeyboard-config 2.48 or newer.
       The xkb-latin-layouts test is also known to fail on
       some systems.
     </para>
