@@ -210,8 +210,8 @@ make</userinput></screen>
 
     <para revision="openrc">
       <parameter>--with-systemdsystemunitdir=no</parameter>:
-      This prevents building the <application>systemd</application> units,
-      which are not needed for a <application>SYS V</application> system.
+      This prevents building the systemd units,
+      which are not needed for an OpenRC system.
     </para>
 
     <para>
@@ -235,10 +235,15 @@ make</userinput></screen>
       <title>Config Files</title>
 
       <para>
+        <filename revision="openrc">/etc/conf.d/fcron</filename>,
         <filename>/etc/fcron.conf</filename>,
         <filename>/etc/fcron.allow</filename>, and
         <filename>/etc/fcron.deny</filename>
       </para>
+
+      <indexterm revision="openrc" zone="fcron fcron-openrc">
+        <primary sortas="e-etc-conf.d-fcron">/etc/conf.d/fcron</primary>
+      </indexterm>
 
       <indexterm zone="fcron fcron-config">
         <primary sortas="e-etc-fcron.conf">/etc/fcron.conf</primary>
@@ -370,13 +375,11 @@ EOF</userinput></screen>
     </sect3>
 
     <sect3  id="fcron-init">
-      <title><phrase revision="openrc">Boot Script</phrase>
+      <title><phrase revision="openrc">OpenRC Service</phrase>
              <phrase revision="systemd">Systemd Unit</phrase></title>
 
       <para revision="openrc">
-        Install the
-        <filename>/etc/rc.d/init.d/fcron</filename> init script from the
-        <xref linkend="bootscripts"/> package.
+        Create and enable the following OpenRC service as the &root; user:
       </para>
 
       <para revision="systemd">
@@ -388,7 +391,27 @@ EOF</userinput></screen>
         <primary sortas="f-fcron">fcron</primary>
       </indexterm>
 
-<screen role="root" revision="openrc"><userinput>make install-fcron</userinput></screen>
+<screen role='root'
+  revision='openrc'><userinput>install -vDm755 /dev/stdin /etc/init.d/fcron &lt;&lt; "EOF" &amp;&amp;
+<literal>#!/sbin/openrc-run
+# Starts the Fcron daemon.
+# Authors: Zeckma - zeckma@linuxfromscratch.com
+# Version: LFS &version;
+
+description="starts fcron"
+
+command=/sbin/fcron
+pidfile=/var/run/fcron.pid
+command_args="${fcron_options}"
+
+depend() {
+  use clock logger
+  need hostname
+  provide cron
+}</literal>
+EOF
+
+rc-update add fcron default</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl enable fcron</userinput></screen>
 
@@ -398,7 +421,7 @@ EOF</userinput></screen>
         <filename>/var/spool/fcron/systab</filename> file:
       </para>
 
-<screen role="root" revision="openrc"><userinput>/etc/rc.d/init.d/fcron start &amp;&amp;
+<screen role="root" revision="openrc"><userinput>/etc/init.d/fcron start &amp;&amp;
 fcrontab -z -u systab</userinput></screen>
 
 <screen role="root" revision="systemd"><userinput>systemctl start fcron &amp;&amp;
