@@ -4,15 +4,12 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY exim-download-http   "https://ftp.exim.org/pub/exim/exim4/exim-&exim-version;.tar.xz">
-
+  <!ENTITY exim-download-http   "https://downloads.exim.org/exim4/exim-&exim-version;.tar.xz">
   <!ENTITY exim-download-ftp    " ">
-  <!-- if above don't work, please use one of the official mirrors at
-       http://www.exim.org/mirmon/ftp_mirrors.html -->
-  <!ENTITY exim-md5sum          "3f8e750a827e86ab01aedef01b2de9ec">
+  <!ENTITY exim-md5sum          "0fa646b6f2a40e6b86604926b4a8bcfc">
   <!ENTITY exim-size            "1.9 MB">
-  <!ENTITY exim-buildsize       "18 MB">
-  <!ENTITY exim-time            "0.1 SBU">
+  <!ENTITY exim-buildsize       "23 MB">
+  <!ENTITY exim-time            "0.2 SBU">
 
   <!ENTITY exim-daemon-version  "&exim-version;-2">
 ]>
@@ -36,7 +33,7 @@
       under the GNU Public License.
     </para>
 
-    &lfs130_checked;
+    &lfs131_built;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -81,20 +78,6 @@
           shown at <ulink url="https://exim.org/docs.html"/>.
         </para>
       </listitem>
-<!-- Applied in 4.96
-      <listitem>
-        <para>
-          Required patch when building with <application>PAM</application> support:
-          <ulink url="&patch-root;/exim-&exim-version;-call_pam-1.patch"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Required patch to build with openssl-3:
-          <ulink url="&patch-root;/exim-&exim-version;-openssl3_fix-1.patch"/>
-        </para>
-      </listitem>
--->
     </itemizedlist>
 
     <bridgehead renderas="sect3">Exim Dependencies</bridgehead>
@@ -113,11 +96,11 @@
       <xref linkend="libidn"/>,
       <xref linkend="linux-pam"/>,
       <xref linkend="mariadb"/> or
-      <ulink url="https://www.mysql.com/">MySQL</ulink>,
       <xref linkend="openldap"/>,
       <xref linkend="gnutls"/>,
       <xref linkend="postgresql"/>,
       <xref linkend="x-window-system"/>,
+      <ulink url="https://www.mysql.com/">MySQL</ulink>,
       <ulink url="https://github.com/heimdal/heimdal">Heimdal GSSAPI</ulink>,
       <ulink url="https://github.com/shevek/libspf2/">libspf2</ulink>, and
       <ulink url="http://www.trusteddomain.org/opendmarc/">OpenDMARC</ulink>
@@ -142,16 +125,17 @@ useradd -d /dev/null -c "Exim Daemon" -g exim -s /bin/false -u 31 exim</userinpu
       Configure <application>Exim</application> with the following commands:
     </para>
 
-<screen><userinput>sed -e 's,^BIN_DIR.*$,BIN_DIRECTORY=/usr/sbin,'    \
-    -e 's,^CONF.*$,CONFIGURE_FILE=/etc/exim.conf,' \
-    -e 's,^EXIM_USER.*$,EXIM_USER=exim,'           \
-    -e '/# USE_OPENSSL/s,^#,,' src/EDITME > Local/Makefile &amp;&amp;
+<screen><userinput>sed -e 's|^BIN_DIR.*$|BIN_DIRECTORY=/usr/sbin|'    \
+    -e 's|^CONF.*$|CONFIGURE_FILE=/etc/exim.conf|' \
+    -e 's|^EXIM_USER.*$|EXIM_USER=exim|'           \
+    -e '/# USE_OPENSSL/s|^#||'                     \
+    src/EDITME > Local/Makefile &amp;&amp;
 
-printf "USE_GDBM = yes\nDBMLIB = -lgdbm\n" >> Local/Makefile
-</userinput></screen>
+printf "USE_GDBM = yes\nDBMLIB = -lgdbm\n" >> Local/Makefile</userinput></screen>
 
     <para>
-      If you want to add <application>Linux PAM</application> support, also run the following commands:
+      If you want to add <application>Linux PAM</application> support, also 
+      run the following commands:
     </para>
 
 <screen role="nodump"><userinput>sed -i '/# SUPPORT_PAM=yes/s,^#,,' Local/Makefile
@@ -163,7 +147,6 @@ echo "EXTRALIBS=-lpam" >> Local/Makefile
     </para>
 
 <screen><userinput>make</userinput></screen>
-
 
     <para>
       This package does not come with a test suite.
@@ -222,20 +205,11 @@ install -v -d -m750 -o exim -g exim /var/spool/exim</userinput></screen>
       needs to hand off the daemon to the <systemitem
       class="username">exim</systemitem> user.
     </para>
-    <!-- obsolete: now default 
-    <para>
-      <option>SUPPORT_TLS=yes</option>: This allows to support
-      STARTTLS connections. If you use this option, you need to select
-      whether <application>OpenSSL</application> or
-      <application>GnuTLS</application> is used (see
-      <filename>src/EDITME</filename>).
-    </para>
-    -->
+
     <para>
       <parameter>USE_OPENSSL</parameter>: uncommenting
       <option>USE_OPENSSL=yes</option> and <option>USE_OPNSSL_PC=yes</option>
-      tells the
-      build system to use <application>OpenSSL</application>, and to
+      tells the build system to use <application>OpenSSL</application>, and to
       find the needed libraries with <application>pkg-config</application>.
     </para>
 
@@ -487,11 +461,29 @@ EOF</userinput></screen>
       <segtitle>Installed Directories</segtitle>
 
       <seglistitem>
-        <seg>exicyclog, exigrep, exim, exim-&exim-daemon-version;, exim_checkaccess,
-        exim_dbmbuild, exim_dumpdb, exim_fixdb, exim_id_update, exim_lock,
-        exim_msgdate, exim_tidydb, eximstats, exinext, exipick, exiqgrep,
-        exiqsumm, exiwhat, and optionally, eximon, eximon.bin,
-        and sendmail (symlink)</seg>
+        <seg>
+          exicyclog, 
+          exigrep, 
+          exim, 
+          exim-&exim-daemon-version;, 
+          exim_checkaccess,
+          exim_dbmbuild, 
+          exim_dumpdb, 
+          exim_fixdb, 
+          exim_id_update, 
+          exim_lock,
+          exim_msgdate, 
+          exim_tidydb, 
+          eximstats, 
+          exinext, 
+          exipick, 
+          exiqgrep,
+          exiqsumm, 
+          exiwhat, and optionally, 
+          eximon, 
+          eximon.bin, and 
+          sendmail (symlink)
+        </seg>
         <seg>None</seg>
         <seg>/usr/share/doc/exim-&exim-version; and /var/spool/exim</seg>
       </seglistitem>
