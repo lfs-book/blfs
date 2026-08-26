@@ -31,7 +31,7 @@
       from the Berkeley Postgres database management system.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -299,15 +299,6 @@ chown -Rv postgres:postgres /srv/pgsql /run/postgresql</userinput></screen>
       <filename class="directory">/run/postgresql</filename>.
     </para>
 
- <!-- Removed in 17.0
-    <para>
-      <parameter>- -enable-thread-safety</parameter>: This switch makes the
-      client libraries thread-safe by allowing concurrent threads in
-      <filename class="libraryfile">libpq</filename> and ECPG programs to
-      safely control their private connection handles.
-    </para>
--->
-
     <para>
       <option>--with-openssl</option>: builds the package  with support for
       <application>OpenSSL</application> encrypted connections.
@@ -395,8 +386,9 @@ chown -Rv postgres:postgres /srv/pgsql /run/postgresql</userinput></screen>
         (as the <systemitem class="username">root</systemitem> user):
       </para>
 
-<screen role="root"><userinput>su - postgres -c '/usr/bin/postgres -D /srv/pgsql/data > \
+<screen role="root" revision="sysv"><userinput>su - postgres -c '/usr/bin/postgres -D /srv/pgsql/data > \
                   /srv/pgsql/data/logfile 2&gt;&amp;1 &amp;'</userinput></screen>
+<screen role="root" revision="systemd"><userinput>systemctl start postgresql</userinput></screen>
       <note>
         <para>
           If you are scripting this part, you should wait for the server to
@@ -428,7 +420,8 @@ echo "select * from t1;" | (su - postgres -c '/usr/bin/psql test')</userinput></
         issuing as <systemitem class="username">root</systemitem>:
       </para>
 
-<screen role="root"><userinput>su - postgres -c "/usr/bin/pg_ctl stop -D /srv/pgsql/data"</userinput></screen>
+<screen role="root" revision='sysv'><userinput>su - postgres -c "/usr/bin/pg_ctl stop -D /srv/pgsql/data"</userinput></screen>
+<screen role="root" revision='systemd'><userinput>systemctl stop postgresql</userinput></screen>
 
     </sect3>
 
