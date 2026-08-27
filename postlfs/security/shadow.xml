@@ -125,10 +125,10 @@
 <screen revision='sysv'><userinput>find man -name Makefile.in -exec sed -i 's/getspnam\.3 / /' {} \; &amp;&amp;
 find man -name Makefile.in -exec sed -i 's/passwd\.5 / /'   {} \; &amp;&amp;
 
-sed -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD YESCRYPT@' \
-    -e 's@/var/spool/mail@/var/mail@'                   \
-    -e '/PATH=/{s@/sbin:@@;s@/bin:@@}'                  \
-    -i etc/login.defs                                   &amp;&amp;
+sed -e 's@#ENCRYPT_METHOD SHA512@ENCRYPT_METHOD YESCRYPT@' \
+    -e 's@/var/spool/mail@/var/mail@'                      \
+    -e '/PATH=/{s@/sbin:@@;s@/bin:@@}'                     \
+    -i etc/login.defs                                      &amp;&amp;
 
 ./configure --sysconfdir=/etc   \
             --disable-static    \
@@ -174,26 +174,16 @@ make</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>sed -i 's/groups$(EXEEXT) //' src/Makefile.in</command>: This sed
-      is used to suppress the installation of the <command>groups</command>
-      program as the version from the <application>Coreutils</application>
-      package installed during LFS is preferred.
-    </para>
-
-    <para>
-      <command>find man -name Makefile.in -exec ... {} \;</command>: The
-      first command is used to suppress the installation of the
-      <command>groups</command> man pages so the existing ones installed from
-      the <application>Coreutils</application> package are not replaced.
-      The two other commands prevent installation of manual pages that
+      <command>find man -name Makefile.in -exec ... {} \;</command>: These
+      two commands prevent installation of manual pages that
       are already installed by <application>Man-pages</application> in LFS.
     </para>
 
     <para>
-      <command>sed -e 's@#ENCRYPT_METHOD DES@ENCRYPT_METHOD YESCRYPT@' -e
+      <command>sed -e 's@#ENCRYPT_METHOD SHA512@ENCRYPT_METHOD YESCRYPT@' -e
         's@/var/spool/mail@/var/mail@' -e '/PATH=/{s@/sbin:@@;s@/bin:@@}'
-        -i etc/login.defs</command>: Instead of using the default 'DES'
-      method, this command modifies the installation to use the much more
+        -i etc/login.defs</command>: Instead of using the default 'SHA512'
+      method, this command modifies the installation to use the more
       secure 'YESCRYPT' method of hashing passwords, which also allows
       passwords longer than eight characters.  The command also changes the
       obsolete <filename class="directory">/var/spool/mail</filename> location
