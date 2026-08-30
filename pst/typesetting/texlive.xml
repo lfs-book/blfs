@@ -6,21 +6,21 @@
   <!-- utah -->
   <!ENTITY texlive-download-http "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/&texlive-year;/texlive-&texlive-version;-source.tar.xz">
   <!ENTITY texlive-download-ftp  " ">
-  <!ENTITY texlive-md5sum        "699b3a9871885e54f35c155332d69da4">
-  <!ENTITY texlive-size          "106 MB">
+  <!ENTITY texlive-md5sum        "734e2521173e8ef6a4c04f70d1285124">
+  <!ENTITY texlive-size          "95 MB">
 
-  <!ENTITY texlive-buildsize     "9.8 GB including the additional downloads and the tests, 8.7 GB installed">
+  <!ENTITY texlive-buildsize     "10.3 GB including the additional downloads and the tests, 9.2 GB installed">
   <!ENTITY texlive-time          "4.0 SBU including the additional downloads and the tests, building with parallelism=4">
 
   <!-- utah -->
   <!ENTITY texlive-texmf-download-http "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/&texlive-year;/texlive-&texlive-version;-texmf.tar.xz">
   <!ENTITY texlive-texmf-download-ftp  " ">
-  <!ENTITY texlive-texmf-md5sum        "9b3093da81e6eacf98fde86589471a22">
-  <!ENTITY texlive-texmf-size          "4.4 GB">
+  <!ENTITY texlive-texmf-md5sum        "0a953c929116392047950b93a8bb96d1">
+  <!ENTITY texlive-texmf-size          "4.6 GB">
 
   <!ENTITY texlive-extra-download-http "https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/&texlive-year;/texlive-&texlive-version;-extra.tar.xz">
   <!ENTITY texlive-extra-download-ftp  " ">
-  <!ENTITY texlive-extra-md5sum        "8aabf4273a001d79c3c8de347f028145">
+  <!ENTITY texlive-extra-md5sum        "e4103c7087dd5cd11edb62028a7fafba">
   <!ENTITY texlive-extra-size          "2.0 MB">
 
 <!-- The following commit will change future installs so that the scripts in
@@ -61,13 +61,10 @@ and it might have been removed by next year. -->
     <note>
       <para>
         According to <ulink url="https://www.tug.org/historic/"/> the master
-        site in France only supports ftp and rsync. Now that ftp is generally
-        deprecated, that page has links to mirrors, some of which support https,
-        e.g. in Utah and Chemnitz as well as in China. If you prefer to use a
+        site in Germany only supports rsync, but that page has links to mirrors,
+        which support https. If you prefer to use a
         different mirror from the example links here, you will need to navigate
-        to systems/historic/texlive/&texlive-year; or systems/texlive/&texlive-year;
-        as the case may be.
-        <!-- the Chinese mirrors do not use a 'historic' subdirectory. -->
+        to systems/texlive/&texlive-year;.
       </para>
     </note>
 
@@ -85,8 +82,6 @@ and it might have been removed by next year. -->
       if shared system libraries are used.
     </para>
 
-      <para>
-      </para>
     <para>
       All of those packages are dealt with on their own pages and can be
       built after installing this package. If you have not already done so, you
@@ -94,7 +89,7 @@ and it might have been removed by next year. -->
       initialize the new installation will be found.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -144,7 +139,8 @@ and it might have been removed by next year. -->
       <para>
         Because of the size of this package, it is unlikely to be mirrored by
         BLFS mirrors. If you are unable to download the files for this package,
-        go to https://www.ctan.org/mirrors/ to find a more-accessible mirror.
+        go to <ulink url="https://www.tug.org/historic/"/> to find a more
+        accessible mirror (see the note above).
       </para>
 
     <itemizedlist spacing="compact">
@@ -197,14 +193,15 @@ and it might have been removed by next year. -->
           Download size: &texlive-extra-size;
         </para>
       </listitem>
+<!--
       <listitem>
         <para>
           Required patch: <ulink url=
           "&patch-root;/texlive-&texlive-version;-source-upstream_fixes-1.patch"/>
         </para>
       </listitem>
+-->
     </itemizedlist>
-
     <bridgehead renderas="sect3">TeX Live from source Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Recommended</bridgehead>
@@ -266,33 +263,20 @@ and it might have been removed by next year. -->
       </para>
     </note>
 
-<!-- Applied in TL2025 -renodr
-    <para>
-      Fix a build failure that occurs on some platforms due to more strict
-      compiler warnings:
-    </para>
-
-<screen><userinput remap="pre">sed -e '182 s/internal_font_number/boolean/' \
-    -e '301 s/internal_font_number/boolean/' \
-    -i texk/web2c/pdftexdir/pdftex.ch</userinput></screen>
--->
-
     <para>
       Now, as a normal user:
     </para>
 
 <!-- if a patch for the source is needed, this should go between the export
-	ande configure. But keeping it there as a commented line adds too much vertical space.
-    patch -Np1 -i ../texlive-&texlive-version;-source-security_fix-1.patch &amp;&amp;-->
-<screen><userinput>export TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') &amp;&amp;
-
+	and mkdir. But keeping it there as a commented line adds too much vertical space.
 patch -Np1 -i ../texlive-&texlive-version;-source-upstream_fixes-1.patch &amp;&amp;
+    -->
+<screen><userinput>export TEXARCH=$(uname -m | sed -e 's/i.86/i386/' -e 's/$/-linux/') &amp;&amp;
 
 mkdir texlive-build &amp;&amp;
 cd    texlive-build &amp;&amp;
 
-../configure CC="gcc -std=gnu17" -C               \
-    CXX="g++ -std=gnu++17"                        \
+../configure CXX="g++ -std=gnu++17" -C            \
     --prefix=$TEXLIVE_PREFIX                      \
     --bindir=$TEXLIVE_PREFIX/bin/$TEXARCH         \
     --datarootdir=$TEXLIVE_PREFIX                 \
@@ -327,10 +311,8 @@ make</userinput></screen>
       <application>psutils</application> and <application>libpaper</application>
       which result in a difference in the final decimal places of the psresize
       test. The <application>libpaper</application> developer does not think
-      this is significant. Another test, <filename>xdvipdfm-pdf.test</filename>,
-      is known to fail due to a missing binary file from the upstream fixes
-      patch. This does not affect the functionality of the program.
-      <!-- Still true with TL 2025 -->
+      this is significant.
+      <!-- Still true with TL 2026 -->
     </para>
 
     <para>
@@ -385,6 +367,15 @@ fmtutil-sys --all</userinput></screen>
 
 <screen role="root"><userinput>ln -svf $TEXLIVE_PREFIX/lib/libkpathsea.so{,.6} /usr/lib</userinput></screen>
 
+    <para>
+      To allow <command>xdvi</command> to appear in desktop menu, it is
+      necessary to create a symlink from
+      <filename class="directory">/usr/share/applications</filename>. As the
+      &root; user:
+    </para>
+
+<screen role="root"><userinput>ln -svf $TEXLIVE_PREFIX/applications/* /usr/share/applications</userinput></screen>
+
     <note>
       <para>
         TeX Live does not include the source for ConTeXt, only the items that
@@ -422,7 +413,13 @@ fmtutil-sys --all</userinput></screen>
     <title>Command Explanations</title>
 
     <para>
-      <command>-C</command>: creates config.cache, which saves significant
+      <parameter>CXX="g++ -std=gnu++17"</parameter>: the texlive build system
+      defaults to the C++11 standard for C++, but some system packages
+      require the C++17 standard. This switch allows using this standard.
+    </para>
+
+    <para>
+      <parameter>-C</parameter>: creates config.cache, which saves significant
       time in a parallel build.
     </para>
 
@@ -510,10 +507,13 @@ fmtutil-sys --all</userinput></screen>
              libtexlua53.so,
              libtexluajit.so
         </seg>
-        <seg>$TEXLIVE_PREFIX/bin,
+        <seg>$TEXLIVE_PREFIX/applications,
+             $TEXLIVE_PREFIX/bin,
              $TEXLIVE_PREFIX/include,
              $TEXLIVE_PREFIX/lib,
-             $TEXLIVE_PREFIX/texmf-dist
+             $TEXLIVE_PREFIX/texmf-dist,
+             $TEXLIVE_PREFIX/texmf-var, and
+             $TEXLIVE_PREFIX/tlpkg
         </seg>
       </seglistitem>
     </segmentedlist>
