@@ -10,9 +10,11 @@
 
   <!ENTITY biber-download-http "https://github.com/plk/biber/archive/v&biber-version;.tar.gz">
 -->
-  <!ENTITY biber-download-http "https://github.com/plk/biber/archive/v&biber-version;/biber-&biber-version;.tar.gz">
+  <!-- for biber-2.22, we need a tag, the release does not exist
+  <!ENTITY biber-download-http "https://github.com/plk/biber/archive/v&biber-version;/biber-&biber-version;.tar.gz"> -->
+  <!ENTITY biber-download-http "https://github.com/plk/biber/archive/refs/tags/v&biber-version;/biber-&biber-version;.tar.gz">
   <!ENTITY biber-download-ftp  " ">
-  <!ENTITY biber-md5sum        "abdbdb2aa0479e490d0d75eb8e35ad50">
+  <!ENTITY biber-md5sum        "a14ce888c04ab4047ff46490f8e00faf">
   <!ENTITY biber-size          "1.6 MB">
   <!-- Buildsize includes the installed biblatex, except that what matters is
     the difference from the files shipped by texlive, so usually the addition is
@@ -54,7 +56,7 @@
       <application>Perl</application>, with full Unicode support.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <!-- note for editors: FIXME please test this by using the latest
          version of the latex-test tarball from
@@ -128,13 +130,6 @@
         to use the system certificates, Mozilla::CA uses old certificates.
       </para>
 
-<!--  <para> ##commented as a reminder that sooner or later it will need a
-        newer version than our current or last but one release ##
-        This version of biber requires <application>perl-5.30</application>
-        or later.  If you are still using the 8.4 version of BLFS you may
-        wish to build the 2.13 version: see the 8.4 book noting that
-        biblatex-3.13 has been replaced by biblatex-3.13a upstream.
-      </para>-->
     </note>
 
     <!-- TexLive 2024 shipped biblatex-3.19.  Uncomment if a newer
@@ -174,6 +169,7 @@
       <xref linkend="perl-business-ismn"/>,
       <xref linkend="perl-business-issn"/>,
       <xref linkend="perl-class-accessor"/>,
+      <xref linkend="perl-config-autoconf"/>,
       <xref linkend="perl-data-compare"/>,
       <xref linkend="perl-data-dump"/>,
       <xref linkend="perl-data-uniqid"/>,
@@ -182,6 +178,7 @@
       <xref linkend="perl-encode-eucjpascii"/>,
       <xref linkend="perl-encode-hanextra"/>,
       <xref linkend="perl-encode-jis2k"/>,
+      <xref linkend="perl-extutils-libbuilder"/>,
       <xref linkend="perl-file-slurper"/>,
       <xref linkend="perl-io-string"/>,
       <!-- IPC::Cmd is a part of core perl -->
@@ -208,12 +205,13 @@
       <xref linkend="perl-text-roman"/>,
       <!-- Unicode-Collate usually needs to be latest when biber is released,
         core perl is usually older. To read the core version, look at
-        /usr/lib/perl5/5.xx.y/x86_64-linux-thread-multi/Unicode/Collate.pm -->
-      <xref linkend="perl-unicode-collate"/>,
+        /usr/lib/perl5/5.xx/core_perl/Unicode/Collate.pm
+         Up to date in core for perl-5.44
+      <xref linkend="perl-unicode-collate"/>-->
       <!-- Unicode::GCstring is part of Unicode::LineBreak -->
       <xref linkend="perl-unicode-linebreak"/>,
       <!-- Unicode::Normalize is part of core perl, found in
-        /usr/lib/perl5/5.xx.y/x86_64-linux-thread-multi/Unicode/Normalize.pm -->
+        /usr/lib/perl5/5.xx/core_perl/Unicode/Normalize.pm -->
       <!-- perl-xml-libxml is a dependency of perl-xml-libxml-simple -->
       <xref linkend="perl-xml-libxml-simple"/>,
       <xref linkend="perl-xml-libxslt"/>, and
@@ -228,8 +226,10 @@
 
     <bridgehead renderas="sect4">Recommended (required for the test suite)</bridgehead>
     <para role="recommended">
-      <xref linkend="perl-file-which"/> and
-      <xref linkend="perl-test-differences"/>
+      <xref linkend="perl-file-which"/>,
+      <xref linkend="perl-test-differences"/>, and
+      <!-- Build.PL lists Test::More, which is part of -->
+      <xref linkend="perl-test-simple"/>
     </para>
 
     <note>
@@ -319,7 +319,7 @@ texhash &amp;&amp;
       <seglistitem>
         <seg>biber</seg>
         <seg>None</seg>
-        <seg>/usr/lib/perl5/site_perl/5.*{,/&lt;arch&gt;-linux/auto}/Biber</seg>
+        <seg>/usr/lib/perl5/&lfs-perl-version;/site_perl/Biber</seg>
       </seglistitem>
     </segmentedlist>
 
