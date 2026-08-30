@@ -6,12 +6,12 @@
 
   <!ENTITY asymptote-download-http "&sourceforge-dl;/asymptote/asymptote-&asymptote-version;.src.tgz">
   <!ENTITY asymptote-download-ftp  " ">
-  <!ENTITY asymptote-md5sum        "b89cc85a4621fa4afedcb5e988c625c7">
-  <!ENTITY asymptote-size          "25 MB">
+  <!ENTITY asymptote-md5sum        "158921966b8be1049e933b5154774c66">
+  <!ENTITY asymptote-size          "27 MB">
   <!-- for asymptote-2.88 on top of TL2024, 75 MB for programs,
        the docs overwrite texmf-dist (5.2 MB) -->
-  <!ENTITY asymptote-buildsize     "335 MB (62 MB installed after overwriting files in $TEXLIVE_PREFIX/texmf-dist/, with all the dependencies which are in BLFS)">
-  <!ENTITY asymptote-time          "0.8 SBU (using parallelism=4)">
+  <!ENTITY asymptote-buildsize     "338 MB (55 MB installed after overwriting files in $TEXLIVE_PREFIX/texmf-dist/, with all the dependencies which are in BLFS)">
+  <!ENTITY asymptote-time          "0.9 SBU (using parallelism=4)">
 ]>
 
 <sect1 id="asymptote" xreflabel="asymptote-&asymptote-version;">
@@ -35,7 +35,7 @@
       and (using <application>dvisvgm</application>) SVG output.
     </para>
 
-    &lfs130_checked;
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -109,6 +109,12 @@
       <xref linkend="fftw"/>,
       <xref linkend="gsl"/>,
       <xref linkend="libsigsegv"/>,
+      <!-- I have not been able to build this against vulkan, although
+      vulkan support has been added in recent versions. It seems to require
+      glfw, and weird libraries like "-lMachineIndependent -lOSDependent" etc.
+      Disabling for 13.1 release, because I am in a hurry.
+      Pierre August 30, 2026-->
+      <xref linkend="vulkan"/>,
       <ulink url="https://github.com/Tencent/rapidjson/releases/">rapidjson</ulink>
       to use
       <ulink url="https://microsoft.github.io/language-server-protocol/implementors/tools/">LSP</ulink>
@@ -160,6 +166,12 @@
 <screen><userinput>patch -Np1 -i ../asymptote-&asymptote-version;-build_fix-1.patch</userinput></screen>-->
 
     <para>
+      First, fix a build error when both GL and Vulkan are disabled:
+    </para>
+
+<screen><userinput>sed -i "/SHIMLIB.*asydir/d" Makefile.in</userinput></screen>
+
+    <para>
       Install <application>asymptote</application> by running the following
       commands:
     </para>
@@ -173,7 +185,8 @@
             --libdir=$TEXLIVE_PREFIX/texmf-dist               \
             --mandir=$TEXLIVE_PREFIX/texmf-dist/doc/man       \
             --disable-lsp                                     \
-            --enable-gc=system                                \
+            --disable-vulkan                                  \
+            --disable-gl                                      \
             --with-latex=$TEXLIVE_PREFIX/texmf-dist/tex/latex \
             --with-context=$TEXLIVE_PREFIX/texmf-dist/tex/context/third &amp;&amp;
 
@@ -210,10 +223,24 @@ make</userinput></screen>
        does not build unless boost and rapidjson have been installed.
      </para>
 
+     <para>
+       <parameter>--disable-vulkan --disable-gl</parameter>: Building Vulkan
+       or GL backends require the GLFW package, and several other external
+       libraries not in BLFS.
+     </para>
+
+     <para>
+       <parameter>--disable-lsp</parameter>: The Language Server Protocol is
+       enabled by default, with several third-party sources included, but it
+       does not build unless boost and rapidjson have been installed.
+     </para>
+
     <para>
-      <parameter>--enable-gc=system</parameter>: this ensures that the system
-      version of <filename class="libraryfile">libgc.so</filename> will be used
-      instead of the version shipped with this package.
+      <option>--disable-gc</option>: there does not seem to be a way to build
+      asymptote against the system
+      <filename class="libraryfile">libgc.so</filename>. Garbage collection
+      can be either disabled with this option, or built using the
+      the version shipped with this package.
     </para>
 
     <para>
