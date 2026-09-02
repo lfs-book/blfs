@@ -73,6 +73,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="git"/>,
+      <xref linkend="llvm"/> (with Clang),
       <xref linkend="sphinx"/> and
       <xref linkend="sphinx_rtd_theme"/> (for documentation),
       <ulink url="https://www.docker.com/">docker</ulink>,
@@ -93,7 +94,7 @@
       commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr --disable-static &amp;&amp;
+<screen><userinput>./configure --prefix=/usr --disable-static --without-libclang &amp;&amp;
 make</userinput></screen>
 
     <para>
@@ -112,6 +113,18 @@ make</userinput></screen>
     <title>Command Explanations</title>
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="../../xincludes/static-libraries.xml"/>
+
+    <!-- libfyaml.pc has Clang libraries in Libs instead of Libs.private,
+         so the dependency is "infective."  When libclang really starts to
+         provides a functionality we may remove this option and reassess the
+         issue.  -->
+    <para>
+      <parameter>--without-libclang</parameter>: This option disables the
+      use of the Clang library.  As at now the Clang library does not really
+      provide any useful functionality for this package, and enabling it
+      would cause all packages using libfyaml to be unnecessarily linked
+      against the Clang library.
+    </para>
   </sect2>
 
   <sect2 role="content">
