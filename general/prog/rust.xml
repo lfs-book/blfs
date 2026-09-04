@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "c6fc3febcd3b1235cf4f00c3e05559b3">
-  <!ENTITY rust-size          "232 MB">
+  <!ENTITY rust-md5sum        "482f80584e838c0e20b0614673373048">
+  <!ENTITY rust-size          "234 MB">
   <!ENTITY rust-buildsize     "10 GB (324 MB installed); add 11 GB if running the tests">
   <!ENTITY rust-time          "10 SBU (including download time; add 15 SBU for tests, both using parallelism=8)">
 ]>
@@ -136,6 +136,16 @@
       </listitem>
     </itemizedlist>
 
+    <bridgehead renderas="sect3">Additional Downloads</bridgehead>
+    <itemizedlist spacing='compact'>
+      <listitem>
+        <para>
+          Required patch: <ulink
+          url="&patch-root;/rustc-&rust-version;-llvm_23-1.patch"/>
+        </para>
+      </listitem>
+    </itemizedlist>
+
     <bridgehead renderas="sect3">Rust Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Required</bridgehead>
@@ -226,7 +236,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py that the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn users to review that information.
-change-id = 154587
+change-id = 158169
 
 [llvm]
 # When using the system installed copy of LLVM, prefer the shared libraries
@@ -270,14 +280,12 @@ llvm-config = "/usr/bin/llvm-config"
 llvm-config = "/usr/bin/llvm-config"</literal>
 EOF</userinput></screen>
 
-<!-- retain here in case we need a patch
     <para>
-      If running the test suite, apply a patch to make it compatible with
-      GCC-15 or newer:
+      Apply a patch to make this package compatible with LLVM 23 or newer:
     </para>
 
-<screen><userinput remap="pre">patch -Np1 -i ../rustc-&rust-version;-testsuite_fix-1.patch</userinput></screen>
--->
+<screen><userinput remap="pre">patch -Np1 -i ../rustc-&rust-version;-llvm_23-1.patch</userinput></screen>
+
     <para>
       Compile <application>Rust</application> by running the following
       commands:
@@ -315,10 +323,6 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
 ./x.py test --no-fail-fast | tee rustc-testlog</userinput></screen>
 
     <para>
-      In the <filename class='directory'>rustdoc-ui</filename> tests,
-      the test named <filename>ice-bug-report-url.rs</filename> is known
-      to fail for unknown reason.
-
       In the <filename class='directory'>run-make</filename> tests,
       <!-- https://github.com/rust-lang/rust/issues/155606 -->
       the test named <filename>remap-path-prefix-std</filename> is known
@@ -399,7 +403,7 @@ install -vm644 README.md                                \
 
 install -vdm755 /usr/share/zsh/site-functions      &amp;&amp;
 ln -sfv /opt/rustc/share/zsh/site-functions/_cargo \
-        /usr/share/zsh/site-functions
+        /usr/share/zsh/site-functions              &amp;&amp;
 
 mv -v /etc/bash_completion.d/cargo /usr/share/bash-completion/completions</userinput></screen>
 
