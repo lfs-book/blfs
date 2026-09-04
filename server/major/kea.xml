@@ -6,10 +6,10 @@
 
   <!ENTITY kea-download-http "https://downloads.isc.org/isc/kea/&kea-dhcp-version;/kea-&kea-dhcp-version;.tar.xz">
   <!ENTITY kea-download-ftp  " ">
-  <!ENTITY kea-md5sum        "a673e95637b708b3b1926c696cdf168b">
-  <!ENTITY kea-size          "6.3 MB">
-  <!ENTITY kea-buildsize     "231 MB (47 MB installed; add 425 MB for tests)">
-  <!ENTITY kea-time          "6.4 SBU (with parallelism=4; add 17 SBU for tests)">
+  <!ENTITY kea-md5sum        "84f88fb0a9897e993ac7d414e1efb2bc">
+  <!ENTITY kea-size          "6.5 MB">
+  <!ENTITY kea-buildsize     "254 MB (49 MB installed; add 535 MB for tests)">
+  <!ENTITY kea-time          "3.8 SBU (with parallelism=4; add 17 SBU for tests)">
   <!ENTITY kea-arm-vers      "&kea-dhcp-version;">
 ]>
 
@@ -31,7 +31,18 @@
       server which went out of support in December 2022.
     </para>
 
-    &lfs131_built;
+    <important>
+      <para>
+        This packages builds on a current LFS system but it has 
+        <emphasis role='bold'>not</emphasis> been tested by the LFS
+        editors.  To properly test it, the package has to be 
+        installed on a server in a network where it is the only dhcp 
+        server.  Then another system on that independent network must 
+        request a DHCP IP adddress from that server.
+      </para>
+    </important>
+
+    &lfs131_checked;
 
     <bridgehead renderas="sect3">Package Information</bridgehead>
     <itemizedlist spacing="compact">
@@ -125,7 +136,7 @@
 
   <sect2 role="installation">
     <title>Installation of ISC Kea DHCP Server</title>
-
+<!--
     <para>
       First, apply a few fixes required for boost-&boost-version;:
     </para>
@@ -137,9 +148,9 @@
 sed -e "/lexical_cast.hpp/a #include &lt;boost/static_assert.hpp&gt;"  \
     -i src/lib/log/logger_level_impl.cc                          \
        src/lib/dns/rdataclass.cc</userinput></screen>
-
+-->
     <para>
-      Also apply a fix for building with OpenSSL-4:
+      First, apply a fix for building with OpenSSL-4:
     </para>
 
 <screen><userinput>sed -e 's/^[ ]*\(::X509_NAME\)/const \1/' \
@@ -183,8 +194,8 @@ ninja</userinput></screen>
       it's configuration file:
     </para>
 
-<screen role="root"><userinput>sed -e "s:\${prefix}/::" -i /usr/sbin/keactrl             &amp;&amp;
-sed -e "s:\${prefix}//etc:/etc:" -i /etc/kea/keactrl.conf</userinput></screen>
+<screen role="root"><userinput>sed -i "s:\${prefix}//etc:/etc:" /etc/kea/keactrl.conf &amp;&amp;
+sed -i "s:\${prefix}/::"         /usr/sbin/keactrl</userinput></screen>
 
     <para>
       Create some directories and fix their permission settings as the
@@ -703,13 +714,13 @@ EOF</userinput></screen>
         <seg>
           keactrl,
           kea-admin,
-          kea-ctrl-agent,
           kea-dhcp4,
           kea-dhcp6,
           kea-dhcp-ddns,
           kea-lfc,
-          kea-msg-compiler, and
-          kea-shell
+          kea-msg-compiler, 
+          kea-shell, and
+          perfdhcp
         </seg>
         <seg>
           libkea-asiodns.so,
