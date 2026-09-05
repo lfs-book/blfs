@@ -177,56 +177,50 @@ sed '/name = "encoding_rs"/,/^$/{/source/d;/checksum/d}' -i Cargo.lock</userinpu
 -->
 
     <para>
-      Install <application>SpiderMonkey</application> by running the following
-      commands:
+      The configuration of <application>SpiderMonkey</application> is
+      accomplished by creating a <filename>mozconfig</filename> file containing
+      the desired configuration options. A default
+      <filename>mozconfig</filename> is created below. To see the entire list
+      of available configuration options (and a brief description of each),
+      issue <command>./mach configure -- --help | less</command>. Create the file with
+      the following command:
+    </para>
+
+<screen><userinput>cat &gt; mozconfig &lt;&lt; "EOF"
+<literal>ac_add_options --prefix=/usr
+ac_add_options --enable-project=js
+ac_add_options --disable-debug-symbols
+ac_add_options --disable-jemalloc
+ac_add_options --enable-readline
+ac_add_options --enable-rust-simd
+ac_add_options --with-intl-api
+ac_add_options --with-system-icu
+ac_add_options --with-system-zlib</literal>
+EOF</userinput></screen>
+
+    <para>
+      Now invoke the Python <command>mach</command> script to compile
+      <application>SpiderMonkey</application>:
     </para>
 
     <note>
       <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-         href="../../xincludes/mozshm.xml"/>
-      <para>
-        Compiling the C++ code respects $MAKEFLAGS and defaults to 'j1',
-        the rust code will use all processors.
-      </para>
+       href="../../xincludes/mozshm.xml"/>
     </note>
 
-<screen><userinput>mkdir obj &amp;&amp;
-cd    obj &amp;&amp;
-
-MOZBUILD_STATE_PATH=${PWD}/mozbuild          \
-../js/src/configure --prefix=/usr            \
-                    --disable-debug-symbols  \
-                    --disable-jemalloc       \
-                    --enable-readline        \
-                    --enable-rust-simd       \
-                    --with-intl-api          \
-                    --with-system-icu        \
-                    --with-system-zlib       &amp;&amp;
-make</userinput></screen>
-
-<!-- No longer needed with 128.8.0
-    <para>
-      If you wish to run the test suite, adapt it to be compatible with Python
-      3.13.0 or newer:
-    </para>
-
-    <screen remap='test'><userinput>sed 's/pipes/shlex/' -i ../js/src/tests/lib/results.py</userinput></screen>
--->
+<screen><userinput>export MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none &amp;&amp;
+export MOZBUILD_STATE_PATH=$(pwd)/mozbuild          &amp;&amp;
+./mach build</userinput></screen>
 
     <para>
       To run the SpiderMonkey test suite, issue:
     </para>
 
-    <screen remap='test'><userinput>make -C js/src check-jstests \
-     JSTESTS_EXTRA_ARGS="--timeout 300 --wpt=disabled" | tee jstest.log</userinput></screen>
+    <screen remap='test'><userinput>./mach jstests</userinput></screen>
 
     <para>
       Because we are building with system ICU, a little over 100 tests, depending on ICU version,
       (out of a total of more than 50,000) are known to fail.
-      The list of failed tests can be extracted via
-      <command>grep 'UNEXPECTED-FAIL' jstest.log</command>.
-      Pass the <option>-c</option> option to <command>grep</command> if
-      you only want the total number of failed tests.
     </para>
 
     <para>
@@ -241,7 +235,7 @@ make</userinput></screen>
       To run the JIT test suite, issue the following command:
     </para>
 
-    <screen remap='test'><userinput>make -C js/src check-jit-test</userinput></screen>
+    <screen remap='test'><userinput>./mach jit-test</userinput></screen>
 
     <para>
       Like the SpiderMonkey test suite, the number of test jobs is same as
@@ -251,11 +245,11 @@ make</userinput></screen>
       CPU have multiple cores.  Running the JIT test suite without
       enough memory may invoke the kernel OOM killer and cause stability
       issues.  If you don't have enough system memory available, append
-      <option>JITTEST_EXTRA_ARGS=-j<replaceable>N</replaceable></option> to
+      <option>-j<replaceable>N</replaceable></option> to
       the command and replace <replaceable>N</replaceable> with the number
       of test jobs your available system memory can hold.  For example, if
       you have 15 GB system memory available and 4 CPU cores,
-      append <option>JITTEST_EXTRA_ARGS=-j3</option> to run the
+      append <option>-j3</option> to run the
       test suite with 3 parallel jobs so the memory usage won't exceed 12 GB.
       <!-- TL;DR: DO NOT REMOVE MEMORY USAGE NOTE W/O MY CONFIRMATION!
 
@@ -283,6 +277,7 @@ make</userinput></screen>
       -->
     </para>
 
+
     <caution>
       <para>
         An issue in the installation process causes any running program which
@@ -298,11 +293,20 @@ make</userinput></screen>
     </caution>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Install <application>SpiderMonkey</application> by running the following
+      commands as the &root; user:
     </para>
 
-<screen role="root"><userinput>make install &amp;&amp;
-rm -v /usr/lib/libjs_static.ajs &amp;&amp;
+<screen role="root"><userinput>MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE=none ./mach install</userinput></screen>
+<!-- devs: For DESTDIR install, prepend DESTDIR=<dest> to the above -->
+
+    <para>
+      Still as the &root; user, remove a useless and very large static
+      library, and remove a buggy output of the
+      <command>js&spidermonkey-major;-config</command> script:
+    </para>
+
+<screen role="root"><userinput>rm -v /usr/lib/libjs_static.ajs &amp;&amp;
 sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js&spidermonkey-major;-config</userinput></screen>
 
     <!-- https://bugzilla.mozilla.org/show_bug.cgi?id=1973994 -->
@@ -312,6 +316,12 @@ sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js&spidermonkey-major;-config</userinput></sc
 
 <screen role='root'><userinput>sed '$i#define XP_UNIX' -i /usr/include/mozjs-140/js-config.h</userinput></screen>
 
+    <para>
+      Empty the environment variables which were set above:
+    </para>
+
+<screen><userinput>unset MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE &amp;&amp;
+unset MOZBUILD_STATE_PATH</userinput></screen>
   </sect2>
 
   <sect2 role="commands">
@@ -362,42 +372,26 @@ sed -i '/@NSPR_CFLAGS@/d' /usr/bin/js&spidermonkey-major;-config</userinput></sc
     </para>
 
     <para>
-      <command>rm -v /usr/lib/libjs_static.ajs</command>: Remove a large
-      static library which is not used by any BLFS package.
-    </para>
-
-    <para>
-      <command>sed -i '/@NSPR_CFLAGS@/d'
-      /usr/bin/js&spidermonkey-major;-config</command>:
-      Prevent <command>js&spidermonkey-major;-config</command> from using
-      buggy CFLAGS.
-    </para>
-
-    <para>
-      <option><envar>CC=gcc CXX=g++</envar></option>: BLFS used to
-      prefer to use gcc and g++ instead of upstream's defaults of the
+      <command>export CC=gcc</command>
+      and <command>export CXX=g++</command>: BLFS
+      use to prefer to use gcc and g++ instead of upstream's defaults of the
       <application>clang</application> programs. With the release of
       gcc-12 the build takes longer with gcc and g++, primarily because
-      of extra warnings, and is bigger. Pass these environment variables
-      to the configure script if you wish to continue to use gcc, g++
-      (by exporting them and unset them after the installation, or simply
-      prepending them before the
-      <command>../js/src/configure</command> command).  If you are
-      building on a 32-bit system, also see below.
+      of extra warnings, and is bigger.  Put these two commands into the
+      <filename>mozconfig</filename> file if you wish to continue to use gcc
+      and g++.  If you are building on a 32-bit system, also see below.
     </para>
 
     <para>
-      <option><envar>CXXFLAGS="-msse2 -mfpmath=sse"</envar></option>:
+      <command>export CXXFLAGS="$CXXFLAGS -msse2 -mfpmath=sse"</command>:
       Use SSE2 instead of 387 for double-precision floating-point
-      operations.  It's needed by GCC to satisfy the expectations of
-      upstream (Mozilla) developers with floating-point arithmetic.
-      Use it if you are building this package on a 32-bit system with
-      GCC (if Clang is not installed or GCC is explicitly specified).
-      Note that this will cause SpiderMonkey to crash on a processor without
-      SSE2 capability.  If you are running the system on such an old
-      processor, Clang is strictly needed.  This setting is not needed on
-      64-bit systems because all 64-bit x86 processors support SSE2 and the
-      64-bit compilers (both Clang and GCC) use SSE2 by default.
+      operations.  It's needed to satisfy the expectations of
+      upstream (Mozilla) developers with floating-point arithmetic (meaning,
+      a 32-bit processor lacking SSE2 is not capable to run this package).
+      Add it to <filename>mozconfig</filename> if you are building this
+      package on a 32-bit system with GCC.  This setting is not needed with
+      Clang, neither with GCC on a 64-bit system because those
+      configurations have SSE2 enabled by default.
     </para>
   </sect2>
 
