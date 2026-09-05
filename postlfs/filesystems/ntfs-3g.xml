@@ -28,15 +28,32 @@
 
     <note>
       <para id='ntfs3-kernel'>
-        A new read-write driver for NTFS, called NTFS3, has been added
-        into the Linux kernel since the 5.15 release. The performance of NTFS3
-        is much better than ntfs-3g. To enable NTFS3, enable the following
-        options in the kernel configuration and recompile the kernel if
-        necessary:
+        As at Linux 7.1 there are two competing in-kernel NTFS read-write
+        drivers, named NTFS and NTFS3.  Their performance is much better
+        than ntfs-3g.  As some applications invoke <command>mount</command>
+        with <option>-t ntfs</option> but others may use
+        <option>-t ntfs3</option> instead (the latter is also the default if
+        no <option>-t</option> options is passed), to make both options
+        work, enable both drivers:
       </para>
 
     <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
       href="ntfs3-kernel.xml"/>
+
+      <para>
+        If you has select NTFS3 as a part of the main kernel image
+        (<literal>*</literal> instead of <literal>M</literal>), enabling
+        NTFS (no matter as a module or as a part of the main kernel image)
+        will immediately demote NTFS3 to a module.
+      </para>
+
+      <para>
+        Due to <ulink url='https://git.kernel.org/torvalds/c/35e4b60792cd'>a
+        bug in the kernel configuration system</ulink>, as at Linux 7.1
+        NTFS3 is rendered in the submenu of NTFS (different from the
+        demonstration above).  Please note that it does not mean NTFS3 was
+        an extension of NTFS: they are two distinct drivers.
+      </para>
 
     <indexterm zone="ntfs-3g ntfs3-kernel">
       <primary sortas="d-ntfs3">NTFS read-write support in kernel</primary>
