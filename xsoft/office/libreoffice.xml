@@ -7,24 +7,24 @@
   <!ENTITY libreoffice-dl "https://download.documentfoundation.org/libreoffice/src/&libreoffice-version;">
 
   <!ENTITY libreoffice-core-download-http "&libreoffice-dl;/libreoffice-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-core-md5sum        "cde5452693205386a34cbf3ce561956b">
-  <!ENTITY libreoffice-core-size          "279 MB">
+  <!ENTITY libreoffice-core-md5sum        "6e294bbca789719e01036be6233d18a3">
+  <!ENTITY libreoffice-core-size          "289 MB">
 
   <!ENTITY libreoffice-dict-download-http "&libreoffice-dl;/libreoffice-dictionaries-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-dict-md5sum        "4c9b61b7eb79d4305632a0c2906b44f3">
+  <!ENTITY libreoffice-dict-md5sum        "d83a4a7ef602cd499848e7107871cf35">
   <!ENTITY libreoffice-dict-size          "60 MB">
 
   <!ENTITY libreoffice-help-download-http "&libreoffice-dl;/libreoffice-help-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-help-md5sum        "9fcdb2965e70765743b27ced12cb0908">
-  <!ENTITY libreoffice-help-size          "56 MB">
+  <!ENTITY libreoffice-help-md5sum        "879c7d60c247cdc66b5d5977d3b255e0">
+  <!ENTITY libreoffice-help-size          "52 MB">
 
   <!ENTITY libreoffice-translations-download-http "&libreoffice-dl;/libreoffice-translations-&libreoffice-dlversion;.tar.xz">
-  <!ENTITY libreoffice-translations-md5sum "1bf538dd2052deafa73882fc0494dc5e">
-  <!ENTITY libreoffice-translations-size   "225 MB">
+  <!ENTITY libreoffice-translations-md5sum "98982f96f556bfe3011c1cb19c7c20db">
+  <!ENTITY libreoffice-translations-size   "226 MB">
 
   <!-- full size remeasured for 7.0.0.3 -->
 
-  <!ENTITY libreoffice-buildsize  "7.8 GB including the additional files if downloaded during the build (751 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
+  <!ENTITY libreoffice-buildsize  "7.6 GB including the additional files if downloaded during the build (736 MB installed). Installing the whole set of languages requires more than 25 GB (around 3 GB installed)">
 
  <!-- Editors: many updates to poppler will break LO using system poppler until
       somebody is able to provide a patch or sed.  In these cases, please mark
@@ -58,7 +58,7 @@
 
        For 7.5.4.2, I increased the parallelism to 8.  -bdubbs
   -->
-  <!ENTITY libreoffice-time "25 SBU with parallelism=8 (will vary due to download time)">
+  <!ENTITY libreoffice-time "21 SBU with parallelism=8 (will vary due to download time)">
 
 ]>
 
@@ -331,12 +331,11 @@
 <screen><userinput remap="pre">patch -Np1 -i ../libreoffice-&libreoffice-dlversion;-poppler_26.06-1.patch</userinput></screen>
 -->
     <para>
-      First, fix a bug with linking to zlib,
-      fix a bug which would cause an install failure, and
-      prevent compression of man pages:
+      First, fix a bug which would cause an install failure 
+      and prevent compression of man pages:
     </para>
 
-<screen><userinput remap="pre">sed -i '/icuuc \\/a zlib\\'           writerperfect/Library_wpftdraw.mk &amp;&amp;
+<screen><userinput remap="pre">
 sed -i "/distro-install-file-lists/d" Makefile.in                       &amp;&amp;
 sed -e "/gzip -f/d"   \
     -e "s|.1.gz|.1|g" \
