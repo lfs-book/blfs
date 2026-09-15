@@ -6,10 +6,10 @@
 
   <!ENTITY gtk4-download-http "&gnome-download-http;/gtk/&gtk4-minor;/gtk-&gtk4-version;.tar.xz">
   <!ENTITY gtk4-download-ftp  " ">
-  <!ENTITY gtk4-md5sum        "5428262efe87473d802a83421eee4218">
+  <!ENTITY gtk4-md5sum        "096b120180814d56c5ae82a8aec0b1f0">
   <!ENTITY gtk4-size          "17 MB">
-  <!ENTITY gtk4-buildsize     "1.5 GB (with docs and tests)">
-  <!ENTITY gtk4-time          "1.5 SBU (using parallelism=4; with docs; add 2.1 SBU for tests)">
+  <!ENTITY gtk4-buildsize     "1.2 GB (with docs)">
+  <!ENTITY gtk4-time          "1.7 SBU (using parallelism=4; with docs)">
 ]>
 
 <sect1 id="gtk4" xreflabel="GTK-&gtk4-version;">
@@ -185,10 +185,16 @@ meson configure -D documentation=true                            &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      To run the tests, issue:
+      The BLFS editors do not recommend running the tests. The results are 
+      highly dependent on installed drivers and hardware compared to what the 
+      upstream developers have. Out of over 9000 tests the number for failures 
+      can range from 50 to over 5000. To test the operation of the package,
+      the <command>gtk4-demo</command> program is recommended instead.
     </para>
 
-    <screen remap='test'><userinput>env -u{GALLIUM_DRIVER,MESA_LOADER_DRIVER_OVERRIDE}          \
+    <para>To run the tests anyway, issue:</para>
+
+    <screen role='nodump'><userinput>env -u{GALLIUM_DRIVER,MESA_LOADER_DRIVER_OVERRIDE}          \
     LIBGL_ALWAYS_SOFTWARE=1 VK_LOADER_DRIVERS_SELECT='lvp*' \
     dbus-run-session meson test --setup x11                 \
                                 --no-suite=headless</userinput></screen>
@@ -200,7 +206,7 @@ ninja</userinput></screen>
       Many tests will fail if <filename>~/.config/gtk-4.0/settings.ini</filename> 
       exists and the gtk-modules line is not commented out.
 
-      Several other tests may fail for unknown reasons.
+      <!--Several other tests may fail for unknown reasons.-->
       
       On systems with NVIDIA graphics cards, the tests may take significantly
       longer.
