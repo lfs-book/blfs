@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY gnome-user-docs-download-http
-           "&gnome-download-http;/gnome-user-docs/&gnome-50;/gnome-user-docs-&gnome-user-docs-version;.tar.xz">
+           "&gnome-download-http;/gnome-user-docs/&gnome-51;/gnome-user-docs-&gnome-user-docs-version;.tar.xz">
   <!ENTITY gnome-user-docs-download-ftp  " ">
-  <!ENTITY gnome-user-docs-md5sum        "d629c3a0542d3a7403259e6a695cc477">
+  <!ENTITY gnome-user-docs-md5sum        "c832030638a651f73d97501155a0956b">
   <!ENTITY gnome-user-docs-size          "16 MB">
-  <!ENTITY gnome-user-docs-buildsize     "285 MB">
-  <!ENTITY gnome-user-docs-time          "0.3 SBU (using parallelism=4)">
+  <!ENTITY gnome-user-docs-buildsize     "208 MB">
+  <!ENTITY gnome-user-docs-time          "0.3 SBU">
 ]>
 
 <sect1 id="gnome-user-docs" xreflabel="gnome-user-docs-&gnome-user-docs-version;">
@@ -75,6 +75,11 @@
       <xref linkend="libxml2"/>
     </para>
 
+    <bridgehead renderas="sect4">Optional</bridgehead>
+    <para role="optional">
+      <ulink url="https://gitlab.gnome.org/GNOME/yelp-tools"/> (for tests)
+    </para>
+
   </sect2>
 
   <sect2 role="installation">
@@ -85,18 +90,21 @@
       following commands:
     </para>
 
-<screen><userinput>./configure --prefix=/usr &amp;&amp;
-make</userinput></screen>
+<screen><userinput>mkdir build &amp;&amp;
+cd    build &amp;&amp;
+
+meson setup  --prefix=/usr -D tests=false .. &amp;&amp;
+ninja</userinput></screen>
 
     <para>
-      This package does not come with a test suite.
+      Tests for this package require the optional yelp-tools package.
     </para>
 
     <para>
-      Now, as the <systemitem class="username">root</systemitem> user:
+      Now, as the &root; user:
     </para>
 
-<screen role="root"><userinput>make install</userinput></screen>
+<screen role="root"><userinput>ninja install</userinput></screen>
 
   </sect2>
 
