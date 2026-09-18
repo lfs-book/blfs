@@ -5,12 +5,12 @@
   %general-entities;
 
   <!ENTITY gnome-system-monitor-download-http
-           "&gnome-download-http;/gnome-system-monitor/&gnome-50;/gnome-system-monitor-&gnome-system-monitor-version;.tar.xz">
+           "&gnome-download-http;/gnome-system-monitor/&gnome-51;/gnome-system-monitor-&gnome-system-monitor-version;.tar.xz">
   <!ENTITY gnome-system-monitor-download-ftp  " ">
-  <!ENTITY gnome-system-monitor-md5sum        "24c73cd65f22e53bc82bef32a79a3ce3">
+  <!ENTITY gnome-system-monitor-md5sum        "17dc50d9794dd21417c67621ba422103">
   <!ENTITY gnome-system-monitor-size          "1.1 MB">
-  <!ENTITY gnome-system-monitor-buildsize     "24 MB">
-  <!ENTITY gnome-system-monitor-time          "0.1 SBU (with parallelism=4)">
+  <!ENTITY gnome-system-monitor-buildsize     "25 MB">
+  <!ENTITY gnome-system-monitor-time          "0.3 SBU (with tests)">
 ]>
 
 <sect1 id="gnome-system-monitor" xreflabel="gnome-system-monitor-&gnome-system-monitor-version;">
@@ -83,8 +83,7 @@
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
       <xref linkend="appstream-glib"/>,
-      <xref linkend="desktop-file-utils"/>,
-      <ulink url="https://github.com/catchorg/Catch2">Catch2</ulink>, and
+      <xref linkend="desktop-file-utils"/>, and
       <ulink url="https://github.com/uncrustify/uncrustify">uncrustify</ulink>
     </para>
 
@@ -92,7 +91,7 @@
 
   <sect2 role="installation">
     <title>Installation of GNOME System Monitor</title>
-
+<!--
     <para>
       First, remove a hard dependency on Catch2, which is only used if you
       are running the unit tests:
@@ -100,7 +99,7 @@
 
 <screen><userinput remap="pre">find . -name meson.build | xargs sed -i -e '/catch2/d' &amp;&amp;
 sed -i '141,151d' src/meson.build</userinput></screen>
-
+-->
     <para>
       Install <application>GNOME System Monitor</application> by running
       the following commands:
@@ -122,9 +121,7 @@ meson setup --prefix=/usr --buildtype=release .. &amp;&amp;
 ninja</userinput></screen>
 
     <para>
-      This package comes with a test suite, but it requires the external
-      Catch2 dependency. If you have Catch2 installed, you can omit the seds
-      above and then run the tests with <command>ninja test</command>.
+      To test the package, run: <command>ninja test</command>.
     </para>
 
     <para>
