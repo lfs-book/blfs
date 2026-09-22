@@ -190,19 +190,6 @@ by systemd-user.-->
       dependencies.
     </para>
 
-<!-- This option was removed in 46
-    <para revision="sysv">
-      <parameter>-D systemd_journal=false</parameter>
-      and <parameter>-D systemduserunitdir=/tmp</parameter>: Allow building
-      with elogind support on a SysV based system.
-    </para>
--->
-
-    <para>
-      <option>-D x11=true</option>: This option enables support for X11
-      sessions. X11 support is deprecated and will be removed in GNOME 50.
-    </para>
-
   </sect2>
 
   <sect2 role="starting" revision="systemd">
@@ -226,34 +213,35 @@ by systemd-user.-->
       support on a system that has the proprietary NVIDIA driver installed,
       since GDM will not show the Wayland session type on such a system.-->
     </para>
-    <!-- we don't build with x11 support. So there is no point in starting
-         with X11
-    <warning>
-      <para>
-        X11 support is deprecated and will be removed in GNOME 50. Please use
-        the Wayland session wherever possible.
-      </para>
-    </warning>
 
-    <para>
-      To start <application>GNOME</application> using
-      <xref role="nodep" linkend="xinit"/>, run the following commands:
-    </para>
-
-<screen role="nodump"><userinput>cat &gt; ~/.xinitrc &lt;&lt; "EOF"
-<literal>dbus-run-session gnome-session</literal>
-EOF
-
-startx</userinput></screen>
--->
     <para>
       To start <application>GNOME</application> without a display manager
       you need to determine your session ID, using <command>loginctl</command>.
       Once it is done, issue (we suppose the session ID is 1):
     </para>
 
-    <screen role="nodump"><userinput>systemctl --user set-environment XDG_SESSION_TYPE=wayland XDG_SESSION_ID=<replaceable>1</replaceable> &amp;&amp;
+    <screen role="nodump"><userinput>systemctl --user set-environment    \
+          XDG_CURRENT_DESKTOP=GNOME \
+          XDG_SESSION_DESKTOP=gnome \
+          XDG_SESSION_TYPE=wayland  \
+          XDG_SESSION_ID=<replaceable>1</replaceable> &amp;&amp;
 systemctl --user start gnome-session@gnome.target</userinput></screen>
+
+    <note>
+      <para>
+        The above commands do start <application>GNOME</application> from the
+        command line, but do not enable complete functionality. For instance
+        <application>GNOME</application>'s automatic screen-blank/idle timeout
+        doesn't work because of a complex interaction between the command-line
+        logind session and the component responsible for both screen locking
+        and idle-triggered blanking.  
+      </para>
+
+      <para>
+        For full <application>GNOME</application> functionality, you must
+        start it from a display manager.
+      </para>
+    </note>
 
   </sect2>
 
