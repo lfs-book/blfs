@@ -125,6 +125,34 @@ ninja</userinput></screen>
 default=wlr</literal>
 EOF</userinput></screen>
 
+    <note>
+      <para>
+        If <application>xdg-desktop-portal-wlr</application> is installed
+        and <application>Xfce</application> is run under X11, the
+        <filename>xfce-portals.conf</filename> file in
+        <filename class="directory">/usr/share/xdg-desktop-portal</filename>
+        tells <application>xdg-desktop-portal</application> to try the
+        <literal>wlr</literal> backend first for screen casting. The
+        <literal>wlr</literal> backend's user service is skipped when
+        <envar>WAYLAND_DISPLAY</envar> is not set, but the portal is not
+        told about it and waits 25 seconds for a D-Bus timeout every time
+        it starts. Applications that query the portal stall for the same
+        amount of time. To avoid this, override the setting for your user:
+      </para>
+
+<screen><userinput>mkdir -pv ~/.config/xdg-desktop-portal &amp;&amp;
+sed 's/^org.*.ScreenCast=.*/org.freedesktop.impl.portal.ScreenCast=none/' \
+    /usr/share/xdg-desktop-portal/xfce-portals.conf \
+    &gt; ~/.config/xdg-desktop-portal/xfce-portals.conf</userinput></screen>
+
+      <para>
+        This disables the screen cast portal in all
+        <application>Xfce</application> sessions for that user, including
+        Wayland sessions. Do not make this change if you run
+        <application>Xfce</application> under Wayland.
+      </para>
+    </note>
+
   </sect2>
 
   <sect2 role="content">

@@ -188,6 +188,51 @@ EOF
 
 startx</userinput></screen>
 
+    <note revision="systemd">
+      <para>
+        If <xref linkend="xdg-desktop-portal"/> is installed, its systemd
+        user service will only start when
+        the systemd unit <emphasis role="bold">graphical-session.target</emphasis> 
+        is active.  <command>startx</command> does not activate that target, 
+        so any application that queries the portal (for example
+        <application>LibreOffice</application> or other GTK applications)
+        waits for a D-Bus timeout of 25 seconds, sometimes more than once,
+        before it appears. To avoid this, create a user target that binds
+        to <emphasis role="bold">graphical-session.target</emphasis> as the
+        &root; user:
+      </para>
+
+<screen role="root"><userinput>cat &gt; /etc/systemd/user/xfce-session.target &lt;&lt; "EOF"
+<literal>[Unit]
+Description=Xfce session
+BindsTo=graphical-session.target
+Wants=graphical-session-pre.target
+After=graphical-session-pre.target</literal>
+EOF</userinput></screen>
+
+      <para>
+        Then start <application>Xfce</application> with this
+        <filename>~/.xinitrc</filename> instead of the one shown above:
+      </para>
+
+<screen><userinput>cat &gt; ~/.xinitrc &lt;&lt; "EOF"
+<literal>export XDG_CURRENT_DESKTOP=XFCE
+dbus-update-activation-environment --systemd DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP
+systemctl --user start xfce-session.target
+startxfce4
+systemctl --user stop xfce-session.target</literal>
+EOF</userinput></screen>
+
+      <para>
+        The environment variables are passed to the systemd user instance
+        so that the portal and its backends can connect to the X server.
+        Do not prefix <command>startxfce4</command> with
+        <command>exec</command>; the last line has to run when the session
+        ends so that <emphasis role="bold">graphical-session.target</emphasis>
+        and the services bound to it are stopped.
+      </para>
+    </note>
+
     <para>
       The X session starts on the first unused virtual terminal, normally vt7.
       You can switch to another vt<emphasis>n</emphasis> simultaneously

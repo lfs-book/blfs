@@ -402,6 +402,23 @@ EOF</userinput></screen>
 eval `dbus-launch`
 export DBUS_SESSION_BUS_ADDRESS</literal></userinput></screen>
 
+          <note revision="systemd">
+            <para>
+              Do not use <command>dbus-update-activation-environment --systemd
+              --all</command> on a BLFS system. The <filename>/etc/profile</filename>
+              created in <xref linkend="postlfs-config-profile"/> exports shell
+              functions, which appear in the environment as variables such as
+              <envar>BASH_FUNC_pathappend%%</envar>. systemd rejects those names
+              and refuses the entire update with the message
+              <computeroutput>Invalid environment assignments</computeroutput>,
+              so none of the variables are set, including
+              <envar>DISPLAY</envar>. List the variables explicitly instead, for
+              example:
+            </para>
+
+<screen><userinput>dbus-update-activation-environment --systemd DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP</userinput></screen>
+          </note>
+
           <para>
             This method will not stop the session daemon when you exit
             your shell, therefore you should add the following line to your
