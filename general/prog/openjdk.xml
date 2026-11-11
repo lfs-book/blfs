@@ -5,26 +5,25 @@
   %general-entities;
 
   <!ENTITY ojdk-tarball              "jdk-&openjdk-version;-ga.tar.gz">
-  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk21u">
+  <!ENTITY ojdk-repo                 "https://github.com/openjdk/jdk25u">
   <!ENTITY ojdk-download             "&ojdk-repo;/archive/&ojdk-tarball;">
 
   <!ENTITY anduin-download           "&sources-anduin-http;/OpenJDK/OpenJDK-&openjdk-version;">
 
-  <!ENTITY ojdk-md5sum               "1d1a6069a03dcbb9ae52cc74e8e78d63">
-  <!ENTITY ojdk-size                 "109 MB">
+  <!ENTITY ojdk-md5sum               "a0569c783077f8b924d1cb4adc4f013a">
+  <!ENTITY ojdk-size                 "114 MB">
 
   <!ENTITY jtreg-version             "8.3+1">
   <!ENTITY jtreg-download            "&anduin-download;/jtreg-&jtreg-version;.tar.gz">
   <!ENTITY jtreg-md5sum              "bc81822397fe76d2cfcdea26c1454be2">
   <!ENTITY jtreg-size                "9.7 MB">
 
-  <!ENTITY ojdk-bdsize               "5.6 GB (add 769 MB for tests)">
-  <!ENTITY ojdk-time                 "3.7 SBU with 4 jobs (add 44 SBU for tests with 4 jobs)">
+  <!ENTITY ojdk-bdsize               "5.4 GB (add 829 MB for tests)">
+  <!ENTITY ojdk-time                 "4.6 SBU with 4 jobs (add 54 SBU for tests with 4 jobs)">
 ]>
 
 <sect1 id="openjdk" xreflabel="OpenJDK-&openjdk-version;">
   <?dbhtml filename="openjdk.html" ?>
-
 
   <title>OpenJDK-&openjdk-version;</title>
 
@@ -337,6 +336,8 @@ unset JT_JAVA</userinput></screen>
          for i686:   passed: 6,644; failed: 33; error: 19
          21.0.12.1+1:
          for x86_64: passed: 6,728; failed: 73; error: 13
+         25.0.5.0.3+1:
+         for x86_64: passed: 7,042; failed: 16; error: 97
     -->
 
     <para>
@@ -428,12 +429,7 @@ EOF</userinput></screen>
       <filename>configure</filename> is a wrapper around the autotools one.
       It is not executable and must be run through <command>bash</command>.
     </para>
-<!-- Not needed in openjdk-15
-    <para>
-      <parameter>- -with-extra-cflags=-fcommon</parameter>: Allows building
-      with GCC 10.
-    </para>
--->
+
     <para>
       <parameter>--enable-unlimited-crypto</parameter>: Because of limitations
       on the usage of cryptography in some countries, there is the possibility
@@ -503,12 +499,7 @@ EOF</userinput></screen>
       location of the temporary <application>JDK</application>. It is normally
       not needed if <command>java</command> is found in the <envar>PATH</envar>.
     </para>
-<!-- Seems to have disappeared
-    <para>
-      <command>find ... -iname '*.diz' -delete</command>: This command
-      removes redundant files.
-    </para>
--->
+
   </sect2>
 
   <sect2 role="configuration"
@@ -578,7 +569,7 @@ bin/keytool -list -cacerts</userinput></screen>
       <seglistitem>
         <seg>jar, jarsigner, java, javac, javadoc, javap, jcmd,
         jconsole, jdb, jdeprscan, jdeps, jfr, jhsdb, jimage, jinfo,
-        jlink, jmap, jmod, <!--jnativescan,--> jpackage, jps, jrunscript, jshell,
+        jlink, jmap, jmod, jnativescan, jpackage, jps, jrunscript, jshell,
         jstack, jstat, jstatd, jwebserver, keytool, rmiregistry, and serialver</seg>
         <seg>37 libraries in /opt/jdk-&openjdk-version;+&openjdk-build;/lib/</seg>
         <seg>/opt/jdk-&openjdk-version;+&openjdk-build;</seg>
@@ -822,7 +813,6 @@ bin/keytool -list -cacerts</userinput></screen>
         </listitem>
       </varlistentry>
 
-<!--
       <varlistentry id="jnativescan">
         <term><command>jnativescan</command></term>
         <listitem>
@@ -835,7 +825,6 @@ bin/keytool -list -cacerts</userinput></screen>
           </indexterm>
         </listitem>
       </varlistentry>
--->
 
       <varlistentry id="jpackage">
         <term><command>jpackage</command></term>
