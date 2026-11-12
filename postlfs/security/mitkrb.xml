@@ -6,10 +6,10 @@
 
   <!ENTITY mitkrb-download-http "https://kerberos.org/dist/krb5/&mitkrb-major-version;/krb5-&mitkrb-version;.tar.gz">
   <!ENTITY mitkrb-download-ftp  " ">
-  <!ENTITY mitkrb-md5sum        "42472b11771d074329e0cc776d2eb5fd">
+  <!ENTITY mitkrb-md5sum        "f843383e33d1e544a0ac31778c796b2c">
   <!ENTITY mitkrb-size          "8.4 MB">
-  <!ENTITY mitkrb-buildsize     "149 MB (with tests)">
-  <!ENTITY mitkrb-time          "0.4 SBU (Using parallelism=4; add 3.8 SBU for tests)">
+  <!ENTITY mitkrb-buildsize     "112 MB (with tests)">
+  <!ENTITY mitkrb-time          "0.4 SBU (Using parallelism=4; add 0.7 SBU for tests)">
 ]>
 
 <sect1 id="mitkrb" xreflabel="MIT Kerberos V5-&mitkrb-version;">
@@ -69,7 +69,7 @@
         </para>
       </listitem>
     </itemizedlist>
-
+<!--
     <bridgehead renderas="sect3">Additional Downloads</bridgehead>
     <itemizedlist spacing="compact">
       <listitem>
@@ -78,20 +78,8 @@
            <ulink url="&patch-root;/mitkrb-&mitkrb-version;-upstream_fix-1.patch"/>
         </para>
       </listitem>
-      <listitem>
-        <para>
-          Required patch:
-           <ulink url="&patch-root;/mitkrb-&mitkrb-version;-security_fix-1.patch"/>
-        </para>
-      </listitem>
-      <listitem>
-        <para>
-          Required patch for OpenSSL-4:
-           <ulink url="&patch-root;/mitkrb-&mitkrb-version;-openssl_4_fixes-1.patch"/>
-        </para>
-      </listitem>
     </itemizedlist>
-
+-->
     <bridgehead renderas="sect3">MIT Kerberos V5 Dependencies</bridgehead>
 
     <bridgehead renderas="sect4">Optional</bridgehead>
@@ -128,7 +116,7 @@
 
   <sect2 role="installation">
     <title>Installation of MIT Kerberos V5</title>
-
+<!--
     <para>
       First, fix an issue identified by glibc-2.43:
     </para>
@@ -146,15 +134,15 @@
     </para>
 
 <screen><userinput remap="pre">patch -Np1 -i ../mitkrb-&mitkrb-version;-openssl_4_fixes-1.patch</userinput></screen>
-
+-->
     <para>
       Build <application>MIT Kerberos V5</application> by running the
       following commands:
     </para>
 
 <screen><userinput>cd src &amp;&amp;
-sed -i -e '/eq 0/{N;s/12 //}' plugins/kdb/db2/libdb2/test/run.test &amp;&amp;
-
+<!--sed -i -e '/eq 0/{N;s/12 //}' plugins/kdb/db2/libdb2/test/run.test &amp;&amp;
+-->
 ./configure --prefix=/usr            \
             --sysconfdir=/etc        \
             --localstatedir=/var/lib \
@@ -168,13 +156,18 @@ make</userinput></screen>
 
     <para>
       To test the build, issue: <command>make -j1 -k check</command>.
+      One test, test12, is known to fail if a word list such as the one 
+      installed by CrackLib is present at /usr/share/dict/words. 
+      To avoid this, add WORDLIST=$PWD/plugins/kdb/db2/libdb2/test/dictionary 
+      to the make check command.
+      <!--
       Some tests may fail with the latest version of dejagnu and glibc.
       Some tests may hang for a long time and fail if the system is not
       connected to a network. One test, <filename>t_kadm5srv</filename>,
       is known to fail. If <xref linkend='keyutils'/> is installed but
       <xref linkend='keyutils-test-kernel'/> is not
       satisfied, some tests will fail complaining
-      <computeroutput>keyctl failed with code 1</computeroutput>.
+      <computeroutput>keyctl failed with code 1</computeroutput>.-->
       <!-- Note: on my laptop -j8 fails but -j1 passes
       For version 1.21, -j1 no longer needs to be specified and the
       time for the tests was reduced considerably.  -bdubbs
@@ -196,10 +189,11 @@ cp -vfr ../doc -T /usr/share/doc/krb5-&mitkrb-version;</userinput></screen>
     <title>Command Explanations</title>
 
     <!-- https://krbdev.mit.edu/rt/Ticket/Display.html?id=9129 -->
+    <!--
     <para>
       The <command>sed</command> command removes a
       test that is known to fail.
-    </para>
+    </para>-->
 
     <para>
       <parameter>--localstatedir=/var/lib</parameter>: This option is
