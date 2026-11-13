@@ -135,6 +135,14 @@
 
 <screen><userinput remap="pre">patch -Np1 -i ../mitkrb-&mitkrb-version;-openssl_4_fixes-1.patch</userinput></screen>
 -->
+    
+    <para>
+      First, make some fixes for gcc-16.2 and later:
+    </para>
+
+<screen><userinput>sed -r 's/X509_EXTENSION .san_ext|X509_NAME .name/const &amp;/' \
+    -i src/plugins/tls/k5tls/openssl.c</userinput></screen>
+
     <para>
       Build <application>MIT Kerberos V5</application> by running the
       following commands:
