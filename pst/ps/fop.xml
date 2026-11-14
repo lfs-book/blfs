@@ -6,10 +6,10 @@
 
   <!ENTITY fop-download-http "https://archive.apache.org/dist/xmlgraphics/fop/source/fop-&fop-version;-src.tar.gz">
   <!ENTITY fop-download-ftp  " ">
-  <!ENTITY fop-md5sum        "b202dcd7c6dcaf3ec5d14bb193d7bf01">
-  <!ENTITY fop-size          "21 MB">
-  <!ENTITY fop-buildsize     "343 MB (including files downloaded to the user directory)">
-  <!ENTITY fop-time          "0.9 SBU">
+  <!ENTITY fop-md5sum        "489d8d34cff84217f59d94041a4206ab">
+  <!ENTITY fop-size          "20 MB">
+  <!ENTITY fop-buildsize     "563 MB (including files downloaded to user directory, add 73 MB for tests)">
+  <!ENTITY fop-time          "0.3 SBU (add 0.7 SBU for tests) depends on download time">
 <!--
   <!ENTITY pdfbox-version    "2.0.27">
   <!ENTITY pdfbox-download   "https://archive.apache.org/dist/pdfbox/&pdfbox-version;/pdfbox-&pdfbox-version;.jar">
@@ -21,10 +21,10 @@
   <!ENTITY fontbox-size      "1.5 MB">
 -->
   <!ENTITY maven-major        "3">
-  <!ENTITY maven-version      "3.9.12">
+  <!ENTITY maven-version      "3.10.0">
   <!ENTITY maven-download     "https://archive.apache.org/dist/maven/maven-&maven-major;/&maven-version;/binaries/apache-maven-&maven-version;-bin.tar.gz">
-  <!ENTITY maven-md5sum       "bcd2fb0a7f3f27047b693c2a2818c965">
-  <!ENTITY maven-size         "11 MB (additionally, about 90 MB are downloaded to the building user's directory)">
+  <!ENTITY maven-md5sum       "c0ad4bb59dbd99bcdbde758c9afcc0ee">
+  <!ENTITY maven-size         "9.5 MB (additionally, about 90 MB are downloaded to the building user's directory)">
 
   <!ENTITY offo-download     "&sourceforge-dl;/offo/2.2/offo-hyphenation.zip">
   <!ENTITY offo-md5sum       "bf9c09bf05108ef9661b8f08d91c2336">
@@ -156,9 +156,11 @@
       <xref linkend="apache-ant"/>
     </para>
 
+    &build-use-internet;
+
     <bridgehead renderas="sect4">Optional</bridgehead>
     <para role="optional">
-      <xref linkend="x-window-system"/> (to run tests),
+<!-- tests seem to work without X      <xref linkend="x-window-system"/> (to run tests), -->
       <ulink url="https://jai-tools.blogspot.com/">JAI Image I/O Tools</ulink>, and
       <ulink url="https://jeuclid.sourceforge.net/">JEuclid</ulink>
 <!-- [pierre 2017-04-29] Note to devs: there are a lot of bundled dependencies.
@@ -175,10 +177,11 @@
 
     <para>
       Ensure <envar>$JAVA_HOME</envar> is set correctly before beginning
-      the build. To build the <application>JIMI SDK</application> and/or
+      the build. <!-- Those are now downloaded through maven
+      To build the <application>JIMI SDK</application> and/or
       <application>XMLUnit</application> extension classes, ensure the
       corresponding <filename class='extension'>.jar</filename> files can be
-      found via the <envar>CLASSPATH</envar> environment variable.
+      found via the <envar>CLASSPATH</envar> environment variable.-->
     </para>
 
     <sect3>
@@ -210,14 +213,7 @@ rm -rf offo-hyphenation</userinput></screen>
     <sect3>
       <title>Installing fop Components</title>
 
-<!-- Applied in fop-2.11
-      <para>
-        First, fix a build error caused by Java-23:
-      </para>
-
-<screen><userinput>patch -Np1 -i ../fop-&fop-version;-upstream_fixes-1.patch</userinput></screen>
--->
-
+<!-- seems ok with fop-2.12
       <para>
         The <command>javadoc</command> command that ships with OpenJDK 10 and
         later has
@@ -229,10 +225,10 @@ rm -rf offo-hyphenation</userinput></screen>
 
 <screen><userinput>sed -i '\@&lt;/javad@i\
 &lt;arg value="-Xdoclint:none"/&gt;\
-&lt;arg value="--allow-script-in-comments"/&gt;\
-&lt;arg value="--ignore-source-errors"/&gt;' \
+&lt;arg value="- -allow-script-in-comments"/&gt;\
+&lt;arg value="- -ignore-source-errors"/&gt;' \
     fop/build.xml</userinput></screen>
-
+-->
 <!--
       <para>
         The <filename>build.xml</filename> file calls for an old version of
@@ -256,9 +252,12 @@ ant package javadocs &amp;&amp;
 mv build/javadocs .</userinput></screen>
 
       <para>
-        This package comes with a test suite, but the java infrastructure
-        installed in this book does not allow running it.
+        To test the results, issue:
       </para>
+
+<screen remap="test"><userinput>LC_ALL=en_US.UTF-8                      \
+PATH=$PATH:/tmp/apache-maven-&maven-version;/bin \
+ant junit</userinput></screen>
 
       <para>
         Now, install <application>Fop</application> as the
@@ -282,13 +281,13 @@ ln -v -sfn fop-&fop-version; /opt/fop</userinput></screen>
 
   <sect2 role="commands">
     <title>Command Explanations</title>
-
+    <!--
     <para>
       <command>sed -i ... build.xml</command>: This adds three switches to the
       <command>javadoc</command> command, preventing some errors from occurring
       when building the documentation.
     </para>
-
+    -->
     <para>
       <command>export LC_ALL=en_US.UTF-8</command>: the compiler fails if using
       an ASCII locale.
