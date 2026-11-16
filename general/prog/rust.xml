@@ -6,8 +6,8 @@
 
   <!ENTITY rust-download-http "https://static.rust-lang.org/dist/rustc-&rust-version;-src.tar.xz">
   <!ENTITY rust-download-ftp  " ">
-  <!ENTITY rust-md5sum        "8872013f6cf2c07e1f5ffaca47d0a347">
-  <!ENTITY rust-size          "253 MB">
+  <!ENTITY rust-md5sum        "ff4767885a0b3f3f4167d7f626e22a5a">
+  <!ENTITY rust-size          "252 MB">
   <!ENTITY rust-buildsize     "10 GB (324 MB installed); add 11 GB if running the tests">
   <!ENTITY rust-time          "10 SBU (including download time; add 15 SBU for tests, both using parallelism=8)">
 ]>
@@ -236,7 +236,7 @@ ln -svfn rustc-&rust-version; /opt/rustc</userinput></screen>
 # Tell x.py that the editors have reviewed the content of this file
 # and updated it to follow the major changes of the building system,
 # so x.py will not warn users to review that information.
-change-id = 160100
+change-id = 162423
 
 [llvm]
 # When using the system installed copy of LLVM, prefer the shared libraries
@@ -307,10 +307,29 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
     </note>
 
     <para>
+      Some tests make the use of the <literal>expect-test</literal> crate
+      that <ulink url='https://github.com/rust-lang/rust/issues/166014'>does
+      not work well under our Rustc build configuration</ulink>.  Suppress
+      those tests so they won't spam the test results if running the test
+      suite:
+    </para>
+
+<screen remap="test"><userinput>sed -e '1i#![allow(warnings)]'                          \
+    -e 's/actual == expected/expected.is_empty() || &amp;/' \
+    -i vendor/expect-test-1.5.1/src/lib.rs &amp;&amp;
+
+cat &gt;&gt; Cargo.toml &lt;&lt; EOF &amp;&amp;
+<literal>[patch.crates-io]
+expect-test = { path = "vendor/expect-test-1.5.1" }</literal>
+EOF
+
+sed -r '/name = "expect-test"/,/^$/{/source|checksum/d}' -i Cargo.lock</userinput></screen>
+
+    <para>
       To run the tests, issue:
     </para>
 
-<screen remap="test"><userinput>./x.py test --no-fail-fast | tee rustc-testlog</userinput></screen>
+<screen remap="test"><userinput>./x.py test --no-fail-fast | tee test.log</userinput></screen>
 
     <para>
       In the <filename class='directory'>run-make</filename> tests,
@@ -345,7 +364,7 @@ export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
     </para>
 
 <!-- split into two lines for narrower screen windows -->
-<screen remap="test"><userinput>grep '^test result:' rustc-testlog |
+<screen remap="test"><userinput>grep '^test result:' test.log |
  awk '{sum1 += $4; sum2 += $6} END { print sum1 " passed; " sum2 " failed" }'</userinput></screen>
 
     <para>
