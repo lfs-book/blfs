@@ -4,10 +4,10 @@
   <!ENTITY % general-entities SYSTEM "../../general.ent">
   %general-entities;
 
-  <!ENTITY qtwebengine-download-http "https://download.qt.io/official_releases/qt/&qtwebengine-major;/&qtwebengine-version;/submodules/qtwebengine-everywhere-src-&qtwebengine-version;.tar.xz">
+  <!ENTITY qtwebengine-download-http "https://download.qt.io/official_releases/qtwebengine/&qtwebengine-major;/&qtwebengine-version;/src/qtwebengine-everywhere-src-&qtwebengine-version;.tar.xz">
   <!ENTITY qtwebengine-download-ftp  " ">
-  <!ENTITY qtwebengine-md5sum        "4854599a1f9c307faca5dcdcc6ff5834">
-  <!ENTITY qtwebengine-size          "554 MB">
+  <!ENTITY qtwebengine-md5sum        "297be1af46debde1703d9c8151516d68">
+  <!ENTITY qtwebengine-size          "556 MB">
   <!ENTITY qtwebengine-buildsize     "12 GB (388 MB installed)">
   <!ENTITY qtwebengine-time          "44 SBU (using parallelism=8)">
 ]>
@@ -193,6 +193,16 @@
 <screen><userinput>patch -Np1 -i ../qtwebengine-&qtwebengine-version;-icu4c_79-1.patch</userinput></screen>
 
     <para>
+      Now remove the profiler_builtins library from the list of Rust standard
+      library files that the build copies from the system Rust installation.
+      That library is only needed for code coverage builds and is not present
+      unless rustc was built with profiler support.
+    </para>
+
+<screen><userinput>sed -e '/skip_stdlib_files = \[/,/\]/{/"profiler_builtins",/d}' \
+    -i src/3rdparty/chromium/build/rust/std/BUILD.gn</userinput></screen>
+
+    <para>
       Install <application>qtwebengine</application> by running the following
       commands:
     </para>
@@ -207,7 +217,7 @@ cmake -D CMAKE_MESSAGE_LOG_LEVEL=STATUS             \
       -D QT_FEATURE_webengine_webrtc_pipewire=ON    \
       -D QT_BUILD_EXAMPLES_BY_DEFAULT=OFF           \
       -D QT_GENERATE_SBOM=OFF                       \
-      -G Ninja ..                                   &amp;&amp;
+      -G Ninja -W no-author ..                      &amp;&amp;
 ninja</userinput></screen>
 
     <para>
