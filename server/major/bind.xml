@@ -8,7 +8,7 @@
   <!ENTITY bind-download-ftp  " ">
   <!ENTITY bind-md5sum        "&bind-md5;">
   <!ENTITY bind-size          "5.7 MB">
-  <!ENTITY bind-buildsize     "124 MB (add 88 MB or tests; 23 MB installed)">
+  <!ENTITY bind-buildsize     "125 MB (add 68 MB for tests; 23 MB installed)">
   <!ENTITY bind-time          "0.4 SBU (with parallelism=4; about 58 minutes somewhat processor independent, to run the complete test suite)">
 ]>
 
@@ -125,21 +125,7 @@
 
   <sect2 role="installation">
     <title>Installation of BIND</title>
-<!-- Its now (Oct'24) about a year ago
-     Btw, if the root file is a bit out of sync, it doesn't break the
-     installation. named queries one of the servers in that list (and
-     is that doesn't work another) to retrieve the actual list and keep
-     it in cache. We do not even be required to create the root.hint
-     as named has a list builtin. As long as at least one of the servers
-     is valid, named will be able to retrieve the actual list (they call
-     it "re-prime") and thus it will be operational.
-    <note>
-      <para>
-         Starting with bind-9.18.20, the IP addresses for B.ROOT-SERVERS.NET
-         have changed.
-      </para>
-    </note>
--->
+
     <para>
       If you plan to run the tests, a virtual python environment should be
       set up, so that <command>configure</command> finds the Python binary from
@@ -254,14 +240,6 @@ install doc/dnssec-guide/* /usr/share/doc/bind-&bind-version;/dnssec-guide</user
       to be able to limit the rate of recursive client queries. This may be
       useful on servers which receive a large number of queries.
     </para>
-
-<!-- Removed in 9.20.0 (and support has been in LFS for years)
-    <para>
-      <option>- -disable-linux-caps</option>: BIND can also be built without
-      capability support by using this option, at the cost of some loss of
-      security.
-    </para>
--->
 
     <para>
       <option>--disable-doh</option>: Use this option if you do not have
